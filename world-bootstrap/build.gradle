@@ -1,0 +1,21 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':world-common')
+    implementation project(':world-proto')
+    implementation project(':world-service')
+    implementation project(':world-core')
+    implementation project(':world-worldserver')
+    implementation project(':world-portalserver')
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+application {
+    mainClass = 'com.rainbowlandcore.boot.StandaloneApplication'
+}

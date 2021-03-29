@@ -1,0 +1,12 @@
+
+
+rootProject.name = 'helloWorld'
+include 'world-common'
+include 'world-proto'
+include 'world-service'
+include 'world-core'
+include 'world-game'
+include 'world-worldserver'
+include 'world-portalserver'
+include 'world-bootstrap'
+

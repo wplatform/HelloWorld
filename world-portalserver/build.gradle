@@ -1,0 +1,35 @@
+plugins {
+    id 'java-library'
+    id 'com.google.protobuf' version '0.8.15'
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/source/proto/main/java"
+        }
+    }
+}
+
+dependencies {
+    implementation project(':world-common')
+    implementation project(':world-service')
+
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+    implementation 'io.projectreactor.netty:reactor-netty-http'
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation 'com.google.protobuf:protobuf-java:3.11.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    compileOnly "org.projectlombok:lombok"
+
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.12.0"
+    }
+
+}

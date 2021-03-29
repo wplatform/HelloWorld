@@ -1,0 +1,11 @@
+
+
+plugins {
+    id 'java-library'
+}
+
+
+dependencies {
+    implementation project(':world-common')
+    implementation 'io.netty:netty-buffer'
+}

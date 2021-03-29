@@ -1,0 +1,19 @@
+
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation project(':world-common')
+    implementation project(':world-proto')
+    implementation project(':world-service')
+    implementation project(':world-core')
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+}
+

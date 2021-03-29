@@ -1,0 +1,64 @@
+package com.rainbowland.utils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class SysProperties {
+
+    public static final String PORTAL_WOW_PROGRAM_NAME =
+            Utils.getProperty("portal.wowProgramName", "WoW");
+
+    public static final List<String> PORTAL_SUPPORTED_PLATFORM_LIST =
+            listString(Utils.getProperty("portal.wowProgramName", "Win,Wn64,Mc64"));
+
+    public static final int PORTAL_LOGIN_TICKET_LENGTH =
+            Utils.getProperty("portal.loginTicketLength", 32);
+
+    public static final int PORTAL_SESSION_KEY_LENGTH =
+            Utils.getProperty("portal.sessionKeyLength", 64);
+
+    public static final int PORTAL_CLIENT_SECRET_LENGTH =
+            Utils.getProperty("portal.clientSecretLength", 32);
+
+    public static final int PORTAL_SERVER_SECRET_LENGTH =
+            Utils.getProperty("portal.serverSecretLength", 32);
+
+    public static final int PORTAL_SERVER_IO_SELECT_COUNT =
+            Utils.getProperty("portal.server.io.selectCount", 1);
+
+    public static final int PORTAL_SERVER_IO_WORKER_COUNT =
+            Utils.getProperty("portal.server.io.workerCount", 1);
+
+    public static final int PORTAL_SERVER_IO_SO_RCVBUF =
+            Utils.getProperty("portal.server.io.rcvbuf", 1024 * 16);
+
+    public static final int PORTAL_SERVER_IO_SO_SNDBUF =
+            Utils.getProperty("portal.server.io.sndbuf", 1024 * 16);
+
+    public static final boolean PORTAL_SERVER_IO_PREFERNATIVE =
+            Utils.getProperty("portal.server.io.preferNative", true);
+
+    public static final String PORTAL_SERVER_CERTIFICATES_FILE =
+            Utils.getProperty("portal.server.certificatesFile", "/portalserver.cert.pem");
+
+    public static final String PORTAL_SERVER_PRIVATE_KEY_FILE =
+            Utils.getProperty("portal.server.privateKeyFile", "/portalserver.key.pem");
+
+    public static final String PORTAL_SERVER_IO_THREAD_NAME =
+            Utils.getProperty("portal.server.io.threadName", "ps-io-worker");
+
+    private SysProperties() {
+        // utility class
+    }
+
+    private static List<String> listString(String string) {
+        List<String> stringList = Arrays.stream(string.split(","))
+                .map(String::trim)
+                .filter(e -> !e.isBlank())
+                .collect(Collectors.toList());
+        return List.copyOf(stringList);
+    }
+
+
+}

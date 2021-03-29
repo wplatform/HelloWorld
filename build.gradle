@@ -1,0 +1,131 @@
+
+allprojects {
+    group = "com.rainbowlandwow"
+    version = "${majorVersion}.${buildNumber}"
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    
+    dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        implementation platform("io.projectreactor:reactor-bom:${reactorBomVersion}")
+        implementation platform("org.junit:junit-bom:${junitVersion}")
+
+        compileOnly "org.projectlombok:lombok:1.18.16"
+        testCompileOnly "org.projectlombok:lombok:1.18.16"
+
+        annotationProcessor "org.projectlombok:lombok:1.18.16"
+        testAnnotationProcessor "org.projectlombok:lombok:1.18.16"
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+
+    }
+
+
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            url 'https://repo.spring.io/milestone'
+            content {
+                includeGroup "io.projectreactor"
+                includeGroup "io.projectreactor.netty"
+            }
+        }
+
+        maven {
+            url 'https://repo.spring.io/snapshot'
+            content {
+                includeGroup "io.projectreactor"
+                includeGroup "io.projectreactor.netty"
+            }
+        }
+    }
+
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+
+    plugins.withType(JavaPlugin) {
+        compileJava {
+            options.release = 15
+            options.incremental = true
+            options.fork = true
+            options.failOnError = true
+            options.encoding = "UTF-8"
+            // options.compilerArgs << '-Xlint:all,-overloads,-rawtypes,-unchecked'
+        }
+
+
+
+        test {
+            useJUnitPlatform()
+            testLogging {
+                events "FAILED"
+                showExceptions true
+                exceptionFormat "FULL"
+                stackTraceFilters "ENTRY_POINT"
+                maxGranularity 3
+            }
+
+
+
+            if (JavaVersion.current().isJava9Compatible()) {
+                println "Java 9+: lowering MaxGCPauseMillis to 20ms in ${project.name} ${name}"
+                println "Java 9+: enabling leak detection [ADVANCED]"
+                jvmArgs = ["-XX:MaxGCPauseMillis=20", "-Dio.netty.leakDetection.level=ADVANCED"]
+            }
+
+            systemProperty("java.awt.headless", "true")
+            systemProperty("testGroups", project.properties.get("testGroups"))
+
+            //allow re-run of failed tests only without special test tasks failing
+            // because the filter is too restrictive
+            filter.setFailOnNoMatchingTests(false)
+
+            //display intermediate results for special test tasks
+            afterSuite { desc, result ->
+                if (!desc.parent) { // will match the outermost suite
+                    println('\n' + "${desc} Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)")
+                }
+            }
+        }
+    }
+
+    plugins.withType(JavaLibraryPlugin) {
+        task sourcesJar(type: Jar) {
+            from sourceSets.main.allJava
+        }
+
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            from javadoc.destinationDir
+        }
+
+        plugins.withType(MavenPublishPlugin) {
+            publishing {
+                publications {
+                    maven(MavenPublication) {
+                        from components.java
+                        artifact sourcesJar
+                        artifact javadocJar
+                    }
+                }
+            }
+        }
+    }
+
+
+
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
