@@ -1,0 +1,12 @@
+package com.rainbowland.enums;
+
+public enum SpellSchools {
+    SPELL_SCHOOL_NORMAL,
+    SPELL_SCHOOL_HOLY,
+    SPELL_SCHOOL_FIRE,
+    SPELL_SCHOOL_NATURE,
+    SPELL_SCHOOL_FROST,
+    SPELL_SCHOOL_SHADOW,
+    SPELL_SCHOOL_ARCANE,
+    //MAX_SPELL_SCHOOL
+}
