@@ -1,5 +1,7 @@
 package com.rainbowland.service.auth;
 
+import com.rainbowland.service.BaseR2dbcService;
+import com.rainbowland.service.R2dbcService;
 import com.rainbowland.service.auth.domain.*;
 import com.rainbowland.service.constants.AuthSqlConstants;
 import lombok.RequiredArgsConstructor;
@@ -14,40 +16,13 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
-
-    private final R2dbcEntityTemplate template;
+public class AuthServiceImpl extends BaseR2dbcService implements AuthService {
 
 
-    public <T> Mono<T> insert(T entity) {
-        return template.insert(entity);
+    public AuthServiceImpl(R2dbcEntityTemplate template) {
+        super(template);
     }
 
-    public <T> Mono<T> delete(T entity) {
-        return template.delete(entity);
-    }
-
-    public <T> Mono<T> update(T entity) {
-        return template.update(entity);
-    }
-
-    public ReactiveUpdateOperation.ReactiveUpdate update(Class<?> entityClass) {
-        return template.update(entityClass);
-    }
-
-    public <T> Flux<T> select(Query query, Class<T> clazz) {
-        return template.select(query, clazz);
-    }
-
-    @Override
-    public <T> ReactiveSelectOperation.ReactiveSelect<T> select(Class<T> clazz) {
-        return template.select(clazz);
-    }
-
-    public <T> Mono<T> selectOne(Query query, Class<T> clazz) {
-        return template.selectOne(query, clazz);
-    }
 
     @Override
     public Mono<BattlenetAccount> getBattleNetAccount(String userName) {

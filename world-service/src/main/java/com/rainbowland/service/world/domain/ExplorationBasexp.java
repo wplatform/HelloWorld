@@ -1,0 +1,50 @@
+package com.rainbowland.service.world.domain;
+
+import io.r2dbc.spi.Row;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.r2dbc.core.Parameter;
+import org.springframework.data.convert.WritingConverter;
+import org.springframework.data.r2dbc.mapping.OutboundRow;
+import lombok.Data;
+
+import java.util.Optional;
+
+@Data
+@Table("exploration_basexp")
+public class ExplorationBasexp {
+
+    @Column("level")
+    private Integer level;
+    @Column("basexp")
+    private Integer basexp;
+
+
+
+    @ReadingConverter
+    public static class RowMapper implements Converter<Row, ExplorationBasexp> {
+
+        public ExplorationBasexp convert(Row row) {
+            ExplorationBasexp domain = new ExplorationBasexp();
+            domain.setLevel(row.get("level", Integer.class));
+            domain.setBasexp(row.get("basexp", Integer.class));
+            return domain;
+        }
+    }
+
+
+
+    @WritingConverter
+    public static class ParamMapper implements Converter<ExplorationBasexp, OutboundRow> {
+
+        public OutboundRow convert(ExplorationBasexp source) {
+            OutboundRow row = new OutboundRow();
+            Optional.ofNullable(source.getLevel()).ifPresent(e -> row.put("level", Parameter.from(e)));
+            Optional.ofNullable(source.getBasexp()).ifPresent(e -> row.put("basexp", Parameter.from(e)));
+            return row;
+        }
+    }
+
+}

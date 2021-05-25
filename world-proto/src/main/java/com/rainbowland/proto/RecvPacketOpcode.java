@@ -3,6 +3,8 @@ package com.rainbowland.proto;
 import com.rainbowland.proto.auth.AuthContinuedSession;
 import com.rainbowland.proto.auth.AuthSession;
 import com.rainbowland.proto.auth.Ping;
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -789,7 +791,7 @@ public enum RecvPacketOpcode {
     CMSG_BF_MGR_QUEUE_EXIT_REQUEST(0xBADD);
 
 
-    private static Map<Integer, RecvPacketOpcode> VALUE_MAPPING = new HashMap<>(RecvPacketOpcode.values().length, 1);
+    private static IntObjectMap<RecvPacketOpcode> VALUE_MAPPING = new IntObjectHashMap<>(RecvPacketOpcode.values().length, 1);
 
     static {
         for (RecvPacketOpcode opcode : RecvPacketOpcode.values()) {

@@ -3,7 +3,7 @@ package com.rainbowland.bootstrap.portal;
 import com.rainbowland.portal.PortalRestfulServer;
 import com.rainbowland.portal.PortalRpcServer;
 import com.rainbowland.portal.boot.PortalServerConfiguration;
-import com.rainbowland.service.auth.boot.AuthServiceConfiguration;
+import com.rainbowland.service.boot.AuthServiceConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;

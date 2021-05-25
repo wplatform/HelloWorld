@@ -1,14 +1,12 @@
 package com.rainbowland.worldserver.server;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import reactor.netty.DisposableServer;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 class WorldServerTest {
 
@@ -50,5 +48,10 @@ class WorldServerTest {
         System.out.println(in.read());
     }
 
+
+    public static void main(String[] args) {
+
+        System.out.println(Duration.between(LocalDate.of(2021,4,11),LocalDate.of(2021,3,15)).toMillis());
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.rainbowland.worldserver.netty;
 
+import com.rainbowland.proto.RecvWorldPacket;
 import com.rainbowland.worldserver.adapter.ChannelSession;
 import com.rainbowland.worldserver.adapter.ServerSession;
 import com.rainbowland.worldserver.crypto.AesGcm;
@@ -44,7 +45,7 @@ public class WorldPacketProtoEncoder extends MessageToByteEncoder<WorldPacketFra
         out.writeIntLE(0);
         out.writeBytes(frame.getTag());
         //write packet data, opcode and payload.
-        SendWorldPacket payload = frame.getPayload();
+        SendWorldPacket payload = (SendWorldPacket) frame.getPayload();
         out.writeShortLE(payload.getOpcode().value());
         payload.serialize(out);
         //calculate the packet data length, opcode and payload length.
@@ -56,7 +57,7 @@ public class WorldPacketProtoEncoder extends MessageToByteEncoder<WorldPacketFra
 
 
     private void encodeEncryptPacket(ServerSession session, WorldPacketFrame frame, ByteBuf out) throws Exception {
-        SendWorldPacket payload = frame.getPayload();
+        SendWorldPacket payload = (SendWorldPacket) frame.getPayload();
         out.writeShort(payload.getOpcode().value());
         payload.serialize(out);
 

@@ -16,16 +16,16 @@ public class Rsa {
 
 
     @SneakyThrows
-    public static PublicKey getPublicKey(String base64PublicKey) {
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
+    public static PublicKey getPublicKey(String publicKeyString) {
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyString.getBytes());
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
         return publicKey;
     }
 
     @SneakyThrows
-    public static PrivateKey getPrivateKey(String base64PrivateKey) {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64PrivateKey.getBytes()));
+    public static PrivateKey getPrivateKey(String privateKeyString) {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyString.getBytes());
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
         return privateKey;
@@ -52,9 +52,7 @@ public class Rsa {
         Signature publicSignature = Signature.getInstance("SHA256withRSA");
         publicSignature.initVerify(publicKey);
         publicSignature.update(plain);
-
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
-
         return publicSignature.verify(signatureBytes);
     }
 

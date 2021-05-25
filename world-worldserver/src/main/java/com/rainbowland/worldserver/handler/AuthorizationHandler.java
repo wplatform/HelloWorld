@@ -1,7 +1,12 @@
 package com.rainbowland.worldserver.handler;
 
 import com.rainbowland.common.RpcErrorCode;
-import com.rainbowland.proto.auth.*;
+import com.rainbowland.proto.RecvWorldPacket;
+import com.rainbowland.proto.SendWorldPacket;
+import com.rainbowland.proto.auth.AuthContinuedSession;
+import com.rainbowland.proto.auth.AuthResponse;
+import com.rainbowland.proto.auth.AuthSession;
+import com.rainbowland.proto.auth.EnterEncryptedMode;
 import com.rainbowland.service.auth.AuthService;
 import com.rainbowland.service.auth.domain.Account;
 import com.rainbowland.service.realm.Realm;
@@ -10,12 +15,10 @@ import com.rainbowland.service.realm.RealmKey;
 import com.rainbowland.service.realm.RealmManager;
 import com.rainbowland.utils.Bits;
 import com.rainbowland.utils.SecureUtils;
+import com.rainbowland.utils.SysProperties;
 import com.rainbowland.worldserver.adapter.ChannelSession;
 import com.rainbowland.worldserver.adapter.ServerSession;
-import com.rainbowland.proto.RecvWorldPacket;
-import com.rainbowland.proto.SendWorldPacket;
 import com.rainbowland.worldserver.adapter.SessionState;
-import com.rainbowland.worldserver.boot.WorldRealmProperties;
 import com.rainbowland.worldserver.constant.Constants;
 import com.rainbowland.worldserver.crypto.Rsa;
 import com.rainbowland.worldserver.utils.SessionKeyGenerator;
@@ -28,8 +31,8 @@ import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.time.Instant;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,20 +53,17 @@ public class AuthorizationHandler {
         Realm thisRealm = realmManager.getRealmByKey(realmKey);
 
         return authService.queryAccountByRealmJoinTicket(payload.getRealmID(), payload.getRealmJoinTicket())
-                .zipWhen(e -> Mono.just(e).map(account -> {
-                    AuthResponse response = new AuthResponse();
+                .flatMap(account -> {
                     RealmBuildInfo buildInfo = realmManager.getBuildInfo(thisRealm.getBuild());
                     if (buildInfo == null) {
-                        response.setResult(RpcErrorCode.ERROR_BAD_VERSION);
-                        return response;
+                        return Mono.just(AuthResponse.result(RpcErrorCode.ERROR_BAD_VERSION));
                     }
 
-                    if (account.getBanned() != null && account.getBanned()) {
-                        response.setResult(RpcErrorCode.ERROR_GAME_ACCOUNT_BANNED);
+                    if (Objects.equals(account.getBanned(), true)) {
                         log.error("Account {} is banned. reject to auth session. address: {}",
                                 account.getUsername(), session.getRemoteHostName());
                         session.close();
-                        return response;
+                        return Mono.empty();
                     }
 
                     String os = account.getOs();
@@ -79,7 +79,7 @@ public class AuthorizationHandler {
                         log.error("Authentication failed for account: {} ({}) address: {}",
                                 account.getId(), payload.getRealmJoinTicket(), session.getRemoteHostName());
                         session.close();
-                        return response;
+                        return Mono.empty();
                     }
 
                     byte[] keyData = SecureUtils.sha256(account.getSessionKeyBnet());
@@ -87,13 +87,12 @@ public class AuthorizationHandler {
                             session.getServerChallenge(), payload.getLocalChallenge(), Constants.SESSION_KEY_SEED);
 
                     SessionKeyGenerator generator = new SessionKeyGenerator(sessionKeyHmac);
-                    byte[] sessionKey = new byte[40];
-                    generator.generate(sessionKey);
+                    byte[] sessionKey = generator.generate();
                     channelSession.setSessionKey(sessionKey);
 
                     // only first 16 bytes of the hmac are used
                     byte[] encryptKeyGen = SecureUtils.hmacSHA256(sessionKey, payload.getLocalChallenge(), session.getServerChallenge(), Constants.ENCRYPTION_KEY_SEED);
-                    byte[] encryptKey = new byte[16];
+                    byte[] encryptKey = new byte[SysProperties.PORTAL_ENCRYPT_KEY_LENGTH];
                     System.arraycopy(encryptKeyGen, 0, encryptKey, 0, encryptKey.length);
                     channelSession.setSecretKey(encryptKey);
 
@@ -105,20 +104,16 @@ public class AuthorizationHandler {
                     EnterEncryptedMode enterEncryptedMode = new EnterEncryptedMode();
                     enterEncryptedMode.setSignature(signature);
                     enterEncryptedMode.setEnabled(true);
-                    return enterEncryptedMode;
-                })).zipWhen(tuple2 -> {
-                    Account account = tuple2.getT1();
-                    SendWorldPacket response = tuple2.getT2();
+
                     Update update = Update.update("last_attempt_ip", session.getRemoteHostName());
-                    if (response instanceof EnterEncryptedMode) {
-                        update.set("session_key_bnet", channelSession.getSessionKey());
-                        update.set("last_ip", session.getRemoteHostName());
-                    }
+                    update.set("session_key_bnet", channelSession.getSessionKey());
+                    update.set("last_ip", session.getRemoteHostName());
+
+                    channelSession.setAttachment(SESSION_ACCOUNT_KEY, account);
+
                     return authService.update(Account.class)
-                            .matching(Query.query(Criteria.where("id").is(account.getId()))).apply(update);
-                }, (v1, v2) -> {
-                    channelSession.setAttachment(SESSION_ACCOUNT_KEY, v1.getT1());
-                    return v1.getT2();
+                            .matching(Query.query(Criteria.where("id").is(account.getId()))).apply(update)
+                            .then(Mono.just(enterEncryptedMode));
                 });
 
     }
@@ -133,7 +128,7 @@ public class AuthorizationHandler {
                     byte[] hmacSHA256 = SecureUtils.hmacSHA256(session.getSessionKey(),
                             ByteBuffer.wrap(new byte[8]).order(ByteOrder.LITTLE_ENDIAN).putLong(payload.getKey()).array(),
                             payload.getLocalChallenge(),
-                            session.getServerChallenge(), Constants.AUTH_CHECK_SEED);
+                            session.getServerChallenge(), Constants.CONTINUED_SESSION_SEED);
 
                     if (!Arrays.equals(hmacSHA256, payload.getDigest())) {
                         log.error("Authentication continued session failed for account: {} ({}) address: {}",
@@ -145,7 +140,7 @@ public class AuthorizationHandler {
                     // only first 16 bytes of the hmac are used
                     byte[] encryptKeyGen = SecureUtils.hmacSHA256(session.getSessionKey(),
                             payload.getLocalChallenge(), session.getServerChallenge(), Constants.ENCRYPTION_KEY_SEED);
-                    byte[] encryptKey = new byte[16];
+                    byte[] encryptKey = new byte[SysProperties.PORTAL_ENCRYPT_KEY_LENGTH];
                     System.arraycopy(encryptKeyGen, 0, encryptKey, 0, encryptKey.length);
 
                     channelSession.setSecretKey(encryptKey);
@@ -159,13 +154,8 @@ public class AuthorizationHandler {
                     enterEncryptedMode.setEnabled(true);
                     return enterEncryptedMode;
 
-                }).switchIfEmpty(Mono.defer(()-> {
-                    AuthResponse response = new AuthResponse();
-                    response.setResult(RpcErrorCode.ERROR_DENIED);
-                    return Mono.just(response);
-                }));
+                }).switchIfEmpty(Mono.just(AuthResponse.result(RpcErrorCode.ERROR_DENIED)));
     }
-
 
 
     public Mono<SendWorldPacket> enterEncryptedModeAck(ServerSession session, RecvWorldPacket request) {

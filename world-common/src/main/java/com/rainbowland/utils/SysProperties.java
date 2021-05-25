@@ -16,10 +16,13 @@ public class SysProperties {
             Utils.getProperty("portal.loginTicketLength", 32);
 
     public static final int PORTAL_SESSION_KEY_LENGTH =
-            Utils.getProperty("portal.sessionKeyLength", 64);
+            Utils.getProperty("portal.sessionKeyLength", 40);
 
     public static final int PORTAL_CLIENT_SECRET_LENGTH =
             Utils.getProperty("portal.clientSecretLength", 32);
+
+    public static final int PORTAL_ENCRYPT_KEY_LENGTH =
+            Utils.getProperty("portal.encryptKeyLength", 16);
 
     public static final int PORTAL_SERVER_SECRET_LENGTH =
             Utils.getProperty("portal.serverSecretLength", 32);
@@ -47,6 +50,18 @@ public class SysProperties {
 
     public static final String PORTAL_SERVER_IO_THREAD_NAME =
             Utils.getProperty("portal.server.io.threadName", "ps-io-worker");
+
+    public static final String CACHE_PERSISTENCE_FILE_NAME =
+            Utils.getProperty("cache.persistenceFileName", "cache.db");
+
+    public static final String METADATA_FOLDER =
+            Utils.getProperty("cache.metadataFolder", "data");
+
+    public static final String METADATA_DB2_FOLDER =
+            Utils.getProperty("cache.metadataFolder", "db2");
+
+    public static final String METADATA_MAPS_FOLDER =
+            Utils.getProperty("cache.metadataFolder", "maps");
 
     private SysProperties() {
         // utility class

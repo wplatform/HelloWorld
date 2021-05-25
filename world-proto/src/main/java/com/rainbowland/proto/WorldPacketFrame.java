@@ -58,8 +58,8 @@ public final class WorldPacketFrame {
         }
     }
 
-    public <T extends WorldPacket> T getPayload() {
-        return (T) payload;
+    public WorldPacket getPayload() {
+        return payload;
     }
 
     public void setPayload(WorldPacket payload) {

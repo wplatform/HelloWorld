@@ -112,7 +112,7 @@ public class ServerRoutes implements BiFunction<NettyInbound, NettyOutbound, Pub
     }
 
     private Mono<HandlerAdapter> getHandler(WorldPacketFrame frame) {
-        RecvWorldPacket payload = frame.getPayload();
+        RecvWorldPacket payload = (RecvWorldPacket) frame.getPayload();
         HandlerAdapter handler;
         handler = predicateHandlers.stream()
                 .filter(e -> e.test(payload))
@@ -131,7 +131,7 @@ public class ServerRoutes implements BiFunction<NettyInbound, NettyOutbound, Pub
 
 
     private Mono<SendWorldPacket> invokeHandler(HandlerAdapter adapter, ServerSession session, WorldPacketFrame frame) {
-        RecvWorldPacket payload = frame.getPayload();
+        RecvWorldPacket payload = (RecvWorldPacket) frame.getPayload();
         Mono<SendWorldPacket> result = switch (adapter.getOverLoading()) {
             case REQUEST_RESPONSE -> Mono.from(adapter.getRequestResponse().apply(payload));
             case REQUEST_RESPONSE_WITH_SESSION -> Mono.from(adapter.getRequestResponseWithSession().apply(session, payload));

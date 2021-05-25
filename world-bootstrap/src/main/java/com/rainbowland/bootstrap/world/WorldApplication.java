@@ -1,7 +1,7 @@
 package com.rainbowland.bootstrap.world;
 
-import com.rainbowland.service.auth.boot.AuthServiceConfiguration;
-import com.rainbowland.service.characters.boot.CharacterServiceConfiguration;
+import com.rainbowland.service.boot.AuthServiceConfiguration;
+import com.rainbowland.service.boot.CharacterServiceConfiguration;
 import com.rainbowland.worldserver.boot.WorldServerConfiguration;
 import com.rainbowland.worldserver.server.WorldServer;
 import lombok.RequiredArgsConstructor;

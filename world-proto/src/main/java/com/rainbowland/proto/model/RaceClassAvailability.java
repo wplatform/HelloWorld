@@ -14,7 +14,6 @@ public class RaceClassAvailability {
 
 
     @Data
-    @Builder
    public static class ClassAvailability {
        private int classID = 0;//uint8
        private int activeExpansionLevel = 0;//uint8

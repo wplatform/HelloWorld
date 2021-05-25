@@ -6,7 +6,6 @@ dependencies {
     implementation project(':world-common')
     implementation project(':world-proto')
     implementation project(':world-service')
-    implementation project(':world-core')
     implementation project(':world-worldserver')
     implementation project(':world-portalserver')
     implementation "org.springframework.boot:spring-boot-starter"

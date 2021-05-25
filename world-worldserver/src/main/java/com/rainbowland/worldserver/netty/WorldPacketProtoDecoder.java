@@ -74,7 +74,7 @@ public class WorldPacketProtoDecoder extends MessageToMessageDecoder<ByteBuf> {
             throw new ProtocolException(MessageFormat.format("client {0} sent a wrong opcode (opcode: {1})", ctx.channel().remoteAddress(), Integer.toHexString(opcodeVal)));
 
         }
-        RecvWorldPacket payload = opcode.createPayloadInstance(opcode);
+        RecvWorldPacket payload = RecvPacketOpcode.createPayloadInstance(opcode);
         payload.deserialize(body);
         packetFrame.setPayload(payload);
         return packetFrame;

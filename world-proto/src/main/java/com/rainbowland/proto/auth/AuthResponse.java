@@ -5,16 +5,12 @@ import com.rainbowland.proto.SendWorldPacket;
 import com.rainbowland.proto.model.*;
 import com.rainbowland.utils.Bits;
 import io.netty.buffer.ByteBuf;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Optional;
-
-@Getter
 @Setter
+@Getter
 public class AuthResponse extends SendWorldPacket {
 
     private AuthSuccessInfo successInfo; ///< contains the packet data in case that it has account information (It is never set when WaitInfo is set), otherwise its contents are undefined.
@@ -25,8 +21,15 @@ public class AuthResponse extends SendWorldPacket {
         super(SendPacketOpcode.SMSG_AUTH_RESPONSE);
     }
 
+    public static AuthResponse result(int result) {
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setResult(result);
+        return authResponse;
+    }
 
-    @Override
+
+
+        @Override
     public void serialize(ByteBuf buf) {
 
         buf.writeIntLE(result);

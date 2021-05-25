@@ -1,75 +1,73 @@
 package com.rainbowland.game.components;
 
-import com.rainbowland.core.Component;
-import lombok.Getter;
-import lombok.Setter;
+import com.badlogic.gdx.math.Vector3;
+import com.rainbowland.game.core.Component;
 
-@Setter
-@Getter
-public class Position extends Component {
+public class Position implements Component {
 
-    private float posX;
-    private float posY;
-    private float posZ;
-    private float Orientation;
+
+    private float x;
+    private float y;
+    private float z;
+    private float o;
 
 
     public void relocate(float x, float y) {
-        posX = x;
-        posY = y;
+        this.x = x;
+        this.y = y;
     }
 
     public void relocate(float x, float y, float z) {
-        posX = x;
-        posY = y;
-        posZ = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public void relocate(float x, float y, float z, float o) {
-        posX = x;
-        posY = y;
-        posZ = z;
-        SetOrientation(o);
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.o = o;
     }
 
     public void relocate(Position loc) {
-        relocate(loc.posX, loc.posY, loc.posZ, loc.Orientation);
+        relocate(loc.x, loc.y, loc.z, loc.o);
     }
 
     public void relocate(Vector3 pos) {
-        relocate(pos.X, pos.Y, pos.Z);
+        relocate(pos.x, pos.y, pos.z);
     }
 
     public void relocateOffset(Position offset) {
-        posX = (float) (posX + (offset.posX * Math.cos(Orientation) + offset.posY * Math.sin(Orientation + Math.PI)));
-        posY = (float) (posY + (offset.posY * Math.cos(Orientation) + offset.posX * Math.sin(Orientation)));
-        posZ = posZ + offset.posZ;
-        SetOrientation(Orientation + offset.Orientation);
+        this.x = (float) (x + (offset.x * Math.cos(o) + offset.y * Math.sin(o + Math.PI)));
+        this.y = (float) (y + (offset.y * Math.cos(o) + offset.x * Math.sin(o)));
+        this.z = z + offset.z;
+        this.o = o + offset.o;
     }
-
+/*
     public boolean isPositionValid() {
-        return GridDefines.IsValidMapCoord(posX, posY, posZ, Orientation);
+        return GridDefines.IsValidMapCoord(x, y, z, o);
     }
 
     public float getRelativeAngle(Position pos) {
-        return GetAngle(pos) - Orientation;
+        return getAngle(pos) - o;
     }
 
     public float getRelativeAngle(float x, float y) {
-        return GetAngle(x, y) - Orientation;
+        return getAngle(x, y) - o;
     }
 
 
     public Position getPositionOffsetTo(Position endPos) {
         Position retOffset = new Position();
 
-        float dx = endPos.posZ - posZ;
-        float dy = endPos.posY - posY;
+        float dx = endPos.z - z;
+        float dy = endPos.y - y;
 
-        retOffset.posX = (float) (dx * Math.cos(Orientation) + dy * Math.sin(Orientation));
-        retOffset.posY = (float) (dy * Math.cos(Orientation) - dx * Math.sin(Orientation));
-        retOffset.posZ = endPos.posZ - posZ;
-        retOffset.SetOrientation(endPos.Orientation - Orientation);
+        retOffset.x = (float) (dx * Math.cos(o) + dy * Math.sin(o));
+        retOffset.y = (float) (dy * Math.cos(o) - dx * Math.sin(o));
+        retOffset.z = endPos.z - z;
+        retOffset.SetOrientation(endPos.o - o);
 
         return retOffset;
     }
@@ -101,15 +99,15 @@ public class Position extends Component {
     }
 
     public float GetExactDistSq(float x, float y, float z) {
-        float dz = posZ - z;
+        float dz = this.z - z;
 
         return GetExactDist2dSq(x, y) + dz * dz;
     }
 
     public float GetExactDistSq(Position pos) {
-        float dx = posX - pos.posX;
-        float dy = posY - pos.posY;
-        float dz = posZ - pos.posZ;
+        float dx = x - pos.x;
+        float dy = y - pos.y;
+        float dz = z - pos.z;
 
         return dx * dx + dy * dy + dz * dz;
     }
@@ -123,33 +121,33 @@ public class Position extends Component {
     }
 
     public float GetExactDist2dSq(float x, float y) {
-        float dx = posX - x;
-        float dy = posY - y;
+        float dx = this.x - x;
+        float dy = this.y - y;
 
         return dx * dx + dy * dy;
     }
 
     public float GetExactDist2dSq(Position pos) {
-        float dx = posX - pos.posX;
-        float dy = posY - pos.posY;
+        float dx = x - pos.x;
+        float dy = y - pos.y;
 
         return dx * dx + dy * dy;
     }
 
-    public float GetAngle(float x, float y) {
-        float dx = x - posX;
-        float dy = y - posY;
+    public float getAngle(float x, float y) {
+        float dx = x - this.x;
+        float dy = y - this.y;
 
         float ang = (float) Math.atan2(dy, dx);
         ang = ang >= 0 ? ang : (float) (2 * Math.PI + ang);
         return ang;
     }
 
-    public float GetAngle(Position pos) {
+    public float getAngle(Position pos) {
         if (pos == null)
             return 0;
 
-        return GetAngle(pos.posX, pos.posY);
+        return getAngle(pos.x, pos.y);
     }
 
     public boolean IsInDist(float x, float y, float z, float dist) {
@@ -169,7 +167,7 @@ public class Position extends Component {
     }
 
     public void SetOrientation(float orientation) {
-        Orientation = NormalizeOrientation(orientation);
+        o = NormalizeOrientation(orientation);
     }
 
     public boolean IsWithinBox(Position center, float xradius, float yradius, float zradius) {
@@ -177,20 +175,20 @@ public class Position extends Component {
         // is-in-cube check and we have to calculate only one point instead of 4
 
         // 2PI = 360*, keep in mind that ingame orientation is counter-clockwise
-        double rotation = 2 * Math.PI - center.Orientation;
+        double rotation = 2 * Math.PI - center.o;
         double sinVal = Math.sin(rotation);
         double cosVal = Math.cos(rotation);
 
-        float BoxDistX = posX - center.posX;
-        float BoxDistY = posY - center.posY;
+        float BoxDistX = x - center.x;
+        float BoxDistY = y - center.y;
 
-        float rotX = (float) (center.posX + BoxDistX * cosVal - BoxDistY * sinVal);
-        float rotY = (float) (center.posY + BoxDistY * cosVal + BoxDistX * sinVal);
+        float rotX = (float) (center.x + BoxDistX * cosVal - BoxDistY * sinVal);
+        float rotY = (float) (center.y + BoxDistY * cosVal + BoxDistX * sinVal);
 
         // box edges are parallel to coordiante axis, so we can treat every dimension independently :D
         float dz = GetPositionZ() - center.GetPositionZ();
-        float dx = rotX - center.posX;
-        float dy = rotY - center.posY;
+        float dx = rotX - center.x;
+        float dy = rotY - center.y;
         if ((Math.Abs(dx) > xradius) || (Math.Abs(dy) > yradius) || (Math.Abs(dz) > zradius))
             return false;
 
@@ -198,7 +196,7 @@ public class Position extends Component {
     }
 
     public boolean IsWithinDoubleVerticalCylinder(Position center, float radius, float height) {
-        float verticalDelta = posZ - center.posZ;
+        float verticalDelta = z - center.z;
         return IsInDist2d(center, radius) && Math.abs(verticalDelta) <= height;
     }
 
@@ -210,8 +208,8 @@ public class Position extends Component {
         // move arc to range 0.. 2*pi
         arc = NormalizeOrientation(arc);
 
-        float angle = GetAngle(obj);
-        angle -= Orientation;
+        float angle = getAngle(obj);
+        angle -= o;
 
         // move angle to range -pi ... +pi
         angle = NormalizeOrientation(angle);
@@ -229,12 +227,12 @@ public class Position extends Component {
 
         width += objSize;
         float angle = GetRelativeAngle(pos);
-        return Math.abs(Math.sin(angle)) * GetExactDist2d(pos.posX, pos.posY) < width;
+        return Math.abs(Math.sin(angle)) * GetExactDist2d(pos.x, pos.y) < width;
     }
 
     public void GetSinCos(float x, float y, out float vsin, out float vcos) {
-        float dx = posX - x;
-        float dy = posY - y;
+        float dx = this.x - x;
+        float dy = this.y - y;
 
         if (Math.abs(dx) < 0.001f && Math.abs(dy) < 0.001f) {
             float angle = (float) RandomHelper.NextDouble() * Math.TwoPi;
@@ -248,8 +246,7 @@ public class Position extends Component {
     }
 
     public String toString() {
-        return "X: %f Y: %f Z: %f O: %f".formatted(posX, posY, posZ, Orientation);
+        return "X: %f Y: %f Z: %f O: %f".formatted(x, y, z, o);
     }
-
-
+*/
 }

@@ -1,0 +1,61 @@
+package com.rainbowland.game.map;
+
+public interface MapConst {
+
+    int INVALID_ZONE = 0xFFFFFFFF;
+
+    int MAX_CELLS = 8;
+    //Grids
+    int MAX_GRIDS = 64;
+    float SIZE_OF_GRIDS = 533.33333f;
+    int CENTER_GRID_CELL_ID = (MAX_CELLS * MAX_GRIDS / 2);
+    int CENTER_GRID_ID = (MAX_GRIDS / 2);
+    float CENTER_GRID_OFFSET = (SIZE_OF_GRIDS / 2);
+    float SIZE_OF_CELLS = (SIZE_OF_GRIDS / MAX_CELLS);
+
+    float CENTER_GRID_CELL_OFFSET = (SIZE_OF_CELLS / 2);
+
+    //Cells
+    int TOTAL_CELLS_PER_MAP = (MAX_GRIDS * MAX_CELLS);
+    float MAP_SIZE = (SIZE_OF_GRIDS * MAX_GRIDS);
+    float MAP_HALF_SIZE = (MAP_SIZE / 2);
+
+    int MAX_GROUP_SIZE = 5;
+    int MAX_RAID_SIZE = 40;
+    int MAX_RAID_SUB_GROUPS = MAX_RAID_SIZE / MAX_GROUP_SIZE;
+    int TARGET_ICONS_COUNT = 8;
+    int RAID_MARKERS_COUNT = 8;
+    int READY_CHECK_DURATION = 35000;
+
+    //Liquid
+    int MAP_LIQUID_TYPE_NO_WATER = 0x00;
+    int MAP_LIQUID_TYPE_WATER = 0x01;
+    int MAP_LIQUID_TYPE_OCEAN = 0x02;
+    int MAP_LIQUID_TYPE_MAGMA = 0x04;
+    int MAP_LIQUID_TYPE_SLIME = 0x08;
+    int MAP_LIQUID_TYPE_DARK_WATER = 0x10;
+    int MAP_ALL_LIQUID_TYPES = (MAP_LIQUID_TYPE_WATER | MAP_LIQUID_TYPE_OCEAN | MAP_LIQUID_TYPE_MAGMA | MAP_LIQUID_TYPE_SLIME);
+    float LIQUID_TILE_SIZE = (533.333f / 128.0f);
+
+    int MIN_MAP_UPDATE_DELAY = 50;
+    int MIN_GRID_DELAY = 60000;
+
+    int MAP_RESOLUTION = 128;
+    float DEFAULT_HEIGHT_SEARCH = 50.0f;
+    float INVALID_HEIGHT = -100000.0f;
+    float MAX_HEIGHT = 100000.0f;
+    float MAX_FALL_DISTANCE = 250000.0f;
+
+    int MAP_MAGIC = 0x5350414D; //"MAPS";
+    int MAP_VERSION_MAGIC = 0x392E3176; //"v1.9";
+    int MAP_VERSION_MAGIC2 = 0x302E3276; //"v2.0"; // Hack for some different extractors using v2.0 header
+    int MAP_AREA_MAGIC = 0x41455241; //"AREA";
+    int MAP_HEIGHT_MAGIC = 0x5447484D; //"MHGT";
+    int MAP_LIQUID_MAGIC = 0x51494C4D; //"MLIQ";
+
+    int MMAP_MAGIC = 0x4D4D4150; // 'MMAP'
+    int MMAP_VERSION = 10;
+
+    String VMAP_MAGIC = "VMAP_4.9";
+    float VMAP_INVALID_HEIGHT_VALUE = -200000.0f;
+}

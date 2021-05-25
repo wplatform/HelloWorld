@@ -1,0 +1,62 @@
+package com.rainbowland.service.hotfixes.domain;
+
+import io.r2dbc.spi.Row;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.r2dbc.core.Parameter;
+import org.springframework.data.convert.WritingConverter;
+import org.springframework.data.r2dbc.mapping.OutboundRow;
+import lombok.Data;
+
+import java.util.Optional;
+
+@Data
+@Table("content_tuning_x_expected")
+public class ContentTuningXExpected {
+
+    @Column("ID")
+    private Integer id;
+    @Column("ExpectedStatModID")
+    private Integer expectedStatModId;
+    @Column("MythicPlusSeasonID")
+    private Integer mythicPlusSeasonId;
+    @Column("ContentTuningID")
+    private Integer contentTuningId;
+    @Column("VerifiedBuild")
+    private Integer verifiedBuild;
+
+
+
+    @ReadingConverter
+    public static class RowMapper implements Converter<Row, ContentTuningXExpected> {
+
+        public ContentTuningXExpected convert(Row row) {
+            ContentTuningXExpected domain = new ContentTuningXExpected();
+            domain.setId(row.get("ID", Integer.class));
+            domain.setExpectedStatModId(row.get("ExpectedStatModID", Integer.class));
+            domain.setMythicPlusSeasonId(row.get("MythicPlusSeasonID", Integer.class));
+            domain.setContentTuningId(row.get("ContentTuningID", Integer.class));
+            domain.setVerifiedBuild(row.get("VerifiedBuild", Integer.class));
+            return domain;
+        }
+    }
+
+
+
+    @WritingConverter
+    public static class ParamMapper implements Converter<ContentTuningXExpected, OutboundRow> {
+
+        public OutboundRow convert(ContentTuningXExpected source) {
+            OutboundRow row = new OutboundRow();
+            Optional.ofNullable(source.getId()).ifPresent(e -> row.put("ID", Parameter.from(e)));
+            Optional.ofNullable(source.getExpectedStatModId()).ifPresent(e -> row.put("ExpectedStatModID", Parameter.from(e)));
+            Optional.ofNullable(source.getMythicPlusSeasonId()).ifPresent(e -> row.put("MythicPlusSeasonID", Parameter.from(e)));
+            Optional.ofNullable(source.getContentTuningId()).ifPresent(e -> row.put("ContentTuningID", Parameter.from(e)));
+            Optional.ofNullable(source.getVerifiedBuild()).ifPresent(e -> row.put("VerifiedBuild", Parameter.from(e)));
+            return row;
+        }
+    }
+
+}

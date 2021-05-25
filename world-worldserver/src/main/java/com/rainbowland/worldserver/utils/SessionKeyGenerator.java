@@ -1,6 +1,7 @@
 package com.rainbowland.worldserver.utils;
 
 import com.rainbowland.utils.SecureUtils;
+import com.rainbowland.utils.SysProperties;
 
 public class SessionKeyGenerator {
 
@@ -17,7 +18,8 @@ public class SessionKeyGenerator {
         o0 = SecureUtils.sha256(o1, o0, o2);
     }
 
-    public void generate(byte[] buf) {
+    public byte[] generate() {
+        byte[] buf = new byte[SysProperties.PORTAL_SESSION_KEY_LENGTH];
         for (int i = 0; i < buf.length; ++i) {
             if (o0it == o0.length) {
                 o0 = SecureUtils.sha256(o1, o0, o2);
@@ -25,6 +27,7 @@ public class SessionKeyGenerator {
             }
             buf[i] = o0[o0it++];
         }
+        return buf;
     }
 
 
