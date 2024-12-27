@@ -1,0 +1,10 @@
+package com.github.mmo.game.spell.enums;
+
+public enum SpellGroup {
+    SPELL_GROUP_NONE,
+    SPELL_GROUP_ELIXIR_BATTLE,
+    SPELL_GROUP_ELIXIR_GUARDIAN,
+    SPELL_GROUP_ELIXIR_UNSTABLE,
+    SPELL_GROUP_ELIXIR_SHATTRATH,
+    SPELL_GROUP_CORE_RANGE_MAX
+}

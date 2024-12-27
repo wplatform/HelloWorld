@@ -1,0 +1,13 @@
+package com.github.mmo.game.entity.unit.enums;
+
+public enum UnitMoveType {
+    WALK,
+    RUN,
+    RUN_BACK,
+    SWIM,
+    SWIM_BACK,
+    TURN_RATE,
+    FLIGHT,
+    FLIGHT_BACK,
+    PITCH_RATE
+}

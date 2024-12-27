@@ -1,0 +1,18 @@
+package com.github.mmo.game.networking.packet.taxi;
+
+
+import com.github.mmo.game.networking.*;class TaxiNodeStatusPkt extends ServerPacket {
+    public TaxiNodestatus status = TaxiNodeStatus.values()[0]; // replace with TaxiStatus enum
+    public ObjectGuid unit = ObjectGuid.EMPTY;
+
+    public TaxiNodeStatusPkt() {
+        super(ServerOpcode.TaxiNodeStatus);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(unit);
+        this.writeBits(status, 2);
+        this.flushBits();
+    }
+}

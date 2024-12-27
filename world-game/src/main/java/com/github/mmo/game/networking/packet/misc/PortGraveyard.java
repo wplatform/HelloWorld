@@ -1,0 +1,15 @@
+package com.github.mmo.game.networking.packet.misc;
+
+import com.github.mmo.game.networking.*;
+public class PortGraveyard extends ClientPacket
+{
+	public PortGraveyard(WorldPacket packet)
+	{
+		super(packet);
+	}
+
+	@Override
+	public void read()
+	{
+	}
+}

@@ -1,0 +1,15 @@
+package com.github.mmo.game.entity.item.enums;
+
+public enum ItemSubclassContainer {
+    CONTAINER,
+    SOUL_CONTAINER,
+    HERB_CONTAINER,
+    ENCHANTING_CONTAINER,
+    ENGINEERING_CONTAINER,
+    GEM_CONTAINER,
+    MINING_CONTAINER,
+    LEATHERWORKING_CONTAINER,
+    INSCRIPTION_CONTAINER,
+    TACKLE_CONTAINER,
+    COOKING_CONTAINER
+}

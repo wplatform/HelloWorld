@@ -1,0 +1,95 @@
+
+datasource:
+  auth:
+    url: r2dbcs:mysql://www.rainbowlandwow.com:3306/auth?zeroDate=use_round&useServerPrepareStatement=true
+    username: rainbowland
+    password: rainbowland
+    maxCreateConnectionTime: 5s
+    maxAcquireTime: 5s
+    acquireRetry: 3
+    maxIdleTime: 30m
+    initialSize: 1
+    maxSize: 2
+    validationQuery: select 1
+
+  characters:
+    url: r2dbcs:mysql://www.rainbowlandwow.com:3306/character?zeroDate=use_round&useServerPrepareStatement=true
+    username: rainbowland
+    password: rainbowland
+    maxCreateConnectionTime: 5s
+    maxAcquireTime: 5s
+    acquireRetry: 3
+    maxIdleTime: 30m
+    initialSize: 1
+    maxSize: 2
+    validationQuery: select 1
+
+  world:
+    url: r2dbcs:mysql://www.rainbowlandwow.com:3306/world?zeroDate=use_round&useServerPrepareStatement=true
+    username: rainbowland
+    password: rainbowland
+    maxCreateConnectionTime: 5s
+    maxAcquireTime: 5s
+    acquireRetry: 3
+    maxIdleTime: 30m
+    initialSize: 1
+    maxSize: 2
+    validationQuery: select 1
+
+  hotfixes:
+    url: r2dbcs:mysql://www.rainbowlandwow.com:3306/hotfixes?zeroDate=use_round&useServerPrepareStatement=true
+    username: rainbowland
+    password: rainbowland
+    maxCreateConnectionTime: 5s
+    maxAcquireTime: 5s
+    acquireRetry: 3
+    maxIdleTime: 30m
+    initialSize: 1
+    maxSize: 2
+    validationQuery: select 1
+
+portal:
+  portal-url: https://127.0.0.1:8443
+  LoginTicketDuration: 3600
+  portal-server:
+    port: 1119
+    bindIp: 0.0.0.0
+    selectCount: 1
+    workCount: 1
+    minRecvBuffer: 256
+    initialRecvBuffer: 1024
+    maxRecvBuffer: 2048
+    idleTime: 30m
+  restful-server:
+    port: 8443
+    bindIp: 0.0.0.0
+    selectCount: 1
+    workCount: 1
+    minRecvBuffer: 256
+    initialRecvBuffer: 2048
+    maxRecvBuffer: 20480
+    idleTime: 30m
+
+
+world:
+
+  realm:
+    id: 1
+    type: 0
+    zone: 1
+    expansion: 8
+
+  character:
+
+
+
+  world-server:
+    port: 8085
+    bindIp: 0.0.0.0
+    selectCount: 1
+    workCount: 2
+    minRecvBuffer: 256
+    initialRecvBuffer: 1024
+    maxRecvBuffer: 2048
+    idleTime: 30m
+

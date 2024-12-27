@@ -1,0 +1,23 @@
+package com.github.mmo.game.networking.packet.petition;
+
+
+public class PetitionRenameGuildResponse extends ServerPacket
+{
+    public ObjectGuid petitionGuid = ObjectGuid.EMPTY;
+	public String newGuildName;
+	public PetitionRenameGuildResponse()
+	{
+		super(ServerOpcode.PetitionRenameGuildResponse);
+	}
+
+	@Override
+	public void write()
+	{
+        this.writeGuid(petitionGuid);
+
+        this.writeBits(newGuildName.GetByteCount(), 7);
+        this.flushBits();
+
+        this.writeString(newGuildName);
+	}
+}

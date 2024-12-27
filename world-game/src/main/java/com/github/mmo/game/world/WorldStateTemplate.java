@@ -1,0 +1,13 @@
+package com.github.mmo.game.world;
+
+import java.util.*;
+
+public class WorldStateTemplate
+{
+	public int id;
+	public int defaultValue;
+	public int scriptId;
+
+	public ArrayList<Integer> mapIds = new ArrayList<>();
+	public ArrayList<Integer> areaIds = new ArrayList<>();
+}

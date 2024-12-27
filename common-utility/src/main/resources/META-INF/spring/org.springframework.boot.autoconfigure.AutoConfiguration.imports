@@ -1,0 +1,4 @@
+# Auto Configure
+com.github.mmo.config.ConfigurationRefreshProcessor
+com.github.mmo.schedule.ScheduledExecutorServiceBean
+com.github.mmo.cache.MapdbCacheProvider

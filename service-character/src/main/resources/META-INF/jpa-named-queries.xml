@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.0" xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
+        http://java.sun.com/xml/ns/persistence/orm_2_0.xsd ">
+
+    <named-query name="BattlenetAccount.queryByLoginTicket">
+        <query>
+            SELECT ba,  bab, a, ab, aa, rc, r, lpc
+            FROM BattlenetAccount ba
+            LEFT JOIN BattlenetAccountBan bab ON ba.id = bab.id.id
+            LEFT JOIN FETCH Account a on ba.id = a.battlenetAccount.id
+            LEFT JOIN AccountBanned ab ON a.id = ab.id.id AND ab.active = 1
+            LEFT JOIN AccountAccess aa ON a.id = aa.id.accountID AND aa.id.realmID = -1
+            LEFT JOIN Realmcharacter rc ON a.id = rc.id.acctid
+            LEFT JOIN Realmlist r ON rc.id.realmid = r.id
+            LEFT JOIN AccountLastPlayedCharacter lpc ON r.id = lpc.realmId
+            WHERE ba.loginTicket = :loginTicket ORDER BY a.id
+        </query>
+    </named-query>
+
+</entity-mappings>

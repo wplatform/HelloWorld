@@ -1,0 +1,39 @@
+package com.github.mmo.game.networking.packet.garrison;
+
+
+import java.util.*;
+import com.github.mmo.game.networking.ServerPacket;
+public class GarrisonRequestBlueprintAndSpecializationDataResult extends ServerPacket
+{
+	public GarrisonType garrTypeID = GarrisonType.values()[0];
+	public ArrayList<Integer> specializationsKnown = null;
+	public ArrayList<Integer> blueprintsKnown = null;
+	public GarrisonRequestBlueprintAndSpecializationDataResult()
+	{
+		super(ServerOpcode.GarrisonRequestBlueprintAndSpecializationDataResult, ConnectionType.instance);
+	}
+
+	@Override
+	public void write()
+	{
+		this.writeInt32((int)garrTypeID.getValue());
+		this.writeInt32(blueprintsKnown != null ? blueprintsKnown.size() : 0);
+		this.writeInt32(specializationsKnown != null ? specializationsKnown.size() : 0);
+
+		if (blueprintsKnown != null)
+		{
+			for (var blueprint : blueprintsKnown)
+			{
+				this.writeInt32(blueprint);
+			}
+		}
+
+		if (specializationsKnown != null)
+		{
+			for (var specialization : specializationsKnown)
+			{
+				this.writeInt32(specialization);
+			}
+		}
+	}
+}

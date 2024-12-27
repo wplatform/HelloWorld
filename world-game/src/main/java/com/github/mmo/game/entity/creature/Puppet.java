@@ -1,0 +1,44 @@
+package com.github.mmo.game.entity.creature;
+
+import Framework.Constants.*;
+import com.github.mmo.dbc.domain.SummonProperty;
+import game.datastorage.*;
+import com.github.mmo.game.entity.unit.Unit;
+
+
+
+
+
+
+
+public class Puppet extends Minion {
+    public Puppet(SummonProperty propertiesRecord, Unit owner) {
+        super(propertiesRecord, owner, false);
+        unitTypeMask = unitTypeMask.forValue(unitTypeMask.getValue() | unitTypeMask.Puppet.getValue());
+    }
+
+//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+//ORIGINAL LINE: public override void InitStats(uint duration)
+    @Override
+    public void initStats(int duration) {
+        super.initStats(duration);
+
+        setLevel(getOwnerUnit().getLevel());
+        reactState = ReactStates.Passive;
+    }
+
+//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+//ORIGINAL LINE: public override void Update(uint diff)
+    @Override
+    public void update(int diff) {
+        super.update(diff);
+
+        //check if caster is channelling?
+        if (isInWorld) {
+            if (!isAlive()) {
+                unSummon();
+            }
+        }
+        // @todo why long distance .die does not remove it
+    }
+}

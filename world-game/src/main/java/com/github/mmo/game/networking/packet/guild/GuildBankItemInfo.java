@@ -1,0 +1,17 @@
+package com.github.mmo.game.networking.packet.guild;
+
+import java.util.*;
+
+
+public class GuildBankItemInfo
+{
+	public itemInstance item = new itemInstance();
+	public int slot;
+	public int count;
+	public int enchantmentID;
+	public int charges;
+	public int onUseEnchantmentID;
+	public int flags;
+	public boolean locked;
+	public ArrayList<ItemGemData> socketEnchant = new ArrayList<>();
+}

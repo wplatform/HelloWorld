@@ -1,0 +1,49 @@
+package com.github.mmo.game.networking.packet.npc;
+
+
+import com.github.mmo.game.networking.*;public class ClientGossipOptions {
+    public int gossipOptionID;
+    public GossipOptionNpc optionNPC = GossipOptionNpc.values()[0];
+   
+    public byte optionFlags;
+    public int optionCost;
+   
+    public int optionLanguage;
+    public GossipOptionflags flags = GossipOptionFlags.values()[0];
+    public int orderIndex;
+    public GossipOptionstatus status = GossipOptionStatus.values()[0];
+    public String text = "";
+    public String confirm = "";
+    public treasureLootList treasure = new treasureLootList();
+    public Integer spellID = null;
+    public Integer overrideIconID = null;
+
+    public final void write(WorldPacket data) {
+        data.writeInt32(gossipOptionID);
+        data.writeInt8((byte) optionNPC.getValue());
+        data.writeInt8((byte) optionFlags);
+        data.writeInt32(optionCost);
+        data.writeInt32(optionLanguage);
+        data.writeInt32(flags.getValue());
+        data.writeInt32(orderIndex);
+        data.writeBits(text.GetByteCount(), 12);
+        data.writeBits(confirm.GetByteCount(), 12);
+        data.writeBits((byte) status.getValue(), 2);
+        data.writeBit(spellID != null);
+        data.writeBit(overrideIconID != null);
+        data.flushBits();
+
+        treasure.write(data);
+
+        data.writeString(text);
+        data.writeString(confirm);
+
+        if (spellID != null) {
+            data.writeInt32(spellID.intValue());
+        }
+
+        if (overrideIconID != null) {
+            data.writeInt32(overrideIconID.intValue());
+        }
+    }
+}

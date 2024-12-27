@@ -1,0 +1,20 @@
+package com.github.mmo.game.entity.player.enums;
+
+public enum ReferAFriendError {
+    NONE,
+    NOT_REFERRED_BY,
+    TARGET_TOO_HIGH,
+    INSUFFICIENT_GRANTABLE_LEVELS,
+    TOO_FAR,
+    DIFFERENT_FACTION,
+    NOT_NOW,
+    GRANT_LEVEL_MAX_I,
+    NO_TARGET,
+    NOT_IN_GROUP,
+    SUMMON_LEVEL_MAX_I,
+    SUMMON_COOLDOWN,
+    INSUF_EXPAN_LVL,
+    SUMMON_OFFLINE_S,
+    NO_XREALM,
+    MAP_INCOMING_TRANSFER_NOT_ALLOWED
+}

@@ -1,0 +1,10 @@
+package com.github.mmo.game.spell.enums;
+
+public enum SpellTargetReferenceTypes {
+    TARGET_REFERENCE_TYPE_NONE,
+    TARGET_REFERENCE_TYPE_CASTER,
+    TARGET_REFERENCE_TYPE_TARGET,
+    TARGET_REFERENCE_TYPE_LAST,
+    TARGET_REFERENCE_TYPE_SRC,
+    TARGET_REFERENCE_TYPE_DEST
+}

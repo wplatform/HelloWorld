@@ -1,0 +1,7 @@
+package com.github.mmo.game.scripting.interfaces.iaura;
+
+import com.github.mmo.game.scripting.interfaces.*;
+public interface IAuraEnterLeaveCombat extends IAuraScript
+{
+	void EnterLeaveCombat(boolean isNowInCombat);
+}

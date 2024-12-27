@@ -1,0 +1,12 @@
+plugins {
+    id 'springboot-conventions'
+}
+
+
+dependencies {
+    implementation libs.netty.handler
+    implementation libs.netty.transport.native.epoll
+    implementation project(':common-netty')
+    implementation project(':common-utility')
+    implementation project(':service-auth')
+}
