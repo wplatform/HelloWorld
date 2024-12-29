@@ -5,352 +5,352 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character")
 public class Character {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "account", columnDefinition = "int UNSIGNED not null")
+
+    @Column("account")
     private Long account;
 
-    @Column(name = "name", nullable = false, length = 12)
+    @Column("name")
     private String name;
 
-    @ColumnDefault("'0'")
-    @Column(name = "slot", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("slot")
     private Short slot;
 
-    @ColumnDefault("'0'")
-    @Column(name = "race", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("race")
     private Short race;
 
-    @ColumnDefault("'0'")
-    @Column(name = "class", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("class")
     private Short classField;
 
-    @ColumnDefault("'0'")
-    @Column(name = "gender", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("gender")
     private Short gender;
 
-    @ColumnDefault("'0'")
-    @Column(name = "level", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("level")
     private Short level;
 
-    @ColumnDefault("'0'")
-    @Column(name = "xp", columnDefinition = "int UNSIGNED not null")
+
+    @Column("xp")
     private Long xp;
 
-    @ColumnDefault("'0'")
-    @Column(name = "money", nullable = false)
+
+    @Column("money")
     private Long money;
 
-    @ColumnDefault("'16'")
-    @Column(name = "inventorySlots", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("inventorySlots")
     private Short inventorySlots;
 
-    @ColumnDefault("'0'")
-    @Column(name = "bankSlots", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("bankSlots")
     private Short bankSlots;
 
-    @ColumnDefault("'0'")
-    @Column(name = "restState", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("restState")
     private Short restState;
 
-    @ColumnDefault("'0'")
-    @Column(name = "playerFlags", columnDefinition = "int UNSIGNED not null")
+
+    @Column("playerFlags")
     private Long playerFlags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "playerFlagsEx", columnDefinition = "int UNSIGNED not null")
+
+    @Column("playerFlagsEx")
     private Long playerFlagsEx;
 
-    @ColumnDefault("0")
-    @Column(name = "position_x", nullable = false)
+
+    @Column("position_x")
     private Float positionX;
 
-    @ColumnDefault("0")
-    @Column(name = "position_y", nullable = false)
+
+    @Column("position_y")
     private Float positionY;
 
-    @ColumnDefault("0")
-    @Column(name = "position_z", nullable = false)
+
+    @Column("position_z")
     private Float positionZ;
 
-    @ColumnDefault("'0'")
-    @Column(name = "map", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("map")
     private Integer map;
 
-    @ColumnDefault("'0'")
-    @Column(name = "instance_id", columnDefinition = "int UNSIGNED not null")
+
+    @Column("instance_id")
     private Long instanceId;
 
-    @ColumnDefault("'1'")
-    @Column(name = "dungeonDifficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("dungeonDifficulty")
     private Short dungeonDifficulty;
 
-    @ColumnDefault("'14'")
-    @Column(name = "raidDifficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("raidDifficulty")
     private Short raidDifficulty;
 
-    @ColumnDefault("'3'")
-    @Column(name = "legacyRaidDifficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("legacyRaidDifficulty")
     private Short legacyRaidDifficulty;
 
-    @ColumnDefault("0")
-    @Column(name = "orientation", nullable = false)
+
+    @Column("orientation")
     private Float orientation;
 
-    @Lob
-    @Column(name = "taximask", nullable = false)
+    
+    @Column("taximask")
     private String taximask;
 
-    @ColumnDefault("'0'")
-    @Column(name = "online", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("online")
     private Short online;
 
-    @ColumnDefault("0")
-    @Column(name = "createTime", nullable = false)
+
+    @Column("createTime")
     private Long createTime;
 
-    @ColumnDefault("0")
-    @Column(name = "createMode", nullable = false)
+
+    @Column("createMode")
     private Byte createMode;
 
-    @ColumnDefault("'0'")
-    @Column(name = "cinematic", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("cinematic")
     private Short cinematic;
 
-    @ColumnDefault("'0'")
-    @Column(name = "totaltime", columnDefinition = "int UNSIGNED not null")
+
+    @Column("totaltime")
     private Long totaltime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "leveltime", columnDefinition = "int UNSIGNED not null")
+
+    @Column("leveltime")
     private Long leveltime;
 
-    @ColumnDefault("0")
-    @Column(name = "logout_time", nullable = false)
+
+    @Column("logout_time")
     private Long logoutTime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "is_logout_resting", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("is_logout_resting")
     private Short isLogoutResting;
 
-    @ColumnDefault("0")
-    @Column(name = "rest_bonus", nullable = false)
+
+    @Column("rest_bonus")
     private Float restBonus;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resettalents_cost", columnDefinition = "int UNSIGNED not null")
+
+    @Column("resettalents_cost")
     private Long resettalentsCost;
 
-    @ColumnDefault("0")
-    @Column(name = "resettalents_time", nullable = false)
+
+    @Column("resettalents_time")
     private Long resettalentsTime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "numRespecs", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("numRespecs")
     private Short numRespecs;
 
-    @ColumnDefault("'0'")
-    @Column(name = "primarySpecialization", columnDefinition = "int UNSIGNED not null")
+
+    @Column("primarySpecialization")
     private Long primarySpecialization;
 
-    @ColumnDefault("0")
-    @Column(name = "trans_x", nullable = false)
+
+    @Column("trans_x")
     private Float transX;
 
-    @ColumnDefault("0")
-    @Column(name = "trans_y", nullable = false)
+
+    @Column("trans_y")
     private Float transY;
 
-    @ColumnDefault("0")
-    @Column(name = "trans_z", nullable = false)
+
+    @Column("trans_z")
     private Float transZ;
 
-    @ColumnDefault("0")
-    @Column(name = "trans_o", nullable = false)
+
+    @Column("trans_o")
     private Float transO;
 
-    @ColumnDefault("'0'")
-    @Column(name = "transguid", nullable = false)
+
+    @Column("transguid")
     private Long transguid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "extra_flags", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("extra_flags")
     private Integer extraFlags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "summonedPetNumber", columnDefinition = "int UNSIGNED not null")
+
+    @Column("summonedPetNumber")
     private Long summonedPetNumber;
 
-    @ColumnDefault("'0'")
-    @Column(name = "at_login", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("at_login")
     private Integer atLogin;
 
-    @ColumnDefault("'0'")
-    @Column(name = "zone", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("zone")
     private Integer zone;
 
-    @ColumnDefault("0")
-    @Column(name = "death_expire_time", nullable = false)
+
+    @Column("death_expire_time")
     private Long deathExpireTime;
 
-    @Lob
-    @Column(name = "taxi_path")
+    
+    @Column("taxi_path")
     private String taxiPath;
 
-    @ColumnDefault("'0'")
-    @Column(name = "totalKills", columnDefinition = "int UNSIGNED not null")
+
+    @Column("totalKills")
     private Long totalKills;
 
-    @ColumnDefault("'0'")
-    @Column(name = "todayKills", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("todayKills")
     private Integer todayKills;
 
-    @ColumnDefault("'0'")
-    @Column(name = "yesterdayKills", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("yesterdayKills")
     private Integer yesterdayKills;
 
-    @ColumnDefault("'0'")
-    @Column(name = "chosenTitle", columnDefinition = "int UNSIGNED not null")
+
+    @Column("chosenTitle")
     private Long chosenTitle;
 
-    @ColumnDefault("'0'")
-    @Column(name = "watchedFaction", columnDefinition = "int UNSIGNED not null")
+
+    @Column("watchedFaction")
     private Long watchedFaction;
 
-    @ColumnDefault("'0'")
-    @Column(name = "drunk", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("drunk")
     private Short drunk;
 
-    @ColumnDefault("'0'")
-    @Column(name = "health", columnDefinition = "int UNSIGNED not null")
+
+    @Column("health")
     private Long health;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power1", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power1")
     private Long power1;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power2", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power2")
     private Long power2;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power3", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power3")
     private Long power3;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power4", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power4")
     private Long power4;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power5", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power5")
     private Long power5;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power6", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power6")
     private Long power6;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power7", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power7")
     private Long power7;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power8", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power8")
     private Long power8;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power9", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power9")
     private Long power9;
 
-    @ColumnDefault("'0'")
-    @Column(name = "power10", columnDefinition = "int UNSIGNED not null")
+
+    @Column("power10")
     private Long power10;
 
-    @ColumnDefault("'0'")
-    @Column(name = "latency", columnDefinition = "int UNSIGNED not null")
+
+    @Column("latency")
     private Long latency;
 
-    @ColumnDefault("'0'")
-    @Column(name = "activeTalentGroup", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("activeTalentGroup")
     private Short activeTalentGroup;
 
-    @ColumnDefault("'0'")
-    @Column(name = "lootSpecId", columnDefinition = "int UNSIGNED not null")
+
+    @Column("lootSpecId")
     private Long lootSpecId;
 
-    @Lob
-    @Column(name = "exploredZones")
+    
+    @Column("exploredZones")
     private String exploredZones;
 
-    @Lob
-    @Column(name = "equipmentCache")
+    
+    @Column("equipmentCache")
     private String equipmentCache;
 
-    @Lob
-    @Column(name = "knownTitles")
+    
+    @Column("knownTitles")
     private String knownTitles;
 
-    @ColumnDefault("'0'")
-    @Column(name = "actionBars", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("actionBars")
     private Short actionBars;
 
-    @Column(name = "deleteInfos_Account", columnDefinition = "int UNSIGNED")
+    @Column("deleteInfos_Account")
     private Long deleteinfosAccount;
 
-    @Column(name = "deleteInfos_Name", length = 12)
+    @Column("deleteInfos_Name")
     private String deleteinfosName;
 
-    @Column(name = "deleteDate")
+    @Column("deleteDate")
     private Long deleteDate;
 
-    @ColumnDefault("'0'")
-    @Column(name = "honor", columnDefinition = "int UNSIGNED not null")
+
+    @Column("honor")
     private Long honor;
 
-    @ColumnDefault("'1'")
-    @Column(name = "honorLevel", columnDefinition = "int UNSIGNED not null")
+
+    @Column("honorLevel")
     private Long honorLevel;
 
-    @ColumnDefault("'2'")
-    @Column(name = "honorRestState", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("honorRestState")
     private Short honorRestState;
 
-    @ColumnDefault("0")
-    @Column(name = "honorRestBonus", nullable = false)
+
+    @Column("honorRestBonus")
     private Float honorRestBonus;
 
-    @ColumnDefault("'0'")
-    @Column(name = "lastLoginBuild", columnDefinition = "int UNSIGNED not null")
+
+    @Column("lastLoginBuild")
     private Long lastLoginBuild;
 
-    @ColumnDefault("-1")
-    @Column(name = "personalTabardEmblemStyle", nullable = false)
+
+    @Column("personalTabardEmblemStyle")
     private Integer personalTabardEmblemStyle;
 
-    @ColumnDefault("-1")
-    @Column(name = "personalTabardEmblemColor", nullable = false)
+
+    @Column("personalTabardEmblemColor")
     private Integer personalTabardEmblemColor;
 
-    @ColumnDefault("-1")
-    @Column(name = "personalTabardBorderStyle", nullable = false)
+
+    @Column("personalTabardBorderStyle")
     private Integer personalTabardBorderStyle;
 
-    @ColumnDefault("-1")
-    @Column(name = "personalTabardBorderColor", nullable = false)
+
+    @Column("personalTabardBorderColor")
     private Integer personalTabardBorderColor;
 
-    @ColumnDefault("-1")
-    @Column(name = "personalTabardBackgroundColor", nullable = false)
+
+    @Column("personalTabardBackgroundColor")
     private Integer personalTabardBackgroundColor;
 
 }

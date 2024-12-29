@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "battlemaster_list")
 @Db2DataBind(name = "BattlemasterList.db2", layoutHash = 0xD8AAA088, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -40,109 +40,109 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class BattleMasterList implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "GameType")
+    @Column("GameType")
     private LocalizedString gameType;
 
-    @Column(name = "ShortDescription")
+    @Column("ShortDescription")
     private LocalizedString shortDescription;
 
-    @Column(name = "LongDescription")
+    @Column("LongDescription")
     private LocalizedString longDescription;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "MapID1")
+    @Column("MapID1")
     private Short mapID1;
 
-    @Column(name = "MapID2")
+    @Column("MapID2")
     private Short mapID2;
 
-    @Column(name = "MapID3")
+    @Column("MapID3")
     private Short mapID3;
 
-    @Column(name = "MapID4")
+    @Column("MapID4")
     private Short mapID4;
 
-    @Column(name = "MapID5")
+    @Column("MapID5")
     private Short mapID5;
 
-    @Column(name = "MapID6")
+    @Column("MapID6")
     private Short mapID6;
 
-    @Column(name = "MapID7")
+    @Column("MapID7")
     private Short mapID7;
 
-    @Column(name = "MapID8")
+    @Column("MapID8")
     private Short mapID8;
 
-    @Column(name = "MapID9")
+    @Column("MapID9")
     private Short mapID9;
 
-    @Column(name = "MapID10")
+    @Column("MapID10")
     private Short mapID10;
 
-    @Column(name = "MapID11")
+    @Column("MapID11")
     private Short mapID11;
 
-    @Column(name = "MapID12")
+    @Column("MapID12")
     private Short mapID12;
 
-    @Column(name = "MapID13")
+    @Column("MapID13")
     private Short mapID13;
 
-    @Column(name = "MapID14")
+    @Column("MapID14")
     private Short mapID14;
 
-    @Column(name = "MapID15")
+    @Column("MapID15")
     private Short mapID15;
 
-    @Column(name = "MapID16")
+    @Column("MapID16")
     private Short mapID16;
 
-    @Column(name = "HolidayWorldState")
+    @Column("HolidayWorldState")
     private Short holidayWorldState;
 
-    @Column(name = "RequiredPlayerConditionID")
+    @Column("RequiredPlayerConditionID")
     private Short requiredPlayerConditionID;
 
-    @Column(name = "InstanceType")
+    @Column("InstanceType")
     private Byte instanceType;
 
-    @Column(name = "GroupsAllowed")
+    @Column("GroupsAllowed")
     private Byte groupsAllowed;
 
-    @Column(name = "MaxGroupSize")
+    @Column("MaxGroupSize")
     private Byte maxGroupSize;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Byte minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Byte maxLevel;
 
-    @Column(name = "RatedPlayers")
+    @Column("RatedPlayers")
     private Byte ratedPlayers;
 
-    @Column(name = "MinPlayers")
+    @Column("MinPlayers")
     private Byte minPlayers;
 
-    @Column(name = "MaxPlayers")
+    @Column("MaxPlayers")
     private Byte maxPlayers;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

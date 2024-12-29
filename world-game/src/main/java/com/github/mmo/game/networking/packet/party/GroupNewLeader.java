@@ -13,7 +13,7 @@ public class GroupNewLeader extends ServerPacket
 	public void write()
 	{
 		this.writeInt8(partyIndex);
-		this.writeBits(name.GetByteCount(), 9);
+		this.writeBits(name.getBytes().length, 9);
 		this.writeString(name);
 	}
 }

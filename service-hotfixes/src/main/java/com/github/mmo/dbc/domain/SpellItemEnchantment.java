@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_item_enchantment")
 @Db2DataBind(name = "SpellItemEnchantment.db2", layoutHash = 0x80DEA734, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -42,94 +42,94 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellItemEnchantment implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "EffectArg1")
+    @Column("EffectArg1")
     private Integer effectArg1;
 
-    @Column(name = "EffectArg2")
+    @Column("EffectArg2")
     private Integer effectArg2;
 
-    @Column(name = "EffectArg3")
+    @Column("EffectArg3")
     private Integer effectArg3;
 
-    @Column(name = "EffectScalingPoints1")
+    @Column("EffectScalingPoints1")
     private Float effectScalingPoints1;
 
-    @Column(name = "EffectScalingPoints2")
+    @Column("EffectScalingPoints2")
     private Float effectScalingPoints2;
 
-    @Column(name = "EffectScalingPoints3")
+    @Column("EffectScalingPoints3")
     private Float effectScalingPoints3;
 
-    @Column(name = "TransmogCost")
+    @Column("TransmogCost")
     private Integer transmogCost;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "EffectPointsMin1")
+    @Column("EffectPointsMin1")
     private Short effectPointsMin1;
 
-    @Column(name = "EffectPointsMin2")
+    @Column("EffectPointsMin2")
     private Short effectPointsMin2;
 
-    @Column(name = "EffectPointsMin3")
+    @Column("EffectPointsMin3")
     private Short effectPointsMin3;
 
-    @Column(name = "ItemVisual")
+    @Column("ItemVisual")
     private Short itemVisual;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "RequiredSkillID")
+    @Column("RequiredSkillID")
     private Short requiredSkillID;
 
-    @Column(name = "RequiredSkillRank")
+    @Column("RequiredSkillRank")
     private Short requiredSkillRank;
 
-    @Column(name = "ItemLevel")
+    @Column("ItemLevel")
     private Short itemLevel;
 
-    @Column(name = "Charges")
+    @Column("Charges")
     private Byte charges;
 
-    @Column(name = "Effect1")
+    @Column("Effect1")
     private Byte effect1;
 
-    @Column(name = "Effect2")
+    @Column("Effect2")
     private Byte effect2;
 
-    @Column(name = "Effect3")
+    @Column("Effect3")
     private Byte effect3;
 
-    @Column(name = "ConditionID")
+    @Column("ConditionID")
     private Byte conditionID;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Byte minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Byte maxLevel;
 
-    @Column(name = "ScalingClass")
+    @Column("ScalingClass")
     private Byte scalingClass;
 
-    @Column(name = "ScalingClassRestricted")
+    @Column("ScalingClassRestricted")
     private Byte scalingClassRestricted;
 
-    @Column(name = "TransmogPlayerConditionID")
+    @Column("TransmogPlayerConditionID")
     private Integer transmogPlayerConditionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

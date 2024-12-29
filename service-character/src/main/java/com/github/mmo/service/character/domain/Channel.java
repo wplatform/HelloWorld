@@ -5,38 +5,38 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(ChannelId.class)
-@Entity
+
+
 @Table(name = "channels")
 public class Channel {
     @Id
-    @Column(name = "name", nullable = false, length = 128)
+    @Column("name")
     private String name;
 
     @Id
-    @Column(name = "team", columnDefinition = "int UNSIGNED not null")
+    @Column("team")
     private Integer team;
 
-    @ColumnDefault("'1'")
-    @Column(name = "announce", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("announce")
     private Short announce;
 
-    @ColumnDefault("'1'")
-    @Column(name = "ownership", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("ownership")
     private Short ownership;
 
-    @Column(name = "password", length = 128)
+    @Column("password")
     private String password;
 
-    @Lob
-    @Column(name = "bannedList")
+    
+    @Column("bannedList")
     private String bannedList;
 
-    @Column(name = "lastUsed", nullable = false)
+    @Column("lastUsed")
     private Integer lastUsed;
 
 }

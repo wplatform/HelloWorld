@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_category")
 @Db2DataBind(name = "SpellCategory.db2", layoutHash = 0xEA60E384, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -29,31 +29,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellCategory implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "ChargeRecoveryTime")
+    @Column("ChargeRecoveryTime")
     private Integer chargeRecoveryTime;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "UsesPerWeek")
+    @Column("UsesPerWeek")
     private Byte usesPerWeek;
 
-    @Column(name = "MaxCharges")
+    @Column("MaxCharges")
     private Byte maxCharges;
 
-    @Column(name = "TypeMask")
+    @Column("TypeMask")
     private Integer typeMask;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

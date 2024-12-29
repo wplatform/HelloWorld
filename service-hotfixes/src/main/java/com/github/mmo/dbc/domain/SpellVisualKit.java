@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_visual_kit")
 @Db2DataBind(name = "SpellVisualKit.db2", layoutHash = 0xDC04F488, fields = {
         @Db2Field(name = "flags", type = Db2Type.INT, signed = true),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellVisualKit implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "FallbackPriority")
+    @Column("FallbackPriority")
     private Byte fallbackPriority;
 
-    @Column(name = "FallbackSpellVisualKitId")
+    @Column("FallbackSpellVisualKitId")
     private Integer fallbackSpellVisualKitId;
 
-    @Column(name = "DelayMin")
+    @Column("DelayMin")
     private Short delayMin;
 
-    @Column(name = "DelayMax")
+    @Column("DelayMax")
     private Short delayMax;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

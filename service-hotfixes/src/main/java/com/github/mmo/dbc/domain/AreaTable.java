@@ -13,13 +13,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "area_table")
 @Db2DataBind(name = "AreaTable.db2", layoutHash = 0x0CA01129, fields = {
         @Db2Field(name = "zoneName", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -48,94 +48,94 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class AreaTable implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ZoneName")
+    @Column("ID")
+    private int id;
+
+    @Column("ZoneName")
     private String zoneName;
 
-    @Column(name = "AreaName")
+    @Column("AreaName")
     private LocalizedString areaName;
 
-    @Column(name = "Flags1")
+    @Column("Flags1")
     private Integer flags1;
 
-    @Column(name = "Flags2")
+    @Column("Flags2")
     private Integer flags2;
 
-    @Column(name = "AmbientMultiplier")
+    @Column("AmbientMultiplier")
     private Float ambientMultiplier;
 
-    @Column(name = "ContinentID")
+    @Column("ContinentID")
     private Short continentID;
 
-    @Column(name = "ParentAreaID")
+    @Column("ParentAreaID")
     private Short parentAreaID;
 
-    @Column(name = "AreaBit")
+    @Column("AreaBit")
     private Short areaBit;
 
-    @Column(name = "AmbienceID")
+    @Column("AmbienceID")
     private Short ambienceID;
 
-    @Column(name = "ZoneMusic")
+    @Column("ZoneMusic")
     private Short zoneMusic;
 
-    @Column(name = "IntroSound")
+    @Column("IntroSound")
     private Short introSound;
 
-    @Column(name = "LiquidTypeID1")
+    @Column("LiquidTypeID1")
     private Short liquidTypeID1;
 
-    @Column(name = "LiquidTypeID2")
+    @Column("LiquidTypeID2")
     private Short liquidTypeID2;
 
-    @Column(name = "LiquidTypeID3")
+    @Column("LiquidTypeID3")
     private Short liquidTypeID3;
 
-    @Column(name = "LiquidTypeID4")
+    @Column("LiquidTypeID4")
     private Short liquidTypeID4;
 
-    @Column(name = "UwZoneMusic")
+    @Column("UwZoneMusic")
     private Short uwZoneMusic;
 
-    @Column(name = "UwAmbience")
+    @Column("UwAmbience")
     private Short uwAmbience;
 
-    @Column(name = "PvpCombatWorldStateID")
+    @Column("PvpCombatWorldStateID")
     private Short pvpCombatWorldStateID;
 
-    @Column(name = "SoundProviderPref")
+    @Column("SoundProviderPref")
     private Byte soundProviderPref;
 
-    @Column(name = "SoundProviderPrefUnderwater")
+    @Column("SoundProviderPrefUnderwater")
     private Byte soundProviderPrefUnderwater;
 
-    @Column(name = "ExplorationLevel")
+    @Column("ExplorationLevel")
     private Byte explorationLevel;
 
-    @Column(name = "FactionGroupMask")
+    @Column("FactionGroupMask")
     private Byte factionGroupMask;
 
-    @Column(name = "MountFlags")
+    @Column("MountFlags")
     private Byte mountFlags;
 
-    @Column(name = "WildBattlePetLevelMin")
+    @Column("WildBattlePetLevelMin")
     private Byte wildBattlePetLevelMin;
 
-    @Column(name = "WildBattlePetLevelMax")
+    @Column("WildBattlePetLevelMax")
     private Byte wildBattlePetLevelMax;
 
-    @Column(name = "WindSettingsID")
+    @Column("WindSettingsID")
     private Byte windSettingsID;
 
-    @Column(name = "UwIntroSound")
+    @Column("UwIntroSound")
     private Integer uwIntroSound;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 

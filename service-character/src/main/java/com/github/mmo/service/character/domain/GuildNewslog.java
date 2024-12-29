@@ -5,42 +5,42 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(GuildNewslogId.class)
-@Entity
+
+
 @Table(name = "guild_newslog")
 public class GuildNewslog {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guildid", nullable = false)
+
+    @Column("guildid")
     private Long guildid;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "LogGuid", columnDefinition = "int UNSIGNED not null")
+
+    @Column("LogGuid")
     private Long logGuid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "EventType", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("EventType")
     private Short eventType;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PlayerGuid", nullable = false)
+
+    @Column("PlayerGuid")
     private Long playerGuid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Flags", columnDefinition = "int UNSIGNED not null")
+
+    @Column("Flags")
     private Long flags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Value", columnDefinition = "int UNSIGNED not null")
+
+    @Column("Value")
     private Long value;
 
-    @ColumnDefault("0")
-    @Column(name = "TimeStamp", nullable = false)
+
+    @Column("TimeStamp")
     private Long timeStamp;
 
 }

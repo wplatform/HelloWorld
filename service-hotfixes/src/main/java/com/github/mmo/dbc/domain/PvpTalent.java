@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "pvp_talent")
 @Db2DataBind(name = "PvpTalent.db2", layoutHash = 0x6EB51740, fields = {
         @Db2Field(name = "description", type = Db2Type.STRING),
@@ -33,43 +33,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PvpTalent implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "OverridesSpellID")
+    @Column("OverridesSpellID")
     private Integer overridesSpellID;
 
-    @Column(name = "ActionBarSpellID")
+    @Column("ActionBarSpellID")
     private Integer actionBarSpellID;
 
-    @Column(name = "TierID")
+    @Column("TierID")
     private Integer tierID;
 
-    @Column(name = "ColumnIndex")
+    @Column("ColumnIndex")
     private Integer columnIndex;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "ClassID")
+    @Column("ClassID")
     private Integer classID;
 
-    @Column(name = "SpecID")
+    @Column("SpecID")
     private Integer specID;
 
-    @Column(name = "Role")
+    @Column("Role")
     private Integer role;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

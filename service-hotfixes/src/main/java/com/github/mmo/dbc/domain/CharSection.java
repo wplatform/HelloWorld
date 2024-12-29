@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "char_sections")
 @Db2DataBind(name = "CharSections.db2", layoutHash = 0xE349E55B, fields = {
         @Db2Field(name = {"materialResourcesID1", "materialResourcesID2", "materialResourcesID3"}, type = Db2Type.INT, signed = true),
@@ -29,40 +29,40 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CharSection implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "MaterialResourcesID1")
+    @Column("ID")
+    private int id;
+
+    @Column("MaterialResourcesID1")
     private Integer materialResourcesID1;
 
-    @Column(name = "MaterialResourcesID2")
+    @Column("MaterialResourcesID2")
     private Integer materialResourcesID2;
 
-    @Column(name = "MaterialResourcesID3")
+    @Column("MaterialResourcesID3")
     private Integer materialResourcesID3;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "RaceID")
+    @Column("RaceID")
     private Byte raceID;
 
-    @Column(name = "SexID")
+    @Column("SexID")
     private Byte sexID;
 
-    @Column(name = "BaseSection")
+    @Column("BaseSection")
     private Byte baseSection;
 
-    @Column(name = "VariationIndex")
+    @Column("VariationIndex")
     private Byte variationIndex;
 
-    @Column(name = "ColorIndex")
+    @Column("ColorIndex")
     private Byte colorIndex;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

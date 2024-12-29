@@ -1,5 +1,6 @@
 package com.github.mmo.game.networking.packet.quest;
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
 
 public class QuestGiverRequestReward extends ClientPacket

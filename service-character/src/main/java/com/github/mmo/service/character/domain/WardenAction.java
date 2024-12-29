@@ -1,22 +1,22 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "warden_action")
 public class WardenAction {
     @Id
-    @Column(name = "wardenId", columnDefinition = "smallint UNSIGNED not null")
-    private Integer id;
+    @Column("wardenId")
+    private int id;
 
-    @Column(name = "action", columnDefinition = "tinyint UNSIGNED")
+    @Column("action")
     private Short action;
 
 }

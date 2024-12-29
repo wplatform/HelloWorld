@@ -8,31 +8,31 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(CharacterAuraStoredLocationId.class)
-@Entity
+
+
 @Table(name = "character_aura_stored_location")
 public class CharacterAuraStoredLocation {
     @Id
-    @Column(name = "Guid", nullable = false)
+    @Column("Guid")
     private Integer guid;
 
     @Id
-    @Column(name = "Spell", columnDefinition = "int UNSIGNED not null")
+    @Column("Spell")
     private Integer spell;
 
-    @Column(name = "MapId", columnDefinition = "int UNSIGNED not null")
+    @Column("MapId")
     private Integer mapId;
 
-    @Column(name = "PositionX", nullable = false)
+    @Column("PositionX")
     private Float positionX;
 
-    @Column(name = "PositionY", nullable = false)
+    @Column("PositionY")
     private Float positionY;
 
-    @Column(name = "PositionZ", nullable = false)
+    @Column("PositionZ")
     private Float positionZ;
 
-    @Column(name = "Orientation", nullable = false)
+    @Column("Orientation")
     private Float orientation;
 
 }

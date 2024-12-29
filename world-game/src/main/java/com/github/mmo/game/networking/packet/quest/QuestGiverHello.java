@@ -1,11 +1,13 @@
 package com.github.mmo.game.networking.packet.quest;
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
+import io.netty.buffer.ByteBuf;
 
 public class QuestGiverHello extends ClientPacket
 {
 	public ObjectGuid questGiverGUID = ObjectGuid.EMPTY;
-	public QuestGiverHello(WorldPacket packet)
+	public QuestGiverHello(ByteBuf packet)
 	{
 		super(packet);
 	}

@@ -2,6 +2,7 @@ package com.github.mmo.game.misc;
 
 
 
+import com.github.mmo.game.service.model.gossip.GossipMenuOption;
 import game.*;
 import java.util.*;
 
@@ -104,7 +105,7 @@ public class GossipMenu
 		addMenuItem(gossipMenuItems, sender, action);
 	}
 
-	public final void addMenuItem(GossipMenuItems menuItem, int sender, int action)
+	public final void addMenuItem(GossipMenuOption menuItem, int sender, int action)
 	{
 		// Store texts for localization.
 		String strOptionText, strBoxText;

@@ -16,8 +16,8 @@ public class DuelWinner extends ServerPacket
 	@Override
 	public void write()
 	{
-		this.writeBits(beatenName.GetByteCount(), 6);
-		this.writeBits(winnerName.GetByteCount(), 6);
+		this.writeBits(beatenName.getBytes().length, 6);
+		this.writeBits(winnerName.getBytes().length, 6);
 		this.writeBit(fled);
 		this.writeInt32(beatenVirtualRealmAddress);
 		this.writeInt32(winnerVirtualRealmAddress);

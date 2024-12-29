@@ -12,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_follower")
 @Db2DataBind(name = "GarrFollower.db2", layoutHash = 0xAAB75E04, indexField = 31, fields = {
         @Db2Field(name = "hordeSourceText", type = Db2Type.STRING),
@@ -55,107 +55,107 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class GarrFollower implements DbcEntity {
-    @Column(name = "HordeSourceText")
+    @Column("HordeSourceText")
     private LocalizedString hordeSourceText;
 
-    @Column(name = "AllianceSourceText")
+    @Column("AllianceSourceText")
     private LocalizedString allianceSourceText;
 
-    @Column(name = "TitleName")
+    @Column("TitleName")
     private LocalizedString titleName;
 
-    @Column(name = "HordeCreatureID")
+    @Column("HordeCreatureID")
     private Integer hordeCreatureID;
 
-    @Column(name = "AllianceCreatureID")
+    @Column("AllianceCreatureID")
     private Integer allianceCreatureID;
 
-    @Column(name = "HordeIconFileDataID")
+    @Column("HordeIconFileDataID")
     private Integer hordeIconFileDataID;
 
-    @Column(name = "AllianceIconFileDataID")
+    @Column("AllianceIconFileDataID")
     private Integer allianceIconFileDataID;
 
-    @Column(name = "HordeSlottingBroadcastTextID")
+    @Column("HordeSlottingBroadcastTextID")
     private Integer hordeSlottingBroadcastTextID;
 
-    @Column(name = "AllySlottingBroadcastTextID")
+    @Column("AllySlottingBroadcastTextID")
     private Integer allySlottingBroadcastTextID;
 
-    @Column(name = "HordeGarrFollItemSetID")
+    @Column("HordeGarrFollItemSetID")
     private Short hordeGarrFollItemSetID;
 
-    @Column(name = "AllianceGarrFollItemSetID")
+    @Column("AllianceGarrFollItemSetID")
     private Short allianceGarrFollItemSetID;
 
-    @Column(name = "ItemLevelWeapon")
+    @Column("ItemLevelWeapon")
     private Short itemLevelWeapon;
 
-    @Column(name = "ItemLevelArmor")
+    @Column("ItemLevelArmor")
     private Short itemLevelArmor;
 
-    @Column(name = "HordeUITextureKitID")
+    @Column("HordeUITextureKitID")
     private Short hordeUITextureKitID;
 
-    @Column(name = "AllianceUITextureKitID")
+    @Column("AllianceUITextureKitID")
     private Short allianceUITextureKitID;
 
-    @Column(name = "GarrFollowerTypeID")
+    @Column("GarrFollowerTypeID")
     private Byte garrFollowerTypeID;
 
-    @Column(name = "HordeGarrFollRaceID")
+    @Column("HordeGarrFollRaceID")
     private Byte hordeGarrFollRaceID;
 
-    @Column(name = "AllianceGarrFollRaceID")
+    @Column("AllianceGarrFollRaceID")
     private Byte allianceGarrFollRaceID;
 
-    @Column(name = "Quality")
+    @Column("Quality")
     private Byte quality;
 
-    @Column(name = "HordeGarrClassSpecID")
+    @Column("HordeGarrClassSpecID")
     private Short hordeGarrClassSpecID;
 
-    @Column(name = "AllianceGarrClassSpecID")
+    @Column("AllianceGarrClassSpecID")
     private Short allianceGarrClassSpecID;
 
-    @Column(name = "FollowerLevel")
+    @Column("FollowerLevel")
     private Byte followerLevel;
 
-    @Column(name = "Gender")
+    @Column("Gender")
     private Byte gender;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "HordeSourceTypeEnum")
+    @Column("HordeSourceTypeEnum")
     private Byte hordeSourceTypeEnum;
 
-    @Column(name = "AllianceSourceTypeEnum")
+    @Column("AllianceSourceTypeEnum")
     private Byte allianceSourceTypeEnum;
 
-    @Column(name = "GarrTypeID")
+    @Column("GarrTypeID")
     private Byte garrTypeID;
 
-    @Column(name = "Vitality")
+    @Column("Vitality")
     private Byte vitality;
 
-    @Column(name = "ChrClassID")
+    @Column("ChrClassID")
     private Byte chrClassID;
 
-    @Column(name = "HordeFlavorGarrStringID")
+    @Column("HordeFlavorGarrStringID")
     private Byte hordeFlavorGarrStringID;
 
-    @Column(name = "AllianceFlavorGarrStringID")
+    @Column("AllianceFlavorGarrStringID")
     private Byte allianceFlavorGarrStringID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

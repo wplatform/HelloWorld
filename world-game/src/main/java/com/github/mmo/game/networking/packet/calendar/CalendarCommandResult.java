@@ -26,7 +26,7 @@ public class CalendarCommandResult extends ServerPacket {
         this.writeInt8(command);
         this.writeInt8((byte) result.getValue());
 
-        this.writeBits(name.GetByteCount(), 9);
+        this.writeBits(name.getBytes().length, 9);
         this.flushBits();
         this.writeString(name);
     }

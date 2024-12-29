@@ -15,7 +15,7 @@ public class GuildBankTextQueryResult extends ServerPacket
 	{
 		this.writeInt32(tab);
 
-		this.writeBits(text.GetByteCount(), 14);
+		this.writeBits(text.getBytes().length, 14);
 		this.writeString(text);
 	}
 }

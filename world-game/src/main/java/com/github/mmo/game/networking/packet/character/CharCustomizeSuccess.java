@@ -32,7 +32,7 @@ public class CharCustomizeSuccess extends ServerPacket
 			this.writeInt32(customization.chrCustomizationChoiceID);
 		}
 
-		this.writeBits(charName.GetByteCount(), 6);
+		this.writeBits(charName.getBytes().length, 6);
 		this.flushBits();
 		this.writeString(charName);
 	}

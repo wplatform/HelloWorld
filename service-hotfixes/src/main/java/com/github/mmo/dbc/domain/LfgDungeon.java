@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "lfg_dungeons")
 @Db2DataBind(name = "LFGDungeons.db2", layoutHash = 0xF02081A0, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -56,112 +56,112 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class LfgDungeon implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "MinGear")
+    @Column("MinGear")
     private Float minGear;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Short maxLevel;
 
-    @Column(name = "TargetLevelMax")
+    @Column("TargetLevelMax")
     private Short targetLevelMax;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "RandomID")
+    @Column("RandomID")
     private Short randomID;
 
-    @Column(name = "ScenarioID")
+    @Column("ScenarioID")
     private Short scenarioID;
 
-    @Column(name = "FinalEncounterID")
+    @Column("FinalEncounterID")
     private Short finalEncounterID;
 
-    @Column(name = "BonusReputationAmount")
+    @Column("BonusReputationAmount")
     private Short bonusReputationAmount;
 
-    @Column(name = "MentorItemLevel")
+    @Column("MentorItemLevel")
     private Short mentorItemLevel;
 
-    @Column(name = "RequiredPlayerConditionId")
+    @Column("RequiredPlayerConditionId")
     private Integer requiredPlayerConditionId;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Byte minLevel;
 
-    @Column(name = "TargetLevel")
+    @Column("TargetLevel")
     private Byte targetLevel;
 
-    @Column(name = "TargetLevelMin")
+    @Column("TargetLevelMin")
     private Byte targetLevelMin;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "TypeID")
+    @Column("TypeID")
     private Byte typeID;
 
-    @Column(name = "Faction")
+    @Column("Faction")
     private Byte faction;
 
-    @Column(name = "ExpansionLevel")
+    @Column("ExpansionLevel")
     private Byte expansionLevel;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
-    @Column(name = "GroupID")
+    @Column("GroupID")
     private Byte groupID;
 
-    @Column(name = "CountTank")
+    @Column("CountTank")
     private Byte countTank;
 
-    @Column(name = "CountHealer")
+    @Column("CountHealer")
     private Byte countHealer;
 
-    @Column(name = "CountDamage")
+    @Column("CountDamage")
     private Byte countDamage;
 
-    @Column(name = "MinCountTank")
+    @Column("MinCountTank")
     private Byte minCountTank;
 
-    @Column(name = "MinCountHealer")
+    @Column("MinCountHealer")
     private Byte minCountHealer;
 
-    @Column(name = "MinCountDamage")
+    @Column("MinCountDamage")
     private Byte minCountDamage;
 
-    @Column(name = "Subtype")
+    @Column("Subtype")
     private Byte subtype;
 
-    @Column(name = "MentorCharLevel")
+    @Column("MentorCharLevel")
     private Byte mentorCharLevel;
 
-    @Column(name = "IconTextureFileID")
+    @Column("IconTextureFileID")
     private Integer iconTextureFileID;
 
-    @Column(name = "RewardsBgTextureFileID")
+    @Column("RewardsBgTextureFileID")
     private Integer rewardsBgTextureFileID;
 
-    @Column(name = "PopupBgTextureFileID")
+    @Column("PopupBgTextureFileID")
     private Integer popupBgTextureFileID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

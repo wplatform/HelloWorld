@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "names_reserved_locale")
 @Db2DataBind(name = "NamesReservedLocale.db2", layoutHash = 0xC1403093, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class NamesReservedLocale implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private String name;
 
-    @Column(name = "LocaleMask")
+    @Column("LocaleMask")
     private Short localeMask;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

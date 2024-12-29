@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "journal_encounter_section")
 @Db2DataBind(name = "JournalEncounterSection.db2", layoutHash = 0x13E56B12, fields = {
         @Db2Field(name = "title", type = Db2Type.STRING),
@@ -38,73 +38,73 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class JournalEncounterSection implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Title")
+
+    @Column("Title")
     private LocalizedString title;
 
-    @Lob
-    @Column(name = "BodyText")
+
+    @Column("BodyText")
     private LocalizedString bodyText;
 
-    @ColumnDefault("'0'")
-    @Column(name = "JournalEncounterID", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("JournalEncounterID")
     private Integer journalEncounterID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "OrderIndex", columnDefinition = "tinyint UNSIGNED not null")
+    
+    @Column("OrderIndex")
     private Short orderIndex;
 
-    @ColumnDefault("'0'")
-    @Column(name = "ParentSectionID", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("ParentSectionID")
     private Integer parentSectionID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "FirstChildSectionID", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("FirstChildSectionID")
     private Integer firstChildSectionID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "NextSiblingSectionID", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("NextSiblingSectionID")
     private Integer nextSiblingSectionID;
 
-    @ColumnDefault("0")
-    @Column(name = "Type", nullable = false)
+    
+    @Column("Type")
     private Byte type;
 
-    @ColumnDefault("'0'")
-    @Column(name = "IconCreatureDisplayInfoID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("IconCreatureDisplayInfoID")
     private Long iconCreatureDisplayInfoID;
 
-    @ColumnDefault("0")
-    @Column(name = "UiModelSceneID", nullable = false)
+    
+    @Column("UiModelSceneID")
     private Integer uiModelSceneID;
 
-    @ColumnDefault("0")
-    @Column(name = "SpellID", nullable = false)
+    
+    @Column("SpellID")
     private Integer spellID;
 
-    @ColumnDefault("0")
-    @Column(name = "IconFileDataID", nullable = false)
+    
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @ColumnDefault("0")
-    @Column(name = "Flags", nullable = false)
+    
+    @Column("Flags")
     private Integer flags;
 
-    @ColumnDefault("0")
-    @Column(name = "IconFlags", nullable = false)
+    
+    @Column("IconFlags")
     private Integer iconFlags;
 
-    @ColumnDefault("0")
-    @Column(name = "DifficultyMask", nullable = false)
+    
+    @Column("DifficultyMask")
     private Byte difficultyMask;
 
 }

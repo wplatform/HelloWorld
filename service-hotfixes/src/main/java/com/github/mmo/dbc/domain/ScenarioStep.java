@@ -12,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "scenario_step")
 @Db2DataBind(name = "ScenarioStep.db2", layoutHash = 0x201B0EFC, parentIndexField = 2, fields = {
         @Db2Field(name = "description", type = Db2Type.STRING),
@@ -33,40 +33,40 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ScenarioStep implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Description")
+    @Column("ID")
+    private int id;
+
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Title")
+    @Column("Title")
     private LocalizedString title;
 
-    @Column(name = "ScenarioID")
+    @Column("ScenarioID")
     private Short scenarioID;
 
-    @Column(name = "Supersedes")
+    @Column("Supersedes")
     private Short supersedes;
 
-    @Column(name = "RewardQuestID")
+    @Column("RewardQuestID")
     private Integer rewardQuestID;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "Criteriatreeid")
+    @Column("Criteriatreeid")
     private Integer criteriatreeid;
 
-    @Column(name = "RelatedStep")
+    @Column("RelatedStep")
     private Integer relatedStep;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "game_object_display_info")
 @Db2DataBind(name = "GameObjectDisplayInfo.db2", layoutHash = 0x9F2098D1, fields = {
         @Db2Field(name = "fileDataID", type = Db2Type.INT, signed = true),
@@ -27,43 +27,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GameObjectDisplayInfo implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "FileDataID")
+    @Column("ID")
+    private int id;
+
+    @Column("FileDataID")
     private Integer fileDataID;
 
-    @Column(name = "GeoBoxMinX")
+    @Column("GeoBoxMinX")
     private Float geoBoxMinX;
 
-    @Column(name = "GeoBoxMinY")
+    @Column("GeoBoxMinY")
     private Float geoBoxMinY;
 
-    @Column(name = "GeoBoxMinZ")
+    @Column("GeoBoxMinZ")
     private Float geoBoxMinZ;
 
-    @Column(name = "GeoBoxMaxX")
+    @Column("GeoBoxMaxX")
     private Float geoBoxMaxX;
 
-    @Column(name = "GeoBoxMaxY")
+    @Column("GeoBoxMaxY")
     private Float geoBoxMaxY;
 
-    @Column(name = "GeoBoxMaxZ")
+    @Column("GeoBoxMaxZ")
     private Float geoBoxMaxZ;
 
-    @Column(name = "OverrideLootEffectScale")
+    @Column("OverrideLootEffectScale")
     private Float overrideLootEffectScale;
 
-    @Column(name = "OverrideNameScale")
+    @Column("OverrideNameScale")
     private Float overrideNameScale;
 
-    @Column(name = "ObjectEffectPackageID")
+    @Column("ObjectEffectPackageID")
     private Short objectEffectPackageID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

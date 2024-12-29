@@ -16,7 +16,7 @@ public class CharacterRenameResult extends ServerPacket
 	{
 		this.writeInt8((byte)result.getValue());
 		this.writeBit(system.guid.HasValue);
-		this.writeBits(name.GetByteCount(), 6);
+		this.writeBits(name.getBytes().length, 6);
 		this.flushBits();
 
 		if (system.guid.HasValue)

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "transmog_set_item")
 @Db2DataBind(name = "TransmogSetItem.db2", layoutHash = 0x0E96B3A2, indexField = 0, parentIndexField = 1, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -26,22 +26,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class TransmogSetItem implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "TransmogSetID")
+    @Column("ID")
+    private int id;
+
+    @Column("TransmogSetID")
     private Integer transmogSetID;
 
-    @Column(name = "ItemModifiedAppearanceID")
+    @Column("ItemModifiedAppearanceID")
     private Integer itemModifiedAppearanceID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

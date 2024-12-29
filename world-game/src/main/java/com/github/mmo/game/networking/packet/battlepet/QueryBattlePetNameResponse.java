@@ -28,12 +28,12 @@ public class QueryBattlePetNameResponse extends ServerPacket
 
 		if (allow)
 		{
-			this.writeBits(name.GetByteCount(), 8);
+			this.writeBits(name.getBytes().length, 8);
 			this.writeBit(hasDeclined);
 
 			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
 			{
-				this.writeBits(declinedNames.name.charAt(i).GetByteCount(), 7);
+				this.writeBits(declinedNames.name.charAt(i).getBytes().length, 7);
 			}
 
 			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)

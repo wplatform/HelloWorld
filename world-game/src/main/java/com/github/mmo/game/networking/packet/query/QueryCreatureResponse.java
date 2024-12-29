@@ -20,15 +20,15 @@ public class QueryCreatureResponse extends ServerPacket
 
 		if (allow)
 		{
-			this.writeBits(stats.title.isEmpty() ? 0 : stats.title.GetByteCount() + 1, 11);
-			this.writeBits(stats.titleAlt.isEmpty() ? 0 : stats.titleAlt.GetByteCount() + 1, 11);
-			this.writeBits(stats.cursorName.isEmpty() ? 0 : stats.cursorName.GetByteCount() + 1, 6);
+			this.writeBits(stats.title.isEmpty() ? 0 : stats.title.getBytes().length + 1, 11);
+			this.writeBits(stats.titleAlt.isEmpty() ? 0 : stats.titleAlt.getBytes().length + 1, 11);
+			this.writeBits(stats.cursorName.isEmpty() ? 0 : stats.cursorName.getBytes().length + 1, 6);
 			this.writeBit(stats.leader);
 
 			for (var i = 0; i < SharedConst.MaxCreatureNames; ++i)
 			{
-				this.writeBits(stats.name.charAt(i).GetByteCount() + 1, 11);
-				this.writeBits(stats.nameAlt.get(i).GetByteCount() + 1, 11);
+				this.writeBits(stats.name.charAt(i).getBytes().length + 1, 11);
+				this.writeBits(stats.nameAlt.get(i).getBytes().length + 1, 11);
 			}
 
 			for (var i = 0; i < SharedConst.MaxCreatureNames; ++i)

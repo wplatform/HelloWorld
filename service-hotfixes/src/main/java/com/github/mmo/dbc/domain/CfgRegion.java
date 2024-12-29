@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "cfg_regions")
 @Db2DataBind(name = "Cfg_Regions.db2", layoutHash = 0x9F4272BF, fields = {
         @Db2Field(name = "tag", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CfgRegion implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Tag")
+    @Column("ID")
+    private int id;
+
+    @Column("Tag")
     private String tag;
 
-    @Column(name = "Raidorigin")
+    @Column("Raidorigin")
     private Integer raidorigin;
 
-    @Column(name = "ChallengeOrigin")
+    @Column("ChallengeOrigin")
     private Integer challengeOrigin;
 
-    @Column(name = "RegionID")
+    @Column("RegionID")
     private Short regionID;
 
-    @Column(name = "RegionGroupMask")
+    @Column("RegionGroupMask")
     private Byte regionGroupMask;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

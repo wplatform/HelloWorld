@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "skill_race_class_info")
 @Db2DataBind(name = "SkillRaceClassInfo.db2", layoutHash = 0x9752C2CE, parentIndexField = 1, fields = {
         @Db2Field(name = "raceMask", type = Db2Type.LONG, signed = true),
@@ -29,34 +29,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SkillRaceClassInfo implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "RaceMask")
+    @Column("ID")
+    private int id;
+
+    @Column("RaceMask")
     private Long raceMask;
 
-    @Column(name = "SkillID")
+    @Column("SkillID")
     private Short skillID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "SkillTierID")
+    @Column("SkillTierID")
     private Short skillTierID;
 
-    @Column(name = "Availability")
+    @Column("Availability")
     private Byte availability;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Byte minLevel;
 
-    @Column(name = "ClassMask")
+    @Column("ClassMask")
     private Integer classMask;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

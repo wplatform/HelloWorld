@@ -5,38 +5,38 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CharacterQueststatusId.class)
-@Entity
+
+
 @Table(name = "character_queststatus")
 public class CharacterQueststatus {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long guid;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "quest", columnDefinition = "int UNSIGNED not null")
+
+    @Column("quest")
     private Long quest;
 
-    @ColumnDefault("'0'")
-    @Column(name = "status", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("status")
     private Short status;
 
-    @ColumnDefault("'0'")
-    @Column(name = "explored", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("explored")
     private Short explored;
 
-    @ColumnDefault("0")
-    @Column(name = "acceptTime", nullable = false)
+
+    @Column("acceptTime")
     private Long acceptTime;
 
-    @ColumnDefault("0")
-    @Column(name = "endTime", nullable = false)
+
+    @Column("endTime")
     private Long endTime;
 
 }

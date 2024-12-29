@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_levels")
 @Db2DataBind(name = "SpellLevels.db2", layoutHash = 0x9E7D1CCD, parentIndexField = 5, fields = {
         @Db2Field(name = "baseLevel", type = Db2Type.SHORT, signed = true),
@@ -28,31 +28,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellLevel implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "BaseLevel")
+    @Column("ID")
+    private int id;
+
+    @Column("BaseLevel")
     private Short baseLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Short maxLevel;
 
-    @Column(name = "SpellLevel")
+    @Column("SpellLevel")
     private Short spellLevel;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "MaxPassiveAuraLevel")
+    @Column("MaxPassiveAuraLevel")
     private Byte maxPassiveAuraLevel;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

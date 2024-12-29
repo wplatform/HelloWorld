@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_power")
 @Db2DataBind(name = "ArtifactPower.db2", layoutHash = 0x45240818, indexField = 5, parentIndexField = 1, fields = {
         @Db2Field(name = {"posX", "posY"}, type = Db2Type.FLOAT),
@@ -28,35 +28,35 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "label", type = Db2Type.INT, signed = true)
 })
 public class ArtifactPower implements DbcEntity {
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "ArtifactID")
+    @Column("ArtifactID")
     private Short artifactID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "MaxPurchasableRank")
+    @Column("MaxPurchasableRank")
     private Byte maxPurchasableRank;
 
-    @Column(name = "Tier")
+    @Column("Tier")
     private Byte tier;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Label")
+    @Column("ID")
+    private int id;
+
+    @Column("Label")
     private Integer label;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

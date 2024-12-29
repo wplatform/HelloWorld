@@ -16,7 +16,7 @@ public class GuildMemberUpdateNote extends ServerPacket
 	{
 		this.writeGuid(member);
 
-		this.writeBits(note.GetByteCount(), 8);
+		this.writeBits(note.getBytes().length, 8);
 		this.writeBit(isPublic);
 		this.flushBits();
 

@@ -25,7 +25,7 @@ final class CalendarSendCalendarEventInfo
 		data.writeInt64(eventClubID);
         data.writeGuid(ownerGuid);
 
-        data.writeBits(eventName.GetByteCount(), 8);
+        data.writeBits(eventName.getBytes().length, 8);
         data.flushBits();
         data.writeString(eventName);
 	}

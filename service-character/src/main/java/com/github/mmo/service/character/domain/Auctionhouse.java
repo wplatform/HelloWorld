@@ -1,63 +1,63 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 import java.time.Instant;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "auctionhouse")
 public class Auctionhouse {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("id")
+    private int id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "auctionHouseId", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("auctionHouseId")
     private Integer auctionHouseId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "owner", nullable = false)
+    
+    @Column("owner")
     private Integer owner;
 
-    @ColumnDefault("'0'")
-    @Column(name = "bidder", nullable = false)
+    
+    @Column("bidder")
     private Integer bidder;
 
-    @ColumnDefault("'0'")
-    @Column(name = "minBid", nullable = false)
+    
+    @Column("minBid")
     private Integer minBid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "buyoutOrUnitPrice", nullable = false)
+    
+    @Column("buyoutOrUnitPrice")
     private Integer buyoutOrUnitPrice;
 
-    @ColumnDefault("'0'")
-    @Column(name = "deposit", nullable = false)
+    
+    @Column("deposit")
     private Integer deposit;
 
-    @ColumnDefault("'0'")
-    @Column(name = "bidAmount", nullable = false)
+    
+    @Column("bidAmount")
     private Integer bidAmount;
 
-    @ColumnDefault("0")
-    @Column(name = "startTime", nullable = false)
+    
+    @Column("startTime")
     private Instant startTime;
 
-    @ColumnDefault("0")
-    @Column(name = "endTime", nullable = false)
+    
+    @Column("endTime")
     private Instant endTime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "serverFlags", columnDefinition = "tinyint UNSIGNED not null")
+    
+    @Column("serverFlags")
     private Short serverFlags;
 
 }

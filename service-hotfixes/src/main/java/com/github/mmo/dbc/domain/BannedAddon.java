@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "banned_addons")
 @Db2DataBind(name = "BannedAddons.db2", layoutHash = 0xF779B6E5, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class BannedAddon implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private String name;
 
-    @Column(name = "Version")
+    @Column("Version")
     private String version;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

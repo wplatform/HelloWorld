@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_random_suffix")
 @Db2DataBind(name = "ItemRandomSuffix.db2", layoutHash = 0x95CAB825, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -26,46 +26,46 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemRandomSuffix implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Enchantment1")
+    @Column("Enchantment1")
     private Short enchantment1;
 
-    @Column(name = "Enchantment2")
+    @Column("Enchantment2")
     private Short enchantment2;
 
-    @Column(name = "Enchantment3")
+    @Column("Enchantment3")
     private Short enchantment3;
 
-    @Column(name = "Enchantment4")
+    @Column("Enchantment4")
     private Short enchantment4;
 
-    @Column(name = "Enchantment5")
+    @Column("Enchantment5")
     private Short enchantment5;
 
-    @Column(name = "AllocationPct1")
+    @Column("AllocationPct1")
     private Short allocationPct1;
 
-    @Column(name = "AllocationPct2")
+    @Column("AllocationPct2")
     private Short allocationPct2;
 
-    @Column(name = "AllocationPct3")
+    @Column("AllocationPct3")
     private Short allocationPct3;
 
-    @Column(name = "AllocationPct4")
+    @Column("AllocationPct4")
     private Short allocationPct4;
 
-    @Column(name = "AllocationPct5")
+    @Column("AllocationPct5")
     private Short allocationPct5;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -12,7 +12,7 @@ public class GuildEventMotd extends ServerPacket
 	@Override
 	public void write()
 	{
-		this.writeBits(motdText.GetByteCount(), 11);
+		this.writeBits(motdText.getBytes().length, 11);
 		this.writeString(motdText);
 	}
 }

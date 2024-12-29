@@ -14,7 +14,7 @@ public class ChatServerMessage extends ServerPacket
 	{
 		this.writeInt32(messageID);
 
-		this.writeBits(stringParam.GetByteCount(), 11);
+		this.writeBits(stringParam.getBytes().length, 11);
 		this.writeString(stringParam);
 	}
 }

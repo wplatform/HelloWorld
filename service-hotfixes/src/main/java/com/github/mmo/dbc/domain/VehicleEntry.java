@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "vehicle")
 @Db2DataBind(name = "Vehicle.db2", layoutHash = 0x1606C582, fields = {
         @Db2Field(name = "flags", type = Db2Type.INT, signed = true),
@@ -40,94 +40,94 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class VehicleEntry implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "TurnSpeed")
+    @Column("TurnSpeed")
     private Float turnSpeed;
 
-    @Column(name = "PitchSpeed")
+    @Column("PitchSpeed")
     private Float pitchSpeed;
 
-    @Column(name = "PitchMin")
+    @Column("PitchMin")
     private Float pitchMin;
 
-    @Column(name = "PitchMax")
+    @Column("PitchMax")
     private Float pitchMax;
 
-    @Column(name = "MouseLookOffsetPitch")
+    @Column("MouseLookOffsetPitch")
     private Float mouseLookOffsetPitch;
 
-    @Column(name = "CameraFadeDistScalarMin")
+    @Column("CameraFadeDistScalarMin")
     private Float cameraFadeDistScalarMin;
 
-    @Column(name = "CameraFadeDistScalarMax")
+    @Column("CameraFadeDistScalarMax")
     private Float cameraFadeDistScalarMax;
 
-    @Column(name = "CameraPitchOffset")
+    @Column("CameraPitchOffset")
     private Float cameraPitchOffset;
 
-    @Column(name = "FacingLimitRight")
+    @Column("FacingLimitRight")
     private Float facingLimitRight;
 
-    @Column(name = "FacingLimitLeft")
+    @Column("FacingLimitLeft")
     private Float facingLimitLeft;
 
-    @Column(name = "CameraYawOffset")
+    @Column("CameraYawOffset")
     private Float cameraYawOffset;
 
-    @Column(name = "SeatID1")
+    @Column("SeatID1")
     private Short seatID1;
 
-    @Column(name = "SeatID2")
+    @Column("SeatID2")
     private Short seatID2;
 
-    @Column(name = "SeatID3")
+    @Column("SeatID3")
     private Short seatID3;
 
-    @Column(name = "SeatID4")
+    @Column("SeatID4")
     private Short seatID4;
 
-    @Column(name = "SeatID5")
+    @Column("SeatID5")
     private Short seatID5;
 
-    @Column(name = "SeatID6")
+    @Column("SeatID6")
     private Short seatID6;
 
-    @Column(name = "SeatID7")
+    @Column("SeatID7")
     private Short seatID7;
 
-    @Column(name = "SeatID8")
+    @Column("SeatID8")
     private Short seatID8;
 
-    @Column(name = "VehicleUIIndicatorID")
+    @Column("VehicleUIIndicatorID")
     private Short vehicleUIIndicatorID;
 
-    @Column(name = "PowerDisplayID1")
+    @Column("PowerDisplayID1")
     private Short powerDisplayID1;
 
-    @Column(name = "PowerDisplayID2")
+    @Column("PowerDisplayID2")
     private Short powerDisplayID2;
 
-    @Column(name = "PowerDisplayID3")
+    @Column("PowerDisplayID3")
     private Short powerDisplayID3;
 
-    @Column(name = "FlagsB")
+    @Column("FlagsB")
     private Byte flagsB;
 
-    @Column(name = "UiLocomotionType")
+    @Column("UiLocomotionType")
     private Byte uiLocomotionType;
 
-    @Column(name = "MissileTargetingID")
+    @Column("MissileTargetingID")
     private Integer missileTargetingID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -20,7 +20,7 @@ public final class BattlePetStruct
 		data.writeInt32(maxHealth);
 		data.writeInt32(speed);
 		data.writeInt8(quality);
-		data.writeBits(name.GetByteCount(), 7);
+		data.writeBits(name.getBytes().length, 7);
 		data.writeBit(ownerInfo != null); // HasOwnerInfo
 		data.writeBit(false); // NoRename
 		data.flushBits();

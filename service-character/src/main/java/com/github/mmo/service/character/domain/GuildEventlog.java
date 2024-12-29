@@ -8,31 +8,31 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(GuildEventlogId.class)
-@Entity
+
+
 @Table(name = "guild_eventlog")
 public class GuildEventlog {
     @Id
-    @Column(name = "guildid", nullable = false)
+    @Column("guildid")
     private Long guildid;
 
     @Id
-    @Column(name = "LogGuid", columnDefinition = "int UNSIGNED not null")
+    @Column("LogGuid")
     private Long logGuid;
 
-    @Column(name = "EventType", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("EventType")
     private Short eventType;
 
-    @Column(name = "PlayerGuid1", nullable = false)
+    @Column("PlayerGuid1")
     private Long playerGuid1;
 
-    @Column(name = "PlayerGuid2", nullable = false)
+    @Column("PlayerGuid2")
     private Long playerGuid2;
 
-    @Column(name = "NewRank", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("NewRank")
     private Short newRank;
 
-    @Column(name = "TimeStamp", nullable = false)
+    @Column("TimeStamp")
     private Long timeStamp;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_reagents_currency")
 @Db2DataBind(name = "SpellReagentsCurrency.db2", layoutHash = 0xA7C3638C, parentIndexField = 0, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellReagentsCurrency implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("ID")
     private  Integer id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("'0'")
-    @Column(name = "SpellID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("SpellID")
     private Long spellID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "CurrencyTypesID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("CurrencyTypesID")
     private Integer currencyTypesID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "CurrencyCount", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("CurrencyCount")
     private Integer currencyCount;
 
 }

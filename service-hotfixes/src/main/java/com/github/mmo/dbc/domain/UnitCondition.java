@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "unit_condition")
 @Db2DataBind(name = "UnitCondition.db2", layoutHash = 0x62802D9C, fields = {
         @Db2Field(name = {"value1", "value2", "value3", "value4", "value5", "value6", "value7", "value8"}, type = Db2Type.INT, signed = true),
@@ -26,88 +26,88 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class UnitCondition implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Value1")
+    @Column("ID")
+    private int id;
+
+    @Column("Value1")
     private Integer value1;
 
-    @Column(name = "Value2")
+    @Column("Value2")
     private Integer value2;
 
-    @Column(name = "Value3")
+    @Column("Value3")
     private Integer value3;
 
-    @Column(name = "Value4")
+    @Column("Value4")
     private Integer value4;
 
-    @Column(name = "Value5")
+    @Column("Value5")
     private Integer value5;
 
-    @Column(name = "Value6")
+    @Column("Value6")
     private Integer value6;
 
-    @Column(name = "Value7")
+    @Column("Value7")
     private Integer value7;
 
-    @Column(name = "Value8")
+    @Column("Value8")
     private Integer value8;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "Variable1")
+    @Column("Variable1")
     private Byte variable1;
 
-    @Column(name = "Variable2")
+    @Column("Variable2")
     private Byte variable2;
 
-    @Column(name = "Variable3")
+    @Column("Variable3")
     private Byte variable3;
 
-    @Column(name = "Variable4")
+    @Column("Variable4")
     private Byte variable4;
 
-    @Column(name = "Variable5")
+    @Column("Variable5")
     private Byte variable5;
 
-    @Column(name = "Variable6")
+    @Column("Variable6")
     private Byte variable6;
 
-    @Column(name = "Variable7")
+    @Column("Variable7")
     private Byte variable7;
 
-    @Column(name = "Variable8")
+    @Column("Variable8")
     private Byte variable8;
 
-    @Column(name = "Op1")
+    @Column("Op1")
     private Byte op1;
 
-    @Column(name = "Op2")
+    @Column("Op2")
     private Byte op2;
 
-    @Column(name = "Op3")
+    @Column("Op3")
     private Byte op3;
 
-    @Column(name = "Op4")
+    @Column("Op4")
     private Byte op4;
 
-    @Column(name = "Op5")
+    @Column("Op5")
     private Byte op5;
 
-    @Column(name = "Op6")
+    @Column("Op6")
     private Byte op6;
 
-    @Column(name = "Op7")
+    @Column("Op7")
     private Byte op7;
 
-    @Column(name = "Op8")
+    @Column("Op8")
     private Byte op8;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

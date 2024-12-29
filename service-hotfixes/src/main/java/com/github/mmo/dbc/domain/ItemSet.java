@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_set")
 @Db2DataBind(name = "ItemSet.db2", layoutHash = 0x847FF58A, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -28,76 +28,76 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemSet implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "ItemID1")
+    @Column("ItemID1")
     private Integer itemID1;
 
-    @Column(name = "ItemID2")
+    @Column("ItemID2")
     private Integer itemID2;
 
-    @Column(name = "ItemID3")
+    @Column("ItemID3")
     private Integer itemID3;
 
-    @Column(name = "ItemID4")
+    @Column("ItemID4")
     private Integer itemID4;
 
-    @Column(name = "ItemID5")
+    @Column("ItemID5")
     private Integer itemID5;
 
-    @Column(name = "ItemID6")
+    @Column("ItemID6")
     private Integer itemID6;
 
-    @Column(name = "ItemID7")
+    @Column("ItemID7")
     private Integer itemID7;
 
-    @Column(name = "ItemID8")
+    @Column("ItemID8")
     private Integer itemID8;
 
-    @Column(name = "ItemID9")
+    @Column("ItemID9")
     private Integer itemID9;
 
-    @Column(name = "ItemID10")
+    @Column("ItemID10")
     private Integer itemID10;
 
-    @Column(name = "ItemID11")
+    @Column("ItemID11")
     private Integer itemID11;
 
-    @Column(name = "ItemID12")
+    @Column("ItemID12")
     private Integer itemID12;
 
-    @Column(name = "ItemID13")
+    @Column("ItemID13")
     private Integer itemID13;
 
-    @Column(name = "ItemID14")
+    @Column("ItemID14")
     private Integer itemID14;
 
-    @Column(name = "ItemID15")
+    @Column("ItemID15")
     private Integer itemID15;
 
-    @Column(name = "ItemID16")
+    @Column("ItemID16")
     private Integer itemID16;
 
-    @Column(name = "ItemID17")
+    @Column("ItemID17")
     private Integer itemID17;
 
-    @Column(name = "RequiredSkillRank")
+    @Column("RequiredSkillRank")
     private Short requiredSkillRank;
 
-    @Column(name = "RequiredSkill")
+    @Column("RequiredSkill")
     private Integer requiredSkill;
 
-    @Column(name = "SetFlags")
+    @Column("SetFlags")
     private Integer setFlags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

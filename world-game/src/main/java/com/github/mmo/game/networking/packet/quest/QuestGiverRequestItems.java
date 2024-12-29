@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.quest;
 
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
 
 import java.util.*;
 
@@ -19,8 +21,8 @@ public class QuestGiverRequestItems extends ServerPacket {
 
     public int suggestPartyMembers;
     public int moneyToGet;
-    public ArrayList<QuestObjectivecollect> collect = new ArrayList<>();
-    public ArrayList<Questcurrency> currency = new ArrayList<>();
+    public ArrayList<QuestObjectiveCollect> collect = new ArrayList<>();
+    public ArrayList<QuestCurrency> currency = new ArrayList<>();
     public int statusFlags;
 
     public int[] questFlags = new int[3];
@@ -29,7 +31,7 @@ public class QuestGiverRequestItems extends ServerPacket {
     public ArrayList<ConditionalQuestText> conditionalCompletionText = new ArrayList<>();
 
     public QuestGiverRequestItems() {
-        super(ServerOpcode.QuestGiverRequestItems);
+        super(ServerOpCode.SMSG_QUEST_GIVER_REQUEST_ITEMS);
     }
 
     @Override
@@ -65,8 +67,8 @@ public class QuestGiverRequestItems extends ServerPacket {
         this.writeInt32(questGiverCreatureID);
         this.writeInt32(conditionalCompletionText.size());
 
-        this.writeBits(questTitle.GetByteCount(), 9);
-        this.writeBits(completionText.GetByteCount(), 12);
+        this.writeBits(questTitle.getBytes().length, 9);
+        this.writeBits(completionText.getBytes().length, 12);
         this.flushBits();
 
         for (var conditionalQuestText : conditionalCompletionText) {

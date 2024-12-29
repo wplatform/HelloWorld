@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "world_map_overlay")
 @Db2DataBind(name = "WorldMapOverlay.db2", layoutHash = 0xDC4B6AF3, indexField = 1, parentIndexField = 4, fields = {
         @Db2Field(name = "textureName", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -35,62 +35,62 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = {"areaID1", "areaID2", "areaID3", "areaID4"}, type = Db2Type.INT)
 })
 public class WorldMapOverlay implements DbcEntity {
-    @Column(name = "TextureName")
+    @Column("TextureName")
     private String textureName;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "TextureWidth")
+    @Column("ID")
+    private int id;
+
+    @Column("TextureWidth")
     private Short textureWidth;
 
-    @Column(name = "TextureHeight")
+    @Column("TextureHeight")
     private Short textureHeight;
 
-    @Column(name = "MapAreaID")
+    @Column("MapAreaID")
     private Integer mapAreaID;
 
-    @Column(name = "OffsetX")
+    @Column("OffsetX")
     private Integer offsetX;
 
-    @Column(name = "OffsetY")
+    @Column("OffsetY")
     private Integer offsetY;
 
-    @Column(name = "HitRectTop")
+    @Column("HitRectTop")
     private Integer hitRectTop;
 
-    @Column(name = "HitRectLeft")
+    @Column("HitRectLeft")
     private Integer hitRectLeft;
 
-    @Column(name = "HitRectBottom")
+    @Column("HitRectBottom")
     private Integer hitRectBottom;
 
-    @Column(name = "HitRectRight")
+    @Column("HitRectRight")
     private Integer hitRectRight;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "AreaID1")
+    @Column("AreaID1")
     private Integer areaID1;
 
-    @Column(name = "AreaID2")
+    @Column("AreaID2")
     private Integer areaID2;
 
-    @Column(name = "AreaID3")
+    @Column("AreaID3")
     private Integer areaID3;
 
-    @Column(name = "AreaID4")
+    @Column("AreaID4")
     private Integer areaID4;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

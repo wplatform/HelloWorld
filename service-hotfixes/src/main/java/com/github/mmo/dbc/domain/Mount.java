@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "mount")
 @Db2DataBind(name = "Mount.db2", layoutHash = 0x4D812F19, indexField = 8, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -33,44 +33,44 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "uiModelSceneID", type = Db2Type.INT, signed = true)
 })
 public class Mount implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "SourceText")
+    @Column("SourceText")
     private LocalizedString sourceText;
 
-    @Column(name = "SourceSpellID")
+    @Column("SourceSpellID")
     private Integer sourceSpellID;
 
-    @Column(name = "MountFlyRideHeight")
+    @Column("MountFlyRideHeight")
     private Float mountFlyRideHeight;
 
-    @Column(name = "MountTypeID")
+    @Column("MountTypeID")
     private Short mountTypeID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "SourceTypeEnum")
+    @Column("SourceTypeEnum")
     private Byte sourceTypeEnum;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "PlayerConditionID")
+    @Column("ID")
+    private int id;
+
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "UiModelSceneID")
+    @Column("UiModelSceneID")
     private Integer uiModelSceneID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

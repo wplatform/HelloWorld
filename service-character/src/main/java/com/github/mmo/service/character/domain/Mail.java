@@ -5,68 +5,68 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "mail")
 public class Mail {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "id", nullable = false)
+
+    @Column("id")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "messageType", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("messageType")
     private Short messageType;
 
-    @ColumnDefault("41")
-    @Column(name = "stationery", nullable = false)
+
+    @Column("stationery")
     private Byte stationery;
 
-    @ColumnDefault("'0'")
-    @Column(name = "mailTemplateId", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("mailTemplateId")
     private Integer mailTemplateId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "sender", nullable = false)
+
+    @Column("sender")
     private Long sender;
 
-    @ColumnDefault("'0'")
-    @Column(name = "receiver", nullable = false)
+
+    @Column("receiver")
     private Long receiver;
 
-    @Lob
-    @Column(name = "subject")
+    
+    @Column("subject")
     private String subject;
 
-    @Lob
-    @Column(name = "body")
+    
+    @Column("body")
     private String body;
 
-    @ColumnDefault("'0'")
-    @Column(name = "has_items", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("has_items")
     private Short hasItems;
 
-    @ColumnDefault("0")
-    @Column(name = "expire_time", nullable = false)
+
+    @Column("expire_time")
     private Long expireTime;
 
-    @ColumnDefault("0")
-    @Column(name = "deliver_time", nullable = false)
+
+    @Column("deliver_time")
     private Long deliverTime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "money", nullable = false)
+
+    @Column("money")
     private Long money;
 
-    @ColumnDefault("'0'")
-    @Column(name = "cod", nullable = false)
+
+    @Column("cod")
     private Long cod;
 
-    @ColumnDefault("'0'")
-    @Column(name = "checked", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("checked")
     private Short checked;
 
 }

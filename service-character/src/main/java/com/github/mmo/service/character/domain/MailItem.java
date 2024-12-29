@@ -1,29 +1,29 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "mail_items")
 public class MailItem {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "item_guid", nullable = false)
+
+    @Column("item_guid")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "mail_id", nullable = false)
+
+    @Column("mail_id")
     private Long mailId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "receiver", nullable = false)
+
+    @Column("receiver")
     private Long receiver;
 
 }

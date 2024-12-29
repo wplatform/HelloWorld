@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "taxi_nodes")
 @Db2DataBind(name = "TaxiNodes.db2", layoutHash = 0xB46C6A8B, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -35,64 +35,64 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class TaxiNode implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "PosZ")
+    @Column("PosZ")
     private Float posZ;
 
-    @Column(name = "MountCreatureID1")
+    @Column("MountCreatureID1")
     private Integer mountCreatureID1;
 
-    @Column(name = "MountCreatureID2")
+    @Column("MountCreatureID2")
     private Integer mountCreatureID2;
 
-    @Column(name = "MapOffsetX")
+    @Column("MapOffsetX")
     private Float mapOffsetX;
 
-    @Column(name = "MapOffsetY")
+    @Column("MapOffsetY")
     private Float mapOffsetY;
 
-    @Column(name = "Facing")
+    @Column("Facing")
     private Float facing;
 
-    @Column(name = "FlightMapOffsetX")
+    @Column("FlightMapOffsetX")
     private Float flightMapOffsetX;
 
-    @Column(name = "FlightMapOffsetY")
+    @Column("FlightMapOffsetY")
     private Float flightMapOffsetY;
 
-    @Column(name = "ContinentID")
+    @Column("ContinentID")
     private Short continentID;
 
-    @Column(name = "ConditionID")
+    @Column("ConditionID")
     private Integer conditionID;
 
-    @Column(name = "CharacterBitNumber")
+    @Column("CharacterBitNumber")
     private Short characterBitNumber;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "UiTextureKitID")
+    @Column("UiTextureKitID")
     private Integer uiTextureKitID;
 
-    @Column(name = "SpecialIconConditionID")
+    @Column("SpecialIconConditionID")
     private Integer specialIconConditionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -26,8 +26,8 @@ public class GuildRoster extends ServerPacket
 		this.writePackedTime(createDate);
 		this.writeInt32(guildFlags);
 		this.writeInt32(memberData.size());
-		this.writeBits(welcomeText.GetByteCount(), 11);
-		this.writeBits(infoText.GetByteCount(), 10);
+		this.writeBits(welcomeText.getBytes().length, 11);
+		this.writeBits(infoText.getBytes().length, 10);
 		this.flushBits();
 
 		memberData.forEach(p -> p.write(this));

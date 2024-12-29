@@ -16,7 +16,7 @@ public class RecruitAFriendFailure extends ServerPacket
         this.writeInt32(reason.getValue());
 		// Client uses this string only if reason == ERR_REFER_A_FRIEND_NOT_IN_GROUP || reason == ERR_REFER_A_FRIEND_SUMMON_OFFLINE_S
 		// but always reads it from packet
-        this.writeBits(str.GetByteCount(), 6);
+        this.writeBits(str.getBytes().length, 6);
         this.writeString(str);
 	}
 }

@@ -6,79 +6,79 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2LocaleId.class)
-@Entity
+
+
 @Table(name = "chr_races_locale")
 public class ChrRacesLocale {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name_lang")
+    
+    @Column("Name_lang")
     private String nameLang;
 
-    @Lob
-    @Column(name = "NameFemale_lang")
+    
+    @Column("NameFemale_lang")
     private String namefemaleLang;
 
-    @Lob
-    @Column(name = "NameLowercase_lang")
+    
+    @Column("NameLowercase_lang")
     private String namelowercaseLang;
 
-    @Lob
-    @Column(name = "NameFemaleLowercase_lang")
+    
+    @Column("NameFemaleLowercase_lang")
     private String namefemalelowercaseLang;
 
-    @Lob
-    @Column(name = "LoreName_lang")
+    
+    @Column("LoreName_lang")
     private String lorenameLang;
 
-    @Lob
-    @Column(name = "LoreNameFemale_lang")
+    
+    @Column("LoreNameFemale_lang")
     private String lorenamefemaleLang;
 
-    @Lob
-    @Column(name = "LoreNameLower_lang")
+    
+    @Column("LoreNameLower_lang")
     private String lorenamelowerLang;
 
-    @Lob
-    @Column(name = "LoreNameLowerFemale_lang")
+    
+    @Column("LoreNameLowerFemale_lang")
     private String lorenamelowerfemaleLang;
 
-    @Lob
-    @Column(name = "LoreDescription_lang")
+    
+    @Column("LoreDescription_lang")
     private String loredescriptionLang;
 
-    @Lob
-    @Column(name = "ShortName_lang")
+    
+    @Column("ShortName_lang")
     private String shortnameLang;
 
-    @Lob
-    @Column(name = "ShortNameFemale_lang")
+    
+    @Column("ShortNameFemale_lang")
     private String shortnamefemaleLang;
 
-    @Lob
-    @Column(name = "ShortNameLower_lang")
+    
+    @Column("ShortNameLower_lang")
     private String shortnamelowerLang;
 
-    @Lob
-    @Column(name = "ShortNameLowerFemale_lang")
+    
+    @Column("ShortNameLowerFemale_lang")
     private String shortnamelowerfemaleLang;
 
 }

@@ -48,7 +48,7 @@ public class CraftingOrderData extends BaseUpdateData<Player>
 		data.writeGuid(crafterGUID);
 		data.writeGuid(personalCrafterGUID);
         data.writeInt32(reagents.size());
-        data.writeBits(customerNotes.getValue().GetByteCount(), 10);
+        data.writeBits(customerNotes.getValue().getBytes().length, 10);
         data.writeBits(outputItem.hasValue(), 1);
         data.writeBits(outputItemData.hasValue(), 1);
 
@@ -202,7 +202,7 @@ public class CraftingOrderData extends BaseUpdateData<Player>
 		{
 			if (changesMask.get(21))
 			{
-                data.writeBits(customerNotes.getValue().GetByteCount(), 10);
+                data.writeBits(customerNotes.getValue().getBytes().length, 10);
                 data.writeString(customerNotes);
 			}
 

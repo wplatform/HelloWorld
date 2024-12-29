@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_aura_restrictions")
 @Db2DataBind(name = "SpellAuraRestrictions.db2", layoutHash = 0x7CDF3311, parentIndexField = 9, fields = {
         @Db2Field(name = "casterAuraSpell", type = Db2Type.INT, signed = true),
@@ -32,43 +32,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellAuraRestriction implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "CasterAuraSpell")
+    @Column("CasterAuraSpell")
     private Integer casterAuraSpell;
 
-    @Column(name = "TargetAuraSpell")
+    @Column("TargetAuraSpell")
     private Integer targetAuraSpell;
 
-    @Column(name = "ExcludeCasterAuraSpell")
+    @Column("ExcludeCasterAuraSpell")
     private Integer excludeCasterAuraSpell;
 
-    @Column(name = "ExcludeTargetAuraSpell")
+    @Column("ExcludeTargetAuraSpell")
     private Integer excludeTargetAuraSpell;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "CasterAuraState")
+    @Column("CasterAuraState")
     private Byte casterAuraState;
 
-    @Column(name = "TargetAuraState")
+    @Column("TargetAuraState")
     private Byte targetAuraState;
 
-    @Column(name = "ExcludeCasterAuraState")
+    @Column("ExcludeCasterAuraState")
     private Byte excludeCasterAuraState;
 
-    @Column(name = "ExcludeTargetAuraState")
+    @Column("ExcludeTargetAuraState")
     private Byte excludeTargetAuraState;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "totem_category")
 @Db2DataBind(name = "TotemCategory.db2", layoutHash = 0x20B9177A, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -26,22 +26,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class TotemCategory implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "TotemCategoryMask")
+    @Column("TotemCategoryMask")
     private Integer totemCategoryMask;
 
-    @Column(name = "TotemCategoryType")
+    @Column("TotemCategoryType")
     private Byte totemCategoryType;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

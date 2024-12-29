@@ -12,15 +12,15 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "faction_template")
 @Db2DataBind(name = "FactionTemplate.db2", layoutHash = 0x6F1D2135, fields = {
         @Db2Field(name = "faction", type = Db2Type.SHORT),
@@ -36,52 +36,52 @@ public class FactionTemplate implements DbcEntity {
     private static final byte MAX_FACTION_RELATIONS = 4;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Faction")
+    @Column("Faction")
     private Short faction;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "Enemies1")
+    @Column("Enemies1")
     private Short enemies1;
 
-    @Column(name = "Enemies2")
+    @Column("Enemies2")
     private Short enemies2;
 
-    @Column(name = "Enemies3")
+    @Column("Enemies3")
     private Short enemies3;
 
-    @Column(name = "Enemies4")
+    @Column("Enemies4")
     private Short enemies4;
 
-    @Column(name = "Friend1")
+    @Column("Friend1")
     private Short friend1;
 
-    @Column(name = "Friend2")
+    @Column("Friend2")
     private Short friend2;
 
-    @Column(name = "Friend3")
+    @Column("Friend3")
     private Short friend3;
 
-    @Column(name = "Friend4")
+    @Column("Friend4")
     private Short friend4;
 
-    @Column(name = "FactionGroup")
+    @Column("FactionGroup")
     private Byte factionGroup;
 
-    @Column(name = "FriendGroup")
+    @Column("FriendGroup")
     private Byte friendGroup;
 
-    @Column(name = "EnemyGroup")
+    @Column("EnemyGroup")
     private Byte enemyGroup;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 

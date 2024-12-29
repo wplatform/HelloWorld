@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_effect")
 @Db2DataBind(name = "ItemEffect.db2", layoutHash = 0xA390FA40, parentIndexField = 8, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -31,40 +31,40 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemEffect implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SpellID")
+    @Column("ID")
+    private int id;
+
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "CoolDownMSec")
+    @Column("CoolDownMSec")
     private Integer coolDownMSec;
 
-    @Column(name = "CategoryCoolDownMSec")
+    @Column("CategoryCoolDownMSec")
     private Integer categoryCoolDownMSec;
 
-    @Column(name = "Charges")
+    @Column("Charges")
     private Short charges;
 
-    @Column(name = "SpellCategoryID")
+    @Column("SpellCategoryID")
     private Short spellCategoryID;
 
-    @Column(name = "ChrSpecializationID")
+    @Column("ChrSpecializationID")
     private Short chrSpecializationID;
 
-    @Column(name = "LegacySlotIndex")
+    @Column("LegacySlotIndex")
     private Byte legacySlotIndex;
 
-    @Column(name = "TriggerType")
+    @Column("TriggerType")
     private Byte triggerType;
 
-    @Column(name = "ParentItemID")
+    @Column("ParentItemID")
     private Integer parentItemID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "toy")
 @Db2DataBind(name = "Toy.db2", layoutHash = 0x5409C5EA, indexField = 4, fields = {
         @Db2Field(name = "sourceText", type = Db2Type.STRING),
@@ -27,26 +27,26 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class Toy implements DbcEntity {
-    @Column(name = "SourceText")
+    @Column("SourceText")
     private LocalizedString sourceText;
 
-    @Column(name = "ItemID")
+    @Column("ItemID")
     private Integer itemID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "SourceTypeEnum")
+    @Column("SourceTypeEnum")
     private Byte sourceTypeEnum;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

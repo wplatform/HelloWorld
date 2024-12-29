@@ -1,9 +1,10 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.domain.reputation.RepRewardRate;
-import com.github.mmo.game.service.domain.reputation.RepSpilloverTemplate;
-import com.github.mmo.game.service.domain.reputation.ReputationOnKill;
+import com.github.mmo.game.service.mapper.RepSpilloverTemplateR;
+import com.github.mmo.game.service.model.reputation.RepRewardRate;
+import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.service.model.reputation.ReputationOnKill;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 public interface ReputationRepository {
 
     @Transactional(readOnly = true)
-    @Query(value = "SELECT faction, faction1, rate_1, rank_1, faction2, rate_2, rank_2, faction3, rate_3, rank_3, faction4, rate_4, rank_4, faction5, rate_5, rank_5 FROM reputation_spillover_template", resultSetExtractorClass = RepSpilloverTemplate.ResultExtractor.class)
+    @Query(value = "SELECT faction, faction1, rate_1, rank_1, faction2, rate_2, rank_2, faction3, rate_3, rank_3, faction4, rate_4, rank_4, faction5, rate_5, rank_5 FROM reputation_spillover_template")
     Stream<RepSpilloverTemplate> streamAllReputationSpilloverTemplate();
     @Transactional(readOnly = true)
     @Query("SELECT creature_id, RewOnKillRepFaction1, RewOnKillRepFaction2, IsTeamAward1, MaxStanding1, RewOnKillRepValue1, isTeamAward2, MaxStanding2, RewOnKillRepValue2, TeamDependent FROM creature_onkill_reputation")

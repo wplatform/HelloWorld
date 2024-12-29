@@ -1,5 +1,6 @@
 package com.github.mmo.game.networking.packet.quest;
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
 import java.util.*;
 
@@ -11,7 +12,7 @@ public class QuestGiverOfferReward
 	public int questID = 0;
 	public boolean autoLaunched = false;
 	public int suggestedPartyMembers = 0;
-	public Questrewards rewards = new questRewards();
+	public QuestRewards rewards = new QuestRewards();
 	public ArrayList<QuestDescEmote> emotes = new ArrayList<>();
 	public int[] questFlags = new int[3]; // Flags and FlagsEx
 
@@ -22,7 +23,6 @@ public class QuestGiverOfferReward
 		data.writeInt32(questID);
 		data.writeInt32(QuestFlags[0]); // Flags
 		data.writeInt32(QuestFlags[1]); // FlagsEx
-		data.writeInt32(QuestFlags[2]); // FlagsEx2
 		data.writeInt32(suggestedPartyMembers);
 
 		data.writeInt32(emotes.size());

@@ -2,6 +2,8 @@ package com.github.mmo.game.networking.packet.quest;
 
 
 import com.github.mmo.game.entity.object.ObjectGuid;
+import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
 
 import java.util.*;
 
@@ -14,7 +16,7 @@ public class QuestGiverQuestDetails extends ServerPacket
 	public int questPackageID;
 	public int[] questFlags = new int[3];
 	public int suggestedPartyMembers;
-	public Questrewards rewards = new questRewards();
+	public QuestRewards rewards = new QuestRewards();
 	public ArrayList<QuestObjectiveSimple> objectives = new ArrayList<>();
 	public ArrayList<QuestDescEmote> descEmotes = new ArrayList<>();
 	public ArrayList<Integer> learnSpells = new ArrayList<>();
@@ -38,7 +40,7 @@ public class QuestGiverQuestDetails extends ServerPacket
 	public boolean autoLaunched;
 	public QuestGiverQuestDetails()
 	{
-		super(ServerOpcode.QuestGiverQuestDetails);
+		super(ServerOpCode.SMSG_QUEST_GIVER_QUEST_DETAILS);
 	}
 
 	@Override
@@ -83,13 +85,13 @@ public class QuestGiverQuestDetails extends ServerPacket
 			this.writeInt8(obj.type);
 		}
 
-        this.writeBits(questTitle.GetByteCount(), 9);
-        this.writeBits(descriptionText.GetByteCount(), 12);
-        this.writeBits(logDescription.GetByteCount(), 12);
-        this.writeBits(portraitGiverText.GetByteCount(), 10);
-        this.writeBits(portraitGiverName.GetByteCount(), 8);
-        this.writeBits(portraitTurnInText.GetByteCount(), 10);
-        this.writeBits(portraitTurnInName.GetByteCount(), 8);
+        this.writeBits(questTitle.getBytes().length, 9);
+        this.writeBits(descriptionText.getBytes().length, 12);
+        this.writeBits(logDescription.getBytes().length, 12);
+        this.writeBits(portraitGiverText.getBytes().length, 10);
+        this.writeBits(portraitGiverName.getBytes().length, 8);
+        this.writeBits(portraitTurnInText.getBytes().length, 10);
+        this.writeBits(portraitTurnInName.getBytes().length, 8);
         this.writeBit(autoLaunched);
         this.writeBit(false); // unused in client
         this.writeBit(startCheat);

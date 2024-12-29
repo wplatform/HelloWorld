@@ -46,7 +46,7 @@ public class GarrisonFollower
 
         abilityID.forEach(ability -> data.writeInt32(ability.id));
 
-        data.writeBits(customName.GetByteCount(), 7);
+        data.writeBits(customName.getBytes().length, 7);
         data.flushBits();
         data.writeString(customName);
 	}

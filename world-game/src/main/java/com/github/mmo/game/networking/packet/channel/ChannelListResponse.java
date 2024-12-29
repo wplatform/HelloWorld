@@ -17,7 +17,7 @@ import java.util.*;public class ChannelListResponse extends ServerPacket {
     @Override
     public void write() {
         this.writeBit(display);
-        this.writeBits(channel.GetByteCount(), 7);
+        this.writeBits(channel.getBytes().length, 7);
         this.writeInt32((int) channelFlags.getValue());
         this.writeInt32(members.size());
         this.writeString(channel);

@@ -26,7 +26,7 @@ public class GuildRankData
             data.writeInt32(TabWithdrawItemLimit[i]);
 		}
 
-        data.writeBits(rankName.GetByteCount(), 7);
+        data.writeBits(rankName.getBytes().length, 7);
         data.writeString(rankName);
 	}
 }

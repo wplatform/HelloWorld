@@ -1,38 +1,38 @@
 package com.github.mmo.dbc.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@Entity
+
 @Table(name = "hotfix_optional_data")
 public class HotfixOptionalDatum {
-    @Column(name = "TableHash", columnDefinition = "int UNSIGNED not null")
+    @Column("TableHash")
     private Long tableHash;
 
-    @Column(name = "RecordId", columnDefinition = "int UNSIGNED not null")
+    @Column("RecordId")
     private Long recordId;
 
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @Column(name = "`Key`", columnDefinition = "int UNSIGNED not null")
+    @Column("`Key`")
     private Long key;
 
-    @Column(name = "Data", nullable = false)
+    @Column("Data")
     private byte[] data;
 
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

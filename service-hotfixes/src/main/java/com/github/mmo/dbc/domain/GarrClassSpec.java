@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_class_spec")
 @Db2DataBind(name = "GarrClassSpec.db2", layoutHash = 0x194CD478, indexField = 7, fields = {
         @Db2Field(name = "classSpec", type = Db2Type.STRING),
@@ -30,35 +30,35 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class GarrClassSpec implements DbcEntity {
-    @Column(name = "ClassSpec")
+    @Column("ClassSpec")
     private LocalizedString classSpec;
 
-    @Column(name = "ClassSpecMale")
+    @Column("ClassSpecMale")
     private LocalizedString classSpecMale;
 
-    @Column(name = "ClassSpecFemale")
+    @Column("ClassSpecFemale")
     private LocalizedString classSpecFemale;
 
-    @Column(name = "UiTextureAtlasMemberID")
+    @Column("UiTextureAtlasMemberID")
     private Short uiTextureAtlasMemberID;
 
-    @Column(name = "GarrFollItemSetID")
+    @Column("GarrFollItemSetID")
     private Short garrFollItemSetID;
 
-    @Column(name = "FollowerClassLimit")
+    @Column("FollowerClassLimit")
     private Byte followerClassLimit;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

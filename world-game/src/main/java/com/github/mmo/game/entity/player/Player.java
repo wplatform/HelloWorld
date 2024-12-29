@@ -4,7 +4,7 @@ package com.github.mmo.game.entity.player;
 import com.github.mmo.game.*;
 import com.github.mmo.game.globals.ObjectManager;
 import com.github.mmo.game.networking.packet.quest.DisplayPlayerChoice;
-import com.github.mmo.game.service.domain.player.PlayerLoginQueryLoad;
+import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
 import com.github.mmo.utils.MathUtil;
 import game.*;
 import game.WorldSession;

@@ -13,7 +13,7 @@ public class GuildNameChanged extends ServerPacket
 	public void write()
 	{
 		this.writeGuid(guildGUID);
-		this.writeBits(guildName.GetByteCount(), 7);
+		this.writeBits(guildName.getBytes().length, 7);
 		this.flushBits();
 		this.writeString(guildName);
 	}

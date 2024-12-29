@@ -32,7 +32,7 @@ public class LFGJoinResult extends ServerPacket
 
 		for (var str : blackListNames)
 		{
-            this.writeBits(str.GetByteCount() + 1, 24);
+            this.writeBits(str.getBytes().length + 1, 24);
 		}
 
 		for (var str : blackListNames)

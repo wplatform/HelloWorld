@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_damage_ammo")
 @Db2DataBind(name = "ItemDamageAmmo.db2", layoutHash = 0xC2186F95, fields = {
         @Db2Field(name = {"quality1", "quality2", "quality3", "quality4", "quality5", "quality6", "quality7"}, type = Db2Type.FLOAT),
@@ -24,37 +24,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemDamageAmmo implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Quality1")
+    @Column("ID")
+    private int id;
+
+    @Column("Quality1")
     private Float quality1;
 
-    @Column(name = "Quality2")
+    @Column("Quality2")
     private Float quality2;
 
-    @Column(name = "Quality3")
+    @Column("Quality3")
     private Float quality3;
 
-    @Column(name = "Quality4")
+    @Column("Quality4")
     private Float quality4;
 
-    @Column(name = "Quality5")
+    @Column("Quality5")
     private Float quality5;
 
-    @Column(name = "Quality6")
+    @Column("Quality6")
     private Float quality6;
 
-    @Column(name = "Quality7")
+    @Column("Quality7")
     private Float quality7;
 
-    @Column(name = "ItemLevel")
+    @Column("ItemLevel")
     private Short itemLevel;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

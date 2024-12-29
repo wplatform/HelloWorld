@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_procs_per_minute_mod")
 @Db2DataBind(name = "SpellProcsPerMinuteMod.db2", layoutHash = 0x2503C18B, parentIndexField = 3, fields = {
         @Db2Field(name = "coeff", type = Db2Type.FLOAT),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellProcsPerMinuteMod implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Coeff")
+    @Column("Coeff")
     private Float coeff;
 
-    @Column(name = "Param")
+    @Column("Param")
     private Short param;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Byte type;
 
-    @Column(name = "SpellProcsPerMinuteID")
+    @Column("SpellProcsPerMinuteID")
     private Short spellProcsPerMinuteID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

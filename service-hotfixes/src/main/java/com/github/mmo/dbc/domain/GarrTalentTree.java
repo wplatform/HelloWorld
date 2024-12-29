@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_talent_tree")
 @Db2DataBind(name = "GarrTalentTree.db2", layoutHash = 0x676CBC04, parentIndexField = 1, fields = {
         @Db2Field(name = "uiTextureKitID", type = Db2Type.SHORT),
@@ -27,41 +27,41 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrTalentTree implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name")
+    
+    @Column("Name")
     private String name;
 
-    @ColumnDefault("0")
-    @Column(name = "GarrTypeID", nullable = false)
+
+    @Column("GarrTypeID")
     private Integer garrTypeID;
 
-    @ColumnDefault("0")
-    @Column(name = "ClassID", nullable = false)
+
+    @Column("ClassID")
     private Integer classID;
 
-    @ColumnDefault("0")
-    @Column(name = "MaxTiers", nullable = false)
+
+    @Column("MaxTiers")
     private Byte maxTiers;
 
-    @ColumnDefault("0")
-    @Column(name = "UiOrder", nullable = false)
+
+    @Column("UiOrder")
     private Byte uiOrder;
 
-    @ColumnDefault("0")
-    @Column(name = "Flags", nullable = false)
+
+    @Column("Flags")
     private Byte flags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "UiTextureKitID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("UiTextureKitID")
     private Integer uiTextureKitID;
 
 }

@@ -51,9 +51,9 @@ public class GuildRosterMemberData
 		data.writeInt64(guildClubMemberID);
 		data.writeInt8(raceID);
 
-		data.writeBits(name.GetByteCount(), 6);
-		data.writeBits(note.GetByteCount(), 8);
-		data.writeBits(officerNote.GetByteCount(), 8);
+		data.writeBits(name.getBytes().length, 6);
+		data.writeBits(note.getBytes().length, 8);
+		data.writeBits(officerNote.getBytes().length, 8);
 		data.writeBit(authenticated);
 		data.writeBit(sorEligible);
 		data.flushBits();

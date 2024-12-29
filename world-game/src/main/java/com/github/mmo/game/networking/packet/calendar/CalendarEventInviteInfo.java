@@ -27,7 +27,7 @@ class CalendarEventInviteInfo
 
 		data.writePackedTime(responseTime);
 
-		data.writeBits(notes.GetByteCount(), 8);
+		data.writeBits(notes.getBytes().length, 8);
 		data.flushBits();
 		data.writeString(notes);
 	}

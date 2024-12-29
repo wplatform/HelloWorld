@@ -10,16 +10,16 @@ public class ConditionalQuestText
 
 	public ConditionalQuestText(int playerConditionID, int questGiverCreatureID, String text)
 	{
-		playerConditionID = playerConditionID;
-		questGiverCreatureID = questGiverCreatureID;
-		text = text;
+		this.playerConditionID = playerConditionID;
+		this.questGiverCreatureID = questGiverCreatureID;
+		this.text = text;
 	}
 
 	public final void write(WorldPacket data)
 	{
 		data.writeInt32(playerConditionID);
 		data.writeInt32(questGiverCreatureID);
-		data.writeBits(text.GetByteCount(), 12);
+		data.writeBits(text.getBytes().length, 12);
 		data.flushBits();
 
 		data.writeString(text);

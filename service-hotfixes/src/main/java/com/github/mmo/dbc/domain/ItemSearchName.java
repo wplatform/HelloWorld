@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_search_name")
 @Db2DataBind(name = "ItemSearchName.db2", layoutHash = 0x2D4B72FA, indexField = 2, fields = {
         @Db2Field(name = "allowableRace", type = Db2Type.LONG, signed = true),
@@ -36,59 +36,59 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "requiredAbility", type = Db2Type.INT)
 })
 public class ItemSearchName implements DbcEntity {
-    @Column(name = "AllowableRace")
+    @Column("AllowableRace")
     private Long allowableRace;
 
-    @Column(name = "Display")
+    @Column("Display")
     private LocalizedString display;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags1")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags1")
     private Integer flags1;
 
-    @Column(name = "Flags2")
+    @Column("Flags2")
     private Integer flags2;
 
-    @Column(name = "Flags3")
+    @Column("Flags3")
     private Integer flags3;
 
-    @Column(name = "ItemLevel")
+    @Column("ItemLevel")
     private Short itemLevel;
 
-    @Column(name = "OverallQualityID")
+    @Column("OverallQualityID")
     private Byte overallQualityID;
 
-    @Column(name = "ExpansionID")
+    @Column("ExpansionID")
     private Byte expansionID;
 
-    @Column(name = "RequiredLevel")
+    @Column("RequiredLevel")
     private Byte requiredLevel;
 
-    @Column(name = "MinFactionID")
+    @Column("MinFactionID")
     private Short minFactionID;
 
-    @Column(name = "MinReputation")
+    @Column("MinReputation")
     private Byte minReputation;
 
-    @Column(name = "AllowableClass")
+    @Column("AllowableClass")
     private Integer allowableClass;
 
-    @Column(name = "RequiredSkill")
+    @Column("RequiredSkill")
     private Short requiredSkill;
 
-    @Column(name = "RequiredSkillRank")
+    @Column("RequiredSkillRank")
     private Short requiredSkillRank;
 
-    @Column(name = "RequiredAbility")
+    @Column("RequiredAbility")
     private Integer requiredAbility;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

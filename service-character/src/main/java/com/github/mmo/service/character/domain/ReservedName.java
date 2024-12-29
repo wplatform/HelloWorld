@@ -1,21 +1,21 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "reserved_name")
 public class ReservedName {
     @Id
-    @ColumnDefault("''")
-    @Column(name = "name", nullable = false, length = 12)
+    
+    @Column("name")
     private String name;
 
     //TODO [Reverse Engineering] generate columns from DB

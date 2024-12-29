@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_categories")
 @Db2DataBind(name = "SpellCategories.db2", layoutHash = 0x14E916CC, parentIndexField = 8, fields = {
         @Db2Field(name = "category", type = Db2Type.SHORT, signed = true),
@@ -31,40 +31,40 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellCategories implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Category")
+    @Column("ID")
+    private int id;
+
+    @Column("Category")
     private Short category;
 
-    @Column(name = "StartRecoveryCategory")
+    @Column("StartRecoveryCategory")
     private Short startRecoveryCategory;
 
-    @Column(name = "ChargeCategory")
+    @Column("ChargeCategory")
     private Short chargeCategory;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "DefenseType")
+    @Column("DefenseType")
     private Byte defenseType;
 
-    @Column(name = "DispelType")
+    @Column("DispelType")
     private Byte dispelType;
 
-    @Column(name = "Mechanic")
+    @Column("Mechanic")
     private Byte mechanic;
 
-    @Column(name = "PreventionType")
+    @Column("PreventionType")
     private Byte preventionType;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

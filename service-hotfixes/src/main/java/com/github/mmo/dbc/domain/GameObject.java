@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "gameobjects")
 @Db2DataBind(name = "GameObjects.db2", layoutHash = 0x597E8643, indexField = 11, parentIndexField = 5, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -34,83 +34,83 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class GameObject implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "PosZ")
+    @Column("PosZ")
     private Float posZ;
 
-    @Column(name = "Rot1")
+    @Column("Rot1")
     private Float rot1;
 
-    @Column(name = "Rot2")
+    @Column("Rot2")
     private Float rot2;
 
-    @Column(name = "Rot3")
+    @Column("Rot3")
     private Float rot3;
 
-    @Column(name = "Rot4")
+    @Column("Rot4")
     private Float rot4;
 
-    @Column(name = "Scale")
+    @Column("Scale")
     private Float scale;
 
-    @Column(name = "PropValue1")
+    @Column("PropValue1")
     private Integer propValue1;
 
-    @Column(name = "PropValue2")
+    @Column("PropValue2")
     private Integer propValue2;
 
-    @Column(name = "PropValue3")
+    @Column("PropValue3")
     private Integer propValue3;
 
-    @Column(name = "PropValue4")
+    @Column("PropValue4")
     private Integer propValue4;
 
-    @Column(name = "PropValue5")
+    @Column("PropValue5")
     private Integer propValue5;
 
-    @Column(name = "PropValue6")
+    @Column("PropValue6")
     private Integer propValue6;
 
-    @Column(name = "PropValue7")
+    @Column("PropValue7")
     private Integer propValue7;
 
-    @Column(name = "PropValue8")
+    @Column("PropValue8")
     private Integer propValue8;
 
-    @Column(name = "OwnerID")
+    @Column("OwnerID")
     private Short ownerID;
 
-    @Column(name = "DisplayID")
+    @Column("DisplayID")
     private Integer displayID;
 
-    @Column(name = "PhaseID")
+    @Column("PhaseID")
     private Short phaseID;
 
-    @Column(name = "PhaseGroupID")
+    @Column("PhaseGroupID")
     private Short phaseGroupID;
 
-    @Column(name = "PhaseUseFlags")
+    @Column("PhaseUseFlags")
     private Byte phaseUseFlags;
 
-    @Column(name = "TypeID")
+    @Column("TypeID")
     private Byte typeID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

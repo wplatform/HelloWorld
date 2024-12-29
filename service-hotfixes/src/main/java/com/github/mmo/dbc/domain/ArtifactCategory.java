@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_category")
 @Db2DataBind(name = "ArtifactCategory.db2", layoutHash = 0x21328475, fields = {
         @Db2Field(name = "xpMultCurrencyID", type = Db2Type.SHORT, signed = true),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ArtifactCategory implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "XpMultCurrencyID")
+    @Column("XpMultCurrencyID")
     private Short xpMultCurrencyID;
 
-    @Column(name = "XpMultCurveID")
+    @Column("XpMultCurveID")
     private Short xpMultCurveID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -5,41 +5,41 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CharacterCurrencyId.class)
-@Entity
+
+
 @Table(name = "character_currency")
 public class CharacterCurrency {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "CharacterGuid", nullable = false)
+
+    @Column("CharacterGuid")
     private Integer characterGuid;
 
     @Id
-    @Column(name = "Currency", columnDefinition = "smallint UNSIGNED not null")
+    @Column("Currency")
     private Integer currency;
 
-    @Column(name = "Quantity", columnDefinition = "int UNSIGNED not null")
+    @Column("Quantity")
     private Integer quantity;
 
-    @Column(name = "WeeklyQuantity", columnDefinition = "int UNSIGNED not null")
+    @Column("WeeklyQuantity")
     private Integer weeklyQuantity;
 
-    @Column(name = "TrackedQuantity", columnDefinition = "int UNSIGNED not null")
+    @Column("TrackedQuantity")
     private Integer trackedQuantity;
 
-    @ColumnDefault("'0'")
-    @Column(name = "IncreasedCapQuantity", columnDefinition = "int UNSIGNED not null")
+
+    @Column("IncreasedCapQuantity")
     private Integer increasedCapQuantity;
 
-    @ColumnDefault("'0'")
-    @Column(name = "EarnedQuantity", columnDefinition = "int UNSIGNED not null")
+
+    @Column("EarnedQuantity")
     private Integer earnedQuantity;
 
-    @Column(name = "Flags", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("Flags")
     private Short flags;
 
 }

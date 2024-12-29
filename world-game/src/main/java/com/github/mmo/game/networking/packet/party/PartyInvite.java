@@ -56,7 +56,7 @@ public class PartyInvite extends ServerPacket
         this.writeBit(mustBeBNetFriend);
         this.writeBit(allowMultipleRoles);
         this.writeBit(questSessionActive);
-        this.writeBits(inviterName.GetByteCount(), 6);
+        this.writeBits(inviterName.getBytes().length, 6);
 
 		inviterRealm.write(this);
 

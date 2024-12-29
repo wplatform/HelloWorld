@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "world_map_area")
 @Db2DataBind(name = "WorldMapArea.db2", layoutHash = 0xC7E90019, indexField = 15, fields = {
         @Db2Field(name = "areaName", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -38,62 +38,62 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "visibilityPlayerConditionID", type = Db2Type.INT)
 })
 public class WorldMapArea implements DbcEntity {
-    @Column(name = "AreaName")
+    @Column("AreaName")
     private String areaName;
 
-    @Column(name = "LocLeft")
+    @Column("LocLeft")
     private Float locLeft;
 
-    @Column(name = "LocRight")
+    @Column("LocRight")
     private Float locRight;
 
-    @Column(name = "LocTop")
+    @Column("LocTop")
     private Float locTop;
 
-    @Column(name = "LocBottom")
+    @Column("LocBottom")
     private Float locBottom;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "AreaID")
+    @Column("AreaID")
     private Short areaID;
 
-    @Column(name = "DisplayMapID")
+    @Column("DisplayMapID")
     private Short displayMapID;
 
-    @Column(name = "DefaultDungeonFloor")
+    @Column("DefaultDungeonFloor")
     private Short defaultDungeonFloor;
 
-    @Column(name = "ParentWorldMapID")
+    @Column("ParentWorldMapID")
     private Short parentWorldMapID;
 
-    @Column(name = "LevelRangeMin")
+    @Column("LevelRangeMin")
     private Byte levelRangeMin;
 
-    @Column(name = "LevelRangeMax")
+    @Column("LevelRangeMax")
     private Byte levelRangeMax;
 
-    @Column(name = "BountySetID")
+    @Column("BountySetID")
     private Byte bountySetID;
 
-    @Column(name = "BountyDisplayLocation")
+    @Column("BountyDisplayLocation")
     private Byte bountyDisplayLocation;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "VisibilityPlayerConditionID")
+    @Column("VisibilityPlayerConditionID")
     private Integer visibilityPlayerConditionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

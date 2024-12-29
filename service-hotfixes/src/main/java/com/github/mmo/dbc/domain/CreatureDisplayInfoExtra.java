@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "creature_display_info_extra")
 @Db2DataBind(name = "CreatureDisplayInfoExtra.db2", layoutHash = 0x6DF98EF6, fields = {
         @Db2Field(name = "bakeMaterialResourcesID", type = Db2Type.INT, signed = true),
@@ -34,55 +34,55 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CreatureDisplayInfoExtra implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "BakeMaterialResourcesID")
+    @Column("ID")
+    private int id;
+
+    @Column("BakeMaterialResourcesID")
     private Integer bakeMaterialResourcesID;
 
-    @Column(name = "HDBakeMaterialResourcesID")
+    @Column("HDBakeMaterialResourcesID")
     private Integer hDBakeMaterialResourcesID;
 
-    @Column(name = "DisplayRaceID")
+    @Column("DisplayRaceID")
     private Byte displayRaceID;
 
-    @Column(name = "DisplaySexID")
+    @Column("DisplaySexID")
     private Byte displaySexID;
 
-    @Column(name = "DisplayClassID")
+    @Column("DisplayClassID")
     private Byte displayClassID;
 
-    @Column(name = "SkinID")
+    @Column("SkinID")
     private Byte skinID;
 
-    @Column(name = "FaceID")
+    @Column("FaceID")
     private Byte faceID;
 
-    @Column(name = "HairStyleID")
+    @Column("HairStyleID")
     private Byte hairStyleID;
 
-    @Column(name = "HairColorID")
+    @Column("HairColorID")
     private Byte hairColorID;
 
-    @Column(name = "FacialHairID")
+    @Column("FacialHairID")
     private Byte facialHairID;
 
-    @Column(name = "CustomDisplayOption1")
+    @Column("CustomDisplayOption1")
     private Byte customDisplayOption1;
 
-    @Column(name = "CustomDisplayOption2")
+    @Column("CustomDisplayOption2")
     private Byte customDisplayOption2;
 
-    @Column(name = "CustomDisplayOption3")
+    @Column("CustomDisplayOption3")
     private Byte customDisplayOption3;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

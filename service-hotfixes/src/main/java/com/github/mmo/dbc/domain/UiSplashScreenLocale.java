@@ -6,55 +6,55 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2LocaleId.class)
-@Entity
+
+
 @Table(name = "ui_splash_screen_locale")
 public class UiSplashScreenLocale {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("ID")
     private  Integer id;
 
     @Id
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Header_lang")
+    
+    @Column("Header_lang")
     private String headerLang;
 
-    @Lob
-    @Column(name = "TopLeftFeatureTitle_lang")
+    
+    @Column("TopLeftFeatureTitle_lang")
     private String topleftfeaturetitleLang;
 
-    @Lob
-    @Column(name = "TopLeftFeatureDesc_lang")
+    
+    @Column("TopLeftFeatureDesc_lang")
     private String topleftfeaturedescLang;
 
-    @Lob
-    @Column(name = "BottomLeftFeatureTitle_lang")
+    
+    @Column("BottomLeftFeatureTitle_lang")
     private String bottomleftfeaturetitleLang;
 
-    @Lob
-    @Column(name = "BottomLeftFeatureDesc_lang")
+    
+    @Column("BottomLeftFeatureDesc_lang")
     private String bottomleftfeaturedescLang;
 
-    @Lob
-    @Column(name = "RightFeatureTitle_lang")
+    
+    @Column("RightFeatureTitle_lang")
     private String rightfeaturetitleLang;
 
-    @Lob
-    @Column(name = "RightFeatureDesc_lang")
+    
+    @Column("RightFeatureDesc_lang")
     private String rightfeaturedescLang;
 
 }

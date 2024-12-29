@@ -1,13 +1,19 @@
 package com.github.mmo.game.networking.packet.quest;
 
 
-import com.github.mmo.game.networking.*;class QuestPushResultResponse extends ServerPacket {
+import com.github.mmo.game.entity.object.ObjectGuid;
+import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
+import com.github.mmo.game.quest.enums.QuestPushReason;
+
+class
+QuestPushResultResponse extends ServerPacket {
     public ObjectGuid senderGUID = ObjectGuid.EMPTY;
     public QuestPushReason result = QuestPushReason.values()[0];
     public String questTitle;
 
     public QuestPushResultResponse() {
-        super(ServerOpcode.QuestPushResult);
+        super(ServerOpCode.SMSG_QUEST_PUSH_RESULT);
     }
 
     @Override
@@ -15,7 +21,7 @@ import com.github.mmo.game.networking.*;class QuestPushResultResponse extends Se
         this.writeGuid(senderGUID);
         this.writeInt8((byte) result.getValue());
 
-        this.writeBits(questTitle.GetByteCount(), 9);
+        this.writeBits(questTitle.getBytes().length, 9);
         this.flushBits();
 
         this.writeString(questTitle);

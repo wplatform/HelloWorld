@@ -22,6 +22,8 @@ public interface SharedDefine {
     int MAX_SPECIALIZATIONS = 4;
     int PET_SPEC_OVERRIDE_CLASS_INDEX = MAX_CLASSES;
 
+    int MAX_NPC_TEXT_OPTIONS = 8;
+
 
     short BATTLE_PET_SPECIES_MAX_ID = 2164;
 

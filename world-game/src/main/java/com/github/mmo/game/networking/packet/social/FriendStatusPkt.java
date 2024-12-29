@@ -46,7 +46,7 @@ import com.github.mmo.game.networking.ServerPacket;public class FriendStatusPkt 
         this.writeInt32(areaID);
         this.writeInt32(level);
         this.writeInt32((int) classID.getValue());
-        this.writeBits(notes.GetByteCount(), 10);
+        this.writeBits(notes.getBytes().length, 10);
         this.writeBit(mobile);
         this.flushBits();
         this.writeString(notes);

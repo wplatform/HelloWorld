@@ -18,8 +18,8 @@ final class VirtualRealmNameInfo {
     public void write(WorldPacket data) {
         data.writeBit(isLocal);
         data.writeBit(isInternalRealm);
-        data.writeBits(realmNameActual.GetByteCount(), 8);
-        data.writeBits(realmNameNormalized.GetByteCount(), 8);
+        data.writeBits(realmNameActual.getBytes().length, 8);
+        data.writeBits(realmNameNormalized.getBytes().length, 8);
         data.flushBits();
 
         data.writeString(realmNameActual);

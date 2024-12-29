@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "curve_point")
 @Db2DataBind(name = "CurvePoint.db2", layoutHash = 0xF36752EB, fields = {
         @Db2Field(name = {"posX", "posY"}, type = Db2Type.FLOAT),
@@ -25,25 +25,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CurvePoint implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "CurveID")
+    @Column("CurveID")
     private Short curveID;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

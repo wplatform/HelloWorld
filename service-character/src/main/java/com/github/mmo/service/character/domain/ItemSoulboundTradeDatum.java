@@ -8,15 +8,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "item_soulbound_trade_data")
 public class ItemSoulboundTradeDatum {
     @Id
-    @Column(name = "itemGuid", nullable = false)
+    @Column("itemGuid")
     private Long id;
 
-    @Lob
-    @Column(name = "allowedPlayers", nullable = false)
+
+    @Column("allowedPlayers")
     private String allowedPlayers;
 
 }

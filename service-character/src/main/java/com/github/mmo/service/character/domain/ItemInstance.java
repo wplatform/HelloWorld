@@ -5,96 +5,96 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "item_instance")
 public class ItemInstance {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+    
+    @Column("guid")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "itemEntry", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("itemEntry")
     private Long itemEntry;
 
-    @ColumnDefault("'0'")
-    @Column(name = "owner_guid", nullable = false)
+    
+    @Column("owner_guid")
     private Long ownerGuid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "creatorGuid", nullable = false)
+    
+    @Column("creatorGuid")
     private Long creatorGuid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "giftCreatorGuid", nullable = false)
+    
+    @Column("giftCreatorGuid")
     private Long giftCreatorGuid;
 
-    @ColumnDefault("'1'")
-    @Column(name = "count", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("count")
     private Long count;
 
-    @ColumnDefault("0")
-    @Column(name = "duration", nullable = false)
+    
+    @Column("duration")
     private Integer duration;
 
-    @Lob
-    @Column(name = "charges")
+    
+    @Column("charges")
     private String charges;
 
-    @ColumnDefault("'0'")
-    @Column(name = "flags", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("flags")
     private Long flags;
 
-    @Lob
-    @Column(name = "enchantments", nullable = false)
+    
+    @Column("enchantments")
     private String enchantments;
 
-    @ColumnDefault("'0'")
-    @Column(name = "randomBonusListId", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("randomBonusListId")
     private Long randomBonusListId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "durability", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("durability")
     private Integer durability;
 
-    @ColumnDefault("'0'")
-    @Column(name = "playedTime", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("playedTime")
     private Long playedTime;
 
-    @ColumnDefault("0")
-    @Column(name = "createTime", nullable = false)
+    
+    @Column("createTime")
     private Long createTime;
 
-    @Lob
-    @Column(name = "text")
+    
+    @Column("text")
     private String text;
 
-    @ColumnDefault("'0'")
-    @Column(name = "battlePetSpeciesId", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("battlePetSpeciesId")
     private Long battlePetSpeciesId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "battlePetBreedData", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("battlePetBreedData")
     private Long battlePetBreedData;
 
-    @ColumnDefault("'0'")
-    @Column(name = "battlePetLevel", columnDefinition = "smallint UNSIGNED not null")
+    
+    @Column("battlePetLevel")
     private Integer battlePetLevel;
 
-    @ColumnDefault("'0'")
-    @Column(name = "battlePetDisplayId", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("battlePetDisplayId")
     private Long battlePetDisplayId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "context", columnDefinition = "tinyint UNSIGNED not null")
+    
+    @Column("context")
     private Short context;
 
-    @Lob
-    @Column(name = "bonusListIDs")
+    
+    @Column("bonusListIDs")
     private String bonusListIDs;
 
 }

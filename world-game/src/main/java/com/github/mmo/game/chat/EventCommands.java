@@ -39,7 +39,7 @@ class EventCommands
 		var occurenceStr = time.secsToTimeString(eventData.occurence * time.Minute, 0, false);
 		var lengthStr = time.secsToTimeString(eventData.length * time.Minute, 0, false);
 
-		handler.sendSysMessage(CypherStrings.eventInfo, eventId, eventData.description, activeStr, startTimeStr, endTimeStr, occurenceStr, lengthStr, nextStr);
+		handler.sendSysMessage(CypherStrings.eventInfo, eventId, eventData.description, activeStr, startTimeStr, endTimeStr, occurenceStr);
 
 		return true;
 	}

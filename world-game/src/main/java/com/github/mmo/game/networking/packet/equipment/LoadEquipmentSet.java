@@ -43,8 +43,8 @@ public class LoadEquipmentSet extends ServerPacket
 			this.writeInt32(equipSet.getSecondaryWeaponSlot());
 
 			this.writeBit(equipSet.getAssignedSpecIndex() != -1);
-			this.writeBits(equipSet.getSetName().GetByteCount(), 8);
-			this.writeBits(equipSet.getSetIcon().GetByteCount(), 9);
+			this.writeBits(equipSet.getSetName().getBytes().length, 8);
+			this.writeBits(equipSet.getSetIcon().getBytes().length, 9);
 
 			if (equipSet.getAssignedSpecIndex() != -1)
 			{

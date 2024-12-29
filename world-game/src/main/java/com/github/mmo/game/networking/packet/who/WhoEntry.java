@@ -19,7 +19,7 @@ public class WhoEntry
         data.writeInt32(guildVirtualRealmAddress);
         data.writeInt32(areaID);
 
-        data.writeBits(guildName.GetByteCount(), 7);
+        data.writeBits(guildName.getBytes().length, 7);
         data.writeBit(isGM);
         data.writeString(guildName);
 

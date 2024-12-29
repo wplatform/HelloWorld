@@ -5,30 +5,30 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CharacterSpellId.class)
-@Entity
+
+
 @Table(name = "character_spell")
 public class CharacterSpell {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long guid;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "spell", columnDefinition = "int UNSIGNED not null")
+
+    @Column("spell")
     private Long spell;
 
-    @ColumnDefault("'1'")
-    @Column(name = "active", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("active")
     private Short active;
 
-    @ColumnDefault("'0'")
-    @Column(name = "disabled", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("disabled")
     private Short disabled;
 
 }

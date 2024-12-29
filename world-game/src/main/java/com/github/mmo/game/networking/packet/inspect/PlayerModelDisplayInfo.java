@@ -48,7 +48,7 @@ public class PlayerModelDisplayInfo
         data.writeGuid(GUID);
         data.writeInt32(specializationID);
         data.writeInt32(items.size());
-        data.writeBits(name.GetByteCount(), 6);
+        data.writeBits(name.getBytes().length, 6);
 		data.writeInt8(genderID);
 		data.writeInt8(race);
 		data.writeInt8(classID);

@@ -21,7 +21,7 @@ public class ResurrectRequest extends ServerPacket
         this.writeInt32(resurrectOffererVirtualRealmAddress);
         this.writeInt32(petNumber);
         this.writeInt32(spellID);
-        this.writeBits(name.GetByteCount(), 11);
+        this.writeBits(name.getBytes().length, 11);
         this.writeBit(useTimer);
         this.writeBit(sickness);
         this.flushBits();

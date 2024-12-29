@@ -1,45 +1,45 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_pet_declinedname")
 public class CharacterPetDeclinedname {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
+
+    @Column("id")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "owner", columnDefinition = "int UNSIGNED not null")
+
+    @Column("owner")
     private Long owner;
 
-    @ColumnDefault("''")
-    @Column(name = "genitive", nullable = false, length = 12)
+
+    @Column("genitive")
     private String genitive;
 
-    @ColumnDefault("''")
-    @Column(name = "dative", nullable = false, length = 12)
+
+    @Column("dative")
     private String dative;
 
-    @ColumnDefault("''")
-    @Column(name = "accusative", nullable = false, length = 12)
+
+    @Column("accusative")
     private String accusative;
 
-    @ColumnDefault("''")
-    @Column(name = "instrumental", nullable = false, length = 12)
+
+    @Column("instrumental")
     private String instrumental;
 
-    @ColumnDefault("''")
-    @Column(name = "prepositional", nullable = false, length = 12)
+
+    @Column("prepositional")
     private String prepositional;
 
 }

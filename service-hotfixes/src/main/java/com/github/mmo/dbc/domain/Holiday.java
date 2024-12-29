@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "holidays")
 @Db2DataBind(name = "Holidays.db2", layoutHash = 0x7C3E60FC, indexField = 0, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -34,151 +34,151 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Holiday implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Date1")
+    @Column("ID")
+    private int id;
+
+    @Column("Date1")
     private Integer date1;
 
-    @Column(name = "Date2")
+    @Column("Date2")
     private Integer date2;
 
-    @Column(name = "Date3")
+    @Column("Date3")
     private Integer date3;
 
-    @Column(name = "Date4")
+    @Column("Date4")
     private Integer date4;
 
-    @Column(name = "Date5")
+    @Column("Date5")
     private Integer date5;
 
-    @Column(name = "Date6")
+    @Column("Date6")
     private Integer date6;
 
-    @Column(name = "Date7")
+    @Column("Date7")
     private Integer date7;
 
-    @Column(name = "Date8")
+    @Column("Date8")
     private Integer date8;
 
-    @Column(name = "Date9")
+    @Column("Date9")
     private Integer date9;
 
-    @Column(name = "Date10")
+    @Column("Date10")
     private Integer date10;
 
-    @Column(name = "Date11")
+    @Column("Date11")
     private Integer date11;
 
-    @Column(name = "Date12")
+    @Column("Date12")
     private Integer date12;
 
-    @Column(name = "Date13")
+    @Column("Date13")
     private Integer date13;
 
-    @Column(name = "Date14")
+    @Column("Date14")
     private Integer date14;
 
-    @Column(name = "Date15")
+    @Column("Date15")
     private Integer date15;
 
-    @Column(name = "Date16")
+    @Column("Date16")
     private Integer date16;
 
-    @Column(name = "Duration1")
+    @Column("Duration1")
     private Short duration1;
 
-    @Column(name = "Duration2")
+    @Column("Duration2")
     private Short duration2;
 
-    @Column(name = "Duration3")
+    @Column("Duration3")
     private Short duration3;
 
-    @Column(name = "Duration4")
+    @Column("Duration4")
     private Short duration4;
 
-    @Column(name = "Duration5")
+    @Column("Duration5")
     private Short duration5;
 
-    @Column(name = "Duration6")
+    @Column("Duration6")
     private Short duration6;
 
-    @Column(name = "Duration7")
+    @Column("Duration7")
     private Short duration7;
 
-    @Column(name = "Duration8")
+    @Column("Duration8")
     private Short duration8;
 
-    @Column(name = "Duration9")
+    @Column("Duration9")
     private Short duration9;
 
-    @Column(name = "Duration10")
+    @Column("Duration10")
     private Short duration10;
 
-    @Column(name = "Region")
+    @Column("Region")
     private Short region;
 
-    @Column(name = "Looping")
+    @Column("Looping")
     private Byte looping;
 
-    @Column(name = "CalendarFlags1")
+    @Column("CalendarFlags1")
     private Byte calendarFlags1;
 
-    @Column(name = "CalendarFlags2")
+    @Column("CalendarFlags2")
     private Byte calendarFlags2;
 
-    @Column(name = "CalendarFlags3")
+    @Column("CalendarFlags3")
     private Byte calendarFlags3;
 
-    @Column(name = "CalendarFlags4")
+    @Column("CalendarFlags4")
     private Byte calendarFlags4;
 
-    @Column(name = "CalendarFlags5")
+    @Column("CalendarFlags5")
     private Byte calendarFlags5;
 
-    @Column(name = "CalendarFlags6")
+    @Column("CalendarFlags6")
     private Byte calendarFlags6;
 
-    @Column(name = "CalendarFlags7")
+    @Column("CalendarFlags7")
     private Byte calendarFlags7;
 
-    @Column(name = "CalendarFlags8")
+    @Column("CalendarFlags8")
     private Byte calendarFlags8;
 
-    @Column(name = "CalendarFlags9")
+    @Column("CalendarFlags9")
     private Byte calendarFlags9;
 
-    @Column(name = "CalendarFlags10")
+    @Column("CalendarFlags10")
     private Byte calendarFlags10;
 
-    @Column(name = "Priority")
+    @Column("Priority")
     private Byte priority;
 
-    @Column(name = "CalendarFilterType")
+    @Column("CalendarFilterType")
     private Byte calendarFilterType;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "HolidayNameID")
+    @Column("HolidayNameID")
     private Integer holidayNameID;
 
-    @Column(name = "HolidayDescriptionID")
+    @Column("HolidayDescriptionID")
     private Integer holidayDescriptionID;
 
-    @Column(name = "TextureFileDataID1")
+    @Column("TextureFileDataID1")
     private Integer textureFileDataID1;
 
-    @Column(name = "TextureFileDataID2")
+    @Column("TextureFileDataID2")
     private Integer textureFileDataID2;
 
-    @Column(name = "TextureFileDataID3")
+    @Column("TextureFileDataID3")
     private Integer textureFileDataID3;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

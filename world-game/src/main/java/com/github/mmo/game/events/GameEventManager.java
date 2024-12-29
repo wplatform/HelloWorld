@@ -207,7 +207,7 @@ public class GameEventManager
 		{
 			var oldMSTime = System.currentTimeMillis();
 			//                                         0           1                           2                         3          4       5        6            7            8             9
-			var result = DB.World.query("SELECT eventEntry, UNIX_TIMESTAMP(start_time), UNIX_TIMESTAMP(end_time), occurence, length, holiday, holidayStage, description, world_event, announce FROM game_event");
+			var result = DB.World.query("SELECT eventEntry, UNIX_TIMESTAMP(start_time), UNIX_TIMESTAMP(end_time), occurence);
 
 			if (result.isEmpty())
 			{

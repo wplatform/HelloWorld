@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_interrupts")
 @Db2DataBind(name = "SpellInterrupts.db2", layoutHash = 0x2FA8EA94, parentIndexField = 4, fields = {
         @Db2Field(name = "difficultyID", type = Db2Type.BYTE),
@@ -27,34 +27,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellInterrupt implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "DifficultyID")
+    @Column("ID")
+    private int id;
+
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "InterruptFlags")
+    @Column("InterruptFlags")
     private Short interruptFlags;
 
-    @Column(name = "AuraInterruptFlags1")
+    @Column("AuraInterruptFlags1")
     private Integer auraInterruptFlags1;
 
-    @Column(name = "AuraInterruptFlags2")
+    @Column("AuraInterruptFlags2")
     private Integer auraInterruptFlags2;
 
-    @Column(name = "ChannelInterruptFlags1")
+    @Column("ChannelInterruptFlags1")
     private Integer channelInterruptFlags1;
 
-    @Column(name = "ChannelInterruptFlags2")
+    @Column("ChannelInterruptFlags2")
     private Integer channelInterruptFlags2;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

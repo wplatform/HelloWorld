@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_casting_requirements")
 @Db2DataBind(name = "SpellCastingRequirements.db2", layoutHash = 0xD8B56E5D, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -29,34 +29,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellCastingRequirement implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SpellID")
+    @Column("ID")
+    private int id;
+
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "MinFactionID")
+    @Column("MinFactionID")
     private Short minFactionID;
 
-    @Column(name = "RequiredAreasID")
+    @Column("RequiredAreasID")
     private Short requiredAreasID;
 
-    @Column(name = "RequiresSpellFocus")
+    @Column("RequiresSpellFocus")
     private Short requiresSpellFocus;
 
-    @Column(name = "FacingCasterFlags")
+    @Column("FacingCasterFlags")
     private Byte facingCasterFlags;
 
-    @Column(name = "MinReputation")
+    @Column("MinReputation")
     private Byte minReputation;
 
-    @Column(name = "RequiredAuraVision")
+    @Column("RequiredAuraVision")
     private Byte requiredAuraVision;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

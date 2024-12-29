@@ -5,21 +5,21 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CorpsePhaseId.class)
-@Entity
+
+
 @Table(name = "corpse_phases")
 public class CorpsePhase {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "OwnerGuid", nullable = false)
+
+    @Column("OwnerGuid")
     private Long ownerGuid;
 
     @Id
-    @Column(name = "PhaseId", columnDefinition = "int UNSIGNED not null")
+    @Column("PhaseId")
     private Long phaseId;
 
 }

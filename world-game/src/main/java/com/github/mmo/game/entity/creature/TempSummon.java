@@ -5,7 +5,7 @@ package com.github.mmo.game.entity.creature;
 import com.github.mmo.dbc.domain.SummonProperty;
 import com.github.mmo.game.entity.ForcedUnsummonDelayEvent;
 import com.github.mmo.game.entity.gobject.GameObject;
-import com.github.mmo.game.service.domain.creature.TempSummonType;
+import com.github.mmo.game.service.model.creature.TempSummonType;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldObject;

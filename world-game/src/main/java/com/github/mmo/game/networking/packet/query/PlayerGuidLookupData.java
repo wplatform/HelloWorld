@@ -77,11 +77,11 @@ public class PlayerGuidLookupData
 	public final void write(WorldPacket data)
 	{
 		data.writeBit(isDeleted);
-		data.writeBits(name.GetByteCount(), 6);
+		data.writeBits(name.getBytes().length, 6);
 
 		for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
 		{
-			data.writeBits(declinedNames.name.charAt(i).GetByteCount(), 7);
+			data.writeBits(declinedNames.name.charAt(i).getBytes().length, 7);
 		}
 
 		data.flushBits();

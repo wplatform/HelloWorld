@@ -12,7 +12,7 @@ public class NameCacheUnused920
 	{
 		data.writeInt32(unused1);
 		data.writeGuid(unused2);
-		data.writeBits(unused3.GetByteCount(), 7);
+		data.writeBits(unused3.getBytes().length, 7);
 		data.flushBits();
 
 		data.writeString(unused3);

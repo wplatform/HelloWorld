@@ -30,13 +30,13 @@ import org.springframework.data.relational.core.mapping.Table;
             import lombok.Getter;
             import lombok.Setter;
             import lombok.ToString;
-            import org.hibernate.annotations.ColumnDefault;
+            
             
             @Getter
             @Setter
             @ToString
-            @IdClass(DB2Id.class)
-            @Entity
+            
+            
             @Table(name = "%s")
             @Db2File(name = "%s", layoutHash = %s, indexField = %s, parentIndexField = %s)
             public class %s implements DbcEntity {
@@ -176,17 +176,17 @@ import org.springframework.data.relational.core.mapping.Table;
                 if ("ID".equalsIgnoreCase(field[2])) {
                     texxt.append("""
                                 @Id
-                                @ColumnDefault("'0'")
-                                @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+                                
+                                @Column("ID")
                                 @Db2Field(fieldIndex = %d, type = Db2Type.INT)
-                                private Integer id;
+                                private int id;
                             
                             """.formatted(i)
                     );
                 } else {
                     texxt.append("""
                             
-                                @Column(name = "%s")
+                                @Column("%s")
                                 @Db2Field(fieldIndex = %d, type = Db2Type.%s, signed = %s)
                                 private %s %s;
                             
@@ -196,8 +196,8 @@ import org.springframework.data.relational.core.mapping.Table;
             }
             texxt.append("""
                         @Id
-                        @ColumnDefault("0")
-                        @Column(name = "VerifiedBuild", nullable = false)
+                        
+                        @Column("VerifiedBuild")
                         private Integer verifiedBuild;
                     
                     """

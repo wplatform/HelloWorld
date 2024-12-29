@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_appearance")
 @Db2DataBind(name = "ItemAppearance.db2", layoutHash = 0x06D35A59, fields = {
         @Db2Field(name = "itemDisplayInfoID", type = Db2Type.INT, signed = true),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemAppearance implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ItemDisplayInfoID")
+    @Column("ID")
+    private int id;
+
+    @Column("ItemDisplayInfoID")
     private Integer itemDisplayInfoID;
 
-    @Column(name = "DefaultIconFileDataID")
+    @Column("DefaultIconFileDataID")
     private Integer defaultIconFileDataID;
 
-    @Column(name = "UiOrder")
+    @Column("UiOrder")
     private Integer uiOrder;
 
-    @Column(name = "DisplayType")
+    @Column("DisplayType")
     private Byte displayType;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

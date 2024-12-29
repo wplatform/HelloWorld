@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "skill_line")
 @Db2DataBind(name = "SkillLine.db2", layoutHash = 0x3F7E88AF, fields = {
         @Db2Field(name = "displayName", type = Db2Type.STRING),
@@ -31,37 +31,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SkillLine implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "DisplayName")
+    @Column("ID")
+    private int id;
+
+    @Column("DisplayName")
     private LocalizedString displayName;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "AlternateVerb")
+    @Column("AlternateVerb")
     private LocalizedString alternateVerb;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "CategoryID")
+    @Column("CategoryID")
     private Byte categoryID;
 
-    @Column(name = "CanLink")
+    @Column("CanLink")
     private Byte canLink;
 
-    @Column(name = "SpellIconFileID")
+    @Column("SpellIconFileID")
     private Integer spellIconFileID;
 
-    @Column(name = "ParentSkillLineID")
+    @Column("ParentSkillLineID")
     private Integer parentSkillLineID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

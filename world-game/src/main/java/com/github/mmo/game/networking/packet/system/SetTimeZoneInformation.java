@@ -14,9 +14,9 @@ public class SetTimeZoneInformation extends ServerPacket
 	@Override
 	public void write()
 	{
-		this.writeBits(serverTimeTZ.GetByteCount(), 7);
-		this.writeBits(gameTimeTZ.GetByteCount(), 7);
-		this.writeBits(serverRegionalTZ.GetByteCount(), 7);
+		this.writeBits(serverTimeTZ.getBytes().length, 7);
+		this.writeBits(gameTimeTZ.getBytes().length, 7);
+		this.writeBits(serverRegionalTZ.getBytes().length, 7);
 		this.flushBits();
 
 		this.writeString(serverTimeTZ);

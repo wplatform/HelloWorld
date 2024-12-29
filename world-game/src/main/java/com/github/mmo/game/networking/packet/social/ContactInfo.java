@@ -45,7 +45,7 @@ import com.github.mmo.game.networking.WorldPacket;public class ContactInfo {
         data.writeInt32(areaID);
         data.writeInt32(level);
         data.writeInt32((int) classID.getValue());
-        data.writeBits(notes.GetByteCount(), 10);
+        data.writeBits(notes.getBytes().length, 10);
         data.writeBit(mobile);
         data.flushBits();
         data.writeString(notes);

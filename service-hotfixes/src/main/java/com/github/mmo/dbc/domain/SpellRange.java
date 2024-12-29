@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_range")
 @Db2DataBind(name = "SpellRange.db2", layoutHash = 0xDE2E3F8E, fields = {
         @Db2Field(name = "displayName", type = Db2Type.STRING),
@@ -28,34 +28,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellRange implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "DisplayName")
+    @Column("ID")
+    private int id;
+
+    @Column("DisplayName")
     private LocalizedString displayName;
 
-    @Column(name = "DisplayNameShort")
+    @Column("DisplayNameShort")
     private LocalizedString displayNameShort;
 
-    @Column(name = "RangeMin1")
+    @Column("RangeMin1")
     private Float rangeMin1;
 
-    @Column(name = "RangeMin2")
+    @Column("RangeMin2")
     private Float rangeMin2;
 
-    @Column(name = "RangeMax1")
+    @Column("RangeMax1")
     private Float rangeMax1;
 
-    @Column(name = "RangeMax2")
+    @Column("RangeMax2")
     private Float rangeMax2;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

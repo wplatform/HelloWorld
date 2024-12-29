@@ -5,76 +5,76 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "gm_complaint")
 public class GmComplaint {
     @Id
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
+    @Column("id")
     private Long id;
 
-    @Column(name = "playerGuid", nullable = false)
+    @Column("playerGuid")
     private Long playerGuid;
 
-    @Lob
-    @Column(name = "note", nullable = false)
+    
+    @Column("note")
     private String note;
 
-    @ColumnDefault("0")
-    @Column(name = "createTime", nullable = false)
+
+    @Column("createTime")
     private Long createTime;
 
-    @ColumnDefault("'0'")
-    @Column(name = "mapId", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("mapId")
     private Integer mapId;
 
-    @ColumnDefault("0")
-    @Column(name = "posX", nullable = false)
+
+    @Column("posX")
     private Float posX;
 
-    @ColumnDefault("0")
-    @Column(name = "posY", nullable = false)
+
+    @Column("posY")
     private Float posY;
 
-    @ColumnDefault("0")
-    @Column(name = "posZ", nullable = false)
+
+    @Column("posZ")
     private Float posZ;
 
-    @ColumnDefault("0")
-    @Column(name = "facing", nullable = false)
+
+    @Column("facing")
     private Float facing;
 
-    @Column(name = "targetCharacterGuid", nullable = false)
+    @Column("targetCharacterGuid")
     private Long targetCharacterGuid;
 
-    @ColumnDefault("0")
-    @Column(name = "reportType", nullable = false)
+
+    @Column("reportType")
     private Integer reportType;
 
-    @ColumnDefault("0")
-    @Column(name = "reportMajorCategory", nullable = false)
+
+    @Column("reportMajorCategory")
     private Integer reportMajorCategory;
 
-    @ColumnDefault("0")
-    @Column(name = "reportMinorCategoryFlags", nullable = false)
+
+    @Column("reportMinorCategoryFlags")
     private Integer reportMinorCategoryFlags;
 
-    @Column(name = "reportLineIndex", nullable = false)
+    @Column("reportLineIndex")
     private Integer reportLineIndex;
 
-    @ColumnDefault("0")
-    @Column(name = "closedBy", nullable = false)
+
+    @Column("closedBy")
     private Long closedBy;
 
-    @ColumnDefault("'0'")
-    @Column(name = "assignedTo", nullable = false)
+
+    @Column("assignedTo")
     private Long assignedTo;
 
-    @Lob
-    @Column(name = "comment", nullable = false)
+    
+    @Column("comment")
     private String comment;
 
 }

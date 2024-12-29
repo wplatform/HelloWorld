@@ -14,7 +14,7 @@ public class GenerateRandomCharacterNameResult extends ServerPacket
 	public void write()
 	{
         this.writeBit(success);
-        this.writeBits(name.GetByteCount(), 6);
+        this.writeBits(name.getBytes().length, 6);
 
         this.writeString(name);
 	}

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "power_type")
 @Db2DataBind(name = "PowerType.db2", layoutHash = 0x0C3844E1, fields = {
         @Db2Field(name = "nameGlobalStringTag", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -34,49 +34,49 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PowerType implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "NameGlobalStringTag")
+    @Column("ID")
+    private int id;
+
+    @Column("NameGlobalStringTag")
     private String nameGlobalStringTag;
 
-    @Column(name = "CostGlobalStringTag")
+    @Column("CostGlobalStringTag")
     private String costGlobalStringTag;
 
-    @Column(name = "RegenPeace")
+    @Column("RegenPeace")
     private Float regenPeace;
 
-    @Column(name = "RegenCombat")
+    @Column("RegenCombat")
     private Float regenCombat;
 
-    @Column(name = "MaxBasePower")
+    @Column("MaxBasePower")
     private Short maxBasePower;
 
-    @Column(name = "RegenInterruptTimeMS")
+    @Column("RegenInterruptTimeMS")
     private Short regenInterruptTimeMS;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "PowerTypeEnum")
+    @Column("PowerTypeEnum")
     private Byte powerTypeEnum;
 
-    @Column(name = "MinPower")
+    @Column("MinPower")
     private Byte minPower;
 
-    @Column(name = "CenterPower")
+    @Column("CenterPower")
     private Byte centerPower;
 
-    @Column(name = "DefaultPower")
+    @Column("DefaultPower")
     private Byte defaultPower;
 
-    @Column(name = "DisplayModifier")
+    @Column("DisplayModifier")
     private Byte displayModifier;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

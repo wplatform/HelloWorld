@@ -18,7 +18,7 @@ public class UserlistRemove extends ServerPacket
         this.writeInt32((int) channelFlags.getValue());
         this.writeInt32(channelID);
 
-        this.writeBits(channelName.GetByteCount(), 7);
+        this.writeBits(channelName.getBytes().length, 7);
         this.flushBits();
         this.writeString(channelName);
 	}

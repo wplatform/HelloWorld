@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "movie")
 @Db2DataBind(name = "Movie.db2", layoutHash = 0xF3E9AE3B, fields = {
         @Db2Field(name = "audioFileDataID", type = Db2Type.INT),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Movie implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "AudioFileDataID")
+    @Column("ID")
+    private int id;
+
+    @Column("AudioFileDataID")
     private Integer audioFileDataID;
 
-    @Column(name = "SubtitleFileDataID")
+    @Column("SubtitleFileDataID")
     private Integer subtitleFileDataID;
 
-    @Column(name = "Volume")
+    @Column("Volume")
     private Short volume;
 
-    @Column(name = "KeyID")
+    @Column("KeyID")
     private Byte keyID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "difficulty")
 @Db2DataBind(name = "Difficulty.db2", layoutHash = 0x92302BB8, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -36,52 +36,52 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class DifficultyEntry implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "GroupSizeHealthCurveID")
+    @Column("GroupSizeHealthCurveID")
     private Short groupSizeHealthCurveID;
 
-    @Column(name = "GroupSizeDmgCurveID")
+    @Column("GroupSizeDmgCurveID")
     private Short groupSizeDmgCurveID;
 
-    @Column(name = "GroupSizeSpellPointsCurveID")
+    @Column("GroupSizeSpellPointsCurveID")
     private Short groupSizeSpellPointsCurveID;
 
-    @Column(name = "FallbackDifficultyID")
+    @Column("FallbackDifficultyID")
     private Byte fallbackDifficultyID;
 
-    @Column(name = "InstanceType")
+    @Column("InstanceType")
     private Byte instanceType;
 
-    @Column(name = "MinPlayers")
+    @Column("MinPlayers")
     private Byte minPlayers;
 
-    @Column(name = "MaxPlayers")
+    @Column("MaxPlayers")
     private Byte maxPlayers;
 
-    @Column(name = "OldEnumValue")
+    @Column("OldEnumValue")
     private Byte oldEnumValue;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "ToggleDifficultyID")
+    @Column("ToggleDifficultyID")
     private Byte toggleDifficultyID;
 
-    @Column(name = "ItemContext")
+    @Column("ItemContext")
     private Byte itemContext;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

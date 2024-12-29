@@ -12,7 +12,7 @@ public class ChatPlayerNotfound extends ServerPacket {
 
     @Override
     public void write() {
-        this.writeBits(name.GetByteCount(), 9);
+        this.writeBits(name.getBytes().length, 9);
         this.writeString(name);
     }
 }

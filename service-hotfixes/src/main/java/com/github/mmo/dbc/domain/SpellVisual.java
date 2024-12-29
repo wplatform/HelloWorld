@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_visual")
 @Db2DataBind(name = "SpellVisual.db2", layoutHash = 0x1C1301D2, fields = {
         @Db2Field(name = {"missileCastOffset1", "missileCastOffset2", "missileCastOffset3"}, type = Db2Type.FLOAT),
@@ -36,67 +36,67 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellVisual implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "MissileCastOffset1")
+    @Column("ID")
+    private int id;
+
+    @Column("MissileCastOffset1")
     private Float missileCastOffset1;
 
-    @Column(name = "MissileCastOffset2")
+    @Column("MissileCastOffset2")
     private Float missileCastOffset2;
 
-    @Column(name = "MissileCastOffset3")
+    @Column("MissileCastOffset3")
     private Float missileCastOffset3;
 
-    @Column(name = "MissileImpactOffset1")
+    @Column("MissileImpactOffset1")
     private Float missileImpactOffset1;
 
-    @Column(name = "MissileImpactOffset2")
+    @Column("MissileImpactOffset2")
     private Float missileImpactOffset2;
 
-    @Column(name = "MissileImpactOffset3")
+    @Column("MissileImpactOffset3")
     private Float missileImpactOffset3;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "SpellVisualMissileSetID")
+    @Column("SpellVisualMissileSetID")
     private Short spellVisualMissileSetID;
 
-    @Column(name = "MissileDestinationAttachment")
+    @Column("MissileDestinationAttachment")
     private Byte missileDestinationAttachment;
 
-    @Column(name = "MissileAttachment")
+    @Column("MissileAttachment")
     private Byte missileAttachment;
 
-    @Column(name = "MissileCastPositionerID")
+    @Column("MissileCastPositionerID")
     private Integer missileCastPositionerID;
 
-    @Column(name = "MissileImpactPositionerID")
+    @Column("MissileImpactPositionerID")
     private Integer missileImpactPositionerID;
 
-    @Column(name = "MissileTargetingKit")
+    @Column("MissileTargetingKit")
     private Integer missileTargetingKit;
 
-    @Column(name = "AnimEventSoundID")
+    @Column("AnimEventSoundID")
     private Integer animEventSoundID;
 
-    @Column(name = "DamageNumberDelay")
+    @Column("DamageNumberDelay")
     private Short damageNumberDelay;
 
-    @Column(name = "HostileSpellVisualID")
+    @Column("HostileSpellVisualID")
     private Integer hostileSpellVisualID;
 
-    @Column(name = "CasterSpellVisualID")
+    @Column("CasterSpellVisualID")
     private Integer casterSpellVisualID;
 
-    @Column(name = "LowViolenceSpellVisualID")
+    @Column("LowViolenceSpellVisualID")
     private Integer lowViolenceSpellVisualID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

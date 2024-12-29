@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_level_selector_quality")
 @Db2DataBind(name = "ItemLevelSelectorQuality.db2", layoutHash = 0xB7174A51, parentIndexField = 2, fields = {
         @Db2Field(name = "qualityItemBonusListID", type = Db2Type.INT, signed = true),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemLevelSelectorQuality implements DbcEntity, Comparable<ItemLevelSelectorQuality> {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "QualityItemBonusListID")
+    @Column("ID")
+    private int id;
+
+    @Column("QualityItemBonusListID")
     private Integer qualityItemBonusListID;
 
-    @Column(name = "Quality")
+    @Column("Quality")
     private Byte quality;
 
-    @Column(name = "ParentILSQualitySetID")
+    @Column("ParentILSQualitySetID")
     private Short parentILSQualitySetID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
     @Override

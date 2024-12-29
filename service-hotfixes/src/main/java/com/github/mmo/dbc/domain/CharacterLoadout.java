@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "character_loadout")
 @Db2DataBind(name = "CharacterLoadout.db2", layoutHash = 0xCA30C801, indexField = 1, fields = {
         @Db2Field(name = "id", type = Db2Type.INT, signed = true),
@@ -27,29 +27,29 @@ import org.hibernate.annotations.ColumnDefault;
 public class CharacterLoadout implements DbcEntity {
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("0")
-    @Column(name = "RaceMask", nullable = false)
+
+    @Column("RaceMask")
     private Long raceMask;
 
-    @ColumnDefault("0")
-    @Column(name = "ChrClassID", nullable = false)
+
+    @Column("ChrClassID")
     private Byte chrClassID;
 
-    @ColumnDefault("0")
-    @Column(name = "Purpose", nullable = false)
+
+    @Column("Purpose")
     private Integer purpose;
 
-    @ColumnDefault("0")
-    @Column(name = "ItemContext", nullable = false)
+
+    @Column("ItemContext")
     private Byte itemContext;
 
 }

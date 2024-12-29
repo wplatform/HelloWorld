@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "transport_animation")
 @Db2DataBind(name = "TransportAnimation.db2", layoutHash = 0x099987ED, parentIndexField = 3, fields = {
         @Db2Field(name = "timeIndex", type = Db2Type.INT),
@@ -26,31 +26,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class TransportAnimation implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "TimeIndex")
+    @Column("ID")
+    private int id;
+
+    @Column("TimeIndex")
     private Integer timeIndex;
 
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "PosZ")
+    @Column("PosZ")
     private Float posZ;
 
-    @Column(name = "SequenceID")
+    @Column("SequenceID")
     private Short sequenceID;
 
-    @Column(name = "TransportID")
+    @Column("TransportID")
     private Integer transportID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

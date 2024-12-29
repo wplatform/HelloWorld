@@ -15,8 +15,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact")
 @Db2DataBind(name = "Artifact.db2", layoutHash = 0x76CF31A8, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -32,43 +32,43 @@ import lombok.ToString;
 })
 public class Artifact implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "UiBarOverlayColor")
+    @Column("UiBarOverlayColor")
     private Integer uiBarOverlayColor;
 
-    @Column(name = "UiBarBackgroundColor")
+    @Column("UiBarBackgroundColor")
     private Integer uiBarBackgroundColor;
 
-    @Column(name = "UiNameColor")
+    @Column("UiNameColor")
     private Integer uiNameColor;
 
-    @Column(name = "UiTextureKitID")
+    @Column("UiTextureKitID")
     private Short uiTextureKitID;
 
-    @Column(name = "ChrSpecializationID")
+    @Column("ChrSpecializationID")
     private Short chrSpecializationID;
 
-    @Column(name = "ArtifactCategoryID")
+    @Column("ArtifactCategoryID")
     private Byte artifactCategoryID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "UiModelSceneID")
+    @Column("UiModelSceneID")
     private Integer uiModelSceneID;
 
-    @Column(name = "SpellVisualKitID")
+    @Column("SpellVisualKitID")
     private Integer spellVisualKitID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

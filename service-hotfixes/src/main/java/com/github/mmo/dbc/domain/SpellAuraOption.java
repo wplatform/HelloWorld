@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_aura_options")
 @Db2DataBind(name = "SpellAuraOptions.db2", layoutHash = 0xE05BE94F, parentIndexField = 7, fields = {
         @Db2Field(name = "procCharges", type = Db2Type.INT, signed = true),
@@ -30,37 +30,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellAuraOption implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ProcCharges")
+    @Column("ID")
+    private int id;
+
+    @Column("ProcCharges")
     private Integer procCharges;
 
-    @Column(name = "ProcTypeMask")
+    @Column("ProcTypeMask")
     private Integer procTypeMask;
 
-    @Column(name = "ProcCategoryRecovery")
+    @Column("ProcCategoryRecovery")
     private Integer procCategoryRecovery;
 
-    @Column(name = "CumulativeAura")
+    @Column("CumulativeAura")
     private Short cumulativeAura;
 
-    @Column(name = "SpellProcsPerMinuteID")
+    @Column("SpellProcsPerMinuteID")
     private Short spellProcsPerMinuteID;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "ProcChance")
+    @Column("ProcChance")
     private Byte procChance;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

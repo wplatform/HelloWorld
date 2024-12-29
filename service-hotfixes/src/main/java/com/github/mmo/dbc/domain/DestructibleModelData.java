@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "destructible_model_data")
 @Db2DataBind(name = "DestructibleModelData.db2", layoutHash = 0x1092C9AF, fields = {
         @Db2Field(name = "state0Wmo", type = Db2Type.SHORT),
@@ -44,79 +44,79 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class DestructibleModelData implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "State0Wmo")
+    @Column("ID")
+    private int id;
+
+    @Column("State0Wmo")
     private Integer state0Wmo;
 
-    @Column(name = "State1Wmo")
+    @Column("State1Wmo")
     private Integer state1Wmo;
 
-    @Column(name = "State2Wmo")
+    @Column("State2Wmo")
     private Integer state2Wmo;
 
-    @Column(name = "State3Wmo")
+    @Column("State3Wmo")
     private Integer state3Wmo;
 
-    @Column(name = "HealEffectSpeed")
+    @Column("HealEffectSpeed")
     private Short healEffectSpeed;
 
-    @Column(name = "State0ImpactEffectDoodadSet")
+    @Column("State0ImpactEffectDoodadSet")
     private Byte state0ImpactEffectDoodadSet;
 
-    @Column(name = "State0AmbientDoodadSet")
+    @Column("State0AmbientDoodadSet")
     private Byte state0AmbientDoodadSet;
 
-    @Column(name = "State0NameSet")
+    @Column("State0NameSet")
     private Byte state0NameSet;
 
-    @Column(name = "State1DestructionDoodadSet")
+    @Column("State1DestructionDoodadSet")
     private Byte state1DestructionDoodadSet;
 
-    @Column(name = "State1ImpactEffectDoodadSet")
+    @Column("State1ImpactEffectDoodadSet")
     private Byte state1ImpactEffectDoodadSet;
 
-    @Column(name = "State1AmbientDoodadSet")
+    @Column("State1AmbientDoodadSet")
     private Byte state1AmbientDoodadSet;
 
-    @Column(name = "State1NameSet")
+    @Column("State1NameSet")
     private Byte state1NameSet;
 
-    @Column(name = "State2DestructionDoodadSet")
+    @Column("State2DestructionDoodadSet")
     private Byte state2DestructionDoodadSet;
 
-    @Column(name = "State2ImpactEffectDoodadSet")
+    @Column("State2ImpactEffectDoodadSet")
     private Byte state2ImpactEffectDoodadSet;
 
-    @Column(name = "State2AmbientDoodadSet")
+    @Column("State2AmbientDoodadSet")
     private Byte state2AmbientDoodadSet;
 
-    @Column(name = "State2NameSet")
+    @Column("State2NameSet")
     private Byte state2NameSet;
 
-    @Column(name = "State3InitDoodadSet")
+    @Column("State3InitDoodadSet")
     private Byte state3InitDoodadSet;
 
-    @Column(name = "State3AmbientDoodadSet")
+    @Column("State3AmbientDoodadSet")
     private Byte state3AmbientDoodadSet;
 
-    @Column(name = "State3NameSet")
+    @Column("State3NameSet")
     private Byte state3NameSet;
 
-    @Column(name = "EjectDirection")
+    @Column("EjectDirection")
     private Byte ejectDirection;
 
-    @Column(name = "DoNotHighlight")
+    @Column("DoNotHighlight")
     private Byte doNotHighlight;
 
-    @Column(name = "HealEffect")
+    @Column("HealEffect")
     private Byte healEffect;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

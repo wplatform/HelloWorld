@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_effect")
 @Db2DataBind(name = "SpellEffect.db2", layoutHash = 0x3244098B, indexField = 0, parentIndexField = 29, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -52,118 +52,118 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellEffect implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Effect")
+    @Column("ID")
+    private int id;
+
+    @Column("Effect")
     private Integer effect;
 
-    @Column(name = "EffectBasePoints")
+    @Column("EffectBasePoints")
     private Integer effectBasePoints;
 
-    @Column(name = "EffectIndex")
+    @Column("EffectIndex")
     private Integer effectIndex;
 
-    @Column(name = "EffectAura")
+    @Column("EffectAura")
     private Integer effectAura;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Integer difficultyID;
 
-    @Column(name = "EffectAmplitude")
+    @Column("EffectAmplitude")
     private Float effectAmplitude;
 
-    @Column(name = "EffectAuraPeriod")
+    @Column("EffectAuraPeriod")
     private Integer effectAuraPeriod;
 
-    @Column(name = "EffectBonusCoefficient")
+    @Column("EffectBonusCoefficient")
     private Float effectBonusCoefficient;
 
-    @Column(name = "EffectChainAmplitude")
+    @Column("EffectChainAmplitude")
     private Float effectChainAmplitude;
 
-    @Column(name = "EffectChainTargets")
+    @Column("EffectChainTargets")
     private Integer effectChainTargets;
 
-    @Column(name = "EffectDieSides")
+    @Column("EffectDieSides")
     private Integer effectDieSides;
 
-    @Column(name = "EffectItemType")
+    @Column("EffectItemType")
     private Integer effectItemType;
 
-    @Column(name = "EffectMechanic")
+    @Column("EffectMechanic")
     private Integer effectMechanic;
 
-    @Column(name = "EffectPointsPerResource")
+    @Column("EffectPointsPerResource")
     private Float effectPointsPerResource;
 
-    @Column(name = "EffectRealPointsPerLevel")
+    @Column("EffectRealPointsPerLevel")
     private Float effectRealPointsPerLevel;
 
-    @Column(name = "EffectTriggerSpell")
+    @Column("EffectTriggerSpell")
     private Integer effectTriggerSpell;
 
-    @Column(name = "EffectPosFacing")
+    @Column("EffectPosFacing")
     private Float effectPosFacing;
 
-    @Column(name = "EffectAttributes")
+    @Column("EffectAttributes")
     private Integer effectAttributes;
 
-    @Column(name = "BonusCoefficientFromAP")
+    @Column("BonusCoefficientFromAP")
     private Float bonusCoefficientFromAP;
 
-    @Column(name = "PvpMultiplier")
+    @Column("PvpMultiplier")
     private Float pvpMultiplier;
 
-    @Column(name = "Coefficient")
+    @Column("Coefficient")
     private Float coefficient;
 
-    @Column(name = "Variance")
+    @Column("Variance")
     private Float variance;
 
-    @Column(name = "ResourceCoefficient")
+    @Column("ResourceCoefficient")
     private Float resourceCoefficient;
 
-    @Column(name = "GroupSizeBasePointsCoefficient")
+    @Column("GroupSizeBasePointsCoefficient")
     private Float groupSizeBasePointsCoefficient;
 
-    @Column(name = "EffectSpellClassMask1")
+    @Column("EffectSpellClassMask1")
     private Integer effectSpellClassMask1;
 
-    @Column(name = "EffectSpellClassMask2")
+    @Column("EffectSpellClassMask2")
     private Integer effectSpellClassMask2;
 
-    @Column(name = "EffectSpellClassMask3")
+    @Column("EffectSpellClassMask3")
     private Integer effectSpellClassMask3;
 
-    @Column(name = "EffectSpellClassMask4")
+    @Column("EffectSpellClassMask4")
     private Integer effectSpellClassMask4;
 
-    @Column(name = "EffectMiscValue1")
+    @Column("EffectMiscValue1")
     private Integer effectMiscValue1;
 
-    @Column(name = "EffectMiscValue2")
+    @Column("EffectMiscValue2")
     private Integer effectMiscValue2;
 
-    @Column(name = "EffectRadiusIndex1")
+    @Column("EffectRadiusIndex1")
     private Integer effectRadiusIndex1;
 
-    @Column(name = "EffectRadiusIndex2")
+    @Column("EffectRadiusIndex2")
     private Integer effectRadiusIndex2;
 
-    @Column(name = "ImplicitTarget1")
+    @Column("ImplicitTarget1")
     private Integer implicitTarget1;
 
-    @Column(name = "ImplicitTarget2")
+    @Column("ImplicitTarget2")
     private Integer implicitTarget2;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

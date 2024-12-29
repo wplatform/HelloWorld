@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_visual_effect_name")
 @Db2DataBind(name = "SpellVisualEffectName.db2", layoutHash = 0xB930A934, fields = {
         @Db2Field(name = "effectRadius", type = Db2Type.FLOAT),
@@ -35,52 +35,52 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellVisualEffectName implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "EffectRadius")
+    @Column("ID")
+    private int id;
+
+    @Column("EffectRadius")
     private Float effectRadius;
 
-    @Column(name = "BaseMissileSpeed")
+    @Column("BaseMissileSpeed")
     private Float baseMissileSpeed;
 
-    @Column(name = "Scale")
+    @Column("Scale")
     private Float scale;
 
-    @Column(name = "MinAllowedScale")
+    @Column("MinAllowedScale")
     private Float minAllowedScale;
 
-    @Column(name = "MaxAllowedScale")
+    @Column("MaxAllowedScale")
     private Float maxAllowedScale;
 
-    @Column(name = "Alpha")
+    @Column("Alpha")
     private Float alpha;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "GenericID")
+    @Column("GenericID")
     private Integer genericID;
 
-    @Column(name = "TextureFileDataID")
+    @Column("TextureFileDataID")
     private Integer textureFileDataID;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Byte type;
 
-    @Column(name = "ModelFileDataID")
+    @Column("ModelFileDataID")
     private Integer modelFileDataID;
 
-    @Column(name = "RibbonQualityID")
+    @Column("RibbonQualityID")
     private Integer ribbonQualityID;
 
-    @Column(name = "DissolveEffectID")
+    @Column("DissolveEffectID")
     private Integer dissolveEffectID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

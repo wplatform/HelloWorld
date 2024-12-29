@@ -47,7 +47,7 @@ public class QueryPageTextResponse extends ServerPacket {
             data.writeInt32(nextPageID);
             data.writeInt32(playerConditionID);
             data.writeInt8(flags);
-            data.writeBits(text.GetByteCount(), 12);
+            data.writeBits(text.getBytes().length, 12);
             data.flushBits();
 
             data.writeString(text);

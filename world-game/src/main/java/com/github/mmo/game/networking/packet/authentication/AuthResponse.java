@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.authentication;
 
 
-import com.github.mmo.game.service.domain.misc.RaceClassAvailability;
+import com.github.mmo.game.service.model.misc.RaceClassAvailability;
 
 
 import java.util.ArrayList;
@@ -100,8 +100,8 @@ public class AuthResponse extends ServerPacket
 					this.writeInt8((byte)templateClass.factionGroup.getValue());
 				}
 
-                this.writeBits(templat.name.GetByteCount(), 7);
-                this.writeBits(templat.description.GetByteCount(), 10);
+                this.writeBits(templat.name.getBytes().length, 7);
+                this.writeBits(templat.description.getBytes().length, 10);
                 this.flushBits();
 
                 this.writeString(templat.name);

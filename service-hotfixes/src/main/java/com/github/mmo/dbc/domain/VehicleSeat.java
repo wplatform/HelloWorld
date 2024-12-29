@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "vehicle_seat")
 @Db2DataBind(name = "VehicleSeat.db2", layoutHash = 0x242E0ECD, fields = {
         @Db2Field(name = "flags", type = Db2Type.INT, signed = true),
@@ -83,208 +83,208 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class VehicleSeat implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "FlagsB")
+    @Column("FlagsB")
     private Integer flagsB;
 
-    @Column(name = "FlagsC")
+    @Column("FlagsC")
     private Integer flagsC;
 
-    @Column(name = "AttachmentOffsetX")
+    @Column("AttachmentOffsetX")
     private Float attachmentOffsetX;
 
-    @Column(name = "AttachmentOffsetY")
+    @Column("AttachmentOffsetY")
     private Float attachmentOffsetY;
 
-    @Column(name = "AttachmentOffsetZ")
+    @Column("AttachmentOffsetZ")
     private Float attachmentOffsetZ;
 
-    @Column(name = "EnterPreDelay")
+    @Column("EnterPreDelay")
     private Float enterPreDelay;
 
-    @Column(name = "EnterSpeed")
+    @Column("EnterSpeed")
     private Float enterSpeed;
 
-    @Column(name = "EnterGravity")
+    @Column("EnterGravity")
     private Float enterGravity;
 
-    @Column(name = "EnterMinDuration")
+    @Column("EnterMinDuration")
     private Float enterMinDuration;
 
-    @Column(name = "EnterMaxDuration")
+    @Column("EnterMaxDuration")
     private Float enterMaxDuration;
 
-    @Column(name = "EnterMinArcHeight")
+    @Column("EnterMinArcHeight")
     private Float enterMinArcHeight;
 
-    @Column(name = "EnterMaxArcHeight")
+    @Column("EnterMaxArcHeight")
     private Float enterMaxArcHeight;
 
-    @Column(name = "ExitPreDelay")
+    @Column("ExitPreDelay")
     private Float exitPreDelay;
 
-    @Column(name = "ExitSpeed")
+    @Column("ExitSpeed")
     private Float exitSpeed;
 
-    @Column(name = "ExitGravity")
+    @Column("ExitGravity")
     private Float exitGravity;
 
-    @Column(name = "ExitMinDuration")
+    @Column("ExitMinDuration")
     private Float exitMinDuration;
 
-    @Column(name = "ExitMaxDuration")
+    @Column("ExitMaxDuration")
     private Float exitMaxDuration;
 
-    @Column(name = "ExitMinArcHeight")
+    @Column("ExitMinArcHeight")
     private Float exitMinArcHeight;
 
-    @Column(name = "ExitMaxArcHeight")
+    @Column("ExitMaxArcHeight")
     private Float exitMaxArcHeight;
 
-    @Column(name = "PassengerYaw")
+    @Column("PassengerYaw")
     private Float passengerYaw;
 
-    @Column(name = "PassengerPitch")
+    @Column("PassengerPitch")
     private Float passengerPitch;
 
-    @Column(name = "PassengerRoll")
+    @Column("PassengerRoll")
     private Float passengerRoll;
 
-    @Column(name = "VehicleEnterAnimDelay")
+    @Column("VehicleEnterAnimDelay")
     private Float vehicleEnterAnimDelay;
 
-    @Column(name = "VehicleExitAnimDelay")
+    @Column("VehicleExitAnimDelay")
     private Float vehicleExitAnimDelay;
 
-    @Column(name = "CameraEnteringDelay")
+    @Column("CameraEnteringDelay")
     private Float cameraEnteringDelay;
 
-    @Column(name = "CameraEnteringDuration")
+    @Column("CameraEnteringDuration")
     private Float cameraEnteringDuration;
 
-    @Column(name = "CameraExitingDelay")
+    @Column("CameraExitingDelay")
     private Float cameraExitingDelay;
 
-    @Column(name = "CameraExitingDuration")
+    @Column("CameraExitingDuration")
     private Float cameraExitingDuration;
 
-    @Column(name = "CameraOffsetX")
+    @Column("CameraOffsetX")
     private Float cameraOffsetX;
 
-    @Column(name = "CameraOffsetY")
+    @Column("CameraOffsetY")
     private Float cameraOffsetY;
 
-    @Column(name = "CameraOffsetZ")
+    @Column("CameraOffsetZ")
     private Float cameraOffsetZ;
 
-    @Column(name = "CameraPosChaseRate")
+    @Column("CameraPosChaseRate")
     private Float cameraPosChaseRate;
 
-    @Column(name = "CameraFacingChaseRate")
+    @Column("CameraFacingChaseRate")
     private Float cameraFacingChaseRate;
 
-    @Column(name = "CameraEnteringZoom")
+    @Column("CameraEnteringZoom")
     private Float cameraEnteringZoom;
 
-    @Column(name = "CameraSeatZoomMin")
+    @Column("CameraSeatZoomMin")
     private Float cameraSeatZoomMin;
 
-    @Column(name = "CameraSeatZoomMax")
+    @Column("CameraSeatZoomMax")
     private Float cameraSeatZoomMax;
 
-    @Column(name = "UiSkinFileDataID")
+    @Column("UiSkinFileDataID")
     private Integer uiSkinFileDataID;
 
-    @Column(name = "EnterAnimStart")
+    @Column("EnterAnimStart")
     private Short enterAnimStart;
 
-    @Column(name = "EnterAnimLoop")
+    @Column("EnterAnimLoop")
     private Short enterAnimLoop;
 
-    @Column(name = "RideAnimStart")
+    @Column("RideAnimStart")
     private Short rideAnimStart;
 
-    @Column(name = "RideAnimLoop")
+    @Column("RideAnimLoop")
     private Short rideAnimLoop;
 
-    @Column(name = "RideUpperAnimStart")
+    @Column("RideUpperAnimStart")
     private Short rideUpperAnimStart;
 
-    @Column(name = "RideUpperAnimLoop")
+    @Column("RideUpperAnimLoop")
     private Short rideUpperAnimLoop;
 
-    @Column(name = "ExitAnimStart")
+    @Column("ExitAnimStart")
     private Short exitAnimStart;
 
-    @Column(name = "ExitAnimLoop")
+    @Column("ExitAnimLoop")
     private Short exitAnimLoop;
 
-    @Column(name = "ExitAnimEnd")
+    @Column("ExitAnimEnd")
     private Short exitAnimEnd;
 
-    @Column(name = "VehicleEnterAnim")
+    @Column("VehicleEnterAnim")
     private Short vehicleEnterAnim;
 
-    @Column(name = "VehicleExitAnim")
+    @Column("VehicleExitAnim")
     private Short vehicleExitAnim;
 
-    @Column(name = "VehicleRideAnimLoop")
+    @Column("VehicleRideAnimLoop")
     private Short vehicleRideAnimLoop;
 
-    @Column(name = "EnterAnimKitID")
+    @Column("EnterAnimKitID")
     private Short enterAnimKitID;
 
-    @Column(name = "RideAnimKitID")
+    @Column("RideAnimKitID")
     private Short rideAnimKitID;
 
-    @Column(name = "ExitAnimKitID")
+    @Column("ExitAnimKitID")
     private Short exitAnimKitID;
 
-    @Column(name = "VehicleEnterAnimKitID")
+    @Column("VehicleEnterAnimKitID")
     private Short vehicleEnterAnimKitID;
 
-    @Column(name = "VehicleRideAnimKitID")
+    @Column("VehicleRideAnimKitID")
     private Short vehicleRideAnimKitID;
 
-    @Column(name = "VehicleExitAnimKitID")
+    @Column("VehicleExitAnimKitID")
     private Short vehicleExitAnimKitID;
 
-    @Column(name = "CameraModeID")
+    @Column("CameraModeID")
     private Short cameraModeID;
 
-    @Column(name = "AttachmentID")
+    @Column("AttachmentID")
     private Byte attachmentID;
 
-    @Column(name = "PassengerAttachmentID")
+    @Column("PassengerAttachmentID")
     private Byte passengerAttachmentID;
 
-    @Column(name = "VehicleEnterAnimBone")
+    @Column("VehicleEnterAnimBone")
     private Byte vehicleEnterAnimBone;
 
-    @Column(name = "VehicleExitAnimBone")
+    @Column("VehicleExitAnimBone")
     private Byte vehicleExitAnimBone;
 
-    @Column(name = "VehicleRideAnimLoopBone")
+    @Column("VehicleRideAnimLoopBone")
     private Byte vehicleRideAnimLoopBone;
 
-    @Column(name = "VehicleAbilityDisplay")
+    @Column("VehicleAbilityDisplay")
     private Byte vehicleAbilityDisplay;
 
-    @Column(name = "EnterUISoundID")
+    @Column("EnterUISoundID")
     private Integer enterUISoundID;
 
-    @Column(name = "ExitUISoundID")
+    @Column("ExitUISoundID")
     private Integer exitUISoundID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

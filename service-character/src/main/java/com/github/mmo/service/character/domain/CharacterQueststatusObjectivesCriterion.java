@@ -8,16 +8,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(CharacterQueststatusObjectivesCriterionId.class)
-@Entity
+
+
 @Table(name = "character_queststatus_objectives_criteria")
 public class CharacterQueststatusObjectivesCriterion {
     @Id
-    @Column(name = "guid", nullable = false)
+    @Column("guid")
     private Long guid;
 
     @Id
-    @Column(name = "questObjectiveId", columnDefinition = "int UNSIGNED not null")
+    @Column("questObjectiveId")
     private Long questObjectiveId;
 
 }

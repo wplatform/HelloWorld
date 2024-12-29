@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "reward_pack")
 @Db2DataBind(name = "RewardPack.db2", layoutHash = 0xDB6CC0AB, fields = {
         @Db2Field(name = "money", type = Db2Type.INT),
@@ -28,31 +28,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class RewardPack implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Money")
+    @Column("Money")
     private Integer money;
 
-    @Column(name = "ArtifactXPMultiplier")
+    @Column("ArtifactXPMultiplier")
     private Float artifactXPMultiplier;
 
-    @Column(name = "ArtifactXPDifficulty")
+    @Column("ArtifactXPDifficulty")
     private Byte artifactXPDifficulty;
 
-    @Column(name = "ArtifactXPCategoryID")
+    @Column("ArtifactXPCategoryID")
     private Byte artifactXPCategoryID;
 
-    @Column(name = "CharTitleID")
+    @Column("CharTitleID")
     private Integer charTitleID;
 
-    @Column(name = "TreasurePickerID")
+    @Column("TreasurePickerID")
     private Integer treasurePickerID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

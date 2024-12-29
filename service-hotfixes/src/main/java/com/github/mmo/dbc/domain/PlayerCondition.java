@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "player_condition")
 @Db2DataBind(name = "PlayerCondition.db2", layoutHash = 0x5B3DA113, indexField = 2, fields = {
         @Db2Field(name = "raceMask", type = Db2Type.LONG, signed = true),
@@ -103,452 +103,452 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = {"movementFlags1", "movementFlags2"}, type = Db2Type.INT, signed = true)
 })
 public class PlayerCondition implements DbcEntity {
-    @Column(name = "RaceMask")
+    @Column("RaceMask")
     private Long raceMask;
 
-    @Column(name = "FailureDescription")
+    @Column("FailureDescription")
     private LocalizedString failureDescription;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Short minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Short maxLevel;
 
-    @Column(name = "ClassMask")
+    @Column("ClassMask")
     private Integer classMask;
 
-    @Column(name = "Gender")
+    @Column("Gender")
     private Byte gender;
 
-    @Column(name = "NativeGender")
+    @Column("NativeGender")
     private Byte nativeGender;
 
-    @Column(name = "SkillLogic")
+    @Column("SkillLogic")
     private Integer skillLogic;
 
-    @Column(name = "LanguageID")
+    @Column("LanguageID")
     private Byte languageID;
 
-    @Column(name = "MinLanguage")
+    @Column("MinLanguage")
     private Byte minLanguage;
 
-    @Column(name = "MaxLanguage")
+    @Column("MaxLanguage")
     private Integer maxLanguage;
 
-    @Column(name = "MaxFactionID")
+    @Column("MaxFactionID")
     private Short maxFactionID;
 
-    @Column(name = "MaxReputation")
+    @Column("MaxReputation")
     private Byte maxReputation;
 
-    @Column(name = "ReputationLogic")
+    @Column("ReputationLogic")
     private Integer reputationLogic;
 
-    @Column(name = "CurrentPvpFaction")
+    @Column("CurrentPvpFaction")
     private Byte currentPvpFaction;
 
-    @Column(name = "MinPVPRank")
+    @Column("MinPVPRank")
     private Byte minPVPRank;
 
-    @Column(name = "MaxPVPRank")
+    @Column("MaxPVPRank")
     private Byte maxPVPRank;
 
-    @Column(name = "PvpMedal")
+    @Column("PvpMedal")
     private Byte pvpMedal;
 
-    @Column(name = "PrevQuestLogic")
+    @Column("PrevQuestLogic")
     private Integer prevQuestLogic;
 
-    @Column(name = "CurrQuestLogic")
+    @Column("CurrQuestLogic")
     private Integer currQuestLogic;
 
-    @Column(name = "CurrentCompletedQuestLogic")
+    @Column("CurrentCompletedQuestLogic")
     private Integer currentCompletedQuestLogic;
 
-    @Column(name = "SpellLogic")
+    @Column("SpellLogic")
     private Integer spellLogic;
 
-    @Column(name = "ItemLogic")
+    @Column("ItemLogic")
     private Integer itemLogic;
 
-    @Column(name = "ItemFlags")
+    @Column("ItemFlags")
     private Byte itemFlags;
 
-    @Column(name = "AuraSpellLogic")
+    @Column("AuraSpellLogic")
     private Integer auraSpellLogic;
 
-    @Column(name = "WorldStateExpressionID")
+    @Column("WorldStateExpressionID")
     private Short worldStateExpressionID;
 
-    @Column(name = "WeatherID")
+    @Column("WeatherID")
     private Byte weatherID;
 
-    @Column(name = "PartyStatus")
+    @Column("PartyStatus")
     private Byte partyStatus;
 
-    @Column(name = "LifetimeMaxPVPRank")
+    @Column("LifetimeMaxPVPRank")
     private Byte lifetimeMaxPVPRank;
 
-    @Column(name = "AchievementLogic")
+    @Column("AchievementLogic")
     private Integer achievementLogic;
 
-    @Column(name = "LfgLogic")
+    @Column("LfgLogic")
     private Integer lfgLogic;
 
-    @Column(name = "AreaLogic")
+    @Column("AreaLogic")
     private Integer areaLogic;
 
-    @Column(name = "CurrencyLogic")
+    @Column("CurrencyLogic")
     private Integer currencyLogic;
 
-    @Column(name = "QuestKillID")
+    @Column("QuestKillID")
     private Integer questKillID;
 
-    @Column(name = "QuestKillLogic")
+    @Column("QuestKillLogic")
     private Integer questKillLogic;
 
-    @Column(name = "MinExpansionLevel")
+    @Column("MinExpansionLevel")
     private Byte minExpansionLevel;
 
-    @Column(name = "MaxExpansionLevel")
+    @Column("MaxExpansionLevel")
     private Byte maxExpansionLevel;
 
-    @Column(name = "MinExpansionTier")
+    @Column("MinExpansionTier")
     private Byte minExpansionTier;
 
-    @Column(name = "MaxExpansionTier")
+    @Column("MaxExpansionTier")
     private Byte maxExpansionTier;
 
-    @Column(name = "MinGuildLevel")
+    @Column("MinGuildLevel")
     private Byte minGuildLevel;
 
-    @Column(name = "MaxGuildLevel")
+    @Column("MaxGuildLevel")
     private Byte maxGuildLevel;
 
-    @Column(name = "PhaseUseFlags")
+    @Column("PhaseUseFlags")
     private Byte phaseUseFlags;
 
-    @Column(name = "PhaseID")
+    @Column("PhaseID")
     private Short phaseID;
 
-    @Column(name = "PhaseGroupID")
+    @Column("PhaseGroupID")
     private Integer phaseGroupID;
 
-    @Column(name = "MinAvgItemLevel")
+    @Column("MinAvgItemLevel")
     private Integer minAvgItemLevel;
 
-    @Column(name = "MaxAvgItemLevel")
+    @Column("MaxAvgItemLevel")
     private Integer maxAvgItemLevel;
 
-    @Column(name = "MinAvgEquippedItemLevel")
+    @Column("MinAvgEquippedItemLevel")
     private Short minAvgEquippedItemLevel;
 
-    @Column(name = "MaxAvgEquippedItemLevel")
+    @Column("MaxAvgEquippedItemLevel")
     private Short maxAvgEquippedItemLevel;
 
-    @Column(name = "ChrSpecializationIndex")
+    @Column("ChrSpecializationIndex")
     private Byte chrSpecializationIndex;
 
-    @Column(name = "ChrSpecializationRole")
+    @Column("ChrSpecializationRole")
     private Byte chrSpecializationRole;
 
-    @Column(name = "PowerType")
+    @Column("PowerType")
     private Byte powerType;
 
-    @Column(name = "PowerTypeComp")
+    @Column("PowerTypeComp")
     private Byte powerTypeComp;
 
-    @Column(name = "PowerTypeValue")
+    @Column("PowerTypeValue")
     private Byte powerTypeValue;
 
-    @Column(name = "ModifierTreeID")
+    @Column("ModifierTreeID")
     private Integer ModifierTreeID;
 
-    @Column(name = "WeaponSubclassMask")
+    @Column("WeaponSubclassMask")
     private Integer weaponSubclassMask;
 
-    @Column(name = "SkillID1")
+    @Column("SkillID1")
     private Short skillID1;
 
-    @Column(name = "SkillID2")
+    @Column("SkillID2")
     private Short skillID2;
 
-    @Column(name = "SkillID3")
+    @Column("SkillID3")
     private Short skillID3;
 
-    @Column(name = "SkillID4")
+    @Column("SkillID4")
     private Short skillID4;
 
-    @Column(name = "MinSkill1")
+    @Column("MinSkill1")
     private Short minSkill1;
 
-    @Column(name = "MinSkill2")
+    @Column("MinSkill2")
     private Short minSkill2;
 
-    @Column(name = "MinSkill3")
+    @Column("MinSkill3")
     private Short minSkill3;
 
-    @Column(name = "MinSkill4")
+    @Column("MinSkill4")
     private Short minSkill4;
 
-    @Column(name = "MaxSkill1")
+    @Column("MaxSkill1")
     private Short maxSkill1;
 
-    @Column(name = "MaxSkill2")
+    @Column("MaxSkill2")
     private Short maxSkill2;
 
-    @Column(name = "MaxSkill3")
+    @Column("MaxSkill3")
     private Short maxSkill3;
 
-    @Column(name = "MaxSkill4")
+    @Column("MaxSkill4")
     private Short maxSkill4;
 
-    @Column(name = "MinFactionID1")
+    @Column("MinFactionID1")
     private Integer minFactionID1;
 
-    @Column(name = "MinFactionID2")
+    @Column("MinFactionID2")
     private Integer minFactionID2;
 
-    @Column(name = "MinFactionID3")
+    @Column("MinFactionID3")
     private Integer minFactionID3;
 
-    @Column(name = "MinReputation1")
+    @Column("MinReputation1")
     private Byte minReputation1;
 
-    @Column(name = "MinReputation2")
+    @Column("MinReputation2")
     private Byte minReputation2;
 
-    @Column(name = "MinReputation3")
+    @Column("MinReputation3")
     private Byte minReputation3;
 
-    @Column(name = "PrevQuestID1")
+    @Column("PrevQuestID1")
     private Integer prevQuestID1;
 
-    @Column(name = "PrevQuestID2")
+    @Column("PrevQuestID2")
     private Integer prevQuestID2;
 
-    @Column(name = "PrevQuestID3")
+    @Column("PrevQuestID3")
     private Integer prevQuestID3;
 
-    @Column(name = "PrevQuestID4")
+    @Column("PrevQuestID4")
     private Integer prevQuestID4;
 
-    @Column(name = "CurrQuestID1")
+    @Column("CurrQuestID1")
     private Integer currQuestID1;
 
-    @Column(name = "CurrQuestID2")
+    @Column("CurrQuestID2")
     private Integer currQuestID2;
 
-    @Column(name = "CurrQuestID3")
+    @Column("CurrQuestID3")
     private Integer currQuestID3;
 
-    @Column(name = "CurrQuestID4")
+    @Column("CurrQuestID4")
     private Integer currQuestID4;
 
-    @Column(name = "CurrentCompletedQuestID1")
+    @Column("CurrentCompletedQuestID1")
     private Integer currentCompletedQuestID1;
 
-    @Column(name = "CurrentCompletedQuestID2")
+    @Column("CurrentCompletedQuestID2")
     private Integer currentCompletedQuestID2;
 
-    @Column(name = "CurrentCompletedQuestID3")
+    @Column("CurrentCompletedQuestID3")
     private Integer currentCompletedQuestID3;
 
-    @Column(name = "CurrentCompletedQuestID4")
+    @Column("CurrentCompletedQuestID4")
     private Integer currentCompletedQuestID4;
 
-    @Column(name = "SpellID1")
+    @Column("SpellID1")
     private Integer spellID1;
 
-    @Column(name = "SpellID2")
+    @Column("SpellID2")
     private Integer spellID2;
 
-    @Column(name = "SpellID3")
+    @Column("SpellID3")
     private Integer spellID3;
 
-    @Column(name = "SpellID4")
+    @Column("SpellID4")
     private Integer spellID4;
 
-    @Column(name = "ItemID1")
+    @Column("ItemID1")
     private Integer itemID1;
 
-    @Column(name = "ItemID2")
+    @Column("ItemID2")
     private Integer itemID2;
 
-    @Column(name = "ItemID3")
+    @Column("ItemID3")
     private Integer itemID3;
 
-    @Column(name = "ItemID4")
+    @Column("ItemID4")
     private Integer itemID4;
 
-    @Column(name = "ItemCount1")
+    @Column("ItemCount1")
     private Integer itemCount1;
 
-    @Column(name = "ItemCount2")
+    @Column("ItemCount2")
     private Integer itemCount2;
 
-    @Column(name = "ItemCount3")
+    @Column("ItemCount3")
     private Integer itemCount3;
 
-    @Column(name = "ItemCount4")
+    @Column("ItemCount4")
     private Integer itemCount4;
 
-    @Column(name = "Explored1")
+    @Column("Explored1")
     private Short explored1;
 
-    @Column(name = "Explored2")
+    @Column("Explored2")
     private Short explored2;
 
-    @Column(name = "Time1")
+    @Column("Time1")
     private Integer time1;
 
-    @Column(name = "Time2")
+    @Column("Time2")
     private Integer time2;
 
-    @Column(name = "AuraSpellID1")
+    @Column("AuraSpellID1")
     private Integer auraSpellID1;
 
-    @Column(name = "AuraSpellID2")
+    @Column("AuraSpellID2")
     private Integer auraSpellID2;
 
-    @Column(name = "AuraSpellID3")
+    @Column("AuraSpellID3")
     private Integer auraSpellID3;
 
-    @Column(name = "AuraSpellID4")
+    @Column("AuraSpellID4")
     private Integer auraSpellID4;
 
-    @Column(name = "AuraStacks1")
+    @Column("AuraStacks1")
     private Short auraStacks1;
 
-    @Column(name = "AuraStacks2")
+    @Column("AuraStacks2")
     private Short auraStacks2;
 
-    @Column(name = "AuraStacks3")
+    @Column("AuraStacks3")
     private Short auraStacks3;
 
-    @Column(name = "AuraStacks4")
+    @Column("AuraStacks4")
     private Short auraStacks4;
 
-    @Column(name = "Achievement1")
+    @Column("Achievement1")
     private Short achievement1;
 
-    @Column(name = "Achievement2")
+    @Column("Achievement2")
     private Short achievement2;
 
-    @Column(name = "Achievement3")
+    @Column("Achievement3")
     private Short achievement3;
 
-    @Column(name = "Achievement4")
+    @Column("Achievement4")
     private Short achievement4;
 
-    @Column(name = "LfgStatus1")
+    @Column("LfgStatus1")
     private Byte lfgStatus1;
 
-    @Column(name = "LfgStatus2")
+    @Column("LfgStatus2")
     private Byte lfgStatus2;
 
-    @Column(name = "LfgStatus3")
+    @Column("LfgStatus3")
     private Byte lfgStatus3;
 
-    @Column(name = "LfgStatus4")
+    @Column("LfgStatus4")
     private Byte lfgStatus4;
 
-    @Column(name = "LfgCompare1")
+    @Column("LfgCompare1")
     private Byte lfgCompare1;
 
-    @Column(name = "LfgCompare2")
+    @Column("LfgCompare2")
     private Byte lfgCompare2;
 
-    @Column(name = "LfgCompare3")
+    @Column("LfgCompare3")
     private Byte lfgCompare3;
 
-    @Column(name = "LfgCompare4")
+    @Column("LfgCompare4")
     private Byte lfgCompare4;
 
-    @Column(name = "LfgValue1")
+    @Column("LfgValue1")
     private Integer lfgValue1;
 
-    @Column(name = "LfgValue2")
+    @Column("LfgValue2")
     private Integer lfgValue2;
 
-    @Column(name = "LfgValue3")
+    @Column("LfgValue3")
     private Integer lfgValue3;
 
-    @Column(name = "LfgValue4")
+    @Column("LfgValue4")
     private Integer lfgValue4;
 
-    @Column(name = "AreaID1")
+    @Column("AreaID1")
     private Short areaID1;
 
-    @Column(name = "AreaID2")
+    @Column("AreaID2")
     private Short areaID2;
 
-    @Column(name = "AreaID3")
+    @Column("AreaID3")
     private Short areaID3;
 
-    @Column(name = "AreaID4")
+    @Column("AreaID4")
     private Short areaID4;
 
-    @Column(name = "CurrencyID1")
+    @Column("CurrencyID1")
     private Integer currencyID1;
 
-    @Column(name = "CurrencyID2")
+    @Column("CurrencyID2")
     private Integer currencyID2;
 
-    @Column(name = "CurrencyID3")
+    @Column("CurrencyID3")
     private Integer currencyID3;
 
-    @Column(name = "CurrencyID4")
+    @Column("CurrencyID4")
     private Integer currencyID4;
 
-    @Column(name = "CurrencyCount1")
+    @Column("CurrencyCount1")
     private Integer currencyCount1;
 
-    @Column(name = "CurrencyCount2")
+    @Column("CurrencyCount2")
     private Integer currencyCount2;
 
-    @Column(name = "CurrencyCount3")
+    @Column("CurrencyCount3")
     private Integer currencyCount3;
 
-    @Column(name = "CurrencyCount4")
+    @Column("CurrencyCount4")
     private Integer currencyCount4;
 
-    @Column(name = "QuestKillMonster1")
+    @Column("QuestKillMonster1")
     private Integer questKillMonster1;
 
-    @Column(name = "QuestKillMonster2")
+    @Column("QuestKillMonster2")
     private Integer questKillMonster2;
 
-    @Column(name = "QuestKillMonster3")
+    @Column("QuestKillMonster3")
     private Integer questKillMonster3;
 
-    @Column(name = "QuestKillMonster4")
+    @Column("QuestKillMonster4")
     private Integer questKillMonster4;
 
-    @Column(name = "QuestKillMonster5")
+    @Column("QuestKillMonster5")
     private Integer questKillMonster5;
 
-    @Column(name = "QuestKillMonster6")
+    @Column("QuestKillMonster6")
     private Integer questKillMonster6;
 
-    @Column(name = "MovementFlags1")
+    @Column("MovementFlags1")
     private Integer movementFlags1;
 
-    @Column(name = "MovementFlags2")
+    @Column("MovementFlags2")
     private Integer movementFlags2;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

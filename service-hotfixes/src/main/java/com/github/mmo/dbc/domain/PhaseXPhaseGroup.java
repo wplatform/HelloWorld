@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "phase_x_phase_group")
 @Db2DataBind(name = "PhaseXPhaseGroup.db2", layoutHash = 0x66517AF6, parentIndexField = 1, fields = {
         @Db2Field(name = "phaseID", type = Db2Type.SHORT),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PhaseXPhaseGroup implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "PhaseID")
+    @Column("ID")
+    private int id;
+
+    @Column("PhaseID")
     private Short phaseID;
 
-    @Column(name = "PhaseGroupID")
+    @Column("PhaseGroupID")
     private Short phaseGroupID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

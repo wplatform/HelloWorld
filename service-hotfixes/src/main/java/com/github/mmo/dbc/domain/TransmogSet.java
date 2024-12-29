@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "transmog_set")
 @Db2DataBind(name = "TransmogSet.db2", layoutHash = 0xBEDFD7D1, indexField = 4, parentIndexField = 1, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -32,41 +32,41 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "transmogSetGroupID", type = Db2Type.INT)
 })
 public class TransmogSet implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "ParentTransmogSetID")
+    @Column("ParentTransmogSetID")
     private Short parentTransmogSetID;
 
-    @Column(name = "UiOrder")
+    @Column("UiOrder")
     private Short uiOrder;
 
-    @Column(name = "ExpansionID")
+    @Column("ExpansionID")
     private Byte expansionID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "TrackingQuestID")
+    @Column("TrackingQuestID")
     private Integer trackingQuestID;
 
-    @Column(name = "ClassMask")
+    @Column("ClassMask")
     private Integer classMask;
 
-    @Column(name = "ItemNameDescriptionID")
+    @Column("ItemNameDescriptionID")
     private Integer itemNameDescriptionID;
 
-    @Column(name = "TransmogSetGroupID")
+    @Column("TransmogSetGroupID")
     private Integer transmogSetGroupID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

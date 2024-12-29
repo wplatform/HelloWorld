@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "chr_classes")
 @Db2DataBind(name = "ChrClasses.db2", layoutHash = 0x6F7AB8E7, indexField = 19, fields = {
         @Db2Field(name = "petNameToken", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -42,71 +42,71 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class ChrClass implements DbcEntity {
-    @Column(name = "PetNameToken")
+    @Column("PetNameToken")
     private String petNameToken;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "NameFemale")
+    @Column("NameFemale")
     private LocalizedString nameFemale;
 
-    @Column(name = "NameMale")
+    @Column("NameMale")
     private LocalizedString nameMale;
 
-    @Column(name = "Filename")
+    @Column("Filename")
     private String filename;
 
-    @Column(name = "CreateScreenFileDataID")
+    @Column("CreateScreenFileDataID")
     private Integer createScreenFileDataID;
 
-    @Column(name = "SelectScreenFileDataID")
+    @Column("SelectScreenFileDataID")
     private Integer selectScreenFileDataID;
 
-    @Column(name = "LowResScreenFileDataID")
+    @Column("LowResScreenFileDataID")
     private Integer lowResScreenFileDataID;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "StartingLevel")
+    @Column("StartingLevel")
     private Integer startingLevel;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "CinematicSequenceID")
+    @Column("CinematicSequenceID")
     private Short cinematicSequenceID;
 
-    @Column(name = "DefaultSpec")
+    @Column("DefaultSpec")
     private Short defaultSpec;
 
-    @Column(name = "DisplayPower")
+    @Column("DisplayPower")
     private Byte displayPower;
 
-    @Column(name = "SpellClassSet")
+    @Column("SpellClassSet")
     private Byte spellClassSet;
 
-    @Column(name = "AttackPowerPerStrength")
+    @Column("AttackPowerPerStrength")
     private Byte attackPowerPerStrength;
 
-    @Column(name = "AttackPowerPerAgility")
+    @Column("AttackPowerPerAgility")
     private Byte attackPowerPerAgility;
 
-    @Column(name = "RangedAttackPowerPerAgility")
+    @Column("RangedAttackPowerPerAgility")
     private Byte rangedAttackPowerPerAgility;
 
-    @Column(name = "PrimaryStatPriority")
+    @Column("PrimaryStatPriority")
     private Byte primaryStatPriority;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

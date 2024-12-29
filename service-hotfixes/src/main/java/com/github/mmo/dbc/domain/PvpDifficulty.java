@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "pvp_difficulty")
 @Db2DataBind(name = "PVPDifficulty.db2", layoutHash = 0x970B5E15, parentIndexField = 3, fields = {
         @Db2Field(name = "rangeIndex", type = Db2Type.BYTE),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PvpDifficulty implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "RangeIndex")
+    @Column("RangeIndex")
     private Byte rangeIndex;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Short minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Short maxLevel;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

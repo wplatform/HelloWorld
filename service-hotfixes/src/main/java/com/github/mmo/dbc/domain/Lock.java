@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "lock")
 @Db2DataBind(name = "Lock.db2", layoutHash = 0xDAC7F42F, fields = {
         @Db2Field(name = {"index1", "index2", "index3", "index4", "index5", "index6", "index7", "index8"}, type = Db2Type.INT, signed = true),
@@ -26,109 +26,109 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Lock implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Index1")
+    @Column("ID")
+    private int id;
+
+    @Column("Index1")
     private Integer index1;
 
-    @Column(name = "Index2")
+    @Column("Index2")
     private Integer index2;
 
-    @Column(name = "Index3")
+    @Column("Index3")
     private Integer index3;
 
-    @Column(name = "Index4")
+    @Column("Index4")
     private Integer index4;
 
-    @Column(name = "Index5")
+    @Column("Index5")
     private Integer index5;
 
-    @Column(name = "Index6")
+    @Column("Index6")
     private Integer index6;
 
-    @Column(name = "Index7")
+    @Column("Index7")
     private Integer index7;
 
-    @Column(name = "Index8")
+    @Column("Index8")
     private Integer index8;
 
-    @Column(name = "Skill1")
+    @Column("Skill1")
     private Short skill1;
 
-    @Column(name = "Skill2")
+    @Column("Skill2")
     private Short skill2;
 
-    @Column(name = "Skill3")
+    @Column("Skill3")
     private Short skill3;
 
-    @Column(name = "Skill4")
+    @Column("Skill4")
     private Short skill4;
 
-    @Column(name = "Skill5")
+    @Column("Skill5")
     private Short skill5;
 
-    @Column(name = "Skill6")
+    @Column("Skill6")
     private Short skill6;
 
-    @Column(name = "Skill7")
+    @Column("Skill7")
     private Short skill7;
 
-    @Column(name = "Skill8")
+    @Column("Skill8")
     private Short skill8;
 
-    @Column(name = "Type1")
+    @Column("Type1")
     private Byte type1;
 
-    @Column(name = "Type2")
+    @Column("Type2")
     private Byte type2;
 
-    @Column(name = "Type3")
+    @Column("Type3")
     private Byte type3;
 
-    @Column(name = "Type4")
+    @Column("Type4")
     private Byte type4;
 
-    @Column(name = "Type5")
+    @Column("Type5")
     private Byte type5;
 
-    @Column(name = "Type6")
+    @Column("Type6")
     private Byte type6;
 
-    @Column(name = "Type7")
+    @Column("Type7")
     private Byte type7;
 
-    @Column(name = "Type8")
+    @Column("Type8")
     private Byte type8;
 
-    @Column(name = "Action1")
+    @Column("Action1")
     private Byte action1;
 
-    @Column(name = "Action2")
+    @Column("Action2")
     private Byte action2;
 
-    @Column(name = "Action3")
+    @Column("Action3")
     private Byte action3;
 
-    @Column(name = "Action4")
+    @Column("Action4")
     private Byte action4;
 
-    @Column(name = "Action5")
+    @Column("Action5")
     private Byte action5;
 
-    @Column(name = "Action6")
+    @Column("Action6")
     private Byte action6;
 
-    @Column(name = "Action7")
+    @Column("Action7")
     private Byte action7;
 
-    @Column(name = "Action8")
+    @Column("Action8")
     private Byte action8;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

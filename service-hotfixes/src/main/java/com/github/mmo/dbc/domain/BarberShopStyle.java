@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "barber_shop_style")
 @Db2DataBind(name = "BarberShopStyle.db2", layoutHash = 0x670C71AE, indexField = 7, fields = {
         @Db2Field(name = "displayName", type = Db2Type.STRING),
@@ -30,35 +30,35 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class BarberShopStyle implements DbcEntity {
-    @Column(name = "DisplayName")
+    @Column("DisplayName")
     private LocalizedString displayName;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "CostModifier")
+    @Column("CostModifier")
     private Float costModifier;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Byte type;
 
-    @Column(name = "Race")
+    @Column("Race")
     private Byte race;
 
-    @Column(name = "Sex")
+    @Column("Sex")
     private Byte sex;
 
-    @Column(name = "Data")
+    @Column("Data")
     private Byte data;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

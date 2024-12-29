@@ -8,20 +8,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "bugreport")
 public class Bugreport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    @Column("id")
+    private int id;
 
-    @Lob
-    @Column(name = "type", nullable = false)
+
+    @Column("type")
     private String type;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+
+    @Column("content")
     private String content;
 
 }

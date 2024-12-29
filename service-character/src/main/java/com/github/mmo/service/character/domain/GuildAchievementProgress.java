@@ -5,31 +5,31 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(GuildAchievementProgressId.class)
-@Entity
+
+
 @Table(name = "guild_achievement_progress")
 public class GuildAchievementProgress {
     @Id
-    @Column(name = "guildId", nullable = false)
+    @Column("guildId")
     private Long guildId;
 
     @Id
-    @Column(name = "criteria", columnDefinition = "int UNSIGNED not null")
+    @Column("criteria")
     private Long criteria;
 
-    @Column(name = "counter", nullable = false)
+    @Column("counter")
     private Long counter;
 
-    @ColumnDefault("0")
-    @Column(name = "date", nullable = false)
+
+    @Column("date")
     private Long date;
 
-    @ColumnDefault("'0'")
-    @Column(name = "completedGuid", nullable = false)
+
+    @Column("completedGuid")
     private Long completedGuid;
 
 }

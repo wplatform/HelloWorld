@@ -21,7 +21,7 @@ public class CharFactionChangeResult extends ServerPacket {
         this.flushBits();
 
         if (display != null) {
-            this.writeBits(display.name.GetByteCount(), 6);
+            this.writeBits(display.name.getBytes().length, 6);
             this.writeInt8(display.sexID);
             this.writeInt8(display.raceID);
             this.writeInt32(display.customizations.size());

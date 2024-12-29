@@ -3,12 +3,14 @@ package com.github.mmo.game.networking.packet.quest;
 
 import java.util.*;
 import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
+
 public class WorldQuestUpdateResponse extends ServerPacket
 {
 	private final ArrayList<WorldQuestUpdateInfo> worldQuestUpdates = new ArrayList<>();
 	public WorldQuestUpdateResponse()
 	{
-		super(ServerOpcode.WorldQuestUpdateResponse, ConnectionType.instance);
+		super(ServerOpCode.WorldQuestUpdateResponse);
 	}
 
 	@Override

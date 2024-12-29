@@ -23,8 +23,8 @@ public class ChannelNotify extends ServerPacket
 	public void write()
 	{
 		this.writeBits(type, 6);
-		this.writeBits(channel.GetByteCount(), 7);
-		this.writeBits(sender.GetByteCount(), 6);
+		this.writeBits(channel.getBytes().length, 7);
+		this.writeBits(sender.getBytes().length, 6);
 
 		this.writeGuid(senderGuid);
 		this.writeGuid(senderAccountID);

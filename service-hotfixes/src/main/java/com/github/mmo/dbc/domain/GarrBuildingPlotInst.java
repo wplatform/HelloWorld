@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_building_plot_inst")
 @Db2DataBind(name = "GarrBuildingPlotInst.db2", layoutHash = 0xF45B6227, indexField = 4, parentIndexField = 3, fields = {
         @Db2Field(name = {"mapOffsetX", "mapOffsetY"}, type = Db2Type.FLOAT),
@@ -26,29 +26,29 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class GarrBuildingPlotInst implements DbcEntity {
-    @Column(name = "MapOffsetX")
+    @Column("MapOffsetX")
     private Float mapOffsetX;
 
-    @Column(name = "MapOffsetY")
+    @Column("MapOffsetY")
     private Float mapOffsetY;
 
-    @Column(name = "UiTextureAtlasMemberID")
+    @Column("UiTextureAtlasMemberID")
     private Short uiTextureAtlasMemberID;
 
-    @Column(name = "GarrSiteLevelPlotInstID")
+    @Column("GarrSiteLevelPlotInstID")
     private Short garrSiteLevelPlotInstID;
 
-    @Column(name = "GarrBuildingID")
+    @Column("GarrBuildingID")
     private Short garrBuildingID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

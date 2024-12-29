@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_site_level_plot_inst")
 @Db2DataBind(name = "GarrSiteLevelPlotInst.db2", layoutHash = 0xC4E74201, parentIndexField = 1, fields = {
         @Db2Field(name = {"uiMarkerPosX", "uiMarkerPosY"}, type = Db2Type.FLOAT),
@@ -26,28 +26,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrSiteLevelPlotInst implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "UiMarkerPosX")
+    @Column("ID")
+    private int id;
+
+    @Column("UiMarkerPosX")
     private Float uiMarkerPosX;
 
-    @Column(name = "UiMarkerPosY")
+    @Column("UiMarkerPosY")
     private Float uiMarkerPosY;
 
-    @Column(name = "GarrSiteLevelID")
+    @Column("GarrSiteLevelID")
     private Short garrSiteLevelID;
 
-    @Column(name = "GarrPlotInstanceID")
+    @Column("GarrPlotInstanceID")
     private Byte garrPlotInstanceID;
 
-    @Column(name = "UiMarkerSize")
+    @Column("UiMarkerSize")
     private Byte uiMarkerSize;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

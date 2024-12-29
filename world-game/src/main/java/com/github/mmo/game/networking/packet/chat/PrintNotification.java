@@ -14,7 +14,7 @@ public class PrintNotification extends ServerPacket
 	@Override
 	public void write()
 	{
-		this.writeBits(notifyText.GetByteCount(), 12);
+		this.writeBits(notifyText.getBytes().length, 12);
 		this.writeString(notifyText);
 	}
 }

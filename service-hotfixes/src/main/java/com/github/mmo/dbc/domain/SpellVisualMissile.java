@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_visual_missile")
 @Db2DataBind(name = "SpellVisualMissile.db2", layoutHash = 0x00BA67A5, indexField = 12, parentIndexField = 15, fields = {
         @Db2Field(name = "followGroundHeight", type = Db2Type.INT, signed = true),
@@ -37,71 +37,71 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "spellVisualMissileSetID", type = Db2Type.SHORT)
 })
 public class SpellVisualMissile implements DbcEntity {
-    @Column(name = "FollowGroundHeight")
+    @Column("FollowGroundHeight")
     private Integer followGroundHeight;
 
-    @Column(name = "FollowGroundDropSpeed")
+    @Column("FollowGroundDropSpeed")
     private Integer followGroundDropSpeed;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "CastOffset1")
+    @Column("CastOffset1")
     private Float castOffset1;
 
-    @Column(name = "CastOffset2")
+    @Column("CastOffset2")
     private Float castOffset2;
 
-    @Column(name = "CastOffset3")
+    @Column("CastOffset3")
     private Float castOffset3;
 
-    @Column(name = "ImpactOffset1")
+    @Column("ImpactOffset1")
     private Float impactOffset1;
 
-    @Column(name = "ImpactOffset2")
+    @Column("ImpactOffset2")
     private Float impactOffset2;
 
-    @Column(name = "ImpactOffset3")
+    @Column("ImpactOffset3")
     private Float impactOffset3;
 
-    @Column(name = "SpellVisualEffectNameID")
+    @Column("SpellVisualEffectNameID")
     private Short spellVisualEffectNameID;
 
-    @Column(name = "CastPositionerID")
+    @Column("CastPositionerID")
     private Short castPositionerID;
 
-    @Column(name = "ImpactPositionerID")
+    @Column("ImpactPositionerID")
     private Short impactPositionerID;
 
-    @Column(name = "FollowGroundApproach")
+    @Column("FollowGroundApproach")
     private Integer followGroundApproach;
 
-    @Column(name = "SpellMissileMotionID")
+    @Column("SpellMissileMotionID")
     private Short spellMissileMotionID;
 
-    @Column(name = "Attachment")
+    @Column("Attachment")
     private Byte attachment;
 
-    @Column(name = "DestinationAttachment")
+    @Column("DestinationAttachment")
     private Byte destinationAttachment;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SoundEntriesID")
+    @Column("SoundEntriesID")
     private Integer soundEntriesID;
 
-    @Column(name = "AnimKitID")
+    @Column("AnimKitID")
     private Integer animKitID;
 
-    @Column(name = "SpellVisualMissileSetID")
+    @Column("SpellVisualMissileSetID")
     private Short spellVisualMissileSetID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

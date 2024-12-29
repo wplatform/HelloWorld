@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "quest_line_x_quest")
 @Db2DataBind(name = "QuestLineXQuest.db2", layoutHash = 0x83C5B32B, parentIndexField = 0, fields = {
         @Db2Field(name = "questLineID", type = Db2Type.SHORT),
@@ -25,25 +25,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class QuestLineXQuest implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("'0'")
-    @Column(name = "QuestLineID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("QuestLineID")
     private Long questLineID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "QuestID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("QuestID")
     private Long questID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "OrderIndex", columnDefinition = "int UNSIGNED not null")
+
+    @Column("OrderIndex")
     private Long orderIndex;
 
 }

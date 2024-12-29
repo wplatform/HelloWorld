@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_spec_override")
 @Db2DataBind(name = "ItemSpecOverride.db2", layoutHash = 0xE499CD2A, parentIndexField = 1, fields = {
         @Db2Field(name = "specID", type = Db2Type.SHORT),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemSpecOverride implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SpecID")
+    @Column("ID")
+    private int id;
+
+    @Column("SpecID")
     private Short specID;
 
-    @Column(name = "ItemID")
+    @Column("ItemID")
     private Integer itemID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

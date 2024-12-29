@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "vignette")
 @Db2DataBind(name = "Vignette.db2", layoutHash = 0x52E3B381, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -30,49 +30,49 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Vignette implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("ID")
     private  Integer id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name")
+
+    @Column("Name")
     private LocalizedString name;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PlayerConditionID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("PlayerConditionID")
     private Long playerConditionID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "VisibleTrackingQuestID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("VisibleTrackingQuestID")
     private Long visibleTrackingQuestID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "QuestFeedbackEffectID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("QuestFeedbackEffectID")
     private Long questFeedbackEffectID;
 
-    @ColumnDefault("0")
-    @Column(name = "Flags", nullable = false)
+    
+    @Column("Flags")
     private Integer flags;
 
-    @ColumnDefault("0")
-    @Column(name = "MaxHeight", nullable = false)
+    
+    @Column("MaxHeight")
     private Float maxHeight;
 
-    @ColumnDefault("0")
-    @Column(name = "MinHeight", nullable = false)
+    
+    @Column("MinHeight")
     private Float minHeight;
 
-    @ColumnDefault("0")
-    @Column(name = "VignetteType", nullable = false)
+    
+    @Column("VignetteType")
     private Byte vignetteType;
 
-    @ColumnDefault("0")
-    @Column(name = "RewardQuestID", nullable = false)
+    
+    @Column("RewardQuestID")
     private Integer rewardQuestID;
 
 }

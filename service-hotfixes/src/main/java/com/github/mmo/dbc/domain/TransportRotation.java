@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "transport_rotation")
 @Db2DataBind(name = "TransportRotation.db2", layoutHash = 0x72035AA9, parentIndexField = 2, fields = {
         @Db2Field(name = "timeIndex", type = Db2Type.INT),
@@ -25,31 +25,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class TransportRotation implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "TimeIndex")
+    @Column("ID")
+    private int id;
+
+    @Column("TimeIndex")
     private Integer timeIndex;
 
-    @Column(name = "Rot1")
+    @Column("Rot1")
     private Float rot1;
 
-    @Column(name = "Rot2")
+    @Column("Rot2")
     private Float rot2;
 
-    @Column(name = "Rot3")
+    @Column("Rot3")
     private Float rot3;
 
-    @Column(name = "Rot4")
+    @Column("Rot4")
     private Float rot4;
 
-    @Column(name = "GameObjectsID")
+    @Column("GameObjectsID")
     private Integer gameObjectsID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

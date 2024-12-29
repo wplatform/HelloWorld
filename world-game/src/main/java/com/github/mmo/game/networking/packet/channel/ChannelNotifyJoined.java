@@ -17,8 +17,8 @@ public class ChannelNotifyJoined extends ServerPacket
 	@Override
 	public void write()
 	{
-        this.writeBits(channel.GetByteCount(), 7);
-        this.writeBits(channelWelcomeMsg.GetByteCount(), 11);
+        this.writeBits(channel.getBytes().length, 7);
+        this.writeBits(channelWelcomeMsg.getBytes().length, 11);
         this.writeInt32((int) channelFlags.getValue());
         this.writeInt32(chatChannelID);
 		this.writeInt64(instanceID);

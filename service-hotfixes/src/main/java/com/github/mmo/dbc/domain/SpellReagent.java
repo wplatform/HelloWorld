@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_reagents")
 @Db2DataBind(name = "SpellReagents.db2", layoutHash = 0x0463C688, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -26,64 +26,64 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellReagent implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "Reagent1")
+    @Column("Reagent1")
     private Integer reagent1;
 
-    @Column(name = "Reagent2")
+    @Column("Reagent2")
     private Integer reagent2;
 
-    @Column(name = "Reagent3")
+    @Column("Reagent3")
     private Integer reagent3;
 
-    @Column(name = "Reagent4")
+    @Column("Reagent4")
     private Integer reagent4;
 
-    @Column(name = "Reagent5")
+    @Column("Reagent5")
     private Integer reagent5;
 
-    @Column(name = "Reagent6")
+    @Column("Reagent6")
     private Integer reagent6;
 
-    @Column(name = "Reagent7")
+    @Column("Reagent7")
     private Integer reagent7;
 
-    @Column(name = "Reagent8")
+    @Column("Reagent8")
     private Integer reagent8;
 
-    @Column(name = "ReagentCount1")
+    @Column("ReagentCount1")
     private Short reagentCount1;
 
-    @Column(name = "ReagentCount2")
+    @Column("ReagentCount2")
     private Short reagentCount2;
 
-    @Column(name = "ReagentCount3")
+    @Column("ReagentCount3")
     private Short reagentCount3;
 
-    @Column(name = "ReagentCount4")
+    @Column("ReagentCount4")
     private Short reagentCount4;
 
-    @Column(name = "ReagentCount5")
+    @Column("ReagentCount5")
     private Short reagentCount5;
 
-    @Column(name = "ReagentCount6")
+    @Column("ReagentCount6")
     private Short reagentCount6;
 
-    @Column(name = "ReagentCount7")
+    @Column("ReagentCount7")
     private Short reagentCount7;
 
-    @Column(name = "ReagentCount8")
+    @Column("ReagentCount8")
     private Short reagentCount8;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -8,42 +8,42 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(CharacterInstanceLockId.class)
-@Entity
+
+
 @Table(name = "character_instance_lock")
 public class CharacterInstanceLock {
     @Id
-    @Column(name = "guid", nullable = false)
+    @Column("guid")
     private Long guid;
 
     @Id
-    @Column(name = "mapId", columnDefinition = "int UNSIGNED not null")
+    @Column("mapId")
     private Long mapId;
 
     @Id
-    @Column(name = "lockId", columnDefinition = "int UNSIGNED not null")
+    @Column("lockId")
     private Long lockId;
 
-    @Column(name = "instanceId", columnDefinition = "int UNSIGNED")
+    @Column("instanceId")
     private Long instanceId;
 
-    @Column(name = "difficulty", columnDefinition = "tinyint UNSIGNED")
+    @Column("difficulty")
     private Short difficulty;
 
-    @Lob
-    @Column(name = "data")
+    
+    @Column("data")
     private String data;
 
-    @Column(name = "completedEncountersMask", columnDefinition = "int UNSIGNED")
+    @Column("completedEncountersMask")
     private Long completedEncountersMask;
 
-    @Column(name = "entranceWorldSafeLocId", columnDefinition = "int UNSIGNED")
+    @Column("entranceWorldSafeLocId")
     private Long entranceWorldSafeLocId;
 
-    @Column(name = "expiryTime")
+    @Column("expiryTime")
     private Long expiryTime;
 
-    @Column(name = "extended", columnDefinition = "tinyint UNSIGNED")
+    @Column("extended")
     private Short extended;
 
 }

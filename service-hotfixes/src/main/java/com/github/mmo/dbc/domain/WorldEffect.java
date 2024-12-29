@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "world_effect")
 @Db2DataBind(name = "WorldEffect.db2", layoutHash = 0x2E9B9BFD, fields = {
         @Db2Field(name = "targetAsset", type = Db2Type.INT, signed = true),
@@ -28,31 +28,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class WorldEffect implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "TargetAsset")
+    @Column("TargetAsset")
     private Integer targetAsset;
 
-    @Column(name = "CombatConditionID")
+    @Column("CombatConditionID")
     private Short combatConditionID;
 
-    @Column(name = "TargetType")
+    @Column("TargetType")
     private Byte targetType;
 
-    @Column(name = "WhenToDisplay")
+    @Column("WhenToDisplay")
     private Byte whenToDisplay;
 
-    @Column(name = "QuestFeedbackEffectID")
+    @Column("QuestFeedbackEffectID")
     private Integer questFeedbackEffectID;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

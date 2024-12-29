@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "import_price_armor")
 @Db2DataBind(name = "ImportPriceArmor.db2", layoutHash = 0x1F7A850F, fields = {
         @Db2Field(name = "clothModifier", type = Db2Type.FLOAT),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ImportPriceArmor implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ClothModifier")
+    @Column("ID")
+    private int id;
+
+    @Column("ClothModifier")
     private Float clothModifier;
 
-    @Column(name = "LeatherModifier")
+    @Column("LeatherModifier")
     private Float leatherModifier;
 
-    @Column(name = "ChainModifier")
+    @Column("ChainModifier")
     private Float chainModifier;
 
-    @Column(name = "PlateModifier")
+    @Column("PlateModifier")
     private Float plateModifier;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -1,4 +1,2 @@
-# Auto Configure
-com.github.mmo.config.ConfigurationRefreshProcessor
-com.github.mmo.schedule.ScheduledExecutorServiceBean
-com.github.mmo.cache.MapdbCacheProvider
+# Auto Configure. config any type of bean wanna add to spring io container
+com.github.mmo.boot.CommonAutoConfiguration

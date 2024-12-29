@@ -21,7 +21,7 @@ public class LfgBootInfo
 		data.writeBit(votePassed);
 		data.writeBit(myVoteCompleted);
 		data.writeBit(myVote);
-		data.writeBits(reason.GetByteCount(), 8);
+		data.writeBits(reason.getBytes().length, 8);
 		data.writeGuid(target);
 		data.writeInt32(totalVotes);
 		data.writeInt32(bootVotes);

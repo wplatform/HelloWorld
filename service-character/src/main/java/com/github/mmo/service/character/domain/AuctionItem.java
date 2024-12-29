@@ -8,16 +8,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(AuctionItemId.class)
-@Entity
+
+
 @Table(name = "auction_items")
 public class AuctionItem {
     @Id
-    @Column(name = "auctionId", columnDefinition = "int UNSIGNED not null")
+    @Column("auctionId")
     private Integer auctionId;
 
     @Id
-    @Column(name = "itemGuid", nullable = false)
+    @Column("itemGuid")
     private Integer itemGuid;
 
 }

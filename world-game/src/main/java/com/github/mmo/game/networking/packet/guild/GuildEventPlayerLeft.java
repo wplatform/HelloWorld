@@ -19,10 +19,10 @@ import com.github.mmo.game.networking.*;public class GuildEventPlayerLeft extend
     @Override
     public void write() {
         this.writeBit(removed);
-        this.writeBits(leaverName.GetByteCount(), 6);
+        this.writeBits(leaverName.getBytes().length, 6);
 
         if (removed) {
-            this.writeBits(removerName.GetByteCount(), 6);
+            this.writeBits(removerName.getBytes().length, 6);
             this.writeGuid(removerGUID);
             this.writeInt32(removerVirtualRealmAddress);
             this.writeString(removerName);

@@ -1,53 +1,53 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "account_tutorial")
 public class AccountTutorial {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "accountId", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut0", columnDefinition = "int UNSIGNED not null")
+    @Column("accountId")
+    private int id;
+
+
+    @Column("tut0")
     private Integer tut0;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut1", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut1")
     private Integer tut1;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut2", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut2")
     private Integer tut2;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut3", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut3")
     private Integer tut3;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut4", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut4")
     private Integer tut4;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut5", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut5")
     private Integer tut5;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut6", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut6")
     private Integer tut6;
 
-    @ColumnDefault("'0'")
-    @Column(name = "tut7", columnDefinition = "int UNSIGNED not null")
+
+    @Column("tut7")
     private Integer tut7;
 
 }

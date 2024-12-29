@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_equipped_items")
 @Db2DataBind(name = "SpellEquippedItems.db2", layoutHash = 0xCE628176, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellEquippedItem implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SpellID")
+    @Column("ID")
+    private int id;
+
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "EquippedItemInvTypes")
+    @Column("EquippedItemInvTypes")
     private Integer equippedItemInvTypes;
 
-    @Column(name = "EquippedItemSubclass")
+    @Column("EquippedItemSubclass")
     private Integer equippedItemSubclass;
 
-    @Column(name = "EquippedItemClass")
+    @Column("EquippedItemClass")
     private Byte equippedItemClass;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

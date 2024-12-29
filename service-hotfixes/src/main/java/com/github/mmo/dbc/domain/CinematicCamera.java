@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "cinematic_camera")
 @Db2DataBind(name = "CinematicCamera.db2", layoutHash = 0x0062B0F4, fields = {
         @Db2Field(name = "soundID", type = Db2Type.INT),
@@ -26,31 +26,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CinematicCamera implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SoundID")
+    @Column("ID")
+    private int id;
+
+    @Column("SoundID")
     private Integer soundID;
 
-    @Column(name = "OriginX")
+    @Column("OriginX")
     private Float originX;
 
-    @Column(name = "OriginY")
+    @Column("OriginY")
     private Float originY;
 
-    @Column(name = "OriginZ")
+    @Column("OriginZ")
     private Float originZ;
 
-    @Column(name = "OriginFacing")
+    @Column("OriginFacing")
     private Float originFacing;
 
-    @Column(name = "FileDataID")
+    @Column("FileDataID")
     private Integer fileDataID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

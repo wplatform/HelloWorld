@@ -262,14 +262,14 @@ public class EnumCharactersResult extends ServerPacket
 				data.writeInt32(mailSenderType);
 			}
 
-			data.writeBits(name.GetByteCount(), 6);
+			data.writeBits(name.getBytes().length, 6);
 			data.writeBit(firstLogin);
 			data.writeBit(boostInProgress);
 			data.writeBits(unkWod61x, 5);
 
 			for (var str : mailSenders)
 			{
-				data.writeBits(str.GetByteCount() + 1, 6);
+				data.writeBits(str.getBytes().length + 1, 6);
 			}
 
 			data.flushBits();

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_item_enchantment_condition")
 @Db2DataBind(name = "SpellItemEnchantmentCondition.db2", layoutHash = 0xB9C16961, fields = {
         @Db2Field(name = {"ltOperand1", "ltOperand2", "ltOperand3", "ltOperand4", "ltOperand5"}, type = Db2Type.INT),
@@ -28,103 +28,103 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellItemEnchantmentCondition implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "LtOperand1")
+    @Column("ID")
+    private int id;
+
+    @Column("LtOperand1")
     private Integer ltOperand1;
 
-    @Column(name = "LtOperand2")
+    @Column("LtOperand2")
     private Integer ltOperand2;
 
-    @Column(name = "LtOperand3")
+    @Column("LtOperand3")
     private Integer ltOperand3;
 
-    @Column(name = "LtOperand4")
+    @Column("LtOperand4")
     private Integer ltOperand4;
 
-    @Column(name = "LtOperand5")
+    @Column("LtOperand5")
     private Integer ltOperand5;
 
-    @Column(name = "LtOperandType1")
+    @Column("LtOperandType1")
     private Byte ltOperandType1;
 
-    @Column(name = "LtOperandType2")
+    @Column("LtOperandType2")
     private Byte ltOperandType2;
 
-    @Column(name = "LtOperandType3")
+    @Column("LtOperandType3")
     private Byte ltOperandType3;
 
-    @Column(name = "LtOperandType4")
+    @Column("LtOperandType4")
     private Byte ltOperandType4;
 
-    @Column(name = "LtOperandType5")
+    @Column("LtOperandType5")
     private Byte ltOperandType5;
 
-    @Column(name = "Operator1")
+    @Column("Operator1")
     private Byte operator1;
 
-    @Column(name = "Operator2")
+    @Column("Operator2")
     private Byte operator2;
 
-    @Column(name = "Operator3")
+    @Column("Operator3")
     private Byte operator3;
 
-    @Column(name = "Operator4")
+    @Column("Operator4")
     private Byte operator4;
 
-    @Column(name = "Operator5")
+    @Column("Operator5")
     private Byte operator5;
 
-    @Column(name = "RtOperandType1")
+    @Column("RtOperandType1")
     private Byte rtOperandType1;
 
-    @Column(name = "RtOperandType2")
+    @Column("RtOperandType2")
     private Byte rtOperandType2;
 
-    @Column(name = "RtOperandType3")
+    @Column("RtOperandType3")
     private Byte rtOperandType3;
 
-    @Column(name = "RtOperandType4")
+    @Column("RtOperandType4")
     private Byte rtOperandType4;
 
-    @Column(name = "RtOperandType5")
+    @Column("RtOperandType5")
     private Byte rtOperandType5;
 
-    @Column(name = "RtOperand1")
+    @Column("RtOperand1")
     private Byte rtOperand1;
 
-    @Column(name = "RtOperand2")
+    @Column("RtOperand2")
     private Byte rtOperand2;
 
-    @Column(name = "RtOperand3")
+    @Column("RtOperand3")
     private Byte rtOperand3;
 
-    @Column(name = "RtOperand4")
+    @Column("RtOperand4")
     private Byte rtOperand4;
 
-    @Column(name = "RtOperand5")
+    @Column("RtOperand5")
     private Byte rtOperand5;
 
-    @Column(name = "Logic1")
+    @Column("Logic1")
     private Byte logic1;
 
-    @Column(name = "Logic2")
+    @Column("Logic2")
     private Byte logic2;
 
-    @Column(name = "Logic3")
+    @Column("Logic3")
     private Byte logic3;
 
-    @Column(name = "Logic4")
+    @Column("Logic4")
     private Byte logic4;
 
-    @Column(name = "Logic5")
+    @Column("Logic5")
     private Byte logic5;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

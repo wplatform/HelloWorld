@@ -48,7 +48,7 @@ public class TraitConfig extends BaseUpdateData<Player>
 			entries.get(i).writeCreate(data, owner, receiver);
 		}
 
-		data.writeBits(name.getValue().GetByteCount(), 9);
+		data.writeBits(name.getValue().getBytes().length, 9);
 		data.writeString(name);
 		data.flushBits();
 	}
@@ -155,7 +155,7 @@ public class TraitConfig extends BaseUpdateData<Player>
 		{
 			if (changesMask.get(3))
 			{
-				data.writeBits(name.getValue().GetByteCount(), 9);
+				data.writeBits(name.getValue().getBytes().length, 9);
 				data.writeString(name);
 			}
 		}

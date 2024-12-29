@@ -5,28 +5,28 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(GuildAchievementId.class)
-@Entity
+
+
 @Table(name = "guild_achievement")
 public class GuildAchievement {
     @Id
-    @Column(name = "guildId", nullable = false)
+    @Column("guildId")
     private Long guildId;
 
     @Id
-    @Column(name = "achievement", columnDefinition = "int UNSIGNED not null")
+    @Column("achievement")
     private Long achievement;
 
-    @ColumnDefault("0")
-    @Column(name = "date", nullable = false)
+
+    @Column("date")
     private Long date;
 
-    @Lob
-    @Column(name = "guids", nullable = false)
+    
+    @Column("guids")
     private String guids;
 
 }

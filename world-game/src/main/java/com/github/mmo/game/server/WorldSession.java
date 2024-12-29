@@ -4,7 +4,7 @@ package game;
 
 import com.github.mmo.game.DisableType;
 import com.github.mmo.game.LoginQueryHolder;
-import com.github.mmo.game.service.domain.player.PlayerLoginQueryLoad;
+import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
 import com.github.mmo.game.WorldSafeLocsEntry;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.creature.minion;

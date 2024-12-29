@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "map_challenge_mode")
 @Db2DataBind(name = "MapChallengeMode.db2", layoutHash = 0xC5261662, indexField = 1, parentIndexField = 2, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -28,37 +28,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class MapChallengeMode implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name")
+    
+    @Column("Name")
     private LocalizedString name;
 
-    @ColumnDefault("'0'")
-    @Column(name = "MapID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("MapID")
     private Integer mapID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Flags", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("Flags")
     private Short flags;
 
-    @ColumnDefault("0")
-    @Column(name = "CriteriaCount1", nullable = false)
+
+    @Column("CriteriaCount1")
     private Short criteriaCount1;
 
-    @ColumnDefault("0")
-    @Column(name = "CriteriaCount2", nullable = false)
+
+    @Column("CriteriaCount2")
     private Short criteriaCount2;
 
-    @ColumnDefault("0")
-    @Column(name = "CriteriaCount3", nullable = false)
+
+    @Column("CriteriaCount3")
     private Short criteriaCount3;
 
 }

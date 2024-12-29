@@ -43,12 +43,12 @@ public class PetitionInfo
 		data.writeInt32(staticType);
 		data.writeInt32(muid);
 
-		data.writeBits(title.GetByteCount(), 7);
-		data.writeBits(bodyText.GetByteCount(), 12);
+		data.writeBits(title.getBytes().length, 7);
+		data.writeBits(bodyText.getBytes().length, 12);
 
 		for (byte i = 0; i < choicetext.length; i++)
 		{
-			data.writeBits(choicetext.get(i).GetByteCount(), 6);
+			data.writeBits(choicetext.get(i).getBytes().length, 6);
 		}
 
 		data.flushBits();

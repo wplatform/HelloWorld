@@ -8,29 +8,29 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(RespawnId.class)
-@Entity
+
+
 @Table(name = "respawn")
 public class Respawn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "type", columnDefinition = "smallint UNSIGNED not null")
+    @Column("type")
     private Integer type;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "spawnId", nullable = false)
+    @Column("spawnId")
     private Long spawnId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "instanceId", columnDefinition = "int UNSIGNED not null")
+    @Column("instanceId")
     private Long instanceId;
 
-    @Column(name = "respawnTime", nullable = false)
+    @Column("respawnTime")
     private Long respawnTime;
 
-    @Column(name = "mapId", columnDefinition = "smallint UNSIGNED not null")
+    @Column("mapId")
     private Integer mapId;
 
 }

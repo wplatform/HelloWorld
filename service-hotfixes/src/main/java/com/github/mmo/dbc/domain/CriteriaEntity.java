@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "criteria")
 @Db2DataBind(name = "Criteria.db2", layoutHash = 0xA87A5BB9, fields = {
         @Db2Field(name = "asset", type = Db2Type.INT),
@@ -33,46 +33,46 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CriteriaEntity implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Asset")
+    @Column("ID")
+    private int id;
+
+    @Column("Asset")
     private Integer asset;
 
-    @Column(name = "StartAsset")
+    @Column("StartAsset")
     private Integer startAsset;
 
-    @Column(name = "FailAsset")
+    @Column("FailAsset")
     private Integer failAsset;
 
-    @Column(name = "ModifierTreeId")
+    @Column("ModifierTreeId")
     private Integer ModifierTreeId;
 
-    @Column(name = "StartTimer")
+    @Column("StartTimer")
     private Short startTimer;
 
-    @Column(name = "EligibilityWorldStateID")
+    @Column("EligibilityWorldStateID")
     private Short eligibilityWorldStateID;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Short type;
 
-    @Column(name = "StartEvent")
+    @Column("StartEvent")
     private Byte startEvent;
 
-    @Column(name = "FailEvent")
+    @Column("FailEvent")
     private Byte failEvent;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "EligibilityWorldStateValue")
+    @Column("EligibilityWorldStateValue")
     private Byte eligibilityWorldStateValue;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

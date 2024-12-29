@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "mount_x_display")
 @Db2DataBind(name = "MountXDisplay.db2", layoutHash = 0xD59B9FE4, parentIndexField = 2, fields = {
         @Db2Field(name = "creatureDisplayInfoID", type = Db2Type.INT, signed = true),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class MountXDisplay implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "CreatureDisplayInfoID")
+    @Column("CreatureDisplayInfoID")
     private Integer creatureDisplayInfoID;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "MountID")
+    @Column("MountID")
     private Integer mountID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

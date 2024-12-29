@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_misc")
 @Db2DataBind(name = "SpellMisc.db2", layoutHash = 0xCDC114D5, parentIndexField = 10, fields = {
         @Db2Field(name = "castingTimeIndex", type = Db2Type.SHORT),
@@ -33,85 +33,85 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellMisc implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "CastingTimeIndex")
+    @Column("CastingTimeIndex")
     private Short castingTimeIndex;
 
-    @Column(name = "DurationIndex")
+    @Column("DurationIndex")
     private Short durationIndex;
 
-    @Column(name = "RangeIndex")
+    @Column("RangeIndex")
     private Short rangeIndex;
 
-    @Column(name = "SchoolMask")
+    @Column("SchoolMask")
     private Byte schoolMask;
 
-    @Column(name = "SpellIconFileDataID")
+    @Column("SpellIconFileDataID")
     private Integer spellIconFileDataID;
 
-    @Column(name = "Speed")
+    @Column("Speed")
     private Float speed;
 
-    @Column(name = "ActiveIconFileDataID")
+    @Column("ActiveIconFileDataID")
     private Integer activeIconFileDataID;
 
-    @Column(name = "LaunchDelay")
+    @Column("LaunchDelay")
     private Float launchDelay;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "Attributes1")
+    @Column("Attributes1")
     private Integer attributes1;
 
-    @Column(name = "Attributes2")
+    @Column("Attributes2")
     private Integer attributes2;
 
-    @Column(name = "Attributes3")
+    @Column("Attributes3")
     private Integer attributes3;
 
-    @Column(name = "Attributes4")
+    @Column("Attributes4")
     private Integer attributes4;
 
-    @Column(name = "Attributes5")
+    @Column("Attributes5")
     private Integer attributes5;
 
-    @Column(name = "Attributes6")
+    @Column("Attributes6")
     private Integer attributes6;
 
-    @Column(name = "Attributes7")
+    @Column("Attributes7")
     private Integer attributes7;
 
-    @Column(name = "Attributes8")
+    @Column("Attributes8")
     private Integer attributes8;
 
-    @Column(name = "Attributes9")
+    @Column("Attributes9")
     private Integer attributes9;
 
-    @Column(name = "Attributes10")
+    @Column("Attributes10")
     private Integer attributes10;
 
-    @Column(name = "Attributes11")
+    @Column("Attributes11")
     private Integer attributes11;
 
-    @Column(name = "Attributes12")
+    @Column("Attributes12")
     private Integer attributes12;
 
-    @Column(name = "Attributes13")
+    @Column("Attributes13")
     private Integer attributes13;
 
-    @Column(name = "Attributes14")
+    @Column("Attributes14")
     private Integer attributes14;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

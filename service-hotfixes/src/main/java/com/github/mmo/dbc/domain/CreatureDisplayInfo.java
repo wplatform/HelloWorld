@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "creature_display_info")
 @Db2DataBind(name = "CreatureDisplayInfo.db2", layoutHash = 0x406268DF, indexField = 0, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -45,85 +45,85 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CreatureDisplayInfo implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "CreatureModelScale")
+    @Column("CreatureModelScale")
     private Float creatureModelScale;
 
-    @Column(name = "ModelID")
+    @Column("ModelID")
     private Short modelID;
 
-    @Column(name = "NPCSoundID")
+    @Column("NPCSoundID")
     private Short nPCSoundID;
 
-    @Column(name = "SizeClass")
+    @Column("SizeClass")
     private Byte sizeClass;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "Gender")
+    @Column("Gender")
     private Byte gender;
 
-    @Column(name = "ExtendedDisplayInfoID")
+    @Column("ExtendedDisplayInfoID")
     private Integer extendedDisplayInfoID;
 
-    @Column(name = "PortraitTextureFileDataID")
+    @Column("PortraitTextureFileDataID")
     private Integer portraitTextureFileDataID;
 
-    @Column(name = "CreatureModelAlpha")
+    @Column("CreatureModelAlpha")
     private Short creatureModelAlpha;
 
-    @Column(name = "SoundID")
+    @Column("SoundID")
     private Short soundID;
 
-    @Column(name = "PlayerOverrideScale")
+    @Column("PlayerOverrideScale")
     private Float playerOverrideScale;
 
-    @Column(name = "PortraitCreatureDisplayInfoID")
+    @Column("PortraitCreatureDisplayInfoID")
     private Integer portraitCreatureDisplayInfoID;
 
-    @Column(name = "BloodID")
+    @Column("BloodID")
     private Byte bloodID;
 
-    @Column(name = "ParticleColorID")
+    @Column("ParticleColorID")
     private Short particleColorID;
 
-    @Column(name = "CreatureGeosetData")
+    @Column("CreatureGeosetData")
     private Integer creatureGeosetData;
 
-    @Column(name = "ObjectEffectPackageID")
+    @Column("ObjectEffectPackageID")
     private Short objectEffectPackageID;
 
-    @Column(name = "AnimReplacementSetID")
+    @Column("AnimReplacementSetID")
     private Short animReplacementSetID;
 
-    @Column(name = "UnarmedWeaponType")
+    @Column("UnarmedWeaponType")
     private Byte unarmedWeaponType;
 
-    @Column(name = "StateSpellVisualKitID")
+    @Column("StateSpellVisualKitID")
     private Integer stateSpellVisualKitID;
 
-    @Column(name = "PetInstanceScale")
+    @Column("PetInstanceScale")
     private Float petInstanceScale;
 
-    @Column(name = "MountPoofSpellVisualKitID")
+    @Column("MountPoofSpellVisualKitID")
     private Integer mountPoofSpellVisualKitID;
 
-    @Column(name = "TextureVariationFileDataID1")
+    @Column("TextureVariationFileDataID1")
     private Integer textureVariationFileDataID1;
 
-    @Column(name = "TextureVariationFileDataID2")
+    @Column("TextureVariationFileDataID2")
     private Integer textureVariationFileDataID2;
 
-    @Column(name = "TextureVariationFileDataID3")
+    @Column("TextureVariationFileDataID3")
     private Integer textureVariationFileDataID3;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

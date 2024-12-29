@@ -12,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "currency_types")
 @Db2DataBind(name = "CurrencyTypes.db2", layoutHash = 0x6CC25CBF, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -34,43 +34,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CurrencyType implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "MaxQty")
+    @Column("MaxQty")
     private Integer maxQty;
 
-    @Column(name = "MaxEarnablePerWeek")
+    @Column("MaxEarnablePerWeek")
     private Integer maxEarnablePerWeek;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "CategoryID")
+    @Column("CategoryID")
     private Short categoryID;
 
-    @Column(name = "SpellCategory")
+    @Column("SpellCategory")
     private Byte spellCategory;
 
-    @Column(name = "Quality")
+    @Column("Quality")
     private Byte quality;
 
-    @Column(name = "InventoryIconFileID")
+    @Column("InventoryIconFileID")
     private Integer inventoryIconFileID;
 
-    @Column(name = "SpellWeight")
+    @Column("SpellWeight")
     private Integer spellWeight;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -132,19 +132,17 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
 
         long oldMSTime = System.currentTimeMillis();
 
-        if (!Locale.isValidLocale(dbcLocale)) {
-            throw new IllegalConfigException(StringUtil.format("Incorrect DBC.Locale! Must be >= 0 and < {} and not {}", Locale.TOTAL_LOCALES, Locale.none));
-        }
 
         SERVER_LOADING.info("Using {} DBC Locale", dbcLocale.name());
 
         EnumSet<Locale> availableDb2Locales = EnumSet.noneOf(Locale.class);
 
-        try (Stream<java.nio.file.Path> listStream = Files.list(Paths.get(dataFolder, "dbc"))) {
+        try (var listStream = Files.list(Paths.get(dataFolder, "dbc"))) {
             listStream.filter(Files::isDirectory)
-                    .map(path -> Locale.fromName(path.toFile().getName()))
-                    .filter(Locale::isValidLocale)
+                    .map(path -> Locale.valueOf(path.getFileName().toString()))
                     .forEach(availableDb2Locales::add);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalConfigException(StringUtil.format("Incorrect DBC.Locale! Must ", Locale.none));
         } catch (IOException e) {
             SERVER_LOADING.error("Unable to load db2 files for {} locale specified in DBC.Locale config!", Paths.get(dataFolder).toAbsolutePath(), e);
             return;

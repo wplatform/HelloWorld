@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_upgrade")
 @Db2DataBind(name = "ItemUpgrade.db2", layoutHash = 0x8F3A4137, fields = {
         @Db2Field(name = "currencyAmount", type = Db2Type.INT),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemUpgrade implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "CurrencyAmount")
+    @Column("CurrencyAmount")
     private Integer currencyAmount;
 
-    @Column(name = "PrerequisiteID")
+    @Column("PrerequisiteID")
     private Short prerequisiteID;
 
-    @Column(name = "CurrencyType")
+    @Column("CurrencyType")
     private Short currencyType;
 
-    @Column(name = "ItemUpgradePathID")
+    @Column("ItemUpgradePathID")
     private Short itemUpgradePathID;
 
-    @Column(name = "ItemLevelIncrement")
+    @Column("ItemLevelIncrement")
     private Byte itemLevelIncrement;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

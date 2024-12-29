@@ -15,7 +15,7 @@ public class BroadcastAchievement extends ServerPacket
 	@Override
 	public void write()
 	{
-		this.writeBits(name.GetByteCount(), 7);
+		this.writeBits(name.getBytes().length, 7);
 		this.writeBit(guildAchievement);
 		this.writeGuid(playerGUID);
 		this.writeInt32(achievementID);

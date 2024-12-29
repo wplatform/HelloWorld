@@ -14,7 +14,7 @@ public class DefenseMessage extends ServerPacket {
     @Override
     public void write() {
         this.writeInt32(zoneID);
-        this.writeBits(messageText.GetByteCount(), 12);
+        this.writeBits(messageText.getBytes().length, 12);
         this.flushBits();
         this.writeString(messageText);
     }

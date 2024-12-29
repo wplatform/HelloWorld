@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "quest_sort")
 @Db2DataBind(name = "QuestSort.db2", layoutHash = 0xAD7072C6, fields = {
         @Db2Field(name = "sortName", type = Db2Type.STRING),
@@ -25,19 +25,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class QuestSort implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SortName")
+    @Column("ID")
+    private int id;
+
+    @Column("SortName")
     private LocalizedString sortName;
 
-    @Column(name = "UiOrderIndex")
+    @Column("UiOrderIndex")
     private Byte uiOrderIndex;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

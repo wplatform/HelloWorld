@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "glyphbindablespell")
 @Db2DataBind(name = "GlyphBindableSpell.db2", layoutHash = 0xEA228DFA, parentIndexField = 1, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GlyphBindableSpell implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "GlyphPropertiesID")
+    @Column("GlyphPropertiesID")
     private Short glyphPropertiesID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_power_rank")
 @Db2DataBind(name = "ArtifactPowerRank.db2", layoutHash = 0xA87EACC4, parentIndexField = 4, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ArtifactPowerRank implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "AuraPointsOverride")
+    @Column("AuraPointsOverride")
     private Float auraPointsOverride;
 
-    @Column(name = "ItemBonusListID")
+    @Column("ItemBonusListID")
     private Short itemBonusListID;
 
-    @Column(name = "RankIndex")
+    @Column("RankIndex")
     private Byte rankIndex;
 
-    @Column(name = "ArtifactPowerID")
+    @Column("ArtifactPowerID")
     private Short artifactPowerID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

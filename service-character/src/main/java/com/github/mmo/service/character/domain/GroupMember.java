@@ -1,35 +1,35 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "group_member")
 public class GroupMember {
     @Id
-    @Column(name = "memberGuid", nullable = false)
+    @Column("memberGuid")
     private Long id;
 
-    @Column(name = "guid", columnDefinition = "int UNSIGNED not null")
+    @Column("guid")
     private Long guid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "memberFlags", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("memberFlags")
     private Short memberFlags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "subgroup", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("subgroup")
     private Short subgroup;
 
-    @ColumnDefault("'0'")
-    @Column(name = "roles", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("roles")
     private Short roles;
 
 }

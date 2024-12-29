@@ -41,7 +41,7 @@ public class TrainerList extends ServerPacket
 			this.writeInt8(spell.reqLevel);
 		}
 
-        this.writeBits(greeting.GetByteCount(), 11);
+        this.writeBits(greeting.getBytes().length, 11);
         this.flushBits();
         this.writeString(greeting);
 	}

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "wmo_area_table")
 @Db2DataBind(name = "WMOAreaTable.db2", layoutHash = 0x4616C893, indexField = 12, parentIndexField = 14, fields = {
         @Db2Field(name = "areaName", type = Db2Type.STRING),
@@ -37,56 +37,56 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "wmoID", type = Db2Type.SHORT)
 })
 public class WmoAreaTable implements DbcEntity {
-    @Column(name = "AreaName")
+    @Column("AreaName")
     private LocalizedString areaName;
 
-    @Column(name = "WmoGroupID")
+    @Column("WmoGroupID")
     private Integer wmoGroupID;
 
-    @Column(name = "AmbienceID")
+    @Column("AmbienceID")
     private Short ambienceID;
 
-    @Column(name = "ZoneMusic")
+    @Column("ZoneMusic")
     private Short zoneMusic;
 
-    @Column(name = "IntroSound")
+    @Column("IntroSound")
     private Short introSound;
 
-    @Column(name = "AreaTableID")
+    @Column("AreaTableID")
     private Short areaTableID;
 
-    @Column(name = "UwIntroSound")
+    @Column("UwIntroSound")
     private Short uwIntroSound;
 
-    @Column(name = "UwAmbience")
+    @Column("UwAmbience")
     private Short uwAmbience;
 
-    @Column(name = "NameSetID")
+    @Column("NameSetID")
     private Byte nameSetID;
 
-    @Column(name = "SoundProviderPref")
+    @Column("SoundProviderPref")
     private Byte soundProviderPref;
 
-    @Column(name = "SoundProviderPrefUnderwater")
+    @Column("SoundProviderPrefUnderwater")
     private Byte soundProviderPrefUnderwater;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "UwZoneMusic")
+    @Column("ID")
+    private int id;
+
+    @Column("UwZoneMusic")
     private Integer uwZoneMusic;
 
-    @Column(name = "WmoID")
+    @Column("WmoID")
     private Short wmoID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

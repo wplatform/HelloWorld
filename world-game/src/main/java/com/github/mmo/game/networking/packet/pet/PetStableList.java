@@ -27,7 +27,7 @@ public class PetStableList extends ServerPacket
             this.writeInt32(pet.displayID);
             this.writeInt32(pet.experienceLevel);
 			this.writeInt8((byte)pet.petFlags.getValue());
-            this.writeBits(pet.petName.GetByteCount(), 8);
+            this.writeBits(pet.petName.getBytes().length, 8);
             this.writeString(pet.petName);
 		}
 	}

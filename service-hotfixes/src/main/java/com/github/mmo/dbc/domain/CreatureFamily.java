@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "creature_family")
 @Db2DataBind(name = "CreatureFamily.db2", layoutHash = 0xE2DC5126, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -32,43 +32,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CreatureFamily implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "MinScale")
+    @Column("MinScale")
     private Float minScale;
 
-    @Column(name = "MaxScale")
+    @Column("MaxScale")
     private Float maxScale;
 
-    @Column(name = "IconFileID")
+    @Column("IconFileID")
     private Integer iconFileID;
 
-    @Column(name = "SkillLine1")
+    @Column("SkillLine1")
     private Short skillLine1;
 
-    @Column(name = "SkillLine2")
+    @Column("SkillLine2")
     private Short skillLine2;
 
-    @Column(name = "PetFoodMask")
+    @Column("PetFoodMask")
     private Short petFoodMask;
 
-    @Column(name = "MinScaleLevel")
+    @Column("MinScaleLevel")
     private Byte minScaleLevel;
 
-    @Column(name = "MaxScaleLevel")
+    @Column("MaxScaleLevel")
     private Byte maxScaleLevel;
 
-    @Column(name = "PetTalentType")
+    @Column("PetTalentType")
     private Byte petTalentType;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

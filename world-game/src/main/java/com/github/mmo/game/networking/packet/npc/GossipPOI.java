@@ -23,7 +23,7 @@ public class GossipPOI extends ServerPacket
         this.writeInt32(importance);
         this.writeInt32(WMOGroupID);
         this.writeBits(flags, 14);
-        this.writeBits(name.GetByteCount(), 6);
+        this.writeBits(name.getBytes().length, 6);
         this.flushBits();
         this.writeString(name);
 	}

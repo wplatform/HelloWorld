@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "battle_pet_species")
 @Db2DataBind(name = "BattlePetSpecies.db2", layoutHash = 0x8A3D97A4, indexField = 8, fields = {
         @Db2Field(name = "sourceText", type = Db2Type.STRING),
@@ -33,44 +33,44 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "loadoutUIModelSceneID", type = Db2Type.INT, signed = true)
 })
 public class BattlePetSpecie implements DbcEntity {
-    @Column(name = "SourceText")
+    @Column("SourceText")
     private LocalizedString sourceText;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "CreatureID")
+    @Column("CreatureID")
     private Integer creatureID;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "SummonSpellID")
+    @Column("SummonSpellID")
     private Integer summonSpellID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "PetTypeEnum")
+    @Column("PetTypeEnum")
     private Byte petTypeEnum;
 
-    @Column(name = "SourceTypeEnum")
+    @Column("SourceTypeEnum")
     private Byte sourceTypeEnum;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "CardUIModelSceneID")
+    @Column("ID")
+    private int id;
+
+    @Column("CardUIModelSceneID")
     private Integer cardUIModelSceneID;
 
-    @Column(name = "LoadoutUIModelSceneID")
+    @Column("LoadoutUIModelSceneID")
     private Integer loadoutUIModelSceneID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

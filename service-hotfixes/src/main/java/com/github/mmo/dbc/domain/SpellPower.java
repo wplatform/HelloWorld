@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_power")
 @Db2DataBind(name = "SpellPower.db2", layoutHash = 0x8E5E46EC, indexField = 7, parentIndexField = 13, fields = {
         @Db2Field(name = "manaCost", type = Db2Type.INT, signed = true),
@@ -35,53 +35,53 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true)
 })
 public class SpellPower implements DbcEntity {
-    @Column(name = "ManaCost")
+    @Column("ManaCost")
     private Integer manaCost;
 
-    @Column(name = "PowerCostPct")
+    @Column("PowerCostPct")
     private Float powerCostPct;
 
-    @Column(name = "PowerPctPerSecond")
+    @Column("PowerPctPerSecond")
     private Float powerPctPerSecond;
 
-    @Column(name = "RequiredAuraSpellID")
+    @Column("RequiredAuraSpellID")
     private Integer requiredAuraSpellID;
 
-    @Column(name = "PowerCostMaxPct")
+    @Column("PowerCostMaxPct")
     private Float powerCostMaxPct;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
-    @Column(name = "PowerType")
+    @Column("PowerType")
     private Byte powerType;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ManaCostPerLevel")
+    @Column("ID")
+    private int id;
+
+    @Column("ManaCostPerLevel")
     private Integer manaCostPerLevel;
 
-    @Column(name = "ManaPerSecond")
+    @Column("ManaPerSecond")
     private Integer manaPerSecond;
 
-    @Column(name = "OptionalCost")
+    @Column("OptionalCost")
     private Integer optionalCost;
 
-    @Column(name = "PowerDisplayID")
+    @Column("PowerDisplayID")
     private Integer powerDisplayID;
 
-    @Column(name = "AltPowerBarID")
+    @Column("AltPowerBarID")
     private Integer altPowerBarID;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

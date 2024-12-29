@@ -107,11 +107,11 @@ public class ChatPkt extends ServerPacket {
         this.writeGuid(partyGUID);
         this.writeInt32(achievementID);
         this.writeFloat(displayTime);
-        this.writeBits(senderName.GetByteCount(), 11);
-        this.writeBits(targetName.GetByteCount(), 11);
-        this.writeBits(prefix.GetByteCount(), 5);
-        this.writeBits(channel.GetByteCount(), 7);
-        this.writeBits(chatText.GetByteCount(), 12);
+        this.writeBits(senderName.getBytes().length, 11);
+        this.writeBits(targetName.getBytes().length, 11);
+        this.writeBits(prefix.getBytes().length, 5);
+        this.writeBits(channel.getBytes().length, 7);
+        this.writeBits(chatText.getBytes().length, 12);
         this.writeBits((byte) _ChatFlags.getValue(), 14);
         this.writeBit(hideChatLog);
         this.writeBit(fakeSenderName);

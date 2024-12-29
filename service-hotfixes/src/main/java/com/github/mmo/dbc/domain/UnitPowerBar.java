@@ -12,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "unit_power_bar")
 @Db2DataBind(name = "UnitPowerBar.db2", layoutHash = 0x626C94CD, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -40,91 +40,91 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class UnitPowerBar implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Cost")
+    @Column("Cost")
     private LocalizedString cost;
 
-    @Column(name = "OutOfError")
+    @Column("OutOfError")
     private LocalizedString outOfError;
 
-    @Column(name = "ToolTip")
+    @Column("ToolTip")
     private LocalizedString toolTip;
 
-    @Column(name = "RegenerationPeace")
+    @Column("RegenerationPeace")
     private Float regenerationPeace;
 
-    @Column(name = "RegenerationCombat")
+    @Column("RegenerationCombat")
     private Float regenerationCombat;
 
-    @Column(name = "FileDataID1")
+    @Column("FileDataID1")
     private Integer fileDataID1;
 
-    @Column(name = "FileDataID2")
+    @Column("FileDataID2")
     private Integer fileDataID2;
 
-    @Column(name = "FileDataID3")
+    @Column("FileDataID3")
     private Integer fileDataID3;
 
-    @Column(name = "FileDataID4")
+    @Column("FileDataID4")
     private Integer fileDataID4;
 
-    @Column(name = "FileDataID5")
+    @Column("FileDataID5")
     private Integer fileDataID5;
 
-    @Column(name = "FileDataID6")
+    @Column("FileDataID6")
     private Integer fileDataID6;
 
-    @Column(name = "Color1")
+    @Column("Color1")
     private Integer color1;
 
-    @Column(name = "Color2")
+    @Column("Color2")
     private Integer color2;
 
-    @Column(name = "Color3")
+    @Column("Color3")
     private Integer color3;
 
-    @Column(name = "Color4")
+    @Column("Color4")
     private Integer color4;
 
-    @Column(name = "Color5")
+    @Column("Color5")
     private Integer color5;
 
-    @Column(name = "Color6")
+    @Column("Color6")
     private Integer color6;
 
-    @Column(name = "StartInset")
+    @Column("StartInset")
     private Float startInset;
 
-    @Column(name = "EndInset")
+    @Column("EndInset")
     private Float endInset;
 
-    @Column(name = "StartPower")
+    @Column("StartPower")
     private Short startPower;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "CenterPower")
+    @Column("CenterPower")
     private Byte centerPower;
 
-    @Column(name = "BarType")
+    @Column("BarType")
     private Byte barType;
 
-    @Column(name = "MinPower")
+    @Column("MinPower")
     private Integer minPower;
 
-    @Column(name = "MaxPower")
+    @Column("MaxPower")
     private Integer maxPower;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

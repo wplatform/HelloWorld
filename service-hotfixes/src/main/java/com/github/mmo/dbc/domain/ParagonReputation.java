@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "paragon_reputation")
 @Db2DataBind(name = "ParagonReputation.db2", layoutHash = 0xD7712F98, parentIndexField = 2, fields = {
         @Db2Field(name = "factionID", type = Db2Type.INT),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ParagonReputation implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "FactionID")
+    @Column("ID")
+    private int id;
+
+    @Column("FactionID")
     private Integer factionID;
 
-    @Column(name = "LevelThreshold")
+    @Column("LevelThreshold")
     private Integer levelThreshold;
 
-    @Column(name = "QuestID")
+    @Column("QuestID")
     private Integer questID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

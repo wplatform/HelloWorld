@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "adventure_journal")
 @Db2DataBind(name = "AdventureJournal.db2", layoutHash = 0xB2FFA8DD, fields = {
         @Db2Field(name = "nameLang", type = Db2Type.STRING),
@@ -45,85 +45,85 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class AdventureJournal implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name_Lang")
+    @Column("ID")
+    private int id;
+
+    @Column("Name_Lang")
     private LocalizedString nameLang;
 
-    @Column(name = "Description_Lang")
+    @Column("Description_Lang")
     private LocalizedString descriptionLang;
 
-    @Column(name = "ButtonText_Lang")
+    @Column("ButtonText_Lang")
     private LocalizedString buttonTextLang;
 
-    @Column(name = "RewardDescription_Lang")
+    @Column("RewardDescription_Lang")
     private LocalizedString rewardDescriptionLang;
 
-    @Column(name = "ContinueDescription_Lang")
+    @Column("ContinueDescription_Lang")
     private LocalizedString continueDescriptionLang;
 
-    @Column(name = "TextureFileDataID")
+    @Column("TextureFileDataID")
     private Integer textureFileDataID;
 
-    @Column(name = "ItemID")
+    @Column("ItemID")
     private Integer itemID;
 
-    @Column(name = "LfgDungeonID")
+    @Column("LfgDungeonID")
     private Short lfgDungeonID;
 
-    @Column(name = "QuestID")
+    @Column("QuestID")
     private Integer questID;
 
-    @Column(name = "BattleMasterListID")
+    @Column("BattleMasterListID")
     private Short battleMasterListID;
 
-    @Column(name = "BonusPlayerConditionID1")
+    @Column("BonusPlayerConditionID1")
     private Integer bonusPlayerConditionID1;
 
-    @Column(name = "BonusPlayerConditionID2")
+    @Column("BonusPlayerConditionID2")
     private Integer bonusPlayerConditionID2;
 
-    @Column(name = "CurrencyType")
+    @Column("CurrencyType")
     private Short currencyType;
 
-    @Column(name = "WorldMapAreaID")
+    @Column("WorldMapAreaID")
     private Short worldMapAreaID;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Byte type;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "ButtonActionType")
+    @Column("ButtonActionType")
     private Byte buttonActionType;
 
-    @Column(name = "PriorityMin")
+    @Column("PriorityMin")
     private Byte priorityMin;
 
-    @Column(name = "PriorityMax")
+    @Column("PriorityMax")
     private Byte priorityMax;
 
-    @Column(name = "BonusValue1")
+    @Column("BonusValue1")
     private Byte bonusValue1;
 
-    @Column(name = "BonusValue2")
+    @Column("BonusValue2")
     private Byte bonusValue2;
 
-    @Column(name = "CurrencyQuantity")
+    @Column("CurrencyQuantity")
     private Byte currencyQuantity;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "ItemQuantity")
+    @Column("ItemQuantity")
     private Integer itemQuantity;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

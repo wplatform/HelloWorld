@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "guild_color_emblem")
 @Db2DataBind(name = "GuildColorEmblem.db2", layoutHash = 0xCC0CEFF1, fields = {
         @Db2Field(name = "red", type = Db2Type.BYTE),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GuildColorEmblem implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Red")
+    @Column("Red")
     private Short red;
 
-    @Column(name = "Green")
+    @Column("Green")
     private Short green;
 
-    @Column(name = "Blue")
+    @Column("Blue")
     private Short blue;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

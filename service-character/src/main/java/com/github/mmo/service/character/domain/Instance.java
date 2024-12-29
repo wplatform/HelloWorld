@@ -8,21 +8,21 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "instance")
 public class Instance {
     @Id
-    @Column(name = "instanceId", columnDefinition = "int UNSIGNED not null")
+    @Column("instanceId")
     private Long id;
 
-    @Lob
-    @Column(name = "data")
+    
+    @Column("data")
     private String data;
 
-    @Column(name = "completedEncountersMask", columnDefinition = "int UNSIGNED")
+    @Column("completedEncountersMask")
     private Long completedEncountersMask;
 
-    @Column(name = "entranceWorldSafeLocId", columnDefinition = "int UNSIGNED")
+    @Column("entranceWorldSafeLocId")
     private Long entranceWorldSafeLocId;
 
 }

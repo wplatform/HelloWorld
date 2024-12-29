@@ -1,159 +1,159 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_stats")
 public class CharacterStat {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+    
+    @Column("guid")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxhealth", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxhealth")
     private Long maxhealth;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower1", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower1")
     private Long maxpower1;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower2", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower2")
     private Long maxpower2;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower3", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower3")
     private Long maxpower3;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower4", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower4")
     private Long maxpower4;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower5", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower5")
     private Long maxpower5;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower6", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower6")
     private Long maxpower6;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower7", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower7")
     private Long maxpower7;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower8", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower8")
     private Long maxpower8;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower9", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower9")
     private Long maxpower9;
 
-    @ColumnDefault("'0'")
-    @Column(name = "maxpower10", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("maxpower10")
     private Long maxpower10;
 
-    @ColumnDefault("'0'")
-    @Column(name = "strength", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("strength")
     private Long strength;
 
-    @ColumnDefault("'0'")
-    @Column(name = "agility", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("agility")
     private Long agility;
 
-    @ColumnDefault("'0'")
-    @Column(name = "stamina", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("stamina")
     private Long stamina;
 
-    @ColumnDefault("'0'")
-    @Column(name = "intellect", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("intellect")
     private Long intellect;
 
-    @ColumnDefault("'0'")
-    @Column(name = "armor", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("armor")
     private Long armor;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resHoly", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resHoly")
     private Long resHoly;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resFire", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resFire")
     private Long resFire;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resNature", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resNature")
     private Long resNature;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resFrost", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resFrost")
     private Long resFrost;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resShadow", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resShadow")
     private Long resShadow;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resArcane", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resArcane")
     private Long resArcane;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attackPower", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("attackPower")
     private Long attackPower;
 
-    @ColumnDefault("'0'")
-    @Column(name = "rangedAttackPower", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("rangedAttackPower")
     private Long rangedAttackPower;
 
-    @ColumnDefault("'0'")
-    @Column(name = "spellPower", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("spellPower")
     private Long spellPower;
 
-    @ColumnDefault("'0'")
-    @Column(name = "resilience", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("resilience")
     private Long resilience;
 
-    @ColumnDefault("0")
-    @Column(name = "mastery", nullable = false)
+    
+    @Column("mastery")
     private Float mastery;
 
-    @ColumnDefault("0")
-    @Column(name = "versatility", nullable = false)
+    
+    @Column("versatility")
     private Integer versatility;
 
 
-    @ColumnDefault("'0'")
-    @Column(name = "blockPct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("blockPct")
     private Float blockPct;
 
-    @ColumnDefault("'0'")
-    @Column(name = "dodgePct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("dodgePct")
     private Float dodgePct;
 
  
-    @ColumnDefault("'0'")
-    @Column(name = "parryPct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("parryPct")
     private Float parryPct;
  
 
-    @ColumnDefault("'0'")
-    @Column(name = "critPct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("critPct")
     private Float critPct;
 
-    @ColumnDefault("'0'")
-    @Column(name = "rangedCritPct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("rangedCritPct")
     private Float rangedCritPct;
     
-    @ColumnDefault("'0'")
-    @Column(name = "spellCritPct", columnDefinition = "float UNSIGNED not null")
+    
+    @Column("spellCritPct")
     private Float spellCritPct;
 }

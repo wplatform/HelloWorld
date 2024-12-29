@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "taxi_path_node")
 @Db2DataBind(name = "TaxiPathNode.db2", layoutHash = 0xD38E8C01, indexField = 4, parentIndexField = 1, fields = {
         @Db2Field(name = {"locX", "locY", "locZ"}, type = Db2Type.FLOAT),
@@ -31,44 +31,44 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "departureEventID", type = Db2Type.SHORT)
 })
 public class TaxiPathNode implements DbcEntity {
-    @Column(name = "LocX")
+    @Column("LocX")
     private Float locX;
 
-    @Column(name = "LocY")
+    @Column("LocY")
     private Float locY;
 
-    @Column(name = "LocZ")
+    @Column("LocZ")
     private Float locZ;
 
-    @Column(name = "PathID")
+    @Column("PathID")
     private Short pathID;
 
-    @Column(name = "ContinentID")
+    @Column("ContinentID")
     private Short continentID;
 
-    @Column(name = "NodeIndex")
+    @Column("NodeIndex")
     private Short nodeIndex;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "Delay")
+    @Column("Delay")
     private Integer delay;
 
-    @Column(name = "ArrivalEventID")
+    @Column("ArrivalEventID")
     private Integer arrivalEventID;
 
-    @Column(name = "DepartureEventID")
+    @Column("DepartureEventID")
     private Integer departureEventID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

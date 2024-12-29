@@ -123,7 +123,7 @@ public class TraitConfigPacket
 			}
 		}
 
-        data.writeBits(name.GetByteCount(), 9);
+        data.writeBits(name.getBytes().length, 9);
         data.flushBits();
 
         data.writeString(name);

@@ -8,8 +8,8 @@ final class PartyPlayerInfo
 
 	public void write(WorldPacket data)
 	{
-        data.writeBits(name.GetByteCount(), 6);
-        data.writeBits(voiceStateID.GetByteCount() + 1, 6);
+        data.writeBits(name.getBytes().length, 6);
+        data.writeBits(voiceStateID.getBytes().length + 1, 6);
         data.writeBit(connected);
         data.writeBit(voiceChatSilenced);
         data.writeBit(fromSocialQueue);

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "path_property")
 @Db2DataBind(name = "PathProperty.db2", layoutHash = 0x3D29C266, indexField = 3, fields = {
         @Db2Field(name = "value", type = Db2Type.INT),
@@ -27,25 +27,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PathProperty implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PathID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("PathID")
     private Integer pathID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PropertyIndex", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("PropertyIndex")
     private Short propertyIndex;
 
-    @ColumnDefault("0")
-    @Column(name = "Value", nullable = false)
+
+    @Column("Value")
     private Integer value;
 
 }

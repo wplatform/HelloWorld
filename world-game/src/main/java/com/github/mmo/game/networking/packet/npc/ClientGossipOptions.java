@@ -26,8 +26,8 @@ import com.github.mmo.game.networking.*;public class ClientGossipOptions {
         data.writeInt32(optionLanguage);
         data.writeInt32(flags.getValue());
         data.writeInt32(orderIndex);
-        data.writeBits(text.GetByteCount(), 12);
-        data.writeBits(confirm.GetByteCount(), 12);
+        data.writeBits(text.getBytes().length, 12);
+        data.writeBits(confirm.getBytes().length, 12);
         data.writeBits((byte) status.getValue(), 2);
         data.writeBit(spellID != null);
         data.writeBit(overrideIconID != null);

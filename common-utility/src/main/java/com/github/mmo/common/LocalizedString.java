@@ -2,12 +2,11 @@ package com.github.mmo.common;
 
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
 import java.util.EnumMap;
 
 import static com.github.mmo.defines.SharedDefine.DEFAULT_LOCALE;
 
-public class LocalizedString implements Serializable {
+public class LocalizedString {
 
     private final EnumMap<Locale, String> localizedString = new EnumMap<>(Locale.class);
 

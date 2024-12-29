@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "sound_kit")
 @Db2DataBind(name = "SoundKit.db2", layoutHash = 0x0E9CB7AE, indexField = 0, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -38,58 +38,58 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SoundKit implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "VolumeFloat")
+    @Column("ID")
+    private int id;
+
+    @Column("VolumeFloat")
     private Float volumeFloat;
 
-    @Column(name = "MinDistance")
+    @Column("MinDistance")
     private Float minDistance;
 
-    @Column(name = "DistanceCutoff")
+    @Column("DistanceCutoff")
     private Float distanceCutoff;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "SoundEntriesAdvancedID")
+    @Column("SoundEntriesAdvancedID")
     private Integer soundEntriesAdvancedID;
 
-    @Column(name = "SoundType")
+    @Column("SoundType")
     private Byte soundType;
 
-    @Column(name = "DialogType")
+    @Column("DialogType")
     private Byte dialogType;
 
-    @Column(name = "EAXDef")
+    @Column("EAXDef")
     private Byte eAXDef;
 
-    @Column(name = "VolumeVariationPlus")
+    @Column("VolumeVariationPlus")
     private Float volumeVariationPlus;
 
-    @Column(name = "VolumeVariationMinus")
+    @Column("VolumeVariationMinus")
     private Float volumeVariationMinus;
 
-    @Column(name = "PitchVariationPlus")
+    @Column("PitchVariationPlus")
     private Float pitchVariationPlus;
 
-    @Column(name = "PitchVariationMinus")
+    @Column("PitchVariationMinus")
     private Float pitchVariationMinus;
 
-    @Column(name = "PitchAdjust")
+    @Column("PitchAdjust")
     private Float pitchAdjust;
 
-    @Column(name = "BusOverwriteID")
+    @Column("BusOverwriteID")
     private Short busOverwriteID;
 
-    @Column(name = "MaxInstances")
+    @Column("MaxInstances")
     private Byte maxInstances;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

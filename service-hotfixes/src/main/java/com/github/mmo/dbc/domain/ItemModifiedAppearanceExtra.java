@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_modified_appearance_extra")
 @Db2DataBind(name = "ItemModifiedAppearanceExtra.db2", layoutHash = 0x77212236, fields = {
         @Db2Field(name = "iconFileDataID", type = Db2Type.INT, signed = true),
@@ -27,33 +27,33 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemModifiedAppearanceExtra implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("0")
-    @Column(name = "IconFileDataID", nullable = false)
+
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @ColumnDefault("0")
-    @Column(name = "UnequippedIconFileDataID", nullable = false)
+
+    @Column("UnequippedIconFileDataID")
     private Integer unequippedIconFileDataID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "SheatheType", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("SheatheType")
     private Short sheatheType;
 
-    @ColumnDefault("0")
-    @Column(name = "DisplayWeaponSubclassID", nullable = false)
+
+    @Column("DisplayWeaponSubclassID")
     private Byte displayWeaponSubclassID;
 
-    @ColumnDefault("0")
-    @Column(name = "DisplayInventoryType", nullable = false)
+
+    @Column("DisplayInventoryType")
     private Byte displayInventoryType;
 
 }

@@ -14,7 +14,7 @@ import com.github.mmo.dbc.domain.AreaTable;
 import com.github.mmo.dbc.domain.Faction;
 import com.github.mmo.dbc.domain.FactionTemplate;
 import com.github.mmo.defines.*;
-import com.github.mmo.game.service.domain.creature.TempSummonType;
+import com.github.mmo.game.service.model.creature.TempSummonType;
 import com.github.mmo.utils.MathUtil;
 import com.github.mmo.utils.RandomUtil;
 import game.ConditionManager;

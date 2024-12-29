@@ -17,7 +17,7 @@ public class CalendarInviteNotesAlert extends ServerPacket
 	{
 		this.writeInt64(eventID);
 
-        this.writeBits(notes.GetByteCount(), 8);
+        this.writeBits(notes.getBytes().length, 8);
         this.flushBits();
         this.writeString(notes);
 	}

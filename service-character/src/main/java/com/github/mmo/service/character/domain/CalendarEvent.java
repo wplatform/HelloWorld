@@ -1,55 +1,55 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 import java.time.Instant;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "calendar_events")
 public class CalendarEvent {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "EventID", nullable = false)
-    private Integer id;
+    
+    @Column("EventID")
+    private int id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Owner", nullable = false)
+    
+    @Column("Owner")
     private Integer owner;
 
-    @ColumnDefault("''")
-    @Column(name = "Title", nullable = false)
+    
+    @Column("Title")
     private String title;
 
-    @ColumnDefault("''")
-    @Column(name = "Description", nullable = false)
+    
+    @Column("Description")
     private String description;
 
-    @ColumnDefault("'4'")
-    @Column(name = "EventType", columnDefinition = "tinyint UNSIGNED not null")
+    
+    @Column("EventType")
     private Short eventType;
 
-    @ColumnDefault("-1")
-    @Column(name = "TextureID", nullable = false)
+    
+    @Column("TextureID")
     private Integer textureID;
 
-    @ColumnDefault("0")
-    @Column(name = "Date", nullable = false)
+    
+    @Column("Date")
     private Instant date;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Flags", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("Flags")
     private Integer flags;
 
-    @ColumnDefault("0")
-    @Column(name = "LockDate", nullable = false)
+    
+    @Column("LockDate")
     private Instant lockDate;
 
 }

@@ -12,7 +12,7 @@ public class WhoIsResponse extends ServerPacket
 	@Override
 	public void write()
 	{
-        this.writeBits(accountName.GetByteCount(), 11);
+        this.writeBits(accountName.getBytes().length, 11);
         this.writeString(accountName);
 	}
 }

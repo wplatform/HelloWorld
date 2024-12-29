@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "heirloom")
 @Db2DataBind(name = "Heirloom.db2", layoutHash = 0x36887C6F, indexField = 9, fields = {
         @Db2Field(name = "sourceText", type = Db2Type.STRING),
@@ -32,53 +32,53 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class Heirloom implements DbcEntity {
-    @Column(name = "SourceText")
+    @Column("SourceText")
     private LocalizedString sourceText;
 
-    @Column(name = "ItemID")
+    @Column("ItemID")
     private Integer itemID;
 
-    @Column(name = "LegacyItemID")
+    @Column("LegacyItemID")
     private Integer legacyItemID;
 
-    @Column(name = "LegacyUpgradedItemID")
+    @Column("LegacyUpgradedItemID")
     private Integer legacyUpgradedItemID;
 
-    @Column(name = "StaticUpgradedItemID")
+    @Column("StaticUpgradedItemID")
     private Integer staticUpgradedItemID;
 
-    @Column(name = "UpgradeItemID1")
+    @Column("UpgradeItemID1")
     private Integer upgradeItemID1;
 
-    @Column(name = "UpgradeItemID2")
+    @Column("UpgradeItemID2")
     private Integer upgradeItemID2;
 
-    @Column(name = "UpgradeItemID3")
+    @Column("UpgradeItemID3")
     private Integer upgradeItemID3;
 
-    @Column(name = "UpgradeItemBonusListID1")
+    @Column("UpgradeItemBonusListID1")
     private Short upgradeItemBonusListID1;
 
-    @Column(name = "UpgradeItemBonusListID2")
+    @Column("UpgradeItemBonusListID2")
     private Short upgradeItemBonusListID2;
 
-    @Column(name = "UpgradeItemBonusListID3")
+    @Column("UpgradeItemBonusListID3")
     private Short upgradeItemBonusListID3;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "SourceTypeEnum")
+    @Column("SourceTypeEnum")
     private Byte sourceTypeEnum;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

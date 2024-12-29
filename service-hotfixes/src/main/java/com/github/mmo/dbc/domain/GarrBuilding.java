@@ -12,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_building")
 @Db2DataBind(name = "GarrBuilding.db2", layoutHash = 0x200F9858, fields = {
         @Db2Field(name = "allianceName", type = Db2Type.STRING),
@@ -48,85 +48,85 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrBuilding implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "AllianceName")
+    @Column("ID")
+    private int id;
+
+    @Column("AllianceName")
     private LocalizedString allianceName;
 
-    @Column(name = "HordeName")
+    @Column("HordeName")
     private LocalizedString hordeName;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Tooltip")
+    @Column("Tooltip")
     private LocalizedString tooltip;
 
-    @Column(name = "HordeGameObjectID")
+    @Column("HordeGameObjectID")
     private Integer hordeGameObjectID;
 
-    @Column(name = "AllianceGameObjectID")
+    @Column("AllianceGameObjectID")
     private Integer allianceGameObjectID;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "CurrencyTypeID")
+    @Column("CurrencyTypeID")
     private Short currencyTypeID;
 
-    @Column(name = "HordeUiTextureKitID")
+    @Column("HordeUiTextureKitID")
     private Short hordeUiTextureKitID;
 
-    @Column(name = "AllianceUiTextureKitID")
+    @Column("AllianceUiTextureKitID")
     private Short allianceUiTextureKitID;
 
-    @Column(name = "AllianceSceneScriptPackageID")
+    @Column("AllianceSceneScriptPackageID")
     private Short allianceSceneScriptPackageID;
 
-    @Column(name = "HordeSceneScriptPackageID")
+    @Column("HordeSceneScriptPackageID")
     private Short hordeSceneScriptPackageID;
 
-    @Column(name = "GarrAbilityID")
+    @Column("GarrAbilityID")
     private Short garrAbilityID;
 
-    @Column(name = "BonusGarrAbilityID")
+    @Column("BonusGarrAbilityID")
     private Short bonusGarrAbilityID;
 
-    @Column(name = "GoldCost")
+    @Column("GoldCost")
     private Short goldCost;
 
-    @Column(name = "GarrSiteID")
+    @Column("GarrSiteID")
     private Byte garrSiteID;
 
-    @Column(name = "BuildingType")
+    @Column("BuildingType")
     private Byte buildingType;
 
-    @Column(name = "UpgradeLevel")
+    @Column("UpgradeLevel")
     private Byte upgradeLevel;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "ShipmentCapacity")
+    @Column("ShipmentCapacity")
     private Byte shipmentCapacity;
 
-    @Column(name = "GarrTypeID")
+    @Column("GarrTypeID")
     private Byte garrTypeID;
 
-    @Column(name = "BuildSeconds")
+    @Column("BuildSeconds")
     private Integer buildSeconds;
 
-    @Column(name = "CurrencyQty")
+    @Column("CurrencyQty")
     private Integer currencyQty;
 
-    @Column(name = "MaxAssignments")
+    @Column("MaxAssignments")
     private Integer maxAssignments;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

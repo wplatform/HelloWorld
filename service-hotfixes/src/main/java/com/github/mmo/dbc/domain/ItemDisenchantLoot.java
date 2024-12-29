@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_disenchant_loot")
 @Db2DataBind(name = "ItemDisenchantLoot.db2", layoutHash = 0xC0D926CC, parentIndexField = 6, fields = {
         @Db2Field(name = "minLevel", type = Db2Type.SHORT),
@@ -29,34 +29,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemDisenchantLoot implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "MinLevel")
+    @Column("ID")
+    private int id;
+
+    @Column("MinLevel")
     private Short minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Short maxLevel;
 
-    @Column(name = "SkillRequired")
+    @Column("SkillRequired")
     private Short skillRequired;
 
-    @Column(name = "Subclass")
+    @Column("Subclass")
     private Byte subclass;
 
-    @Column(name = "Quality")
+    @Column("Quality")
     private Byte quality;
 
-    @Column(name = "ExpansionID")
+    @Column("ExpansionID")
     private Byte expansionID;
 
-    @Column(name = "Class")
+    @Column("Class")
     private Byte klass;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

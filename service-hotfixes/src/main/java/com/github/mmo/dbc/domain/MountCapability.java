@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "mount_capability")
 @Db2DataBind(name = "MountCapability.db2", layoutHash = 0xB0D11D52, indexField = 6, fields = {
         @Db2Field(name = "reqSpellKnownID", type = Db2Type.INT, signed = true),
@@ -29,35 +29,35 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "reqSpellAuraID", type = Db2Type.INT)
 })
 public class MountCapability implements DbcEntity {
-    @Column(name = "ReqSpellKnownID")
+    @Column("ReqSpellKnownID")
     private Integer reqSpellKnownID;
 
-    @Column(name = "ModSpellAuraID")
+    @Column("ModSpellAuraID")
     private Integer modSpellAuraID;
 
-    @Column(name = "ReqRidingSkill")
+    @Column("ReqRidingSkill")
     private Short reqRidingSkill;
 
-    @Column(name = "ReqAreaID")
+    @Column("ReqAreaID")
     private Short reqAreaID;
 
-    @Column(name = "ReqMapID")
+    @Column("ReqMapID")
     private Short reqMapID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ReqSpellAuraID")
+    @Column("ID")
+    private int id;
+
+    @Column("ReqSpellAuraID")
     private Integer reqSpellAuraID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -15,7 +15,7 @@ public class PetitionRenameGuildResponse extends ServerPacket
 	{
         this.writeGuid(petitionGuid);
 
-        this.writeBits(newGuildName.GetByteCount(), 7);
+        this.writeBits(newGuildName.getBytes().length, 7);
         this.flushBits();
 
         this.writeString(newGuildName);

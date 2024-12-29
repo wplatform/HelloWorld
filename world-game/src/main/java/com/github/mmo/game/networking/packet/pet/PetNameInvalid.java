@@ -16,7 +16,7 @@ public class PetNameInvalid extends ServerPacket
 		this.writeGuid(renameData.petGUID);
 		this.writeInt32(renameData.petNumber);
 
-		this.writeInt8((byte)renameData.newName.GetByteCount());
+		this.writeInt8((byte)renameData.newName.getBytes().length);
 
 		this.writeBit(renameData.hasDeclinedNames);
 
@@ -24,7 +24,7 @@ public class PetNameInvalid extends ServerPacket
 		{
 			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)
 			{
-				this.writeBits(renameData.declinedNames.name.charAt(i).GetByteCount(), 7);
+				this.writeBits(renameData.declinedNames.name.charAt(i).getBytes().length, 7);
 			}
 
 			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)

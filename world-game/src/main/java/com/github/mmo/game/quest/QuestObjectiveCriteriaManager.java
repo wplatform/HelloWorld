@@ -4,7 +4,6 @@ package com.github.mmo.game.quest;
 
 import com.github.mmo.game.achievement.*;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.service.domain.quest.QuestObjective;
 
 import java.util.*;
 

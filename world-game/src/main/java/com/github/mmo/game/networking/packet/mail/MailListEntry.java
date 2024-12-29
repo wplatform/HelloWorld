@@ -78,8 +78,8 @@ public class MailListEntry
 
         data.writeBit(senderCharacter != null);
         data.writeBit(altSenderID != null);
-        data.writeBits(subject.GetByteCount(), 8);
-        data.writeBits(body.GetByteCount(), 13);
+        data.writeBits(subject.getBytes().length, 8);
+        data.writeBits(body.getBytes().length, 13);
         data.flushBits();
 
 		attachments.forEach(p -> p.write(data));

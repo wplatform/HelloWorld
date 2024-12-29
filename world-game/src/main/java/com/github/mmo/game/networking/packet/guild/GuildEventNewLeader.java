@@ -19,8 +19,8 @@ public class GuildEventNewLeader extends ServerPacket
 	public void write()
 	{
 		this.writeBit(selfPromoted);
-		this.writeBits(oldLeaderName.GetByteCount(), 6);
-		this.writeBits(newLeaderName.GetByteCount(), 6);
+		this.writeBits(oldLeaderName.getBytes().length, 6);
+		this.writeBits(newLeaderName.getBytes().length, 6);
 
 		this.writeGuid(oldLeaderGUID);
 		this.writeInt32(oldLeaderVirtualRealmAddress);

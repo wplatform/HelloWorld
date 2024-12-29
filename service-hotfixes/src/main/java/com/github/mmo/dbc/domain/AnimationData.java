@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "animation_data")
 @Db2DataBind(name = "AnimationData.db2", layoutHash = 0x03182786, fields = {
         @Db2Field(name = "flags", type = Db2Type.INT, signed = true),
@@ -26,29 +26,29 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class AnimationData implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Fallback", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("Fallback")
     private Integer fallback;
 
-    @ColumnDefault("'0'")
-    @Column(name = "BehaviorTier", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("BehaviorTier")
     private Short behaviorTier;
 
-    @ColumnDefault("0")
-    @Column(name = "BehaviorID", nullable = false)
+
+    @Column("BehaviorID")
     private Integer behaviorID;
 
-    @ColumnDefault("0")
-    @Column(name = "Flags", nullable = false)
+
+    @Column("Flags")
     private Integer flags;
 
 }

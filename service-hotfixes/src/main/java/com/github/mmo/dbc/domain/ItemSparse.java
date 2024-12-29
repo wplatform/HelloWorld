@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_sparse")
 @Db2DataBind(name = "ItemSparse.db2", layoutHash = 0x4007DE16, fields = {
         @Db2Field(name = "allowableRace", type = Db2Type.LONG, signed = true),
@@ -87,328 +87,328 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemSparse implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "AllowableRace")
+    @Column("AllowableRace")
     private Long allowableRace;
 
-    @Column(name = "Display")
+    @Column("Display")
     private LocalizedString display;
 
-    @Column(name = "Display1")
+    @Column("Display1")
     private LocalizedString display1;
 
-    @Column(name = "Display2")
+    @Column("Display2")
     private LocalizedString display2;
 
-    @Column(name = "Display3")
+    @Column("Display3")
     private LocalizedString display3;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Flags1")
+    @Column("Flags1")
     private Integer flags1;
 
-    @Column(name = "Flags2")
+    @Column("Flags2")
     private Integer flags2;
 
-    @Column(name = "Flags3")
+    @Column("Flags3")
     private Integer flags3;
 
-    @Column(name = "Flags4")
+    @Column("Flags4")
     private Integer flags4;
 
-    @Column(name = "PriceRandomValue")
+    @Column("PriceRandomValue")
     private Float priceRandomValue;
 
-    @Column(name = "PriceVariance")
+    @Column("PriceVariance")
     private Float priceVariance;
 
-    @Column(name = "VendorStackCount")
+    @Column("VendorStackCount")
     private Integer vendorStackCount;
 
-    @Column(name = "BuyPrice")
+    @Column("BuyPrice")
     private Integer buyPrice;
 
-    @Column(name = "SellPrice")
+    @Column("SellPrice")
     private Integer sellPrice;
 
-    @Column(name = "RequiredAbility")
+    @Column("RequiredAbility")
     private Integer requiredAbility;
 
-    @Column(name = "MaxCount")
+    @Column("MaxCount")
     private Integer maxCount;
 
-    @Column(name = "Stackable")
+    @Column("Stackable")
     private Integer stackable;
 
-    @Column(name = "StatPercentEditor1")
+    @Column("StatPercentEditor1")
     private Integer statPercentEditor1;
 
-    @Column(name = "StatPercentEditor2")
+    @Column("StatPercentEditor2")
     private Integer statPercentEditor2;
 
-    @Column(name = "StatPercentEditor3")
+    @Column("StatPercentEditor3")
     private Integer statPercentEditor3;
 
-    @Column(name = "StatPercentEditor4")
+    @Column("StatPercentEditor4")
     private Integer statPercentEditor4;
 
-    @Column(name = "StatPercentEditor5")
+    @Column("StatPercentEditor5")
     private Integer statPercentEditor5;
 
-    @Column(name = "StatPercentEditor6")
+    @Column("StatPercentEditor6")
     private Integer statPercentEditor6;
 
-    @Column(name = "StatPercentEditor7")
+    @Column("StatPercentEditor7")
     private Integer statPercentEditor7;
 
-    @Column(name = "StatPercentEditor8")
+    @Column("StatPercentEditor8")
     private Integer statPercentEditor8;
 
-    @Column(name = "StatPercentEditor9")
+    @Column("StatPercentEditor9")
     private Integer statPercentEditor9;
 
-    @Column(name = "StatPercentEditor10")
+    @Column("StatPercentEditor10")
     private Integer statPercentEditor10;
 
-    @Column(name = "StatPercentageOfSocket1")
+    @Column("StatPercentageOfSocket1")
     private Float statPercentageOfSocket1;
 
-    @Column(name = "StatPercentageOfSocket2")
+    @Column("StatPercentageOfSocket2")
     private Float statPercentageOfSocket2;
 
-    @Column(name = "StatPercentageOfSocket3")
+    @Column("StatPercentageOfSocket3")
     private Float statPercentageOfSocket3;
 
-    @Column(name = "StatPercentageOfSocket4")
+    @Column("StatPercentageOfSocket4")
     private Float statPercentageOfSocket4;
 
-    @Column(name = "StatPercentageOfSocket5")
+    @Column("StatPercentageOfSocket5")
     private Float statPercentageOfSocket5;
 
-    @Column(name = "StatPercentageOfSocket6")
+    @Column("StatPercentageOfSocket6")
     private Float statPercentageOfSocket6;
 
-    @Column(name = "StatPercentageOfSocket7")
+    @Column("StatPercentageOfSocket7")
     private Float statPercentageOfSocket7;
 
-    @Column(name = "StatPercentageOfSocket8")
+    @Column("StatPercentageOfSocket8")
     private Float statPercentageOfSocket8;
 
-    @Column(name = "StatPercentageOfSocket9")
+    @Column("StatPercentageOfSocket9")
     private Float statPercentageOfSocket9;
 
-    @Column(name = "StatPercentageOfSocket10")
+    @Column("StatPercentageOfSocket10")
     private Float statPercentageOfSocket10;
 
-    @Column(name = "ItemRange")
+    @Column("ItemRange")
     private Float itemRange;
 
-    @Column(name = "BagFamily")
+    @Column("BagFamily")
     private Integer bagFamily;
 
-    @Column(name = "QualityModifier")
+    @Column("QualityModifier")
     private Float qualityModifier;
 
-    @Column(name = "DurationInInventory")
+    @Column("DurationInInventory")
     private Integer durationInInventory;
 
-    @Column(name = "DmgVariance")
+    @Column("DmgVariance")
     private Float dmgVariance;
 
-    @Column(name = "AllowableClass")
+    @Column("AllowableClass")
     private Short allowableClass;
 
-    @Column(name = "ItemLevel")
+    @Column("ItemLevel")
     private Short itemLevel;
 
-    @Column(name = "RequiredSkill")
+    @Column("RequiredSkill")
     private Short requiredSkill;
 
-    @Column(name = "RequiredSkillRank")
+    @Column("RequiredSkillRank")
     private Short requiredSkillRank;
 
-    @Column(name = "MinFactionID")
+    @Column("MinFactionID")
     private Short minFactionID;
 
-    @Column(name = "ItemStatValue1")
+    @Column("ItemStatValue1")
     private Short itemStatValue1;
 
-    @Column(name = "ItemStatValue2")
+    @Column("ItemStatValue2")
     private Short itemStatValue2;
 
-    @Column(name = "ItemStatValue3")
+    @Column("ItemStatValue3")
     private Short itemStatValue3;
 
-    @Column(name = "ItemStatValue4")
+    @Column("ItemStatValue4")
     private Short itemStatValue4;
 
-    @Column(name = "ItemStatValue5")
+    @Column("ItemStatValue5")
     private Short itemStatValue5;
 
-    @Column(name = "ItemStatValue6")
+    @Column("ItemStatValue6")
     private Short itemStatValue6;
 
-    @Column(name = "ItemStatValue7")
+    @Column("ItemStatValue7")
     private Short itemStatValue7;
 
-    @Column(name = "ItemStatValue8")
+    @Column("ItemStatValue8")
     private Short itemStatValue8;
 
-    @Column(name = "ItemStatValue9")
+    @Column("ItemStatValue9")
     private Short itemStatValue9;
 
-    @Column(name = "ItemStatValue10")
+    @Column("ItemStatValue10")
     private Short itemStatValue10;
 
-    @Column(name = "ScalingStatDistributionID")
+    @Column("ScalingStatDistributionID")
     private Short scalingStatDistributionID;
 
-    @Column(name = "ItemDelay")
+    @Column("ItemDelay")
     private Short itemDelay;
 
-    @Column(name = "PageID")
+    @Column("PageID")
     private Short pageID;
 
-    @Column(name = "StartQuestID")
+    @Column("StartQuestID")
     private Integer startQuestID;
 
-    @Column(name = "LockID")
+    @Column("LockID")
     private Short lockID;
 
-    @Column(name = "RandomSelect")
+    @Column("RandomSelect")
     private Short randomSelect;
 
-    @Column(name = "ItemRandomSuffixGroupID")
+    @Column("ItemRandomSuffixGroupID")
     private Short itemRandomSuffixGroupID;
 
-    @Column(name = "ItemSet")
+    @Column("ItemSet")
     private Short itemSet;
 
-    @Column(name = "ZoneBound")
+    @Column("ZoneBound")
     private Short zoneBound;
 
-    @Column(name = "InstanceBound")
+    @Column("InstanceBound")
     private Short instanceBound;
 
-    @Column(name = "TotemCategoryID")
+    @Column("TotemCategoryID")
     private Short totemCategoryID;
 
-    @Column(name = "SocketMatchEnchantmentId")
+    @Column("SocketMatchEnchantmentId")
     private Short socketMatchEnchantmentId;
 
-    @Column(name = "GemProperties")
+    @Column("GemProperties")
     private Short gemProperties;
 
-    @Column(name = "LimitCategory")
+    @Column("LimitCategory")
     private Short limitCategory;
 
-    @Column(name = "RequiredHoliday")
+    @Column("RequiredHoliday")
     private Short requiredHoliday;
 
-    @Column(name = "RequiredTransmogHoliday")
+    @Column("RequiredTransmogHoliday")
     private Short requiredTransmogHoliday;
 
-    @Column(name = "ItemNameDescriptionID")
+    @Column("ItemNameDescriptionID")
     private Short itemNameDescriptionID;
 
-    @Column(name = "OverallQualityID")
+    @Column("OverallQualityID")
     private Byte overallQualityID;
 
-    @Column(name = "InventoryType")
+    @Column("InventoryType")
     private Byte inventoryType;
 
-    @Column(name = "RequiredLevel")
+    @Column("RequiredLevel")
     private Byte requiredLevel;
 
-    @Column(name = "RequiredPVPRank")
+    @Column("RequiredPVPRank")
     private Byte requiredPVPRank;
 
-    @Column(name = "RequiredPVPMedal")
+    @Column("RequiredPVPMedal")
     private Byte requiredPVPMedal;
 
-    @Column(name = "MinReputation")
+    @Column("MinReputation")
     private Byte minReputation;
 
-    @Column(name = "ContainerSlots")
+    @Column("ContainerSlots")
     private Byte containerSlots;
 
-    @Column(name = "StatModifierBonusStat1")
+    @Column("StatModifierBonusStat1")
     private Byte statModifierBonusStat1;
 
-    @Column(name = "StatModifierBonusStat2")
+    @Column("StatModifierBonusStat2")
     private Byte statModifierBonusStat2;
 
-    @Column(name = "StatModifierBonusStat3")
+    @Column("StatModifierBonusStat3")
     private Byte statModifierBonusStat3;
 
-    @Column(name = "StatModifierBonusStat4")
+    @Column("StatModifierBonusStat4")
     private Byte statModifierBonusStat4;
 
-    @Column(name = "StatModifierBonusStat5")
+    @Column("StatModifierBonusStat5")
     private Byte statModifierBonusStat5;
 
-    @Column(name = "StatModifierBonusStat6")
+    @Column("StatModifierBonusStat6")
     private Byte statModifierBonusStat6;
 
-    @Column(name = "StatModifierBonusStat7")
+    @Column("StatModifierBonusStat7")
     private Byte statModifierBonusStat7;
 
-    @Column(name = "StatModifierBonusStat8")
+    @Column("StatModifierBonusStat8")
     private Byte statModifierBonusStat8;
 
-    @Column(name = "StatModifierBonusStat9")
+    @Column("StatModifierBonusStat9")
     private Byte statModifierBonusStat9;
 
-    @Column(name = "StatModifierBonusStat10")
+    @Column("StatModifierBonusStat10")
     private Byte statModifierBonusStat10;
 
-    @Column(name = "DamageDamageType")
+    @Column("DamageDamageType")
     private Byte damageDamageType;
 
-    @Column(name = "Bonding")
+    @Column("Bonding")
     private Byte bonding;
 
-    @Column(name = "LanguageID")
+    @Column("LanguageID")
     private Byte languageID;
 
-    @Column(name = "PageMaterialID")
+    @Column("PageMaterialID")
     private Byte pageMaterialID;
 
-    @Column(name = "Material")
+    @Column("Material")
     private Byte material;
 
-    @Column(name = "SheatheType")
+    @Column("SheatheType")
     private Byte sheatheType;
 
-    @Column(name = "SocketType1")
+    @Column("SocketType1")
     private Byte socketType1;
 
-    @Column(name = "SocketType2")
+    @Column("SocketType2")
     private Byte socketType2;
 
-    @Column(name = "SocketType3")
+    @Column("SocketType3")
     private Byte socketType3;
 
-    @Column(name = "SpellWeightCategory")
+    @Column("SpellWeightCategory")
     private Byte spellWeightCategory;
 
-    @Column(name = "SpellWeight")
+    @Column("SpellWeight")
     private Byte spellWeight;
 
-    @Column(name = "ArtifactID")
+    @Column("ArtifactID")
     private Byte artifactID;
 
-    @Column(name = "ExpansionID")
+    @Column("ExpansionID")
     private Byte expansionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -25,9 +25,9 @@ public class GuildInvite extends ServerPacket
 	@Override
 	public void write()
 	{
-        this.writeBits(inviterName.GetByteCount(), 6);
-        this.writeBits(guildName.GetByteCount(), 7);
-        this.writeBits(oldGuildName.GetByteCount(), 7);
+        this.writeBits(inviterName.getBytes().length, 6);
+        this.writeBits(guildName.getBytes().length, 7);
+        this.writeBits(oldGuildName.getBytes().length, 7);
 
         this.writeInt32(inviterVirtualRealmAddress);
         this.writeInt32(guildVirtualRealmAddress);

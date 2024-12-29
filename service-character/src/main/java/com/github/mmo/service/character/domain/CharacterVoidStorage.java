@@ -5,48 +5,48 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_void_storage")
 public class CharacterVoidStorage {
     @Id
-    @Column(name = "itemId", nullable = false)
+    @Column("itemId")
     private Long id;
 
-    @Column(name = "playerGuid", nullable = false)
+    @Column("playerGuid")
     private Long playerGuid;
 
-    @Column(name = "itemEntry", columnDefinition = "int UNSIGNED not null")
+    @Column("itemEntry")
     private Long itemEntry;
 
-    @Column(name = "slot", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("slot")
     private Short slot;
 
-    @ColumnDefault("'0'")
-    @Column(name = "creatorGuid", nullable = false)
+
+    @Column("creatorGuid")
     private Long creatorGuid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "randomBonusListId", columnDefinition = "int UNSIGNED not null")
+
+    @Column("randomBonusListId")
     private Long randomBonusListId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "fixedScalingLevel", columnDefinition = "int UNSIGNED")
+
+    @Column("fixedScalingLevel")
     private Long fixedScalingLevel;
 
-    @ColumnDefault("'0'")
-    @Column(name = "artifactKnowledgeLevel", columnDefinition = "int UNSIGNED")
+
+    @Column("artifactKnowledgeLevel")
     private Long artifactKnowledgeLevel;
 
-    @ColumnDefault("'0'")
-    @Column(name = "context", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("context")
     private Short context;
 
-    @Lob
-    @Column(name = "bonusListIDs")
+    
+    @Column("bonusListIDs")
     private String bonusListIDs;
 
 }

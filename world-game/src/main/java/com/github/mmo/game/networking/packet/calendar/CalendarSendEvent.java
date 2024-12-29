@@ -36,8 +36,8 @@ public class CalendarSendEvent extends ServerPacket
 		this.writeGuid(eventGuildID);
 		this.writeInt32(invites.size());
 
-		this.writeBits(eventName.GetByteCount(), 8);
-		this.writeBits(description.GetByteCount(), 11);
+		this.writeBits(eventName.getBytes().length, 8);
+		this.writeBits(description.getBytes().length, 11);
 		this.flushBits();
 
 		for (var invite : invites)

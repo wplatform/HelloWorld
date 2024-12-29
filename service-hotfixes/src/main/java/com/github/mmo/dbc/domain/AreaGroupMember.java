@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "area_group_member")
 @Db2DataBind(name = "AreaGroupMember.db2", layoutHash = 0x50AA43EE, parentIndexField = 1, fields = {
         @Db2Field(name = "areaID", type = Db2Type.SHORT),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class AreaGroupMember implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "AreaID")
+    @Column("ID")
+    private int id;
+
+    @Column("AreaID")
     private Short areaID;
 
-    @Column(name = "AreaGroupID")
+    @Column("AreaGroupID")
     private Short areaGroupID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

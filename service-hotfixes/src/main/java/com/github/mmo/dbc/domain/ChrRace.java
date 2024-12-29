@@ -9,7 +9,7 @@ import com.github.mmo.dbc.db2.Db2Type;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -17,8 +17,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "chr_races")
 @Db2DataBind(name = "ChrRaces.db2", layoutHash = 0x51C511F9, indexField = 30, fields = {
         @Db2Field(name = "clientPrefix", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -61,149 +61,149 @@ import org.springframework.data.relational.core.mapping.Table;
         @Db2Field(name = {"alteredFormFinishVisualKitID1", "alteredFormFinishVisualKitID2", "alteredFormFinishVisualKitID3"}, type = Db2Type.INT)
 })
 public class ChrRace implements DbcEntity {
-    @Column(name = "ClientPrefix")
+    @Column("ClientPrefix")
     private String clientPrefix;
 
-    @Column(name = "ClientFileString")
+    @Column("ClientFileString")
     private String clientFileString;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "NameFemale")
+    @Column("NameFemale")
     private LocalizedString nameFemale;
 
-    @Column(name = "NameLowercase")
+    @Column("NameLowercase")
     private LocalizedString nameLowercase;
 
-    @Column(name = "NameFemaleLowercase")
+    @Column("NameFemaleLowercase")
     private LocalizedString nameFemaleLowercase;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "MaleDisplayId")
+    @Column("MaleDisplayId")
     private Integer maleDisplayId;
 
-    @Column(name = "FemaleDisplayId")
+    @Column("FemaleDisplayId")
     private Integer femaleDisplayId;
 
-    @Column(name = "CreateScreenFileDataID")
+    @Column("CreateScreenFileDataID")
     private Integer createScreenFileDataID;
 
-    @Column(name = "SelectScreenFileDataID")
+    @Column("SelectScreenFileDataID")
     private Integer selectScreenFileDataID;
 
-    @Column(name = "MaleCustomizeOffset1")
+    @Column("MaleCustomizeOffset1")
     private Float maleCustomizeOffset1;
 
-    @Column(name = "MaleCustomizeOffset2")
+    @Column("MaleCustomizeOffset2")
     private Float maleCustomizeOffset2;
 
-    @Column(name = "MaleCustomizeOffset3")
+    @Column("MaleCustomizeOffset3")
     private Float maleCustomizeOffset3;
 
-    @Column(name = "FemaleCustomizeOffset1")
+    @Column("FemaleCustomizeOffset1")
     private Float femaleCustomizeOffset1;
 
-    @Column(name = "FemaleCustomizeOffset2")
+    @Column("FemaleCustomizeOffset2")
     private Float femaleCustomizeOffset2;
 
-    @Column(name = "FemaleCustomizeOffset3")
+    @Column("FemaleCustomizeOffset3")
     private Float femaleCustomizeOffset3;
 
-    @Column(name = "LowResScreenFileDataID")
+    @Column("LowResScreenFileDataID")
     private Integer lowResScreenFileDataID;
 
-    @Column(name = "StartingLevel")
+    @Column("StartingLevel")
     private Integer startingLevel;
 
-    @Column(name = "UiDisplayOrder")
+    @Column("UiDisplayOrder")
     private Integer uiDisplayOrder;
 
-    @Column(name = "FactionID")
+    @Column("FactionID")
     private Short factionID;
 
-    @Column(name = "ResSicknessSpellID")
+    @Column("ResSicknessSpellID")
     private Short resSicknessSpellID;
 
-    @Column(name = "SplashSoundID")
+    @Column("SplashSoundID")
     private Short splashSoundID;
 
-    @Column(name = "CinematicSequenceID")
+    @Column("CinematicSequenceID")
     private Short cinematicSequenceID;
 
-    @Column(name = "BaseLanguage")
+    @Column("BaseLanguage")
     private Byte baseLanguage;
 
-    @Column(name = "CreatureType")
+    @Column("CreatureType")
     private Byte creatureType;
 
-    @Column(name = "Alliance")
+    @Column("Alliance")
     private Byte alliance;
 
-    @Column(name = "RaceRelated")
+    @Column("RaceRelated")
     private Byte raceRelated;
 
-    @Column(name = "UnalteredVisualRaceID")
+    @Column("UnalteredVisualRaceID")
     private Byte unalteredVisualRaceID;
 
-    @Column(name = "CharComponentTextureLayoutID")
+    @Column("CharComponentTextureLayoutID")
     private Byte charComponentTextureLayoutID;
 
-    @Column(name = "DefaultClassID")
+    @Column("DefaultClassID")
     private Byte defaultClassID;
 
-    @Column(name = "NeutralRaceID")
+    @Column("NeutralRaceID")
     private Byte neutralRaceID;
 
-    @Column(name = "DisplayRaceID")
+    @Column("DisplayRaceID")
     private Byte displayRaceID;
 
-    @Column(name = "CharComponentTexLayoutHiResID")
+    @Column("CharComponentTexLayoutHiResID")
     private Byte charComponentTexLayoutHiResID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "HighResMaleDisplayId")
+    @Column("ID")
+    private int id;
+
+    @Column("HighResMaleDisplayId")
     private Integer highResMaleDisplayId;
 
-    @Column(name = "HighResFemaleDisplayId")
+    @Column("HighResFemaleDisplayId")
     private Integer highResFemaleDisplayId;
 
-    @Column(name = "HeritageArmorAchievementID")
+    @Column("HeritageArmorAchievementID")
     private Integer heritageArmorAchievementID;
 
-    @Column(name = "MaleSkeletonFileDataID")
+    @Column("MaleSkeletonFileDataID")
     private Integer maleSkeletonFileDataID;
 
-    @Column(name = "FemaleSkeletonFileDataID")
+    @Column("FemaleSkeletonFileDataID")
     private Integer femaleSkeletonFileDataID;
 
-    @Column(name = "AlteredFormStartVisualKitID1")
+    @Column("AlteredFormStartVisualKitID1")
     private Integer alteredFormStartVisualKitID1;
 
-    @Column(name = "AlteredFormStartVisualKitID2")
+    @Column("AlteredFormStartVisualKitID2")
     private Integer alteredFormStartVisualKitID2;
 
-    @Column(name = "AlteredFormStartVisualKitID3")
+    @Column("AlteredFormStartVisualKitID3")
     private Integer alteredFormStartVisualKitID3;
 
-    @Column(name = "AlteredFormFinishVisualKitID1")
+    @Column("AlteredFormFinishVisualKitID1")
     private Integer alteredFormFinishVisualKitID1;
 
-    @Column(name = "AlteredFormFinishVisualKitID2")
+    @Column("AlteredFormFinishVisualKitID2")
     private Integer alteredFormFinishVisualKitID2;
 
-    @Column(name = "AlteredFormFinishVisualKitID3")
+    @Column("AlteredFormFinishVisualKitID3")
     private Integer alteredFormFinishVisualKitID3;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

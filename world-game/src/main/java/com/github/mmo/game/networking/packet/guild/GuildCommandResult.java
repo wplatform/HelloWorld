@@ -17,7 +17,7 @@ public class GuildCommandResult extends ServerPacket
 		this.writeInt32((int)result.getValue());
 		this.writeInt32((int)command.getValue());
 
-		this.writeBits(name.GetByteCount(), 8);
+		this.writeBits(name.getBytes().length, 8);
 		this.writeString(name);
 	}
 }

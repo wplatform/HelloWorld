@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_shapeshift_form")
 @Db2DataBind(name = "SpellShapeshiftForm.db2", layoutHash = 0x130819AF, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -33,73 +33,73 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellShapeshiftForm implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "DamageVariance")
+    @Column("DamageVariance")
     private Float damageVariance;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "CombatRoundTime")
+    @Column("CombatRoundTime")
     private Short combatRoundTime;
 
-    @Column(name = "MountTypeID")
+    @Column("MountTypeID")
     private Short mountTypeID;
 
-    @Column(name = "CreatureType")
+    @Column("CreatureType")
     private Byte creatureType;
 
-    @Column(name = "BonusActionBar")
+    @Column("BonusActionBar")
     private Byte bonusActionBar;
 
-    @Column(name = "AttackIconFileID")
+    @Column("AttackIconFileID")
     private Integer attackIconFileID;
 
-    @Column(name = "CreatureDisplayID1")
+    @Column("CreatureDisplayID1")
     private Integer creatureDisplayID1;
 
-    @Column(name = "CreatureDisplayID2")
+    @Column("CreatureDisplayID2")
     private Integer creatureDisplayID2;
 
-    @Column(name = "CreatureDisplayID3")
+    @Column("CreatureDisplayID3")
     private Integer creatureDisplayID3;
 
-    @Column(name = "CreatureDisplayID4")
+    @Column("CreatureDisplayID4")
     private Integer creatureDisplayID4;
 
-    @Column(name = "PresetSpellID1")
+    @Column("PresetSpellID1")
     private Integer presetSpellID1;
 
-    @Column(name = "PresetSpellID2")
+    @Column("PresetSpellID2")
     private Integer presetSpellID2;
 
-    @Column(name = "PresetSpellID3")
+    @Column("PresetSpellID3")
     private Integer presetSpellID3;
 
-    @Column(name = "PresetSpellID4")
+    @Column("PresetSpellID4")
     private Integer presetSpellID4;
 
-    @Column(name = "PresetSpellID5")
+    @Column("PresetSpellID5")
     private Integer presetSpellID5;
 
-    @Column(name = "PresetSpellID6")
+    @Column("PresetSpellID6")
     private Integer presetSpellID6;
 
-    @Column(name = "PresetSpellID7")
+    @Column("PresetSpellID7")
     private Integer presetSpellID7;
 
-    @Column(name = "PresetSpellID8")
+    @Column("PresetSpellID8")
     private Integer presetSpellID8;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

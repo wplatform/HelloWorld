@@ -1,12 +1,13 @@
 package com.github.mmo.game.networking.packet.quest;
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
 
 public class QuestGiverChooseReward extends ClientPacket
 {
 	public ObjectGuid questGiverGUID = ObjectGuid.EMPTY;
 	public int questID;
-	public QuestchoiceItem choice = new questChoiceItem();
+	public QuestChoiceItem choice = new QuestChoiceItem();
 	public QuestGiverChooseReward(WorldPacket packet)
 	{
 		super(packet);

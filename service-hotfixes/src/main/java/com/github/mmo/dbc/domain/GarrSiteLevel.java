@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_site_level")
 @Db2DataBind(name = "GarrSiteLevel.db2", layoutHash = 0xD3979C38, fields = {
         @Db2Field(name = {"townHallUiPosX", "townHallUiPosY"}, type = Db2Type.FLOAT),
@@ -31,43 +31,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrSiteLevel implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "TownHallUiPosX")
+    @Column("TownHallUiPosX")
     private Float townHallUiPosX;
 
-    @Column(name = "TownHallUiPosY")
+    @Column("TownHallUiPosY")
     private Float townHallUiPosY;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "UiTextureKitID")
+    @Column("UiTextureKitID")
     private Short uiTextureKitID;
 
-    @Column(name = "UpgradeMovieID")
+    @Column("UpgradeMovieID")
     private Short upgradeMovieID;
 
-    @Column(name = "UpgradeCost")
+    @Column("UpgradeCost")
     private Short upgradeCost;
 
-    @Column(name = "UpgradeGoldCost")
+    @Column("UpgradeGoldCost")
     private Short upgradeGoldCost;
 
-    @Column(name = "GarrLevel")
+    @Column("GarrLevel")
     private Byte garrLevel;
 
-    @Column(name = "GarrSiteID")
+    @Column("GarrSiteID")
     private Short garrSiteID;
 
-    @Column(name = "MaxBuildingLevel")
+    @Column("MaxBuildingLevel")
     private Byte maxBuildingLevel;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -34,8 +34,8 @@ public class GuildBankQueryResults extends ServerPacket
 		for (var tab : tabInfo)
 		{
             this.writeInt32(tab.tabIndex);
-            this.writeBits(tab.name.GetByteCount(), 7);
-            this.writeBits(tab.icon.GetByteCount(), 9);
+            this.writeBits(tab.name.getBytes().length, 7);
+            this.writeBits(tab.icon.getBytes().length, 9);
 
             this.writeString(tab.name);
             this.writeString(tab.icon);

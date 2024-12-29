@@ -5,71 +5,71 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(ItemLootItemId.class)
-@Entity
+
+
 @Table(name = "item_loot_items")
 public class ItemLootItem {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "container_id", nullable = false)
+
+    @Column("container_id")
     private Long containerId;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "item_type", nullable = false)
+
+    @Column("item_type")
     private Byte itemType;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "item_id", columnDefinition = "int UNSIGNED not null")
+
+    @Column("item_id")
     private Long itemId;
 
-    @ColumnDefault("0")
-    @Column(name = "item_count", nullable = false)
+
+    @Column("item_count")
     private Integer itemCount;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item_index", columnDefinition = "int UNSIGNED not null")
+
+    @Column("item_index")
     private Long itemIndex;
 
-    @ColumnDefault("0")
-    @Column(name = "follow_rules", nullable = false)
+
+    @Column("follow_rules")
     private Boolean followRules = false;
 
-    @ColumnDefault("0")
-    @Column(name = "ffa", nullable = false)
+
+    @Column("ffa")
     private Boolean ffa = false;
 
-    @ColumnDefault("0")
-    @Column(name = "blocked", nullable = false)
+
+    @Column("blocked")
     private Boolean blocked = false;
 
-    @ColumnDefault("0")
-    @Column(name = "counted", nullable = false)
+
+    @Column("counted")
     private Boolean counted = false;
 
-    @ColumnDefault("0")
-    @Column(name = "under_threshold", nullable = false)
+
+    @Column("under_threshold")
     private Boolean underThreshold = false;
 
-    @ColumnDefault("0")
-    @Column(name = "needs_quest", nullable = false)
+
+    @Column("needs_quest")
     private Boolean needsQuest = false;
 
-    @ColumnDefault("'0'")
-    @Column(name = "rnd_bonus", columnDefinition = "int UNSIGNED not null")
+
+    @Column("rnd_bonus")
     private Long rndBonus;
 
-    @ColumnDefault("'0'")
-    @Column(name = "context", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("context")
     private Short context;
 
-    @Lob
-    @Column(name = "bonus_list_ids")
+    
+    @Column("bonus_list_ids")
     private String bonusListIds;
 
 }

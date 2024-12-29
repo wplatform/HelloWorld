@@ -26,8 +26,8 @@ public class GMTicketCaseStatus extends ServerPacket
 			this.writeInt64(c.characterID);
             this.writeInt32(c.waitTimeOverrideMinutes);
 
-            this.writeBits(c.url.GetByteCount(), 11);
-            this.writeBits(c.waitTimeOverrideMessage.GetByteCount(), 10);
+            this.writeBits(c.url.getBytes().length, 11);
+            this.writeBits(c.waitTimeOverrideMessage.getBytes().length, 10);
 
             this.writeString(c.url);
             this.writeString(c.waitTimeOverrideMessage);

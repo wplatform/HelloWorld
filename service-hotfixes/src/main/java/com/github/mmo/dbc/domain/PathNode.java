@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "path_node")
 @Db2DataBind(name = "PathNode.db2", layoutHash = 0x76615830, indexField = 0, fields = {
         @Db2Field(name = "id", type = Db2Type.INT),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class PathNode implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("ID")
     private  Integer id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PathID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("PathID")
     private Integer pathID;
 
-    @ColumnDefault("0")
-    @Column(name = "Sequence", nullable = false)
+
+    @Column("Sequence")
     private Short sequence;
 
-    @ColumnDefault("0")
-    @Column(name = "LocationID", nullable = false)
+
+    @Column("LocationID")
     private Integer locationID;
 
 }

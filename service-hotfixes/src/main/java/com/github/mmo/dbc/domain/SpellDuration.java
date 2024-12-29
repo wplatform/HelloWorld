@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_duration")
 @Db2DataBind(name = "SpellDuration.db2", layoutHash = 0x0D6C9082, fields = {
         @Db2Field(name = "duration", type = Db2Type.INT, signed = true),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellDuration implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Duration")
+    @Column("Duration")
     private Integer duration;
 
-    @Column(name = "MaxDuration")
+    @Column("MaxDuration")
     private Integer maxDuration;
 
-    @Column(name = "DurationPerLevel")
+    @Column("DurationPerLevel")
     private Integer durationPerLevel;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

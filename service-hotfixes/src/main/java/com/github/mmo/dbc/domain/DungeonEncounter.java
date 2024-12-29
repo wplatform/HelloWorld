@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "dungeon_encounter")
 @Db2DataBind(name = "DungeonEncounter.db2", layoutHash = 0xB04A2596, indexField = 6, parentIndexField = 2, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -31,38 +31,38 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "spellIconFileID", type = Db2Type.INT, signed = true)
 })
 public class DungeonEncounter implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "CreatureDisplayID")
+    @Column("CreatureDisplayID")
     private Integer creatureDisplayID;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "Bit")
+    @Column("Bit")
     private Byte bit;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Integer orderIndex;
 
-    @Column(name = "SpellIconFileID")
+    @Column("SpellIconFileID")
     private Integer spellIconFileID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

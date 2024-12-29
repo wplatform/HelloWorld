@@ -22,11 +22,11 @@ import java.util.*;public class RBACData {
     }
     // Gets the Id of the Object
 
-        public RBACData(int id, String name, int realmId, byte secLevel) {
-        id = id;
-        name = name;
-        realmId = realmId;
-        secLevel = secLevel;
+    public RBACData(int id, String name, int realmId, byte secLevel) {
+        this.id = id;
+        this.name = name;
+        this.realmId = realmId;
+        this.secLevel = secLevel;
     }
 
     // Returns all the granted permissions (after computation)

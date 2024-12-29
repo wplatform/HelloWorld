@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_unlock")
 @Db2DataBind(name = "ArtifactUnlock.db2", layoutHash = 0x52839A77, parentIndexField = 4, fields = {
         @Db2Field(name = "itemBonusListID", type = Db2Type.SHORT),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ArtifactUnlock implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ItemBonusListID")
+    @Column("ID")
+    private int id;
+
+    @Column("ItemBonusListID")
     private Short itemBonusListID;
 
-    @Column(name = "PowerRank")
+    @Column("PowerRank")
     private Byte powerRank;
 
-    @Column(name = "PowerID")
+    @Column("PowerID")
     private Integer powerID;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "ArtifactID")
+    @Column("ArtifactID")
     private Byte artifactID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

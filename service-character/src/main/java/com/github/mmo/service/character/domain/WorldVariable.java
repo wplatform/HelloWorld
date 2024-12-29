@@ -1,24 +1,24 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "world_variable")
 public class WorldVariable {
     @Id
-    @Column(name = "ID", nullable = false, length = 64)
+    @Column("ID")
     private String id;
 
-    @ColumnDefault("0")
-    @Column(name = "Value", nullable = false)
+
+    @Column("Value")
     private Integer value;
 
 }

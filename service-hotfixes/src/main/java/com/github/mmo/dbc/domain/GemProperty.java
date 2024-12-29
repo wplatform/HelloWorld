@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "gem_properties")
 @Db2DataBind(name = "GemProperties.db2", layoutHash = 0x84558CAB, fields = {
         @Db2Field(name = "type", type = Db2Type.INT),
@@ -26,22 +26,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GemProperty implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Type")
+    @Column("ID")
+    private int id;
+
+    @Column("Type")
     private Integer type;
 
-    @Column(name = "EnchantId")
+    @Column("EnchantId")
     private Short enchantId;
 
-    @Column(name = "MinItemLevel")
+    @Column("MinItemLevel")
     private Short minItemLevel;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

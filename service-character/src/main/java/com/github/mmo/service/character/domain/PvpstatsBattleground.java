@@ -10,24 +10,24 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "pvpstats_battlegrounds")
 public class PvpstatsBattleground {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column("id")
     private Long id;
 
-    @Column(name = "winner_faction", nullable = false)
+    @Column("winner_faction")
     private Byte winnerFaction;
 
-    @Column(name = "bracket_id", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("bracket_id")
     private Short bracketId;
 
-    @Column(name = "type", columnDefinition = "int UNSIGNED not null")
+    @Column("type")
     private Long type;
 
-    @Column(name = "date", nullable = false)
+    @Column("date")
     private Instant date;
 
 }

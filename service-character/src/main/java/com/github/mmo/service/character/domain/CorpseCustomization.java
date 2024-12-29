@@ -5,24 +5,24 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CorpseCustomizationId.class)
-@Entity
+
+
 @Table(name = "corpse_customizations")
 public class CorpseCustomization {
     @Id
-    @Column(name = "ownerGuid", nullable = false)
+    @Column("ownerGuid")
     private Long ownerGuid;
 
     @Id
-    @Column(name = "chrCustomizationOptionID", columnDefinition = "int UNSIGNED not null")
+    @Column("chrCustomizationOptionID")
     private Long chrCustomizationOptionID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "chrCustomizationChoiceID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("chrCustomizationChoiceID")
     private Long chrCustomizationChoiceID;
 
 }

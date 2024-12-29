@@ -28,14 +28,14 @@ import java.util.ArrayList;public class QueryGuildInfoResponse extends ServerPac
             this.writeInt32(info.borderStyle);
             this.writeInt32(info.borderColor);
             this.writeInt32(info.backgroundColor);
-            this.writeBits(info.guildName.GetByteCount(), 7);
+            this.writeBits(info.guildName.getBytes().length, 7);
             this.flushBits();
 
             for (var rank : info.ranks) {
                 this.writeInt32(rank.rankID);
                 this.writeInt32(rank.rankOrder);
 
-                this.writeBits(rank.rankName.GetByteCount(), 7);
+                this.writeBits(rank.rankName.getBytes().length, 7);
                 this.writeString(rank.rankName);
             }
 

@@ -21,7 +21,7 @@ public class ClientGossipText
 		data.writeInt32(questFlagsEx);
 
 		data.writeBit(repeatable);
-		data.writeBits(questTitle.GetByteCount(), 9);
+		data.writeBits(questTitle.getBytes().length, 9);
 		data.flushBits();
 
 		data.writeString(questTitle);

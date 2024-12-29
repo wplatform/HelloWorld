@@ -20,7 +20,7 @@ public class LoadCUFProfiles extends ServerPacket
 
 		for (var cufProfile : CUFProfiles)
 		{
-			this.writeBits(cufProfile.getProfileName().GetByteCount(), 7);
+			this.writeBits(cufProfile.getProfileName().getBytes().length, 7);
 
 			// Bool Options
 			for (byte option = 0; option < CUFBoolOptions.BoolOptionsCount.getValue(); option++)

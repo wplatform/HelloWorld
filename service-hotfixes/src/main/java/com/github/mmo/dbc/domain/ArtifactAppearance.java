@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_appearance")
 @Db2DataBind(name = "ArtifactAppearance.db2", layoutHash = 0xAEED7395, indexField = 11, parentIndexField = 5, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -37,56 +37,56 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "uiAltItemAppearanceID", type = Db2Type.INT)
 })
 public class ArtifactAppearance implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "UiSwatchColor")
+    @Column("UiSwatchColor")
     private Integer uiSwatchColor;
 
-    @Column(name = "UiModelSaturation")
+    @Column("UiModelSaturation")
     private Float uiModelSaturation;
 
-    @Column(name = "UiModelOpacity")
+    @Column("UiModelOpacity")
     private Float uiModelOpacity;
 
-    @Column(name = "OverrideShapeshiftDisplayID")
+    @Column("OverrideShapeshiftDisplayID")
     private Integer overrideShapeshiftDisplayID;
 
-    @Column(name = "ArtifactAppearanceSetID")
+    @Column("ArtifactAppearanceSetID")
     private Short artifactAppearanceSetID;
 
-    @Column(name = "UiCameraID")
+    @Column("UiCameraID")
     private Short uiCameraID;
 
-    @Column(name = "DisplayIndex")
+    @Column("DisplayIndex")
     private Byte displayIndex;
 
-    @Column(name = "ItemAppearanceModifierID")
+    @Column("ItemAppearanceModifierID")
     private Byte itemAppearanceModifierID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "OverrideShapeshiftFormID")
+    @Column("OverrideShapeshiftFormID")
     private Byte overrideShapeshiftFormID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "UnlockPlayerConditionID")
+    @Column("ID")
+    private int id;
+
+    @Column("UnlockPlayerConditionID")
     private Integer unlockPlayerConditionID;
 
-    @Column(name = "UiItemAppearanceID")
+    @Column("UiItemAppearanceID")
     private Integer uiItemAppearanceID;
 
-    @Column(name = "UiAltItemAppearanceID")
+    @Column("UiAltItemAppearanceID")
     private Integer uiAltItemAppearanceID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

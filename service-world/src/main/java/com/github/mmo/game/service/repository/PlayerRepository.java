@@ -1,8 +1,7 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.domain.misc.ExplorationBaseXp;
-import com.github.mmo.game.service.domain.player.*;
+import com.github.mmo.game.service.model.player.*;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

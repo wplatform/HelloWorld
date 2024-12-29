@@ -6,47 +6,47 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2LocaleId.class)
-@Entity
+
+
 @Table(name = "map_locale")
 public class MapLocale {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "MapName_lang")
+    
+    @Column("MapName_lang")
     private String mapnameLang;
 
-    @Lob
-    @Column(name = "MapDescription0_lang")
+    
+    @Column("MapDescription0_lang")
     private String mapdescription0Lang;
 
-    @Lob
-    @Column(name = "MapDescription1_lang")
+    
+    @Column("MapDescription1_lang")
     private String mapdescription1Lang;
 
-    @Lob
-    @Column(name = "PvpShortDescription_lang")
+    
+    @Column("PvpShortDescription_lang")
     private String pvpshortdescriptionLang;
 
-    @Lob
-    @Column(name = "PvpLongDescription_lang")
+    
+    @Column("PvpLongDescription_lang")
     private String pvplongdescriptionLang;
 
 }

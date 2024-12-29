@@ -1,33 +1,33 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_inventory")
 public class CharacterInventory {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "item", nullable = false)
+
+    @Column("item")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long guid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "bag", nullable = false)
+
+    @Column("bag")
     private Long bag;
 
-    @ColumnDefault("'0'")
-    @Column(name = "slot", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("slot")
     private Short slot;
 
 }

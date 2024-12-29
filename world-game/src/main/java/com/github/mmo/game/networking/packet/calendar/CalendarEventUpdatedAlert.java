@@ -29,8 +29,8 @@ public class CalendarEventUpdatedAlert extends ServerPacket
 		this.writeInt32(textureID);
 		this.writeInt8((byte)eventType.getValue());
 
-		this.writeBits(eventName.GetByteCount(), 8);
-		this.writeBits(description.GetByteCount(), 11);
+		this.writeBits(eventName.getBytes().length, 8);
+		this.writeBits(description.getBytes().length, 11);
 		this.writeBit(clearPending);
 		this.flushBits();
 

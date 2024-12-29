@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "skill_line_ability")
 @Db2DataBind(name = "SkillLineAbility.db2", layoutHash = 0x97B5A653, indexField = 1, parentIndexField = 4, fields = {
         @Db2Field(name = "raceMask", type = Db2Type.LONG, signed = true),
@@ -35,53 +35,53 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "flags", type = Db2Type.BYTE, signed = true)
 })
 public class SkillLineAbility implements DbcEntity {
-    @Column(name = "RaceMask")
+    @Column("RaceMask")
     private Long raceMask;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Spell")
+    @Column("ID")
+    private int id;
+
+    @Column("Spell")
     private Integer spell;
 
-    @Column(name = "SupercedesSpell")
+    @Column("SupercedesSpell")
     private Integer supercedesSpell;
 
-    @Column(name = "SkillLine")
+    @Column("SkillLine")
     private Short skillLine;
 
-    @Column(name = "TrivialSkillLineRankHigh")
+    @Column("TrivialSkillLineRankHigh")
     private Short trivialSkillLineRankHigh;
 
-    @Column(name = "TrivialSkillLineRankLow")
+    @Column("TrivialSkillLineRankLow")
     private Short trivialSkillLineRankLow;
 
-    @Column(name = "UniqueBit")
+    @Column("UniqueBit")
     private Short uniqueBit;
 
-    @Column(name = "TradeSkillCategoryID")
+    @Column("TradeSkillCategoryID")
     private Short tradeSkillCategoryID;
 
-    @Column(name = "NumSkillUps")
+    @Column("NumSkillUps")
     private Byte numSkillUps;
 
-    @Column(name = "ClassMask")
+    @Column("ClassMask")
     private Integer classMask;
 
-    @Column(name = "MinSkillLineRank")
+    @Column("MinSkillLineRank")
     private Short minSkillLineRank;
 
-    @Column(name = "AcquireMethod")
+    @Column("AcquireMethod")
     private Byte acquireMethod;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

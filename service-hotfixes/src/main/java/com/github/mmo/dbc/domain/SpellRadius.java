@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_radius")
 @Db2DataBind(name = "SpellRadius.db2", layoutHash = 0xC12E5C90, fields = {
         @Db2Field(name = "radius", type = Db2Type.FLOAT),
@@ -26,25 +26,25 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellRadius implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Radius")
+    @Column("ID")
+    private int id;
+
+    @Column("Radius")
     private Float radius;
 
-    @Column(name = "RadiusPerLevel")
+    @Column("RadiusPerLevel")
     private Float radiusPerLevel;
 
-    @Column(name = "RadiusMin")
+    @Column("RadiusMin")
     private Float radiusMin;
 
-    @Column(name = "RadiusMax")
+    @Column("RadiusMax")
     private Float radiusMax;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

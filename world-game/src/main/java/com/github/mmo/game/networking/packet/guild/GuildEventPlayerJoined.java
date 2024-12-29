@@ -17,7 +17,7 @@ public class GuildEventPlayerJoined extends ServerPacket
 		this.writeGuid(UUID);
 		this.writeInt32(virtualRealmAddress);
 
-		this.writeBits(name.GetByteCount(), 6);
+		this.writeBits(name.getBytes().length, 6);
 		this.writeString(name);
 	}
 }

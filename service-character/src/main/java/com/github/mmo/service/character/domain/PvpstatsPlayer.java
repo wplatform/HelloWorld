@@ -5,63 +5,63 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(PvpstatsPlayerId.class)
-@Entity
+
+
 @Table(name = "pvpstats_players")
 public class PvpstatsPlayer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "battleground_id", nullable = false)
+    @Column("battleground_id")
     private Long battlegroundId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "character_guid", nullable = false)
+    @Column("character_guid")
     private Long characterGuid;
 
-    @Column(name = "winner", nullable = false)
+    @Column("winner")
     private Boolean winner = false;
 
-    @Column(name = "score_killing_blows", columnDefinition = "int UNSIGNED not null")
+    @Column("score_killing_blows")
     private Long scoreKillingBlows;
 
-    @Column(name = "score_deaths", columnDefinition = "int UNSIGNED not null")
+    @Column("score_deaths")
     private Long scoreDeaths;
 
-    @Column(name = "score_honorable_kills", columnDefinition = "int UNSIGNED not null")
+    @Column("score_honorable_kills")
     private Long scoreHonorableKills;
 
-    @Column(name = "score_bonus_honor", columnDefinition = "int UNSIGNED not null")
+    @Column("score_bonus_honor")
     private Long scoreBonusHonor;
 
-    @Column(name = "score_damage_done", columnDefinition = "int UNSIGNED not null")
+    @Column("score_damage_done")
     private Long scoreDamageDone;
 
-    @Column(name = "score_healing_done", columnDefinition = "int UNSIGNED not null")
+    @Column("score_healing_done")
     private Long scoreHealingDone;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attr_1", columnDefinition = "int UNSIGNED not null")
+
+    @Column("attr_1")
     private Long attr1;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attr_2", columnDefinition = "int UNSIGNED not null")
+
+    @Column("attr_2")
     private Long attr2;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attr_3", columnDefinition = "int UNSIGNED not null")
+
+    @Column("attr_3")
     private Long attr3;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attr_4", columnDefinition = "int UNSIGNED not null")
+
+    @Column("attr_4")
     private Long attr4;
 
-    @ColumnDefault("'0'")
-    @Column(name = "attr_5", columnDefinition = "int UNSIGNED not null")
+
+    @Column("attr_5")
     private Long attr5;
 
 }

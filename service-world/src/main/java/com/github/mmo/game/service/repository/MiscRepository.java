@@ -1,8 +1,11 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.domain.misc.*;
-import com.github.mmo.game.service.domain.misc.ClassExpansionRequirement;
+import com.github.mmo.game.service.model.gossip.GossipMenuItemsLocale;
+import com.github.mmo.game.service.model.gossip.GossipMenuOption;
+import com.github.mmo.game.service.model.gossip.GossipMenus;
+import com.github.mmo.game.service.model.misc.*;
+import com.github.mmo.game.service.model.misc.ClassExpansionRequirement;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +17,7 @@ public interface MiscRepository {
 
     @Transactional(readOnly = true)
     @Query("SELECT entry, content_default, content_loc1, content_loc2, content_loc3, content_loc4, content_loc5, content_loc6, content_loc7, content_loc8 FROM trinity_string")
-    Stream<TrinityString> queryAllTrinityString();
+    Stream<SystemText> queryAllTrinityString();
 
     @Transactional(readOnly = true)
     @Query("SELECT raceID, expansion, achievementId FROM `race_unlock_requirement`")
@@ -49,4 +52,31 @@ public interface MiscRepository {
 
     @Query("SELECT id, speed, treatSpeedAsMoveTimeSeconds, jumpGravity, spellVisualId, progressCurveId, parabolicCurveId FROM jump_charge_params")
     List<JumpChargeParams> queryAllJumpChargeParams();
+
+
+    @Transactional(readOnly = true)
+    @Query("""
+            SELECT ID, Probability0, Probability1, Probability2, Probability3, Probability4, Probability5, Probability6, Probability7,
+            BroadcastTextID0, BroadcastTextID1, BroadcastTextID2, BroadcastTextID3, BroadcastTextID4, BroadcastTextID5, BroadcastTextID6, BroadcastTextID7 FROM npc_text
+            """)
+    Stream<NpcText> streamAllNpcText();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT menuId, TextId FROM gossip_menu")
+    Stream<GossipMenus> streamAllGossipMenu();
+
+    @Transactional(readOnly = true)
+    @Query("""
+            SELECT MenuID, GossipOptionID, OptionID, OptionNpc, OptionText, OptionBroadcastTextID, Language, Flags, ActionMenuID, ActionPoiID, GossipNpcOptionID,
+                    BoxCoded, BoxMoney, BoxText, BoxBroadcastTextID, SpellID, OverrideIconID
+                    FROM gossip_menu_option ORDER BY MenuID, OptionID
+            """)
+    Stream<GossipMenuOption> streamAllGossipMenuOption();
+    @Transactional(readOnly = true)
+    @Query("SELECT menuId, OptionID, locale, optionText, BoxText FROM gossip_menu_option_locale")
+    Stream<GossipMenuItemsLocale> streamAllGossipMenuOptionLocale();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT MenuID, FriendshipFactionID FROM gossip_menu_addon")
+    Stream<GossipMenuAddon> streamAllGossipMenuAddon();
 }

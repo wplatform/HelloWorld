@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "liquid_type")
 @Db2DataBind(name = "LiquidType.db2", layoutHash = 0x3313BBF3, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -41,163 +41,163 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class LiquidType implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private String name;
 
-    @Column(name = "Texture1")
+    @Column("Texture1")
     private String texture1;
 
-    @Column(name = "Texture2")
+    @Column("Texture2")
     private String texture2;
 
-    @Column(name = "Texture3")
+    @Column("Texture3")
     private String texture3;
 
-    @Column(name = "Texture4")
+    @Column("Texture4")
     private String texture4;
 
-    @Column(name = "Texture5")
+    @Column("Texture5")
     private String texture5;
 
-    @Column(name = "Texture6")
+    @Column("Texture6")
     private String texture6;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "MaxDarkenDepth")
+    @Column("MaxDarkenDepth")
     private Float maxDarkenDepth;
 
-    @Column(name = "FogDarkenIntensity")
+    @Column("FogDarkenIntensity")
     private Float fogDarkenIntensity;
 
-    @Column(name = "AmbDarkenIntensity")
+    @Column("AmbDarkenIntensity")
     private Float ambDarkenIntensity;
 
-    @Column(name = "DirDarkenIntensity")
+    @Column("DirDarkenIntensity")
     private Float dirDarkenIntensity;
 
-    @Column(name = "ParticleScale")
+    @Column("ParticleScale")
     private Float particleScale;
 
-    @Column(name = "Color1")
+    @Column("Color1")
     private Integer color1;
 
-    @Column(name = "Color2")
+    @Column("Color2")
     private Integer color2;
 
-    @Column(name = "Float1")
+    @Column("Float1")
     private Float float1;
 
-    @Column(name = "Float2")
+    @Column("Float2")
     private Float float2;
 
-    @Column(name = "Float3")
+    @Column("Float3")
     private Float float3;
 
-    @Column(name = "Float4")
+    @Column("Float4")
     private Float float4;
 
-    @Column(name = "Float5")
+    @Column("Float5")
     private Float float5;
 
-    @Column(name = "Float6")
+    @Column("Float6")
     private Float float6;
 
-    @Column(name = "Float7")
+    @Column("Float7")
     private Float float7;
 
-    @Column(name = "Float8")
+    @Column("Float8")
     private Float float8;
 
-    @Column(name = "Float9")
+    @Column("Float9")
     private Float float9;
 
-    @Column(name = "Float10")
+    @Column("Float10")
     private Float float10;
 
-    @Column(name = "Float11")
+    @Column("Float11")
     private Float float11;
 
-    @Column(name = "Float12")
+    @Column("Float12")
     private Float float12;
 
-    @Column(name = "Float13")
+    @Column("Float13")
     private Float float13;
 
-    @Column(name = "Float14")
+    @Column("Float14")
     private Float float14;
 
-    @Column(name = "Float15")
+    @Column("Float15")
     private Float float15;
 
-    @Column(name = "Float16")
+    @Column("Float16")
     private Float float16;
 
-    @Column(name = "Float17")
+    @Column("Float17")
     private Float float17;
 
-    @Column(name = "Float18")
+    @Column("Float18")
     private Float float18;
 
-    @Column(name = "Int1")
+    @Column("Int1")
     private Integer int1;
 
-    @Column(name = "Int2")
+    @Column("Int2")
     private Integer int2;
 
-    @Column(name = "Int3")
+    @Column("Int3")
     private Integer int3;
 
-    @Column(name = "Int4")
+    @Column("Int4")
     private Integer int4;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "LightID")
+    @Column("LightID")
     private Short lightID;
 
-    @Column(name = "SoundBank")
+    @Column("SoundBank")
     private Byte soundBank;
 
-    @Column(name = "ParticleMovement")
+    @Column("ParticleMovement")
     private Byte particleMovement;
 
-    @Column(name = "ParticleTexSlots")
+    @Column("ParticleTexSlots")
     private Byte particleTexSlots;
 
-    @Column(name = "MaterialID")
+    @Column("MaterialID")
     private Byte materialID;
 
-    @Column(name = "FrameCountTexture1")
+    @Column("FrameCountTexture1")
     private Byte frameCountTexture1;
 
-    @Column(name = "FrameCountTexture2")
+    @Column("FrameCountTexture2")
     private Byte frameCountTexture2;
 
-    @Column(name = "FrameCountTexture3")
+    @Column("FrameCountTexture3")
     private Byte frameCountTexture3;
 
-    @Column(name = "FrameCountTexture4")
+    @Column("FrameCountTexture4")
     private Byte frameCountTexture4;
 
-    @Column(name = "FrameCountTexture5")
+    @Column("FrameCountTexture5")
     private Byte frameCountTexture5;
 
-    @Column(name = "FrameCountTexture6")
+    @Column("FrameCountTexture6")
     private Byte frameCountTexture6;
 
-    @Column(name = "SoundID")
+    @Column("SoundID")
     private Integer soundID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

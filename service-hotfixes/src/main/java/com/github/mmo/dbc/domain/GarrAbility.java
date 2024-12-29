@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_ability")
 @Db2DataBind(name = "GarrAbility.db2", layoutHash = 0x5DF95DBD, indexField = 7, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -30,35 +30,35 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class GarrAbility implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "FactionChangeGarrAbilityID")
+    @Column("FactionChangeGarrAbilityID")
     private Short factionChangeGarrAbilityID;
 
-    @Column(name = "GarrAbilityCategoryID")
+    @Column("GarrAbilityCategoryID")
     private Byte garrAbilityCategoryID;
 
-    @Column(name = "GarrFollowerTypeID")
+    @Column("GarrFollowerTypeID")
     private Byte garrFollowerTypeID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

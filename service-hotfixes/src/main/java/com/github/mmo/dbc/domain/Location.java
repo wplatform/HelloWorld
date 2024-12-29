@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "location")
 @Db2DataBind(name = "Location.db2", layoutHash = 0xBBC1BE7A, fields = {
         @Db2Field(name = {"posX", "posY", "posZ"}, type = Db2Type.FLOAT),
@@ -24,37 +24,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Location implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @ColumnDefault("0")
-    @Column(name = "PosX", nullable = false)
+
+    @Column("PosX")
     private Float posX;
 
-    @ColumnDefault("0")
-    @Column(name = "PosY", nullable = false)
+
+    @Column("PosY")
     private Float posY;
 
-    @ColumnDefault("0")
-    @Column(name = "PosZ", nullable = false)
+
+    @Column("PosZ")
     private Float posZ;
 
-    @ColumnDefault("0")
-    @Column(name = "Rot1", nullable = false)
+
+    @Column("Rot1")
     private Float rot1;
 
-    @ColumnDefault("0")
-    @Column(name = "Rot2", nullable = false)
+
+    @Column("Rot2")
     private Float rot2;
 
-    @ColumnDefault("0")
-    @Column(name = "Rot3", nullable = false)
+
+    @Column("Rot3")
     private Float rot3;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_target_restrictions")
 @Db2DataBind(name = "SpellTargetRestrictions.db2", layoutHash = 0x7B330026, parentIndexField = 7, fields = {
         @Db2Field(name = "coneDegrees", type = Db2Type.FLOAT),
@@ -30,37 +30,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellTargetRestriction implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ConeDegrees")
+    @Column("ID")
+    private int id;
+
+    @Column("ConeDegrees")
     private Float coneDegrees;
 
-    @Column(name = "Width")
+    @Column("Width")
     private Float width;
 
-    @Column(name = "Targets")
+    @Column("Targets")
     private Integer targets;
 
-    @Column(name = "TargetCreatureType")
+    @Column("TargetCreatureType")
     private Short targetCreatureType;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "MaxTargets")
+    @Column("MaxTargets")
     private Short maxTargets;
 
-    @Column(name = "MaxTargetLevel")
+    @Column("MaxTargetLevel")
     private Integer maxTargetLevel;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

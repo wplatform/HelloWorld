@@ -222,7 +222,7 @@ class WardenWin extends Warden
 			}
 			else if (!check.str.isEmpty())
 			{
-				buff.writeInt8((byte)check.str.GetByteCount());
+				buff.writeInt8((byte)check.str.getBytes().length);
                 buff.writeString(check.str);
 			}
 		}
@@ -337,7 +337,7 @@ class WardenWin extends Warden
         var length = buff.readUInt16();
         var Checksum = buff.readUInt();
 
-		if (!isValidCheckSum(Checksum, buff.getData(), length))
+		if (!isValidCheckSum(Checksum, buff.getData())
 		{
 			var penalty = applyPenalty();
 			Log.outWarn(LogFilter.Warden, "{0} failed checksum. Action: {1}", session.getPlayerInfo(), penalty);

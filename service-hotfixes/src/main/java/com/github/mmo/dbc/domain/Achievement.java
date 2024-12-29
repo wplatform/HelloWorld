@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "achievement")
 @Db2DataBind(name = "Achievement.db2", layoutHash = 0x2C4BE18C, indexField = 12, parentIndexField = 7, fields = {
         @Db2Field(name = "title", type = Db2Type.STRING),
@@ -37,56 +37,56 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "criteriaTree", type = Db2Type.INT)
 })
 public class Achievement implements DbcEntity {
-    @Column(name = "Title")
+    @Column("Title")
     private LocalizedString title;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Reward")
+    @Column("Reward")
     private LocalizedString reward;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "InstanceID")
+    @Column("InstanceID")
     private Short instanceID;
 
-    @Column(name = "Supercedes")
+    @Column("Supercedes")
     private Short supercedes;
 
-    @Column(name = "Category")
+    @Column("Category")
     private Short category;
 
-    @Column(name = "UiOrder")
+    @Column("UiOrder")
     private Short uiOrder;
 
-    @Column(name = "SharesCriteria")
+    @Column("SharesCriteria")
     private Short sharesCriteria;
 
-    @Column(name = "Faction")
+    @Column("Faction")
     private Byte faction;
 
-    @Column(name = "Points")
+    @Column("Points")
     private Byte points;
 
-    @Column(name = "MinimumCriteria")
+    @Column("MinimumCriteria")
     private Byte minimumCriteria;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "IconFileID")
+    @Column("IconFileID")
     private Integer iconFileID;
 
-    @Column(name = "CriteriaTree")
+    @Column("CriteriaTree")
     private Integer criteriaTree;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

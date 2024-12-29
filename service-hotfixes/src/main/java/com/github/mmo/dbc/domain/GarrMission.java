@@ -6,143 +6,143 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_mission")
 public class GarrMission {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("ID")
     private Long id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name")
+
+    @Column("Name")
     private String name;
 
-    @Lob
-    @Column(name = "Location")
+
+    @Column("Location")
     private String location;
 
-    @Lob
-    @Column(name = "Description")
+
+    @Column("Description")
     private String description;
 
-    @ColumnDefault("0")
-    @Column(name = "MapPosX", nullable = false)
+
+    @Column("MapPosX")
     private Float mapPosX;
 
-    @ColumnDefault("0")
-    @Column(name = "MapPosY", nullable = false)
+
+    @Column("MapPosY")
     private Float mapPosY;
 
-    @ColumnDefault("0")
-    @Column(name = "WorldPosX", nullable = false)
+
+    @Column("WorldPosX")
     private Float worldPosX;
 
-    @ColumnDefault("0")
-    @Column(name = "WorldPosY", nullable = false)
+
+    @Column("WorldPosY")
     private Float worldPosY;
 
-    @ColumnDefault("'0'")
-    @Column(name = "GarrTypeID", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("GarrTypeID")
     private Short garrTypeID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "GarrMissionTypeID", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("GarrMissionTypeID")
     private Short garrMissionTypeID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "GarrFollowerTypeID", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("GarrFollowerTypeID")
     private Short garrFollowerTypeID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "MaxFollowers", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("MaxFollowers")
     private Short maxFollowers;
 
-    @ColumnDefault("'0'")
-    @Column(name = "MissionCost", columnDefinition = "int UNSIGNED not null")
+
+    @Column("MissionCost")
     private Long missionCost;
 
-    @ColumnDefault("'0'")
-    @Column(name = "MissionCostCurrencyTypesID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("MissionCostCurrencyTypesID")
     private Integer missionCostCurrencyTypesID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "OfferedGarrMissionTextureID", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("OfferedGarrMissionTextureID")
     private Short offeredGarrMissionTextureID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "UiTextureKitID", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("UiTextureKitID")
     private Integer uiTextureKitID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "EnvGarrMechanicID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("EnvGarrMechanicID")
     private Long envGarrMechanicID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "EnvGarrMechanicTypeID", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("EnvGarrMechanicTypeID")
     private Short envGarrMechanicTypeID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PlayerConditionID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("PlayerConditionID")
     private Long playerConditionID;
 
-    @ColumnDefault("0")
-    @Column(name = "TargetLevel", nullable = false)
+
+    @Column("TargetLevel")
     private Byte targetLevel;
 
-    @ColumnDefault("'0'")
-    @Column(name = "TargetItemLevel", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("TargetItemLevel")
     private Integer targetItemLevel;
 
-    @ColumnDefault("0")
-    @Column(name = "MissionDuration", nullable = false)
+
+    @Column("MissionDuration")
     private Integer missionDuration;
 
-    @ColumnDefault("0")
-    @Column(name = "TravelDuration", nullable = false)
+
+    @Column("TravelDuration")
     private Integer travelDuration;
 
-    @ColumnDefault("'0'")
-    @Column(name = "OfferDuration", columnDefinition = "int UNSIGNED not null")
+
+    @Column("OfferDuration")
     private Long offerDuration;
 
-    @ColumnDefault("'0'")
-    @Column(name = "BaseCompletionChance", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("BaseCompletionChance")
     private Short baseCompletionChance;
 
-    @ColumnDefault("'0'")
-    @Column(name = "BaseFollowerXP", columnDefinition = "int UNSIGNED not null")
+
+    @Column("BaseFollowerXP")
     private Long baseFollowerXP;
 
-    @ColumnDefault("'0'")
-    @Column(name = "OvermaxRewardPackID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("OvermaxRewardPackID")
     private Long overmaxRewardPackID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "FollowerDeathChance", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("FollowerDeathChance")
     private Short followerDeathChance;
 
-    @ColumnDefault("'0'")
-    @Column(name = "AreaID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("AreaID")
     private Long areaID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Flags", columnDefinition = "int UNSIGNED not null")
+
+    @Column("Flags")
     private Long flags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "GarrMissionSetID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("GarrMissionSetID")
     private Long garrMissionSetID;
 
 }

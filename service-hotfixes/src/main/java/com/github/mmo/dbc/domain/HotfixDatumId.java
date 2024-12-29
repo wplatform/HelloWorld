@@ -1,6 +1,6 @@
 package com.github.mmo.dbc.domain;
 
-import jakarta.persistence.Column;
+import org.springframework.data.relational.core.mapping.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,13 +16,13 @@ import java.util.Objects;
 @Embeddable
 public class HotfixDatumId implements Serializable {
     private static final long serialVersionUID = 8839744695552428397L;
-    @Column(name = "Id", nullable = false)
-    private Integer id;
+    @Column("Id")
+    private int id;
 
-    @Column(name = "TableHash", columnDefinition = "int UNSIGNED not null")
+    @Column("TableHash")
     private Long tableHash;
 
-    @Column(name = "RecordId", nullable = false)
+    @Column("RecordId")
     private Integer recordId;
 
     @Override

@@ -6,35 +6,35 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2LocaleId.class)
-@Entity
+
+
 @Table(name = "spell_item_enchantment_locale")
 public class SpellItemEnchantmentLocale {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("ID")
     private  Integer id;
 
     @Id
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name_lang")
+    
+    @Column("Name_lang")
     private String nameLang;
 
-    @Lob
-    @Column(name = "HordeName_lang")
+    
+    @Column("HordeName_lang")
     private String hordenameLang;
 
 }

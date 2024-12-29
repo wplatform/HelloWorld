@@ -1,74 +1,74 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "groups")
 public class Group {
     @Id
-    @Column(name = "guid", columnDefinition = "int UNSIGNED not null")
+    @Column("guid")
     private Long id;
 
-    @Column(name = "leaderGuid", nullable = false)
+    @Column("leaderGuid")
     private Long leaderGuid;
 
-    @Column(name = "lootMethod", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("lootMethod")
     private Short lootMethod;
 
-    @Column(name = "looterGuid", nullable = false)
+    @Column("looterGuid")
     private Long looterGuid;
 
-    @Column(name = "lootThreshold", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("lootThreshold")
     private Short lootThreshold;
 
-    @Column(name = "icon1", nullable = false, length = 16)
+    @Column("icon1")
     private String icon1;
 
-    @Column(name = "icon2", nullable = false, length = 16)
+    @Column("icon2")
     private String icon2;
 
-    @Column(name = "icon3", nullable = false, length = 16)
+    @Column("icon3")
     private String icon3;
 
-    @Column(name = "icon4", nullable = false, length = 16)
+    @Column("icon4")
     private String icon4;
 
-    @Column(name = "icon5", nullable = false, length = 16)
+    @Column("icon5")
     private String icon5;
 
-    @Column(name = "icon6", nullable = false, length = 16)
+    @Column("icon6")
     private String icon6;
 
-    @Column(name = "icon7", nullable = false, length = 16)
+    @Column("icon7")
     private String icon7;
 
-    @Column(name = "icon8", nullable = false, length = 16)
+    @Column("icon8")
     private String icon8;
 
-    @Column(name = "groupType", columnDefinition = "smallint UNSIGNED not null")
+    @Column("groupType")
     private Integer groupType;
 
-    @ColumnDefault("'1'")
-    @Column(name = "difficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("difficulty")
     private Short difficulty;
 
-    @ColumnDefault("'14'")
-    @Column(name = "raidDifficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("raidDifficulty")
     private Short raidDifficulty;
 
-    @ColumnDefault("'3'")
-    @Column(name = "legacyRaidDifficulty", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("legacyRaidDifficulty")
     private Short legacyRaidDifficulty;
 
-    @Column(name = "masterLooterGuid", nullable = false)
+    @Column("masterLooterGuid")
     private Long masterLooterGuid;
 
 }

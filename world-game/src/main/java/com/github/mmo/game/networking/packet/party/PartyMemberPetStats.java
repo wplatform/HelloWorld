@@ -24,7 +24,7 @@ class PartyMemberPetStats
 		data.writeInt32(auras.size());
 		auras.forEach(p -> p.write(data));
 
-		data.writeBits(name.GetByteCount(), 8);
+		data.writeBits(name.getBytes().length, 8);
 		data.flushBits();
 		data.writeString(name);
 	}

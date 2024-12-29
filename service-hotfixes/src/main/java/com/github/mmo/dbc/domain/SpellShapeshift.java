@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_shapeshift")
 @Db2DataBind(name = "SpellShapeshift.db2", layoutHash = 0xA461C24D, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -26,31 +26,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellShapeshift implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "ShapeshiftExclude1")
+    @Column("ShapeshiftExclude1")
     private Integer shapeshiftExclude1;
 
-    @Column(name = "ShapeshiftExclude2")
+    @Column("ShapeshiftExclude2")
     private Integer shapeshiftExclude2;
 
-    @Column(name = "ShapeshiftMask1")
+    @Column("ShapeshiftMask1")
     private Integer shapeshiftMask1;
 
-    @Column(name = "ShapeshiftMask2")
+    @Column("ShapeshiftMask2")
     private Integer shapeshiftMask2;
 
-    @Column(name = "StanceBarOrder")
+    @Column("StanceBarOrder")
     private Byte stanceBarOrder;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

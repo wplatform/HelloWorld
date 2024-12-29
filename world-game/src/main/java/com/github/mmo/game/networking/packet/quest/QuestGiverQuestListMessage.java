@@ -1,6 +1,10 @@
 package com.github.mmo.game.networking.packet.quest;
 
 
+import com.github.mmo.game.entity.object.ObjectGuid;
+import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.packet.npc.ClientGossipText;
+
 import java.util.*;
 
 
@@ -23,7 +27,7 @@ public class QuestGiverQuestListMessage extends ServerPacket
 		this.writeInt32(greetEmoteDelay);
 		this.writeInt32(greetEmoteType);
 		this.writeInt32(questDataText.size());
-		this.writeBits(greeting.GetByteCount(), 11);
+		this.writeBits(greeting.getBytes().length, 11);
 		this.flushBits();
 
 		for (var gossip : questDataText)

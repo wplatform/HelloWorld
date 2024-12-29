@@ -36,7 +36,7 @@ public class CalendarInviteAlert extends ServerPacket
 		this.writeGuid(invitedByGuid);
 		this.writeGuid(ownerGuid);
 
-		this.writeBits(eventName.GetByteCount(), 8);
+		this.writeBits(eventName.getBytes().length, 8);
 		this.flushBits();
 		this.writeString(eventName);
 	}

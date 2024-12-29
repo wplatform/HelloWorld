@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_class_options")
 @Db2DataBind(name = "SpellClassOptions.db2", layoutHash = 0x80FBD67A, fields = {
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true),
@@ -26,34 +26,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SpellClassOption implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "SpellID")
+    @Column("ID")
+    private int id;
+
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "SpellClassMask1")
+    @Column("SpellClassMask1")
     private Integer spellClassMask1;
 
-    @Column(name = "SpellClassMask2")
+    @Column("SpellClassMask2")
     private Integer spellClassMask2;
 
-    @Column(name = "SpellClassMask3")
+    @Column("SpellClassMask3")
     private Integer spellClassMask3;
 
-    @Column(name = "SpellClassMask4")
+    @Column("SpellClassMask4")
     private Integer spellClassMask4;
 
-    @Column(name = "SpellClassSet")
+    @Column("SpellClassSet")
     private Byte spellClassSet;
 
-    @Column(name = "ModalNextSpell")
+    @Column("ModalNextSpell")
     private Integer modalNextSpell;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

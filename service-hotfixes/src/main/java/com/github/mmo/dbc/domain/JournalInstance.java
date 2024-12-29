@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "journal_instance")
 @Db2DataBind(name = "JournalInstance.db2", layoutHash = 0x1691CC3D, indexField = 10, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -33,44 +33,44 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class JournalInstance implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "ButtonFileDataID")
+    @Column("ButtonFileDataID")
     private Integer buttonFileDataID;
 
-    @Column(name = "ButtonSmallFileDataID")
+    @Column("ButtonSmallFileDataID")
     private Integer buttonSmallFileDataID;
 
-    @Column(name = "BackgroundFileDataID")
+    @Column("BackgroundFileDataID")
     private Integer backgroundFileDataID;
 
-    @Column(name = "LoreFileDataID")
+    @Column("LoreFileDataID")
     private Integer loreFileDataID;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "AreaID")
+    @Column("AreaID")
     private Short areaID;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Byte orderIndex;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

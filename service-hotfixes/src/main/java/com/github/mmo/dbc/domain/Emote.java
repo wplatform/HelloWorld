@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "emotes")
 @Db2DataBind(name = "Emotes.db2", layoutHash = 0x14467F27, fields = {
         @Db2Field(name = "raceMask", type = Db2Type.LONG, signed = true),
@@ -31,40 +31,40 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Emote implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "RaceMask")
+    @Column("RaceMask")
     private Long raceMask;
 
-    @Column(name = "EmoteSlashCommand")
+    @Column("EmoteSlashCommand")
     private String emoteSlashCommand;
 
-    @Column(name = "EmoteFlags")
+    @Column("EmoteFlags")
     private Integer emoteFlags;
 
-    @Column(name = "SpellVisualKitID")
+    @Column("SpellVisualKitID")
     private Integer spellVisualKitID;
 
-    @Column(name = "AnimID")
+    @Column("AnimID")
     private Short animID;
 
-    @Column(name = "EmoteSpecProc")
+    @Column("EmoteSpecProc")
     private Byte emoteSpecProc;
 
-    @Column(name = "ClassMask")
+    @Column("ClassMask")
     private Integer classMask;
 
-    @Column(name = "EmoteSpecProcParam")
+    @Column("EmoteSpecProcParam")
     private Integer emoteSpecProcParam;
 
-    @Column(name = "EventSoundID")
+    @Column("EventSoundID")
     private Integer eventSoundID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

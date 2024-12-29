@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_plot_building")
 @Db2DataBind(name = "GarrPlotBuilding.db2", layoutHash = 0x3F77A6FA, fields = {
         @Db2Field(name = "garrPlotID", type = Db2Type.BYTE),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrPlotBuilding implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "GarrPlotID")
+    @Column("ID")
+    private int id;
+
+    @Column("GarrPlotID")
     private Byte garrPlotID;
 
-    @Column(name = "GarrBuildingID")
+    @Column("GarrBuildingID")
     private Short garrBuildingID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

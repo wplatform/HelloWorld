@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "journal_encounter_item")
 @Db2DataBind(name = "JournalEncounterItem.db2", layoutHash = 0x39230FF9, indexField = 5, parentIndexField = 1, fields = {
         @Db2Field(name = "itemID", type = Db2Type.INT),
@@ -27,29 +27,29 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class JournalEncounterItem implements DbcEntity {
-    @Column(name = "ItemID")
+    @Column("ItemID")
     private Integer itemID;
 
-    @Column(name = "JournalEncounterID")
+    @Column("JournalEncounterID")
     private Short journalEncounterID;
 
-    @Column(name = "DifficultyMask")
+    @Column("DifficultyMask")
     private Byte difficultyMask;
 
-    @Column(name = "FactionMask")
+    @Column("FactionMask")
     private Byte factionMask;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

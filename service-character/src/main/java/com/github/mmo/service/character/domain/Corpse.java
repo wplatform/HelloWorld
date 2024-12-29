@@ -5,76 +5,76 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "corpse")
 public class Corpse {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long id;
 
-    @ColumnDefault("0")
-    @Column(name = "posX", nullable = false)
+
+    @Column("posX")
     private Float posX;
 
-    @ColumnDefault("0")
-    @Column(name = "posY", nullable = false)
+
+    @Column("posY")
     private Float posY;
 
-    @ColumnDefault("0")
-    @Column(name = "posZ", nullable = false)
+
+    @Column("posZ")
     private Float posZ;
 
-    @ColumnDefault("0")
-    @Column(name = "orientation", nullable = false)
+
+    @Column("orientation")
     private Float orientation;
 
-    @ColumnDefault("'0'")
-    @Column(name = "mapId", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("mapId")
     private Integer mapId;
 
-    @ColumnDefault("'0'")
-    @Column(name = "displayId", columnDefinition = "int UNSIGNED not null")
+
+    @Column("displayId")
     private Long displayId;
 
-    @Lob
-    @Column(name = "itemCache", nullable = false)
+    
+    @Column("itemCache")
     private String itemCache;
 
-    @ColumnDefault("'0'")
-    @Column(name = "race", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("race")
     private Short race;
 
-    @ColumnDefault("'0'")
-    @Column(name = "class", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("class")
     private Short classField;
 
-    @ColumnDefault("'0'")
-    @Column(name = "gender", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("gender")
     private Short gender;
 
-    @ColumnDefault("'0'")
-    @Column(name = "flags", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("flags")
     private Short flags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "dynFlags", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("dynFlags")
     private Short dynFlags;
 
-    @ColumnDefault("'0'")
-    @Column(name = "time", columnDefinition = "int UNSIGNED not null")
+
+    @Column("time")
     private Long time;
 
-    @ColumnDefault("'0'")
-    @Column(name = "corpseType", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("corpseType")
     private Short corpseType;
 
-    @ColumnDefault("'0'")
-    @Column(name = "instanceId", columnDefinition = "int UNSIGNED not null")
+
+    @Column("instanceId")
     private Long instanceId;
 
 }

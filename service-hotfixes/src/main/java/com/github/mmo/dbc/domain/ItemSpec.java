@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_spec")
 @Db2DataBind(name = "ItemSpec.db2", layoutHash = 0xB17B7986, parentIndexField = 3, fields = {
         @Db2Field(name = "specializationID", type = Db2Type.SHORT),
@@ -28,31 +28,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemSpec implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "SpecializationID")
+    @Column("SpecializationID")
     private Short specializationID;
 
-    @Column(name = "MinLevel")
+    @Column("MinLevel")
     private Byte minLevel;
 
-    @Column(name = "MaxLevel")
+    @Column("MaxLevel")
     private Byte maxLevel;
 
-    @Column(name = "ItemType")
+    @Column("ItemType")
     private Byte itemType;
 
-    @Column(name = "PrimaryStat")
+    @Column("PrimaryStat")
     private Byte primaryStat;
 
-    @Column(name = "SecondaryStat")
+    @Column("SecondaryStat")
     private Byte secondaryStat;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

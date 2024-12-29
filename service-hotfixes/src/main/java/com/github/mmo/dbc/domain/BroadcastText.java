@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "broadcast_text")
 @Db2DataBind(name = "BroadcastText.db2", layoutHash = 0x51BF0C33, fields = {
         @Db2Field(name = "text", type = Db2Type.STRING),
@@ -32,55 +32,55 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class BroadcastText implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Text")
+    @Column("Text")
     private LocalizedString text;
 
-    @Column(name = "Text1")
+    @Column("Text1")
     private LocalizedString text1;
 
-    @Column(name = "EmoteID1")
+    @Column("EmoteID1")
     private Short emoteID1;
 
-    @Column(name = "EmoteID2")
+    @Column("EmoteID2")
     private Short emoteID2;
 
-    @Column(name = "EmoteID3")
+    @Column("EmoteID3")
     private Short emoteID3;
 
-    @Column(name = "EmoteDelay1")
+    @Column("EmoteDelay1")
     private Short emoteDelay1;
 
-    @Column(name = "EmoteDelay2")
+    @Column("EmoteDelay2")
     private Short emoteDelay2;
 
-    @Column(name = "EmoteDelay3")
+    @Column("EmoteDelay3")
     private Short emoteDelay3;
 
-    @Column(name = "EmotesID")
+    @Column("EmotesID")
     private Short emotesID;
 
-    @Column(name = "LanguageID")
+    @Column("LanguageID")
     private Byte languageID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "ConditionID")
+    @Column("ConditionID")
     private Integer conditionID;
 
-    @Column(name = "SoundEntriesID1")
+    @Column("SoundEntriesID1")
     private Integer soundEntriesID1;
 
-    @Column(name = "SoundEntriesID2")
+    @Column("SoundEntriesID2")
     private Integer soundEntriesID2;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_appearance_set")
 @Db2DataBind(name = "ArtifactAppearanceSet.db2", layoutHash = 0x53DFED74, indexField = 7, parentIndexField = 8, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -31,38 +31,38 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "artifactID", type = Db2Type.BYTE)
 })
 public class ArtifactAppearanceSet implements DbcEntity {
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "UiCameraID")
+    @Column("UiCameraID")
     private Short uiCameraID;
 
-    @Column(name = "AltHandUICameraID")
+    @Column("AltHandUICameraID")
     private Short altHandUICameraID;
 
-    @Column(name = "DisplayIndex")
+    @Column("DisplayIndex")
     private Byte displayIndex;
 
-    @Column(name = "ForgeAttachmentOverride")
+    @Column("ForgeAttachmentOverride")
     private Byte forgeAttachmentOverride;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "ArtifactID")
+    @Column("ArtifactID")
     private Short artifactID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

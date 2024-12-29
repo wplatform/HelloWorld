@@ -15,7 +15,7 @@ public class PartyCommandResult extends ServerPacket
 	@Override
 	public void write()
 	{
-        this.writeBits(name.GetByteCount(), 9);
+        this.writeBits(name.getBytes().length, 9);
         this.writeBits(command, 4);
         this.writeBits(result, 6);
 

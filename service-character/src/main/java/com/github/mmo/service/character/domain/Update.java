@@ -5,34 +5,34 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 import java.time.Instant;
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "updates")
 public class Update {
     @Id
-    @Column(name = "name", nullable = false, length = 200)
+    @Column("name")
     private String name;
 
-    @ColumnDefault("''")
-    @Column(name = "hash", length = 40)
+
+    @Column("hash")
     private String hash;
 
-    @ColumnDefault("'RELEASED'")
-    @Lob
-    @Column(name = "state", nullable = false)
+
+    
+    @Column("state")
     private String state;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "timestamp", nullable = false)
+
+    @Column("timestamp")
     private Instant timestamp;
 
-    @ColumnDefault("'0'")
-    @Column(name = "speed", columnDefinition = "int UNSIGNED not null")
+
+    @Column("speed")
     private Long speed;
 
 }

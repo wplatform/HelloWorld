@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item")
 @Db2DataBind(name = "Item.db2", layoutHash = 0x0DFCC83D, fields = {
         @Db2Field(name = "iconFileDataID", type = Db2Type.INT, signed = true),
@@ -30,37 +30,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Item implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "IconFileDataID")
+    @Column("IconFileDataID")
     private Integer iconFileDataID;
 
-    @Column(name = "ClassID")
+    @Column("ClassID")
     private Byte classID;
 
-    @Column(name = "SubclassID")
+    @Column("SubclassID")
     private Byte subclassID;
 
-    @Column(name = "SoundOverrideSubclassID")
+    @Column("SoundOverrideSubclassID")
     private Byte soundOverrideSubclassID;
 
-    @Column(name = "Material")
+    @Column("Material")
     private Byte material;
 
-    @Column(name = "InventoryType")
+    @Column("InventoryType")
     private Byte inventoryType;
 
-    @Column(name = "SheatheType")
+    @Column("SheatheType")
     private Byte sheatheType;
 
-    @Column(name = "ItemGroupSoundsID")
+    @Column("ItemGroupSoundsID")
     private Byte itemGroupSoundsID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

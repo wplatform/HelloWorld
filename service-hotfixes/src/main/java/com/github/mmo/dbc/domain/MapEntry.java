@@ -15,13 +15,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "map")
 @Db2DataBind(name = "Map.db2", layoutHash = 0xF568DF12, fields = {
         @Db2Field(name = "directory", type = Db2Type.STRING_NOT_LOCALIZED),
@@ -48,82 +48,82 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class MapEntry implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Directory")
+    @Column("ID")
+    private int id;
+
+    @Column("Directory")
     private String directory;
 
-    @Column(name = "MapName")
+    @Column("MapName")
     private LocalizedString mapName;
 
-    @Column(name = "MapDescription0")
+    @Column("MapDescription0")
     private LocalizedString mapDescription0;
 
-    @Column(name = "MapDescription1")
+    @Column("MapDescription1")
     private LocalizedString mapDescription1;
 
-    @Column(name = "PvpShortDescription")
+    @Column("PvpShortDescription")
     private LocalizedString pvpShortDescription;
 
-    @Column(name = "PvpLongDescription")
+    @Column("PvpLongDescription")
     private LocalizedString pvpLongDescription;
 
-    @Column(name = "Flags1")
+    @Column("Flags1")
     private Integer flags1;
 
-    @Column(name = "Flags2")
+    @Column("Flags2")
     private Integer flags2;
 
-    @Column(name = "MinimapIconScale")
+    @Column("MinimapIconScale")
     private Float minimapIconScale;
 
-    @Column(name = "CorpseX")
+    @Column("CorpseX")
     private Float corpseX;
 
-    @Column(name = "CorpseY")
+    @Column("CorpseY")
     private Float corpseY;
 
-    @Column(name = "AreaTableID")
+    @Column("AreaTableID")
     private Short areaTableID;
 
-    @Column(name = "LoadingScreenID")
+    @Column("LoadingScreenID")
     private Short loadingScreenID;
 
-    @Column(name = "CorpseMapID")
+    @Column("CorpseMapID")
     private Short corpseMapID;
 
-    @Column(name = "TimeOfDayOverride")
+    @Column("TimeOfDayOverride")
     private Short timeOfDayOverride;
 
-    @Column(name = "ParentMapID")
+    @Column("ParentMapID")
     private Short parentMapID;
 
-    @Column(name = "CosmeticParentMapID")
+    @Column("CosmeticParentMapID")
     private Short cosmeticParentMapID;
 
-    @Column(name = "WindSettingsID")
+    @Column("WindSettingsID")
     private Short windSettingsID;
 
-    @Column(name = "instanceType")
+    @Column("instanceType")
     private Byte instanceType;
 
-    @Column(name = "MapType")
+    @Column("MapType")
     private Byte mapType;
 
-    @Column(name = "ExpansionID")
+    @Column("ExpansionID")
     private Byte expansionID;
 
-    @Column(name = "MaxPlayers")
+    @Column("MaxPlayers")
     private Byte maxPlayers;
 
-    @Column(name = "TimeOffset")
+    @Column("TimeOffset")
     private Byte timeOffset;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
     @Transient

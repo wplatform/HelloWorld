@@ -5,25 +5,25 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(GameEventConditionSaveId.class)
-@Entity
+
+
 @Table(name = "game_event_condition_save")
 public class GameEventConditionSave {
     @Id
-    @Column(name = "eventEntry", columnDefinition = "tinyint UNSIGNED not null")
+    @Column("eventEntry")
     private Short eventEntry;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "condition_id", columnDefinition = "int UNSIGNED not null")
+
+    @Column("condition_id")
     private Long conditionId;
 
-    @ColumnDefault("0")
-    @Column(name = "done")
+
+    @Column("done")
     private Float done;
 
 }

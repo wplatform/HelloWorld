@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "area_trigger")
 @Db2DataBind(name = "AreaTrigger.db2", layoutHash = 0x378573E8, indexField = 14, parentIndexField = 6, fields = {
         @Db2Field(name = {"posX", "posY", "posZ"}, type = Db2Type.FLOAT),
@@ -36,62 +36,62 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "id", type = Db2Type.INT)
 })
 public class AreaTrigger implements DbcEntity {
-    @Column(name = "PosX")
+    @Column("PosX")
     private Float posX;
 
-    @Column(name = "PosY")
+    @Column("PosY")
     private Float posY;
 
-    @Column(name = "PosZ")
+    @Column("PosZ")
     private Float posZ;
 
-    @Column(name = "Radius")
+    @Column("Radius")
     private Float radius;
 
-    @Column(name = "BoxLength")
+    @Column("BoxLength")
     private Float boxLength;
 
-    @Column(name = "BoxWidth")
+    @Column("BoxWidth")
     private Float boxWidth;
 
-    @Column(name = "BoxHeight")
+    @Column("BoxHeight")
     private Float boxHeight;
 
-    @Column(name = "BoxYaw")
+    @Column("BoxYaw")
     private Float boxYaw;
 
-    @Column(name = "ContinentID")
+    @Column("ContinentID")
     private Short continentID;
 
-    @Column(name = "PhaseID")
+    @Column("PhaseID")
     private Short phaseID;
 
-    @Column(name = "PhaseGroupID")
+    @Column("PhaseGroupID")
     private Short phaseGroupID;
 
-    @Column(name = "ShapeID")
+    @Column("ShapeID")
     private Short shapeID;
 
-    @Column(name = "AreaTriggerActionSetID")
+    @Column("AreaTriggerActionSetID")
     private Short areaTriggerActionSetID;
 
-    @Column(name = "PhaseUseFlags")
+    @Column("PhaseUseFlags")
     private Byte phaseUseFlags;
 
-    @Column(name = "ShapeType")
+    @Column("ShapeType")
     private Byte shapeType;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

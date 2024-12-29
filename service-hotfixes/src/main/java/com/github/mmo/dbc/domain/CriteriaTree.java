@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "criteria_tree")
 @Db2DataBind(name = "CriteriaTree.db2", layoutHash = 0x0A1B99C2, fields = {
         @Db2Field(name = "description", type = Db2Type.STRING),
@@ -30,34 +30,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CriteriaTree implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Description")
+    @Column("ID")
+    private int id;
+
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Amount")
+    @Column("Amount")
     private Integer amount;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Short flags;
 
-    @Column(name = "Operator")
+    @Column("Operator")
     private Byte operator;
 
-    @Column(name = "CriteriaID")
+    @Column("CriteriaID")
     private Integer criteriaID;
 
-    @Column(name = "Parent")
+    @Column("Parent")
     private Integer parent;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Integer orderIndex;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

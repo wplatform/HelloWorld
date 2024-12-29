@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "adventure_map_poi")
 @Db2DataBind(name = "AdventureMapPOI.db2", layoutHash = 0x0C288A82, fields = {
         @Db2Field(name = "title", type = Db2Type.STRING),
@@ -36,69 +36,69 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class AdventureMapPoi implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Title")
+    
+    @Column("Title")
     private LocalizedString title;
 
-    @Lob
-    @Column(name = "Description")
+    
+    @Column("Description")
     private LocalizedString description;
 
-    @ColumnDefault("0")
-    @Column(name = "WorldPositionX", nullable = false)
+
+    @Column("WorldPositionX")
     private Float worldPositionX;
 
-    @ColumnDefault("0")
-    @Column(name = "WorldPositionY", nullable = false)
+
+    @Column("WorldPositionY")
     private Float worldPositionY;
 
-    @ColumnDefault("0")
-    @Column(name = "Type", nullable = false)
+
+    @Column("Type")
     private Byte type;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PlayerConditionID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("PlayerConditionID")
     private Long playerConditionID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "QuestID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("QuestID")
     private Long questID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "LfgDungeonID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("LfgDungeonID")
     private Long lfgDungeonID;
 
-    @ColumnDefault("0")
-    @Column(name = "RewardItemID", nullable = false)
+
+    @Column("RewardItemID")
     private Integer rewardItemID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "UiTextureAtlasMemberID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("UiTextureAtlasMemberID")
     private Long uiTextureAtlasMemberID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "UiTextureKitID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("UiTextureKitID")
     private Long uiTextureKitID;
 
-    @ColumnDefault("0")
-    @Column(name = "MapID", nullable = false)
+
+    @Column("MapID")
     private Integer mapID;
 
-    @ColumnDefault("0")
-    @Column(name = "WorldMapAreaID", nullable = false)
+
+    @Column("WorldMapAreaID")
     private Integer worldMapAreaID;
 
-    @ColumnDefault("'0'")
-    @Column(name = "AreaTableID", columnDefinition = "int UNSIGNED not null")
+
+    @Column("AreaTableID")
     private Long areaTableID;
 
 }

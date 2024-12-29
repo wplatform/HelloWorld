@@ -6,35 +6,35 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2LocaleId.class)
-@Entity
+
+
 @Table(name = "adventure_map_poi_locale")
 public class AdventureMapPoiLocale {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
+    
+    @Column("ID")
     private Long id;
 
     @Id
-    @Column(name = "locale", nullable = false, length = 4)
+    @Column("locale")
     private String locale;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Title_lang")
+    
+    @Column("Title_lang")
     private String titleLang;
 
-    @Lob
-    @Column(name = "Description_lang")
+    
+    @Column("Description_lang")
     private String descriptionLang;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_extended_cost")
 @Db2DataBind(name = "ItemExtendedCost.db2", layoutHash = 0xC31F4DEF, fields = {
         @Db2Field(name = {"itemID1", "itemID2", "itemID3", "itemID4", "itemID5"}, type = Db2Type.INT, signed = true),
@@ -32,91 +32,91 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemExtendedCost implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ItemID1")
+    @Column("ID")
+    private int id;
+
+    @Column("ItemID1")
     private Integer itemID1;
 
-    @Column(name = "ItemID2")
+    @Column("ItemID2")
     private Integer itemID2;
 
-    @Column(name = "ItemID3")
+    @Column("ItemID3")
     private Integer itemID3;
 
-    @Column(name = "ItemID4")
+    @Column("ItemID4")
     private Integer itemID4;
 
-    @Column(name = "ItemID5")
+    @Column("ItemID5")
     private Integer itemID5;
 
-    @Column(name = "CurrencyCount1")
+    @Column("CurrencyCount1")
     private Integer currencyCount1;
 
-    @Column(name = "CurrencyCount2")
+    @Column("CurrencyCount2")
     private Integer currencyCount2;
 
-    @Column(name = "CurrencyCount3")
+    @Column("CurrencyCount3")
     private Integer currencyCount3;
 
-    @Column(name = "CurrencyCount4")
+    @Column("CurrencyCount4")
     private Integer currencyCount4;
 
-    @Column(name = "CurrencyCount5")
+    @Column("CurrencyCount5")
     private Integer currencyCount5;
 
-    @Column(name = "ItemCount1")
+    @Column("ItemCount1")
     private Short itemCount1;
 
-    @Column(name = "ItemCount2")
+    @Column("ItemCount2")
     private Short itemCount2;
 
-    @Column(name = "ItemCount3")
+    @Column("ItemCount3")
     private Short itemCount3;
 
-    @Column(name = "ItemCount4")
+    @Column("ItemCount4")
     private Short itemCount4;
 
-    @Column(name = "ItemCount5")
+    @Column("ItemCount5")
     private Short itemCount5;
 
-    @Column(name = "RequiredArenaRating")
+    @Column("RequiredArenaRating")
     private Short requiredArenaRating;
 
-    @Column(name = "CurrencyID1")
+    @Column("CurrencyID1")
     private Short currencyID1;
 
-    @Column(name = "CurrencyID2")
+    @Column("CurrencyID2")
     private Short currencyID2;
 
-    @Column(name = "CurrencyID3")
+    @Column("CurrencyID3")
     private Short currencyID3;
 
-    @Column(name = "CurrencyID4")
+    @Column("CurrencyID4")
     private Short currencyID4;
 
-    @Column(name = "CurrencyID5")
+    @Column("CurrencyID5")
     private Short currencyID5;
 
-    @Column(name = "ArenaBracket")
+    @Column("ArenaBracket")
     private Byte arenaBracket;
 
-    @Column(name = "MinFactionID")
+    @Column("MinFactionID")
     private Byte minFactionID;
 
-    @Column(name = "MinReputation")
+    @Column("MinReputation")
     private Byte minReputation;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "RequiredAchievement")
+    @Column("RequiredAchievement")
     private Byte requiredAchievement;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

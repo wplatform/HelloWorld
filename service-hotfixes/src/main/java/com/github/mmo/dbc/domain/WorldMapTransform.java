@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "world_map_transforms")
 @Db2DataBind(name = "WorldMapTransforms.db2", layoutHash = 0x99FB4B71, parentIndexField = 3, fields = {
         @Db2Field(name = {"regionMinX", "regionMinY", "regionMinZ", "regionMaxX", "regionMaxY", "regionMaxZ"}, type = Db2Type.FLOAT),
@@ -32,61 +32,61 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class WorldMapTransform implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "RegionMinX")
+    @Column("RegionMinX")
     private Float regionMinX;
 
-    @Column(name = "RegionMinY")
+    @Column("RegionMinY")
     private Float regionMinY;
 
-    @Column(name = "RegionMinZ")
+    @Column("RegionMinZ")
     private Float regionMinZ;
 
-    @Column(name = "RegionMaxX")
+    @Column("RegionMaxX")
     private Float regionMaxX;
 
-    @Column(name = "RegionMaxY")
+    @Column("RegionMaxY")
     private Float regionMaxY;
 
-    @Column(name = "RegionMaxZ")
+    @Column("RegionMaxZ")
     private Float regionMaxZ;
 
-    @Column(name = "RegionOffsetX")
+    @Column("RegionOffsetX")
     private Float regionOffsetX;
 
-    @Column(name = "RegionOffsetY")
+    @Column("RegionOffsetY")
     private Float regionOffsetY;
 
-    @Column(name = "RegionScale")
+    @Column("RegionScale")
     private Float regionScale;
 
-    @Column(name = "MapID")
+    @Column("MapID")
     private Short mapID;
 
-    @Column(name = "AreaID")
+    @Column("AreaID")
     private Short areaID;
 
-    @Column(name = "NewMapID")
+    @Column("NewMapID")
     private Short newMapID;
 
-    @Column(name = "NewDungeonMapID")
+    @Column("NewDungeonMapID")
     private Short newDungeonMapID;
 
-    @Column(name = "NewAreaID")
+    @Column("NewAreaID")
     private Short newAreaID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "Priority")
+    @Column("Priority")
     private Integer priority;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

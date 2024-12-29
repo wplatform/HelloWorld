@@ -16,7 +16,7 @@ public class QuestConfirmAcceptResponse extends ServerPacket
 		this.writeInt32(questID);
 		this.writeGuid(initiatedBy);
 
-		this.writeBits(questTitle.GetByteCount(), 10);
+		this.writeBits(questTitle.getBytes().length, 10);
 		this.writeString(questTitle);
 	}
 }

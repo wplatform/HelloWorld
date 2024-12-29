@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_random_properties")
 @Db2DataBind(name = "ItemRandomProperties.db2", layoutHash = 0xB67375F8, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -25,31 +25,31 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemRandomProperty implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Enchantment1")
+    @Column("Enchantment1")
     private Short enchantment1;
 
-    @Column(name = "Enchantment2")
+    @Column("Enchantment2")
     private Short enchantment2;
 
-    @Column(name = "Enchantment3")
+    @Column("Enchantment3")
     private Short enchantment3;
 
-    @Column(name = "Enchantment4")
+    @Column("Enchantment4")
     private Short enchantment4;
 
-    @Column(name = "Enchantment5")
+    @Column("Enchantment5")
     private Short enchantment5;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "conversation_line")
 @Db2DataBind(name = "ConversationLine.db2", layoutHash = 0x032B137B, fields = {
         @Db2Field(name = "broadcastTextID", type = Db2Type.INT),
@@ -30,37 +30,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ConversationLine implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "BroadcastTextID")
+    @Column("BroadcastTextID")
     private Integer broadcastTextID;
 
-    @Column(name = "SpellVisualKitID")
+    @Column("SpellVisualKitID")
     private Integer spellVisualKitID;
 
-    @Column(name = "AdditionalDuration")
+    @Column("AdditionalDuration")
     private Integer additionalDuration;
 
-    @Column(name = "NextConversationLineID")
+    @Column("NextConversationLineID")
     private Short nextConversationLineID;
 
-    @Column(name = "AnimKitID")
+    @Column("AnimKitID")
     private Short animKitID;
 
-    @Column(name = "SpeechType")
+    @Column("SpeechType")
     private Byte speechType;
 
-    @Column(name = "StartAnimation")
+    @Column("StartAnimation")
     private Short startAnimation;
 
-    @Column(name = "EndAnimation")
+    @Column("EndAnimation")
     private Short endAnimation;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

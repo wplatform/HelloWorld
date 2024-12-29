@@ -41,12 +41,12 @@ public class QuestGiverOfferRewardMessage extends ServerPacket {
         this.writeInt32(questGiverCreatureID);
         this.writeInt32(conditionalRewardText.size());
 
-        this.writeBits(questTitle.GetByteCount(), 9);
-        this.writeBits(rewardText.GetByteCount(), 12);
-        this.writeBits(portraitGiverText.GetByteCount(), 10);
-        this.writeBits(portraitGiverName.GetByteCount(), 8);
-        this.writeBits(portraitTurnInText.GetByteCount(), 10);
-        this.writeBits(portraitTurnInName.GetByteCount(), 8);
+        this.writeBits(questTitle.getBytes().length, 9);
+        this.writeBits(rewardText.getBytes().length, 12);
+        this.writeBits(portraitGiverText.getBytes().length, 10);
+        this.writeBits(portraitGiverName.getBytes().length, 8);
+        this.writeBits(portraitTurnInText.getBytes().length, 10);
+        this.writeBits(portraitTurnInName.getBytes().length, 8);
         this.flushBits();
 
         for (var conditionalQuestText : conditionalRewardText) {

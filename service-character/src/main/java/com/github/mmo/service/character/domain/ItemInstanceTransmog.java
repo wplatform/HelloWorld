@@ -1,92 +1,92 @@
 package com.github.mmo.service.character.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.relational.core.mapping.Column;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "item_instance_transmog")
 public class ItemInstanceTransmog {
     @Id
-    @Column(name = "itemGuid", nullable = false)
+    @Column("itemGuid")
     private Long id;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceAllSpecs", nullable = false)
+
+    @Column("itemModifiedAppearanceAllSpecs")
     private Integer itemModifiedAppearanceAllSpecs;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceSpec1", nullable = false)
+
+    @Column("itemModifiedAppearanceSpec1")
     private Integer itemModifiedAppearanceSpec1;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceSpec2", nullable = false)
+
+    @Column("itemModifiedAppearanceSpec2")
     private Integer itemModifiedAppearanceSpec2;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceSpec3", nullable = false)
+
+    @Column("itemModifiedAppearanceSpec3")
     private Integer itemModifiedAppearanceSpec3;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceSpec4", nullable = false)
+
+    @Column("itemModifiedAppearanceSpec4")
     private Integer itemModifiedAppearanceSpec4;
 
-    @ColumnDefault("0")
-    @Column(name = "itemModifiedAppearanceSpec5", nullable = false)
+
+    @Column("itemModifiedAppearanceSpec5")
     private Integer itemModifiedAppearanceSpec5;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentAllSpecs", nullable = false)
+
+    @Column("spellItemEnchantmentAllSpecs")
     private Integer spellItemEnchantmentAllSpecs;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentSpec1", nullable = false)
+
+    @Column("spellItemEnchantmentSpec1")
     private Integer spellItemEnchantmentSpec1;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentSpec2", nullable = false)
+
+    @Column("spellItemEnchantmentSpec2")
     private Integer spellItemEnchantmentSpec2;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentSpec3", nullable = false)
+
+    @Column("spellItemEnchantmentSpec3")
     private Integer spellItemEnchantmentSpec3;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentSpec4", nullable = false)
+
+    @Column("spellItemEnchantmentSpec4")
     private Integer spellItemEnchantmentSpec4;
 
-    @ColumnDefault("0")
-    @Column(name = "spellItemEnchantmentSpec5", nullable = false)
+
+    @Column("spellItemEnchantmentSpec5")
     private Integer spellItemEnchantmentSpec5;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceAllSpecs", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceAllSpecs")
     private Integer secondaryItemModifiedAppearanceAllSpecs;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceSpec1", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceSpec1")
     private Integer secondaryItemModifiedAppearanceSpec1;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceSpec2", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceSpec2")
     private Integer secondaryItemModifiedAppearanceSpec2;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceSpec3", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceSpec3")
     private Integer secondaryItemModifiedAppearanceSpec3;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceSpec4", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceSpec4")
     private Integer secondaryItemModifiedAppearanceSpec4;
 
-    @ColumnDefault("0")
-    @Column(name = "secondaryItemModifiedAppearanceSpec5", nullable = false)
+
+    @Column("secondaryItemModifiedAppearanceSpec5")
     private Integer secondaryItemModifiedAppearanceSpec5;
 
 }

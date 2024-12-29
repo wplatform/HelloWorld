@@ -12,19 +12,7 @@ public enum Locale {
     esES,
     esMX,
     ruRU,
-    none,
     ptBR,
     itIT,
-    TOTAL_LOCALES;
-
-    public static Locale fromName(String name) {
-        return Arrays.stream(Locale.values())
-                .filter(e -> e.name().endsWith(name))
-                .findFirst().orElse(TOTAL_LOCALES);
-    }
-
-    public static boolean isValidLocale(Locale locale) {
-        return locale.ordinal() < TOTAL_LOCALES.ordinal() && locale != none;
-    }
 
 }

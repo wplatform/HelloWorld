@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "talent")
 @Db2DataBind(name = "Talent.db2", layoutHash = 0xE8850B48, fields = {
         @Db2Field(name = "description", type = Db2Type.STRING),
@@ -32,43 +32,43 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class Talent implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Description")
+    @Column("ID")
+    private int id;
+
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
-    @Column(name = "OverridesSpellID")
+    @Column("OverridesSpellID")
     private Integer overridesSpellID;
 
-    @Column(name = "SpecID")
+    @Column("SpecID")
     private Short specID;
 
-    @Column(name = "TierID")
+    @Column("TierID")
     private Byte tierID;
 
-    @Column(name = "ColumnIndex")
+    @Column("ColumnIndex")
     private Byte columnIndex;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "CategoryMask1")
+    @Column("CategoryMask1")
     private Byte categoryMask1;
 
-    @Column(name = "CategoryMask2")
+    @Column("CategoryMask2")
     private Byte categoryMask2;
 
-    @Column(name = "ClassID")
+    @Column("ClassID")
     private Byte classID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -15,32 +15,18 @@ public final class QuestObjectiveCollect
 
 	public QuestObjectiveCollect()
 	{
-		this(0, 0, 0);
-	}
-
-	public QuestObjectiveCollect()
-	{
 	}
 
 	public QuestObjectiveCollect(int objectID, int amount, int flags)
 	{
-		objectID = objectID;
-		amount = amount;
-		flags = flags;
+		this.objectID = objectID;
+		this.amount = amount;
+		this.flags = flags;
 	}
 
 	public int objectID;
 	public int amount;
 	public int flags;
 
-	public QuestObjectiveCollect clone()
-	{
-		QuestObjectiveCollect varCopy = new QuestObjectiveCollect();
 
-		varCopy.objectID = this.objectID;
-		varCopy.amount = this.amount;
-		varCopy.flags = this.flags;
-
-		return varCopy;
-	}
 }

@@ -8,10 +8,6 @@ public final class QuestCurrency
 		this(currencyID, 0);
 	}
 
-	public QuestCurrency()
-	{
-		this(0, 0);
-	}
 
 	public QuestCurrency()
 	{
@@ -19,20 +15,11 @@ public final class QuestCurrency
 
 	public QuestCurrency(int currencyID, int amount)
 	{
-		currencyID = currencyID;
-		amount = amount;
+		this.currencyID = currencyID;
+		this.amount = amount;
 	}
 
 	public int currencyID;
 	public int amount;
 
-	public QuestCurrency clone()
-	{
-		QuestCurrency varCopy = new QuestCurrency();
-
-		varCopy.currencyID = this.currencyID;
-		varCopy.amount = this.amount;
-
-		return varCopy;
-	}
 }

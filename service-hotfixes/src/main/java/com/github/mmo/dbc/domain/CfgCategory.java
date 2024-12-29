@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "cfg_categories")
 @Db2DataBind(name = "Cfg_Categories.db2", layoutHash = 0x705B82C8, fields = {
         @Db2Field(name = "localeMask", type = Db2Type.SHORT),
@@ -28,37 +28,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CfgCategory implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+
+    @Column("ID")
+    private int id;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Lob
-    @Column(name = "Name")
+    
+    @Column("Name")
     private LocalizedString name;
 
-    @ColumnDefault("'0'")
-    @Column(name = "LocaleMask", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("LocaleMask")
     private Integer localeMask;
 
-    @ColumnDefault("'0'")
-    @Column(name = "CreateCharsetMask", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("CreateCharsetMask")
     private Short createCharsetMask;
 
-    @ColumnDefault("'0'")
-    @Column(name = "ExistingCharsetMask", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("ExistingCharsetMask")
     private Short existingCharsetMask;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Flags", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("Flags")
     private Short flags;
 
-    @ColumnDefault("0")
-    @Column(name = "`Order`", nullable = false)
+
+    @Column("`Order`")
     private Byte order;
 
 }

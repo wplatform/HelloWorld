@@ -1,7 +1,7 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.domain.creature.TempSummonData;
+import com.github.mmo.game.service.model.creature.TempSummonData;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 

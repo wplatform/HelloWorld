@@ -1,6 +1,8 @@
 package com.github.mmo.game.networking.packet.quest;
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.*;
+import io.netty.buffer.ByteBuf;
 
 public class QuestGiverAcceptQuest extends ClientPacket
 {
@@ -8,7 +10,7 @@ public class QuestGiverAcceptQuest extends ClientPacket
 	public int questID;
 	public boolean startCheat;
 
-	public QuestGiverAcceptQuest(WorldPacket packet)
+	public QuestGiverAcceptQuest(ByteBuf packet)
 	{
 		super(packet);
 	}

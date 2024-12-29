@@ -14,7 +14,7 @@ public class ChannelNotifyLeft extends ServerPacket
 	@Override
 	public void write()
 	{
-        this.writeBits(channel.GetByteCount(), 7);
+        this.writeBits(channel.getBytes().length, 7);
         this.writeBit(suspended);
         this.writeInt32(chatChannelID);
         this.writeString(channel);

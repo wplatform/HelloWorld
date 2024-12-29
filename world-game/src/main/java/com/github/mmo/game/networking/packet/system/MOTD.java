@@ -20,7 +20,7 @@ public class MOTD extends ServerPacket
 
 		for (var line : text)
 		{
-            this.writeBits(line.GetByteCount(), 7);
+            this.writeBits(line.getBytes().length, 7);
             this.flushBits();
             this.writeString(line);
 		}

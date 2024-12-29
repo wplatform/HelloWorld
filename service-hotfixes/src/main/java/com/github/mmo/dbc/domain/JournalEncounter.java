@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "journal_encounter")
 @Db2DataBind(name = "JournalEncounter.db2", layoutHash = 0x2935A0FD, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -34,49 +34,49 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class JournalEncounter implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
+    
+    @Column("ID")
+    private int id;
 
-    @Column(name = "Name")
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "Description")
+    @Column("Description")
     private LocalizedString description;
 
-    @Column(name = "Map_1")
+    @Column("Map_1")
     private Float map_1;
 
-    @Column(name = "Map_2")
+    @Column("Map_2")
     private Float map_2;
 
-    @Column(name = "DungeonMapID")
+    @Column("DungeonMapID")
     private Short dungeonMapID;
 
-    @Column(name = "WorldMapAreaID")
+    @Column("WorldMapAreaID")
     private Short worldMapAreaID;
 
-    @Column(name = "FirstSectionID")
+    @Column("FirstSectionID")
     private Short firstSectionID;
 
-    @Column(name = "JournalInstanceID")
+    @Column("JournalInstanceID")
     private Short journalInstanceID;
 
-    @Column(name = "DifficultyMask")
+    @Column("DifficultyMask")
     private Byte difficultyMask;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "OrderIndex")
+    @Column("OrderIndex")
     private Integer orderIndex;
 
-    @Column(name = "MapDisplayConditionID")
+    @Column("MapDisplayConditionID")
     private Integer mapDisplayConditionID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+    
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

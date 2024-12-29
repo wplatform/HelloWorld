@@ -2,15 +2,16 @@ package com.github.mmo.game.networking.packet.quest;
 
 
 import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
 
 public class QueryQuestInfoResponse extends ServerPacket {
     public boolean allow;
-    public Questinfo info = new questInfo();
+    public QuestInfo info = new QuestInfo();
 
     public int questID;
 
     public QueryQuestInfoResponse() {
-        super(ServerOpcode.QueryQuestInfoResponse, ConnectionType.instance);
+        super(ServerOpCode.SMSG_QUERY_QUEST_INFO_RESPONSE);
     }
 
     @Override
@@ -109,15 +110,15 @@ public class QueryQuestInfoResponse extends ServerPacket {
                 rewardDisplaySpell.write(this);
             }
 
-            this.writeBits(info.logTitle.GetByteCount(), 9);
-            this.writeBits(info.logDescription.GetByteCount(), 12);
-            this.writeBits(info.questDescription.GetByteCount(), 12);
-            this.writeBits(info.areaDescription.GetByteCount(), 9);
-            this.writeBits(info.portraitGiverText.GetByteCount(), 10);
-            this.writeBits(info.portraitGiverName.GetByteCount(), 8);
-            this.writeBits(info.portraitTurnInText.GetByteCount(), 10);
-            this.writeBits(info.portraitTurnInName.GetByteCount(), 8);
-            this.writeBits(info.questCompletionLog.GetByteCount(), 11);
+            this.writeBits(info.logTitle.getBytes().length, 9);
+            this.writeBits(info.logDescription.getBytes().length, 12);
+            this.writeBits(info.questDescription.getBytes().length, 12);
+            this.writeBits(info.areaDescription.getBytes().length, 9);
+            this.writeBits(info.portraitGiverText.getBytes().length, 10);
+            this.writeBits(info.portraitGiverName.getBytes().length, 8);
+            this.writeBits(info.portraitTurnInText.getBytes().length, 10);
+            this.writeBits(info.portraitTurnInName.getBytes().length, 8);
+            this.writeBits(info.questCompletionLog.getBytes().length, 11);
             this.writeBit(info.readyForTranslation);
             this.flushBits();
 
@@ -137,7 +138,7 @@ public class QueryQuestInfoResponse extends ServerPacket {
                     this.writeInt32(visualEffect);
                 }
 
-                this.writeBits(questObjective.description.GetByteCount(), 8);
+                this.writeBits(questObjective.description.getBytes().length, 8);
                 this.flushBits();
 
                 this.writeString(questObjective.description);

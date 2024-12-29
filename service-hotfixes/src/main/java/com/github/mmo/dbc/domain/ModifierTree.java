@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "modifier_tree")
 @Db2DataBind(name = "ModifierTree.db2", layoutHash = 0x7718AFC2, fields = {
         @Db2Field(name = "asset", type = Db2Type.INT, signed = true),
@@ -30,34 +30,34 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ModifierTree implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Asset")
+    @Column("ID")
+    private int id;
+
+    @Column("Asset")
     private Integer asset;
 
-    @Column(name = "SecondaryAsset")
+    @Column("SecondaryAsset")
     private Integer secondaryAsset;
 
-    @Column(name = "Parent")
+    @Column("Parent")
     private Integer parent;
 
-    @Column(name = "Type")
+    @Column("Type")
     private Short type;
 
-    @Column(name = "TertiaryAsset")
+    @Column("TertiaryAsset")
     private Byte tertiaryAsset;
 
-    @Column(name = "Operator")
+    @Column("Operator")
     private Byte operator;
 
-    @Column(name = "Amount")
+    @Column("Amount")
     private Byte amount;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

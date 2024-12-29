@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "artifact_power_link")
 @Db2DataBind(name = "ArtifactPowerLink.db2", layoutHash = 0xE179618C, fields = {
         @Db2Field(name = "powerA", type = Db2Type.SHORT),
@@ -24,19 +24,19 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ArtifactPowerLink implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "PowerA")
+    @Column("ID")
+    private int id;
+
+    @Column("PowerA")
     private Short powerA;
 
-    @Column(name = "PowerB")
+    @Column("PowerB")
     private Short powerB;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

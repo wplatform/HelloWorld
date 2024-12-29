@@ -11,29 +11,29 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "import_price_weapon")
 @Db2DataBind(name = "ImportPriceWeapon.db2", layoutHash = 0x6F64793D, fields = {
         @Db2Field(name = "data", type = Db2Type.FLOAT)
 })
 public class ImportPriceWeapon implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Data")
+    @Column("ID")
+    private int id;
+
+    @Column("Data")
     private Float data;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

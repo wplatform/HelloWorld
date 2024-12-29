@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "creature_model_data")
 @Db2DataBind(name = "CreatureModelData.db2", layoutHash = 0x983BD312, fields = {
         @Db2Field(name = "modelScale", type = Db2Type.FLOAT),
@@ -50,112 +50,112 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class CreatureModelData implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "ModelScale")
+    @Column("ID")
+    private int id;
+
+    @Column("ModelScale")
     private Float modelScale;
 
-    @Column(name = "FootprintTextureLength")
+    @Column("FootprintTextureLength")
     private Float footprintTextureLength;
 
-    @Column(name = "FootprintTextureWidth")
+    @Column("FootprintTextureWidth")
     private Float footprintTextureWidth;
 
-    @Column(name = "FootprintParticleScale")
+    @Column("FootprintParticleScale")
     private Float footprintParticleScale;
 
-    @Column(name = "CollisionWidth")
+    @Column("CollisionWidth")
     private Float collisionWidth;
 
-    @Column(name = "CollisionHeight")
+    @Column("CollisionHeight")
     private Float collisionHeight;
 
-    @Column(name = "MountHeight")
+    @Column("MountHeight")
     private Float mountHeight;
 
-    @Column(name = "GeoBox1")
+    @Column("GeoBox1")
     private Float geoBox1;
 
-    @Column(name = "GeoBox2")
+    @Column("GeoBox2")
     private Float geoBox2;
 
-    @Column(name = "GeoBox3")
+    @Column("GeoBox3")
     private Float geoBox3;
 
-    @Column(name = "GeoBox4")
+    @Column("GeoBox4")
     private Float geoBox4;
 
-    @Column(name = "GeoBox5")
+    @Column("GeoBox5")
     private Float geoBox5;
 
-    @Column(name = "GeoBox6")
+    @Column("GeoBox6")
     private Float geoBox6;
 
-    @Column(name = "WorldEffectScale")
+    @Column("WorldEffectScale")
     private Float worldEffectScale;
 
-    @Column(name = "AttachedEffectScale")
+    @Column("AttachedEffectScale")
     private Float attachedEffectScale;
 
-    @Column(name = "MissileCollisionRadius")
+    @Column("MissileCollisionRadius")
     private Float missileCollisionRadius;
 
-    @Column(name = "MissileCollisionPush")
+    @Column("MissileCollisionPush")
     private Float missileCollisionPush;
 
-    @Column(name = "MissileCollisionRaise")
+    @Column("MissileCollisionRaise")
     private Float missileCollisionRaise;
 
-    @Column(name = "OverrideLootEffectScale")
+    @Column("OverrideLootEffectScale")
     private Float overrideLootEffectScale;
 
-    @Column(name = "OverrideNameScale")
+    @Column("OverrideNameScale")
     private Float overrideNameScale;
 
-    @Column(name = "OverrideSelectionRadius")
+    @Column("OverrideSelectionRadius")
     private Float overrideSelectionRadius;
 
-    @Column(name = "TamedPetBaseScale")
+    @Column("TamedPetBaseScale")
     private Float tamedPetBaseScale;
 
-    @Column(name = "HoverHeight")
+    @Column("HoverHeight")
     private Float hoverHeight;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "FileDataID")
+    @Column("FileDataID")
     private Integer fileDataID;
 
-    @Column(name = "SizeClass")
+    @Column("SizeClass")
     private Integer sizeClass;
 
-    @Column(name = "BloodID")
+    @Column("BloodID")
     private Integer bloodID;
 
-    @Column(name = "FootprintTextureID")
+    @Column("FootprintTextureID")
     private Integer footprintTextureID;
 
-    @Column(name = "FoleyMaterialID")
+    @Column("FoleyMaterialID")
     private Integer foleyMaterialID;
 
-    @Column(name = "FootstepCameraEffectID")
+    @Column("FootstepCameraEffectID")
     private Integer footstepCameraEffectID;
 
-    @Column(name = "DeathThudCameraEffectID")
+    @Column("DeathThudCameraEffectID")
     private Integer deathThudCameraEffectID;
 
-    @Column(name = "SoundID")
+    @Column("SoundID")
     private Integer soundID;
 
-    @Column(name = "CreatureGeosetDataID")
+    @Column("CreatureGeosetDataID")
     private Integer creatureGeosetDataID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -8,23 +8,23 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@IdClass(GmComplaintChatlogId.class)
-@Entity
+
+
 @Table(name = "gm_complaint_chatlog")
 public class GmComplaintChatlog {
     @Id
-    @Column(name = "complaintId", columnDefinition = "int UNSIGNED not null")
+    @Column("complaintId")
     private Long complaintId;
 
     @Id
-    @Column(name = "lineId", columnDefinition = "int UNSIGNED not null")
+    @Column("lineId")
     private Long lineId;
 
-    @Column(name = "timestamp", nullable = false)
+    @Column("timestamp")
     private Long timestamp;
 
-    @Lob
-    @Column(name = "text", nullable = false)
+    
+    @Column("text")
     private String text;
 
 }

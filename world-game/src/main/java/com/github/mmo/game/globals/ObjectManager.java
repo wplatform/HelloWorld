@@ -12,17 +12,23 @@ import com.github.mmo.cache.MapCache;
 import com.github.mmo.cache.TypeReference;
 import com.github.mmo.common.*;
 import com.github.mmo.common.Locale;
+import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.dbc.defines.LevelLimit;
-import com.github.mmo.dbc.domain.Faction;
+import com.github.mmo.dbc.domain.*;
 import com.github.mmo.defines.*;
+import com.github.mmo.defines.Emote;
 import com.github.mmo.game.*;
+import com.github.mmo.game.DungeonEncounter;
 import com.github.mmo.game.entity.creature.*;
 import com.github.mmo.game.entity.creatures.EquipmentInfo;
 import com.github.mmo.game.entity.creatures.Trainer;
+import com.github.mmo.game.entity.creatures.TrainerSpell;
 import com.github.mmo.game.entity.creatures.VendorItemData;
 import com.github.mmo.game.entity.gobject.*;
+import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.enums.HighGuid;
+import com.github.mmo.game.entity.object.enums.TypeId;
 import com.github.mmo.game.entity.player.AccessRequirement;
 import com.github.mmo.game.entity.vehicle.VehicleAccessory;
 import com.github.mmo.game.entity.vehicle.VehicleSeatAddon;
@@ -32,39 +38,43 @@ import com.github.mmo.game.map.SpawnGroupTemplateData;
 import com.github.mmo.game.map.SpawnMetadata;
 import com.github.mmo.game.misc.*;
 import com.github.mmo.game.movement.MotionMaster;
-import com.github.mmo.game.movement.MovementDefine;
-import com.github.mmo.game.service.domain.misc.JumpChargeParams;
-import com.github.mmo.game.service.domain.creature.CreatureLocale;
-import com.github.mmo.game.service.domain.creature.TempSummonData;
+import com.github.mmo.game.quest.Quest;
+import com.github.mmo.game.quest.QuestObjective;
+import com.github.mmo.game.quest.enums.QuestObjectiveType;
+import com.github.mmo.game.service.model.gossip.GossipMenuOption;
+import com.github.mmo.game.service.model.gossip.GossipOptionNpc;
+import com.github.mmo.game.service.model.misc.RaceClassAvailability;
+import com.github.mmo.game.service.model.misc.JumpChargeParams;
+import com.github.mmo.game.service.model.creature.CreatureLocale;
+import com.github.mmo.game.service.model.creature.TempSummonData;
 
 import com.github.mmo.game.entity.item.ItemTemplate;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.object.enums.SummonerType;
 
-import com.github.mmo.game.service.domain.creature.TempSummonType;
-import com.github.mmo.game.service.domain.gobject.GameObjectLocale;
-import com.github.mmo.game.service.domain.gossip.GossipMenuItemsLocale;
-import com.github.mmo.game.service.domain.gossip.GossipMenus;
-import com.github.mmo.game.service.domain.misc.*;
-import com.github.mmo.game.service.domain.misc.RaceUnlockRequirement;
-import com.github.mmo.game.service.domain.player.PlayerChoice;
-import com.github.mmo.game.service.domain.player.PlayerChoiceLocale;
-import com.github.mmo.game.service.domain.player.PlayerInfo;
-import com.github.mmo.game.service.domain.quest.*;
-import com.github.mmo.game.service.domain.*;
+import com.github.mmo.game.service.model.creature.TempSummonType;
+import com.github.mmo.game.service.model.gobject.GameObjectLocale;
+import com.github.mmo.game.service.model.gossip.GossipMenuItemsLocale;
+import com.github.mmo.game.service.model.gossip.GossipMenus;
+import com.github.mmo.game.service.model.misc.*;
+import com.github.mmo.game.service.model.misc.RaceUnlockRequirement;
+import com.github.mmo.game.service.model.player.PlayerChoice;
+import com.github.mmo.game.service.model.player.PlayerChoiceLocale;
+import com.github.mmo.game.service.model.player.PlayerInfo;
+import com.github.mmo.game.service.model.quest.*;
+import com.github.mmo.game.service.model.*;
 import com.github.mmo.dbc.DbcObjectManager;
-import com.github.mmo.dbc.domain.ChrClass;
-import com.github.mmo.dbc.domain.ChrRace;
-import com.github.mmo.game.service.domain.reputation.RepRewardRate;
-import com.github.mmo.game.service.domain.reputation.RepSpilloverTemplate;
-import com.github.mmo.game.service.domain.reputation.ReputationOnKill;
+import com.github.mmo.game.service.model.reputation.RepRewardRate;
+import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.service.model.reputation.ReputationOnKill;
 import com.github.mmo.game.service.repository.CreatureRepository;
 import com.github.mmo.game.service.repository.PlayerRepository;
 import com.github.mmo.game.service.repository.ReputationRepository;
-import com.github.mmo.service.auth.domain.RealmList;
 
-import com.github.mmo.game.service.domain.misc.ClassExpansionRequirement;
+import com.github.mmo.game.service.model.misc.ClassExpansionRequirement;
 import com.github.mmo.game.service.repository.MiscRepository;
+import com.github.mmo.game.spell.SpellManager;
+import com.github.mmo.game.world.setting.WorldSetting;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -199,12 +209,15 @@ public final class ObjectManager
 
 	private static final float[] weaponMultipliers = new float[] {0.91f, 1.00f, 1.00f, 1.00f, 0.91f, 1.00f, 1.00f, 0.91f, 1.00f, 1.00f, 1.00f, 0.00f, 0.00f, 0.66f, 0.00f, 0.66f, 0.00f, 0.00f, 1.00f, 0.66f, 0.66f};
 
+	private WorldSetting worldSetting;
 	private CacheProvider cacheProvider;
 	private MapManager mapManager;
 	private DbcObjectManager dbcObjectManager;
 	private MiscRepository miscRepository;
 	private CreatureRepository creatureRepository;
 	private ReputationRepository reputationRepository;
+
+	private SpellManager spellManager;
 
 	private PlayerRepository playerRepository;
 
@@ -221,7 +234,7 @@ public final class ObjectManager
 	private final HashMap<Integer, SceneTemplate> sceneTemplateStorage = new HashMap<Integer, SceneTemplate>();
 	private final IntMap<JumpChargeParams> jumpChargeParams = new IntMap<>();
 	private final HashMap<Integer, String> phaseNameStorage = new HashMap<Integer, String>();
-	private final HashMap<Short, RaceUnlockRequirement> raceUnlockRequirementStorage = new HashMap<>();
+	private final EnumMap<Race, RaceUnlockRequirement> raceUnlockRequirementStorage = new EnumMap<>(Race.class);
 	private final ArrayList<RaceClassAvailability> classExpansionRequirementStorage = new ArrayList<>();
 	private final HashMap<Integer, String> realmNameStorage = new HashMap<>(2);
 
@@ -242,11 +255,11 @@ public final class ObjectManager
 	private final HashMap<Integer, QuestGreetingLocale>[] questGreetingLocaleStorage = new HashMap<Integer, QuestGreetingLocale>[2];
 
 	//Scripts
-	private final scriptNameContainer scriptNamesStorage = new scriptNameContainer();
+	private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
 	private final MultiMap<Integer, Integer> spellScriptsStorage = new MultiMap<Integer, Integer>();
 	private final MultiMap<Integer, Integer> areaTriggerScriptStorage = new MultiMap<Integer, Integer>();
-	private final HashMap<(int mapId, Difficulty difficulty), HashMap<Integer, CellObjectGuids>> mapObjectGuidsStore = new HashMap<(int mapId, Difficulty difficulty), HashMap<Integer, CellObjectGuids>>();
-	private final HashMap<(int mapId, Difficulty diffuculty, int phaseId), HashMap<Integer, CellObjectGuids>> mapPersonalObjectGuidsStore = new HashMap<(int mapId, Difficulty diffuculty, int phaseId), HashMap<Integer, CellObjectGuids>>();
+	private final HashMap<Integer, CellObjectGuids> mapObjectGuidsStore = new HashMap<>();
+	private final HashMap<Integer, CellObjectGuids> mapPersonalObjectGuidsStore = new HashMap<>();
 	private final HashMap<Integer, InstanceTemplate> instanceTemplateStorage = new HashMap<>();
 	private final ArrayList<SHORT> transportMaps = new ArrayList<>();
 	private final HashMap<Integer, SpawnGroupTemplateData> spawnGroupDataStorage = new HashMap<Integer, SpawnGroupTemplateData>();
@@ -264,9 +277,9 @@ public final class ObjectManager
 	private final HashMap<Integer, SkillTiersEntry> skillTiers = new HashMap<Integer, SkillTiersEntry>();
 
 	//Gossip
-	private final MultiMap<Integer, GossipMenus> gossipMenusStorage = new MultiMap<Integer, GossipMenus>();
-	private final MultiMap<Integer, GossipMenuItems> gossipMenuItemsStorage = new MultiMap<Integer, GossipMenuItems>();
-	private final HashMap<Integer, GossipMenuAddon> gossipMenuAddonStorage = new HashMap<Integer, GossipMenuAddon>();
+	private final MapCache<Integer, List<GossipMenus>> gossipMenusStorage;
+	private final MapCache<Integer, List<GossipMenuOption>> gossipMenuItemsStorage;
+	private final MapCache<Integer, GossipMenuAddon> gossipMenuAddonStorage;
 	private final HashMap<Integer, PointOfInterest> pointsOfInterestStorage = new HashMap<Integer, PointOfInterest>();
 
 	//Creature
@@ -286,7 +299,7 @@ public final class ObjectManager
 	private final HashMap<(int creatureId, int gossipMenuId, int gossipOptionIndex), Integer> creatureDefaultTrainers = new HashMap<(int creatureId, int gossipMenuId, int gossipOptionIndex), Integer>();
 	private final ArrayList<Integer>[] difficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded difficulty 1 value in creatures, used in CheckCreatureTemplate
 	private final ArrayList<Integer>[] hasDifficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded creatures with difficulty 1 values, used in CheckCreatureTemplate
-	private final HashMap<Integer, NpcText> npcTextStorage = new HashMap<Integer, NpcText>();
+	private final MapCache<Integer, NpcText> npcTextStorage;
 
 	//GameObject
 	private final HashMap<Integer, GameObjectTemplate> gameObjectTemplateStorage = new HashMap<Integer, GameObjectTemplate>();
@@ -321,7 +334,6 @@ public final class ObjectManager
 	private final HashMap<Integer, QuestObjectivesLocale> questObjectivesLocaleStorage = new HashMap<Integer, QuestObjectivesLocale>();
 	private final HashMap<Integer, QuestOfferRewardLocale> questOfferRewardLocaleStorage = new HashMap<Integer, QuestOfferRewardLocale>();
 	private final HashMap<Integer, QuestRequestItemsLocale> questRequestItemsLocaleStorage = new HashMap<Integer, QuestRequestItemsLocale>();
-	private final HashMap<Tuple<Integer, Integer>, GossipMenuItemsLocale> gossipMenuItemsLocaleStorage = new HashMap<Tuple<Integer, Integer>, GossipMenuItemsLocale>();
 	private final HashMap<Integer, PageTextLocale> pageTextLocaleStorage = new HashMap<Integer, PageTextLocale>();
 	private final HashMap<Integer, PointOfInterestLocale> pointOfInterestLocaleStorage = new HashMap<Integer, PointOfInterestLocale>();
 	private final HashMap<Integer, PlayerChoiceLocale> playerChoiceLocales = new HashMap<Integer, PlayerChoiceLocale>();
@@ -361,34 +373,21 @@ public final class ObjectManager
 
 		this.repSpilloverTemplateStorage = cacheProvider.newGenericMapCache("RepSpilloverTemplateStorage", new TypeReference<>(){});
 		this.playerChoices = cacheProvider.newGenericMapCache("PlayerChoicesStorage", new TypeReference<>(){});
+		this.gossipMenusStorage = cacheProvider.newGenericMapCache("GossipMenusStorage", new TypeReference<>(){});
+		this.npcTextStorage = cacheProvider.newGenericMapCache("NpcTextStorage", new TypeReference<>(){});
+		this.gossipMenuItemsStorage = cacheProvider.newGenericMapCache("GossipMenuItemsStorage", new TypeReference<>(){});
+		this.gossipMenuAddonStorage = cacheProvider.newGenericMapCache("GossipMenuAddonStorage", new TypeReference<>(){});
 		for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i)
 		{
-			_difficultyEntries[i] = new ArrayList<>();
-			_hasDifficultyEntries[i] = new ArrayList<>();
+			difficultyEntries[i] = new ArrayList<>();
+			hasDifficultyEntries[i] = new ArrayList<>();
 		}
 	}
 
 	//Static Methods
-	public static boolean normalizePlayerName(tangible.RefObject<String> name)
+	public static String normalizePlayerName(String name)
 	{
-		if (name.refArgValue.isEmpty())
-		{
-			return false;
-		}
-
-		//CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
-		//TextInfo textInfo = cultureInfo.TextInfo;
-
-		//str = textInfo.ToTitleCase(str);
-
-		name.refArgValue = name.refArgValue.toLowerCase();
-
-		var charArray = name.refArgValue.toCharArray();
-		charArray[0] = Character.toUpperCase(charArray[0]);
-
-		name.refArgValue = new String(charArray);
-
-		return true;
+		return null;
 	}
 
 	public static ExtendedPlayerName extractExtendedPlayerName(String name)
@@ -560,7 +559,7 @@ public final class ObjectManager
 		stringStorage.clear();
 
 
-		try(Stream<TrinityString> trinityString = miscRepository.queryAllTrinityString()) {
+		try(Stream<SystemText> trinityString = miscRepository.queryAllTrinityString()) {
 			trinityString.forEach(e->{
 				LocalizedString string = new LocalizedString();
 				Locale[] values = Locale.values();
@@ -599,26 +598,26 @@ public final class ObjectManager
 
 		try(Stream<RaceUnlockRequirement> raceUnlockRequirements = miscRepository.queryAllRaceUnlockRequirement()) {
 			raceUnlockRequirements.forEach(e->{
-				ChrClass chrClass = dbcObjectManager.chrClass(e.id);
+				var chrClass = dbcObjectManager.chrRace(e.raceId);
 				if (chrClass == null)
 				{
-					Logs.SQL.error("Race {} defined in `race_unlock_requirement` does not exists, skipped.", e.id);
+					Logs.SQL.error("Race {} defined in `race_unlock_requirement` does not exists, skipped.", e.raceId);
 					return;
 				}
 
 				if (e.expansion >= Expansion.MAX_EXPANSIONS.getValue())
 				{
-					Logs.SQL.error("Race {} defined in `race_unlock_requirement` has incorrect expansion {}, skipped.", e.id, e.expansion);
+					Logs.SQL.error("Race {} defined in `race_unlock_requirement` has incorrect expansion {}, skipped.", e.raceId, e.expansion);
 					return;
 				}
 
-				if (e.achievementId != null && dbcObjectManager.achievement(e.achievementId) == null)
+				if (e.achievementId != 0 && dbcObjectManager.achievement(e.achievementId) == null)
 				{
-					Logs.SQL.error("Race {} defined in `race_unlock_requirement` has incorrect achievement {}, skipped.", e.id, e.achievementId);
+					Logs.SQL.error("Race {} defined in `race_unlock_requirement` has incorrect achievement {}, skipped.", e.raceId, e.achievementId);
 					return;
 				}
 
-				raceUnlockRequirementStorage.put(e.id, e);
+				raceUnlockRequirementStorage.put(Race.values()[e.raceId], e);
 			});
 		}
 		if(!raceUnlockRequirementStorage.isEmpty()) {
@@ -696,84 +695,33 @@ public final class ObjectManager
 		}
 	}
 
-	public void loadRealmNames()
+
+
+	public String getSystemText(int entry)
 	{
-		var oldMSTime = System.currentTimeMillis();
-		realmNameStorage.clear();
-
-		try(Stream<RealmList> streamNameAll = realmListRepository.streamNameAll()) {
-			streamNameAll.forEach(e->realmNameStorage.put(e.id, e.name));
-		}
-		if(realmNameStorage.isEmpty()) {
-
-		}
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} realm names in {1} ms.", count, time.GetMSTimeDiffToNow(oldMSTime));
+		return getSystemText(entry, Locale.enUS);
 	}
 
-
-	public String getCypherString(int entry)
+	public String getSystemText(int entry, Locale locale)
 	{
-		return getCypherString(entry, locale.enUS);
-	}
 
-	public String getCypherString(int entry, Locale locale)
-	{
-		if (!stringStorage.containsKey(entry))
-		{
-			Log.outError(LogFilter.Sql, "Cypher string entry {0} not found in DB.", entry);
-
+		LocalizedString localizedString = stringStorage.get(entry);
+		if(localizedString == null) {
+			Logs.SQL.error("System text entry {} not found in DB.", entry);
 			return "<error>";
 		}
-
-		var cs = stringStorage.get(entry);
-
-		if (cs.length > locale.getValue() && !tangible.StringHelper.isNullOrEmpty(cs.get(locale.getValue())))
-		{
-			return cs.get(locale.getValue());
-		}
-
-		return cs.get(SharedConst.DefaultLocale.getValue());
+		return localizedString.get(locale);
 	}
 
 
-	public String getCypherString(CypherStrings cmd)
-	{
-		return getCypherString(cmd, locale.enUS);
-	}
 
-	public String getCypherString(CypherStrings cmd, Locale locale)
-	{
-		return getCypherString((int)cmd.getValue(), locale);
-	}
 
-	public String getRealmName(int realm)
-	{
-		return realmNameStorage.get(realm);
-	}
 
-	public boolean getRealmName(int realmId, tangible.RefObject<String> name, tangible.RefObject<String> normalizedName)
-	{
-		var realmName = realmNameStorage.get(realmId);
 
-		if (realmName != null)
-		{
-			name.refArgValue = realmName;
-			normalizedName.refArgValue = realmName.normalize();
-
-			return true;
-		}
-
-		return false;
-	}
-
-	public HashMap<Byte, RaceUnlockRequirement> getRaceUnlockRequirements()
-	{
-		return raceUnlockRequirementStorage;
-	}
 
 	public RaceUnlockRequirement getRaceUnlockRequirement(Race race)
 	{
-		return raceUnlockRequirementStorage.get((byte)race.getValue());
+		return raceUnlockRequirementStorage.get(race);
 	}
 
 	public ArrayList<RaceClassAvailability> getClassExpansionRequirements()
@@ -781,46 +729,22 @@ public final class ObjectManager
 		return classExpansionRequirementStorage;
 	}
 
-	public ClassAvailability getClassExpansionRequirement(Race raceId, PlayerClass classId)
-	{
-		classExpansionRequirementStorage.get(raceId)
-		var raceClassAvailability = tangible.ListHelper.find(classExpansionRequirementStorage, raceClass ->
-		{
-				return raceClass.raceID == (byte)raceId.getValue();
-		});
+	public ClassAvailability getClassExpansionRequirement(Race raceId, PlayerClass classId) {
+		return classExpansionRequirementStorage.stream()
+				.filter(e -> e.raceID == raceId)
+				.flatMap(e -> e.classes.stream())
+				.filter(e -> e.classID == classId)
+				.findFirst()
+				.orElse(null);
 
-		if (raceClassAvailability == null)
-		{
-			return null;
-		}
-
-		var classAvailability = tangible.ListHelper.find(raceClassAvailability.classes, availability ->
-		{
-				return availability.classID == (byte)classId.getValue();
-		});
-
-		if (classAvailability == null)
-		{
-			return null;
-		}
-
-		return classAvailability;
 	}
 
-	public ClassAvailability getClassExpansionRequirementFallback(byte classId)
-	{
-		for (var raceClassAvailability : classExpansionRequirementStorage)
-		{
-			for (var classAvailability : raceClassAvailability.classes)
-			{
-				if (classAvailability.classID == classId)
-				{
-					return classAvailability;
-				}
-			}
-		}
-
-		return null;
+	public ClassAvailability getClassExpansionRequirementFallback(PlayerClass classId) {
+		return classExpansionRequirementStorage.stream()
+				.flatMap(e -> e.classes.stream())
+				.filter(e -> e.classID == classId)
+				.findFirst()
+				.orElse(null);
 	}
 
 	public PlayerChoice getPlayerChoice(int choiceId)
@@ -840,246 +764,126 @@ public final class ObjectManager
 
 		gossipMenusStorage.clear();
 
-		var result = DB.World.query("SELECT menuId, TextId FROM gossip_menu");
-
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 gossip_menu entries. DB table `gossip_menu` is empty!");
-
-			return;
+		Map<Integer, List<GossipMenus>> tmp = new HashMap<>();
+		AtomicInteger count = new AtomicInteger();
+		try(var items = miscRepository.streamAllGossipMenu()) {
+			items.forEach(e-> {
+				if (getNpcText(e.textId) == null)
+				{
+					Logs.SQL.error("Table gossip_menu: ID {} is using non-existing TextID {}", e.menuId, e.textId);
+					return;
+				}
+				tmp.compute(e.menuId, Functions.addToList(e));
+				count.getAndIncrement();
+			});
 		}
+		Logs.SERVER_LOADING.info(">> Loaded {} gossip_menu IDs in {} ms", tmp.size(), count.get() - oldMSTime);
 
-		do
-		{
-			GossipMenus gMenu = new GossipMenus();
-
-			gMenu.setMenuId(result.<Integer>Read(0));
-			gMenu.setTextId(result.<Integer>Read(1));
-
-			if (getNpcText(gMenu.getTextId()) == null)
-			{
-				if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-				{
-					DB.World.execute(String.format("DELETE FROM gossip_menu WHERE MenuID = %1$s", gMenu.getMenuId()));
-				}
-				else
-				{
-					Log.outError(LogFilter.Sql, "Table gossip_menu: Id {0} is using non-existing TextId {1}", gMenu.getMenuId(), gMenu.getTextId());
-				}
-
-				continue;
-			}
-
-			gossipMenusStorage.add(gMenu.getMenuId(), gMenu);
-		} while (result.NextRow());
-
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} gossip_menu Ids in {1} ms", gossipMenusStorage.count, time.GetMSTimeDiffToNow(oldMSTime));
 	}
 
 	public void loadGossipMenuItems()
 	{
 		var oldMSTime = System.currentTimeMillis();
 
+		Map<Integer, List<GossipMenuOption>> temp = new HashMap<>();
+		AtomicInteger count = new AtomicInteger();
 		gossipMenuItemsStorage.clear();
+		try(var items = miscRepository.streamAllGossipMenuOption()) {
+			items.forEach(e -> {
+				if (e.optionNpc == null)
+				{
+					Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} has unknown NPC option id {}. Replacing with GossipOptionNpc::None", e.menuId, e.orderIndex, e.optionNpc);
+					e.optionNpc = GossipOptionNpc.None;
+				}
 
-		//                                         0       1               2         3          4           5                      6         7      8             9            10
-		var result = DB.World.query("SELECT MenuID, gossipOptionID, OptionID, optionNpc, optionText, OptionBroadcastTextID, language, flags, ActionMenuID, ActionPoiID, gossipNpcOptionID, " + "BoxCoded, boxMoney, boxText, BoxBroadcastTextID, spellID, OverrideIconID FROM gossip_menu_option ORDER BY MenuID, OptionID");
+				if (e.optionBroadcastTextId != 0)
+				{
+					BroadcastText broadcastText = dbcObjectManager.broadcastText(e.optionBroadcastTextId);
+					if (broadcastText != null)
+					{
+						Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} has non-existing or incompatible OptionBroadcastTextID {}, ignoring.", e.menuId, e.orderIndex, e.optionBroadcastTextId);
+						e.optionBroadcastTextId = 0;
+					}
+				}
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 gossip_menu_option Ids. DB table `gossip_menu_option` is empty!");
+				if (e.language != 0 && dbcObjectManager.language(e.language) != null)
+				{
+					Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} use non-existing Language {}, ignoring", e.menuId, e.orderIndex, e.language);
+					e.language = 0;
+				}
 
-			return;
+				if (e.actionMenuId != 0 && e.optionNpc != GossipOptionNpc.None)
+				{
+					Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} can not use ActionMenuID for GossipOptionNpc different from GossipOptionNpc::None, ignoring", e.menuId, e.orderIndex);
+					e.actionMenuId = 0;
+				}
+
+				if (e.actionPoiId != 0)
+				{
+					if (e.optionNpc != GossipOptionNpc.None)
+					{
+						Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} can not use ActionPoiID for GossipOptionNpc different from GossipOptionNpc::None, ignoring", e.menuId, e.orderIndex);
+						e.actionPoiId = 0;
+					}
+					else if (getPointOfInterest(e.actionPoiId) == null)
+					{
+						Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} use non-existing ActionPoiID {}, ignoring", e.menuId, e.orderIndex, e.actionPoiId);
+						e.actionPoiId = 0;
+					}
+				}
+
+
+
+				if (e.boxBroadcastTextId != 0)
+				{
+					if (dbcObjectManager.broadcastText(e.boxBroadcastTextId) == null)
+					{
+						Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} has non-existing or incompatible BoxBroadcastTextID {}, ignoring.", e.menuId, e.orderIndex, e.boxBroadcastTextId);
+						e.boxBroadcastTextId = 0;
+					}
+				}
+
+				if (e.spellId != 0)
+				{
+					if (spellManager.getSpellInfo(e.spellId, Difficulty.NONE) == null)
+					{
+						Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} use non-existing Spell {}, ignoring",
+								e.menuId, e.orderIndex, e.spellId);
+						e.spellId = 0;
+					}
+				}
+				temp.compute(e.menuId, Functions.addToList(e));
+				count.incrementAndGet();
+			});
 		}
 
-		HashMap<Integer, Integer> optionToNpcOption = new HashMap<Integer, Integer>();
+		oldMSTime = System.currentTimeMillis();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-		for (var(_, npcOption) : CliDB.GossipNPCOptionStorage)
-		{
-			optionToNpcOption.put(npcOption.gossipOptionID, npcOption.id);
+		AtomicInteger countLocale = new AtomicInteger();
+		try (var items = miscRepository.streamAllGossipMenuOptionLocale()) {
+			items.forEach(e -> {
+				if (e.locale == Locale.enUS) {
+					return;
+				}
+				GossipMenuOption gossipMenuOption = temp.entrySet()
+						.stream()
+						.filter(entry -> entry.getKey() == e.menuId)
+						.flatMap(entry -> entry.getValue().stream())
+						.filter(option -> option.gossipOptionId == e.optionId).findFirst().orElse(null);
+				if (gossipMenuOption == null) {
+					Logs.SQL.error("Table `gossip_menu_option_locale` for gossip_menu_option menuId {}, optionId {} has non-existing record, ignoring.", e.menuId, e.optionId);
+					return;
+				}
+				gossipMenuOption.boxText.set(e.locale, e.boxText);
+				gossipMenuOption.optionText.set(e.locale, e.optionText);
+				countLocale.getAndIncrement();
+			});
 		}
 
-		do
-		{
-			GossipMenuItems gMenuItem = new GossipMenuItems();
+		gossipMenuItemsStorage.putAll(temp);
+		Logs.SERVER_LOADING.error(">> Loaded {} gossip_menu_option entries in {} ms",count, System.currentTimeMillis() - oldMSTime);
+		Logs.SERVER_LOADING.error(">> Loaded {} gossip_menu_option locale strings in {} ms", countLocale, System.currentTimeMillis() - oldMSTime);
 
-			gMenuItem.setMenuId(result.<Integer>Read(0));
-			gMenuItem.setGossipOptionId(result.<Integer>Read(1));
-			gMenuItem.setOrderIndex(result.<Integer>Read(2));
-			gMenuItem.setOptionNpc(GossipOptionNpc.forValue(result.<Byte>Read(3)));
-			gMenuItem.setOptionText(result.<String>Read(4));
-			gMenuItem.setOptionBroadcastTextId(result.<Integer>Read(5));
-			gMenuItem.setLanguage(result.<Integer>Read(6));
-			gMenuItem.setFlags(GossipOptionFlags.forValue(result.<Integer>Read(7)));
-			gMenuItem.setActionMenuId(result.<Integer>Read(8));
-			gMenuItem.setActionPoiId(result.<Integer>Read(9));
-
-			if (!result.IsNull(10))
-			{
-				gMenuItem.setGossipNpcOptionId(result.<Integer>Read(10));
-			}
-
-			gMenuItem.setBoxCoded(result.<Boolean>Read(11));
-			gMenuItem.setBoxMoney(result.<Integer>Read(12));
-			gMenuItem.setBoxText(result.<String>Read(13));
-			gMenuItem.setBoxBroadcastTextId(result.<Integer>Read(14));
-
-			if (!result.IsNull(15))
-			{
-				gMenuItem.setSpellId(result.<Integer>Read(15));
-			}
-
-			if (!result.IsNull(16))
-			{
-				gMenuItem.setOverrideIconId(result.<Integer>Read(16));
-			}
-
-			if (gMenuItem.getOptionNpc().getValue() >= GossipOptionNpc.max.getValue())
-			{
-				Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s has unknown NPC option id %3$s. Replacing with GossipOptionNpc.None", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getOptionNpc()));
-				gMenuItem.setOptionNpc(GossipOptionNpc.NONE);
-			}
-
-			if (gMenuItem.getOptionBroadcastTextId() != 0)
-			{
-				if (!CliDB.BroadcastTextStorage.containsKey(gMenuItem.getOptionBroadcastTextId()))
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET OptionBroadcastTextID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for MenuId %1$s, OptionIndex %2$s has non-existing or incompatible OptionBroadcastTextId %3$s, ignoring.", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getOptionBroadcastTextId()));
-					}
-
-					gMenuItem.setOptionBroadcastTextId(0);
-				}
-			}
-
-			if (gMenuItem.getLanguage() != 0 && !CliDB.LanguagesStorage.containsKey(gMenuItem.getLanguage()))
-			{
-				if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-				{
-					DB.World.execute(String.format("UPDATE gossip_menu_option SET OptionID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-				}
-				else
-				{
-					Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s use non-existing Language %3$s, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getLanguage()));
-				}
-
-				gMenuItem.setLanguage(0);
-			}
-
-			if (gMenuItem.getActionMenuId() != 0 && gMenuItem.getOptionNpc() != GossipOptionNpc.NONE)
-			{
-				if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-				{
-					DB.World.execute(String.format("UPDATE gossip_menu_option SET ActionMenuID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-				}
-				else
-				{
-					Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s can not use ActionMenuID for GossipOptionNpc different from GossipOptionNpc.NONE, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex()));
-				}
-
-				gMenuItem.setActionMenuId(0);
-			}
-
-			if (gMenuItem.getActionPoiId() != 0)
-			{
-				if (gMenuItem.getOptionNpc() != GossipOptionNpc.NONE)
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET ActionPoiID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s can not use ActionPoiID for GossipOptionNpc different from GossipOptionNpc.NONE, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex()));
-					}
-
-					gMenuItem.setActionPoiId(0);
-				}
-				else if (getPointOfInterest(gMenuItem.getActionPoiId()) == null)
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET ActionPoiID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s use non-existing ActionPoiID %3$s, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getActionPoiId()));
-					}
-
-					gMenuItem.setActionPoiId(0);
-				}
-			}
-
-			if (gMenuItem.getGossipNpcOptionId() != null)
-			{
-				if (!CliDB.GossipNPCOptionStorage.containsKey(gMenuItem.getGossipNpcOptionId().intValue()))
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET gossipNpcOptionID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s use non-existing GossipNPCOption %3$s, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getGossipNpcOptionId()));
-					}
-
-					gMenuItem.setGossipNpcOptionId(null);
-				}
-			}
-			else
-			{
-				var npcOptionId = optionToNpcOption.get(gMenuItem.getGossipOptionId());
-
-				if (npcOptionId != 0)
-				{
-					gMenuItem.setGossipNpcOptionId((int)npcOptionId);
-				}
-			}
-
-			if (gMenuItem.getBoxBroadcastTextId() != 0)
-			{
-				if (!CliDB.BroadcastTextStorage.containsKey(gMenuItem.getBoxBroadcastTextId()))
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET BoxBroadcastTextID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for MenuId %1$s, OptionIndex %2$s has non-existing or incompatible BoxBroadcastTextId %3$s, ignoring.", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getBoxBroadcastTextId()));
-					}
-
-					gMenuItem.setBoxBroadcastTextId(0);
-				}
-			}
-
-			if (gMenuItem.getSpellId() != null)
-			{
-				if (!global.getSpellMgr().hasSpellInfo((int)gMenuItem.getSpellId().intValue(), Difficulty.NONE))
-				{
-					if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-					{
-						DB.World.execute(String.format("UPDATE gossip_menu_option SET spellID = 0 WHERE MenuID = %1$s", gMenuItem.getMenuId()));
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `gossip_menu_option` for menu %1$s, id %2$s use non-existing Spell %3$s, ignoring", gMenuItem.getMenuId(), gMenuItem.getOrderIndex(), gMenuItem.getSpellId()));
-					}
-
-					gMenuItem.setSpellId(null);
-				}
-			}
-
-			gossipMenuItemsStorage.add(gMenuItem.getMenuId(), gMenuItem);
-		} while (result.NextRow());
-
-		Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s gossip_menu_option entries in %2$s ms", gossipMenuItemsStorage.count, time.GetMSTimeDiffToNow(oldMSTime)));
 	}
 
 	public void loadGossipMenuAddon()
@@ -1087,6 +891,18 @@ public final class ObjectManager
 		var oldMSTime = System.currentTimeMillis();
 
 		gossipMenuAddonStorage.clear();
+
+		try(var items = miscRepository.streamAllGossipMenuAddon()) {
+			items.forEach(e-> {
+				var entry = dbcObjectManager.faction(e.friendshipFactionId);
+
+				if(entry != null && dbcObjectManager.friendshipRepReaction(entry.getFriendshipRepID()) == null) {
+					Logs.SQL.error("Table gossip_menu_addon: ID {} is using FriendshipFactionID {} referencing non-existing FriendshipRepID {}",
+							e.menuId, e.friendshipFactionId, entry.getFriendshipRepID());
+					addon.FriendshipFactionID = 0;
+				}
+			});
+		}
 
 		//                                         0       1
 		var result = DB.World.query("SELECT MenuID, FriendshipFactionID FROM gossip_menu_addon");
@@ -1177,7 +993,7 @@ public final class ObjectManager
 		return gossipMenusStorage.get(uiMenuId);
 	}
 
-	public ArrayList<GossipMenuItems> getGossipMenuItemsMapBounds(int uiMenuId)
+	public ArrayList<GossipMenuOption> getGossipMenuItemsMapBounds(int uiMenuId)
 	{
 		return gossipMenuItemsStorage.get(uiMenuId);
 	}
@@ -3658,73 +3474,42 @@ public final class ObjectManager
 		var oldMSTime = System.currentTimeMillis();
 
 		npcTextStorage.clear();
-
-		var result = DB.World.query("SELECT ID, Probability0, Probability1, Probability2, Probability3, Probability4, Probability5, Probability6, Probability7, " + "BroadcastTextID0, BroadcastTextID1, BroadcastTextID2, BroadcastTextID3, BroadcastTextID4, BroadcastTextID5, BroadcastTextID6, BroadcastTextID7 FROM npc_text");
-
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 npc texts, table is empty!");
-
-			return;
-		}
-
-		do
-		{
-			var textID = result.<Integer>Read(0);
-
-			if (textID == 0)
-			{
-				Log.outError(LogFilter.Sql, "Table `npc_text` has record wit reserved id 0, ignore.");
-
-				continue;
-			}
-
-			NpcText npcText = new NpcText();
-
-			for (var i = 0; i < SharedConst.MaxNpcTextOptions; i++)
-			{
-				npcText.getData()[i].probability = result.<Float>Read(1 + i);
-				npcText.getData()[i].broadcastTextID = result.<Integer>Read(9 + i);
-			}
-
-			for (var i = 0; i < SharedConst.MaxNpcTextOptions; i++)
-			{
-				if (npcText.getData()[i].broadcastTextID != 0)
+		AtomicInteger count = new AtomicInteger();
+		try(var items = miscRepository.streamAllNpcText()) {
+			items.forEach(e->{
+				if (e.id == 0)
 				{
-					if (!CliDB.BroadcastTextStorage.containsKey(npcText.getData()[i].broadcastTextID))
+					Logs.SQL.error("Table `npc_text` has record with reserved id 0, ignore.");
+
+					return;
+				}
+                NpcTextData[] data = e.data;
+                for (int i = 0; i < data.length; i++) {
+                    NpcTextData datum = data[i];
+                    if (datum.broadcastTextID != 0 && dbcObjectManager.broadcastText(datum.broadcastTextID) == null) {
+                        Logs.SQL.error("NPCText (ID: {}) has a non-existing BroadcastText (ID: {}, Index: {})", e.data, datum.broadcastTextID, i);
+                        datum.probability = 0.0f;
+                        datum.broadcastTextID = 0;
+						return;
+                    }
+					if (datum.probability > 0 && datum.broadcastTextID == 0)
 					{
-						Log.outDebug(LogFilter.Sql, "NPCText (Id: {0}) has a non-existing BroadcastText (ID: {1}, Index: {2})", textID, npcText.getData()[i].broadcastTextID, i);
-						npcText.getData()[i].probability = 0.0f;
-						npcText.getData()[i].broadcastTextID = 0;
+						Logs.SQL.error("NPCText (ID: {}) has a probability (Index: {}) set, but no BroadcastTextID to go with it", e.id, i);
+						datum.probability = 0;
+						return;
 					}
-				}
-			}
-
-			for (byte i = 0; i < SharedConst.MaxNpcTextOptions; i++)
-			{
-				if (npcText.getData()[i].probability > 0 && npcText.getData()[i].broadcastTextID == 0)
+                }
+				float probabilitySum = Arrays.stream(data).map(datum -> datum.probability).reduce(0f, Float::sum);
+				if (probabilitySum <= 0.0f)
 				{
-					Log.outDebug(LogFilter.Sql, "NPCText (ID: {0}) has a probability (Index: {1}) set, but no BroadcastTextID to go with it", textID, i);
-					npcText.getData()[i].probability = 0;
+					Logs.SQL.error( "NPCText (ID: {}) has a probability sum 0, no text can be selected from it, skipped.", e.id);
+					return;
 				}
-			}
-
-			var probabilitySum = npcText.getData().Aggregate(0f, (float sum, NpcTextData data) ->
-			{
-					return sum + data.probability;
+				npcTextStorage.put(e.id, e);
+				count.getAndIncrement();
 			});
-
-			if (probabilitySum <= 0.0f)
-			{
-				Log.outDebug(LogFilter.Sql, String.format("NPCText (ID: %1$s) has a probability sum 0, no text can be selected from it, skipped.", textID));
-
-				continue;
-			}
-
-			npcTextStorage.put(textID, npcText);
-		} while (result.NextRow());
-
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} npc texts in {1} ms", npcTextStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
+		}
+		Logs.SERVER_LOADING.info(">> Loaded {} npc texts in {} ms", count, System.currentTimeMillis() - oldMSTime);
 	}
 
 	public void loadTrainers()
@@ -8040,7 +7825,7 @@ public final class ObjectManager
 		// for example set of race quests can lead to single not race specific quest
 		do
 		{
-			Quest newQuest = new quest(result.GetFields());
+			Quest newQuest = new Quest(result.GetFields());
 			questTemplates.put(newQuest.id, newQuest);
 
 			if (newQuest.isAutoPush())
@@ -9586,7 +9371,7 @@ public final class ObjectManager
 		{
 			typeIndex = 0;
 		}
-		else if (type == TypeId.gameObject)
+		else if (type == TypeId.GAME_OBJECT)
 		{
 			typeIndex = 1;
 		}
@@ -9595,7 +9380,7 @@ public final class ObjectManager
 			return null;
 		}
 
-		return _questGreetingStorage[typeIndex].get(id);
+		return questGreetingStorage[typeIndex].get(id);
 	}
 
 	public QuestGreetingLocale getQuestGreetingLocale(TypeId type, int id)
@@ -9606,7 +9391,7 @@ public final class ObjectManager
 		{
 			typeIndex = 0;
 		}
-		else if (type == TypeId.gameObject)
+		else if (type == TypeId.GAME_OBJECT)
 		{
 			typeIndex = 1;
 		}
@@ -9615,7 +9400,7 @@ public final class ObjectManager
 			return null;
 		}
 
-		return _questGreetingLocaleStorage[typeIndex].get(id);
+		return questGreetingLocaleStorage[typeIndex].get(id);
 	}
 
 	public ArrayList<Integer> getExclusiveQuestGroupBounds(int exclusiveGroupId)
@@ -10138,39 +9923,7 @@ public final class ObjectManager
 
 	public void loadGossipMenuItemsLocales()
 	{
-		var oldMSTime = System.currentTimeMillis();
 
-		gossipMenuItemsLocaleStorage.clear(); // need for reload case
-
-		//                                         0       1            2       3           4
-		var result = DB.World.query("SELECT menuId, OptionID, locale, optionText, BoxText FROM gossip_menu_option_locale");
-
-		if (result.isEmpty())
-		{
-			return;
-		}
-
-		do
-		{
-			var menuId = result.<Integer>Read(0);
-			var optionIndex = result.<Integer>Read(1);
-			var localeName = result.<String>Read(2);
-
-			var locale = localeName.<locale>ToEnum();
-
-			if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS)
-			{
-				continue;
-			}
-
-			GossipMenuItemsLocale data = new GossipMenuItemsLocale();
-			addLocaleString(result.<String>Read(3), locale, data.optionText);
-			addLocaleString(result.<String>Read(4), locale, data.boxText);
-
-			gossipMenuItemsLocaleStorage.put(Tuple.create(menuId, optionIndex), data);
-		} while (result.NextRow());
-
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} gossip_menu_option locale strings in {1} ms", gossipMenuItemsLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
 	}
 
 	public void loadPageTextLocales()
@@ -11018,7 +10771,7 @@ public final class ObjectManager
 			items.forEach(e -> {
 				PlayerChoice playerChoice = tmp.get(e.choiceId);
 				if (playerChoice == null) {
-					Logs.SQL.error("sql.sql", "Table `playerchoice_response_maw_power` references non-existing ChoiceId: {} (ResponseId: {}), skipped", e.choiceId, e.responseId);
+					Logs.SQL.error("Table `playerchoice_response_maw_power` references non-existing ChoiceId: {} (ResponseId: {}), skipped", e.choiceId, e.responseId);
 					return;
 				}
 				var anyMatch = playerChoice.responses.stream().filter(response -> response.responseID == e.responseId).findFirst();

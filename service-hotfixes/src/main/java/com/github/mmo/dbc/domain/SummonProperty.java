@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "summon_properties")
 @Db2DataBind(name = "SummonProperties.db2", layoutHash = 0xFB8338FC, fields = {
         @Db2Field(name = "flags", type = Db2Type.INT, signed = true),
@@ -27,28 +27,28 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class SummonProperty implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Flags")
+    @Column("ID")
+    private int id;
+
+    @Column("Flags")
     private Integer flags;
 
-    @Column(name = "Control")
+    @Column("Control")
     private Integer control;
 
-    @Column(name = "Faction")
+    @Column("Faction")
     private Integer faction;
 
-    @Column(name = "Title")
+    @Column("Title")
     private Integer title;
 
-    @Column(name = "Slot")
+    @Column("Slot")
     private Integer slot;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

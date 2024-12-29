@@ -5,80 +5,80 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_pet")
 public class CharacterPet {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
+
+    @Column("id")
     private Long id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "entry", columnDefinition = "int UNSIGNED not null")
+
+    @Column("entry")
     private Long entry;
 
-    @ColumnDefault("'0'")
-    @Column(name = "owner", nullable = false)
+
+    @Column("owner")
     private Long owner;
 
-    @ColumnDefault("'0'")
-    @Column(name = "modelid", columnDefinition = "int UNSIGNED")
+
+    @Column("modelid")
     private Long modelid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "CreatedBySpell", columnDefinition = "int UNSIGNED not null")
+
+    @Column("CreatedBySpell")
     private Long createdBySpell;
 
-    @ColumnDefault("'0'")
-    @Column(name = "PetType", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("PetType")
     private Short petType;
 
-    @ColumnDefault("'1'")
-    @Column(name = "level", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("level")
     private Integer level;
 
-    @ColumnDefault("'0'")
-    @Column(name = "exp", columnDefinition = "int UNSIGNED not null")
+
+    @Column("exp")
     private Long exp;
 
-    @ColumnDefault("'0'")
-    @Column(name = "Reactstate", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("Reactstate")
     private Short reactstate;
 
-    @ColumnDefault("'Pet'")
-    @Column(name = "name", nullable = false, length = 21)
+
+    @Column("name")
     private String name;
 
-    @ColumnDefault("'0'")
-    @Column(name = "renamed", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("renamed")
     private Short renamed;
 
-    @ColumnDefault("-1")
-    @Column(name = "slot", nullable = false)
+
+    @Column("slot")
     private Short slot;
 
-    @ColumnDefault("'1'")
-    @Column(name = "curhealth", columnDefinition = "int UNSIGNED not null")
+
+    @Column("curhealth")
     private Long curhealth;
 
-    @ColumnDefault("'0'")
-    @Column(name = "curmana", columnDefinition = "int UNSIGNED not null")
+
+    @Column("curmana")
     private Long curmana;
 
-    @ColumnDefault("'0'")
-    @Column(name = "savetime", columnDefinition = "int UNSIGNED not null")
+
+    @Column("savetime")
     private Long savetime;
 
-    @Lob
-    @Column(name = "abdata")
+    
+    @Column("abdata")
     private String abdata;
 
-    @ColumnDefault("'0'")
-    @Column(name = "specialization", columnDefinition = "smallint UNSIGNED not null")
+
+    @Column("specialization")
     private Integer specialization;
 
 }

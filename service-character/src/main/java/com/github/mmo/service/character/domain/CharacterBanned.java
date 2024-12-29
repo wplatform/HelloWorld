@@ -5,36 +5,36 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@IdClass(CharacterBannedId.class)
-@Entity
+
+
 @Table(name = "character_banned")
 public class CharacterBanned {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Integer guid;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "bandate", nullable = false)
+
+    @Column("bandate")
     private Long bandate;
 
-    @ColumnDefault("0")
-    @Column(name = "unbandate", nullable = false)
+
+    @Column("unbandate")
     private Long unbandate;
 
-    @Column(name = "bannedby", nullable = false, length = 50)
+    @Column("bannedby")
     private String bannedby;
 
-    @Column(name = "banreason", nullable = false)
+    @Column("banreason")
     private String banreason;
 
-    @ColumnDefault("'1'")
-    @Column(name = "active", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("active")
     private Short active;
 
 }

@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "item_limit_category_condition")
 @Db2DataBind(name = "ItemLimitCategoryCondition.db2", layoutHash = 0xDE8EAD49, parentIndexField = 2, fields = {
         @Db2Field(name = "addQuantity", type = Db2Type.BYTE, signed = true),
@@ -25,22 +25,22 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class ItemLimitCategoryCondition implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "AddQuantity")
+    @Column("ID")
+    private int id;
+
+    @Column("AddQuantity")
     private Byte addQuantity;
 
-    @Column(name = "PlayerConditionID")
+    @Column("PlayerConditionID")
     private Integer playerConditionID;
 
-    @Column(name = "ParentItemLimitCategoryID")
+    @Column("ParentItemLimitCategoryID")
     private Integer parentItemLimitCategoryID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -11,13 +11,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "garr_plot")
 @Db2DataBind(name = "GarrPlot.db2", layoutHash = 0xE12049E0, fields = {
         @Db2Field(name = "name", type = Db2Type.STRING),
@@ -30,37 +30,37 @@ import org.hibernate.annotations.ColumnDefault;
 })
 public class GarrPlot implements DbcEntity {
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Name")
+    @Column("ID")
+    private int id;
+
+    @Column("Name")
     private LocalizedString name;
 
-    @Column(name = "AllianceConstructObjID")
+    @Column("AllianceConstructObjID")
     private Integer allianceConstructObjID;
 
-    @Column(name = "HordeConstructObjID")
+    @Column("HordeConstructObjID")
     private Integer hordeConstructObjID;
 
-    @Column(name = "UiCategoryID")
+    @Column("UiCategoryID")
     private Byte uiCategoryID;
 
-    @Column(name = "PlotType")
+    @Column("PlotType")
     private Byte plotType;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "UpgradeRequirement1")
+    @Column("UpgradeRequirement1")
     private Integer upgradeRequirement1;
 
-    @Column(name = "UpgradeRequirement2")
+    @Column("UpgradeRequirement2")
     private Integer upgradeRequirement2;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

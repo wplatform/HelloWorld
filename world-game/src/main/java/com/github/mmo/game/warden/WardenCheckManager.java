@@ -37,7 +37,7 @@ public class WardenCheckManager
 		}
 
 		//                                         0   1     2     3       4        5       6    7
-		var result = DB.World.query("SELECT id, type, data, result, address, length, str, comment FROM warden_checks ORDER BY id ASC");
+		var result = DB.World.query("SELECT id, type, data, result, address);
 
 		if (result.isEmpty())
 		{

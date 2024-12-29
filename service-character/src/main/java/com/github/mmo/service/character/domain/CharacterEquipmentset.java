@@ -5,114 +5,114 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
-@Entity
+
 @Table(name = "character_equipmentsets")
 public class CharacterEquipmentset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "setguid", nullable = false)
-    private Integer id;
+    @Column("setguid")
+    private int id;
 
-    @ColumnDefault("'0'")
-    @Column(name = "guid", nullable = false)
+
+    @Column("guid")
     private Long guid;
 
-    @ColumnDefault("'0'")
-    @Column(name = "setindex", columnDefinition = "tinyint UNSIGNED not null")
+
+    @Column("setindex")
     private Short setindex;
 
-    @Column(name = "name", nullable = false, length = 31)
+    @Column("name")
     private String name;
 
-    @Column(name = "iconname", nullable = false, length = 100)
+    @Column("iconname")
     private String iconname;
 
-    @ColumnDefault("'0'")
-    @Column(name = "ignore_mask", columnDefinition = "int UNSIGNED not null")
+
+    @Column("ignore_mask")
     private Long ignoreMask;
 
-    @ColumnDefault("-1")
-    @Column(name = "AssignedSpecIndex", nullable = false)
+
+    @Column("AssignedSpecIndex")
     private Integer assignedSpecIndex;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item0", nullable = false)
+
+    @Column("item0")
     private Long item0;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item1", nullable = false)
+
+    @Column("item1")
     private Long item1;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item2", nullable = false)
+
+    @Column("item2")
     private Long item2;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item3", nullable = false)
+
+    @Column("item3")
     private Long item3;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item4", nullable = false)
+
+    @Column("item4")
     private Long item4;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item5", nullable = false)
+
+    @Column("item5")
     private Long item5;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item6", nullable = false)
+
+    @Column("item6")
     private Long item6;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item7", nullable = false)
+
+    @Column("item7")
     private Long item7;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item8", nullable = false)
+
+    @Column("item8")
     private Long item8;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item9", nullable = false)
+
+    @Column("item9")
     private Long item9;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item10", nullable = false)
+
+    @Column("item10")
     private Long item10;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item11", nullable = false)
+
+    @Column("item11")
     private Long item11;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item12", nullable = false)
+
+    @Column("item12")
     private Long item12;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item13", nullable = false)
+
+    @Column("item13")
     private Long item13;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item14", nullable = false)
+
+    @Column("item14")
     private Long item14;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item15", nullable = false)
+
+    @Column("item15")
     private Long item15;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item16", nullable = false)
+
+    @Column("item16")
     private Long item16;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item17", nullable = false)
+
+    @Column("item17")
     private Long item17;
 
-    @ColumnDefault("'0'")
-    @Column(name = "item18", nullable = false)
+
+    @Column("item18")
     private Long item18;
 
 }

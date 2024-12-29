@@ -10,13 +10,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+
 
 @Getter
 @Setter
 @ToString
-@IdClass(DB2Id.class)
-@Entity
+
+
 @Table(name = "spell_x_spell_visual")
 @Db2DataBind(name = "SpellXSpellVisual.db2", layoutHash = 0x4F4B8A2A, indexField = 1, parentIndexField = 12, fields = {
         @Db2Field(name = "spellVisualID", type = Db2Type.INT),
@@ -34,50 +34,50 @@ import org.hibernate.annotations.ColumnDefault;
         @Db2Field(name = "spellID", type = Db2Type.INT, signed = true)
 })
 public class SpellXSpellVisual implements DbcEntity {
-    @Column(name = "SpellVisualID")
+    @Column("SpellVisualID")
     private Integer spellVisualID;
 
     @Id
-    @ColumnDefault("'0'")
-    @Column(name = "ID", columnDefinition = "int UNSIGNED not null")
-    private Integer id;
 
-    @Column(name = "Probability")
+    @Column("ID")
+    private int id;
+
+    @Column("Probability")
     private Float probability;
 
-    @Column(name = "CasterPlayerConditionID")
+    @Column("CasterPlayerConditionID")
     private Integer casterPlayerConditionID;
 
-    @Column(name = "CasterUnitConditionID")
+    @Column("CasterUnitConditionID")
     private Short casterUnitConditionID;
 
-    @Column(name = "ViewerPlayerConditionID")
+    @Column("ViewerPlayerConditionID")
     private Integer viewerPlayerConditionID;
 
-    @Column(name = "ViewerUnitConditionID")
+    @Column("ViewerUnitConditionID")
     private Short viewerUnitConditionID;
 
-    @Column(name = "SpellIconFileID")
+    @Column("SpellIconFileID")
     private Integer spellIconFileID;
 
-    @Column(name = "ActiveIconFileID")
+    @Column("ActiveIconFileID")
     private Integer activeIconFileID;
 
-    @Column(name = "Flags")
+    @Column("Flags")
     private Byte flags;
 
-    @Column(name = "DifficultyID")
+    @Column("DifficultyID")
     private Byte difficultyID;
 
-    @Column(name = "Priority")
+    @Column("Priority")
     private Byte priority;
 
-    @Column(name = "SpellID")
+    @Column("SpellID")
     private Integer spellID;
 
     @Id
-    @ColumnDefault("0")
-    @Column(name = "VerifiedBuild", nullable = false)
+
+    @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
 }

@@ -16,8 +16,8 @@ public class GuildEventTabModified extends ServerPacket
 	{
 		this.writeInt32(tab);
 
-		this.writeBits(name.GetByteCount(), 7);
-		this.writeBits(icon.GetByteCount(), 9);
+		this.writeBits(name.getBytes().length, 7);
+		this.writeBits(icon.getBytes().length, 9);
 		this.flushBits();
 
 		this.writeString(name);

@@ -16,7 +16,7 @@ public class QueryItemTextResponse extends ServerPacket {
     @Override
     public void write() {
         this.writeBit(valid);
-        this.writeBits(text.GetByteCount(), 13);
+        this.writeBits(text.getBytes().length, 13);
         this.flushBits();
 
         this.writeString(text);
