@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;public class GuildBankQueryTab extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class GuildBankQueryTab extends ClientPacket {
     public ObjectGuid banker = ObjectGuid.EMPTY;
 
     public byte tab;

@@ -1,42 +1,36 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public final class SpellMissStatus
-{
-	public SpellMissStatus()
-	{
-	}
+public final class SpellMissStatus {
+    public SpellMissInfo reason = SpellMissInfo.values()[0];
+    public SpellMissInfo reflectStatus = SpellMissInfo.values()[0];
 
-	public SpellMissStatus(SpellMissInfo reason, SpellMissInfo reflectStatus)
-	{
-		reason = reason;
-		reflectStatus = reflectStatus;
-	}
+    public SpellMissStatus() {
+    }
 
-	public void write(WorldPacket data)
-	{
-		data.writeBits((byte)reason.getValue(), 4);
+    public SpellMissStatus(SpellMissInfo reason, SpellMissInfo reflectStatus) {
+        reason = reason;
+        reflectStatus = reflectStatus;
+    }
 
-		if (reason == SpellMissInfo.Reflect)
-		{
-			data.writeBits(reflectStatus, 4);
-		}
+    public void write(WorldPacket data) {
+        data.writeBits((byte) reason.getValue(), 4);
 
-		data.flushBits();
-	}
+        if (reason == SpellMissInfo.Reflect) {
+            data.writeBits(reflectStatus, 4);
+        }
 
-	public SpellMissInfo reason = SpellMissInfo.values()[0];
-	public SpellMissInfo reflectStatus = SpellMissInfo.values()[0];
+        data.flushBits();
+    }
 
-	public SpellMissStatus clone()
-	{
-		SpellMissStatus varCopy = new SpellMissStatus();
+    public SpellMissStatus clone() {
+        SpellMissStatus varCopy = new SpellMissStatus();
 
-		varCopy.reason = this.reason;
-		varCopy.reflectStatus = this.reflectStatus;
+        varCopy.reason = this.reason;
+        varCopy.reflectStatus = this.reflectStatus;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

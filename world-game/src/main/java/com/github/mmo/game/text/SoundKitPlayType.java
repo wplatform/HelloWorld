@@ -1,41 +1,35 @@
-package game;public enum SoundKitPlayType
-{
-	NORMAL(0),
-	ObjectSound(1),
-	max(2);
+package game;
 
-	public static final int SIZE = Integer.SIZE;
+public enum SoundKitPlayType {
+    NORMAL(0),
+    ObjectSound(1),
+    max(2);
 
-	private int intValue;
-	private static java.util.HashMap<Integer, SoundKitPlayType> mappings;
-	private static java.util.HashMap<Integer, SoundKitPlayType> getMappings()
-	{
-		if (mappings == null)
-		{
-			synchronized (SoundKitPlayType.class)
-			{
-				if (mappings == null)
-				{
-					mappings = new java.util.HashMap<Integer, SoundKitPlayType>();
-				}
-			}
-		}
-		return mappings;
-	}
+    public static final int SIZE = Integer.SIZE;
+    private static java.util.HashMap<Integer, SoundKitPlayType> mappings;
+    private int intValue;
 
-	private SoundKitPlayType(int value)
-	{
-		intValue = value;
-		getMappings().put(value, this);
-	}
+    private SoundKitPlayType(int value) {
+        intValue = value;
+        getMappings().put(value, this);
+    }
 
-	public int getValue()
-	{
-		return intValue;
-	}
+    private static java.util.HashMap<Integer, SoundKitPlayType> getMappings() {
+        if (mappings == null) {
+            synchronized (SoundKitPlayType.class) {
+                if (mappings == null) {
+                    mappings = new java.util.HashMap<Integer, SoundKitPlayType>();
+                }
+            }
+        }
+        return mappings;
+    }
 
-	public static SoundKitPlayType forValue(int value)
-	{
-		return getMappings().get(value);
-	}
+    public static SoundKitPlayType forValue(int value) {
+        return getMappings().get(value);
+    }
+
+    public int getValue() {
+        return intValue;
+    }
 }

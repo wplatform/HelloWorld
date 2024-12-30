@@ -17,7 +17,7 @@ public interface AreaTriggerDefine {
 
     public class AreaTriggerId {
 
-                public int Id = 0;
+        public int Id = 0;
         public boolean IsCustom = false;
 
 
@@ -27,7 +27,7 @@ public interface AreaTriggerDefine {
 
     public class AreaTriggerAction {
 
-                public int Param;
+        public int Param;
         public AreaTriggerActionTypes ActionType;
         public AreaTriggerActionUserTypes TargetType;
     }
@@ -49,12 +49,11 @@ public interface AreaTriggerDefine {
     }
 
     public class AreaTriggerSpawn extends SpawnData {
+        public AreaTriggerId Id = new AreaTriggerId();
+        public Integer SpellForVisuals;
         public AreaTriggerSpawn() {
             super(SpawnObjectType.AREA_TRIGGER);
         }
-
-        public AreaTriggerId Id = new AreaTriggerId();
-        public Integer SpellForVisuals;
     }
 
 }

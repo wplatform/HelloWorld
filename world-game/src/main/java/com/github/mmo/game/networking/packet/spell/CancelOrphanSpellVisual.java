@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-public class CancelOrphanSpellVisual extends ServerPacket
-{
-	public int spellVisualID;
-	public CancelOrphanSpellVisual()
-	{
-		super(ServerOpcode.CancelOrphanSpellVisual);
-	}
+public class CancelOrphanSpellVisual extends ServerPacket {
+    public int spellVisualID;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(spellVisualID);
-	}
+    public CancelOrphanSpellVisual() {
+        super(ServerOpcode.CancelOrphanSpellVisual);
+    }
+
+    @Override
+    public void write() {
+        this.writeInt32(spellVisualID);
+    }
 }

@@ -14,12 +14,6 @@ import com.github.mmo.dbc.domain.AreaTable;
 import com.github.mmo.dbc.domain.Faction;
 import com.github.mmo.dbc.domain.FactionTemplate;
 import com.github.mmo.defines.*;
-import com.github.mmo.game.service.model.creature.TempSummonType;
-import com.github.mmo.utils.MathUtil;
-import com.github.mmo.utils.RandomUtil;
-import game.ConditionManager;
-
-import game.PhasingHandler;
 import com.github.mmo.game.ai.CreatureAI;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.creature.TempSummon;
@@ -35,15 +29,14 @@ import com.github.mmo.game.entity.unit.enums.UnitFlag2;
 import com.github.mmo.game.entity.unit.enums.UnitPVPStateFlags;
 import com.github.mmo.game.entity.unit.enums.UnitState;
 import com.github.mmo.game.entity.vehicle.ITransport;
-
 import com.github.mmo.game.loot.Loot;
-import com.github.mmo.game.map.*;
 import com.github.mmo.game.map.Map;
+import com.github.mmo.game.map.*;
 import com.github.mmo.game.map.enums.LiquidHeaderTypeFlag;
 import com.github.mmo.game.map.enums.ModelIgnoreFlags;
 import com.github.mmo.game.map.enums.ZLiquidStatus;
-import com.github.mmo.game.map.grid.Coordinate;
 import com.github.mmo.game.map.grid.Cell;
+import com.github.mmo.game.map.grid.Coordinate;
 import com.github.mmo.game.map.model.PositionFullTerrainStatus;
 import com.github.mmo.game.map.model.ZoneAndAreaId;
 import com.github.mmo.game.movement.PathGenerator;
@@ -60,12 +53,17 @@ import com.github.mmo.game.networking.packet.spell.PlaySpellVisualKit;
 import com.github.mmo.game.phasing.PhaseShift;
 import com.github.mmo.game.reputation.ReputationFlag;
 import com.github.mmo.game.scenario.Scenario;
+import com.github.mmo.game.service.model.creature.TempSummonType;
 import com.github.mmo.game.spell.*;
 import com.github.mmo.game.spell.auras.enums.AuraType;
 import com.github.mmo.game.spell.enums.SpellModOp;
 import com.github.mmo.game.spell.enums.SpellValueMod;
 import com.github.mmo.game.spell.enums.TriggerCastFlag;
 import com.github.mmo.game.world.WorldContext;
+import com.github.mmo.utils.MathUtil;
+import com.github.mmo.utils.RandomUtil;
+import game.ConditionManager;
+import game.PhasingHandler;
 import lombok.Getter;
 
 import java.time.Duration;
@@ -77,11 +75,16 @@ import static game.WardenActions.Log;
 @Getter
 public abstract class WorldObject extends GenericObject {
 
-    public int lastUsedScriptID;
-
-    private boolean activeObject;
     private final boolean worldObject;
-
+    private final EnumIntArray<StealthType> stealth = EnumIntArray.of(StealthType.class);
+    private final EnumIntArray<StealthType> stealthDetect = EnumIntArray.of(StealthType.class);
+    private final EnumIntArray<InvisibilityType> invisibility = EnumIntArray.of(InvisibilityType.class);
+    private final EnumIntArray<InvisibilityType> invisibilityDetect = EnumIntArray.of(InvisibilityType.class);
+    private final EnumIntArray<ServerSideVisibilityType> serverSideVisibility = EnumIntArray.of(ServerSideVisibilityType.class);
+    private final EnumIntArray<ServerSideVisibilityType> serverSideVisibilityDetect = EnumIntArray.of(ServerSideVisibilityType.class);
+    private final WorldLocation location;
+    public int lastUsedScriptID;
+    private boolean activeObject;
     private int zoneId;
     private int areaId;
     private float staticFloorZ;
@@ -100,17 +103,8 @@ public abstract class WorldObject extends GenericObject {
     private SmoothPhasing smoothPhasing;
     // Event handler
     private EventSystem events = new EventSystem();
-
     private ZoneScript zoneScript;
-
     private int instanceId;
-    private final EnumIntArray<StealthType> stealth = EnumIntArray.of(StealthType.class);
-    private final EnumIntArray<StealthType> stealthDetect = EnumIntArray.of(StealthType.class);
-    private final EnumIntArray<InvisibilityType> invisibility = EnumIntArray.of(InvisibilityType.class);
-    private final EnumIntArray<InvisibilityType> invisibilityDetect = EnumIntArray.of(InvisibilityType.class);
-    private final EnumIntArray<ServerSideVisibilityType> serverSideVisibility = EnumIntArray.of(ServerSideVisibilityType.class);
-    private final EnumIntArray<ServerSideVisibilityType> serverSideVisibilityDetect = EnumIntArray.of(ServerSideVisibilityType.class);
-    private final WorldLocation location;
     private WorldContext worldContext;
     private int faction;
 
@@ -123,6 +117,10 @@ public abstract class WorldObject extends GenericObject {
         staticFloorZ = MapDefine.VMAP_INVALID_HEIGHT_VALUE;
         location = new WorldLocation();
 
+    }
+
+    public static boolean inSamePhase(WorldObject a, WorldObject b) {
+        return a != null && b != null && a.inSamePhase(b);
     }
 
     private ReputationRank getFactionReactionTo(FactionTemplate factionTemplateEntry, WorldObject target) {
@@ -191,11 +189,6 @@ public abstract class WorldObject extends GenericObject {
         // neutral by default
         return ReputationRank.NEUTRAL;
     }
-
-    public static boolean inSamePhase(WorldObject a, WorldObject b) {
-        return a != null && b != null && a.inSamePhase(b);
-    }
-
 
     public final Scenario getScenario() {
         if (isInWorld()) {
@@ -315,8 +308,6 @@ public abstract class WorldObject extends GenericObject {
     public ObjectGuid getCharmerOrOwnerGUID() {
         return getOwnerGUID();
     }
-
-
 
 
     private Position getTransOffset() {
@@ -501,10 +492,17 @@ public abstract class WorldObject extends GenericObject {
         return farVisible;
     }
 
+    public final void setFarVisible(boolean on) {
+        if (isPlayer()) {
+            return;
+        }
+
+        farVisible = on;
+    }
+
     private boolean isVisibilityOverridden() {
         return visibilityDistanceOverride != null;
     }
-
 
     public final void create(ObjectGuid guid) {
         objectUpdated = false;
@@ -531,7 +529,7 @@ public abstract class WorldObject extends GenericObject {
             return;
         }
 
-        if (!getObjectTypeMask().HasAnyFlag(TypeMask.item.getValue() | TypeMask.Container.getValue())) {
+        if (!getObjectTypeMask().hasFlag(TypeMask.item.getValue() | TypeMask.Container.getValue())) {
             updateObjectVisibilityOnDestroy();
         }
 
@@ -548,7 +546,7 @@ public abstract class WorldObject extends GenericObject {
     public void processPositionDataChanged(PositionFullTerrainStatus data) {
         zoneId = areaId = data.getAreaId();
         AreaTable areaTable = worldContext.getDbcObjectManager().areaTable(areaId);
-        
+
 
         if (areaTable != null) {
             if (areaTable.getParentAreaID() != 0) {
@@ -560,7 +558,6 @@ public abstract class WorldObject extends GenericObject {
         staticFloorZ = data.getFloorZ();
         liquidStatus = data.getLiquidStatus();
     }
-    
 
     public final void addToObjectUpdateIfNeeded() {
         if (isInWorld() && !objectUpdated) {
@@ -587,7 +584,6 @@ public abstract class WorldObject extends GenericObject {
         buildValuesUpdateBlockForPlayer(data_map.get(player), player);
     }
 
-
     public Loot getLootForPlayer(Player player) {
         return null;
     }
@@ -595,7 +591,6 @@ public abstract class WorldObject extends GenericObject {
     public abstract void buildValuesCreate(WorldPacket data, Player target);
 
     public abstract void buildValuesUpdate(WorldPacket data, Player target);
-
 
     public final void forceUpdateFieldChange() {
         addToObjectUpdateIfNeeded();
@@ -609,17 +604,16 @@ public abstract class WorldObject extends GenericObject {
         return isTypeId(TypeId.UNIT) && toCreature().isTempWorldObject();
     }
 
-
-    public void update(int diff) {
-        //getEvents().update(diff);
-    }
-
     public final void setWorldObject(boolean on) {
         if (!isInWorld()) {
             return;
         }
 
         getMap().addObjectToSwitchList(this, on);
+    }
+
+    public void update(int diff) {
+        //getEvents().update(diff);
     }
 
     public final void setActive(boolean on) {
@@ -648,14 +642,6 @@ public abstract class WorldObject extends GenericObject {
         } else {
             map.removeFromActive(this);
         }
-    }
-
-    public final void setFarVisible(boolean on) {
-        if (isPlayer()) {
-            return;
-        }
-
-        farVisible = on;
     }
 
     public final void setVisibilityDistanceOverride(VisibilityDistanceType type) {
@@ -693,7 +679,7 @@ public abstract class WorldObject extends GenericObject {
         cleanupsBeforeDelete(true);
     }
 
-        public void cleanupsBeforeDelete(boolean finalCleanup) {
+    public void cleanupsBeforeDelete(boolean finalCleanup) {
         if (isInWorld()) {
             removeFromWorld();
         }
@@ -717,7 +703,7 @@ public abstract class WorldObject extends GenericObject {
         return getSightRange(null);
     }
 
-        public final float getSightRange(WorldObject target) {
+    public final float getSightRange(WorldObject target) {
         if (isPlayer() || isCreature()) {
             if (isPlayer()) {
                 if (target != null && target.isVisibilityOverridden() && !target.isPlayer()) {
@@ -1034,7 +1020,7 @@ public abstract class WorldObject extends GenericObject {
         return summonCreature(entry, x, y, z, 0, TempSummonType.MANUAL_DESPAWN, null, 0, 0, null);
     }
 
-        public final TempSummon summonCreature(int entry, float x, float y, float z, float o, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, ObjectGuid privateObjectOwner) {
+    public final TempSummon summonCreature(int entry, float x, float y, float z, float o, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, ObjectGuid privateObjectOwner) {
         return summonCreature(entry, new Position(x, y, z, o), despawnType, despawnTime, vehId, spellId, privateObjectOwner);
     }
 
@@ -1059,7 +1045,7 @@ public abstract class WorldObject extends GenericObject {
         return summonCreature(entry, pos, TempSummonType.MANUAL_DESPAWN, null, 0, 0, null);
     }
 
-        public final TempSummon summonCreature(int entry, Position pos, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, ObjectGuid privateObjectOwner) {
+    public final TempSummon summonCreature(int entry, Position pos, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, ObjectGuid privateObjectOwner) {
         if (pos.isDefault()) {
             getClosePoint(pos, getCombatReach());
         }
@@ -1104,7 +1090,7 @@ public abstract class WorldObject extends GenericObject {
         return summonPersonalClone(pos, TempSummonType.MANUAL_DESPAWN, null, 0, 0, null);
     }
 
-        public final TempSummon summonPersonalClone(Position pos, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, Player privateObjectOwner) {
+    public final TempSummon summonPersonalClone(Position pos, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, Player privateObjectOwner) {
         var map = getMap();
 
         if (map != null) {
@@ -1125,7 +1111,7 @@ public abstract class WorldObject extends GenericObject {
         return summonGameObject(entry, x, y, z, ang, rotation, respawnTime, GOSummonType.TIMED_OR_CORPSE_DESPAWN);
     }
 
-        public final GameObject summonGameObject(int entry, float x, float y, float z, float ang, Quaternion rotation, Duration respawnTime, GOSummonType summonType) {
+    public final GameObject summonGameObject(int entry, float x, float y, float z, float ang, Quaternion rotation, Duration respawnTime, GOSummonType summonType) {
         return summonGameObject(entry, new Position(x, y, z, ang), rotation, respawnTime, summonType);
     }
 
@@ -1179,7 +1165,7 @@ public abstract class WorldObject extends GenericObject {
         return summonTrigger(pos, despawnTime, null);
     }
 
-        public final Creature summonTrigger(Position pos, Duration despawnTime, CreatureAI AI) {
+    public final Creature summonTrigger(Position pos, Duration despawnTime, CreatureAI AI) {
         var summonType = despawnTime.isZero() ? TempSummonType.DEAD_DESPAWN : TempSummonType.TIMED_DESPAWN;
         Creature summon = summonCreature(ObjectDefine.WORLD_TRIGGER, pos, summonType, despawnTime);
 
@@ -1198,9 +1184,6 @@ public abstract class WorldObject extends GenericObject {
 
         return summon;
     }
-
-
-
 
 
     public final void summonCreatureGroup(byte group, ArrayList<TempSummon> list) {
@@ -1242,7 +1225,7 @@ public abstract class WorldObject extends GenericObject {
         getAlliesWithinRange(unitList, maxSearchRange, true);
     }
 
-        public final void getAlliesWithinRange(ArrayList<Unit> unitList, float maxSearchRange, boolean includeSelf) {
+    public final void getAlliesWithinRange(ArrayList<Unit> unitList, float maxSearchRange, boolean includeSelf) {
         var pair = new CellCoord((int) getLocation().getX(), (int) getLocation().getY());
         var cell = new Cell(pair);
         cell.setNoCreate();
@@ -1262,7 +1245,7 @@ public abstract class WorldObject extends GenericObject {
         getAlliesWithinRangeWithOwnedAura(unitList, maxSearchRange, auraId, true);
     }
 
-        public final void getAlliesWithinRangeWithOwnedAura(ArrayList<Unit> unitList, float maxSearchRange, int auraId, boolean includeSelf) {
+    public final void getAlliesWithinRangeWithOwnedAura(ArrayList<Unit> unitList, float maxSearchRange, int auraId, boolean includeSelf) {
         getAlliesWithinRange(unitList, maxSearchRange, includeSelf);
 
         unitList.RemoveIf((creature) ->
@@ -1292,7 +1275,7 @@ public abstract class WorldObject extends GenericObject {
         return findNearestCreature(entry, range, true);
     }
 
-        public final Creature findNearestCreature(int entry, float range, boolean alive) {
+    public final Creature findNearestCreature(int entry, float range, boolean alive) {
         var checker = new NearestCreatureEntryWithLiveStateInObjectRangeCheck(this, entry, alive, range);
         var searcher = new CreatureLastSearcher(this, checker, gridType.All);
 
@@ -1320,7 +1303,7 @@ public abstract class WorldObject extends GenericObject {
         return findNearestGameObject(entry, range, true);
     }
 
-        public final GameObject findNearestGameObject(int entry, float range, boolean spawnedOnly) {
+    public final GameObject findNearestGameObject(int entry, float range, boolean spawnedOnly) {
         var checker = new NearestGameObjectEntryInObjectRangeCheck(this, entry, range, spawnedOnly);
         var searcher = new GameObjectLastSearcher(this, checker, gridType.Grid);
 
@@ -1357,7 +1340,6 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-
     public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId) {
         return calculateSpellDamage(target, spellEffectInfo, basePoints, castItemId, -1);
     }
@@ -1370,7 +1352,7 @@ public abstract class WorldObject extends GenericObject {
         return calculateSpellDamage(target, spellEffectInfo, null, 0, -1);
     }
 
-        public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
+    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
         return calculateSpellDamage(out _, target, spellEffectInfo, basePoints, castItemId, itemLevel);
     }
@@ -1389,7 +1371,7 @@ public abstract class WorldObject extends GenericObject {
         return calculateSpellDamage(variance, target, spellEffectInfo, null, 0, -1);
     }
 
-        public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
+    public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
         variance.outArgValue = 0.0f;
 
         return spellEffectInfo != null ? spellEffectInfo.calcValue(variance, this, basePoints, target, castItemId, itemLevel) : 0;
@@ -1581,7 +1563,7 @@ public abstract class WorldObject extends GenericObject {
         modSpellCastTime(spellInfo, castTime, null);
     }
 
-        public final void modSpellCastTime(SpellInfo spellInfo, tangible.RefObject<Integer> castTime, Spell spell) {
+    public final void modSpellCastTime(SpellInfo spellInfo, tangible.RefObject<Integer> castTime, Spell spell) {
         if (spellInfo == null || castTime.refArgValue < 0) {
             return;
         }
@@ -1616,7 +1598,7 @@ public abstract class WorldObject extends GenericObject {
         modSpellDurationTime(spellInfo, duration, null);
     }
 
-        public final void modSpellDurationTime(SpellInfo spellInfo, tangible.RefObject<Integer> duration, Spell spell) {
+    public final void modSpellDurationTime(SpellInfo spellInfo, tangible.RefObject<Integer> duration, Spell spell) {
         if (spellInfo == null || duration.refArgValue < 0) {
             return;
         }
@@ -1666,7 +1648,7 @@ public abstract class WorldObject extends GenericObject {
         return spellHitResult(victim, spellInfo, false);
     }
 
-        public final SpellMissInfo spellHitResult(Unit victim, SpellInfo spellInfo, boolean canReflect) {
+    public final SpellMissInfo spellHitResult(Unit victim, SpellInfo spellInfo, boolean canReflect) {
         // Check for immune
         if (victim.isImmunedToSpell(spellInfo, this)) {
             return SpellMissInfo.Immune;
@@ -1746,7 +1728,7 @@ public abstract class WorldObject extends GenericObject {
                 case GAME_OBJECT:
                     if (factionId != 0) // Gameobjects may have faction template id = 0
                     {
-                        Logs.UNIT.error( "GameObject (template id: {}) has invalid faction (faction template Id) #{}", toGameObject().getTemplate().entry, factionId);
+                        Logs.UNIT.error("GameObject (template id: {}) has invalid faction (faction template Id) #{}", toGameObject().getTemplate().entry, factionId);
                     }
 
                     break;
@@ -1928,7 +1910,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(int spellId) {
         return castSpell(spellId, false, null);
     }
-    
+
     public final SpellCastResult castSpell(int spellId, boolean triggered, Byte empowerStage) {
         return castSpell(null, spellId, triggered, empowerStage);
     }
@@ -1965,7 +1947,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(WorldObject target, int spellId) {
         return castSpell(target, spellId, false, null);
     }
-    
+
     public final SpellCastResult castSpell(WorldObject target, int spellId, boolean triggered, Byte empowerStage) {
         CastSpellExtraArgs args = new CastSpellExtraArgs(triggered);
         args.empowerStage = empowerStage;
@@ -1976,7 +1958,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(WorldObject target, int spellId, TriggerCastFlag triggerCastFlag) {
         return castSpell(target, spellId, triggerCastFlag, false);
     }
-    
+
     public final SpellCastResult castSpell(WorldObject target, int spellId, TriggerCastFlag triggerCastFlags, boolean triggered) {
         CastSpellExtraArgs args = new CastSpellExtraArgs(triggered);
         args.triggerFlags = triggerCastFlags;
@@ -1987,7 +1969,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(WorldObject target, int spellId, float bp0Val) {
         return castSpell(target, spellId, bp0Val, false);
     }
-    
+
     public final SpellCastResult castSpell(WorldObject target, int spellId, float bp0Val, boolean triggered) {
         CastSpellExtraArgs args = new CastSpellExtraArgs(triggered);
         args.spellValueOverrides.put(SpellValueMod.BASE_POINT0, bp0Val);
@@ -1998,7 +1980,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(WorldObject target, int spellId, SpellValueMod spellValueMod, float bp0Val) {
         return castSpell(target, spellId, spellValueMod, bp0Val, false);
     }
-    
+
     public final SpellCastResult castSpell(WorldObject target, int spellId, SpellValueMod spellValueMod, float bp0Val, boolean triggered) {
         CastSpellExtraArgs args = new CastSpellExtraArgs(triggered);
         args.spellValueOverrides.put(spellValueMod, bp0Val);
@@ -2019,12 +2001,12 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(float x, float y, float z, int spellId) {
         return castSpell(x, y, z, spellId, false);
     }
-    
+
     public final SpellCastResult castSpell(float x, float y, float z, int spellId, boolean triggered) {
         return castSpell(new Position(x, y, z), spellId, triggered);
     }
 
-    
+
     public final SpellCastResult castSpell(float x, float y, float z, int spellId, CastSpellExtraArgs args) {
         return castSpell(new Position(x, y, z), spellId, args);
     }
@@ -2032,7 +2014,7 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(Position dest, int spellId) {
         return castSpell(dest, spellId, false);
     }
-    
+
     public final SpellCastResult castSpell(Position dest, int spellId, boolean triggered) {
         CastSpellExtraArgs args = new CastSpellExtraArgs(triggered);
         return castSpell(new CastSpellTargetArg(dest), spellId, args);
@@ -2099,7 +2081,7 @@ public abstract class WorldObject extends GenericObject {
         sendPlaySpellVisual(target, spellVisualId, missReason, reflectStatus, travelSpeed, false, 0);
     }
 
-        public final void sendPlaySpellVisual(WorldObject target, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime, float launchDelay) {
+    public final void sendPlaySpellVisual(WorldObject target, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime, float launchDelay) {
         PlaySpellVisual playSpellVisual = new PlaySpellVisual();
         playSpellVisual.source = getGUID();
         playSpellVisual.target = target.getGUID();
@@ -2117,7 +2099,7 @@ public abstract class WorldObject extends GenericObject {
         sendPlaySpellVisual(targetPosition, launchDelay, spellVisualId, missReason, reflectStatus, travelSpeed, false);
     }
 
-        public final void sendPlaySpellVisual(Position targetPosition, float launchDelay, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime) {
+    public final void sendPlaySpellVisual(Position targetPosition, float launchDelay, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime) {
         PlaySpellVisual playSpellVisual = new PlaySpellVisual();
         playSpellVisual.source = getGUID();
         playSpellVisual.targetPosition = targetPosition;
@@ -2134,7 +2116,7 @@ public abstract class WorldObject extends GenericObject {
         sendPlaySpellVisual(targetPosition, spellVisualId, missReason, reflectStatus, travelSpeed, false);
     }
 
-        public final void sendPlaySpellVisual(Position targetPosition, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime) {
+    public final void sendPlaySpellVisual(Position targetPosition, int spellVisualId, short missReason, short reflectStatus, float travelSpeed, boolean speedAsTime) {
         PlaySpellVisual playSpellVisual = new PlaySpellVisual();
         playSpellVisual.source = getGUID();
         playSpellVisual.targetPosition = targetPosition;
@@ -2163,7 +2145,7 @@ public abstract class WorldObject extends GenericObject {
 
     // function based on function Unit::CanAttack from 13850 client
 
-        public final boolean isValidAttackTarget(WorldObject target, SpellInfo bySpell) {
+    public final boolean isValidAttackTarget(WorldObject target, SpellInfo bySpell) {
         // some positive spells can be casted at hostile target
         var isPositiveSpell = bySpell != null && bySpell.isPositive();
 
@@ -2356,7 +2338,7 @@ public abstract class WorldObject extends GenericObject {
         return isValidAssistTarget(target, null, true);
     }
 
-        public final boolean isValidAssistTarget(WorldObject target, SpellInfo bySpell, boolean spellCheck) {
+    public final boolean isValidAssistTarget(WorldObject target, SpellInfo bySpell, boolean spellCheck) {
         // some negative spells can be casted at friendly target
         var isNegativeSpell = bySpell != null && !bySpell.isPositive();
 
@@ -2530,7 +2512,7 @@ public abstract class WorldObject extends GenericObject {
         return getGameObjectListWithEntryInGrid(0, 250.0f);
     }
 
-        public final ArrayList<GameObject> getGameObjectListWithEntryInGrid(int entry, float maxSearchRange) {
+    public final ArrayList<GameObject> getGameObjectListWithEntryInGrid(int entry, float maxSearchRange) {
         ArrayList<GameObject> gameobjectList = new ArrayList<>();
         var check = new AllGameObjectsWithEntryInRange(this, entry, maxSearchRange);
         var searcher = new GameObjectListSearcher(this, gameobjectList, check, gridType.Grid);
@@ -2548,7 +2530,7 @@ public abstract class WorldObject extends GenericObject {
         return getCreatureListWithEntryInGrid(0, 250.0f);
     }
 
-        public final ArrayList<Creature> getCreatureListWithEntryInGrid(int entry, float maxSearchRange) {
+    public final ArrayList<Creature> getCreatureListWithEntryInGrid(int entry, float maxSearchRange) {
         ArrayList<Creature> creatureList = new ArrayList<>();
         var check = new AllCreaturesOfEntryInRange(this, entry, maxSearchRange);
         var searcher = new CreatureListSearcher(this, creatureList, check, gridType.Grid);
@@ -2562,7 +2544,7 @@ public abstract class WorldObject extends GenericObject {
         return getCreatureListWithEntryInGrid(entry, 250.0f);
     }
 
-        public final ArrayList<Creature> getCreatureListWithEntryInGrid(int[] entry, float maxSearchRange) {
+    public final ArrayList<Creature> getCreatureListWithEntryInGrid(int[] entry, float maxSearchRange) {
         ArrayList<Creature> creatureList = new ArrayList<>();
         var check = new AllCreaturesOfEntriesInRange(this, entry, maxSearchRange);
         var searcher = new CreatureListSearcher(this, creatureList, check, gridType.Grid);
@@ -2591,7 +2573,7 @@ public abstract class WorldObject extends GenericObject {
         return getPlayerListInGrid(maxSearchRange, true);
     }
 
-        public final ArrayList<Unit> getPlayerListInGrid(float maxSearchRange, boolean alive) {
+    public final ArrayList<Unit> getPlayerListInGrid(float maxSearchRange, boolean alive) {
         ArrayList<Unit> playerList = new ArrayList<>();
         var checker = new AnyPlayerInObjectRangeCheck(this, maxSearchRange, alive);
         var searcher = new PlayerListSearcher(this, playerList, checker);
@@ -2613,7 +2595,7 @@ public abstract class WorldObject extends GenericObject {
         playDistanceSound(soundId, null);
     }
 
-        public final void playDistanceSound(int soundId, Player target) {
+    public final void playDistanceSound(int soundId, Player target) {
         PlaySpeakerBoxSound playSpeakerBoxSound = new PlaySpeakerBoxSound(getGUID(), soundId);
 
         if (target != null) {
@@ -2631,7 +2613,7 @@ public abstract class WorldObject extends GenericObject {
         playDirectSound(soundId, null, 0);
     }
 
-        public final void playDirectSound(int soundId, Player target, int broadcastTextId) {
+    public final void playDirectSound(int soundId, Player target, int broadcastTextId) {
         PlaySound sound = new playSound(getGUID(), soundId, broadcastTextId);
 
         if (target) {
@@ -2645,7 +2627,7 @@ public abstract class WorldObject extends GenericObject {
         playDirectMusic(musicId, null);
     }
 
-        public final void playDirectMusic(int musicId, Player target) {
+    public final void playDirectMusic(int musicId, Player target) {
         if (target) {
             target.sendPacket(new PlayMusic(musicId));
         } else {
@@ -2690,7 +2672,7 @@ public abstract class WorldObject extends GenericObject {
         updateObjectVisibility(true);
     }
 
-        public void updateObjectVisibility(boolean force) {
+    public void updateObjectVisibility(boolean force) {
         //updates object's visibility for nearby players
         var notifier = new VisibleChangesNotifier(new WorldObject[]{this}, gridType.World);
 
@@ -2726,18 +2708,17 @@ public abstract class WorldObject extends GenericObject {
         return getName(locale.enUS);
     }
 
-        public String getName(Locale locale) {
-        return name;
-    }
-
     public final void setName(String name) {
         name = name;
+    }
+
+    public String getName(Locale locale) {
+        return name;
     }
 
     public final boolean isTypeId(TypeId typeId) {
         return getTypeId() == typeId;
     }
-    
 
 
     public boolean hasQuest(int questId) {
@@ -2753,9 +2734,8 @@ public abstract class WorldObject extends GenericObject {
         newObject = enable;
     }
 
-    
 
-        public int getLevelForTarget(WorldObject target) {
+    public int getLevelForTarget(WorldObject target) {
         return 1;
     }
 
@@ -2775,16 +2755,16 @@ public abstract class WorldObject extends GenericObject {
         return transport;
     }
 
+    public final void setTransport(ITransport t) {
+        transport = t;
+    }
+
     public ObjectGuid getTransGUID() {
         if (getTransport() != null) {
             return getTransport().getTransportGUID();
         }
 
         return ObjectGuid.EMPTY;
-    }
-
-    public final void setTransport(ITransport t) {
-        transport = t;
     }
 
     public boolean isNeverVisibleFor(WorldObject seer) {
@@ -2826,7 +2806,7 @@ public abstract class WorldObject extends GenericObject {
         return _IsWithinDist(obj, dist2compare, is3D, true, true);
     }
 
-        public boolean _IsWithinDist(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
+    public boolean _IsWithinDist(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
         float sizefactor = 0;
         sizefactor += incOwnRadius ? getCombatReach() : 0.0f;
         sizefactor += incTargetRadius ? obj.getCombatReach() : 0.0f;
@@ -2920,7 +2900,7 @@ public abstract class WorldObject extends GenericObject {
         return isWithinDist(obj, dist2compare, true, true, true);
     }
 
-        public final boolean isWithinDist(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
+    public final boolean isWithinDist(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
         return obj != null && _IsWithinDist(obj, dist2compare, is3D, incOwnRadius, incTargetRadius);
     }
 
@@ -2936,7 +2916,7 @@ public abstract class WorldObject extends GenericObject {
         return isWithinDistInMap(obj, dist2compare, true, true, true);
     }
 
-        public final boolean isWithinDistInMap(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
+    public final boolean isWithinDistInMap(WorldObject obj, float dist2compare, boolean is3D, boolean incOwnRadius, boolean incTargetRadius) {
         return isInMap(obj) && inSamePhase(obj) && _IsWithinDist(obj, dist2compare, is3D, incOwnRadius, incTargetRadius);
     }
 
@@ -2948,7 +2928,7 @@ public abstract class WorldObject extends GenericObject {
         return isWithinLOS(pos, LineOfSightChecks.ALL, ModelIgnoreFlags.Nothing);
     }
 
-        public final boolean isWithinLOS(Position pos, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
+    public final boolean isWithinLOS(Position pos, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
         return isWithinLOS(pos.getX(), pos.getY(), pos.getZ(), checks, ignoreFlags);
     }
 
@@ -2960,7 +2940,7 @@ public abstract class WorldObject extends GenericObject {
         return isWithinLOS(ox, oy, oz, LineOfSightChecks.ALL, ModelIgnoreFlags.Nothing);
     }
 
-        public final boolean isWithinLOS(float ox, float oy, float oz, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
+    public final boolean isWithinLOS(float ox, float oy, float oz, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
         if (isInWorld()) {
             oz += getCollisionHeight();
             var pos = new Position();
@@ -2986,7 +2966,7 @@ public abstract class WorldObject extends GenericObject {
         return isWithinLOSInMap(obj, LineOfSightChecks.ALL, ModelIgnoreFlags.Nothing);
     }
 
-        public final boolean isWithinLOSInMap(WorldObject obj, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
+    public final boolean isWithinLOSInMap(WorldObject obj, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
         if (!isInMap(obj)) {
             return false;
         }
@@ -3030,7 +3010,7 @@ public abstract class WorldObject extends GenericObject {
         return getDistanceOrder(obj1, obj2, true);
     }
 
-        public final boolean getDistanceOrder(WorldObject obj1, WorldObject obj2, boolean is3D) {
+    public final boolean getDistanceOrder(WorldObject obj1, WorldObject obj2, boolean is3D) {
         var dx1 = getLocation().getX() - obj1.getLocation().getX();
         var dy1 = getLocation().getY() - obj1.getLocation().getY();
         var distsq1 = dx1 * dx1 + dy1 * dy1;
@@ -3056,7 +3036,7 @@ public abstract class WorldObject extends GenericObject {
         return isInRange(obj, minRange, maxRange, true);
     }
 
-        public final boolean isInRange(WorldObject obj, float minRange, float maxRange, boolean is3D) {
+    public final boolean isInRange(WorldObject obj, float minRange, float maxRange, boolean is3D) {
         var dx = getLocation().getX() - obj.getLocation().getX();
         var dy = getLocation().getY() - obj.getLocation().getY();
         var distsq = dx * dx + dy * dy;
@@ -3086,7 +3066,7 @@ public abstract class WorldObject extends GenericObject {
         return isInBetween(obj1, obj2, 0);
     }
 
-        public final boolean isInBetween(WorldObject obj1, WorldObject obj2, float size) {
+    public final boolean isInBetween(WorldObject obj1, WorldObject obj2, float size) {
         return obj1 != null && obj2 != null && isInBetween(obj1.getLocation(), obj2.getLocation(), size);
     }
 
@@ -3094,7 +3074,7 @@ public abstract class WorldObject extends GenericObject {
         return isInFront(target, MathUtil.PI);
     }
 
-        public final boolean isInFront(WorldObject target, float arc) {
+    public final boolean isInFront(WorldObject target, float arc) {
         return getLocation().hasInArc(arc, target.getLocation());
     }
 
@@ -3102,7 +3082,7 @@ public abstract class WorldObject extends GenericObject {
         return isInBack(target, MathUtil.PI);
     }
 
-        public final boolean isInBack(WorldObject target, float arc) {
+    public final boolean isInBack(WorldObject target, float arc) {
         return !getLocation().hasInArc(2 * MathUtil.PI - arc, target.getLocation());
     }
 
@@ -3168,7 +3148,7 @@ public abstract class WorldObject extends GenericObject {
         if (getTransport() != null) {
             return new PositionZAllowed(z, z);
         }
-        
+
         if (this instanceof Unit unit) {
             if (!unit.getCanFly()) {
                 var canSwim = unit.getCanSwim();
@@ -3182,7 +3162,7 @@ public abstract class WorldObject extends GenericObject {
                 } else {
                     max_z = ground_z = getMapHeight(x, y, z);
                 }
-                
+
                 if (max_z > MapDefine.INVALID_HEIGHT) {
                     // hovering units cannot go below their hover height
                     var hoverOffset = unit.getHoverOffset();
@@ -3316,7 +3296,7 @@ public abstract class WorldObject extends GenericObject {
         getClosePoint(pos, size, 0, 0);
     }
 
-        public final void getClosePoint(Position pos, float size, float distance2d, float relAngle) {
+    public final void getClosePoint(Position pos, float size, float distance2d, float relAngle) {
         // angle calculated from current orientation
         getNearPoint(null, pos, distance2d + size, getLocation().getO() + relAngle);
     }
@@ -3346,7 +3326,7 @@ public abstract class WorldObject extends GenericObject {
         return findNearestPlayer(range, true);
     }
 
-        public final Player findNearestPlayer(float range, boolean alive) {
+    public final Player findNearestPlayer(float range, boolean alive) {
         var check = new AnyPlayerInObjectRangeCheck(this, getVisibilityRange());
         var searcher = new PlayerSearcher(this, check, gridType.Grid);
         Cell.visitGrid(this, searcher, range);
@@ -3358,7 +3338,7 @@ public abstract class WorldObject extends GenericObject {
         getContactPoint(obj, pos, 0.5f);
     }
 
-        public final void getContactPoint(WorldObject obj, Position pos, float distance2d) {
+    public final void getContactPoint(WorldObject obj, Position pos, float distance2d) {
         // angle to face `obj` to `this` using distance includes size of `obj`
         getNearPoint(obj, pos, distance2d, getLocation().getAbsoluteAngle(obj.getLocation()));
     }
@@ -3413,7 +3393,7 @@ public abstract class WorldObject extends GenericObject {
         // Prevent invalid coordinates here, position is unchanged
         if (!MapDefine.isValidMapCoordinate(destx, desty)) {
             Logs.MISC.error("WorldObject::MovePositionToFirstCollision invalid coordinates X: {} and Y: {} were passed!", destx, desty);
-            
+
             return;
         }
 
@@ -3526,7 +3506,7 @@ public abstract class WorldObject extends GenericObject {
         return getMapHeight(pos, true, MapDefine.DEFAULT_HEIGHT_SEARCH);
     }
 
-        public final float getMapHeight(Position pos, boolean vmap, float distanceToSearch) {
+    public final float getMapHeight(Position pos, boolean vmap, float distanceToSearch) {
         return getMapHeight(pos.getX(), pos.getY(), pos.getZ(), vmap, distanceToSearch);
     }
 
@@ -3538,8 +3518,8 @@ public abstract class WorldObject extends GenericObject {
         return getMapHeight(x, y, z, true, MapDefine.DEFAULT_HEIGHT_SEARCH);
     }
 
-        public final float getMapHeight(float x, float y, float z, boolean vmap, float distanceToSearch) {
-        
+    public final float getMapHeight(float x, float y, float z, boolean vmap, float distanceToSearch) {
+
         if (z != MapDefine.MAX_HEIGHT) {
             z += SharedDefine.Z_OFFSET_FIND_HEIGHT;
         }
@@ -3556,7 +3536,7 @@ public abstract class WorldObject extends GenericObject {
         return canDetect(obj, ignoreStealth, false);
     }
 
-        private boolean canDetect(WorldObject obj, boolean ignoreStealth, boolean checkAlert) {
+    private boolean canDetect(WorldObject obj, boolean ignoreStealth, boolean checkAlert) {
         var seer = this;
 
         // If a unit is possessing another one, it uses the detection of the latter
@@ -3631,7 +3611,7 @@ public abstract class WorldObject extends GenericObject {
         return canDetectStealthOf(obj, false);
     }
 
-        private boolean canDetectStealthOf(WorldObject obj, boolean checkAlert) {
+    private boolean canDetectStealthOf(WorldObject obj, boolean checkAlert) {
         // Combat reach is the minimal distance (both in front and behind),
         //   and it is also used in the range calculation.
         // One stealth point increases the visibility range by 0.3 yard.
@@ -3665,7 +3645,7 @@ public abstract class WorldObject extends GenericObject {
 
 
         for (StealthType stealthType : StealthType.values()) {
-            if((obj.getStealth().getFlags() & (1 << stealthType.ordinal())) == 0) {
+            if ((obj.getStealth().getFlags() & (1 << stealthType.ordinal())) == 0) {
                 continue;
             }
 
@@ -3838,7 +3818,7 @@ public abstract class WorldObject extends GenericObject {
         sendPlayOrphanSpellVisual(target, spellVisualId, travelSpeed, false, false);
     }
 
-        private void sendPlayOrphanSpellVisual(ObjectGuid target, int spellVisualId, float travelSpeed, boolean speedAsTime, boolean withSourceOrientation) {
+    private void sendPlayOrphanSpellVisual(ObjectGuid target, int spellVisualId, float travelSpeed, boolean speedAsTime, boolean withSourceOrientation) {
         PlayOrphanSpellVisual playOrphanSpellVisual = new PlayOrphanSpellVisual();
         playOrphanSpellVisual.sourceLocation = getLocation();
 
@@ -3869,7 +3849,7 @@ public abstract class WorldObject extends GenericObject {
         sendPlayOrphanSpellVisual(targetLocation, spellVisualId, travelSpeed, false, false);
     }
 
-        private void sendPlayOrphanSpellVisual(Position targetLocation, int spellVisualId, float travelSpeed, boolean speedAsTime, boolean withSourceOrientation) {
+    private void sendPlayOrphanSpellVisual(Position targetLocation, int spellVisualId, float travelSpeed, boolean speedAsTime, boolean withSourceOrientation) {
         PlayOrphanSpellVisual playOrphanSpellVisual = new PlayOrphanSpellVisual();
         playOrphanSpellVisual.sourceLocation = getLocation();
 
@@ -3924,8 +3904,6 @@ public abstract class WorldObject extends GenericObject {
         // not using sqrt() for performance
         return (size * size) >= getLocation().getExactDist2DSq(pos1.getX() + (float) Math.cos(angle) * dist, pos1.getY() + (float) Math.sin(angle) * dist);
     }
-
-
 
 
 }

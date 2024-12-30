@@ -8,10 +8,11 @@ import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.scripting.interfaces.*;
+import com.github.mmo.game.scripting.interfaces.ISpellScript;
 import com.github.mmo.game.spell.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class SpellScript extends BaseSpellScript implements ISpellScript {
     private Spell spell;
@@ -470,7 +471,7 @@ public class SpellScript extends BaseSpellScript implements ISpellScript {
         return getHitAura(false);
     }
 
-        public final Aura getHitAura(boolean dynObjAura) {
+    public final Aura getHitAura(boolean dynObjAura) {
         if (!isInTargetHook()) {
             Log.outError(LogFilter.Scripts, "Script: `{0}` Spell: `{1}`: function SpellScript.GetHitAura was called, but function has no effect in current hook!", getScriptName(), getScriptSpellId());
 
@@ -552,7 +553,7 @@ public class SpellScript extends BaseSpellScript implements ISpellScript {
         finishCast(result, null, null);
     }
 
-        public final void finishCast(SpellCastResult result, Integer param1, Integer param2) {
+    public final void finishCast(SpellCastResult result, Integer param1, Integer param2) {
         spell.sendCastResult(result, param1, param2);
         spell.finish(result);
     }

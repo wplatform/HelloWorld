@@ -1,22 +1,21 @@
 package com.github.mmo.game.networking.packet.achievement;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class GuildGetAchievementMembers extends ClientPacket
-{
+class GuildGetAchievementMembers extends ClientPacket {
     public ObjectGuid playerGUID = ObjectGuid.EMPTY;
     public ObjectGuid guildGUID = ObjectGuid.EMPTY;
-	public int achievementID;
-	public GuildGetAchievementMembers(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public int achievementID;
 
-	@Override
-	public void read()
-	{
+    public GuildGetAchievementMembers(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         playerGUID = this.readPackedGuid();
         guildGUID = this.readPackedGuid();
         achievementID = this.readUInt();
-	}
+    }
 }

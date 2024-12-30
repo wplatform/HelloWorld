@@ -10,230 +10,193 @@ import com.github.mmo.game.scripting.interfaces.ioutdoorpvp.IOutdoorPvPGetOutdoo
 import java.util.HashMap;
 
 
+public class OutdoorPvPManager {
+    // contains all initiated outdoor pvp events
+    // used when initing / cleaning up
+    private final MultiMap<Map, OutdoorPvP> m_OutdoorPvPByMap = new MultiMap<Map, OutdoorPvP>();
 
-public class OutdoorPvPManager 
-{
-	// contains all initiated outdoor pvp events
-	// used when initing / cleaning up
-	private final MultiMap<Map, OutdoorPvP> m_OutdoorPvPByMap = new MultiMap<Map, OutdoorPvP>();
+    // maps the zone ids to an outdoor pvp event
+    // used in player event handling
+	private final HashMap<(
+        // Holds the outdoor PvP templates
+    private final int[] m_OutdoorMapIds = {0, 530, 530, 530, 530, 1};,     private final HashMap<OutdoorPvPTypes, Integer> m_OutdoorPvPDatas = new HashMap<OutdoorPvPTypes, Integer>();),OutdoorPvP>m_OutdoorPvPMap =new HashMap<(
+        private final limitedThreadTaskManager threadTaskManager = new limitedThreadTaskManager(ConfigMgr.GetDefaultValue("Map.ParellelUpdateTasks", 20));, Map map),OutdoorPvP>();
+int zoneId
+Map map
+int zoneId
+    // update interval
+    private int m_UpdateTimer;
 
-	// maps the zone ids to an outdoor pvp event
-	// used in player event handling
-	private final HashMap<(Map map, int zoneId), OutdoorPvP> m_OutdoorPvPMap = new HashMap<(Map map, int zoneId), OutdoorPvP>();
+    private OutdoorPvPManager() {
+    }
 
-	// Holds the outdoor PvP templates
-	private final int[] m_OutdoorMapIds = {0, 530, 530, 530, 530, 1};
+    public final void initOutdoorPvP() {
+        var oldMSTime = System.currentTimeMillis();
 
-	private final HashMap<OutdoorPvPTypes, Integer> m_OutdoorPvPDatas = new HashMap<OutdoorPvPTypes, Integer>();
+        //                                             0       1
+        var result = DB.World.query("SELECT TypeId, ScriptName FROM outdoorpvp_template");
 
-	private final limitedThreadTaskManager threadTaskManager = new limitedThreadTaskManager(ConfigMgr.GetDefaultValue("Map.ParellelUpdateTasks", 20));
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 outdoor PvP definitions. DB table `outdoorpvp_template` is empty.");
 
-	// update interval
-	private int m_UpdateTimer;
-	private OutdoorPvPManager()
-	{
-	}
+            return;
+        }
 
-	public final void initOutdoorPvP()
-	{
-		var oldMSTime = System.currentTimeMillis();
+        int count = 0;
 
-		//                                             0       1
-		var result = DB.World.query("SELECT TypeId, ScriptName FROM outdoorpvp_template");
+        do {
+            var typeId = OutdoorPvPTypes.forValue(result.<Byte>Read(0));
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 outdoor PvP definitions. DB table `outdoorpvp_template` is empty.");
+            if (global.getDisableMgr().isDisabledFor(DisableType.OutdoorPVP, (int) typeId.getValue(), null)) {
+                continue;
+            }
 
-			return;
-		}
+            if (typeId.getValue() >= OutdoorPvPTypes.max.getValue()) {
+                Logs.SQL.error("Invalid OutdoorPvPTypes value {0} in outdoorpvp_template; skipped.", typeId);
 
-		int count = 0;
+                continue;
+            }
 
-		do
-		{
-			var typeId = OutdoorPvPTypes.forValue(result.<Byte>Read(0));
+            m_OutdoorPvPDatas.put(typeId, global.getObjectMgr().getScriptId(result.<String>Read(1)));
 
-			if (global.getDisableMgr().isDisabledFor(DisableType.OutdoorPVP, (int)typeId.getValue(), null))
-			{
-				continue;
-			}
+            ++count;
+        } while (result.NextRow());
 
-			if (typeId.getValue() >= OutdoorPvPTypes.max.getValue())
-			{
-				Log.outError(LogFilter.Sql, "Invalid OutdoorPvPTypes value {0} in outdoorpvp_template; skipped.", typeId);
+        Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s outdoor PvP definitions in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+    }
 
-				continue;
-			}
+    public final void createOutdoorPvPForMap(Map map) {
+        for (var outdoorPvpType = OutdoorPvPTypes.HellfirePeninsula; outdoorPvpType.getValue() < OutdoorPvPTypes.max.getValue(); ++outdoorPvpType) {
+            if (map.getId() != m_OutdoorMapIds[outdoorPvpType.getValue()]) {
+                continue;
+            }
 
-			m_OutdoorPvPDatas.put(typeId, global.getObjectMgr().getScriptId(result.<String>Read(1)));
+            if (!m_OutdoorPvPDatas.containsKey(outdoorPvpType)) {
+                Logs.SQL.error("Could not initialize OutdoorPvP object for type ID {0}; no entry in database.", outdoorPvpType);
 
-			++count;
-		} while (result.NextRow());
+                continue;
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s outdoor PvP definitions in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
-	}
+            var pvp = global.getScriptMgr().<IOutdoorPvPGetOutdoorPvP, OutdoorPvP>RunScriptRet(p -> p.getOutdoorPvP(map), m_OutdoorPvPDatas.get(outdoorPvpType), null);
 
-	public final void createOutdoorPvPForMap(Map map)
-	{
-		for (var outdoorPvpType = OutdoorPvPTypes.HellfirePeninsula; outdoorPvpType.getValue() < OutdoorPvPTypes.max.getValue(); ++outdoorPvpType)
-		{
-			if (map.getId() != m_OutdoorMapIds[outdoorPvpType.getValue()])
-			{
-				continue;
-			}
+            if (pvp == null) {
+                Log.outError(LogFilter.Outdoorpvp, "Could not initialize OutdoorPvP object for type ID {0}; got NULL pointer from script.", outdoorPvpType);
 
-			if (!m_OutdoorPvPDatas.containsKey(outdoorPvpType))
-			{
-				Log.outError(LogFilter.Sql, "Could not initialize OutdoorPvP object for type ID {0}; no entry in database.", outdoorPvpType);
+                continue;
+            }
 
-				continue;
-			}
+            if (!pvp.setupOutdoorPvP()) {
+                Log.outError(LogFilter.Outdoorpvp, "Could not initialize OutdoorPvP object for type ID {0}; SetupOutdoorPvP failed.", outdoorPvpType);
 
-			var pvp = global.getScriptMgr().<IOutdoorPvPGetOutdoorPvP, OutdoorPvP>RunScriptRet(p -> p.getOutdoorPvP(map), m_OutdoorPvPDatas.get(outdoorPvpType), null);
+                continue;
+            }
 
-			if (pvp == null)
-			{
-				Log.outError(LogFilter.Outdoorpvp, "Could not initialize OutdoorPvP object for type ID {0}; got NULL pointer from script.", outdoorPvpType);
+            m_OutdoorPvPByMap.add(map, pvp);
+        }
+    }
 
-				continue;
-			}
+    public final void destroyOutdoorPvPForMap(Map map) {
+        m_OutdoorPvPByMap.remove(map);
+    }
 
-			if (!pvp.setupOutdoorPvP())
-			{
-				Log.outError(LogFilter.Outdoorpvp, "Could not initialize OutdoorPvP object for type ID {0}; SetupOutdoorPvP failed.", outdoorPvpType);
+    public final void addZone(int zoneid, OutdoorPvP handle) {
+        m_OutdoorPvPMap.put((handle.getMap(), zoneid), handle);
+    }
 
-				continue;
-			}
+    public final void handlePlayerEnterZone(Player player, int zoneid) {
+        var outdoor = getOutdoorPvPToZoneId(player.getMap(), zoneid);
 
-			m_OutdoorPvPByMap.add(map, pvp);
-		}
-	}
+        if (outdoor == null) {
+            return;
+        }
 
-	public final void destroyOutdoorPvPForMap(Map map)
-	{
-		m_OutdoorPvPByMap.remove(map);
-	}
+        if (outdoor.hasPlayer(player)) {
+            return;
+        }
 
-	public final void addZone(int zoneid, OutdoorPvP handle)
-	{
-		m_OutdoorPvPMap.put((handle.getMap(), zoneid), handle);
-	}
+        outdoor.handlePlayerEnterZone(player, zoneid);
+        Log.outDebug(LogFilter.Outdoorpvp, "Player {0} entered outdoorpvp id {1}", player.getGUID().toString(), outdoor.getTypeId());
+    }
 
-	public final void handlePlayerEnterZone(Player player, int zoneid)
-	{
-		var outdoor = getOutdoorPvPToZoneId(player.getMap(), zoneid);
+    public final void handlePlayerLeaveZone(Player player, int zoneid) {
+        var outdoor = getOutdoorPvPToZoneId(player.getMap(), zoneid);
 
-		if (outdoor == null)
-		{
-			return;
-		}
+        if (outdoor == null) {
+            return;
+        }
 
-		if (outdoor.hasPlayer(player))
-		{
-			return;
-		}
+        // teleport: remove once in removefromworld, once in updatezone
+        if (!outdoor.hasPlayer(player)) {
+            return;
+        }
 
-		outdoor.handlePlayerEnterZone(player, zoneid);
-		Log.outDebug(LogFilter.Outdoorpvp, "Player {0} entered outdoorpvp id {1}", player.getGUID().toString(), outdoor.getTypeId());
-	}
+        outdoor.handlePlayerLeaveZone(player, zoneid);
+        Log.outDebug(LogFilter.Outdoorpvp, "Player {0} left outdoorpvp id {1}", player.getGUID().toString(), outdoor.getTypeId());
+    }
 
-	public final void handlePlayerLeaveZone(Player player, int zoneid)
-	{
-		var outdoor = getOutdoorPvPToZoneId(player.getMap(), zoneid);
+    public final OutdoorPvP getOutdoorPvPToZoneId(Map map, int zoneid) {
+        return m_OutdoorPvPMap.get((map, zoneid));
+    }
 
-		if (outdoor == null)
-		{
-			return;
-		}
+    public final void update(int diff) {
+        m_UpdateTimer += diff;
 
-		// teleport: remove once in removefromworld, once in updatezone
-		if (!outdoor.hasPlayer(player))
-		{
-			return;
-		}
-
-		outdoor.handlePlayerLeaveZone(player, zoneid);
-		Log.outDebug(LogFilter.Outdoorpvp, "Player {0} left outdoorpvp id {1}", player.getGUID().toString(), outdoor.getTypeId());
-	}
-
-	public final OutdoorPvP getOutdoorPvPToZoneId(Map map, int zoneid)
-	{
-		return m_OutdoorPvPMap.get((map, zoneid));
-	}
-
-	public final void update(int diff)
-	{
-		m_UpdateTimer += diff;
-
-		if (m_UpdateTimer > 1000)
-		{
+        if (m_UpdateTimer > 1000) {
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-			for (var(_, outdoor) : m_OutdoorPvPByMap.KeyValueList)
-			{
-				threadTaskManager.Schedule(() -> outdoor.update(m_UpdateTimer));
-			}
+            for (var(_, outdoor) : m_OutdoorPvPByMap.KeyValueList) {
+                threadTaskManager.Schedule(() -> outdoor.update(m_UpdateTimer));
+            }
 
-			threadTaskManager.Wait();
-			m_UpdateTimer = 0;
-		}
-	}
+            threadTaskManager.Wait();
+            m_UpdateTimer = 0;
+        }
+    }
 
-	public final boolean handleCustomSpell(Player player, int spellId, GameObject go)
-	{
-		var pvp = player.getOutdoorPvP();
+    public final boolean handleCustomSpell(Player player, int spellId, GameObject go) {
+        var pvp = player.getOutdoorPvP();
 
-		if (pvp != null && pvp.hasPlayer(player))
-		{
-			return pvp.handleCustomSpell(player, spellId, go);
-		}
+        if (pvp != null && pvp.hasPlayer(player)) {
+            return pvp.handleCustomSpell(player, spellId, go);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final boolean handleOpenGo(Player player, GameObject go)
-	{
-		var pvp = player.getOutdoorPvP();
+    public final boolean handleOpenGo(Player player, GameObject go) {
+        var pvp = player.getOutdoorPvP();
 
-		if (pvp != null && pvp.hasPlayer(player))
-		{
-			return pvp.handleOpenGo(player, go);
-		}
+        if (pvp != null && pvp.hasPlayer(player)) {
+            return pvp.handleOpenGo(player, go);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final void handleDropFlag(Player player, int spellId)
-	{
-		var pvp = player.getOutdoorPvP();
+    public final void handleDropFlag(Player player, int spellId) {
+        var pvp = player.getOutdoorPvP();
 
-		if (pvp != null && pvp.hasPlayer(player))
-		{
-			pvp.handleDropFlag(player, spellId);
-		}
-	}
+        if (pvp != null && pvp.hasPlayer(player)) {
+            pvp.handleDropFlag(player, spellId);
+        }
+    }
 
-	public final void handlePlayerResurrects(Player player, int zoneid)
-	{
-		var pvp = player.getOutdoorPvP();
+    public final void handlePlayerResurrects(Player player, int zoneid) {
+        var pvp = player.getOutdoorPvP();
 
-		if (pvp != null && pvp.hasPlayer(player))
-		{
-			pvp.handlePlayerResurrects(player, zoneid);
-		}
-	}
+        if (pvp != null && pvp.hasPlayer(player)) {
+            pvp.handlePlayerResurrects(player, zoneid);
+        }
+    }
 
-	public final String getDefenseMessage(int zoneId, int id, Locale locale)
-	{
-		var bct = CliDB.BroadcastTextStorage.get(id);
+    public final String getDefenseMessage(int zoneId, int id, Locale locale) {
+        var bct = CliDB.BroadcastTextStorage.get(id);
 
-		if (bct != null)
-		{
-			return global.getDB2Mgr().GetBroadcastTextValue(bct, locale);
-		}
+        if (bct != null) {
+            return global.getDB2Mgr().GetBroadcastTextValue(bct, locale);
+        }
 
-		Log.outError(LogFilter.Outdoorpvp, "Can not find DefenseMessage (Zone: {0}, Id: {1}). BroadcastText (Id: {2}) does not exist.", zoneId, id, id);
+        Log.outError(LogFilter.Outdoorpvp, "Can not find DefenseMessage (Zone: {0}, Id: {1}). BroadcastText (Id: {2}) does not exist.", zoneId, id, id);
 
-		return "";
-	}
+        return "";
+    }
 }

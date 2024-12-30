@@ -1,8 +1,8 @@
 package com.github.mmo.game.scripting.interfaces.iauctionhouse;
 
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
 import game.*;
-import com.github.mmo.game.scripting.interfaces.*;
-public interface IAuctionHouseOnAuctionAdd extends IScriptObject
-{
-	void OnAuctionAdd(AuctionHouseObject ah, AuctionPosting auction);
+
+public interface IAuctionHouseOnAuctionAdd extends IScriptObject {
+    void OnAuctionAdd(AuctionHouseObject ah, AuctionPosting auction);
 }

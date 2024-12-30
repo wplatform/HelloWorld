@@ -16,8 +16,8 @@ enum TradeSlots {
     COUNT(7),
     INVALID(-1);
 
-    public static  final TradeSlots TRADED_COUNT = SLOTS_6;
-    public static  final TradeSlots NON_TRADED = SLOTS_6;
+    public static final TradeSlots TRADED_COUNT = SLOTS_6;
+    public static final TradeSlots NON_TRADED = SLOTS_6;
 
     public final int value;
 }

@@ -2,7 +2,6 @@ package com.github.mmo.game.achievement;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.guild.guild;
 import com.github.mmo.game.scripting.interfaces.iachievement.IAchievementOnCompleted;
 
 import java.util.ArrayList;
@@ -195,7 +194,7 @@ public class GuildAchievementMgr extends AchievementManager {
         sendAchievementInfo(receiver, 0);
     }
 
-        public final void sendAchievementInfo(Player receiver, int achievementId) {
+    public final void sendAchievementInfo(Player receiver, int achievementId) {
         GuildCriteriaUpdate guildCriteriaUpdate = new GuildCriteriaUpdate();
         var achievement = CliDB.AchievementStorage.get(achievementId);
 
@@ -275,11 +274,11 @@ public class GuildAchievementMgr extends AchievementManager {
     public void completedAchievement(AchievementRecord achievement, Player referencePlayer) {
         Log.outDebug(LogFilter.achievement, "CompletedAchievement({0})", achievement.id);
 
-        if (achievement.flags.HasAnyFlag(AchievementFlags.counter) || hasAchieved(achievement.id)) {
+        if (achievement.flags.hasFlag(AchievementFlags.counter) || hasAchieved(achievement.id)) {
             return;
         }
 
-        if (achievement.flags.HasAnyFlag(AchievementFlags.ShowInGuildNews)) {
+        if (achievement.flags.hasFlag(AchievementFlags.ShowInGuildNews)) {
             var guild = referencePlayer.getGuild();
 
             if (guild) {
@@ -292,7 +291,7 @@ public class GuildAchievementMgr extends AchievementManager {
         ca.date = gameTime.GetGameTime();
         ca.changed = true;
 
-        if (achievement.flags.HasAnyFlag(AchievementFlags.ShowGuildMembers)) {
+        if (achievement.flags.hasFlag(AchievementFlags.ShowGuildMembers)) {
             if (referencePlayer.getGuildId() == owner.getId()) {
                 ca.completingPlayers.add(referencePlayer.getGUID());
             }
@@ -314,11 +313,11 @@ public class GuildAchievementMgr extends AchievementManager {
 
         completedAchievements.put(achievement.id, ca);
 
-        if (achievement.flags.HasAnyFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
+        if (achievement.flags.hasFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
             global.getAchievementMgr().setRealmCompleted(achievement);
         }
 
-        if (!achievement.flags.HasAnyFlag(AchievementFlags.TrackingFlag)) {
+        if (!achievement.flags.hasFlag(AchievementFlags.TrackingFlag)) {
             achievementPoints += achievement.points;
         }
 
@@ -372,7 +371,7 @@ public class GuildAchievementMgr extends AchievementManager {
     }
 
     private void sendAchievementEarned(AchievementRecord achievement) {
-        if (achievement.flags.HasAnyFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
+        if (achievement.flags.hasFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
             // broadcast realm first reached
             BroadcastAchievement serverFirstAchievement = new BroadcastAchievement();
             serverFirstAchievement.name = owner.getName();

@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;class SwapItemWithGuildBankItem extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class SwapItemWithGuildBankItem extends ClientPacket {
     public ObjectGuid banker = ObjectGuid.EMPTY;
 
     public byte bankTab;

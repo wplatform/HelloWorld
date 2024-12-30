@@ -4,8 +4,6 @@ package com.github.mmo.game.entity.creature;
 import com.github.mmo.defines.CreatureClassification;
 import com.github.mmo.defines.LootMode;
 import com.github.mmo.defines.SpellSchoolMask;
-import game.ObjectManager;
-import game.PhasingHandler;
 import com.github.mmo.game.ai.AISelector;
 import com.github.mmo.game.ai.CreatureAI;
 import com.github.mmo.game.ai.IUnitAI;
@@ -17,16 +15,14 @@ import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.loot.Loot;
 import com.github.mmo.game.map.*;
+import com.github.mmo.game.map.grid.Cell;
 import com.github.mmo.game.map.grid.GridObject;
 import com.github.mmo.game.map.grid.GridReference;
-
-import com.github.mmo.game.map.grid.Cell;
-
-
-
 import com.github.mmo.game.spell.SpellEffectInfo;
 import com.github.mmo.game.spell.SpellInfo;
 import com.github.mmo.game.world.setting.WorldSetting;
+import game.ObjectManager;
+import game.PhasingHandler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,10 +42,10 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     // vendor items
     private final ArrayList<VendorItemCount> vendorItemCounts = new ArrayList<>();
     private final String[] stringIds = new String[3];
+    private final spellFocusInfo spellFocusInfo = new spellFocusInfo();
     int nodeId;
     int pathId;
     private String scriptStringId;
-    private final spellFocusInfo spellFocusInfo = new spellFocusInfo();
     // Regenerate health
     private boolean regenerateHealth; // Set on creation
     private boolean isMissingCanSwimFlagOutOfCombat;
@@ -188,26 +184,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return creature;
     }
 
-    public float _GetDamageMod(CreatureClassification rank) {
-        WorldSetting worldSettings = getWorldContext().getWorldSettings();
-        switch (rank) // define rates for each elite rank
-        {
-            case Normal:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureNormalDamage);
-            case Elite:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
-            case RareElite:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareeliteDamage);
-            case WorldBoss:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteWorldbossDamage);
-            case Rare:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareDamage);
-            default:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
-        }
-    }
-
-
     public static boolean deleteFromDB(long spawnId) {
         var data = global.getObjectMgr().getCreatureData(spawnId);
 
@@ -285,6 +261,25 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         DB.World.CommitTransaction(trans);
 
         return true;
+    }
+
+    public float _GetDamageMod(CreatureClassification rank) {
+        WorldSetting worldSettings = getWorldContext().getWorldSettings();
+        switch (rank) // define rates for each elite rank
+        {
+            case Normal:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureNormalDamage);
+            case Elite:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
+            case RareElite:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareeliteDamage);
+            case WorldBoss:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteWorldbossDamage);
+            case Rare:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareDamage);
+            default:
+                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
+        }
     }
 
     @Override
@@ -388,7 +383,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         removeCorpse(true, true);
     }
 
-        public final void removeCorpse(boolean setSpawnTime, boolean destroyForNearbyPlayers) {
+    public final void removeCorpse(boolean setSpawnTime, boolean destroyForNearbyPlayers) {
         if (getDeathState() != deathState.Corpse) {
             return;
         }
@@ -467,11 +462,11 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return initEntry(entry, null);
     }
 
-        public final boolean initEntry(int entry, CreatureData data) {
+    public final boolean initEntry(int entry, CreatureData data) {
         var normalInfo = global.getObjectMgr().getCreatureTemplate(entry);
 
         if (normalInfo == null) {
-            Log.outError(LogFilter.Sql, "Creature.InitEntry creature entry {0} does not exist.", entry);
+            Logs.SQL.error("Creature.InitEntry creature entry {0} does not exist.", entry);
 
             return false;
         }
@@ -513,7 +508,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         // Cancel load if no model defined
         if (cInfo.getFirstValidModel() == null) {
-            Log.outError(LogFilter.Sql, "Creature (Entry: {0}) has no model defined in table `creature_template`, can't load. ", entry);
+            Logs.SQL.error("Creature (Entry: {0}) has no model defined in table `creature_template`, can't load. ", entry);
 
             return false;
         }
@@ -525,7 +520,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         if (minfo == null) // Cancel load if no model defined
         {
-            Log.outError(LogFilter.Sql, "Creature (Entry: {0}) has invalid model {1} defined in table `creature_template`, can't load.", entry, model.creatureDisplayId);
+            Logs.SQL.error("Creature (Entry: {0}) has invalid model {1} defined in table `creature_template`, can't load.", entry, model.creatureDisplayId);
 
             return false;
         }
@@ -561,7 +556,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         setHoverHeight(cInfo.hoverHeight);
 
-        setCanDualWield(cInfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.UseOffhandAttack));
+        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.UseOffhandAttack));
 
         // checked at loading
         setDefaultMovementType(MovementGeneratorType.forValue(data != null ? data.MovementType : cInfo.movementType));
@@ -574,7 +569,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
             getSpells()[i] = getTemplate().Spells[i];
         }
 
-        getStaticFlags().modifyFlag(CreatureStaticFlags.NO_XP, isCritter() && isPet() && isTotem() && getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.NoXP));
+        getStaticFlags().modifyFlag(CreatureStaticFlags.NO_XP, isCritter() && isPet() && isTotem() && getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoXP));
 
         return true;
     }
@@ -587,7 +582,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return updateEntry(entry, null, true);
     }
 
-        public final boolean updateEntry(int entry, CreatureData data, boolean updateLevel) {
+    public final boolean updateEntry(int entry, CreatureData data, boolean updateLevel) {
         if (!initEntry(entry, data)) {
             return false;
         }
@@ -620,7 +615,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         unitFlags = tempOut_UnitFlag.outArgValue;
         npcFlags = tempOut_npcFlags.outArgValue;
 
-        if (cInfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.Worldevent)) {
+        if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.Worldevent)) {
             npcFlags |= global.getGameEventMgr().getNPCFlag(this);
         }
 
@@ -642,7 +637,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         setUpdateFieldValue(getValues().modifyValue(getUnitData()).modifyValue(getUnitData().stateAnimID), global.getDB2Mgr().GetEmptyAnimStateID());
 
-        setCanDualWield(cInfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.UseOffhandAttack));
+        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.UseOffhandAttack));
 
         setBaseAttackTime(WeaponAttackType.BaseAttack, cInfo.baseAttackTime);
         setBaseAttackTime(WeaponAttackType.OffAttack, cInfo.baseAttackTime);
@@ -677,7 +672,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         var factionTemplate = CliDB.FactionTemplateStorage.get(cInfo.faction);
 
         if (factionTemplate != null) {
-            setPvP(factionTemplate.flags.HasAnyFlag((short) FactionTemplateFlags.PVP.getValue()));
+            setPvP(factionTemplate.flags.hasFlag((short) FactionTemplateFlags.PVP.getValue()));
         }
 
         // updates spell bars for vehicles and set player's faction - should be called here, to overwrite faction that is set from the new template
@@ -1012,7 +1007,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return initializeAI(null);
     }
 
-        public final boolean initializeAI(CreatureAI ai) {
+    public final boolean initializeAI(CreatureAI ai) {
         initializeMovementAI();
 
         AI = ai != null ? ai : AISelector.selectAI(this);
@@ -1039,7 +1034,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return create(guidlow, map, entry, pos, null, 0, false);
     }
 
-        public final boolean create(long guidlow, Map map, int entry, Position pos, CreatureData data, int vehId, boolean dynamic) {
+    public final boolean create(long guidlow, Map map, int entry, Position pos, CreatureData data, int vehId, boolean dynamic) {
         setMap(map);
 
         if (data != null) {
@@ -1055,7 +1050,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         var cinfo = global.getObjectMgr().getCreatureTemplate(entry);
 
         if (cinfo == null) {
-            Log.outError(LogFilter.Sql, "Creature.Create: creature template (guidlow: {0}, entry: {1}) does not exist.", guidlow, entry);
+            Logs.SQL.error("Creature.Create: creature template (guidlow: {0}, entry: {1}) does not exist.", guidlow, entry);
 
             return false;
         }
@@ -1080,7 +1075,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         }
 
         // Allow players to see those units while dead, do it here (mayby altered by addon auras)
-        if (cinfo.typeFlags.HasAnyFlag(CreatureTypeFlags.VisibleToGhosts)) {
+        if (cinfo.typeFlags.hasFlag(CreatureTypeFlags.VisibleToGhosts)) {
             getServerSideVisibility().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Alive.getValue() | GhostVisibilityType.Ghost.getValue());
         }
 
@@ -1090,7 +1085,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         cinfo = getTemplate(); // might be different than initially requested
 
-        if (cinfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.DungeonBoss) && map.isDungeon()) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.DungeonBoss) && map.isDungeon()) {
             setRespawnDelay(0); // special value, prevents respawn for dungeon bosses unless overridden
         }
 
@@ -1124,16 +1119,16 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         lastUsedScriptID = getScriptId();
 
-        if (isSpiritHealer() || isSpiritGuide() || getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.GhostVisibility)) {
+        if (isSpiritHealer() || isSpiritGuide() || getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.GhostVisibility)) {
             getServerSideVisibility().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Ghost);
             getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Ghost);
         }
 
-        if (cinfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.IgnorePathfinding)) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.IgnorePathfinding)) {
             addUnitState(UnitState.IgnorePathfinding);
         }
 
-        if (cinfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.ImmunityKnockback)) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.ImmunityKnockback)) {
             applySpellImmune(0, SpellImmunity.effect, SpellEffectName.knockBack, true);
             applySpellImmune(0, SpellImmunity.effect, SpellEffectName.KnockBackDest, true);
         }
@@ -1288,7 +1283,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         if (!repeats.contains(id)) {
             repeats.add(id);
         } else {
-            Log.outError(LogFilter.Sql, "CreatureTextMgr: TextGroup {0} for ({1}) {2}, id {3} already added", textGroup, getName(), getGUID().toString(), id);
+            Logs.SQL.error("CreatureTextMgr: TextGroup {0} for ({1}) {2}, id {3} already added", textGroup, getName(), getGUID().toString(), id);
         }
     }
 
@@ -1310,7 +1305,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public void atEngage(Unit target) {
         super.atEngage(target);
 
-        if (!getTemplate().typeFlags.HasAnyFlag(CreatureTypeFlags.AllowMountedCombat)) {
+        if (!getTemplate().typeFlags.hasFlag(CreatureTypeFlags.AllowMountedCombat)) {
             dismount();
         }
 
@@ -1388,7 +1383,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         exitVehicle(null);
     }
 
-        @Override
+    @Override
     public void exitVehicle(Position exitPosition) {
         super.exitVehicle();
 
@@ -1429,7 +1424,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         setTappedBy(unit, true);
     }
 
-        public final void setTappedBy(Unit unit, boolean withGroup) {
+    public final void setTappedBy(Unit unit, boolean withGroup) {
         // set the player whose group should receive the right
         // to loot the creature after it dies
         // should be set to NULL after the loot disappears
@@ -1500,10 +1495,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return false;
     }
 
-    public final void setTapList(HashSet<ObjectGuid> tapList) {
-        setTapList(tapList);
-    }
-
     public final void saveToDB() {
         // this should only be used when the creature has already been loaded
         // preferably after adding to map, because mapid may not be valid otherwise
@@ -1526,7 +1517,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         saveToDB(mapId, data.spawnDifficulties);
     }
-
 
     public void saveToDB(int mapid, ArrayList<Difficulty> spawnDifficulties) {
         // update in loaded data
@@ -1745,7 +1735,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         lowerPlayerDamageReq((long) unDamage);
     }
 
-
     public final void lowerPlayerDamageReq(long unDamage) {
         if (getPlayerDamageReq() != 0) {
             if (getPlayerDamageReq() > unDamage) {
@@ -1788,7 +1777,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         loadEquipment(1, true);
     }
 
-        public final void loadEquipment(int id, boolean force) {
+    public final void loadEquipment(int id, boolean force) {
         if (id == 0) {
             if (force) {
                 for (byte i = 0; i < SharedConst.MaxEquipmentItems; ++i) {
@@ -1841,12 +1830,10 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         setHealth((getDeathState() == deathState.Alive || getDeathState() == deathState.JustRespawned) ? curhealth : 0);
     }
 
-
     @Override
     public boolean hasQuest(int questId) {
         return global.getObjectMgr().getCreatureQuestRelations(getEntry()).hasQuest(questId);
     }
-
 
     @Override
     public boolean hasInvolvedQuest(int questId) {
@@ -2043,7 +2030,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                 unitFlags = tempOut_UnitFlag.outArgValue;
                 npcFlags = tempOut_npcFlags.outArgValue;
 
-                if (cInfo.flagsExtra.HasAnyFlag(CreatureFlagsExtra.Worldevent)) {
+                if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.Worldevent)) {
                     npcFlags |= global.getGameEventMgr().getNPCFlag(this);
                 }
 
@@ -2070,7 +2057,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         respawn(false);
     }
 
-        public final void respawn(boolean force) {
+    public final void respawn(boolean force) {
         if (force) {
             if (isAlive()) {
                 setDeathState(deathState.JustDied);
@@ -2147,7 +2134,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         forcedDespawn(0, null);
     }
 
-        public final void forcedDespawn(int timeMSToDespawn, Duration forceRespawnTimer) {
+    public final void forcedDespawn(int timeMSToDespawn, Duration forceRespawnTimer) {
         if (timeMSToDespawn != 0) {
             getEvents().addEvent(new ForcedDespawnDelayEvent(this, forceRespawnTimer), getEvents().CalculateTime(duration.ofSeconds(timeMSToDespawn)));
 
@@ -2207,7 +2194,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         despawnOrUnsummon(null, null);
     }
 
-        public final void despawnOrUnsummon(Duration msTimeToDespawn, Duration forceRespawnTimer) {
+    public final void despawnOrUnsummon(Duration msTimeToDespawn, Duration forceRespawnTimer) {
         var summon = toTempSummon();
 
         if (summon != null) {
@@ -2262,7 +2249,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return isImmunedToSpellEffect(spellInfo, spellEffectInfo, caster, false);
     }
 
-        @Override
+    @Override
     public boolean isImmunedToSpellEffect(SpellInfo spellInfo, SpellEffectInfo spellEffectInfo, WorldObject caster, boolean requireImmunityPurgesEffectAttribute) {
         if (getTemplate().creatureType == creatureType.Mechanical && spellEffectInfo.isEffect(SpellEffectName.Heal)) {
             return true;
@@ -2275,7 +2262,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return selectNearestTarget(0);
     }
 
-        public final Unit selectNearestTarget(float dist) {
+    public final Unit selectNearestTarget(float dist) {
         if (dist == 0.0f) {
             dist = SharedConst.MaxVisibilityDistance;
         }
@@ -2291,7 +2278,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return selectNearestTargetInAttackDistance(0);
     }
 
-        public final Unit selectNearestTargetInAttackDistance(float dist) {
+    public final Unit selectNearestTargetInAttackDistance(float dist) {
         if (dist > SharedConst.MaxVisibilityDistance) {
             Log.outError(LogFilter.unit, "Creature ({0}) SelectNearestTargetInAttackDistance called with dist > MAX_VISIBILITY_DISTANCE. Distance set to ATTACK_DISTANCE.", getGUID().toString());
             dist = SharedConst.AttackDistance;
@@ -2372,7 +2359,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return canAssistTo(u, enemy, true);
     }
 
-        public final boolean canAssistTo(Unit u, Unit enemy, boolean checkfaction) {
+    public final boolean canAssistTo(Unit u, Unit enemy, boolean checkfaction) {
         // is it true?
         if (!hasReactState(ReactStates.Aggressive)) {
             return false;
@@ -2448,7 +2435,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         saveRespawnTime(0);
     }
 
-        public final void saveRespawnTime(int forceDelay) {
+    public final void saveRespawnTime(int forceDelay) {
         if (isSummon() || getSpawnId() == 0 || (getCreatureData() != null && !getCreatureData().getDbData())) {
             return;
         }
@@ -2471,7 +2458,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return canCreatureAttack(victim, true);
     }
 
-        public final boolean canCreatureAttack(Unit victim, boolean force) {
+    public final boolean canCreatureAttack(Unit victim, boolean force) {
         if (!victim.isInMap(this)) {
             return false;
         }
@@ -2587,7 +2574,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                 var AdditionalSpellInfo = global.getSpellMgr().getSpellInfo(id, getMap().getDifficultyID());
 
                 if (AdditionalSpellInfo == null) {
-                    Log.outError(LogFilter.Sql, "Creature ({0}) has wrong spell {1} defined in `auras` field.", getGUID().toString(), id);
+                    Logs.SQL.error("Creature ({0}) has wrong spell {1} defined in `auras` field.", getGUID().toString(), id);
 
                     continue;
                 }
@@ -2614,7 +2601,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         global.getWorldMgr().sendGlobalMessage(packet, null, (enemy_team == TeamFaction.Alliance ? TeamFaction.Horde : TeamFaction.Alliance));
     }
 
-
     @Override
     public boolean hasSpell(int spellId) {
         return getSpells().contains(spellId);
@@ -2639,7 +2625,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         }
 
         // Creatures with CREATURE_FLAG_EXTRA_NO_MOVE_FLAGS_UPDATE should control MovementFlags in your own scripts
-        if (getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.NoMoveFlagsUpdate)) {
+        if (getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoMoveFlagsUpdate)) {
             return;
         }
 
@@ -2679,7 +2665,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         refreshCanSwimFlag(false);
     }
 
-        public final void refreshCanSwimFlag(boolean recheck) {
+    public final void refreshCanSwimFlag(boolean recheck) {
         if (!isMissingCanSwimFlagOutOfCombat || recheck) {
             isMissingCanSwimFlagOutOfCombat = !hasUnitFlag(UnitFlag.CanSwim);
         }
@@ -2760,7 +2746,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return (float) getMaxHealthByLevel(levelForTarget) / getCreateHealth();
     }
 
-
     public final float getBaseDamageForLevel(int level) {
         var cInfo = getTemplate();
         var scaling = cInfo.getLevelScaling(getMap().getDifficultyID());
@@ -2789,7 +2774,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return getBaseArmorForLevel(levelForTarget) / getBaseArmorForLevel(getLevel());
     }
-
 
     @Override
     public int getLevelForTarget(WorldObject target) {
@@ -2854,7 +2838,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return global.getObjectMgr().getScriptName(getScriptId());
     }
 
-
     public final int getScriptId() {
         var creatureData = getCreatureData();
 
@@ -2876,7 +2859,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public final boolean hasStringId(String id) {
         return getStringIds().contains(id);
     }
-
 
     public final int getVendorItemCurrentCount(VendorItem vItem) {
         if (vItem.getMaxcount() == 0) {
@@ -2916,7 +2898,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return vCount.getCount();
     }
-
 
     public final int updateVendorItemCurrentCount(VendorItem vItem, int used_count) {
         if (vItem.getMaxcount() == 0) {
@@ -2965,7 +2946,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return getName(locale.enUS);
     }
 
-        @Override
+    @Override
     public String getName(Locale locale) {
         if (locale != locale.enUS) {
             var cl = global.getObjectMgr().getCreatureLocale(getEntry());
@@ -2979,7 +2960,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return super.getName(locale);
     }
-
 
     public int getPetAutoSpellOnPos(byte pos) {
         if (pos >= SharedConst.MaxSpellCharm || getCharmInfo() == null || getCharmInfo().getCharmSpell(pos).getActiveState() != ActiveStates.enabled) {
@@ -3009,19 +2989,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         }
 
         return range;
-    }
-
-    public final void setCannotReachTarget(boolean cannotReach) {
-        if (cannotReach == getCannotReachTarget()) {
-            return;
-        }
-
-        setCannotReachTarget(cannotReach);
-        cannotReachTimer = 0;
-
-        if (cannotReach) {
-            Log.outDebug(LogFilter.unit, String.format("Creature::SetCannotReachTarget() called with true. Details: %1$s", getDebugInfo()));
-        }
     }
 
     public final float getAggroRange(Unit target) {
@@ -3083,7 +3050,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return selectNearestHostileUnitInAggroRange(false, false);
     }
 
-        public final Unit selectNearestHostileUnitInAggroRange(boolean useLOS, boolean ignoreCivilians) {
+    public final Unit selectNearestHostileUnitInAggroRange(boolean useLOS, boolean ignoreCivilians) {
         // Selects nearest hostile target within creature's aggro range. Used primarily by
         //  pets set to aggressive. Will not return neutral or friendly targets
         var u_check = new NearestHostileUnitInAggroRangeCheck(this, useLOS, ignoreCivilians);
@@ -3098,7 +3065,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         setDisplayId(modelId, 1f);
     }
 
-        @Override
+    @Override
     public void setDisplayId(int modelId, float displayScale) {
         super.setDisplayId(modelId, displayScale);
 
@@ -3196,7 +3163,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return hasSpellFocus(null);
     }
 
-        @Override
+    @Override
     public boolean hasSpellFocus(Spell focusSpell) {
         if (isDead()) // dead creatures cannot focus
         {
@@ -3222,7 +3189,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         releaseSpellFocus(null, true);
     }
 
-        public final void releaseSpellFocus(Spell focusSpell, boolean withDelay) {
+    public final void releaseSpellFocus(Spell focusSpell, boolean withDelay) {
         if (!spellFocusInfo.spell) {
             return;
         }
@@ -3254,11 +3221,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         spellFocusInfo.spell = null;
     }
 
-    public final void setCorpseDelay(int delay) {
-        setCorpseDelay(delay, false);
-    }
-
-        public final void setCorpseDelay(int delay, boolean ignoreCorpseDecayRatio) {
+    public final void setCorpseDelay(int delay, boolean ignoreCorpseDecayRatio) {
         setCorpseDelay(delay);
 
         if (ignoreCorpseDecayRatio) {
@@ -3274,37 +3237,36 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public void setImmuneToAll(boolean apply) {
         setImmuneToAll(apply, hasReactState(ReactStates.Passive));
     }
-// C# TO JAVA CONVERTER TASK: Tuple fields are not converted by C# to Java Converter:
-    private (
 
-    @Override
+@Override
     public void setImmuneToPC(boolean apply) {
         setImmuneToPC(apply, hasReactState(ReactStates.Passive));
-    },
+    }
 
-    @Override
+@Override
     public void setImmuneToNPC(boolean apply) {
         setImmuneToNPC(apply, hasReactState(ReactStates.Passive));
-    })_currentWaypointNodeInfo;
+    }
 
     public final <T extends CreatureAI> T getAI() {
         return (T) getAi();
     }
+// C# TO JAVA CONVERTER TASK: Tuple fields are not converted by C# to Java Converter:
+    private (
 
-    @Override
+        @Override
     public SpellSchoolMask getMeleeDamageSchoolMask() {
         return getMeleeDamageSchoolMask(WeaponAttackType.BaseAttack);
-    }
+    },
 
         @Override
     public SpellSchoolMask getMeleeDamageSchoolMask(WeaponAttackType attackType) {
         return meleeDamageSchoolMask;
-    }
+    })_currentWaypointNodeInfo;
 
     public final void setMeleeDamageSchool(SpellSchools school) {
         meleeDamageSchoolMask = spellSchoolMask.forValue(1 << school.getValue());
     }
-
 
     @Override
     public boolean loadFromDB(long spawnId, Map map, boolean addToMap, boolean allowDuplicate) {
@@ -3333,13 +3295,13 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         var data = global.getObjectMgr().getCreatureData(spawnId);
 
         if (data == null) {
-            Log.outError(LogFilter.Sql, String.format("Creature (SpawnID: %1$s) not found in table `creature`, can't load.", spawnId));
+            Logs.SQL.error(String.format("Creature (SpawnID: %1$s) not found in table `creature`, can't load.", spawnId));
 
             return false;
         }
 
         setSpawnId(spawnId);
-        setRespawnCompatibilityMode(data.getSpawnGroupData().getFlags().HasAnyFlag(SpawnGroupFlags.CompatibilityMode));
+        setRespawnCompatibilityMode(data.getSpawnGroupData().getFlags().hasFlag(SpawnGroupFlags.CompatibilityMode));
         setCreatureData(data);
         setWanderDistance(data.wanderDistance);
         setRespawnDelay((int) data.spawntimesecs);
@@ -3406,12 +3368,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return lootMode;
     }
 
-    public final boolean hasLootMode(LootMode lootMode) {
-        return (boolean) (lootMode.getValue() & lootMode.getValue());
-    }
-
     public final void setLootMode(LootMode lootMode) {
         lootMode = lootMode;
+    }
+
+    public final boolean hasLootMode(LootMode lootMode) {
+        return (boolean) (lootMode.getValue() & lootMode.getValue());
     }
 
     public final void addLootMode(LootMode lootMode) {
@@ -3439,15 +3401,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return getDefaultMovementType();
     }
 
-    public final void setDefaultMovementType(MovementGeneratorType mgt) {
-        setDefaultMovementType(mgt);
-    }
-
-
-    public final void setRespawnTime(int respawn) {
-        setRespawnTime(respawn != 0 ? gameTime.GetGameTime() + respawn : 0);
-    }
-
     public final void doImmediateBoundaryCheck() {
         boundaryCheckTime = 0;
     }
@@ -3468,11 +3421,9 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         transportHomePosition.relocate(x, y, z, o);
     }
 
-
     public final void loadPath(int pathid) {
         setWaypointPath(pathid);
     }
-
 
     public final void updateCurrentWaypointInfo(int nodeId, int pathId) {
         _currentWaypointNodeInfo = (nodeId, pathId)
@@ -3556,7 +3507,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return createFromProto(guidlow, entry, null, 0);
     }
 
-        private boolean createFromProto(long guidlow, int entry, CreatureData data, int vehId) {
+    private boolean createFromProto(long guidlow, int entry, CreatureData data, int vehId) {
         setZoneScript();
 
         if (getZoneScript() != null && data != null) {
@@ -3570,7 +3521,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         var cinfo = global.getObjectMgr().getCreatureTemplate(entry);
 
         if (cinfo == null) {
-            Log.outError(LogFilter.Sql, "Creature.CreateFromProto: creature template (guidlow: {0}, entry: {1}) does not exist.", guidlow, entry);
+            Logs.SQL.error("Creature.CreateFromProto: creature template (guidlow: {0}, entry: {1}) does not exist.", guidlow, entry);
 
             return false;
         }
@@ -3616,7 +3567,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         updateMovementFlags();
     }
 
-
     private long getMaxHealthByLevel(int level) {
         var cInfo = getTemplate();
         var scaling = cInfo.getLevelScaling(getMap().getDifficultyID());
@@ -3624,7 +3574,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return (long) (baseHealth * cInfo.ModHealth * cInfo.modHealthExtra);
     }
-
 
     private float getBaseArmorForLevel(int level) {
         var cInfo = getTemplate();
@@ -3672,11 +3621,9 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         setReputationGainDisabled(disable);
     }
 
-
     public final long getPlayerDamageReq() {
         return playerDamageReq;
     }
-
 
     public final void setPlayerDamageReq(long value) {
         playerDamageReq = value;
@@ -3706,16 +3653,13 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         isTempWorldObject = value;
     }
 
-
     public final int getOriginalEntry() {
         return originalEntry;
     }
 
-
     public final void setOriginalEntry(int value) {
         originalEntry = value;
     }
-
 
     public final int getLootId() {
         if (lootid != null) {
@@ -3724,7 +3668,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return getTemplate().lootId;
     }
-
 
     public final void setLootId(int value) {
         lootid = value;
@@ -3742,15 +3685,17 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return defaultMovementType;
     }
 
+    public final void setDefaultMovementType(MovementGeneratorType mgt) {
+        setDefaultMovementType(mgt);
+    }
+
     public final void setDefaultMovementType(MovementGeneratorType value) {
         defaultMovementType = value;
     }
 
-
     public final long getSpawnId() {
         return spawnId;
     }
-
 
     public final void setSpawnId(long value) {
         spawnId = value;
@@ -3764,11 +3709,9 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         staticFlags = value;
     }
 
-
     public final int[] getSpells() {
         return spells;
     }
-
 
     public final void setSpells(int[] value) {
         spells = value;
@@ -3806,7 +3749,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         getStaticFlags().modifyFlag(CreatureStaticFlags.NO_MELEE, !value);
     }
 
-
     public final int getGossipMenuId() {
         if (gossipMenuId != null) {
             return gossipMenuId.intValue();
@@ -3814,7 +3756,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         return getTemplate().gossipMenuId;
     }
-
 
     public final void setGossipMenuId(int value) {
         gossipMenuId = value;
@@ -3886,6 +3827,10 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
     public final HashSet<ObjectGuid> getTapList() {
         return tapList;
+    }
+
+    public final void setTapList(HashSet<ObjectGuid> tapList) {
+        setTapList(tapList);
     }
 
     private void setTapList(HashSet<ObjectGuid> value) {
@@ -3976,7 +3921,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return global.getObjectMgr().getNpcVendorItemList(getEntry());
     }
 
-
     public byte getPetAutoSpellSize() {
         return 4;
     }
@@ -3986,11 +3930,13 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return getTemplate().scale;
     }
 
-
     public final int getCorpseDelay() {
         return corpseDelay;
     }
 
+    public final void setCorpseDelay(int delay) {
+        setCorpseDelay(delay, false);
+    }
 
     private void setCorpseDelay(int value) {
         corpseDelay = value;
@@ -4001,15 +3947,15 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     }
 
     public final boolean isCivilian() {
-        return getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.Civilian);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.Civilian);
     }
 
     public final boolean isTrigger() {
-        return getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.trigger);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.trigger);
     }
 
     public final boolean isGuard() {
-        return getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.Guard);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.Guard);
     }
 
     public final boolean getCanWalk() {
@@ -4022,12 +3968,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     }
 
     public final boolean isDungeonBoss() {
-        return (getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.DungeonBoss));
+        return (getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.DungeonBoss));
     }
 
     @Override
     public boolean isAffectedByDiminishingReturns() {
-        return super.isAffectedByDiminishingReturns() || getTemplate().flagsExtra.HasAnyFlag(CreatureFlagsExtra.AllDiminish);
+        return super.isAffectedByDiminishingReturns() || getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.AllDiminish);
     }
 
     public final ReactStates getReactState() {
@@ -4054,11 +4000,9 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         originalEquipmentId = value;
     }
 
-
     public final byte getCurrentEquipmentId() {
         return currentEquipmentId;
     }
-
 
     public final void setCurrentEquipmentId(byte value) {
         currentEquipmentId = value;
@@ -4109,6 +4053,19 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return cannotReachTarget;
     }
 
+    public final void setCannotReachTarget(boolean cannotReach) {
+        if (cannotReach == getCannotReachTarget()) {
+            return;
+        }
+
+        setCannotReachTarget(cannotReach);
+        cannotReachTimer = 0;
+
+        if (cannotReach) {
+            Log.outDebug(LogFilter.unit, String.format("Creature::SetCannotReachTarget() called with true. Details: %1$s", getDebugInfo()));
+        }
+    }
+
     private void setCannotReachTarget(boolean value) {
         cannotReachTarget = value;
     }
@@ -4121,7 +4078,6 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public final int getCombatPulseDelay() {
         return combatPulseDelay;
     }
-
 
     public final void setCombatPulseDelay(int value) {
         combatPulseDelay = value;
@@ -4153,6 +4109,10 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
     public final long getRespawnTime() {
         return respawnTime;
+    }
+
+    public final void setRespawnTime(int respawn) {
+        setRespawnTime(respawn != 0 ? gameTime.GetGameTime() + respawn : 0);
     }
 
     private void setRespawnTime(long value) {
@@ -4306,7 +4266,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         updateAttackPowerAndDamage(false);
     }
 
-        @Override
+    @Override
     public void updateAttackPowerAndDamage(boolean ranged) {
         var unitMod = ranged ? UnitMods.AttackPowerRanged : UnitMods.attackPower;
 

@@ -1,8 +1,9 @@
 package com.github.mmo.game.networking.packet.item;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+import java.util.ArrayList;
+
 public final class InvUpdate {
     public ArrayList<InvItem> items;
 

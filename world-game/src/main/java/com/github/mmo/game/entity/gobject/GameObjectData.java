@@ -1,7 +1,7 @@
 package com.github.mmo.game.entity.gobject;
 
 
-import com.github.mmo.game.map.*;// From `gameobject_template_addon`, `gameobject_overrides`
+import com.github.mmo.game.map.SpawnData;
 
 public class GameObjectData extends SpawnData {
     public Quaternion rotation;

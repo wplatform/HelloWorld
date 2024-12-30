@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.voidstorage;
 
 
-import java.util.*;import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.ServerPacket;
+
+import java.util.ArrayList;
+
 public class VoidStorageTransferChanges extends ServerPacket {
     public ArrayList<ObjectGuid> removedItems = new ArrayList<>();
     public ArrayList<VoidItem> addedItems = new ArrayList<>();

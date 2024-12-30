@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.mail;
 
 
-public class NotifyReceivedMail extends ServerPacket
-{
-	public float delay = 0.0f;
-	public NotifyReceivedMail()
-	{
-		super(ServerOpcode.NotifyReceivedMail);
-	}
+public class NotifyReceivedMail extends ServerPacket {
+    public float delay = 0.0f;
 
-	@Override
-	public void write()
-	{
+    public NotifyReceivedMail() {
+        super(ServerOpcode.NotifyReceivedMail);
+    }
+
+    @Override
+    public void write() {
         this.writeFloat(delay);
-	}
+    }
 }

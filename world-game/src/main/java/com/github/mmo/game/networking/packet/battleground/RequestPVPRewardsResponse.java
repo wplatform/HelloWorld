@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.battleground;
 
 
-import com.github.mmo.game.networking.*;public class RequestPVPRewardsResponse extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class RequestPVPRewardsResponse extends ServerPacket {
 
     public int ratedRewardPointsThisWeek;
 

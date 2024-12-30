@@ -6,8 +6,7 @@ public enum ReactStates {
     REACT_AGGRESSIVE,
     REACT_ASSIST;
 
-    public String describeReactState()
-    {
+    public String describeReactState() {
         return switch (this) {
             case REACT_PASSIVE -> "PASSIVE";
             case REACT_DEFENSIVE -> "DEFENSIVE";

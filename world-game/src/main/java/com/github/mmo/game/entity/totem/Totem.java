@@ -2,21 +2,16 @@ package com.github.mmo.game.entity.totem;
 
 import Framework.Constants.*;
 import com.github.mmo.dbc.domain.SummonProperty;
-import game.datastorage.*;
 import com.github.mmo.game.entity.creature.Minion;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.networking.packets.*;
+import game.datastorage.*;
 import game.spells.*;
-
-
-
-
-
 
 
 public class Totem extends Minion {
     private TotemType totemType = TotemType.values()[0];
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: uint _duration;
     private int duration;
 
@@ -26,7 +21,7 @@ public class Totem extends Minion {
         totemType = TotemType.Passive;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override void Update(uint diff)
     @Override
     public void update(int diff) {
@@ -46,7 +41,8 @@ public class Totem extends Minion {
 
         super.update(diff);
     }
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override void InitStats(uint duration)
     @Override
     public void initStats(int duration) {
@@ -59,7 +55,7 @@ public class Totem extends Minion {
                 packet.totem = getGUID().clone();
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: packet.Slot = (byte)(SummonPropertiesRecord.Slot - (int)Framework.Constants.SummonSlot.Totem);
-                packet.slot = (byte)(summonProperty.slot - SummonSlot.Totem.getValue());
+                packet.slot = (byte) (summonProperty.slot - SummonSlot.Totem.getValue());
                 packet.duration = duration;
                 packet.spellID = unitData.createdBySpell;
                 owner.getAsPlayer().sendPacket(packet);
@@ -96,8 +92,8 @@ public class Totem extends Minion {
         }
 
         // Some totems can have both instant effect and passive spell
-        if (getSpell((byte)1) != 0) {
-            CastSpell(this, getSpell((byte)1), true);
+        if (getSpell((byte) 1) != 0) {
+            CastSpell(this, getSpell((byte) 1), true);
         }
     }
 
@@ -164,7 +160,7 @@ public class Totem extends Minion {
         return isImmunedToSpellEffect(spellInfo, spellEffectInfo, caster, false);
     }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
 //ORIGINAL LINE: public override bool IsImmunedToSpellEffect(SpellInfo spellInfo, SpellEffectInfo spellEffectInfo, WorldObject caster, bool requireImmunityPurgesEffectAttribute = false)
     @Override
     public boolean isImmunedToSpellEffect(SpellInfo spellInfo, SpellEffectInfo spellEffectInfo, WorldObject caster, boolean requireImmunityPurgesEffectAttribute) {
@@ -192,20 +188,20 @@ public class Totem extends Minion {
         return getSpell(0);
     }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
 //ORIGINAL LINE: public uint GetSpell(byte slot = 0)
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
     public final int getSpell(byte slot) {
         return spells[slot];
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetTotemDuration()
     public final int getTotemDuration() {
         return duration;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void SetTotemDuration(uint duration)
     public final void setTotemDuration(int duration) {
         this.duration = duration;
@@ -247,7 +243,7 @@ public class Totem extends Minion {
         updateAttackPowerAndDamage(false);
     }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
 //ORIGINAL LINE: public override void UpdateAttackPowerAndDamage(bool ranged = false)
     @Override
     public void updateAttackPowerAndDamage(boolean ranged) {

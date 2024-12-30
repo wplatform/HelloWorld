@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.party;
 
 
-import com.github.mmo.game.networking.*;class SendRaidTargetUpdateSingle extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class SendRaidTargetUpdateSingle extends ServerPacket {
     public byte partyIndex;
     public ObjectGuid target = ObjectGuid.EMPTY;
     public ObjectGuid changedBy = ObjectGuid.EMPTY;

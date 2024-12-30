@@ -1,19 +1,17 @@
 package com.github.mmo.game.networking.packet.achievement;
 
 
-public class GuildCriteriaDeleted extends ServerPacket
-{
-	public ObjectGuid guildGUID = ObjectGuid.EMPTY;
-	public int criteriaID;
-	public GuildCriteriaDeleted()
-	{
-		super(ServerOpcode.GuildCriteriaDeleted);
-	}
+public class GuildCriteriaDeleted extends ServerPacket {
+    public ObjectGuid guildGUID = ObjectGuid.EMPTY;
+    public int criteriaID;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(guildGUID);
-		this.writeInt32(criteriaID);
-	}
+    public GuildCriteriaDeleted() {
+        super(ServerOpcode.GuildCriteriaDeleted);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(guildGUID);
+        this.writeInt32(criteriaID);
+    }
 }

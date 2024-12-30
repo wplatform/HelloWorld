@@ -1,22 +1,21 @@
 package com.github.mmo.game.networking.packet.character;
 
 
-import com.github.mmo.game.entity.*;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.entity.ChrCustomizationChoice;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
 
-public class CreateCharacter extends ClientPacket
-{
-	public CharactercreateInfo createInfo;
-	public CreateCharacter(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class CreateCharacter extends ClientPacket {
+    public CharactercreateInfo createInfo;
 
-	@Override
-	public void read()
-	{
-		createInfo = new CharacterCreateInfo();
+    public CreateCharacter(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        createInfo = new CharacterCreateInfo();
         var nameLength = this.<Integer>readBit(6);
         var hasTemplateSet = this.readBit();
         createInfo.isTrialBoost = this.readBit();
@@ -29,19 +28,17 @@ public class CreateCharacter extends ClientPacket
 
         createInfo.name = this.readString(nameLength);
 
-		if (createInfo.templateSet != null)
-		{
+        if (createInfo.templateSet != null) {
             createInfo.templateSet = this.readUInt();
-		}
+        }
 
-		for (var i = 0; i < customizationCount; ++i)
-		{
-			ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
+        for (var i = 0; i < customizationCount; ++i) {
+            ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
             tempVar.chrCustomizationOptionID = this.readUInt();
             tempVar.chrCustomizationChoiceID = this.readUInt();
-			createInfo.customizations.set(i, tempVar);
-		}
+            createInfo.customizations.set(i, tempVar);
+        }
 
-		collections.sort(createInfo.customizations);
-	}
+        collections.sort(createInfo.customizations);
+    }
 }

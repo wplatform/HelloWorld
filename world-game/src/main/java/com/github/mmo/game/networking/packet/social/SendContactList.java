@@ -1,21 +1,20 @@
 package com.github.mmo.game.networking.packet.social;
 
 import com.github.mmo.game.entity.player.SocialFlag;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class SendContactList extends ClientPacket
-{
-	public SocialFlag flags = SocialFlag.values()[0];
-	public SendContactList(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class SendContactList extends ClientPacket {
+    public SocialFlag flags = SocialFlag.values()[0];
 
-	@Override
-	public void read()
-	{
-		flags = SocialFlag.forValue(this.readUInt());
-	}
+    public SendContactList(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        flags = SocialFlag.forValue(this.readUInt());
+    }
 }
 
 //Structs

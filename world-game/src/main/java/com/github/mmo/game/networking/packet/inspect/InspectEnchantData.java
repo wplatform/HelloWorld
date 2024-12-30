@@ -1,38 +1,35 @@
 package com.github.mmo.game.networking.packet.inspect;
 
-import com.github.mmo.game.networking.*;
-/** RespondInspectAchievements in AchievementPackets
-*/
+import com.github.mmo.game.networking.WorldPacket;
+
+/**
+ * RespondInspectAchievements in AchievementPackets
+ */
 
 //Structs
-public final class InspectEnchantData
-{
-	public InspectEnchantData()
-	{
-	}
+public final class InspectEnchantData {
+    public int id;
+    public byte index;
 
-	public InspectEnchantData(int id, byte index)
-	{
-		id = id;
-		index = index;
-	}
+    public InspectEnchantData() {
+    }
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(id);
-		data.writeInt8(index);
-	}
+    public InspectEnchantData(int id, byte index) {
+        id = id;
+        index = index;
+    }
 
-	public int id;
-	public byte index;
+    public void write(WorldPacket data) {
+        data.writeInt32(id);
+        data.writeInt8(index);
+    }
 
-	public InspectEnchantData clone()
-	{
-		InspectEnchantData varCopy = new InspectEnchantData();
+    public InspectEnchantData clone() {
+        InspectEnchantData varCopy = new InspectEnchantData();
 
-		varCopy.id = this.id;
-		varCopy.index = this.index;
+        varCopy.id = this.id;
+        varCopy.index = this.index;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

@@ -167,17 +167,17 @@ public interface SharedDefine {
 
     static PlayerClass classByQuestSort(QuestSort questSort) {
         return switch (questSort) {
-            case QUEST_SORT_WARLOCK -> PlayerClass.CLASS_WARLOCK;
-            case QUEST_SORT_WARRIOR -> PlayerClass.CLASS_WARRIOR;
-            case QUEST_SORT_SHAMAN -> PlayerClass.CLASS_SHAMAN;
-            case QUEST_SORT_PALADIN -> PlayerClass.CLASS_PALADIN;
-            case QUEST_SORT_MAGE -> PlayerClass.CLASS_MAGE;
-            case QUEST_SORT_ROGUE -> PlayerClass.CLASS_ROGUE;
-            case QUEST_SORT_HUNTER -> PlayerClass.CLASS_HUNTER;
-            case QUEST_SORT_PRIEST -> PlayerClass.CLASS_PRIEST;
-            case QUEST_SORT_DRUID -> PlayerClass.CLASS_DRUID;
-            case QUEST_SORT_DEATH_KNIGHT -> PlayerClass.CLASS_DEATH_KNIGHT;
-            case QUEST_SORT_DEMON_HUNTER -> PlayerClass.CLASS_DEMON_HUNTER;
+            case WARLOCK -> PlayerClass.CLASS_WARLOCK;
+            case WARRIOR -> PlayerClass.CLASS_WARRIOR;
+            case SHAMAN -> PlayerClass.CLASS_SHAMAN;
+            case PALADIN -> PlayerClass.CLASS_PALADIN;
+            case MAGE -> PlayerClass.CLASS_MAGE;
+            case ROGUE -> PlayerClass.CLASS_ROGUE;
+            case HUNTER -> PlayerClass.CLASS_HUNTER;
+            case PRIEST -> PlayerClass.CLASS_PRIEST;
+            case DRUID -> PlayerClass.CLASS_DRUID;
+            case DEATH_KNIGHT -> PlayerClass.CLASS_DEATH_KNIGHT;
+            case DEMON_HUNTER -> PlayerClass.CLASS_DEMON_HUNTER;
             default -> PlayerClass.CLASS_NONE;
         };
     }
@@ -186,46 +186,46 @@ public interface SharedDefine {
 
     static SkillType skillByLockType(LockType locktype) {
         return switch (locktype) {
-            case LOCKTYPE_HERBALISM -> SkillType.SKILL_HERBALISM;
-            case LOCKTYPE_MINING -> SkillType.SKILL_MINING;
-            case LOCKTYPE_FISHING -> SkillType.SKILL_FISHING;
-            case LOCKTYPE_INSCRIPTION -> SkillType.SKILL_INSCRIPTION;
-            case LOCKTYPE_ARCHAEOLOGY -> SkillType.SKILL_ARCHAEOLOGY;
-            case LOCKTYPE_LUMBER_MILL -> SkillType.SKILL_LOGGING;
-            case LOCKTYPE_CLASSIC_HERBALISM -> SkillType.SKILL_HERBALISM_2;
-            case LOCKTYPE_OUTLAND_HERBALISM -> SkillType.SKILL_OUTLAND_HERBALISM;
-            case LOCKTYPE_NORTHREND_HERBALISM -> SkillType.SKILL_NORTHREND_HERBALISM;
-            case LOCKTYPE_CATACLYSM_HERBALISM -> SkillType.SKILL_CATACLYSM_HERBALISM;
-            case LOCKTYPE_PANDARIA_HERBALISM -> SkillType.SKILL_PANDARIA_HERBALISM;
-            case LOCKTYPE_DRAENOR_HERBALISM -> SkillType.SKILL_DRAENOR_HERBALISM;
-            case LOCKTYPE_LEGION_HERBALISM -> SkillType.SKILL_LEGION_HERBALISM;
-            case LOCKTYPE_KUL_TIRAN_HERBALISM -> SkillType.SKILL_KUL_TIRAN_HERBALISM;
-            case LOCKTYPE_CLASSIC_MINING -> SkillType.SKILL_MINING_2;
-            case LOCKTYPE_OUTLAND_MINING -> SkillType.SKILL_OUTLAND_MINING;
-            case LOCKTYPE_NORTHREND_MINING -> SkillType.SKILL_NORTHREND_MINING;
-            case LOCKTYPE_CATACLYSM_MINING -> SkillType.SKILL_CATACLYSM_MINING;
-            case LOCKTYPE_PANDARIA_MINING -> SkillType.SKILL_PANDARIA_MINING;
-            case LOCKTYPE_DRAENOR_MINING -> SkillType.SKILL_DRAENOR_MINING;
-            case LOCKTYPE_LEGION_MINING -> SkillType.SKILL_LEGION_MINING;
-            case LOCKTYPE_KUL_TIRAN_MINING -> SkillType.SKILL_KUL_TIRAN_MINING;
-            default -> SkillType.SKILL_NONE;
+            case LOCKTYPE_HERBALISM -> SkillType.HERBALISM;
+            case LOCKTYPE_MINING -> SkillType.MINING;
+            case LOCKTYPE_FISHING -> SkillType.FISHING;
+            case LOCKTYPE_INSCRIPTION -> SkillType.INSCRIPTION;
+            case LOCKTYPE_ARCHAEOLOGY -> SkillType.ARCHAEOLOGY;
+            case LOCKTYPE_LUMBER_MILL -> SkillType.LOGGING;
+            case LOCKTYPE_CLASSIC_HERBALISM -> SkillType.HERBALISM_2;
+            case LOCKTYPE_OUTLAND_HERBALISM -> SkillType.OUTLAND_HERBALISM;
+            case LOCKTYPE_NORTHREND_HERBALISM -> SkillType.NORTHREND_HERBALISM;
+            case LOCKTYPE_CATACLYSM_HERBALISM -> SkillType.CATACLYSM_HERBALISM;
+            case LOCKTYPE_PANDARIA_HERBALISM -> SkillType.PANDARIA_HERBALISM;
+            case LOCKTYPE_DRAENOR_HERBALISM -> SkillType.DRAENOR_HERBALISM;
+            case LOCKTYPE_LEGION_HERBALISM -> SkillType.LEGION_HERBALISM;
+            case LOCKTYPE_KUL_TIRAN_HERBALISM -> SkillType.KUL_TIRAN_HERBALISM;
+            case LOCKTYPE_CLASSIC_MINING -> SkillType.MINING_2;
+            case LOCKTYPE_OUTLAND_MINING -> SkillType.OUTLAND_MINING;
+            case LOCKTYPE_NORTHREND_MINING -> SkillType.NORTHREND_MINING;
+            case LOCKTYPE_CATACLYSM_MINING -> SkillType.CATACLYSM_MINING;
+            case LOCKTYPE_PANDARIA_MINING -> SkillType.PANDARIA_MINING;
+            case LOCKTYPE_DRAENOR_MINING -> SkillType.DRAENOR_MINING;
+            case LOCKTYPE_LEGION_MINING -> SkillType.LEGION_MINING;
+            case LOCKTYPE_KUL_TIRAN_MINING -> SkillType.KUL_TIRAN_MINING;
+            default -> SkillType.NONE;
         };
     }
 
     static SkillType skillByQuestSort(QuestSort QuestSort) {
         return switch (QuestSort) {
-            case QUEST_SORT_HERBALISM -> SkillType.SKILL_HERBALISM;
-            case QUEST_SORT_FISHING -> SkillType.SKILL_FISHING;
-            case QUEST_SORT_BLACKSMITHING -> SkillType.SKILL_BLACKSMITHING;
-            case QUEST_SORT_ALCHEMY -> SkillType.SKILL_ALCHEMY;
-            case QUEST_SORT_LEATHERWORKING -> SkillType.SKILL_LEATHERWORKING;
-            case QUEST_SORT_ENGINEERING -> SkillType.SKILL_ENGINEERING;
-            case QUEST_SORT_TAILORING -> SkillType.SKILL_TAILORING;
-            case QUEST_SORT_COOKING -> SkillType.SKILL_COOKING;
-            case QUEST_SORT_JEWELCRAFTING -> SkillType.SKILL_JEWELCRAFTING;
-            case QUEST_SORT_INSCRIPTION -> SkillType.SKILL_INSCRIPTION;
-            case QUEST_SORT_ARCHAEOLOGY -> SkillType.SKILL_ARCHAEOLOGY;
-            default -> SkillType.SKILL_NONE;
+            case HERBALISM -> SkillType.HERBALISM;
+            case FISHING -> SkillType.FISHING;
+            case BLACKSMITHING -> SkillType.BLACKSMITHING;
+            case ALCHEMY -> SkillType.ALCHEMY;
+            case LEATHERWORKING -> SkillType.LEATHERWORKING;
+            case ENGINEERING -> SkillType.ENGINEERING;
+            case TAILORING -> SkillType.TAILORING;
+            case COOKING -> SkillType.COOKING;
+            case JEWELCRAFTING -> SkillType.JEWELCRAFTING;
+            case INSCRIPTION -> SkillType.INSCRIPTION;
+            case ARCHAEOLOGY -> SkillType.ARCHAEOLOGY;
+            default -> SkillType.NONE;
         };
     }
 
@@ -260,7 +260,11 @@ public interface SharedDefine {
     byte MAX_ACCOUNT_TUTORIAL_VALUES = 8;
 
     // max+1 for player race
-    int MAX_RACES = Race.RACE_COMPANION_PTERRODAX.ordinal();
+    int MAX_RACES = Race.COMPANION_PTERRODAX.ordinal();
+
+
+    int REPUTATION_CAP = 42000;
+    int REPUTATION_BOTTOM = -42000;
 
 
 }

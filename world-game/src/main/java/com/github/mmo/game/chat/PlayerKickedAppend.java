@@ -3,39 +3,33 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class PlayerKickedAppend implements IChannelAppender
-{
-	public PlayerKickedAppend()
-	{
-	}
+final class PlayerKickedAppend implements IChannelAppender {
+    private final ObjectGuid kicker;
+    private final ObjectGuid kickee;
 
-	public PlayerKickedAppend(ObjectGuid kicker, ObjectGuid kickee)
-	{
+    public PlayerKickedAppend() {
+    }
+
+    public PlayerKickedAppend(ObjectGuid kicker, ObjectGuid kickee) {
         kicker = kicker;
         kickee = kickee;
-	}
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.PlayerKickedNotice;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.PlayerKickedNotice;
+    }
 
-	public void append(ChannelNotify data)
-	{
+    public void append(ChannelNotify data) {
         data.senderGuid = kicker;
         data.targetGuid = kickee;
-	}
+    }
 
-	private final ObjectGuid kicker;
-	private final ObjectGuid kickee;
-
-	public PlayerKickedAppend clone()
-	{
-		PlayerKickedAppend varCopy = new PlayerKickedAppend();
+    public PlayerKickedAppend clone() {
+        PlayerKickedAppend varCopy = new PlayerKickedAppend();
 
         varCopy.kicker = this.kicker;
         varCopy.kickee = this.kickee;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

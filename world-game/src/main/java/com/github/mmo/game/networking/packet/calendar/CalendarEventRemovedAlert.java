@@ -3,23 +3,21 @@ package com.github.mmo.game.networking.packet.calendar;
 
 import com.github.mmo.game.networking.ServerPacket;
 
-public class CalendarEventRemovedAlert extends ServerPacket
-{
-	public long eventID;
-	public long date;
-	public boolean clearPending;
-	public CalendarEventRemovedAlert()
-	{
-		super(ServerOpcode.CalendarEventRemovedAlert);
-	}
+public class CalendarEventRemovedAlert extends ServerPacket {
+    public long eventID;
+    public long date;
+    public boolean clearPending;
 
-	@Override
-	public void write()
-	{
-		this.writeInt64(eventID);
-		this.writePackedTime(date);
+    public CalendarEventRemovedAlert() {
+        super(ServerOpcode.CalendarEventRemovedAlert);
+    }
+
+    @Override
+    public void write() {
+        this.writeInt64(eventID);
+        this.writePackedTime(date);
 
         this.writeBit(clearPending);
         this.flushBits();
-	}
+    }
 }

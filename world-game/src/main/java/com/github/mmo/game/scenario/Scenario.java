@@ -1,479 +1,397 @@
 package com.github.mmo.game.scenario;
 
 
-import com.github.mmo.game.achievement.criteria;
 import com.github.mmo.game.achievement.CriteriaHandler;
-import com.github.mmo.game.achievement.criteriaProgress;
 import com.github.mmo.game.achievement.CriteriaTree;
+import com.github.mmo.game.achievement.criteria;
+import com.github.mmo.game.achievement.criteriaProgress;
 import com.github.mmo.game.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Scenario extends CriteriaHandler
-{
-	protected ScenarioData data;
+public class Scenario extends CriteriaHandler {
+    private final ArrayList<ObjectGuid> players = new ArrayList<>();
+    private final HashMap<ScenarioStepRecord, ScenarioStepState> stepStates = new HashMap<ScenarioStepRecord, ScenarioStepState>();
+    protected ScenarioData data;
+    private ScenarioStepRecord currentstep;
 
-	private final ArrayList<ObjectGuid> players = new ArrayList<>();
-	private final HashMap<ScenarioStepRecord, ScenarioStepState> stepStates = new HashMap<ScenarioStepRecord, ScenarioStepState>();
-	private ScenarioStepRecord currentstep;
+    public Scenario(ScenarioData scenarioData) {
+        data = scenarioData;
+        currentstep = null;
 
-	public Scenario(ScenarioData scenarioData)
-	{
-		data = scenarioData;
-		currentstep = null;
+        //ASSERT(data);
 
-		//ASSERT(data);
+        for (var scenarioStep : data.steps.values()) {
+            setStepState(scenarioStep, ScenarioStepState.NotStarted);
+        }
 
-		for (var scenarioStep : data.steps.values())
-		{
-			setStepState(scenarioStep, ScenarioStepState.NotStarted);
-		}
+        var firstStep = getFirstStep();
 
-		var firstStep = getFirstStep();
+        if (firstStep != null) {
+            setStep(firstStep);
+        } else {
+            Log.outError(LogFilter.Scenario, "Scenario.Scenario: Could not launch Scenario (id: {0}), found no valid scenario step", data.entry.id);
+        }
+    }
 
-		if (firstStep != null)
-		{
-			setStep(firstStep);
-		}
-		else
-		{
-			Log.outError(LogFilter.Scenario, "Scenario.Scenario: Could not launch Scenario (id: {0}), found no valid scenario step", data.entry.id);
-		}
-	}
+    @Override
+    public void reset() {
+        super.reset();
+        setStep(getFirstStep());
+    }
 
-	@Override
-	public void reset()
-	{
-		super.reset();
-		setStep(getFirstStep());
-	}
+    public void completeStep(ScenarioStepRecord step) {
+        var quest = global.getObjectMgr().getQuestTemplate(step.rewardQuestID);
 
-	public void completeStep(ScenarioStepRecord step)
-	{
-		var quest = global.getObjectMgr().getQuestTemplate(step.rewardQuestID);
-
-		if (quest != null)
-		{
-			for (var guid : players)
-			{
+        if (quest != null) {
+            for (var guid : players) {
                 var player = global.getObjAccessor().findPlayer(guid);
 
-				if (player)
-				{
-					player.rewardQuest(quest, lootItemType.item, 0, null, false);
-				}
-			}
-		}
+                if (player) {
+                    player.rewardQuest(quest, lootItemType.item, 0, null, false);
+                }
+            }
+        }
 
-		if (step.IsBonusObjective())
-		{
-			return;
-		}
+        if (step.IsBonusObjective()) {
+            return;
+        }
 
-		ScenarioStepRecord newStep = null;
+        ScenarioStepRecord newStep = null;
 
-		for (var scenarioStep : data.steps.values())
-		{
-			if (scenarioStep.IsBonusObjective())
-			{
-				continue;
-			}
+        for (var scenarioStep : data.steps.values()) {
+            if (scenarioStep.IsBonusObjective()) {
+                continue;
+            }
 
-			if (getStepState(scenarioStep) == ScenarioStepState.Done)
-			{
-				continue;
-			}
+            if (getStepState(scenarioStep) == ScenarioStepState.Done) {
+                continue;
+            }
 
-			if (newStep == null || scenarioStep.orderIndex < newStep.orderIndex)
-			{
-				newStep = scenarioStep;
-			}
-		}
+            if (newStep == null || scenarioStep.orderIndex < newStep.orderIndex) {
+                newStep = scenarioStep;
+            }
+        }
 
-		setStep(newStep);
+        setStep(newStep);
 
-		if (isComplete())
-		{
-			completeScenario();
-		}
-		else
-		{
-			Log.outError(LogFilter.Scenario, "Scenario.CompleteStep: Scenario (id: {0}, step: {1}) was completed, but could not determine new step, or validate scenario completion.", step.scenarioID, step.id);
-		}
-	}
+        if (isComplete()) {
+            completeScenario();
+        } else {
+            Log.outError(LogFilter.Scenario, "Scenario.CompleteStep: Scenario (id: {0}, step: {1}) was completed, but could not determine new step, or validate scenario completion.", step.scenarioID, step.id);
+        }
+    }
 
-	public void completeScenario()
-	{
-		sendPacket(new ScenarioCompleted(data.entry.id));
-	}
+    public void completeScenario() {
+        sendPacket(new ScenarioCompleted(data.entry.id));
+    }
 
-	public void onPlayerEnter(Player player)
-	{
+    public void onPlayerEnter(Player player) {
         players.add(player.getGUID());
-		sendScenarioState(player);
-	}
+        sendScenarioState(player);
+    }
 
-	public void onPlayerExit(Player player)
-	{
+    public void onPlayerExit(Player player) {
         players.remove(player.getGUID());
-		sendBootPlayer(player);
-	}
+        sendBootPlayer(player);
+    }
 
-	public final ScenarioRecord getEntry()
-	{
-		return data.entry;
-	}
+    public final ScenarioRecord getEntry() {
+        return data.entry;
+    }
 
-	@Override
-    public void sendCriteriaUpdate(Criteria criteria, CriteriaProgress progress, Duration timeElapsed, boolean timedCompleted)
-	{
-		ScenarioProgressUpdate progressUpdate = new ScenarioProgressUpdate();
-		progressUpdate.criteriaProgress.id = criteria.id;
-		progressUpdate.criteriaProgress.quantity = progress.counter;
+    @Override
+    public void sendCriteriaUpdate(Criteria criteria, CriteriaProgress progress, Duration timeElapsed, boolean timedCompleted) {
+        ScenarioProgressUpdate progressUpdate = new ScenarioProgressUpdate();
+        progressUpdate.criteriaProgress.id = criteria.id;
+        progressUpdate.criteriaProgress.quantity = progress.counter;
         progressUpdate.criteriaProgress.player = progress.playerGUID;
-		progressUpdate.criteriaProgress.date = progress.date;
+        progressUpdate.criteriaProgress.date = progress.date;
 
-		if (criteria.entry.startTimer != 0)
-		{
-			progressUpdate.criteriaProgress.flags = timedCompleted ? 1 : 0;
-		}
+        if (criteria.entry.startTimer != 0) {
+            progressUpdate.criteriaProgress.flags = timedCompleted ? 1 : 0;
+        }
 
-		progressUpdate.criteriaProgress.timeFromStart = (int)timeElapsed.TotalSeconds;
-		progressUpdate.criteriaProgress.timeFromCreate = 0;
+        progressUpdate.criteriaProgress.timeFromStart = (int) timeElapsed.TotalSeconds;
+        progressUpdate.criteriaProgress.timeFromCreate = 0;
 
-		sendPacket(progressUpdate);
-	}
+        sendPacket(progressUpdate);
+    }
 
-	@Override
-	public boolean canUpdateCriteriaTree(Criteria criteria, CriteriaTree tree, Player referencePlayer)
-	{
-		var step = tree.scenarioStep;
+    @Override
+    public boolean canUpdateCriteriaTree(Criteria criteria, CriteriaTree tree, Player referencePlayer) {
+        var step = tree.scenarioStep;
 
-		if (step == null)
-		{
-			return false;
-		}
+        if (step == null) {
+            return false;
+        }
 
-		if (step.scenarioID != data.entry.id)
-		{
-			return false;
-		}
+        if (step.scenarioID != data.entry.id) {
+            return false;
+        }
 
-		var currentStep = getStep();
+        var currentStep = getStep();
 
-		if (currentStep == null)
-		{
-			return false;
-		}
+        if (currentStep == null) {
+            return false;
+        }
 
-		if (step.IsBonusObjective())
-		{
-			return true;
-		}
+        if (step.IsBonusObjective()) {
+            return true;
+        }
 
-		return currentStep == step;
-	}
+        return currentStep == step;
+    }
 
-	@Override
-	public boolean canCompleteCriteriaTree(CriteriaTree tree)
-	{
-		var step = tree.scenarioStep;
+    @Override
+    public boolean canCompleteCriteriaTree(CriteriaTree tree) {
+        var step = tree.scenarioStep;
 
-		if (step == null)
-		{
-			return false;
-		}
+        if (step == null) {
+            return false;
+        }
 
-		var state = getStepState(step);
+        var state = getStepState(step);
 
-		if (state == ScenarioStepState.Done)
-		{
-			return false;
-		}
+        if (state == ScenarioStepState.Done) {
+            return false;
+        }
 
-		var currentStep = getStep();
+        var currentStep = getStep();
 
-		if (currentStep == null)
-		{
-			return false;
-		}
+        if (currentStep == null) {
+            return false;
+        }
 
-		if (step.IsBonusObjective())
-		{
-			if (step != currentStep)
-			{
-				return false;
-			}
-		}
+        if (step.IsBonusObjective()) {
+            if (step != currentStep) {
+                return false;
+            }
+        }
 
-		return super.canCompleteCriteriaTree(tree);
-	}
+        return super.canCompleteCriteriaTree(tree);
+    }
 
-	@Override
-	public void completedCriteriaTree(CriteriaTree tree, Player referencePlayer)
-	{
-		var step = tree.scenarioStep;
+    @Override
+    public void completedCriteriaTree(CriteriaTree tree, Player referencePlayer) {
+        var step = tree.scenarioStep;
 
-		if (!isCompletedStep(step))
-		{
-			return;
-		}
+        if (!isCompletedStep(step)) {
+            return;
+        }
 
-		setStepState(step, ScenarioStepState.Done);
-		completeStep(step);
-	}
+        setStepState(step, ScenarioStepState.Done);
+        completeStep(step);
+    }
 
-	@Override
-	public void sendPacket(ServerPacket data)
-	{
-		for (var guid : players)
-		{
+    @Override
+    public void sendPacket(ServerPacket data) {
+        for (var guid : players) {
             var player = global.getObjAccessor().findPlayer(guid);
 
-			if (player)
-			{
-				player.sendPacket(data);
-			}
-		}
-	}
+            if (player) {
+                player.sendPacket(data);
+            }
+        }
+    }
 
-	public final ScenarioStepRecord getLastStep()
-	{
-		// Do it like this because we don't know what order they're in inside the container.
-		ScenarioStepRecord lastStep = null;
+    public final ScenarioStepRecord getLastStep() {
+        // Do it like this because we don't know what order they're in inside the container.
+        ScenarioStepRecord lastStep = null;
 
-		for (var scenarioStep : data.steps.values())
-		{
-			if (scenarioStep.IsBonusObjective())
-			{
-				continue;
-			}
+        for (var scenarioStep : data.steps.values()) {
+            if (scenarioStep.IsBonusObjective()) {
+                continue;
+            }
 
-			if (lastStep == null || scenarioStep.orderIndex > lastStep.orderIndex)
-			{
-				lastStep = scenarioStep;
-			}
-		}
+            if (lastStep == null || scenarioStep.orderIndex > lastStep.orderIndex) {
+                lastStep = scenarioStep;
+            }
+        }
 
-		return lastStep;
-	}
+        return lastStep;
+    }
 
-	public final void sendScenarioState(Player player)
-	{
-		ScenarioState scenarioState = new ScenarioState();
-		buildScenarioState(scenarioState);
-		player.sendPacket(scenarioState);
-	}
+    public final void sendScenarioState(Player player) {
+        ScenarioState scenarioState = new ScenarioState();
+        buildScenarioState(scenarioState);
+        player.sendPacket(scenarioState);
+    }
 
-	@Override
-	public ArrayList<criteria> getCriteriaByType(CriteriaType type, int asset)
-	{
-		return global.getCriteriaMgr().getScenarioCriteriaByTypeAndScenario(type, data.entry.id);
-	}
+    @Override
+    public ArrayList<criteria> getCriteriaByType(CriteriaType type, int asset) {
+        return global.getCriteriaMgr().getScenarioCriteriaByTypeAndScenario(type, data.entry.id);
+    }
 
-	public void update(int diff)
-	{
-	}
+    public void update(int diff) {
+    }
 
-	public final void setStepState(ScenarioStepRecord step, ScenarioStepState state)
-	{
-		stepStates.put(step, state);
-	}
+    public final void setStepState(ScenarioStepRecord step, ScenarioStepState state) {
+        stepStates.put(step, state);
+    }
 
-	public final ScenarioStepRecord getStep()
-	{
-		return currentstep;
-	}
+    public final ScenarioStepRecord getStep() {
+        return currentstep;
+    }
 
-	@Override
-	public void sendCriteriaProgressRemoved(int criteriaId)
-	{
-	}
-	@Override
-	public void afterCriteriaTreeUpdate(CriteriaTree tree, Player referencePlayer)
-	{
-	}
-	@Override
-	public void sendAllData(Player receiver)
-	{
-	}
+    private void setStep(ScenarioStepRecord step) {
+        currentstep = step;
 
-	private void setStep(ScenarioStepRecord step)
-	{
-		currentstep = step;
+        if (step != null) {
+            setStepState(step, ScenarioStepState.inProgress);
+        }
 
-		if (step != null)
-		{
-			setStepState(step, ScenarioStepState.inProgress);
-		}
+        ScenarioState scenarioState = new ScenarioState();
+        buildScenarioState(scenarioState);
+        sendPacket(scenarioState);
+    }
 
-		ScenarioState scenarioState = new ScenarioState();
-		buildScenarioState(scenarioState);
-		sendPacket(scenarioState);
-	}
+    @Override
+    public void sendCriteriaProgressRemoved(int criteriaId) {
+    }
 
-	private boolean isComplete()
-	{
-		for (var scenarioStep : data.steps.values())
-		{
-			if (scenarioStep.IsBonusObjective())
-			{
-				continue;
-			}
+    @Override
+    public void afterCriteriaTreeUpdate(CriteriaTree tree, Player referencePlayer) {
+    }
 
-			if (getStepState(scenarioStep) != ScenarioStepState.Done)
-			{
-				return false;
-			}
-		}
+    @Override
+    public void sendAllData(Player receiver) {
+    }
 
-		return true;
-	}
+    private boolean isComplete() {
+        for (var scenarioStep : data.steps.values()) {
+            if (scenarioStep.IsBonusObjective()) {
+                continue;
+            }
 
-	private ScenarioStepState getStepState(ScenarioStepRecord step)
-	{
-		if (!stepStates.containsKey(step))
-		{
-			return ScenarioStepState.Invalid;
-		}
+            if (getStepState(scenarioStep) != ScenarioStepState.Done) {
+                return false;
+            }
+        }
 
-		return stepStates.get(step);
-	}
+        return true;
+    }
 
-	private boolean isCompletedStep(ScenarioStepRecord step)
-	{
-		var tree = global.getCriteriaMgr().getCriteriaTree(step.CriteriaTreeId);
+    private ScenarioStepState getStepState(ScenarioStepRecord step) {
+        if (!stepStates.containsKey(step)) {
+            return ScenarioStepState.Invalid;
+        }
 
-		if (tree == null)
-		{
-			return false;
-		}
+        return stepStates.get(step);
+    }
 
-		return isCompletedCriteriaTree(tree);
-	}
+    private boolean isCompletedStep(ScenarioStepRecord step) {
+        var tree = global.getCriteriaMgr().getCriteriaTree(step.CriteriaTreeId);
 
-	private void buildScenarioState(ScenarioState scenarioState)
-	{
-		scenarioState.scenarioID = (int)data.entry.id;
-		var step = getStep();
+        if (tree == null) {
+            return false;
+        }
 
-		if (step != null)
-		{
-			scenarioState.currentStep = (int)step.id;
-		}
+        return isCompletedCriteriaTree(tree);
+    }
 
-		scenarioState.criteriaProgress = getCriteriasProgress();
-		scenarioState.bonusObjectives = getBonusObjectivesData();
+    private void buildScenarioState(ScenarioState scenarioState) {
+        scenarioState.scenarioID = (int) data.entry.id;
+        var step = getStep();
 
-		// Don't know exactly what this is for, but seems to contain list of scenario steps that we're either on or that are completed
-		for (var state : stepStates.entrySet())
-		{
-			if (state.getKey().IsBonusObjective())
-			{
-				continue;
-			}
+        if (step != null) {
+            scenarioState.currentStep = (int) step.id;
+        }
 
-			switch (state.getValue())
-			{
-				case ScenarioStepState.InProgress:
-				case ScenarioStepState.Done:
-					break;
-				case ScenarioStepState.NotStarted:
-				default:
-					continue;
-			}
+        scenarioState.criteriaProgress = getCriteriasProgress();
+        scenarioState.bonusObjectives = getBonusObjectivesData();
 
-			scenarioState.pickedSteps.add(state.getKey().id);
-		}
+        // Don't know exactly what this is for, but seems to contain list of scenario steps that we're either on or that are completed
+        for (var state : stepStates.entrySet()) {
+            if (state.getKey().IsBonusObjective()) {
+                continue;
+            }
 
-		scenarioState.scenarioComplete = isComplete();
-	}
+            switch (state.getValue()) {
+                case ScenarioStepState.InProgress:
+                case ScenarioStepState.Done:
+                    break;
+                case ScenarioStepState.NotStarted:
+                default:
+                    continue;
+            }
 
-	private ScenarioStepRecord getFirstStep()
-	{
-		// Do it like this because we don't know what order they're in inside the container.
-		ScenarioStepRecord firstStep = null;
+            scenarioState.pickedSteps.add(state.getKey().id);
+        }
 
-		for (var scenarioStep : data.steps.values())
-		{
-			if (scenarioStep.IsBonusObjective())
-			{
-				continue;
-			}
+        scenarioState.scenarioComplete = isComplete();
+    }
 
-			if (firstStep == null || scenarioStep.orderIndex < firstStep.orderIndex)
-			{
-				firstStep = scenarioStep;
-			}
-		}
+    private ScenarioStepRecord getFirstStep() {
+        // Do it like this because we don't know what order they're in inside the container.
+        ScenarioStepRecord firstStep = null;
 
-		return firstStep;
-	}
+        for (var scenarioStep : data.steps.values()) {
+            if (scenarioStep.IsBonusObjective()) {
+                continue;
+            }
 
-	private ArrayList<BonusObjectiveData> getBonusObjectivesData()
-	{
-		ArrayList<BonusObjectiveData> bonusObjectivesData = new ArrayList<>();
+            if (firstStep == null || scenarioStep.orderIndex < firstStep.orderIndex) {
+                firstStep = scenarioStep;
+            }
+        }
 
-		for (var scenarioStep : data.steps.values())
-		{
-			if (!scenarioStep.IsBonusObjective())
-			{
-				continue;
-			}
+        return firstStep;
+    }
 
-			if (global.getCriteriaMgr().getCriteriaTree(scenarioStep.CriteriaTreeId) != null)
-			{
-				BonusObjectiveData bonusObjectiveData = new BonusObjectiveData();
-				bonusObjectiveData.bonusObjectiveID = (int)scenarioStep.id;
-				bonusObjectiveData.objectiveComplete = getStepState(scenarioStep) == ScenarioStepState.Done;
+    private ArrayList<BonusObjectiveData> getBonusObjectivesData() {
+        ArrayList<BonusObjectiveData> bonusObjectivesData = new ArrayList<>();
+
+        for (var scenarioStep : data.steps.values()) {
+            if (!scenarioStep.IsBonusObjective()) {
+                continue;
+            }
+
+            if (global.getCriteriaMgr().getCriteriaTree(scenarioStep.CriteriaTreeId) != null) {
+                BonusObjectiveData bonusObjectiveData = new BonusObjectiveData();
+                bonusObjectiveData.bonusObjectiveID = (int) scenarioStep.id;
+                bonusObjectiveData.objectiveComplete = getStepState(scenarioStep) == ScenarioStepState.Done;
                 bonusObjectivesData.add(bonusObjectiveData);
-			}
-		}
+            }
+        }
 
-		return bonusObjectivesData;
-	}
+        return bonusObjectivesData;
+    }
 
-	private ArrayList<CriteriaProgressPkt> getCriteriasProgress()
-	{
-		ArrayList<CriteriaProgressPkt> criteriasProgress = new ArrayList<>();
+    private ArrayList<CriteriaProgressPkt> getCriteriasProgress() {
+        ArrayList<CriteriaProgressPkt> criteriasProgress = new ArrayList<>();
 
-		if (!criteriaProgress.isEmpty())
-		{
-			for (var pair : criteriaProgress.entrySet())
-			{
-				CriteriaProgressPkt criteriaProgress = new criteriaProgressPkt();
-				criteriaProgress.id = pair.getKey();
-				criteriaProgress.quantity = pair.getValue().counter;
-				criteriaProgress.date = pair.getValue().date;
-				criteriaProgress.player = pair.getValue().playerGUID;
+        if (!criteriaProgress.isEmpty()) {
+            for (var pair : criteriaProgress.entrySet()) {
+                CriteriaProgressPkt criteriaProgress = new criteriaProgressPkt();
+                criteriaProgress.id = pair.getKey();
+                criteriaProgress.quantity = pair.getValue().counter;
+                criteriaProgress.date = pair.getValue().date;
+                criteriaProgress.player = pair.getValue().playerGUID;
                 criteriasProgress.add(criteriaProgress);
-			}
-		}
+            }
+        }
 
-		return criteriasProgress;
-	}
+        return criteriasProgress;
+    }
 
-	private void sendBootPlayer(Player player)
-	{
-		ScenarioVacate scenarioBoot = new ScenarioVacate();
-		scenarioBoot.scenarioID = (int)data.entry.id;
-		player.sendPacket(scenarioBoot);
-	}
+    private void sendBootPlayer(Player player) {
+        ScenarioVacate scenarioBoot = new ScenarioVacate();
+        scenarioBoot.scenarioID = (int) data.entry.id;
+        player.sendPacket(scenarioBoot);
+    }
 
-	protected void finalize() throws Throwable
-	{
-		for (var guid : players)
-		{
+    protected void finalize() throws Throwable {
+        for (var guid : players) {
             var player = global.getObjAccessor().findPlayer(guid);
 
-			if (player)
-			{
-				sendBootPlayer(player);
-			}
-		}
+            if (player) {
+                sendBootPlayer(player);
+            }
+        }
 
-		players.clear();
-	}
+        players.clear();
+    }
 }

@@ -7,91 +7,75 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.map.interfaces.*;
 
-import java.util.*;
+import java.util.Collection;
 
 
-public class VisibleChangesNotifier implements IGridNotifierCreature, IGridNotifierPlayer, IGridNotifierDynamicObject
-{
-	private final Collection<WorldObject> objects;
+public class VisibleChangesNotifier implements IGridNotifierCreature, IGridNotifierPlayer, IGridNotifierDynamicObject {
+    private final Collection<WorldObject> objects;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public VisibleChangesNotifier(Collection<WorldObject> objects, GridType gridType) {
+        objects = objects;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public VisibleChangesNotifier(Collection<WorldObject> objects, GridType gridType)
-	{
-		objects = objects;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<Creature> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var creature = objs.get(i);
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-			if (creature == null)
-			{
-				continue;
-			}
+    public final void visit(list<Creature> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var creature = objs.get(i);
 
-			for (var visionPlayer : creature.getSharedVisionList())
-			{
-				if (visionPlayer.getSeerView() == creature)
-				{
-					visionPlayer.updateVisibilityOf(objects);
-				}
-			}
-		}
-	}
+            if (creature == null) {
+                continue;
+            }
 
-	public final void visit(list<DynamicObject> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var dynamicObject = objs.get(i);
-			var caster = dynamicObject.getCaster();
+            for (var visionPlayer : creature.getSharedVisionList()) {
+                if (visionPlayer.getSeerView() == creature) {
+                    visionPlayer.updateVisibilityOf(objects);
+                }
+            }
+        }
+    }
 
-			if (caster)
-			{
-				var pl = caster.toPlayer();
+    public final void visit(list<DynamicObject> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var dynamicObject = objs.get(i);
+            var caster = dynamicObject.getCaster();
 
-				if (pl && pl.getSeerView() == dynamicObject)
-				{
-					pl.updateVisibilityOf(objects);
-				}
-			}
-		}
-	}
+            if (caster) {
+                var pl = caster.toPlayer();
 
-	public final void visit(list<Player> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var player = objs.get(i);
+                if (pl && pl.getSeerView() == dynamicObject) {
+                    pl.updateVisibilityOf(objects);
+                }
+            }
+        }
+    }
 
-			if (player == null)
-			{
-				continue;
-			}
+    public final void visit(list<Player> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var player = objs.get(i);
 
-			player.updateVisibilityOf(objects);
+            if (player == null) {
+                continue;
+            }
 
-			for (var visionPlayer : player.getSharedVisionList())
-			{
-				if (visionPlayer.getSeerView() == player)
-				{
-					visionPlayer.updateVisibilityOf(objects);
-				}
-			}
-		}
-	}
+            player.updateVisibilityOf(objects);
+
+            for (var visionPlayer : player.getSharedVisionList()) {
+                if (visionPlayer.getSeerView() == player) {
+                    visionPlayer.updateVisibilityOf(objects);
+                }
+            }
+        }
+    }
+
+
 }
 
 //Searchers

@@ -1,28 +1,25 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
 import com.github.mmo.game.networking.WorldPacket;
-public final class AuctionListFilterSubClass
-{
-	public int itemSubclass;
-	public long invTypeMask;
 
-	public AuctionListFilterSubClass()
-	{
-	}
+public final class AuctionListFilterSubClass {
+    public int itemSubclass;
+    public long invTypeMask;
 
-	public AuctionListFilterSubClass(WorldPacket data)
-	{
+    public AuctionListFilterSubClass() {
+    }
+
+    public AuctionListFilterSubClass(WorldPacket data) {
         invTypeMask = data.readUInt64();
         itemSubclass = data.readInt32();
-	}
+    }
 
-	public AuctionListFilterSubClass clone()
-	{
-		AuctionListFilterSubClass varCopy = new AuctionListFilterSubClass();
+    public AuctionListFilterSubClass clone() {
+        AuctionListFilterSubClass varCopy = new AuctionListFilterSubClass();
 
-		varCopy.itemSubclass = this.itemSubclass;
-		varCopy.invTypeMask = this.invTypeMask;
+        varCopy.itemSubclass = this.itemSubclass;
+        varCopy.invTypeMask = this.invTypeMask;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

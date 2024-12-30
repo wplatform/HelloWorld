@@ -1,12 +1,13 @@
 package com.github.mmo.game.achievement;
 
 
-
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.map.*;
-import com.github.mmo.game.scripting.interfaces.iachievement.*;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+import com.github.mmo.game.map.InstanceMap;
+import com.github.mmo.game.map.InstanceScript;
+import com.github.mmo.game.scripting.interfaces.iachievement.IAchievementCriteriaOnCheck;
+
 public class CriteriaData {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     public CriteriaDataType dataType = CriteriaDataType.values()[0];
@@ -87,7 +88,7 @@ public class CriteriaData {
 
     public final boolean isValid(Criteria criteria) {
         if (dataType.getValue() >= CriteriaDataType.max.getValue()) {
-            Log.outError(LogFilter.Sql, "Table `criteria_data` for criteria (Entry: {0}) has wrong data type ({1}), ignored.", criteria.id, dataType);
+            Logs.SQL.error("Table `criteria_data` for criteria (Entry: {0}) has wrong data type ({1}), ignored.", criteria.id, dataType);
 
             return false;
         }
@@ -122,7 +123,7 @@ public class CriteriaData {
                 break;
             default:
                 if (dataType != CriteriaDataType.script) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` has data for non-supported criteria type (Entry: {0} Type: {1}), ignored.", criteria.id, CriteriaType.forValue(criteria.entry.type));
+                    Logs.SQL.error("Table `criteria_data` has data for non-supported criteria type (Entry: {0} Type: {1}), ignored.", criteria.id, CriteriaType.forValue(criteria.entry.type));
 
                     return false;
                 }
@@ -136,7 +137,7 @@ public class CriteriaData {
                 return true;
             case TCreature:
                 if (creature.id == 0 || global.getObjectMgr().getCreatureTemplate(creature.id) == null) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_CREATURE ({2}) has non-existing creature id in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, creature.id);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_CREATURE ({2}) has non-existing creature id in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, creature.id);
 
                     return false;
                 }
@@ -144,19 +145,19 @@ public class CriteriaData {
                 return true;
             case TPlayerClassRace:
                 if (classRace.classId == 0 && classRace.raceId == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) must not have 0 in either value field, ignored.", criteria.id, criteria.entry.type, dataType);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) must not have 0 in either value field, ignored.", criteria.id, criteria.entry.type, dataType);
 
                     return false;
                 }
 
                 if (classRace.classId != 0 && ((1 << (int) (classRace.ClassId - 1)) & playerClass.ClassMaskAllPlayable.getValue()) == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) has non-existing class in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.classId);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) has non-existing class in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.classId);
 
                     return false;
                 }
 
                 if (classRace.raceId != 0 && (SharedConst.GetMaskForRace(race.forValue(classRace.raceId)).getValue() & (long) SharedConst.RaceMaskAllPlayable.getValue()) == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) has non-existing race in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.raceId);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE ({2}) has non-existing race in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.raceId);
 
                     return false;
                 }
@@ -164,7 +165,7 @@ public class CriteriaData {
                 return true;
             case TPlayerLessHealth:
                 if (health.percent < 1 || health.percent > 100) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_PLAYER_LESS_HEALTH ({2}) has wrong percent value in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, health.percent);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_PLAYER_LESS_HEALTH ({2}) has wrong percent value in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, health.percent);
 
                     return false;
                 }
@@ -175,19 +176,19 @@ public class CriteriaData {
                 var spellEntry = global.getSpellMgr().getSpellInfo(aura.spellId, Difficulty.NONE);
 
                 if (spellEntry == null) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has wrong spell id in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, aura.spellId);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has wrong spell id in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, aura.spellId);
 
                     return false;
                 }
 
                 if (spellEntry.getEffects().size() <= aura.effectIndex) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has wrong spell effect index in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, aura.effectIndex);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has wrong spell effect index in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, aura.effectIndex);
 
                     return false;
                 }
 
                 if (spellEntry.getEffect(aura.effectIndex).applyAuraName == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has non-aura spell effect (ID: {3} Effect: {4}), ignores.", criteria.id, criteria.entry.type, dataType, aura.spellId, aura.effectIndex);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type {2} has non-aura spell effect (ID: {3} Effect: {4}), ignores.", criteria.id, criteria.entry.type, dataType, aura.spellId, aura.effectIndex);
 
                     return false;
                 }
@@ -196,7 +197,7 @@ public class CriteriaData {
             }
             case Value:
                 if (value.comparisonType >= ComparisionType.max.getValue()) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_VALUE ({2}) has wrong ComparisionType in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, value.comparisonType);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_VALUE ({2}) has wrong ComparisionType in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, value.comparisonType);
 
                     return false;
                 }
@@ -204,7 +205,7 @@ public class CriteriaData {
                 return true;
             case TLevel:
                 if (level.min > SharedConst.GTMaxLevel) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_LEVEL ({2}) has wrong minlevel in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, level.min);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_LEVEL ({2}) has wrong minlevel in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, level.min);
 
                     return false;
                 }
@@ -212,7 +213,7 @@ public class CriteriaData {
                 return true;
             case TGender:
                 if (gender.gender > gender.NONE.getValue()) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_GENDER ({2}) has wrong gender in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, gender.gender);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_GENDER ({2}) has wrong gender in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, gender.gender);
 
                     return false;
                 }
@@ -220,7 +221,7 @@ public class CriteriaData {
                 return true;
             case Script:
                 if (scriptId == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_SCRIPT ({2}) does not have ScriptName set, ignored.", criteria.id, criteria.entry.type, dataType);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_SCRIPT ({2}) does not have ScriptName set, ignored.", criteria.id, criteria.entry.type, dataType);
 
                     return false;
                 }
@@ -228,7 +229,7 @@ public class CriteriaData {
                 return true;
             case MapPlayerCount:
                 if (mapPlayers.maxCount <= 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_MAP_PLAYER_COUNT ({2}) has wrong max players count in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, mapPlayers.maxCount);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_MAP_PLAYER_COUNT ({2}) has wrong max players count in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, mapPlayers.maxCount);
 
                     return false;
                 }
@@ -236,7 +237,7 @@ public class CriteriaData {
                 return true;
             case TTeam:
                 if (teamId.team != TeamFaction.Alliance.getValue() && teamId.team != TeamFaction.Horde.getValue()) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_TEAM ({2}) has unknown team in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, teamId.team);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_T_TEAM ({2}) has unknown team in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, teamId.team);
 
                     return false;
                 }
@@ -244,7 +245,7 @@ public class CriteriaData {
                 return true;
             case SDrunk:
                 if (drunk.state >= 4) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_DRUNK ({2}) has unknown drunken state in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, drunk.state);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_DRUNK ({2}) has unknown drunken state in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, drunk.state);
 
                     return false;
                 }
@@ -252,7 +253,7 @@ public class CriteriaData {
                 return true;
             case Holiday:
                 if (!CliDB.HolidaysStorage.containsKey(holiday.id)) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data`(Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_HOLIDAY ({2}) has unknown holiday in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, holiday.id);
+                    Logs.SQL.error("Table `criteria_data`(Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_HOLIDAY ({2}) has unknown holiday in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, holiday.id);
 
                     return false;
                 }
@@ -262,7 +263,7 @@ public class CriteriaData {
                 var events = global.getGameEventMgr().getEventMap();
 
                 if (gameEvent.id < 1 || gameEvent.id >= events.length) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_GAME_EVENT ({2}) has unknown game_event in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, gameEvent.id);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_GAME_EVENT ({2}) has unknown game_event in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, gameEvent.id);
 
                     return false;
                 }
@@ -273,7 +274,7 @@ public class CriteriaData {
                 return true; // not check correctness node indexes
             case SEquippedItem:
                 if (equippedItem.itemQuality >= (int) itemQuality.max.getValue()) {
-                    Log.outError(LogFilter.Sql, "Table `achievement_criteria_requirement` (Entry: {0} Type: {1}) for requirement ACHIEVEMENT_CRITERIA_REQUIRE_S_EQUIPED_ITEM ({2}) has unknown quality state in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, equippedItem.itemQuality);
+                    Logs.SQL.error("Table `achievement_criteria_requirement` (Entry: {0} Type: {1}) for requirement ACHIEVEMENT_CRITERIA_REQUIRE_S_EQUIPED_ITEM ({2}) has unknown quality state in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, equippedItem.itemQuality);
 
                     return false;
                 }
@@ -281,7 +282,7 @@ public class CriteriaData {
                 return true;
             case MapId:
                 if (!CliDB.MapStorage.containsKey(mapId.id)) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_MAP_ID ({2}) contains an unknown map entry in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, mapId.id);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_MAP_ID ({2}) contains an unknown map entry in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, mapId.id);
 
                     return false;
                 }
@@ -289,19 +290,19 @@ public class CriteriaData {
                 return true;
             case SPlayerClassRace:
                 if (classRace.classId == 0 && classRace.raceId == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) must not have 0 in either value field, ignored.", criteria.id, criteria.entry.type, dataType);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) must not have 0 in either value field, ignored.", criteria.id, criteria.entry.type, dataType);
 
                     return false;
                 }
 
                 if (classRace.classId != 0 && ((1 << (int) (classRace.ClassId - 1)) & playerClass.ClassMaskAllPlayable.getValue()) == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) has non-existing class in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.classId);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) has non-existing class in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.classId);
 
                     return false;
                 }
 
                 if (classRace.raceId != 0 && ((long) SharedConst.GetMaskForRace(race.forValue(classRace.raceId)).getValue() & SharedConst.RaceMaskAllPlayable.getValue()) == 0) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) has non-existing race in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.raceId);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE ({2}) has non-existing race in value2 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, classRace.raceId);
 
                     return false;
                 }
@@ -309,7 +310,7 @@ public class CriteriaData {
                 return true;
             case SKnownTitle:
                 if (!CliDB.CharTitlesStorage.containsKey(knownTitle.id)) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_KNOWN_TITLE ({2}) contains an unknown title_id in value1 ({3}), ignore.", criteria.id, criteria.entry.type, dataType, knownTitle.id);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_KNOWN_TITLE ({2}) contains an unknown title_id in value1 ({3}), ignore.", criteria.id, criteria.entry.type, dataType, knownTitle.id);
 
                     return false;
                 }
@@ -317,14 +318,14 @@ public class CriteriaData {
                 return true;
             case SItemQuality:
                 if (itemQuality.quality >= (int) itemQuality.max.getValue()) {
-                    Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_ITEM_QUALITY ({2}) contains an unknown quality state value in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, itemQuality.quality);
+                    Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) for data type CRITERIA_DATA_TYPE_S_ITEM_QUALITY ({2}) contains an unknown quality state value in value1 ({3}), ignored.", criteria.id, criteria.entry.type, dataType, itemQuality.quality);
 
                     return false;
                 }
 
                 return true;
             default:
-                Log.outError(LogFilter.Sql, "Table `criteria_data` (Entry: {0} Type: {1}) contains data of a non-supported data type ({2}), ignored.", criteria.id, criteria.entry.type, dataType);
+                Logs.SQL.error("Table `criteria_data` (Entry: {0} Type: {1}) contains data of a non-supported data type ({2}), ignored.", criteria.id, criteria.entry.type, dataType);
 
                 return false;
         }
@@ -339,7 +340,7 @@ public class CriteriaData {
         return meets(criteriaId, source, target, 0, 0);
     }
 
-        public final boolean meets(int criteriaId, Player source, WorldObject target, int miscValue1, int miscValue2) {
+    public final boolean meets(int criteriaId, Player source, WorldObject target, int miscValue1, int miscValue2) {
         switch (dataType) {
             case None:
                 return true;

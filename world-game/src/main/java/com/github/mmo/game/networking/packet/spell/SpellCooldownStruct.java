@@ -1,6 +1,8 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;public class SpellCooldownStruct {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class SpellCooldownStruct {
 
     public int srecID;
 

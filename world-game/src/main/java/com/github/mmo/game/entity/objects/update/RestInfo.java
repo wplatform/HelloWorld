@@ -1,10 +1,12 @@
 package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class RestInfo extends BaseUpdateData<Player> {
-   
+import com.github.mmo.game.networking.WorldPacket;
+
+public class RestInfo extends BaseUpdateData<Player> {
+
     public UpdateField<Integer> threshold = new UpdateField<Integer>(0, 1);
-   
+
     public UpdateField<Byte> stateID = new UpdateField<Byte>(0, 2);
 
     public restInfo() {

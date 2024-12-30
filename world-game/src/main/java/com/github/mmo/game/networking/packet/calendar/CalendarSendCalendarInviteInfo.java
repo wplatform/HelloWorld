@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.calendar;
 
 
 import com.github.mmo.game.networking.WorldPacket;
+
 final class CalendarSendCalendarInviteInfo {
 
     public long eventID;

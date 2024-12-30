@@ -1,44 +1,38 @@
-package game;public enum CreatureTextRange
-{
-	NORMAL(0),
-	area(1),
-	Zone(2),
-	Map(3),
-	World(4),
-	PERSONAL(5);
+package game;
 
-	public static final int SIZE = Integer.SIZE;
+public enum CreatureTextRange {
+    NORMAL(0),
+    area(1),
+    Zone(2),
+    Map(3),
+    World(4),
+    PERSONAL(5);
 
-	private int intValue;
-	private static java.util.HashMap<Integer, CreatureTextRange> mappings;
-	private static java.util.HashMap<Integer, CreatureTextRange> getMappings()
-	{
-		if (mappings == null)
-		{
-			synchronized (CreatureTextRange.class)
-			{
-				if (mappings == null)
-				{
-					mappings = new java.util.HashMap<Integer, CreatureTextRange>();
-				}
-			}
-		}
-		return mappings;
-	}
+    public static final int SIZE = Integer.SIZE;
+    private static java.util.HashMap<Integer, CreatureTextRange> mappings;
+    private int intValue;
 
-	private CreatureTextRange(int value)
-	{
-		intValue = value;
-		getMappings().put(value, this);
-	}
+    private CreatureTextRange(int value) {
+        intValue = value;
+        getMappings().put(value, this);
+    }
 
-	public int getValue()
-	{
-		return intValue;
-	}
+    private static java.util.HashMap<Integer, CreatureTextRange> getMappings() {
+        if (mappings == null) {
+            synchronized (CreatureTextRange.class) {
+                if (mappings == null) {
+                    mappings = new java.util.HashMap<Integer, CreatureTextRange>();
+                }
+            }
+        }
+        return mappings;
+    }
 
-	public static CreatureTextRange forValue(int value)
-	{
-		return getMappings().get(value);
-	}
+    public static CreatureTextRange forValue(int value) {
+        return getMappings().get(value);
+    }
+
+    public int getValue() {
+        return intValue;
+    }
 }

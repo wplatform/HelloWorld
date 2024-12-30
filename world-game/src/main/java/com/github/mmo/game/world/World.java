@@ -17,12 +17,20 @@ public interface World extends WorldContext {
     ScheduledThreadPoolExecutor getScheduledExecutor();
 
     TerrainManager getTerrainManager();
+
     VMapManager getVMapManager();
+
     MapManager getMapManager();
+
     PoolManager getPoolManager();
+
     TransportManager getTransportManager();
+
     MMapManager getMMapManager();
+
     WorldStateManager getWorldStateManager();
+
     OutdoorPvPManager getOutDoorPvpManager();
+
     BattleFieldManager getBattleFieldManager();
 }

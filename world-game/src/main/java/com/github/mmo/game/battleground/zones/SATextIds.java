@@ -1,7 +1,6 @@
 package com.github.mmo.game.battleground.zones;
 
 
-
 final class SATextIds {
     // Kanrethad
     public static final byte roundStarted = 1;

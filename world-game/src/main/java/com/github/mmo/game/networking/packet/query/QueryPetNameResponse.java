@@ -2,7 +2,9 @@ package com.github.mmo.game.networking.packet.query;
 
 
 import com.github.mmo.game.entity.unit.declinedName;
-import com.github.mmo.game.networking.*;class QueryPetNameResponse extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class QueryPetNameResponse extends ServerPacket {
     public ObjectGuid unitGUID = ObjectGuid.EMPTY;
     public boolean allow;
 

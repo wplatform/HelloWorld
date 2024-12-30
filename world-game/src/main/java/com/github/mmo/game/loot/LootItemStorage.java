@@ -4,7 +4,7 @@ package com.github.mmo.game.loot;
 import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.player.Player;
 
-public class LootItemStorage  {
+public class LootItemStorage {
 
     private final java.util.concurrent.ConcurrentHashMap<Long, StoredLootContainer> lootItemStorage = new java.util.concurrent.ConcurrentHashMap<Long, StoredLootContainer>();
 

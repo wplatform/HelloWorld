@@ -1,16 +1,14 @@
 package com.github.mmo.game.movement;
 
 
-import com.github.mmo.utils.MathUtil;
+import com.github.mmo.game.ai.AISelector;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.object.enums.TypeId;
+import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.movement.generator.*;
 import com.github.mmo.game.movement.spline.MoveSpline;
 import com.github.mmo.game.movement.spline.MoveSplineInit;
-import game.waypointPath;
-import com.github.mmo.game.ai.AISelector;
-
-import com.github.mmo.game.entity.unit.Unit;
+import com.github.mmo.utils.MathUtil;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -256,7 +254,7 @@ public class MotionMaster {
         return getMovementGenerator(filter, MovementSlot.active);
     }
 
-        public final MovementGenerator getMovementGenerator(tangible.Func1Param<MovementGenerator, Boolean> filter, MovementSlot slot) {
+    public final MovementGenerator getMovementGenerator(tangible.Func1Param<MovementGenerator, Boolean> filter, MovementSlot slot) {
         if (empty() || isInvalidMovementSlot(slot)) {
             return null;
         }
@@ -293,7 +291,7 @@ public class MotionMaster {
         return hasMovementGenerator(filter, MovementSlot.active);
     }
 
-        public final boolean hasMovementGenerator(tangible.Func1Param<MovementGenerator, Boolean> filter, MovementSlot slot) {
+    public final boolean hasMovementGenerator(tangible.Func1Param<MovementGenerator, Boolean> filter, MovementSlot slot) {
         if (empty() || isInvalidMovementSlot(slot)) {
             return false;
         }
@@ -370,7 +368,7 @@ public class MotionMaster {
         remove(movement, MovementSlot.active);
     }
 
-        public final void remove(MovementGenerator movement, MovementSlot slot) {
+    public final void remove(MovementGenerator movement, MovementSlot slot) {
         if (movement == null || isInvalidMovementSlot(slot)) {
             return;
         }
@@ -411,7 +409,7 @@ public class MotionMaster {
         remove(type, MovementSlot.active);
     }
 
-        public final void remove(MovementGeneratorType type, MovementSlot slot) {
+    public final void remove(MovementGeneratorType type, MovementSlot slot) {
         if (isInvalidMovementGeneratorType(type) || isInvalidMovementSlot(slot)) {
             return;
         }
@@ -603,7 +601,7 @@ public class MotionMaster {
         moveRandom(wanderDistance, null);
     }
 
-        public final void moveRandom(float wanderDistance, Duration duration) {
+    public final void moveRandom(float wanderDistance, Duration duration) {
         if (getOwner().isTypeId(TypeId.UNIT)) {
             add(new RandomMovementGenerator(wanderDistance, duration), MovementSlot.Default);
         }
@@ -617,7 +615,7 @@ public class MotionMaster {
         moveFollow(target, dist, 0.0f, MovementSlot.active);
     }
 
-        public final void moveFollow(Unit target, float dist, float angle, MovementSlot slot) {
+    public final void moveFollow(Unit target, float dist, float angle, MovementSlot slot) {
         moveFollow(target, dist, new chaseAngle(angle), slot);
     }
 
@@ -625,7 +623,7 @@ public class MotionMaster {
         moveFollow(target, dist, angle, MovementSlot.active);
     }
 
-        public final void moveFollow(Unit target, float dist, ChaseAngle angle, MovementSlot slot) {
+    public final void moveFollow(Unit target, float dist, ChaseAngle angle, MovementSlot slot) {
         // Ignore movement request if target not exist
         if (!target || target == getOwner()) {
             return;
@@ -638,7 +636,7 @@ public class MotionMaster {
         moveChase(target, dist, 0.0f);
     }
 
-        public final void moveChase(Unit target, float dist, float angle) {
+    public final void moveChase(Unit target, float dist, float angle) {
         moveChase(target, new ChaseRange(dist), new chaseAngle(angle));
     }
 
@@ -654,7 +652,7 @@ public class MotionMaster {
         moveChase(target, null, null);
     }
 
-        public final void moveChase(Unit target, ChaseRange dist, ChaseAngle angle) {
+    public final void moveChase(Unit target, ChaseRange dist, ChaseAngle angle) {
         // Ignore movement request if target not exist
         if (!target || target == getOwner()) {
             return;
@@ -708,7 +706,7 @@ public class MotionMaster {
         movePoint(id, pos, true, null, 0, MovementWalkRunSpeedSelectionMode.Default, 0);
     }
 
-        public final void movePoint(int id, Position pos, boolean generatePath, Float finalOrient, float speed, MovementWalkRunSpeedSelectionMode speedSelectionMode, float closeEnoughDistance) {
+    public final void movePoint(int id, Position pos, boolean generatePath, Float finalOrient, float speed, MovementWalkRunSpeedSelectionMode speedSelectionMode, float closeEnoughDistance) {
         movePoint(id, pos.getX(), pos.getY(), pos.getZ(), generatePath, finalOrient, speed, speedSelectionMode, closeEnoughDistance);
     }
 
@@ -732,7 +730,7 @@ public class MotionMaster {
         movePoint(id, x, y, z, true, null, 0, MovementWalkRunSpeedSelectionMode.Default, 0);
     }
 
-        public final void movePoint(int id, float x, float y, float z, boolean generatePath, Float finalOrient, float speed, MovementWalkRunSpeedSelectionMode speedSelectionMode, float closeEnoughDistance) {
+    public final void movePoint(int id, float x, float y, float z, boolean generatePath, Float finalOrient, float speed, MovementWalkRunSpeedSelectionMode speedSelectionMode, float closeEnoughDistance) {
         add(new PointMovementGenerator(id, x, y, z, generatePath, speed, finalOrient, null, null, speedSelectionMode, closeEnoughDistance));
     }
 
@@ -765,7 +763,7 @@ public class MotionMaster {
         moveLand(id, pos, null);
     }
 
-        public final void moveLand(int id, Position pos, Float velocity) {
+    public final void moveLand(int id, Position pos, Float velocity) {
         var initializer = (MoveSplineInit init) ->
         {
             init.moveTo(pos, false);
@@ -783,7 +781,7 @@ public class MotionMaster {
         moveTakeoff(id, pos, null);
     }
 
-        public final void moveTakeoff(int id, Position pos, Float velocity) {
+    public final void moveTakeoff(int id, Position pos, Float velocity) {
         var initializer = (MoveSplineInit init) ->
         {
             init.moveTo(pos, false);
@@ -817,7 +815,7 @@ public class MotionMaster {
         moveCharge(x, y, z, SPEED_CHARGE, eventId.charge, false, null, null);
     }
 
-        public final void moveCharge(float x, float y, float z, float speed, int id, boolean generatePath, Unit target, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveCharge(float x, float y, float z, float speed, int id, boolean generatePath, Unit target, SpellEffectExtraData spellEffectExtraData) {
 		/*
 		if (_slot[(int)MovementSlot.Controlled] != null && _slot[(int)MovementSlot.Controlled].getMovementGeneratorType() != MovementGeneratorType.Distract)
 			return;
@@ -841,7 +839,7 @@ public class MotionMaster {
         moveCharge(path, SPEED_CHARGE, null, null);
     }
 
-        public final void moveCharge(PathGenerator path, float speed, Unit target, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveCharge(PathGenerator path, float speed, Unit target, SpellEffectExtraData spellEffectExtraData) {
         var dest = path.getActualEndPosition();
 
         moveCharge(dest.X, dest.Y, dest.Z, SPEED_CHARGE, eventId.ChargePrepath);
@@ -866,7 +864,7 @@ public class MotionMaster {
         moveKnockbackFrom(origin, speedXY, speedZ, null);
     }
 
-        public final void moveKnockbackFrom(Position origin, float speedXY, float speedZ, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveKnockbackFrom(Position origin, float speedXY, float speedZ, SpellEffectExtraData spellEffectExtraData) {
         //This function may make players fall below map
         if (getOwner().isTypeId(TypeId.PLAYER)) {
             return;
@@ -934,7 +932,7 @@ public class MotionMaster {
         moveJump(pos, speedXY, speedZ, eventId.jump, false, null, null);
     }
 
-        public final void moveJump(Position pos, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveJump(Position pos, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
         moveJump(pos.getX(), pos.getY(), pos.getZ(), pos.getO(), speedXY, speedZ, id, hasOrientation, arrivalCast, spellEffectExtraData);
     }
 
@@ -954,7 +952,7 @@ public class MotionMaster {
         moveJump(x, y, z, speedXY, speedZ, eventId.jump, false, null, null);
     }
 
-        public final void moveJump(float x, float y, float z, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveJump(float x, float y, float z, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
         moveJump(x, y, z, 0, speedXY, speedZ, id, hasOrientation, arrivalCast, spellEffectExtraData);
     }
 
@@ -974,7 +972,7 @@ public class MotionMaster {
         moveJump(x, y, z, o, speedXY, speedZ, eventId.jump, false, null, null);
     }
 
-        public final void moveJump(float x, float y, float z, float o, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveJump(float x, float y, float z, float o, float speedXY, float speedZ, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
         Log.outDebug(LogFilter.Server, "Unit ({0}) jump to point (X: {1} Y: {2} Z: {3})", getOwner().getGUID().toString(), x, y, z);
 
         if (speedXY < 0.01f) {
@@ -1029,7 +1027,7 @@ public class MotionMaster {
         moveJumpWithGravity(pos, speedXY, gravity, eventId.jump, false, null, null);
     }
 
-        public final void moveJumpWithGravity(Position pos, float speedXY, float gravity, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
+    public final void moveJumpWithGravity(Position pos, float speedXY, float gravity, int id, boolean hasOrientation, JumpArrivalCastArgs arrivalCast, SpellEffectExtraData spellEffectExtraData) {
         Log.outDebug(LogFilter.movement, String.format("MotionMaster.MoveJumpWithGravity: '%1$s', jumps to point Id: %2$s (%3$s)", getOwner().getGUID(), id, pos));
 
         if (speedXY < 0.01f) {
@@ -1114,7 +1112,7 @@ public class MotionMaster {
         moveSmoothPath(pointId, pathPoints, pathSize, false, false);
     }
 
-        public final void moveSmoothPath(int pointId, Vector3[] pathPoints, int pathSize, boolean walk, boolean fly) {
+    public final void moveSmoothPath(int pointId, Vector3[] pathPoints, int pathSize, boolean walk, boolean fly) {
         var initializer = (MoveSplineInit init) ->
         {
             init.movebyPath(pathPoints);
@@ -1158,7 +1156,7 @@ public class MotionMaster {
         moveFall(0);
     }
 
-        public final void moveFall(int id) {
+    public final void moveFall(int id) {
         // Use larger distance for vmap height search than in most other cases
         var tz = getOwner().getMapHeight(getOwner().getLocation().getX(), getOwner().getLocation().getY(), getOwner().getLocation().getZ(), true, MapDefine.MaxFallDistance);
 
@@ -1291,7 +1289,7 @@ public class MotionMaster {
         launchMoveSpline(initializer, 0, MovementGeneratorPriority.NORMAL, MovementGeneratorType.effect);
     }
 
-        public final void launchMoveSpline(tangible.Action1Param<MoveSplineInit> initializer, int id, MovementGeneratorPriority priority, MovementGeneratorType type) {
+    public final void launchMoveSpline(tangible.Action1Param<MoveSplineInit> initializer, int id, MovementGeneratorPriority priority, MovementGeneratorType type) {
         if (isInvalidMovementGeneratorType(type)) {
             Log.outDebug(LogFilter.movement, String.format("MotionMaster::LaunchMoveSpline: '%1$s', tried to launch a spline with an invalid MovementGeneratorType: %2$s (Id: %3$s, Priority: %4$s)", getOwner().getGUID(), type, id, priority));
 
@@ -1307,7 +1305,7 @@ public class MotionMaster {
         add(movement, MovementSlot.active);
     }
 
-        private void add(MovementGenerator movement, MovementSlot slot) {
+    private void add(MovementGenerator movement, MovementSlot slot) {
         if (movement == null) {
             return;
         }
@@ -1413,7 +1411,7 @@ public class MotionMaster {
         directAdd(movement, MovementSlot.active);
     }
 
-        private void directAdd(MovementGenerator movement, MovementSlot slot) {
+    private void directAdd(MovementGenerator movement, MovementSlot slot) {
 		/*
 		IMovementGenerator curr = _slot[(int)slot];
 		if (curr != null)

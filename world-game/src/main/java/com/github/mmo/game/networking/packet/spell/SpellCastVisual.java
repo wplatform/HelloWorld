@@ -1,33 +1,28 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public final class SpellCastVisual
-{
-	public int spellXSpellVisualID;
-	public int scriptVisualID;
+public final class SpellCastVisual {
+    public int spellXSpellVisualID;
+    public int scriptVisualID;
 
-	public SpellCastVisual()
-	{
-	}
+    public SpellCastVisual() {
+    }
 
-	public spellCastVisual(int spellXSpellVisualID, int scriptVisualID)
-	{
-		spellXSpellVisualID = spellXSpellVisualID;
-		scriptVisualID = scriptVisualID;
-	}
+    public spellCastVisual(int spellXSpellVisualID, int scriptVisualID) {
+        spellXSpellVisualID = spellXSpellVisualID;
+        scriptVisualID = scriptVisualID;
+    }
 
-	public void read(WorldPacket data)
-	{
+    public void read(WorldPacket data) {
         spellXSpellVisualID = data.readUInt();
         scriptVisualID = data.readUInt();
-	}
+    }
 
-	public void write(WorldPacket data)
-	{
+    public void write(WorldPacket data) {
         data.writeInt32(spellXSpellVisualID);
         data.writeInt32(scriptVisualID);
-	}
+    }
 
 // C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
 //	public static implicit operator spellCastVisualField(SpellCastVisual spellCastVisual)
@@ -39,13 +34,12 @@ public final class SpellCastVisual
 //			return visual;
 //		}
 
-	public SpellCastVisual clone()
-	{
-		SpellCastVisual varCopy = new spellCastVisual();
+    public SpellCastVisual clone() {
+        SpellCastVisual varCopy = new spellCastVisual();
 
-		varCopy.spellXSpellVisualID = this.spellXSpellVisualID;
-		varCopy.scriptVisualID = this.scriptVisualID;
+        varCopy.spellXSpellVisualID = this.spellXSpellVisualID;
+        varCopy.scriptVisualID = this.scriptVisualID;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

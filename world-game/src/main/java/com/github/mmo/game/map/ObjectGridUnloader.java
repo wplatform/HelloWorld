@@ -7,11 +7,11 @@ import com.github.mmo.game.map.interfaces.*;
 class ObjectGridUnloader implements IGridNotifierWorldObject {
     public ObjectGridUnloader() {
         this(gridType.Grid);
-    }    private gridType gridType = getGridType().values()[0];
-
-        public ObjectGridUnloader(GridType gridType) {
-        setGridType(gridType);
     }
+
+    public ObjectGridUnloader(GridType gridType) {
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
     public final GridType getGridType() {
         return gridType;
@@ -37,6 +37,8 @@ class ObjectGridUnloader implements IGridNotifierWorldObject {
             obj.close();
         }
     }
+
+
 
 
 }

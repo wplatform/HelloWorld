@@ -1,8 +1,10 @@
 package com.github.mmo.game.networking.packet.lfg;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;public class LFGBlackList {
+import java.util.ArrayList;
+
+public class LFGBlackList {
     public ObjectGuid playerGuid = null;
     public ArrayList<LFGBlackListslot> slot = new ArrayList<>();
 

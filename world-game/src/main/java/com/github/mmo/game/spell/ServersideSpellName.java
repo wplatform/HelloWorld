@@ -1,35 +1,28 @@
 package com.github.mmo.game.spell;
 
 
+final class ServersideSpellName {
+    public SpellnameRecord name;
 
+    public ServersideSpellName() {
+    }
 
-final class ServersideSpellName
-{
-	public SpellnameRecord name;
+    public ServersideSpellName(int id, String name) {
+        name = new SpellNameRecord();
+        name.name = new LocalizedString();
 
-	public ServersideSpellName()
-	{
-	}
+        name.id = id;
 
-	public ServersideSpellName(int id, String name)
-	{
-		name = new SpellNameRecord();
-		name.name = new LocalizedString();
+        for (Locale i = 0; i.getValue() < locale.Total.getValue(); ++i) {
+            name.name.charAt(i) = name;
+        }
+    }
 
-		name.id = id;
+    public ServersideSpellName clone() {
+        ServersideSpellName varCopy = new ServersideSpellName();
 
-		for (Locale i = 0; i.getValue() < locale.Total.getValue(); ++i)
-		{
-			name.name.charAt(i) = name;
-		}
-	}
+        varCopy.name = this.name;
 
-	public ServersideSpellName clone()
-	{
-		ServersideSpellName varCopy = new ServersideSpellName();
-
-		varCopy.name = this.name;
-
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

@@ -1,25 +1,24 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class GuildSetMemberNote extends ClientPacket
-{
-	public ObjectGuid noteeGUID = ObjectGuid.EMPTY;
-	public boolean isPublic; // 0 == officer, 1 == Public
-	public String note;
-	public GuildSetMemberNote(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class GuildSetMemberNote extends ClientPacket {
+    public ObjectGuid noteeGUID = ObjectGuid.EMPTY;
+    public boolean isPublic; // 0 == officer, 1 == Public
+    public String note;
 
-	@Override
-	public void read()
-	{
-		noteeGUID = this.readPackedGuid();
+    public GuildSetMemberNote(WorldPacket packet) {
+        super(packet);
+    }
 
-		var noteLen = this.<Integer>readBit(8);
-		isPublic = this.readBit();
+    @Override
+    public void read() {
+        noteeGUID = this.readPackedGuid();
 
-		note = this.readString(noteLen);
-	}
+        var noteLen = this.<Integer>readBit(8);
+        isPublic = this.readBit();
+
+        note = this.readString(noteLen);
+    }
 }

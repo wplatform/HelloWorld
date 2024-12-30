@@ -1,28 +1,25 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public final class SpellHealPrediction
-{
+public final class SpellHealPrediction {
     public ObjectGuid beaconGUID = ObjectGuid.EMPTY;
-	public int points;
-	public byte type;
+    public int points;
+    public byte type;
 
-	public void write(WorldPacket data)
-	{
+    public void write(WorldPacket data) {
         data.writeInt32(points);
-		data.writeInt8(type);
+        data.writeInt8(type);
         data.writeGuid(beaconGUID);
-	}
+    }
 
-	public SpellHealPrediction clone()
-	{
-		SpellHealPrediction varCopy = new spellHealPrediction();
+    public SpellHealPrediction clone() {
+        SpellHealPrediction varCopy = new spellHealPrediction();
 
         varCopy.beaconGUID = this.beaconGUID;
-		varCopy.points = this.points;
-		varCopy.type = this.type;
+        varCopy.points = this.points;
+        varCopy.type = this.type;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

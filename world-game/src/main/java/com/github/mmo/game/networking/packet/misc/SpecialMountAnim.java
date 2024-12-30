@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-import java.util.*;import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.ServerPacket;
+
+import java.util.ArrayList;
+
 public class SpecialMountAnim extends ServerPacket {
     public ObjectGuid unitGUID = ObjectGuid.EMPTY;
     public ArrayList<Integer> spellVisualKitIDs = new ArrayList<>();

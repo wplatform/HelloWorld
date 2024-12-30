@@ -2,7 +2,9 @@ package com.github.mmo.game.networking.packet.party;
 
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.networking.ClientPacket;
-import com.github.mmo.game.networking.WorldPacket;class PartyInviteClient extends ClientPacket {
+import com.github.mmo.game.networking.WorldPacket;
+
+class PartyInviteClient extends ClientPacket {
 
     public byte partyIndex;
 

@@ -1,13 +1,16 @@
 package com.github.mmo.game.networking.packet.authentication;
 
-import com.github.mmo.game.networking.WorldPacket;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+import com.github.mmo.game.networking.WorldPacket;
+
 final class VirtualRealmNameInfo {
     public boolean isLocal; // true if the realm is the same as the account's home realm
     public boolean isInternalRealm; // @todo research
     public String realmNameActual; // the name of the realm
     public String realmNameNormalized; // the name of the realm without spaces
+
     public virtualRealmNameInfo() {
     }
+
     public virtualRealmNameInfo(boolean isHomeRealm, boolean isInternalRealm, String realmNameActual, String realmNameNormalized) {
         isLocal = isHomeRealm;
         isInternalRealm = isInternalRealm;

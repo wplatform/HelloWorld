@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.item;
 
-import com.github.mmo.game.networking.*;class AutoEquipItemSlot extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class AutoEquipItemSlot extends ClientPacket {
     public ObjectGuid item = ObjectGuid.EMPTY;
 
     public byte itemDstSlot;

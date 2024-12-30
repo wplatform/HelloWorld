@@ -1,8 +1,10 @@
 package com.github.mmo.game.networking.packet.reputation;
 
 
-import com.github.mmo.game.networking.*;public class InitializeFactions extends ServerPacket {
-   
+import com.github.mmo.game.networking.ServerPacket;
+
+public class InitializeFactions extends ServerPacket {
+
     private static final short FACTIONCOUNT = 443;
     public int[] factionStandings = new int[FactionCount];
     public boolean[] factionHasBonus = new boolean[FactionCount]; //@todo: implement faction bonus

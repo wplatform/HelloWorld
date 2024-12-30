@@ -14,7 +14,7 @@ public class AreaTriggerScriptAttribute extends ScriptAttribute {
         this(name, );
     }
 
-        public AreaTriggerScriptAttribute(String name, object... args) {
+    public AreaTriggerScriptAttribute(String name, object... args) {
         super(name, args);
     }
 
@@ -23,7 +23,7 @@ public class AreaTriggerScriptAttribute extends ScriptAttribute {
         this(areaTriggerId, name, );
     }
 
-        public AreaTriggerScriptAttribute(int areaTriggerId, String name, object... args) {
+    public AreaTriggerScriptAttribute(int areaTriggerId, String name, object... args) {
         super(name, args);
         setAreaTriggerIds(new int[]{areaTriggerId});
     }
@@ -33,7 +33,7 @@ public class AreaTriggerScriptAttribute extends ScriptAttribute {
         this(areaTriggerId, name, );
     }
 
-        public AreaTriggerScriptAttribute(int[] areaTriggerId, String name, object... args) {
+    public AreaTriggerScriptAttribute(int[] areaTriggerId, String name, object... args) {
         super(name, args);
         setAreaTriggerIds(areaTriggerId);
     }

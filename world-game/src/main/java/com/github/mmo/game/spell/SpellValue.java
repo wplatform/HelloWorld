@@ -7,7 +7,7 @@ public class SpellValue {
     public IntFloatMap effectBasePoints = new IntFloatMap(16);
 
 
-        public int customBasePointsMask;
+    public int customBasePointsMask;
 
     public int maxAffectedTargets;
     public float radiusMod;

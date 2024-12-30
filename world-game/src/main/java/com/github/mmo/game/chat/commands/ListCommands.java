@@ -1,17 +1,14 @@
 package com.github.mmo.game.chat.commands;
 
 
-import game.PhasingHandler;
-import com.github.mmo.game.chat.commandHandler;
 import com.github.mmo.game.chat.PlayerIdentifier;
-import com.github.mmo.game.chat.tail;
-
 import com.github.mmo.game.map.RespawnInfo;
 import com.github.mmo.game.map.SpawnData;
 import com.github.mmo.game.spell.SpellInfo;
+import game.PhasingHandler;
 
 import java.util.ArrayList;
-import java.util.locale;
+
 class ListCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleListCreatureCommand(CommandHandler handler, int creatureId, Integer countArg) {
@@ -123,14 +120,11 @@ class ListCommands {
 
                 if (player.isEquipmentPos((byte) itemBag, itemSlot)) {
                     itemPos = "[equipped]";
-                }
-                else if (player.isInventoryPos((byte) itemBag, itemSlot)) {
+                } else if (player.isInventoryPos((byte) itemBag, itemSlot)) {
                     itemPos = "[in inventory]";
-                }
-                else if (player.isReagentBankPos((byte) itemBag, itemSlot)) {
+                } else if (player.isReagentBankPos((byte) itemBag, itemSlot)) {
                     itemPos = "[in reagent bank]";
-                }
-                else if (player.isBankPos((byte) itemBag, itemSlot)) {
+                } else if (player.isBankPos((byte) itemBag, itemSlot)) {
                     itemPos = "[in bank]";
                 } else {
                     itemPos = "";

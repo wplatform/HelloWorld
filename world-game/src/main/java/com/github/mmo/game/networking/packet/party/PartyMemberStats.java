@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.party;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;class PartyMemberStats {
+import java.util.ArrayList;
+
+class PartyMemberStats {
 
     public short level;
     public GroupMemberOnlinestatus status = GroupMemberOnlineStatus.values()[0];

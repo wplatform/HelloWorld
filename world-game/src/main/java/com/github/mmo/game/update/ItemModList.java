@@ -1,65 +1,54 @@
 package com.github.mmo.game.networking.packets;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class ItemModList
-{
-	public Array<ItemMod> values = new Array<ItemMod>(ItemModifier.max.getValue());
+public class ItemModList {
+    public Array<ItemMod> values = new Array<ItemMod>(ItemModifier.max.getValue());
 
-	public final void read(WorldPacket data)
-	{
-		var itemModListCount = data.<Integer>readBit(6);
-		data.resetBitPos();
+    public static boolean opEquals(ItemModList left, ItemModList right) {
+        if (left.values.count != right.values.count) {
+            return false;
+        }
 
-		for (var i = 0; i < itemModListCount; ++i)
-		{
-			var itemMod = new ItemMod();
-			itemMod.read(data);
-			values.set(i, itemMod);
-		}
-	}
+        return !left.values.Except(right.values).Any();
+    }
 
-	public final void write(WorldPacket data)
-	{
-		data.writeBits(values.size(), 6);
-		data.flushBits();
+    public static boolean opNotEquals(ItemModList left, ItemModList right) {
+        return !(left == right);
+    }
 
-		for (var itemMod : values)
-		{
-			itemMod.write(data);
-		}
-	}
+    public final void read(WorldPacket data) {
+        var itemModListCount = data.<Integer>readBit(6);
+        data.resetBitPos();
 
-	@Override
-	public int hashCode()
-	{
-		return values.hashCode();
-	}
+        for (var i = 0; i < itemModListCount; ++i) {
+            var itemMod = new ItemMod();
+            itemMod.read(data);
+            values.set(i, itemMod);
+        }
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof ItemModList)
-		{
-			return (ItemModList)obj == this;
-		}
+    public final void write(WorldPacket data) {
+        data.writeBits(values.size(), 6);
+        data.flushBits();
 
-		return false;
-	}
+        for (var itemMod : values) {
+            itemMod.write(data);
+        }
+    }
 
-	public static boolean opEquals(ItemModList left, ItemModList right)
-	{
-		if (left.values.count != right.values.count)
-		{
-			return false;
-		}
+    @Override
+    public int hashCode() {
+        return values.hashCode();
+    }
 
-		return !left.values.Except(right.values).Any();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemModList) {
+            return (ItemModList) obj == this;
+        }
 
-	public static boolean opNotEquals(ItemModList left, ItemModList right)
-	{
-		return !(left == right);
-	}
+        return false;
+    }
 }

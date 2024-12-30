@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class SpellCooldownPkt extends ServerPacket
-{
-	public ArrayList<SpellCooldownStruct> spellCooldowns = new ArrayList<>();
-	public ObjectGuid caster = ObjectGuid.EMPTY;
-	public SpellCooldownflags flags = SpellCooldownFlags.values()[0];
-	public SpellCooldownPkt()
-	{
-		super(ServerOpcode.SpellCooldown, ConnectionType.instance);
-	}
+public class SpellCooldownPkt extends ServerPacket {
+    public ArrayList<SpellCooldownStruct> spellCooldowns = new ArrayList<>();
+    public ObjectGuid caster = ObjectGuid.EMPTY;
+    public SpellCooldownflags flags = SpellCooldownFlags.values()[0];
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(caster);
-		this.writeInt8((byte)flags.getValue());
-		this.writeInt32(spellCooldowns.size());
-		spellCooldowns.forEach(p -> p.write(this));
-	}
+    public SpellCooldownPkt() {
+        super(ServerOpcode.SpellCooldown, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(caster);
+        this.writeInt8((byte) flags.getValue());
+        this.writeInt32(spellCooldowns.size());
+        spellCooldowns.forEach(p -> p.write(this));
+    }
 }

@@ -1,11 +1,12 @@
 package com.github.mmo.game.map;
 
 
+import java.util.Objects;
 
-
-import java.util.*;class InstanceScriptDataReader {
+class InstanceScriptDataReader {
     private final InstanceScript instance;
     private JsonDocument doc;
+
     public InstanceScriptDataReader(InstanceScript instance) {
         instance = instance;
     }

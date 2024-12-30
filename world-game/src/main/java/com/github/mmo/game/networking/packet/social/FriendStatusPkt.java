@@ -1,11 +1,13 @@
 package com.github.mmo.game.networking.packet.social;
 
 
+import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.entity.player.FriendInfo;
 import com.github.mmo.game.entity.player.FriendStatus;
 import com.github.mmo.game.entity.player.FriendsResult;
-import com.github.mmo.game.entity.ObjectGuid;
-import com.github.mmo.game.networking.ServerPacket;public class FriendStatusPkt extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class FriendStatusPkt extends ServerPacket {
 
     public int virtualRealmAddress;
     public String notes;

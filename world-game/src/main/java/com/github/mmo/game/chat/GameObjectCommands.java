@@ -1,15 +1,15 @@
 package com.github.mmo.game.chat;
 
 
-import game.PhasingHandler;
 import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.gobject.GameObjectData;
 import com.github.mmo.game.entity.object.WorldObject;
-import com.github.mmo.game.map.grid.MapDefines;
+import game.PhasingHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+
 class GameObjectCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleGameObjectActivateCommand(CommandHandler handler, long guidLow) {
@@ -499,7 +499,7 @@ class GameObjectCommands {
 
             if (objectInfo.displayId != 0 && !CliDB.GameObjectDisplayInfoStorage.containsKey(objectInfo.displayId)) {
                 // report to DB errors log as in loading case
-                Log.outError(LogFilter.Sql, "Gameobject (Entry {0} GoType: {1}) have invalid displayId ({2}), not spawned.", objectId, objectInfo.type, objectInfo.displayId);
+                Logs.SQL.error("Gameobject (Entry {0} GoType: {1}) have invalid displayId ({2}), not spawned.", objectId, objectInfo.type, objectInfo.displayId);
                 handler.sendSysMessage(CypherStrings.GameobjectHaveInvalidData, objectId);
 
                 return false;

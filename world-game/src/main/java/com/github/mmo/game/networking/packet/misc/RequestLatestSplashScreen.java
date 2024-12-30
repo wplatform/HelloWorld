@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.misc;
 
-import com.github.mmo.game.networking.*;class RequestLatestSplashScreen extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class RequestLatestSplashScreen extends ClientPacket {
     public RequestLatestSplashScreen(WorldPacket packet) {
         super(packet);
     }

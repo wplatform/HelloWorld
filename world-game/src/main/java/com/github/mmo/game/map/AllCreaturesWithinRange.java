@@ -12,7 +12,7 @@ public class AllCreaturesWithinRange implements ICheck<Creature> {
         this(obj, 0f);
     }
 
-        public AllCreaturesWithinRange(WorldObject obj, float maxRange) {
+    public AllCreaturesWithinRange(WorldObject obj, float maxRange) {
         pObject = obj;
         fRange = maxRange;
     }

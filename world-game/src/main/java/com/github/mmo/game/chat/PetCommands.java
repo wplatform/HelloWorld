@@ -2,190 +2,164 @@ package com.github.mmo.game.chat;
 
 
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-class PetCommands
-{
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePetCreateCommand(CommandHandler handler)
-	{
-		var player = handler.getSession().getPlayer();
-		var creatureTarget = handler.getSelectedCreature();
+class PetCommands {
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    private static boolean handlePetCreateCommand(CommandHandler handler) {
+        var player = handler.getSession().getPlayer();
+        var creatureTarget = handler.getSelectedCreature();
 
-		if (!creatureTarget || creatureTarget.isPet() || creatureTarget.isTypeId(TypeId.PLAYER))
-		{
-			handler.sendSysMessage(CypherStrings.SelectCreature);
+        if (!creatureTarget || creatureTarget.isPet() || creatureTarget.isTypeId(TypeId.PLAYER)) {
+            handler.sendSysMessage(CypherStrings.SelectCreature);
 
-			return false;
-		}
+            return false;
+        }
 
-		var creatureTemplate = creatureTarget.getTemplate();
+        var creatureTemplate = creatureTarget.getTemplate();
 
-		// Creatures with family creatureFamily.None crashes the server
-		if (creatureTemplate.family == creatureFamily.NONE)
-		{
-			handler.sendSysMessage("This creature cannot be tamed. (Family id: 0).");
+        // Creatures with family creatureFamily.None crashes the server
+        if (creatureTemplate.family == creatureFamily.NONE) {
+            handler.sendSysMessage("This creature cannot be tamed. (Family id: 0).");
 
-			return false;
-		}
+            return false;
+        }
 
-		if (!player.getPetGUID().isEmpty())
-		{
-			handler.sendSysMessage("You already have a pet");
+        if (!player.getPetGUID().isEmpty()) {
+            handler.sendSysMessage("You already have a pet");
 
-			return false;
-		}
+            return false;
+        }
 
-		// Everything looks OK, create new pet
-		var pet = player.createTamedPetFrom(creatureTarget);
+        // Everything looks OK, create new pet
+        var pet = player.createTamedPetFrom(creatureTarget);
 
-		// "kill" original creature
-		creatureTarget.despawnOrUnsummon();
+        // "kill" original creature
+        creatureTarget.despawnOrUnsummon();
 
-		// prepare visual effect for levelup
-		pet.setLevel(player.getLevel() - 1);
+        // prepare visual effect for levelup
+        pet.setLevel(player.getLevel() - 1);
 
-		// add to world
-		pet.getMap().addToMap(pet.toCreature());
+        // add to world
+        pet.getMap().addToMap(pet.toCreature());
 
-		// visual effect for levelup
-		pet.setLevel(player.getLevel());
+        // visual effect for levelup
+        pet.setLevel(player.getLevel());
 
-		// caster have pet now
-		player.setMinion(pet, true);
+        // caster have pet now
+        player.setMinion(pet, true);
 
-		pet.SavePetToDB(PetSaveMode.AsCurrent);
-		player.petSpellInitialize();
+        pet.SavePetToDB(PetSaveMode.AsCurrent);
+        player.petSpellInitialize();
 
-		return true;
-	}
+        return true;
+    }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePetLearnCommand(CommandHandler handler, int spellId)
-	{
-		var pet = getSelectedPlayerPetOrOwn(handler);
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    private static boolean handlePetLearnCommand(CommandHandler handler, int spellId) {
+        var pet = getSelectedPlayerPetOrOwn(handler);
 
-		if (!pet)
-		{
-			handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+        if (!pet) {
+            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
 
-			return false;
-		}
+            return false;
+        }
 
-		if (spellId == 0 || !global.getSpellMgr().hasSpellInfo(spellId, Difficulty.NONE))
-		{
-			return false;
-		}
+        if (spellId == 0 || !global.getSpellMgr().hasSpellInfo(spellId, Difficulty.NONE)) {
+            return false;
+        }
 
-		// Check if pet already has it
-		if (pet.hasSpell(spellId))
-		{
-			handler.sendSysMessage("Pet already has spell: {0}", spellId);
+        // Check if pet already has it
+        if (pet.hasSpell(spellId)) {
+            handler.sendSysMessage("Pet already has spell: {0}", spellId);
 
-			return false;
-		}
+            return false;
+        }
 
-		// Check if spell is valid
-		var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
+        // Check if spell is valid
+        var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
 
-		if (spellInfo == null || !global.getSpellMgr().isSpellValid(spellInfo))
-		{
-			handler.sendSysMessage(CypherStrings.CommandSpellBroken, spellId);
+        if (spellInfo == null || !global.getSpellMgr().isSpellValid(spellInfo)) {
+            handler.sendSysMessage(CypherStrings.CommandSpellBroken, spellId);
 
-			return false;
-		}
+            return false;
+        }
 
-		pet.learnSpell(spellId);
+        pet.learnSpell(spellId);
 
-		handler.sendSysMessage("Pet has learned spell {0}", spellId);
+        handler.sendSysMessage("Pet has learned spell {0}", spellId);
 
-		return true;
-	}
+        return true;
+    }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePetUnlearnCommand(CommandHandler handler, int spellId)
-	{
-		var pet = getSelectedPlayerPetOrOwn(handler);
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    private static boolean handlePetUnlearnCommand(CommandHandler handler, int spellId) {
+        var pet = getSelectedPlayerPetOrOwn(handler);
 
-		if (!pet)
-		{
-			handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+        if (!pet) {
+            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
 
-			return false;
-		}
+            return false;
+        }
 
-		if (pet.hasSpell(spellId))
-		{
-			pet.removeSpell(spellId, false);
-		}
-		else
-		{
-			handler.sendSysMessage("Pet doesn't have that spell");
-		}
+        if (pet.hasSpell(spellId)) {
+            pet.removeSpell(spellId, false);
+        } else {
+            handler.sendSysMessage("Pet doesn't have that spell");
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePetLevelCommand(CommandHandler handler, int level)
-	{
-		var pet = getSelectedPlayerPetOrOwn(handler);
-		var owner = pet ? pet.getOwningPlayer() : null;
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    private static boolean handlePetLevelCommand(CommandHandler handler, int level) {
+        var pet = getSelectedPlayerPetOrOwn(handler);
+        var owner = pet ? pet.getOwningPlayer() : null;
 
-		if (!pet || !owner)
-		{
-			handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+        if (!pet || !owner) {
+            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
 
-			return false;
-		}
+            return false;
+        }
 
-		if (level == 0)
-		{
-			level = (int)(owner.getLevel() - pet.getLevel());
-		}
+        if (level == 0) {
+            level = (int) (owner.getLevel() - pet.getLevel());
+        }
 
-		if (level == 0 || level < -SharedConst.StrongMaxLevel || level > SharedConst.StrongMaxLevel)
-		{
-			handler.sendSysMessage(CypherStrings.BadValue);
+        if (level == 0 || level < -SharedConst.StrongMaxLevel || level > SharedConst.StrongMaxLevel) {
+            handler.sendSysMessage(CypherStrings.BadValue);
 
-			return false;
-		}
+            return false;
+        }
 
-		var newLevel = (int)pet.getLevel() + level;
+        var newLevel = (int) pet.getLevel() + level;
 
-		if (newLevel < 1)
-		{
-			newLevel = 1;
-		}
-		else if (newLevel > owner.getLevel())
-		{
-			newLevel = (int)owner.getLevel();
-		}
+        if (newLevel < 1) {
+            newLevel = 1;
+        } else if (newLevel > owner.getLevel()) {
+            newLevel = (int) owner.getLevel();
+        }
 
-		pet.GivePetLevel(newLevel);
+        pet.GivePetLevel(newLevel);
 
-		return true;
-	}
+        return true;
+    }
 
-	private static Pet getSelectedPlayerPetOrOwn(CommandHandler handler)
-	{
-		var target = handler.getSelectedUnit();
+    private static Pet getSelectedPlayerPetOrOwn(CommandHandler handler) {
+        var target = handler.getSelectedUnit();
 
-		if (target)
-		{
-			if (target.isTypeId(TypeId.PLAYER))
-			{
-				return target.toPlayer().getCurrentPet();
-			}
+        if (target) {
+            if (target.isTypeId(TypeId.PLAYER)) {
+                return target.toPlayer().getCurrentPet();
+            }
 
-			if (target.isPet())
-			{
-				return target.getAsPet();
-			}
+            if (target.isPet()) {
+                return target.getAsPet();
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		var player = handler.getSession().getPlayer();
+        var player = handler.getSession().getPlayer();
 
-		return player ? player.getCurrentPet() : null;
-	}
+        return player ? player.getCurrentPet() : null;
+    }
 }

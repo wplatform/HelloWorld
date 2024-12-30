@@ -2,7 +2,7 @@ package com.github.mmo.game.scripting.interfaces.iaura;
 
 
 import Framework.models.*;
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.spell.AuraEffect;
 
 public class AuraEffectCalcAmountHandler extends AuraEffectHandler implements IAuraCalcAmount {
     private final tangible.Action3Param<AuraEffect, BoxedValue<Double>, BoxedValue<Boolean>> fn;

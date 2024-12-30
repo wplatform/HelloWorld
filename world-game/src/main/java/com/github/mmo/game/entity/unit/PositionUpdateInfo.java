@@ -1,22 +1,20 @@
 package com.github.mmo.game.entity.unit;
-final class PositionUpdateInfo
-{
-	public boolean relocated;
-	public boolean turned;
 
-	public void reset()
-	{
-		relocated = false;
-		turned = false;
-	}
+final class PositionUpdateInfo {
+    public boolean relocated;
+    public boolean turned;
 
-	public PositionUpdateInfo clone()
-	{
-		PositionUpdateInfo varCopy = new PositionUpdateInfo();
+    public void reset() {
+        relocated = false;
+        turned = false;
+    }
 
-		varCopy.relocated = this.relocated;
-		varCopy.turned = this.turned;
+    public PositionUpdateInfo clone() {
+        PositionUpdateInfo varCopy = new PositionUpdateInfo();
 
-		return varCopy;
-	}
+        varCopy.relocated = this.relocated;
+        varCopy.turned = this.turned;
+
+        return varCopy;
+    }
 }

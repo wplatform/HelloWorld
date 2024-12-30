@@ -1,15 +1,14 @@
 package com.github.mmo.game.networking.packet.social;
 
-import com.github.mmo.game.networking.*;
-class SocialContractRequest extends ClientPacket
-{
-	public SocialContractRequest(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-	}
+class SocialContractRequest extends ClientPacket {
+    public SocialContractRequest(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+    }
 }

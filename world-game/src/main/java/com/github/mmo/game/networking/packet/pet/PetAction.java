@@ -1,26 +1,25 @@
 package com.github.mmo.game.networking.packet.pet;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class PetAction extends ClientPacket
-{
-	public ObjectGuid petGUID = ObjectGuid.EMPTY;
-	public int tangible.Action0Param;
-	public ObjectGuid targetGUID = ObjectGuid.EMPTY;
-	public Vector3 actionPosition;
-	public PetAction(WorldPacket packet)
-	{
-		super(packet);
-	}
+class PetAction extends ClientPacket {
+    public ObjectGuid petGUID = ObjectGuid.EMPTY;
+    public int tangible.Action0Param;
+    public ObjectGuid targetGUID = ObjectGuid.EMPTY;
+    public Vector3 actionPosition;
 
-	@Override
-	public void read()
-	{
-		petGUID = this.readPackedGuid();
+    public PetAction(WorldPacket packet) {
+        super(packet);
+    }
 
-		tangible.Action0Param = this.readUInt();
-		targetGUID = this.readPackedGuid();
+    @Override
+    public void read() {
+        petGUID = this.readPackedGuid();
 
-		actionPosition = this.readVector3();
-	}
+        tangible.Action0Param = this.readUInt();
+        targetGUID = this.readPackedGuid();
+
+        actionPosition = this.readVector3();
+    }
 }

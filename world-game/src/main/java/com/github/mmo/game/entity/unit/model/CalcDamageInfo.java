@@ -1,10 +1,7 @@
 package com.github.mmo.game.entity.unit.model;
 
 import com.github.mmo.defines.WeaponAttackType;
-import com.github.mmo.world.entities.unit.unit;
 import com.github.mmo.world.entities.unit.enums.MeleeHitOutcome;
-import com.github.mmo.world.spell.enums.procFlags;
-import lombok.data;
 
 // Struct for use in Unit::CalculateMeleeDamage
 // Need create structure like in SMSG_ATTACKERSTATEUPDATE opcode

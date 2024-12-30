@@ -1,6 +1,7 @@
 package com.github.mmo.game.networking.packet.reputation;
 
 import com.github.mmo.game.networking.WorldPacket;
+
 public final class ForcedReaction {
     public int faction;
     public int reaction;

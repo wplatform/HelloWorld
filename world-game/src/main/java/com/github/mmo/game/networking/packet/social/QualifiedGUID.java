@@ -1,6 +1,7 @@
 package com.github.mmo.game.networking.packet.social;
 
-import com.github.mmo.game.networking.*;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+import com.github.mmo.game.networking.WorldPacket;
+
 public final class QualifiedGUID {
     public ObjectGuid guid = ObjectGuid.EMPTY;
 

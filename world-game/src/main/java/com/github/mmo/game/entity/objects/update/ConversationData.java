@@ -2,9 +2,11 @@ package com.github.mmo.game.entity;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;public class ConversationData extends BaseUpdateData<conversation> {
+import java.util.ArrayList;
+
+public class ConversationData extends BaseUpdateData<conversation> {
     public UpdateField<Boolean> dontPlayBroadcastTextSounds = new UpdateField<Boolean>(0, 1);
     public UpdateField<ArrayList<ConversationLine>> lines = new UpdateField<ArrayList<ConversationLine>>(0, 2);
     public DynamicUpdateField<ConversationActorField> actors = new DynamicUpdateField<ConversationActorField>(0, 3);

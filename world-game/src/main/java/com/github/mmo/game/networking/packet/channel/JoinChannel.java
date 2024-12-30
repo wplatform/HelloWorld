@@ -1,21 +1,21 @@
 package com.github.mmo.game.networking.packet.channel;
 
-import com.github.mmo.game.networking.*;
-public class JoinChannel extends ClientPacket
-{
-	public String password;
-	public String channelName;
-	public boolean createVoiceSession;
-	public int chatChannelId;
-	public boolean internal;
-	public joinChannel(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
+public class JoinChannel extends ClientPacket {
+    public String password;
+    public String channelName;
+    public boolean createVoiceSession;
+    public int chatChannelId;
+    public boolean internal;
+
+    public joinChannel(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         chatChannelId = this.readInt32();
         createVoiceSession = this.readBit();
         internal = this.readBit();
@@ -23,5 +23,5 @@ public class JoinChannel extends ClientPacket
         var passwordLength = this.<Integer>readBit(7);
         channelName = this.readString(channelLength);
         password = this.readString(passwordLength);
-	}
+    }
 }

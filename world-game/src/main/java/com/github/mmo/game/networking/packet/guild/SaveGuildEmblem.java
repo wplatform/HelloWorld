@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;public class SaveGuildEmblem extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class SaveGuildEmblem extends ClientPacket {
     public ObjectGuid vendor = ObjectGuid.EMPTY;
 
     public int BStyle;

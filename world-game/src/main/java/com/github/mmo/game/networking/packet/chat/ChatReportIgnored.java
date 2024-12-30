@@ -1,20 +1,19 @@
 package com.github.mmo.game.networking.packet.chat;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class ChatReportIgnored extends ClientPacket
-{
-	public ObjectGuid ignoredGUID = ObjectGuid.EMPTY;
-	public byte reason;
-	public ChatReportIgnored(WorldPacket packet)
-	{
-		super(packet);
-	}
+class ChatReportIgnored extends ClientPacket {
+    public ObjectGuid ignoredGUID = ObjectGuid.EMPTY;
+    public byte reason;
 
-	@Override
-	public void read()
-	{
-		ignoredGUID = this.readPackedGuid();
-		reason = this.readUInt8();
-	}
+    public ChatReportIgnored(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        ignoredGUID = this.readPackedGuid();
+        reason = this.readUInt8();
+    }
 }

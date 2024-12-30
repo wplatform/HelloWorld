@@ -3,7 +3,9 @@ package game;
 
 import Framework.Cryptography.*;
 
-import java.math.*;public abstract class Warden {
+import java.math.BigInteger;
+
+public abstract class Warden {
     public final SARC4 inputCrypto;
     public final SARC4 outputCrypto;
     public Worldsession session;
@@ -154,7 +156,7 @@ import java.math.*;public abstract class Warden {
         return applyPenalty(null);
     }
 
-        public final String applyPenalty(WardenCheck check) {
+    public final String applyPenalty(WardenCheck check) {
         WardenActions action;
 
         if (check != null) {

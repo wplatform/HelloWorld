@@ -7,11 +7,10 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.group.PlayerGroup;
-import com.github.mmo.game.map.grid.Cell;
 import com.github.mmo.game.map.GameObjectLastSearcher;
 import com.github.mmo.game.map.NearestGameObjectCheck;
+import com.github.mmo.game.map.grid.Cell;
 
-import java.util.locale;
 import java.util.Objects;
 
 public class CommandHandler {
@@ -25,7 +24,7 @@ public class CommandHandler {
         this(null);
     }
 
-        public commandHandler(WorldSession session) {
+    public commandHandler(WorldSession session) {
         session = session;
     }
 
@@ -526,7 +525,7 @@ public class CommandHandler {
         return hasLowerSecurity(target, guid, false);
     }
 
-        public final boolean hasLowerSecurity(Player target, ObjectGuid guid, boolean strong) {
+    public final boolean hasLowerSecurity(Player target, ObjectGuid guid, boolean strong) {
         WorldSession target_session = null;
         int target_account = 0;
 
@@ -551,7 +550,7 @@ public class CommandHandler {
         return hasLowerSecurityAccount(target, target_account, false);
     }
 
-        public final boolean hasLowerSecurityAccount(WorldSession target, int target_account, boolean strong) {
+    public final boolean hasLowerSecurityAccount(WorldSession target, int target_account, boolean strong) {
         AccountTypes target_ac_sec;
 
         // allow everything from console and RA console
@@ -603,7 +602,7 @@ public class CommandHandler {
         sendSysMessage(str, false);
     }
 
-        public void sendSysMessage(String str, boolean escapeCharacters) {
+    public void sendSysMessage(String str, boolean escapeCharacters) {
         sentErrorMessage = true;
 
         if (escapeCharacters) {
@@ -643,7 +642,7 @@ public class CommandHandler {
         return getPlayerGroupAndGUIDByName(name, player, group, guid, false);
     }
 
-        public final boolean getPlayerGroupAndGUIDByName(String name, tangible.OutObject<Player> player, tangible.OutObject<PlayerGroup> group, tangible.OutObject<ObjectGuid> guid, boolean offline) {
+    public final boolean getPlayerGroupAndGUIDByName(String name, tangible.OutObject<Player> player, tangible.OutObject<PlayerGroup> group, tangible.OutObject<ObjectGuid> guid, boolean offline) {
         player.outArgValue = null;
         guid.outArgValue = ObjectGuid.Empty;
         group.outArgValue = null;

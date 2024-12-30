@@ -1,9 +1,10 @@
 package com.github.mmo.game.entity.player;
 
 
+import java.util.HashMap;
+import java.util.Objects;
 
-
-import java.util.*;public class PetitionManager  {
+public class PetitionManager {
     private final HashMap<ObjectGuid, Petition> petitionStorage = new HashMap<ObjectGuid, Petition>();
 
     private PetitionManager() {

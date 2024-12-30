@@ -1,4 +1,4 @@
-package com.github.mmo.game.quest.enums;
+package com.github.mmo.game.service.model.quest;
 
 public enum QuestCompleteSpellType {
     LegacyBehavior,
@@ -8,6 +8,5 @@ public enum QuestCompleteSpellType {
     Aura,
     Spell,
     Unlock,
-    Companion,
-    Max
+    Companion
 }

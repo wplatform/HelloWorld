@@ -1,19 +1,17 @@
 package com.github.mmo.game.networking.packet.movement;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class SetActiveMover extends ClientPacket
-{
-	public ObjectGuid activeMover = ObjectGuid.EMPTY;
+public class SetActiveMover extends ClientPacket {
+    public ObjectGuid activeMover = ObjectGuid.EMPTY;
 
-	public SetActiveMover(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public SetActiveMover(WorldPacket packet) {
+        super(packet);
+    }
 
-	@Override
-	public void read()
-	{
-		activeMover = this.readPackedGuid();
-	}
+    @Override
+    public void read() {
+        activeMover = this.readPackedGuid();
+    }
 }

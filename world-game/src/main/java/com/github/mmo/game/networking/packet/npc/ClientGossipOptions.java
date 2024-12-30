@@ -1,13 +1,15 @@
 package com.github.mmo.game.networking.packet.npc;
 
 
-import com.github.mmo.game.networking.*;public class ClientGossipOptions {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class ClientGossipOptions {
     public int gossipOptionID;
     public GossipOptionNpc optionNPC = GossipOptionNpc.values()[0];
-   
+
     public byte optionFlags;
     public int optionCost;
-   
+
     public int optionLanguage;
     public GossipOptionflags flags = GossipOptionFlags.values()[0];
     public int orderIndex;

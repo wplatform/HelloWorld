@@ -2,7 +2,9 @@ package com.github.mmo.game.networking.packet.transmogification;
 
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.networking.ClientPacket;
-import com.github.mmo.game.networking.WorldPacket;class TransmogrifyItems extends ClientPacket {
+import com.github.mmo.game.networking.WorldPacket;
+
+class TransmogrifyItems extends ClientPacket {
     public ObjectGuid npc = ObjectGuid.EMPTY;
     public Array<TransmogrifyItem> items = new Array<TransmogrifyItem>(13);
     public boolean currentSpecOnly;

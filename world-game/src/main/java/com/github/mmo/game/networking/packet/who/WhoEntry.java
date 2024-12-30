@@ -2,18 +2,16 @@ package com.github.mmo.game.networking.packet.who;
 
 import com.github.mmo.game.networking.WorldPacket;
 
-public class WhoEntry
-{
-	public playerGuidLookupData playerData = new playerGuidLookupData();
+public class WhoEntry {
+    public playerGuidLookupData playerData = new playerGuidLookupData();
     public ObjectGuid guildGUID = ObjectGuid.EMPTY;
-	public int guildVirtualRealmAddress;
-	public String guildName = "";
-	public int areaID;
-	public boolean isGM;
+    public int guildVirtualRealmAddress;
+    public String guildName = "";
+    public int areaID;
+    public boolean isGM;
 
-	public final void write(WorldPacket data)
-	{
-		playerData.write(data);
+    public final void write(WorldPacket data) {
+        playerData.write(data);
 
         data.writeGuid(guildGUID);
         data.writeInt32(guildVirtualRealmAddress);
@@ -24,5 +22,5 @@ public class WhoEntry
         data.writeString(guildName);
 
         data.flushBits();
-	}
+    }
 }

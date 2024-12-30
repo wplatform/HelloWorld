@@ -9,7 +9,7 @@ public class ZRangeBoundary extends AreaBoundary {
         this(minZ, maxZ, false);
     }
 
-        public ZRangeBoundary(float minZ, float maxZ, boolean isInverted) {
+    public ZRangeBoundary(float minZ, float maxZ, boolean isInverted) {
         super(isInverted);
         minZ = minZ;
         maxZ = maxZ;

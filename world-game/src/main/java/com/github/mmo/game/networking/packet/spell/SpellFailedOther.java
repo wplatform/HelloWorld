@@ -1,27 +1,25 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-public class SpellFailedOther extends ServerPacket
-{
-	public ObjectGuid casterUnit = ObjectGuid.EMPTY;
-	public int spellID;
-	public SpellCastvisual visual = new spellCastVisual();
-	public short reason;
-	public ObjectGuid castID = ObjectGuid.EMPTY;
-	public SpellFailedOther()
-	{
-		super(ServerOpcode.SpellFailedOther, ConnectionType.instance);
-	}
+public class SpellFailedOther extends ServerPacket {
+    public ObjectGuid casterUnit = ObjectGuid.EMPTY;
+    public int spellID;
+    public SpellCastvisual visual = new spellCastVisual();
+    public short reason;
+    public ObjectGuid castID = ObjectGuid.EMPTY;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(casterUnit);
-		this.writeGuid(castID);
-		this.writeInt32(spellID);
+    public SpellFailedOther() {
+        super(ServerOpcode.SpellFailedOther, ConnectionType.instance);
+    }
 
-		visual.write(this);
+    @Override
+    public void write() {
+        this.writeGuid(casterUnit);
+        this.writeGuid(castID);
+        this.writeInt32(spellID);
 
-		this.writeInt16(reason);
-	}
+        visual.write(this);
+
+        this.writeInt16(reason);
+    }
 }

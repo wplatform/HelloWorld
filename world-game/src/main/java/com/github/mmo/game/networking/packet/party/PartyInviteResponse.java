@@ -1,28 +1,27 @@
 package com.github.mmo.game.networking.packet.party;
 
-import com.github.mmo.game.networking.*;
-class PartyInviteResponse extends ClientPacket
-{
-	public byte partyIndex;
-	public boolean accept;
-	public Integer rolesDesired = null;
-	public PartyInviteResponse(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-		partyIndex = this.readUInt8();
+class PartyInviteResponse extends ClientPacket {
+    public byte partyIndex;
+    public boolean accept;
+    public Integer rolesDesired = null;
 
-		accept = this.readBit();
+    public PartyInviteResponse(WorldPacket packet) {
+        super(packet);
+    }
 
-		var hasRolesDesired = this.readBit();
+    @Override
+    public void read() {
+        partyIndex = this.readUInt8();
 
-		if (hasRolesDesired)
-		{
-			rolesDesired = this.readUInt();
-		}
-	}
+        accept = this.readBit();
+
+        var hasRolesDesired = this.readBit();
+
+        if (hasRolesDesired) {
+            rolesDesired = this.readUInt();
+        }
+    }
 }

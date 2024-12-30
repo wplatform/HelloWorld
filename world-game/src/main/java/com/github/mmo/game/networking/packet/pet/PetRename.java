@@ -2,42 +2,38 @@ package com.github.mmo.game.networking.packet.pet;
 
 
 import com.github.mmo.game.entity.unit.declinedName;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class PetRename extends ClientPacket
-{
-	public PetrenameData renameData = new petRenameData();
-	public PetRename(WorldPacket packet)
-	{
-		super(packet);
-	}
+class PetRename extends ClientPacket {
+    public PetrenameData renameData = new petRenameData();
 
-	@Override
-	public void read()
-	{
-		renameData.petGUID = this.readPackedGuid();
-		renameData.petNumber = this.readInt32();
+    public PetRename(WorldPacket packet) {
+        super(packet);
+    }
 
-		var nameLen = this.<Integer>readBit(8);
+    @Override
+    public void read() {
+        renameData.petGUID = this.readPackedGuid();
+        renameData.petNumber = this.readInt32();
 
-		renameData.hasDeclinedNames = this.readBit();
+        var nameLen = this.<Integer>readBit(8);
 
-		if (renameData.hasDeclinedNames)
-		{
-			renameData.declinedNames = new declinedName();
-			var count = new int[SharedConst.MaxDeclinedNameCases];
+        renameData.hasDeclinedNames = this.readBit();
 
-			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)
-			{
-				count[i] = this.<Integer>readBit(7);
-			}
+        if (renameData.hasDeclinedNames) {
+            renameData.declinedNames = new declinedName();
+            var count = new int[SharedConst.MaxDeclinedNameCases];
 
-			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)
-			{
-				renameData.declinedNames.name.charAt(i) = this.readString(count[i]);
-			}
-		}
+            for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++) {
+                count[i] = this.<Integer>readBit(7);
+            }
 
-		renameData.newName = this.readString(nameLen);
-	}
+            for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++) {
+                renameData.declinedNames.name.charAt(i) = this.readString(count[i]);
+            }
+        }
+
+        renameData.newName = this.readString(nameLen);
+    }
 }

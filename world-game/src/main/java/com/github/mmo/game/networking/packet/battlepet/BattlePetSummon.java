@@ -1,18 +1,17 @@
 package com.github.mmo.game.networking.packet.battlepet;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class BattlePetSummon extends ClientPacket
-{
-	public ObjectGuid petGuid = ObjectGuid.EMPTY;
-	public BattlePetSummon(WorldPacket packet)
-	{
-		super(packet);
-	}
+class BattlePetSummon extends ClientPacket {
+    public ObjectGuid petGuid = ObjectGuid.EMPTY;
 
-	@Override
-	public void read()
-	{
-		petGuid = this.readPackedGuid();
-	}
+    public BattlePetSummon(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        petGuid = this.readPackedGuid();
+    }
 }

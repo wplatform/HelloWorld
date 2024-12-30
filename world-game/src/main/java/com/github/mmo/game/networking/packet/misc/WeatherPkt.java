@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-import com.github.mmo.game.networking.*;public class WeatherPkt extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class WeatherPkt extends ServerPacket {
     private final boolean abrupt;
     private final float intensity;
     private final WeatherState weatherID;
@@ -19,7 +21,7 @@ import com.github.mmo.game.networking.*;public class WeatherPkt extends ServerPa
         this(0, 0.0f, false);
     }
 
-        public WeatherPkt(WeatherState weatherID, float intensity, boolean abrupt) {
+    public WeatherPkt(WeatherState weatherID, float intensity, boolean abrupt) {
         super(ServerOpcode.Weather, ConnectionType.instance);
         weatherID = weatherID;
         intensity = intensity;

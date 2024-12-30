@@ -1,46 +1,39 @@
 package com.github.mmo.game.spell;
-public class DispelableAura
-{
-	private final Aura aura;
-	private final int chance;
-	private byte charges;
 
-	public DispelableAura(Aura aura, int dispelChance, byte dispelCharges)
-	{
-		aura = aura;
-		chance = dispelChance;
-		charges = dispelCharges;
-	}
+public class DispelableAura {
+    private final Aura aura;
+    private final int chance;
+    private byte charges;
 
-	public final boolean rollDispel()
-	{
-		return RandomUtil.randChance(chance);
-	}
+    public DispelableAura(Aura aura, int dispelChance, byte dispelCharges) {
+        aura = aura;
+        chance = dispelChance;
+        charges = dispelCharges;
+    }
 
-	public final Aura getAura()
-	{
-		return aura;
-	}
+    public final boolean rollDispel() {
+        return RandomUtil.randChance(chance);
+    }
 
-	public final byte getDispelCharges()
-	{
-		return charges;
-	}
+    public final Aura getAura() {
+        return aura;
+    }
 
-	public final void incrementCharges()
-	{
-		++charges;
-	}
+    public final byte getDispelCharges() {
+        return charges;
+    }
 
-	public final boolean decrementCharge(byte charges)
-	{
-		if (charges == 0)
-		{
-			return false;
-		}
+    public final void incrementCharges() {
+        ++charges;
+    }
 
-		_charges -= charges;
+    public final boolean decrementCharge(byte charges) {
+        if (charges == 0) {
+            return false;
+        }
 
-		return charges > 0;
-	}
+        _charges -= charges;
+
+        return charges > 0;
+    }
 }

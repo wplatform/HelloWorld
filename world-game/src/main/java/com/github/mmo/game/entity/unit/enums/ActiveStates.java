@@ -3,7 +3,7 @@ package com.github.mmo.game.entity.unit.enums;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum  ActiveStates {
+public enum ActiveStates {
     ACT_PASSIVE(0x01),                                    // 0x01 - passive
     ACT_DISABLED(0x81),                                    // 0x80 - castable
     ACT_ENABLED(0xC1),                                    // 0x40 | 0x80 - auto cast + castable

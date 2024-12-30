@@ -2,23 +2,21 @@ package com.github.mmo.game.networking.packet.taxi;
 
 import com.github.mmo.game.networking.WorldPacket;
 
-class ActivateTaxi extends ClientPacket
-{
+class ActivateTaxi extends ClientPacket {
     public ObjectGuid vendor = ObjectGuid.EMPTY;
-	public int node;
-	public int groundMountID;
-	public int flyingMountID;
-	public ActivateTaxi(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public int node;
+    public int groundMountID;
+    public int flyingMountID;
 
-	@Override
-	public void read()
-	{
+    public ActivateTaxi(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         vendor = this.readPackedGuid();
         node = this.readUInt();
         groundMountID = this.readUInt();
         flyingMountID = this.readUInt();
-	}
+    }
 }

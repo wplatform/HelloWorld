@@ -1,69 +1,59 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
+import com.github.mmo.game.networking.WorldPacket;
 import game.*;
-import com.github.mmo.game.networking.*;
-public class AuctionBucketKey
-{
-	public int itemID;
-	public short itemLevel;
-	public Short battlePetSpeciesID = null;
-	public Short suffixItemNameDescriptionID = null;
 
-	public auctionBucketKey()
-	{
-	}
+public class AuctionBucketKey {
+    public int itemID;
+    public short itemLevel;
+    public Short battlePetSpeciesID = null;
+    public Short suffixItemNameDescriptionID = null;
 
-	public auctionBucketKey(AuctionsBucketKey key)
-	{
-		itemID = key.getItemId();
-		itemLevel = key.getItemLevel();
+    public auctionBucketKey() {
+    }
 
-		if (key.getBattlePetSpeciesId() != 0)
-		{
-			battlePetSpeciesID = key.getBattlePetSpeciesId();
-		}
+    public auctionBucketKey(AuctionsBucketKey key) {
+        itemID = key.getItemId();
+        itemLevel = key.getItemLevel();
 
-		if (key.getSuffixItemNameDescriptionId() != 0)
-		{
-			suffixItemNameDescriptionID = key.getSuffixItemNameDescriptionId();
-		}
-	}
+        if (key.getBattlePetSpeciesId() != 0) {
+            battlePetSpeciesID = key.getBattlePetSpeciesId();
+        }
 
-	public auctionBucketKey(WorldPacket data)
-	{
-		data.resetBitPos();
-		itemID = data.<Integer>readBit(20);
-		var hasBattlePetSpeciesId = data.readBit();
-		itemLevel = data.<SHORT>readBit(11);
-		var hasSuffixItemNameDescriptionId = data.readBit();
+        if (key.getSuffixItemNameDescriptionId() != 0) {
+            suffixItemNameDescriptionID = key.getSuffixItemNameDescriptionId();
+        }
+    }
 
-		if (hasBattlePetSpeciesId)
-		{
-			battlePetSpeciesID = data.readUInt16();
-		}
+    public auctionBucketKey(WorldPacket data) {
+        data.resetBitPos();
+        itemID = data.<Integer>readBit(20);
+        var hasBattlePetSpeciesId = data.readBit();
+        itemLevel = data.<SHORT>readBit(11);
+        var hasSuffixItemNameDescriptionId = data.readBit();
 
-		if (hasSuffixItemNameDescriptionId)
-		{
-			suffixItemNameDescriptionID = data.readUInt16();
-		}
-	}
+        if (hasBattlePetSpeciesId) {
+            battlePetSpeciesID = data.readUInt16();
+        }
 
-	public final void write(WorldPacket data)
-	{
-		data.writeBits(itemID, 20);
-		data.writeBit(battlePetSpeciesID != null);
-		data.writeBits(itemLevel, 11);
-		data.writeBit(suffixItemNameDescriptionID != null);
-		data.flushBits();
+        if (hasSuffixItemNameDescriptionId) {
+            suffixItemNameDescriptionID = data.readUInt16();
+        }
+    }
 
-		if (battlePetSpeciesID != null)
-		{
-			data.writeInt16(battlePetSpeciesID.shortValue());
-		}
+    public final void write(WorldPacket data) {
+        data.writeBits(itemID, 20);
+        data.writeBit(battlePetSpeciesID != null);
+        data.writeBits(itemLevel, 11);
+        data.writeBit(suffixItemNameDescriptionID != null);
+        data.flushBits();
 
-		if (suffixItemNameDescriptionID != null)
-		{
-			data.writeInt16(suffixItemNameDescriptionID.shortValue());
-		}
-	}
+        if (battlePetSpeciesID != null) {
+            data.writeInt16(battlePetSpeciesID.shortValue());
+        }
+
+        if (suffixItemNameDescriptionID != null) {
+            data.writeInt16(suffixItemNameDescriptionID.shortValue());
+        }
+    }
 }

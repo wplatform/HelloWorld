@@ -4,11 +4,11 @@ package com.github.mmo.game.networking;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.github.mmo.exeception.ValueOverflowException;
-import com.github.mmo.utils.StringUtil;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.networking.opcode.OpCode;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
+import com.github.mmo.utils.StringUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.DefaultByteBufHolder;
@@ -27,7 +27,7 @@ public class WorldPacket extends DefaultByteBufHolder {
     private OpCode opcode;
     // only set for a specific set of opcodes, for performance reasons.
     private LocalDateTime m_receivedTime = LocalDateTime.MIN;
-    
+
     private byte bitPosition = 8;
     private byte bitValue;
 
@@ -55,7 +55,7 @@ public class WorldPacket extends DefaultByteBufHolder {
     public static WorldPacket newClientToServer(ByteBuf byteBuf) {
         return new WorldPacket(byteBuf);
     }
-    
+
     public static WorldPacket wrap(ByteBuf byteBuf) {
         return new WorldPacket(byteBuf);
     }

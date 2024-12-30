@@ -7,7 +7,10 @@ import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.interfaces.*;
 
-import java.util.*;public class UnitListSearcher implements IGridNotifierCreature, IGridNotifierPlayer {
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class UnitListSearcher implements IGridNotifierCreature, IGridNotifierPlayer {
     private final PhaseShift phaseShift;
     private final ArrayList<Unit> objects;
     private final ICheck<unit> check;
@@ -17,11 +20,11 @@ import java.util.*;public class UnitListSearcher implements IGridNotifierCreatur
         objects = objects;
         check = check;
         setGridType(gridType);
-    }    private gridType gridType = getGridType().values()[0];
+    }
 
     public final GridType getGridType() {
         return gridType;
-    }
+    }    private gridType gridType = getGridType().values()[0];
 
     public final void setGridType(GridType value) {
         gridType = value;
@@ -50,6 +53,8 @@ import java.util.*;public class UnitListSearcher implements IGridNotifierCreatur
             }
         }
     }
+
+
 
 
 }

@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.quest;
 
 
 import com.github.mmo.game.entity.object.ObjectGuid;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 import com.github.mmo.game.quest.enums.QuestPushReason;
 

@@ -15,10 +15,8 @@ import java.util.ArrayList;
 public class UpdateData {
     private final ArrayList<ObjectGuid> destroyGUIDs = new ArrayList<>();
     private final ArrayList<ObjectGuid> outOfRangeGUIDs = new ArrayList<>();
-
-    CompositeByteBuf compositeByteBuf = ByteBufAllocator.DEFAULT.compositeBuffer();
-
     private final int mapId;
+    CompositeByteBuf compositeByteBuf = ByteBufAllocator.DEFAULT.compositeBuffer();
     private int blockCount;
 
     public final void addDestroyObject(ObjectGuid guid) {

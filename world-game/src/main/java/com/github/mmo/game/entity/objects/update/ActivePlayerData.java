@@ -2,7 +2,7 @@ package com.github.mmo.game.entity;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
 public class ActivePlayerData extends BaseUpdateData<Player> {
     public static int EXPLOREDZONESSIZE;
@@ -16,32 +16,32 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public UpdateField<Boolean> insertItemsLeftToRight = new UpdateField<Boolean>(0, 4);
     public UpdateField<Boolean> hasPerksProgramPendingReward = new UpdateField<Boolean>(0, 5);
     public UpdateFieldArray<DynamicUpdateField<research>> research = new UpdateFieldArray<DynamicUpdateField<research>>(1, 32, 33);
-   
+
     public DynamicUpdateField<Long> knownTitles = new DynamicUpdateField<Long>(0, 6);
-   
+
     public DynamicUpdateField<SHORT> researchSites = new DynamicUpdateField<SHORT>(0, 8);
-   
+
     public DynamicUpdateField<Integer> researchSiteProgress = new DynamicUpdateField<Integer>(0, 9);
-   
+
     public DynamicUpdateField<Integer> dailyQuestsCompleted = new DynamicUpdateField<Integer>(0, 10);
     public DynamicUpdateField<Integer> availableQuestLineXQuestIDs = new DynamicUpdateField<Integer>(0, 11);
-   
+
     public DynamicUpdateField<Integer> heirlooms = new DynamicUpdateField<Integer>(0, 12);
-   
+
     public DynamicUpdateField<Integer> heirloomFlags = new DynamicUpdateField<Integer>(0, 13);
-   
+
     public DynamicUpdateField<Integer> toys = new DynamicUpdateField<Integer>(0, 14);
-   
+
     public DynamicUpdateField<Integer> toyFlags = new DynamicUpdateField<Integer>(0, 15);
-   
+
     public DynamicUpdateField<Integer> transmog = new DynamicUpdateField<Integer>(0, 16);
-   
+
     public DynamicUpdateField<Integer> conditionalTransmog = new DynamicUpdateField<Integer>(0, 17);
-   
+
     public DynamicUpdateField<Integer> selfResSpells = new DynamicUpdateField<Integer>(0, 18);
-   
+
     public DynamicUpdateField<Integer> runeforgePowers = new DynamicUpdateField<Integer>(0, 19);
-   
+
     public DynamicUpdateField<Integer> transmogIllusions = new DynamicUpdateField<Integer>(0, 20);
     public DynamicUpdateField<spellPctModByLabel> spellPctModByLabel = new DynamicUpdateField<spellPctModByLabel>(0, 22);
     public DynamicUpdateField<spellFlatModByLabel> spellFlatModByLabel = new DynamicUpdateField<spellFlatModByLabel>(0, 23);
@@ -57,19 +57,19 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public DynamicUpdateField<CraftingOrder> craftingOrders = new DynamicUpdateField<CraftingOrder>(0, 30);
     public UpdateField<ObjectGuid> farsightObject = new UpdateField<ObjectGuid>(34, 35);
     public UpdateField<ObjectGuid> summonedBattlePetGUID = new UpdateField<ObjectGuid>(34, 36);
-   
+
     public UpdateField<Long> coinage = new UpdateField<Long>(34, 37);
-   
+
     public UpdateField<Integer> XP = new UpdateField<Integer>(34, 38);
-   
+
     public UpdateField<Integer> nextLevelXP = new UpdateField<Integer>(34, 39);
     public UpdateField<Integer> trialXP = new UpdateField<Integer>(34, 40);
     public UpdateField<skillInfo> skill = new UpdateField<SkillInfo>(34, 41);
-   
+
     public UpdateField<Integer> characterPoints = new UpdateField<Integer>(34, 42);
-   
+
     public UpdateField<Integer> maxTalentTiers = new UpdateField<Integer>(34, 43);
-   
+
     public UpdateField<Integer> trackCreatureMask = new UpdateField<Integer>(34, 44);
     public UpdateField<Float> mainhandExpertise = new UpdateField<Float>(34, 45);
     public UpdateField<Float> offhandExpertise = new UpdateField<Float>(34, 46);
@@ -84,7 +84,7 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public UpdateField<Float> rangedCritPercentage = new UpdateField<Float>(34, 55);
     public UpdateField<Float> offhandCritPercentage = new UpdateField<Float>(34, 56);
     public UpdateField<Float> spellCritPercentage = new UpdateField<Float>(34, 57);
-   
+
     public UpdateField<Integer> shieldBlock = new UpdateField<Integer>(34, 58);
     public UpdateField<Float> shieldBlockCritPercentage = new UpdateField<Float>(34, 59);
     public UpdateField<Float> mastery = new UpdateField<Float>(34, 60);
@@ -104,30 +104,30 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public UpdateField<Float> overrideAPBySpellPowerPercent = new UpdateField<Float>(66, 75);
     public UpdateField<Integer> modTargetResistance = new UpdateField<Integer>(66, 76);
     public UpdateField<Integer> modTargetPhysicalResistance = new UpdateField<Integer>(66, 77);
-   
+
     public UpdateField<Integer> localFlags = new UpdateField<Integer>(66, 78);
-   
+
     public UpdateField<Byte> grantableLevels = new UpdateField<Byte>(66, 79);
-   
+
     public UpdateField<Byte> multiActionBars = new UpdateField<Byte>(66, 80);
-   
+
     public UpdateField<Byte> lifetimeMaxRank = new UpdateField<Byte>(66, 81);
-   
+
     public UpdateField<Byte> numRespecs = new UpdateField<Byte>(66, 82);
-   
+
     public UpdateField<Integer> pvpMedals = new UpdateField<Integer>(66, 83);
-   
+
     public UpdateField<SHORT> todayHonorableKills = new UpdateField<SHORT>(66, 84);
-   
+
     public UpdateField<SHORT> yesterdayHonorableKills = new UpdateField<SHORT>(66, 85);
-   
+
     public UpdateField<Integer> lifetimeHonorableKills = new UpdateField<Integer>(66, 86);
-   
+
     public UpdateField<Integer> watchedFactionIndex = new UpdateField<Integer>(66, 87);
     public UpdateField<Integer> maxLevel = new UpdateField<Integer>(66, 88);
     public UpdateField<Integer> scalingPlayerLevelDelta = new UpdateField<Integer>(66, 89);
     public UpdateField<Integer> maxCreatureScalingLevel = new UpdateField<Integer>(66, 90);
-   
+
     public UpdateField<Integer> petSpellPower = new UpdateField<Integer>(66, 91);
     public UpdateField<Float> uiHitModifier = new UpdateField<Float>(66, 92);
     public UpdateField<Float> uiSpellHitModifier = new UpdateField<Float>(66, 93);
@@ -135,41 +135,41 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public UpdateField<Float> modPetHaste = new UpdateField<Float>(66, 95);
     public UpdateField<Byte> jailersTowerLevelMax = new UpdateField<Byte>(66, 96);
     public UpdateField<Byte> jailersTowerLevel = new UpdateField<Byte>(66, 97);
-   
+
     public UpdateField<Byte> localRegenFlags = new UpdateField<Byte>(98, 99);
-   
+
     public UpdateField<Byte> auraVision = new UpdateField<Byte>(98, 100);
-   
+
     public UpdateField<Byte> numBackpackSlots = new UpdateField<Byte>(98, 101);
-   
+
     public UpdateField<Integer> overrideSpellsID = new UpdateField<Integer>(98, 102);
-   
+
     public UpdateField<SHORT> lootSpecID = new UpdateField<SHORT>(98, 103);
-   
+
     public UpdateField<Integer> overrideZonePVPType = new UpdateField<Integer>(98, 104);
     public UpdateField<ObjectGuid> bnetAccount = new UpdateField<ObjectGuid>(98, 105);
-   
+
     public UpdateField<Long> guildClubMemberID = new UpdateField<Long>(98, 106);
-   
+
     public UpdateField<Integer> honor = new UpdateField<Integer>(98, 107);
-   
+
     public UpdateField<Integer> honorNextLevel = new UpdateField<Integer>(98, 108);
     public UpdateField<Integer> perksProgramCurrency = new UpdateField<Integer>(98, 109);
-   
+
     public UpdateField<Byte> numBankSlots = new UpdateField<Byte>(98, 110);
     public UpdateField<PerksVendorItem> frozenPerksVendorItem = new UpdateField<PerksVendorItem>(98, 111);
     public UpdateField<ActivePlayerUnk901> field_1410 = new UpdateField<ActivePlayerUnk901>(98, 113);
     public OptionalUpdateField<questSession> questSession = new OptionalUpdateField<questSession>(98, 112);
     public UpdateField<Integer> uiChromieTimeExpansionID = new UpdateField<Integer>(98, 114);
     public UpdateField<Integer> transportServerTime = new UpdateField<Integer>(98, 115);
-   
+
     public UpdateField<Integer> weeklyRewardsPeriodSinceOrigin = new UpdateField<Integer>(98, 116); // week count since Cfg_RegionsEntry::ChallengeOrigin
     public UpdateField<SHORT> DEBUGSoulbindConduitRank = new UpdateField<SHORT>(98, 117);
     public UpdateField<dungeonScoreData> dungeonScore = new UpdateField<DungeonScoreData>(98, 118);
-   
+
     public UpdateField<Integer> activeCombatTraitConfigID = new UpdateField<Integer>(98, 119);
     public UpdateFieldArray<ObjectGuid> invSlots = new UpdateFieldArray<ObjectGuid>(218, 120, 121);
-   
+
     public UpdateFieldArray<Long> exploredZones = new UpdateFieldArray<Long>(240, 339, 340);
     public UpdateFieldArray<restInfo> restInfo = new UpdateFieldArray<restInfo>(2, 580, 581);
     public UpdateFieldArray<Integer> modDamageDonePos = new UpdateFieldArray<Integer>(7, 583, 584);
@@ -178,21 +178,21 @@ public class ActivePlayerData extends BaseUpdateData<Player> {
     public UpdateFieldArray<Float> modHealingDonePercent = new UpdateFieldArray<Float>(7, 583, 605);
     public UpdateFieldArray<Float> weaponDmgMultipliers = new UpdateFieldArray<Float>(3, 612, 613);
     public UpdateFieldArray<Float> weaponAtkSpeedMultipliers = new UpdateFieldArray<Float>(3, 612, 616);
-   
+
     public UpdateFieldArray<Integer> buybackPrice = new UpdateFieldArray<Integer>(12, 619, 620);
-   
+
     public UpdateFieldArray<Long> buybackTimestamp = new UpdateFieldArray<Long>(12, 619, 632);
-   
+
     public UpdateFieldArray<Integer> combatRatings = new UpdateFieldArray<Integer>(32, 644, 645);
-   
+
     public UpdateFieldArray<Integer> noReagentCostMask = new UpdateFieldArray<Integer>(4, 677, 678);
-   
+
     public UpdateFieldArray<Integer> professionSkillLine = new UpdateFieldArray<Integer>(2, 682, 683);
-   
+
     public UpdateFieldArray<Integer> bagSlotFlags = new UpdateFieldArray<Integer>(5, 685, 686);
-   
+
     public UpdateFieldArray<Integer> bankBagSlotFlags = new UpdateFieldArray<Integer>(7, 691, 692);
-   
+
     public UpdateFieldArray<Long> questCompleted = new UpdateFieldArray<Long>(875, 699, 700);
 
     public activePlayerData() {

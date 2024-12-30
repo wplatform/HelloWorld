@@ -1,25 +1,22 @@
 package com.github.mmo.game.scripting.basescripts;
 
-import com.github.mmo.game.scripting.interfaces.ispell.*;
-import com.github.mmo.game.scripting.*;
+import com.github.mmo.game.scripting.ScriptObject;
+import com.github.mmo.game.scripting.SpellScript;
+import com.github.mmo.game.scripting.interfaces.ispell.ISpellScriptLoaderGetSpellScript;
 
-public class SpellScriptLoader extends ScriptObject implements ISpellScriptLoaderGetSpellScript
-{
-	public SpellScriptLoader(String name)
-	{
-		super(name);
-		global.getScriptMgr().addScript(this);
-	}
+public class SpellScriptLoader extends ScriptObject implements ISpellScriptLoaderGetSpellScript {
+    public SpellScriptLoader(String name) {
+        super(name);
+        global.getScriptMgr().addScript(this);
+    }
 
-	@Override
-	public boolean isDatabaseBound()
-	{
-		return true;
-	}
+    @Override
+    public boolean isDatabaseBound() {
+        return true;
+    }
 
-	// Should return a fully valid SpellScript.
-	public SpellScript getSpellScript()
-	{
-		return null;
-	}
+    // Should return a fully valid SpellScript.
+    public SpellScript getSpellScript() {
+        return null;
+    }
 }

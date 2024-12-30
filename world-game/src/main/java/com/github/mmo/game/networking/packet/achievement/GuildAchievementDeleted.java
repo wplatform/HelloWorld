@@ -1,21 +1,19 @@
 package com.github.mmo.game.networking.packet.achievement;
 
 
-public class GuildAchievementDeleted extends ServerPacket
-{
-	public ObjectGuid guildGUID = ObjectGuid.EMPTY;
-	public int achievementID;
-	public long timeDeleted;
-	public GuildAchievementDeleted()
-	{
-		super(ServerOpcode.GuildAchievementDeleted);
-	}
+public class GuildAchievementDeleted extends ServerPacket {
+    public ObjectGuid guildGUID = ObjectGuid.EMPTY;
+    public int achievementID;
+    public long timeDeleted;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(guildGUID);
-		this.writeInt32(achievementID);
-		this.writePackedTime(timeDeleted);
-	}
+    public GuildAchievementDeleted() {
+        super(ServerOpcode.GuildAchievementDeleted);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(guildGUID);
+        this.writeInt32(achievementID);
+        this.writePackedTime(timeDeleted);
+    }
 }

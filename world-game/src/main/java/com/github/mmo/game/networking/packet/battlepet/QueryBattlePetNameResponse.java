@@ -1,49 +1,45 @@
 package com.github.mmo.game.networking.packet.battlepet;
 
 
-import com.github.mmo.game.entity.unit.declinedName;import com.github.mmo.game.networking.ServerPacket;
-public class QueryBattlePetNameResponse extends ServerPacket
-{
-	public ObjectGuid battlePetID = ObjectGuid.EMPTY;
-	public int creatureID;
-	public long timestamp;
-	public boolean allow;
+import com.github.mmo.game.networking.ServerPacket;
 
-	public boolean hasDeclined;
-	public DeclinedName declinedNames;
-	public String name;
-	public QueryBattlePetNameResponse()
-	{
-		super(ServerOpcode.QueryBattlePetNameResponse, ConnectionType.instance);
-	}
+public class QueryBattlePetNameResponse extends ServerPacket {
+    public ObjectGuid battlePetID = ObjectGuid.EMPTY;
+    public int creatureID;
+    public long timestamp;
+    public boolean allow;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(battlePetID);
-		this.writeInt32(creatureID);
-		this.writeInt64(timestamp);
+    public boolean hasDeclined;
+    public DeclinedName declinedNames;
+    public String name;
 
-		this.writeBit(allow);
+    public QueryBattlePetNameResponse() {
+        super(ServerOpcode.QueryBattlePetNameResponse, ConnectionType.instance);
+    }
 
-		if (allow)
-		{
-			this.writeBits(name.getBytes().length, 8);
-			this.writeBit(hasDeclined);
+    @Override
+    public void write() {
+        this.writeGuid(battlePetID);
+        this.writeInt32(creatureID);
+        this.writeInt64(timestamp);
 
-			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
-			{
-				this.writeBits(declinedNames.name.charAt(i).getBytes().length, 7);
-			}
+        this.writeBit(allow);
 
-			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
-			{
-				this.writeString(declinedNames.name.charAt(i));
-			}
+        if (allow) {
+            this.writeBits(name.getBytes().length, 8);
+            this.writeBit(hasDeclined);
 
-			this.writeString(name);
-		}
+            for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i) {
+                this.writeBits(declinedNames.name.charAt(i).getBytes().length, 7);
+            }
 
-		this.flushBits();
-	}
+            for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i) {
+                this.writeString(declinedNames.name.charAt(i));
+            }
+
+            this.writeString(name);
+        }
+
+        this.flushBits();
+    }
 }

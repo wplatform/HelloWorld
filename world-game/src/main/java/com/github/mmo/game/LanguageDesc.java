@@ -1,44 +1,36 @@
 package com.github.mmo.game;
 
-public class LanguageDesc
-{
-	public int spellId;
-	public int skillId;
+public class LanguageDesc {
+    public int spellId;
+    public int skillId;
 
-	public LanguageDesc()
-	{
-	}
+    public LanguageDesc() {
+    }
 
-	public LanguageDesc(int spellId, int skillId)
-	{
-		spellId = spellId;
-		skillId = skillId;
-	}
+    public LanguageDesc(int spellId, int skillId) {
+        spellId = spellId;
+        skillId = skillId;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return (new integer(spellId)).hashCode() ^ (new integer(skillId)).hashCode();
-	}
+    public static boolean opEquals(LanguageDesc left, LanguageDesc right) {
+        return left.spellId == right.spellId && left.skillId == right.skillId;
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof LanguageDesc)
-		{
-			return LanguageDesc.opEquals((LanguageDesc)obj, this);
-		}
+    public static boolean opNotEquals(LanguageDesc left, LanguageDesc right) {
+        return !(LanguageDesc.opEquals(left, right));
+    }
 
-		return false;
-	}
+    @Override
+    public int hashCode() {
+        return (new integer(spellId)).hashCode() ^ (new integer(skillId)).hashCode();
+    }
 
-	public static boolean opEquals(LanguageDesc left, LanguageDesc right)
-	{
-		return left.spellId == right.spellId && left.skillId == right.skillId;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LanguageDesc) {
+            return LanguageDesc.opEquals((LanguageDesc) obj, this);
+        }
 
-	public static boolean opNotEquals(LanguageDesc left, LanguageDesc right)
-	{
-		return !(LanguageDesc.opEquals(left, right));
-	}
+        return false;
+    }
 }

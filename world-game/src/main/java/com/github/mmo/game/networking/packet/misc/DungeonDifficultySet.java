@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-public class DungeonDifficultySet extends ServerPacket
-{
-	public int difficultyID;
-	public DungeonDifficultySet()
-	{
-		super(ServerOpcode.SetDungeonDifficulty);
-	}
+public class DungeonDifficultySet extends ServerPacket {
+    public int difficultyID;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(difficultyID);
-	}
+    public DungeonDifficultySet() {
+        super(ServerOpcode.SetDungeonDifficulty);
+    }
+
+    @Override
+    public void write() {
+        this.writeInt32(difficultyID);
+    }
 }

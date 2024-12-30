@@ -1,23 +1,21 @@
 package com.github.mmo.game.entity.areatrigger.model;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class AreaTriggerOrbitInfo
-{
-	public ObjectGuid pathTarget = null;
-	public Vector3 center = null;
-	public boolean counterClockwise;
-	public boolean canLoop;
-	public int timeToTarget;
-	public int elapsedTimeForMovement;
-	public int startDelay;
-	public float radius;
-	public float blendFromRadius;
-	public float initialAngle;
-	public float ZOffset;
+public class AreaTriggerOrbitInfo {
+    public ObjectGuid pathTarget = null;
+    public Vector3 center = null;
+    public boolean counterClockwise;
+    public boolean canLoop;
+    public int timeToTarget;
+    public int elapsedTimeForMovement;
+    public int startDelay;
+    public float radius;
+    public float blendFromRadius;
+    public float initialAngle;
+    public float ZOffset;
 
-	public final void write(WorldPacket data)
-	{
+    public final void write(WorldPacket data) {
         data.writeBit(pathTarget != null);
         data.writeBit(center != null);
         data.writeBit(counterClockwise);
@@ -31,14 +29,12 @@ public class AreaTriggerOrbitInfo
         data.writeFloat(initialAngle);
         data.writeFloat(ZOffset);
 
-		if (pathTarget != null)
-		{
+        if (pathTarget != null) {
             data.writeGuid(pathTarget.getValue());
-		}
+        }
 
-		if (center != null)
-		{
+        if (center != null) {
             data.writeVector3(center.getValue());
-		}
-	}
+        }
+    }
 }

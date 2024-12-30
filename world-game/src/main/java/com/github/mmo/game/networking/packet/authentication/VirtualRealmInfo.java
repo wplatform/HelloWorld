@@ -1,34 +1,30 @@
 package com.github.mmo.game.networking.packet.authentication;
 
-import com.github.mmo.game.networking.*;
-final class VirtualRealmInfo
-{
-	public virtualRealmInfo()
-	{
-	}
+import com.github.mmo.game.networking.WorldPacket;
 
-	public virtualRealmInfo(int realmAddress, boolean isHomeRealm, boolean isInternalRealm, String realmNameActual, String realmNameNormalized)
-	{
-		realmAddress = realmAddress;
-		realmNameInfo = new virtualRealmNameInfo(isHomeRealm, isInternalRealm, realmNameActual, realmNameNormalized);
-	}
+final class VirtualRealmInfo {
+    public int realmAddress; // the virtual address of this realm, constructed as RealmHandle::Region << 24 | RealmHandle::Battlegroup << 16 | RealmHandle::Index
+    public VirtualrealmNameInfo realmNameInfo = new virtualRealmNameInfo();
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(realmAddress);
-		realmNameInfo.write(data);
-	}
+    public virtualRealmInfo() {
+    }
 
-	public int realmAddress; // the virtual address of this realm, constructed as RealmHandle::Region << 24 | RealmHandle::Battlegroup << 16 | RealmHandle::Index
-	public VirtualrealmNameInfo realmNameInfo = new virtualRealmNameInfo();
+    public virtualRealmInfo(int realmAddress, boolean isHomeRealm, boolean isInternalRealm, String realmNameActual, String realmNameNormalized) {
+        realmAddress = realmAddress;
+        realmNameInfo = new virtualRealmNameInfo(isHomeRealm, isInternalRealm, realmNameActual, realmNameNormalized);
+    }
 
-	public VirtualRealmInfo clone()
-	{
-		VirtualRealmInfo varCopy = new virtualRealmInfo();
+    public void write(WorldPacket data) {
+        data.writeInt32(realmAddress);
+        realmNameInfo.write(data);
+    }
 
-		varCopy.realmAddress = this.realmAddress;
-		varCopy.realmNameInfo = this.realmNameInfo;
+    public VirtualRealmInfo clone() {
+        VirtualRealmInfo varCopy = new virtualRealmInfo();
 
-		return varCopy;
-	}
+        varCopy.realmAddress = this.realmAddress;
+        varCopy.realmNameInfo = this.realmNameInfo;
+
+        return varCopy;
+    }
 }

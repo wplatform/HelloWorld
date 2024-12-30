@@ -3,7 +3,7 @@ package com.github.mmo.game.chat;
 public class VariantArgAttribute extends Attribute {
     private Class[] types;
 
-    public VariantArgAttribute(class... types) {
+    public VariantArgAttribute(class...types) {
         setTypes(types);
     }
 

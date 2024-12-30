@@ -4,10 +4,10 @@ package com.github.mmo.game.map.collision.model;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.github.mmo.utils.MathUtil;
 import com.github.mmo.game.map.MapDefine;
-import com.github.mmo.game.map.model.AreaInfo;
 import com.github.mmo.game.map.enums.ModelIgnoreFlags;
+import com.github.mmo.game.map.model.AreaInfo;
+import com.github.mmo.utils.MathUtil;
 
 public class ModelInstance extends ModelMinimalData {
     private final Matrix3 iInvRot;

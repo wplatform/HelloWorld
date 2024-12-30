@@ -1,4 +1,4 @@
 package com.github.mmo.game.arena;
-class TolvironArena
-{
+
+class TolvironArena {
 }

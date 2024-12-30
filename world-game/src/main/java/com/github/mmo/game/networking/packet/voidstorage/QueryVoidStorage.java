@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.voidstorage;
 
-import com.github.mmo.game.networking.*;class QueryVoidStorage extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class QueryVoidStorage extends ClientPacket {
     public ObjectGuid npc = ObjectGuid.EMPTY;
 
     public QueryVoidStorage(WorldPacket packet) {

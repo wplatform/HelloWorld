@@ -1,26 +1,23 @@
 package com.github.mmo.game.map;
-public final class UpdateAdditionalSaveDataEvent
-{
-	public String key;
-	public Object value;
 
-	public UpdateAdditionalSaveDataEvent()
-	{
-	}
+public final class UpdateAdditionalSaveDataEvent {
+    public String key;
+    public Object value;
 
-	public UpdateAdditionalSaveDataEvent(String key, Object value)
-	{
-		key = key;
-		value = value;
-	}
+    public UpdateAdditionalSaveDataEvent() {
+    }
 
-	public UpdateAdditionalSaveDataEvent clone()
-	{
-		UpdateAdditionalSaveDataEvent varCopy = new UpdateAdditionalSaveDataEvent();
+    public UpdateAdditionalSaveDataEvent(String key, Object value) {
+        key = key;
+        value = value;
+    }
 
-		varCopy.key = this.key;
-		varCopy.value = this.value;
+    public UpdateAdditionalSaveDataEvent clone() {
+        UpdateAdditionalSaveDataEvent varCopy = new UpdateAdditionalSaveDataEvent();
 
-		return varCopy;
-	}
+        varCopy.key = this.key;
+        varCopy.value = this.value;
+
+        return varCopy;
+    }
 }

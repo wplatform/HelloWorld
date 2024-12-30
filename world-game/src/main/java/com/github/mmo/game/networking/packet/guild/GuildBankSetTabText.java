@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;public class GuildBankSetTabText extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class GuildBankSetTabText extends ClientPacket {
     public int tab;
     public String tabText;
 

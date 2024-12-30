@@ -13,7 +13,7 @@ public class HeirloomData {
         this(0, 0);
     }
 
-        public HeirloomData(HeirloomPlayerFlag flags, int bonusId) {
+    public HeirloomData(HeirloomPlayerFlag flags, int bonusId) {
         setFlags(flags);
         setBonusId(bonusId);
     }

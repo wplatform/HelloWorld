@@ -13,7 +13,7 @@ class NearestHostileUnitInAttackDistanceCheck implements ICheck<unit> {
         this(creature, 0);
     }
 
-        public NearestHostileUnitInAttackDistanceCheck(Creature creature, float dist) {
+    public NearestHostileUnitInAttackDistanceCheck(Creature creature, float dist) {
         me = creature;
         range = (dist == 0 ? 9999 : dist);
         force = (dist != 0);

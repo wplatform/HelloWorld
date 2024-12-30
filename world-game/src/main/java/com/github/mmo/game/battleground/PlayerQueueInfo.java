@@ -1,8 +1,6 @@
 package com.github.mmo.game.battleground;
 
 
-
-
 /**
  * stores information for players in queue
  */

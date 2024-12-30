@@ -2,13 +2,13 @@ package com.github.mmo.game.entity.player.model;
 
 
 import com.github.mmo.defines.TradeStatus;
-import com.github.mmo.utils.RandomUtil;
 import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.item.enums.InventoryResult;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.player.enums.TradeSlots;
 import com.github.mmo.game.networking.packet.trade.TradeStatusPkt;
+import com.github.mmo.utils.RandomUtil;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -123,6 +123,32 @@ public class TradeData {
         update(false); // send spell info to caster self
     }
 
+    public final void setAccepted(boolean state, boolean crosssend) {
+        accepted = state;
+
+        if (!state) {
+            TradeStatusPkt info = new TradeStatusPkt();
+            info.status = TradeStatus.UNACCEPTED;
+
+            if (crosssend) {
+                trader.getSession().sendTradeStatus(info);
+            } else {
+                player.getSession().sendTradeStatus(info);
+            }
+        }
+    }
+
+    public final Player getTrader() {
+        return trader;
+    }
+
+    public final boolean hasSpellCastItem() {
+        return !spellCastItem.isEmpty();
+    }
+
+    public final long getMoney() {
+        return money;
+    }
 
     public final void setMoney(long money) {
         if (this.money == money) {
@@ -148,42 +174,12 @@ public class TradeData {
         update(true);
     }
 
+    public final boolean isAccepted() {
+        return accepted;
+    }
 
     public final void setAccepted(boolean state) {
         setAccepted(state, false);
-    }
-
-
-    public final void setAccepted(boolean state, boolean crosssend) {
-        accepted = state;
-
-        if (!state) {
-            TradeStatusPkt info = new TradeStatusPkt();
-            info.status = TradeStatus.UNACCEPTED;
-
-            if (crosssend) {
-                trader.getSession().sendTradeStatus(info);
-            } else {
-                player.getSession().sendTradeStatus(info);
-            }
-        }
-    }
-
-    public final Player getTrader() {
-        return trader;
-    }
-
-    public final boolean hasSpellCastItem() {
-        return !spellCastItem.isEmpty();
-    }
-
-
-    public final long getMoney() {
-        return money;
-    }
-
-    public final boolean isAccepted() {
-        return accepted;
     }
 
     public final boolean isInAcceptProcess() {

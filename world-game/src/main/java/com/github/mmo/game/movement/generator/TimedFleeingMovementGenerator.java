@@ -6,13 +6,13 @@ import com.github.mmo.game.entity.unit.Unit;
 public class TimedFleeingMovementGenerator extends FleeingMovementGenerator<Creature> {
     private final TimeTracker totalFleeTime;
 
-   
+
     public TimedFleeingMovementGenerator(ObjectGuid fright, int time) {
         super(fright);
         totalFleeTime = new timeTracker(time);
     }
 
-   
+
     @Override
     public boolean update(Unit owner, int diff) {
         if (owner == null || !owner.isAlive()) {

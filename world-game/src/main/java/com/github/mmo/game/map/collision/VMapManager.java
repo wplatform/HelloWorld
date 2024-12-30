@@ -5,13 +5,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.github.mmo.common.Logs;
 import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.game.DisableFlags;
-import game.DisableManager;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.map.MapDefine;
 import com.github.mmo.game.map.collision.model.*;
 import com.github.mmo.game.map.enums.LoadResult;
 import com.github.mmo.game.map.enums.ModelIgnoreFlags;
 import com.github.mmo.game.map.model.AreaInfo;
+import game.DisableManager;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,6 +37,9 @@ public class VMapManager {
     private DisableManager disableManager;
     private Path dataPath;
 
+    private VMapManager() {
+    }
+
     public final boolean isLineOfSightCalcEnabled() {
         return enableLineOfSightCalc;
     }
@@ -48,10 +51,6 @@ public class VMapManager {
     public final boolean isMapLoadingEnabled() {
         return enableLineOfSightCalc || enableHeightCalc;
     }
-
-    private VMapManager() {
-    }
-
 
     public final LoadResult loadMap(int mapId, int x, int y) throws IOException {
         if (!isMapLoadingEnabled()) {

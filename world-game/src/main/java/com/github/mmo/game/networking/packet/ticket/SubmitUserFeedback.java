@@ -1,27 +1,25 @@
 package com.github.mmo.game.networking.packet.ticket;
 
-import com.github.mmo.game.networking.*;
-public class SubmitUserFeedback extends ClientPacket
-{
-	public SupportTicketheader header = new supportTicketHeader();
-	public String note;
-	public boolean isSuggestion;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public SubmitUserFeedback(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class SubmitUserFeedback extends ClientPacket {
+    public SupportTicketheader header = new supportTicketHeader();
+    public String note;
+    public boolean isSuggestion;
 
-	@Override
-	public void read()
-	{
-		header.read(this);
-		var noteLength = this.<Integer>readBit(24);
-		isSuggestion = this.readBit();
+    public SubmitUserFeedback(WorldPacket packet) {
+        super(packet);
+    }
 
-		if (noteLength != 0)
-		{
-			note = this.readString(noteLength - 1);
-		}
-	}
+    @Override
+    public void read() {
+        header.read(this);
+        var noteLength = this.<Integer>readBit(24);
+        isSuggestion = this.readBit();
+
+        if (noteLength != 0) {
+            note = this.readString(noteLength - 1);
+        }
+    }
 }

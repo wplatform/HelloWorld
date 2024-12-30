@@ -1,40 +1,35 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class AuctionListOwnedItems extends ClientPacket
-{
-	public ObjectGuid auctioneer = ObjectGuid.EMPTY;
-	public int offset;
-	public AddOnInfo taintedBy = null;
-	public Array<AuctionSortDef> sorts = new Array<AuctionSortDef>(2);
+class AuctionListOwnedItems extends ClientPacket {
+    public ObjectGuid auctioneer = ObjectGuid.EMPTY;
+    public int offset;
+    public AddOnInfo taintedBy = null;
+    public Array<AuctionSortDef> sorts = new Array<AuctionSortDef>(2);
 
-	public AuctionListOwnedItems(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public AuctionListOwnedItems(WorldPacket packet) {
+        super(packet);
+    }
 
-	@Override
-	public void read()
-	{
-		auctioneer = this.readPackedGuid();
-		offset = this.readUInt();
+    @Override
+    public void read() {
+        auctioneer = this.readPackedGuid();
+        offset = this.readUInt();
 
-		if (this.readBit())
-		{
-			taintedBy = new AddOnInfo();
-		}
+        if (this.readBit()) {
+            taintedBy = new AddOnInfo();
+        }
 
-		var sortCount = this.<Integer>readBit(2);
+        var sortCount = this.<Integer>readBit(2);
 
-		for (var i = 0; i < sortCount; ++i)
-		{
-			sorts.set(i, new AuctionSortDef(this));
-		}
+        for (var i = 0; i < sortCount; ++i) {
+            sorts.set(i, new AuctionSortDef(this));
+        }
 
-		if (taintedBy != null)
-		{
-			taintedBy.getValue().read(this);
-		}
-	}
+        if (taintedBy != null) {
+            taintedBy.getValue().read(this);
+        }
+    }
 }

@@ -2,12 +2,10 @@ package com.github.mmo.game.chat;
 
 
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-class PdumpCommand
-{
+class PdumpCommand {
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePDumpCopyCommand(CommandHandler handler, PlayerIdentifier player, AccountIdentifier account, String characterName, Long characterGUID)
-	{
+    private static boolean handlePDumpCopyCommand(CommandHandler handler, PlayerIdentifier player, AccountIdentifier account, String characterName, Long characterGUID) {
 		/*
 			std::string name;
 			if (!ValidatePDumpTarget(handler, name, characterName, characterGUID))
@@ -48,13 +46,12 @@ class PdumpCommand
 			// ToDo: use a new trinity_string for this commands
 			handler->PSendSysMessage(LANG_COMMAND_IMPORT_SUCCESS);
 			*/
-		return true;
-	}
+        return true;
+    }
 
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePDumpLoadCommand(CommandHandler handler, String fileName, AccountIdentifier account, String characterName, Long characterGuid)
-	{
+    private static boolean handlePDumpLoadCommand(CommandHandler handler, String fileName, AccountIdentifier account, String characterName, Long characterGuid) {
 		/*
 			if (!AccountMgr.normalizeString(accountName))
 			{
@@ -147,12 +144,11 @@ class PdumpCommand
 					return false;
 			}
 			*/
-		return true;
-	}
+        return true;
+    }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	private static boolean handlePDumpWriteCommand(CommandHandler handler, String fileName, String playerName)
-	{
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    private static boolean handlePDumpWriteCommand(CommandHandler handler, String fileName, String playerName) {
 		/*
 			switch (PlayerDumpWriter().WriteDump(fileName, player.getGUID().GetCounter()))
 			{
@@ -173,6 +169,6 @@ class PdumpCommand
 					return false;
 			}
 			*/
-		return true;
-	}
+        return true;
+    }
 }

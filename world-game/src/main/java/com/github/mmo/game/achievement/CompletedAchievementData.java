@@ -1,11 +1,10 @@
 package com.github.mmo.game.achievement;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class CompletedAchievementData
-{
-	public long date;
-	public ArrayList<ObjectGuid> completingPlayers = new ArrayList<>();
-	public boolean changed;
+public class CompletedAchievementData {
+    public long date;
+    public ArrayList<ObjectGuid> completingPlayers = new ArrayList<>();
+    public boolean changed;
 }

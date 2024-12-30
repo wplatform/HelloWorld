@@ -35,4 +35,4 @@ public enum SpellAuraInterruptFlag2 implements EnumFlag.FlagValue {
     EndOfDungeonEncounter(0x01000000), // Implemented in Unit::AtEndOfEncounter - Similar to EndOfEncounter (but only with bosses, not m+ run or battleground)
 
     public final int value;
-}
+    }

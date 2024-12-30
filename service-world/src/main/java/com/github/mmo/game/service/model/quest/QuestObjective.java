@@ -1,9 +1,8 @@
-package com.github.mmo.game.quest;
+package com.github.mmo.game.service.model.quest;
 
 
+import com.github.mmo.common.EnumFlag;
 import com.github.mmo.common.LocalizedString;
-import com.github.mmo.game.quest.enums.QuestObjectiveFlag;
-import com.github.mmo.game.quest.enums.QuestObjectiveType;
 
 public class QuestObjective {
     public int id;
@@ -12,7 +11,7 @@ public class QuestObjective {
     public byte storageIndex;
     public int objectID;
     public int amount;
-    public QuestObjectiveFlag flags;
+    public EnumFlag<QuestObjectiveFlag> flags;
     public int flags2;
     public float progressBarWeight;
     public LocalizedString description;

@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildEventTabTextChanged extends ServerPacket
-{
-	public int tab;
-	public GuildEventTabTextChanged()
-	{
-		super(ServerOpcode.GuildEventTabTextChanged);
-	}
+public class GuildEventTabTextChanged extends ServerPacket {
+    public int tab;
 
-	@Override
-	public void write()
-	{
+    public GuildEventTabTextChanged() {
+        super(ServerOpcode.GuildEventTabTextChanged);
+    }
+
+    @Override
+    public void write() {
         this.writeInt32(tab);
-	}
+    }
 }

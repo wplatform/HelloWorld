@@ -3,19 +3,16 @@ package com.github.mmo.game.map;
 
 import com.github.mmo.game.entity.object.WorldObject;
 
-public class ObjectTypeIdCheck implements ICheck<WorldObject>
-{
-	private final TypeId typeId;
-	private final boolean equals;
+public class ObjectTypeIdCheck implements ICheck<WorldObject> {
+    private final TypeId typeId;
+    private final boolean equals;
 
-	public ObjectTypeIdCheck(TypeId typeId, boolean equals)
-	{
-		typeId = typeId;
-		equals = equals;
-	}
+    public ObjectTypeIdCheck(TypeId typeId, boolean equals) {
+        typeId = typeId;
+        equals = equals;
+    }
 
-	public final boolean invoke(WorldObject obj)
-	{
-		return (obj.getTypeId() == typeId) == equals;
-	}
+    public final boolean invoke(WorldObject obj) {
+        return (obj.getTypeId() == typeId) == equals;
+    }
 }

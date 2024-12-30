@@ -1,34 +1,31 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
-public final class SpellCraftingReagent
-{
-	public int itemID;
-	public int dataSlotIndex;
-	public int quantity;
-	public Byte unknown_1000 = null;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void read(WorldPacket data)
-	{
-		itemID = data.readInt32();
-		dataSlotIndex = data.readInt32();
-		quantity = data.readInt32();
+public final class SpellCraftingReagent {
+    public int itemID;
+    public int dataSlotIndex;
+    public int quantity;
+    public Byte unknown_1000 = null;
 
-		if (data.readBit())
-		{
-			unknown_1000 = data.readUInt8();
-		}
-	}
+    public void read(WorldPacket data) {
+        itemID = data.readInt32();
+        dataSlotIndex = data.readInt32();
+        quantity = data.readInt32();
 
-	public SpellCraftingReagent clone()
-	{
-		SpellCraftingReagent varCopy = new SpellCraftingReagent();
+        if (data.readBit()) {
+            unknown_1000 = data.readUInt8();
+        }
+    }
 
-		varCopy.itemID = this.itemID;
-		varCopy.dataSlotIndex = this.dataSlotIndex;
-		varCopy.quantity = this.quantity;
-		varCopy.unknown_1000 = this.unknown_1000;
+    public SpellCraftingReagent clone() {
+        SpellCraftingReagent varCopy = new SpellCraftingReagent();
 
-		return varCopy;
-	}
+        varCopy.itemID = this.itemID;
+        varCopy.dataSlotIndex = this.dataSlotIndex;
+        varCopy.quantity = this.quantity;
+        varCopy.unknown_1000 = this.unknown_1000;
+
+        return varCopy;
+    }
 }

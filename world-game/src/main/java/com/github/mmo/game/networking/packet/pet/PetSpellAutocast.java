@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.pet;
 
-import com.github.mmo.game.networking.*;class PetSpellAutocast extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class PetSpellAutocast extends ClientPacket {
     public ObjectGuid petGUID = ObjectGuid.EMPTY;
 
     public int spellID;

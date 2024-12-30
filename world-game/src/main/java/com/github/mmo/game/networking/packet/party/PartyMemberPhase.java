@@ -1,8 +1,11 @@
 package com.github.mmo.game.networking.packet.party;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
 public final class PartyMemberPhase {
+    public short flags;
+    public short id;
+
     public PartyMemberPhase() {
     }
 
@@ -15,8 +18,5 @@ public final class PartyMemberPhase {
         data.writeInt16(flags);
         data.writeInt16(id);
     }
-
-    public short flags;
-    public short id;
 
 }

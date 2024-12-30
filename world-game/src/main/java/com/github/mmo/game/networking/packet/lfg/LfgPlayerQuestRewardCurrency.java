@@ -1,27 +1,22 @@
 package com.github.mmo.game.networking.packet.lfg;
 
-public final class LfgPlayerQuestRewardCurrency
-{
-	public LfgPlayerQuestRewardCurrency()
-	{
-	}
+public final class LfgPlayerQuestRewardCurrency {
+    public int currencyID;
+    public int quantity;
 
-	public LfgPlayerQuestRewardCurrency(int currencyId, int quantity)
-	{
-		currencyID = currencyId;
-		quantity = quantity;
-	}
+    public LfgPlayerQuestRewardCurrency() {
+    }
+    public LfgPlayerQuestRewardCurrency(int currencyId, int quantity) {
+        currencyID = currencyId;
+        quantity = quantity;
+    }
 
-	public int currencyID;
-	public int quantity;
+    public LfgPlayerQuestRewardCurrency clone() {
+        LfgPlayerQuestRewardCurrency varCopy = new LfgPlayerQuestRewardCurrency();
 
-	public LfgPlayerQuestRewardCurrency clone()
-	{
-		LfgPlayerQuestRewardCurrency varCopy = new LfgPlayerQuestRewardCurrency();
+        varCopy.currencyID = this.currencyID;
+        varCopy.quantity = this.quantity;
 
-		varCopy.currencyID = this.currencyID;
-		varCopy.quantity = this.quantity;
-
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

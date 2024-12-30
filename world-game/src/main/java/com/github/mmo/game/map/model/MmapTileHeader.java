@@ -2,7 +2,8 @@ package com.github.mmo.game.map.model;// C# TO JAVA CONVERTER WARNING: Java does
 
 import java.nio.ByteBuffer;
 
-public record MmapTileHeader(int mmapMagic, int dtVersion, int mmapVersion, int size, byte usesLiquids, byte[] padding) {
+public record MmapTileHeader(int mmapMagic, int dtVersion, int mmapVersion, int size, byte usesLiquids,
+                             byte[] padding) {
 
     public MmapTileHeader(ByteBuffer buffer) {
         this(buffer.getInt(), buffer.get(), buffer.get(), buffer.getShort(), buffer.get(), new byte[3]);

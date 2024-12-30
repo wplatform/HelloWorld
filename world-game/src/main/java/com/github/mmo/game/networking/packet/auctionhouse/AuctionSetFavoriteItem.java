@@ -1,20 +1,19 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
-import com.github.mmo.game.networking.*;
-class AuctionSetFavoriteItem extends ClientPacket
-{
-	public auctionFavoriteInfo item = new auctionFavoriteInfo();
-	public boolean isNotFavorite = true;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public AuctionSetFavoriteItem(WorldPacket packet)
-	{
-		super(packet);
-	}
+class AuctionSetFavoriteItem extends ClientPacket {
+    public auctionFavoriteInfo item = new auctionFavoriteInfo();
+    public boolean isNotFavorite = true;
 
-	@Override
-	public void read()
-	{
-		isNotFavorite = this.readBit();
-		item = new auctionFavoriteInfo(this);
-	}
+    public AuctionSetFavoriteItem(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        isNotFavorite = this.readBit();
+        item = new auctionFavoriteInfo(this);
+    }
 }

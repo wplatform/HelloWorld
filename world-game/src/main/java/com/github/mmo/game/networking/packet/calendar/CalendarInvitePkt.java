@@ -1,22 +1,22 @@
 package com.github.mmo.game.networking.packet.calendar;
 
-import com.github.mmo.game.networking.*;
-class CalendarInvitePkt extends ClientPacket
-{
-	public long moderatorID;
-	public boolean isSignUp;
-	public boolean creating = true;
-	public long eventID;
-	public long clubID;
-	public String name;
-	public CalendarInvitePkt(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
+class CalendarInvitePkt extends ClientPacket {
+    public long moderatorID;
+    public boolean isSignUp;
+    public boolean creating = true;
+    public long eventID;
+    public long clubID;
+    public String name;
+
+    public CalendarInvitePkt(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         eventID = this.readUInt64();
         moderatorID = this.readUInt64();
         clubID = this.readUInt64();
@@ -26,5 +26,5 @@ class CalendarInvitePkt extends ClientPacket
         isSignUp = this.readBit();
 
         name = this.readString(nameLen);
-	}
+    }
 }

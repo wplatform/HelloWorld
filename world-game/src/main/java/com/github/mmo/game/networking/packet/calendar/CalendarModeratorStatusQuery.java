@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.calendar;
 
-import com.github.mmo.game.networking.*;class CalendarModeratorStatusQuery extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class CalendarModeratorStatusQuery extends ClientPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;
 
     public long eventID;

@@ -1,67 +1,62 @@
 package com.github.mmo.game.networking.packet.combatlog;
 
 
-import com.github.mmo.game.networking.*;
-import java.util.*;
+import com.github.mmo.game.networking.WorldPacket;
+
+import java.util.ArrayList;
 
 
-class SpellPeriodicAuraLog extends CombatLogServerPacket
-{
+class SpellPeriodicAuraLog extends CombatLogServerPacket {
     public ObjectGuid targetGUID = ObjectGuid.EMPTY;
     public ObjectGuid casterGUID = ObjectGuid.EMPTY;
-	public int spellID;
-	public ArrayList<SpellLogEffect> effects = new ArrayList<>();
-	public SpellPeriodicAuraLog()
-	{
-		super(ServerOpcode.SpellPeriodicAuraLog, ConnectionType.instance);
-	}
+    public int spellID;
+    public ArrayList<SpellLogEffect> effects = new ArrayList<>();
 
-	@Override
-	public void write()
-	{
+    public SpellPeriodicAuraLog() {
+        super(ServerOpcode.SpellPeriodicAuraLog, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(targetGUID);
         this.writeGuid(casterGUID);
         this.writeInt32(spellID);
         this.writeInt32(effects.size());
-		writeLogDataBit();
+        writeLogDataBit();
         flushBits();
 
-		effects.forEach(p -> p.write(this));
+        effects.forEach(p -> p.write(this));
 
-		writeLogData();
-	}
+        writeLogData();
+    }
 
-	public final static class PeriodicalAuraLogEffectDebugInfo
-	{
-		public float critRollMade;
-		public float critRollNeeded;
+    public final static class PeriodicalAuraLogEffectDebugInfo {
+        public float critRollMade;
+        public float critRollNeeded;
 
-		public PeriodicalAuraLogEffectDebugInfo clone()
-		{
-			PeriodicalAuraLogEffectDebugInfo varCopy = new PeriodicalAuraLogEffectDebugInfo();
+        public PeriodicalAuraLogEffectDebugInfo clone() {
+            PeriodicalAuraLogEffectDebugInfo varCopy = new PeriodicalAuraLogEffectDebugInfo();
 
-			varCopy.critRollMade = this.critRollMade;
-			varCopy.critRollNeeded = this.critRollNeeded;
+            varCopy.critRollMade = this.critRollMade;
+            varCopy.critRollNeeded = this.critRollNeeded;
 
-			return varCopy;
-		}
-	}
+            return varCopy;
+        }
+    }
 
-	public static class SpellLogEffect
-	{
-		public int effect;
-		public int amount;
-		public int originalDamage;
-		public int overHealOrKill;
-		public int schoolMaskOrPower;
-		public int absorbedOrAmplitude;
-		public int resisted;
-		public boolean crit;
-		public PeriodicalAuraLogEffectdebugInfo debugInfo = null;
-		public contentTuningParams contentTuning;
+    public static class SpellLogEffect {
+        public int effect;
+        public int amount;
+        public int originalDamage;
+        public int overHealOrKill;
+        public int schoolMaskOrPower;
+        public int absorbedOrAmplitude;
+        public int resisted;
+        public boolean crit;
+        public PeriodicalAuraLogEffectdebugInfo debugInfo = null;
+        public contentTuningParams contentTuning;
 
-		public final void write(WorldPacket data)
-		{
+        public final void write(WorldPacket data) {
             data.writeInt32(effect);
             data.writeInt32(amount);
             data.writeInt32(originalDamage);
@@ -75,16 +70,14 @@ class SpellPeriodicAuraLog extends CombatLogServerPacket
             data.writeBit(contentTuning != null);
             data.flushBits();
 
-			if (contentTuning != null)
-			{
-				contentTuning.write(data);
-			}
+            if (contentTuning != null) {
+                contentTuning.write(data);
+            }
 
-			if (debugInfo != null)
-			{
+            if (debugInfo != null) {
                 data.writeFloat(debugInfo.getValue().critRollMade);
                 data.writeFloat(debugInfo.getValue().critRollNeeded);
-			}
-		}
-	}
+            }
+        }
+    }
 }

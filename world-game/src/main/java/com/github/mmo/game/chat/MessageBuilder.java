@@ -7,7 +7,7 @@ public class MessageBuilder {
         return invoke(locale.enUS);
     }
 
-        public dynamic invoke(Locale locale) {
+    public dynamic invoke(Locale locale) {
         return null;
     }
 }

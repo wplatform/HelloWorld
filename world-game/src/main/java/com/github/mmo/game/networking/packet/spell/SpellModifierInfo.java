@@ -1,8 +1,10 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;public class SpellModifierInfo {
+import java.util.ArrayList;
+
+public class SpellModifierInfo {
 
     public byte modIndex;
     public ArrayList<SpellModifierData> modifierData = new ArrayList<>();

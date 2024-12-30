@@ -1,7 +1,6 @@
 package com.github.mmo.game.spell;
 
 import com.badlogic.gdx.utils.IntIntMap;
-import lombok.data;
 
 public interface SpellDefine {
 
@@ -34,6 +33,13 @@ public interface SpellDefine {
 
 
     ;;;;
+    int SPELL_CHANNEL_UPDATE_INTERVAL = 1000;
+
+    ;;;
+    float MAX_SPELL_RANGE_TOLERANCE = 3.0f;
+    float TRAJECTORY_MISSILE_SIZE = 3.0f;
+    int AOE_DAMAGE_TARGET_CAP = 20;
+    int SPELL_INTERRUPT_NONPLAYER = 32747;
 
     // Spell pet auras
     @Data
@@ -42,8 +48,6 @@ public interface SpellDefine {
         boolean removeOnChangePet;
         int damage;
     }
-
-    ;;;
 
     // Spell rank chain  (accessed using SpellMgr functions)
     @Data
@@ -54,14 +58,6 @@ public interface SpellDefine {
         SpellInfo last;
         byte rank;
     }
-
-
-    int SPELL_CHANNEL_UPDATE_INTERVAL = 1000;
-    float MAX_SPELL_RANGE_TOLERANCE = 3.0f;
-    float TRAJECTORY_MISSILE_SIZE = 3.0f;
-    int AOE_DAMAGE_TARGET_CAP = 20;
-
-    int SPELL_INTERRUPT_NONPLAYER = 32747;
 
 
     ;;;;

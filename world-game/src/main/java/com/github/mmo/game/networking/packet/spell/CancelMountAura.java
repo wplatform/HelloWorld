@@ -1,15 +1,14 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
-class CancelMountAura extends ClientPacket
-{
-	public CancelMountAura(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-	}
+class CancelMountAura extends ClientPacket {
+    public CancelMountAura(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+    }
 }

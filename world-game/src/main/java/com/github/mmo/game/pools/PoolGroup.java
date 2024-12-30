@@ -1,7 +1,10 @@
 package com.github.mmo.game.pools;
 
 
-import java.util.*;public class PoolGroup<T> {
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class PoolGroup<T> {
     private final ArrayList<PoolObject> explicitlyChanced = new ArrayList<>();
     private final ArrayList<PoolObject> equalChanced = new ArrayList<>();
 
@@ -66,7 +69,7 @@ import java.util.*;public class PoolGroup<T> {
         despawnObject(spawns, 0, false);
     }
 
-        public final void despawnObject(SpawnedPoolData spawns, long guid, boolean alwaysDeleteRespawnTime) {
+    public final void despawnObject(SpawnedPoolData spawns, long guid, boolean alwaysDeleteRespawnTime) {
         for (var i = 0; i < equalChanced.size(); ++i) {
             // if spawned
             if (spawns.<T>IsSpawnedObject(equalChanced.get(i).guid)) {
@@ -170,20 +173,17 @@ import java.util.*;public class PoolGroup<T> {
         }
     }
 
-
-    public final void setPoolId(int pool_id) {
-        poolId = pool_id;
-    }
-
     public final boolean isEmpty() {
         return explicitlyChanced.isEmpty() && equalChanced.isEmpty();
     }
-
 
     public final int getPoolId() {
         return poolId;
     }
 
+    public final void setPoolId(int pool_id) {
+        poolId = pool_id;
+    }
 
     private void despawn1Object(SpawnedPoolData spawns, long guid, boolean alwaysDeleteRespawnTime) {
         despawn1Object(spawns, guid, alwaysDeleteRespawnTime, true);
@@ -193,7 +193,7 @@ import java.util.*;public class PoolGroup<T> {
         despawn1Object(spawns, guid, false, true);
     }
 
-        private void despawn1Object(SpawnedPoolData spawns, long guid, boolean alwaysDeleteRespawnTime, boolean saveRespawnTime) {
+    private void despawn1Object(SpawnedPoolData spawns, long guid, boolean alwaysDeleteRespawnTime, boolean saveRespawnTime) {
         switch (T.class.name) {
             case "Creature": {
                 var creatureBounds = spawns.getMap().getCreatureBySpawnIdStore().get(guid);

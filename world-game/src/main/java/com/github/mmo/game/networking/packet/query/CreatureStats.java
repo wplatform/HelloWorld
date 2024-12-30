@@ -1,8 +1,9 @@
 package com.github.mmo.game.networking.packet.query;
 
 
+import java.util.ArrayList;
 
-import java.util.*;public class CreatureStats {
+public class CreatureStats {
     public String title;
     public String titleAlt;
     public String cursorName;

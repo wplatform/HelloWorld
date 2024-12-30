@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.auctionhouse;
 
 
 import com.github.mmo.game.networking.WorldPacket;
+
 public final class AuctionSortDef {
     public AuctionHousesortOrder sortOrder = AuctionHouseSortOrder.values()[0];
     public boolean reverseSort;

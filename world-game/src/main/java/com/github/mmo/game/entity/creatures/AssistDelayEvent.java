@@ -1,10 +1,9 @@
 package com.github.mmo.game.entity;
 
 
-
 import com.github.mmo.game.entity.unit.Unit;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class AssistDelayEvent extends BasicEvent {
     private final ArrayList<ObjectGuid> m_assistants = new ArrayList<>();

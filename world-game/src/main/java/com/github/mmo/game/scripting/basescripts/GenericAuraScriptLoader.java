@@ -1,6 +1,8 @@
 package com.github.mmo.game.scripting.basescripts;
 
-import com.github.mmo.game.scripting.*;public class GenericAuraScriptLoader<A extends AuraScript> extends AuraScriptLoader {
+import com.github.mmo.game.scripting.AuraScript;
+
+public class GenericAuraScriptLoader<A extends AuraScript> extends AuraScriptLoader {
     private final Object[] args;
 
     public GenericAuraScriptLoader(String name, Object[] args) {

@@ -2,19 +2,17 @@ package com.github.mmo.game.entity;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class ConversationActorField
-{
-	public int creatureID;
-	public int creatureDisplayInfoID;
+public class ConversationActorField {
+    public int creatureID;
+    public int creatureDisplayInfoID;
     public ObjectGuid actorGUID = ObjectGuid.EMPTY;
-	public int id;
-	public ConversationActortype type = ConversationActorType.values()[0];
-	public int noActorObject;
+    public int id;
+    public ConversationActortype type = ConversationActorType.values()[0];
+    public int noActorObject;
 
-	public final void writeCreate(WorldPacket data, Conversation owner, Player receiver)
-	{
+    public final void writeCreate(WorldPacket data, Conversation owner, Player receiver) {
         data.writeInt32(creatureID);
         data.writeInt32(creatureDisplayInfoID);
         data.writeGuid(actorGUID);
@@ -22,10 +20,9 @@ public class ConversationActorField
         data.writeBits(type, 1);
         data.writeBits(noActorObject, 1);
         data.flushBits();
-	}
+    }
 
-	public final void writeUpdate(WorldPacket data, boolean ignoreChangesMask, Conversation owner, Player receiver)
-	{
+    public final void writeUpdate(WorldPacket data, boolean ignoreChangesMask, Conversation owner, Player receiver) {
         data.writeInt32(creatureID);
         data.writeInt32(creatureDisplayInfoID);
         data.writeGuid(actorGUID);
@@ -33,5 +30,5 @@ public class ConversationActorField
         data.writeBits(type, 1);
         data.writeBits(noActorObject, 1);
         data.flushBits();
-	}
+    }
 }

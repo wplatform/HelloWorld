@@ -3,7 +3,7 @@ package com.github.mmo.game.spell.auras.enums;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum  AuraFlags {
+public enum AuraFlags {
     AFLAG_NONE(0x0000),
     AFLAG_NOCASTER(0x0001),
     AFLAG_POSITIVE(0x0002),

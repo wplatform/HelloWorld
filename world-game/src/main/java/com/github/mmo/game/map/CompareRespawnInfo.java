@@ -1,27 +1,22 @@
 package com.github.mmo.game.map;
 
-import java.util.*;
+import java.util.Comparator;
 
 
-final class CompareRespawnInfo implements Comparator<RespawnInfo>
-{
-	public int compare(RespawnInfo a, RespawnInfo b)
-	{
-		if (a == b)
-		{
-			return 0;
-		}
+final class CompareRespawnInfo implements Comparator<RespawnInfo> {
+    public int compare(RespawnInfo a, RespawnInfo b) {
+        if (a == b) {
+            return 0;
+        }
 
-		if (a.getRespawnTime() != b.getRespawnTime())
-		{
-			return (new Long(a.getRespawnTime())).compareTo(b.getRespawnTime());
-		}
+        if (a.getRespawnTime() != b.getRespawnTime()) {
+            return (new Long(a.getRespawnTime())).compareTo(b.getRespawnTime());
+        }
 
-		if (a.getSpawnId() != b.getSpawnId())
-		{
-			return (new Long(a.getSpawnId())).compareTo(b.getSpawnId());
-		}
+        if (a.getSpawnId() != b.getSpawnId()) {
+            return (new Long(a.getSpawnId())).compareTo(b.getSpawnId());
+        }
 
-		return a.getObjectType().CompareTo(b.getObjectType());
-	}
+        return a.getObjectType().CompareTo(b.getObjectType());
+    }
 }

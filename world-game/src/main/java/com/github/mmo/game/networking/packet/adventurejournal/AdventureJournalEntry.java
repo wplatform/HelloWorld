@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.adventurejournal;
 
-final class AdventureJournalEntry
-{
-	public int adventureJournalID;
-	public int priority;
+final class AdventureJournalEntry {
+    public int adventureJournalID;
+    public int priority;
 
-	public AdventureJournalEntry clone()
-	{
-		AdventureJournalEntry varCopy = new AdventureJournalEntry();
+    public AdventureJournalEntry clone() {
+        AdventureJournalEntry varCopy = new AdventureJournalEntry();
 
-		varCopy.adventureJournalID = this.adventureJournalID;
-		varCopy.priority = this.priority;
+        varCopy.adventureJournalID = this.adventureJournalID;
+        varCopy.priority = this.priority;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

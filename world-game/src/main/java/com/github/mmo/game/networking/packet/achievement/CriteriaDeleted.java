@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.achievement;
 
 
-public class CriteriaDeleted extends ServerPacket
-{
-	public int criteriaID;
-	public CriteriaDeleted()
-	{
-		super(ServerOpcode.CriteriaDeleted, ConnectionType.instance);
-	}
+public class CriteriaDeleted extends ServerPacket {
+    public int criteriaID;
 
-	@Override
-	public void write()
-	{
+    public CriteriaDeleted() {
+        super(ServerOpcode.CriteriaDeleted, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
         this.writeInt32(criteriaID);
-	}
+    }
 }

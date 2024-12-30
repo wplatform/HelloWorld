@@ -2,7 +2,9 @@ package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.networking.*;public class PassiveSpellHistory {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class PassiveSpellHistory {
     public int spellID;
     public int auraSpellID;
 

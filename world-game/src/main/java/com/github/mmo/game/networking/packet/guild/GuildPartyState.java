@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildPartyState extends ServerPacket
-{
-	public float guildXPEarnedMult = 0.0f;
-	public int numMembers;
-	public int numRequired;
-	public boolean inGuildParty;
-	public GuildPartyState()
-	{
-		super(ServerOpcode.GuildPartyState, ConnectionType.instance);
-	}
+public class GuildPartyState extends ServerPacket {
+    public float guildXPEarnedMult = 0.0f;
+    public int numMembers;
+    public int numRequired;
+    public boolean inGuildParty;
 
-	@Override
-	public void write()
-	{
-		this.writeBit(inGuildParty);
-		this.flushBits();
+    public GuildPartyState() {
+        super(ServerOpcode.GuildPartyState, ConnectionType.instance);
+    }
 
-		this.writeInt32(numMembers);
-		this.writeInt32(numRequired);
-		this.writeFloat(guildXPEarnedMult);
-	}
+    @Override
+    public void write() {
+        this.writeBit(inGuildParty);
+        this.flushBits();
+
+        this.writeInt32(numMembers);
+        this.writeInt32(numRequired);
+        this.writeFloat(guildXPEarnedMult);
+    }
 }

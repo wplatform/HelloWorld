@@ -1,11 +1,12 @@
 package com.github.mmo.game.spell;
 
 
-import com.github.mmo.game.condition.condition;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.object.WorldObject;
 
-import java.util.ArrayList;public class WorldObjectSpellAreaTargetCheck extends WorldObjectSpellTargetCheck {
+import java.util.ArrayList;
+
+public class WorldObjectSpellAreaTargetCheck extends WorldObjectSpellTargetCheck {
     private final float range;
     private final Position position;
 

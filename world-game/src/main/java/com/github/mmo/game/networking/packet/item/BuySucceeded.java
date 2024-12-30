@@ -1,23 +1,21 @@
 package com.github.mmo.game.networking.packet.item;
 
 
-public class BuySucceeded extends ServerPacket
-{
+public class BuySucceeded extends ServerPacket {
     public ObjectGuid vendorGUID = ObjectGuid.EMPTY;
-	public int muid;
-	public int quantityBought;
-	public int newQuantity;
-	public BuySucceeded()
-	{
-		super(ServerOpcode.BuySucceeded);
-	}
+    public int muid;
+    public int quantityBought;
+    public int newQuantity;
 
-	@Override
-	public void write()
-	{
+    public BuySucceeded() {
+        super(ServerOpcode.BuySucceeded);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(vendorGUID);
         this.writeInt32(muid);
         this.writeInt32(newQuantity);
         this.writeInt32(quantityBought);
-	}
+    }
 }

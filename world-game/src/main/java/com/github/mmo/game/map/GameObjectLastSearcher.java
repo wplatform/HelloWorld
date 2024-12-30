@@ -6,49 +6,42 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.map.interfaces.*;
 
 
-public class GameObjectLastSearcher implements IGridNotifierGameObject
-{
-	private final PhaseShift phaseShift;
-	private final ICheck<GameObject> check;
-	private GameObject object;
+public class GameObjectLastSearcher implements IGridNotifierGameObject {
+    private final PhaseShift phaseShift;
+    private final ICheck<GameObject> check;
+    private GameObject object;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public GameObjectLastSearcher(WorldObject searcher, ICheck<GameObject> check, GridType gridType) {
+        phaseShift = searcher.getPhaseShift();
+        check = check;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public GameObjectLastSearcher(WorldObject searcher, ICheck<GameObject> check, GridType gridType)
-	{
-		phaseShift = searcher.getPhaseShift();
-		check = check;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<GameObject> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var gameObject = objs.get(i);
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-			if (!gameObject.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<GameObject> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var gameObject = objs.get(i);
 
-			if (check.invoke(gameObject))
-			{
-				object = gameObject;
-			}
-		}
-	}
+            if (!gameObject.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-	public final GameObject getTarget()
-	{
-		return object;
-	}
+            if (check.invoke(gameObject)) {
+                object = gameObject;
+            }
+        }
+    }
+
+    public final GameObject getTarget() {
+        return object;
+    }
+
+
 }

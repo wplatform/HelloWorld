@@ -54,8 +54,7 @@ public class NGrid {
         return cells[x][y];
     }
 
-    public void link(GridRefManager<NGrid> addTo)
-    {
+    public void link(GridRefManager<NGrid> addTo) {
         reference.link(addTo, this);
     }
 
@@ -128,15 +127,12 @@ public class NGrid {
     }
 
 
-    public final void incUnloadActiveLock()
-    {
+    public final void incUnloadActiveLock() {
         ++unloadActiveLockCount;
     }
 
-    public final void decUnloadActiveLock()
-    {
-        if (unloadActiveLockCount != 0)
-        {
+    public final void decUnloadActiveLock() {
+        if (unloadActiveLockCount != 0) {
             --unloadActiveLockCount;
         }
     }

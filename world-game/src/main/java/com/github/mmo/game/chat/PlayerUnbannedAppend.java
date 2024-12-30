@@ -3,39 +3,33 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class PlayerUnbannedAppend implements IChannelAppender
-{
-	public PlayerUnbannedAppend()
-	{
-	}
+final class PlayerUnbannedAppend implements IChannelAppender {
+    private final ObjectGuid moderator;
+    private final ObjectGuid unbanned;
 
-	public PlayerUnbannedAppend(ObjectGuid moderator, ObjectGuid unbanned)
-	{
-		moderator = moderator;
-		unbanned = unbanned;
-	}
+    public PlayerUnbannedAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.PlayerUnbannedNotice;
-	}
+    public PlayerUnbannedAppend(ObjectGuid moderator, ObjectGuid unbanned) {
+        moderator = moderator;
+        unbanned = unbanned;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.senderGuid = moderator;
-		data.targetGuid = unbanned;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.PlayerUnbannedNotice;
+    }
 
-	private final ObjectGuid moderator;
-	private final ObjectGuid unbanned;
+    public void append(ChannelNotify data) {
+        data.senderGuid = moderator;
+        data.targetGuid = unbanned;
+    }
 
-	public PlayerUnbannedAppend clone()
-	{
-		PlayerUnbannedAppend varCopy = new PlayerUnbannedAppend();
+    public PlayerUnbannedAppend clone() {
+        PlayerUnbannedAppend varCopy = new PlayerUnbannedAppend();
 
-		varCopy.moderator = this.moderator;
-		varCopy.unbanned = this.unbanned;
+        varCopy.moderator = this.moderator;
+        varCopy.unbanned = this.unbanned;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

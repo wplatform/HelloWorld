@@ -2,41 +2,37 @@ package com.github.mmo.game.networking.packet.battlepet;
 
 
 import com.github.mmo.game.entity.unit.declinedName;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class BattlePetModifyName extends ClientPacket
-{
-	public ObjectGuid petGuid = ObjectGuid.EMPTY;
-	public String name;
-	public DeclinedName declinedNames;
-	public BattlePetModifyName(WorldPacket packet)
-	{
-		super(packet);
-	}
+class BattlePetModifyName extends ClientPacket {
+    public ObjectGuid petGuid = ObjectGuid.EMPTY;
+    public String name;
+    public DeclinedName declinedNames;
 
-	@Override
-	public void read()
-	{
-		petGuid = this.readPackedGuid();
-		var nameLength = this.<Integer>readBit(7);
+    public BattlePetModifyName(WorldPacket packet) {
+        super(packet);
+    }
 
-		if (this.readBit())
-		{
-			declinedNames = new declinedName();
+    @Override
+    public void read() {
+        petGuid = this.readPackedGuid();
+        var nameLength = this.<Integer>readBit(7);
 
-			var declinedNameLengths = new byte[SharedConst.MaxDeclinedNameCases];
+        if (this.readBit()) {
+            declinedNames = new declinedName();
 
-			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
-			{
-				declinedNameLengths[i] = this.<Byte>readBit(7);
-			}
+            var declinedNameLengths = new byte[SharedConst.MaxDeclinedNameCases];
 
-			for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i)
-			{
-				declinedNames.name.charAt(i) = this.readString(declinedNameLengths[i]);
-			}
-		}
+            for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i) {
+                declinedNameLengths[i] = this.<Byte>readBit(7);
+            }
 
-		name = this.readString(nameLength);
-	}
+            for (byte i = 0; i < SharedConst.MaxDeclinedNameCases; ++i) {
+                declinedNames.name.charAt(i) = this.readString(declinedNameLengths[i]);
+            }
+        }
+
+        name = this.readString(nameLength);
+    }
 }

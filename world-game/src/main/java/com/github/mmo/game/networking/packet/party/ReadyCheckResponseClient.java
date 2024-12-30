@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.party;
 
-import com.github.mmo.game.networking.*;class ReadyCheckResponseClient extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class ReadyCheckResponseClient extends ClientPacket {
 
     public byte partyIndex;
     public boolean isReady;

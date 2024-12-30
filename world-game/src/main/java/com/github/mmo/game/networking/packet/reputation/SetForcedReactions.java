@@ -1,10 +1,10 @@
 package com.github.mmo.game.networking.packet.reputation;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class SetForcedReactions extends ServerPacket {
     public ArrayList<ForcedReaction> reactions = new ArrayList<>();

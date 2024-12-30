@@ -5,7 +5,6 @@ import com.github.mmo.game.map.enums.ZLiquidStatus;
 import lombok.Data;
 
 
-
 @Data
 public class PositionFullTerrainStatus {
     private int areaId;

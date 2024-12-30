@@ -2,13 +2,12 @@ package com.github.mmo.game.entity.gameobjecttype;
 
 
 import com.badlogic.gdx.utils.IntArray;
-import game.GameEvents;
-
 import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.vehicle.ITransport;
 import com.github.mmo.game.map.TransportAnimation;
+import game.GameEvents;
 
 import java.time.Duration;
 import java.util.ArrayList;

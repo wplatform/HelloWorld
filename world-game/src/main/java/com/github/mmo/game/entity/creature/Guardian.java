@@ -3,14 +3,9 @@ package com.github.mmo.game.entity.creature;
 import Framework.Constants.*;
 import com.github.mmo.dbc.domain.SummonProperty;
 import com.github.mmo.defines.WeaponAttackType;
-import game.datastorage.*;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.enums.WeaponDamageRange;
-
-
-
-
-
+import game.datastorage.*;
 
 
 public class Guardian extends Minion {
@@ -40,7 +35,7 @@ public class Guardian extends Minion {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override void InitStats(uint duration)
     @Override
     public void initStats(int duration) {
@@ -89,7 +84,7 @@ public class Guardian extends Minion {
 
         setMeleeDamageSchool(SpellSchools.forValue(cinfo.dmgSchool));
 
-        setStatFlatModifier(UnitMods.Armor, UnitModifierFlatType.Base, (float)petlevel * 50);
+        setStatFlatModifier(UnitMods.Armor, UnitModifierFlatType.Base, (float) petlevel * 50);
 
         setBaseAttackTime(WeaponAttackType.BaseAttack, SharedConst.BaseAttackTime);
         setBaseAttackTime(WeaponAttackType.OffAttack, SharedConst.BaseAttackTime);
@@ -122,15 +117,14 @@ public class Guardian extends Minion {
             for (byte stat = 0; stat < Stats.Max.getValue(); ++stat) {
                 setCreateStat(Stats.forValue(stat), pInfo.stats[stat]);
             }
-        }
-        else { // not exist in DB, use some default fake data
+        } else { // not exist in DB, use some default fake data
             // remove elite bonuses included in DB values
             var stats = Global.getObjectMgr().getCreatureBaseStats(petlevel, cinfo.unitClass);
             applyLevelScaling();
 
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: SetCreateHealth((uint)(Global.DB2Mgr.EvaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.GetHealthScalingExpansion(), UnitData.ContentTuningID, (PlayerClass)cinfo.UnitClass) * cinfo.ModHealth * cinfo.ModHealthExtra * GetHealthMod(cinfo.Rank)));
-            setCreateHealth((int)(Global.getDB2Mgr().evaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.getHealthScalingExpansion(), unitData.contentTuningID, PlayerClass.forValue(cinfo.unitClass)) * cinfo.modHealth * cinfo.modHealthExtra * getHealthMod(cinfo.rank)));
+            setCreateHealth((int) (Global.getDB2Mgr().evaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.getHealthScalingExpansion(), unitData.contentTuningID, PlayerClass.forValue(cinfo.unitClass)) * cinfo.modHealth * cinfo.modHealthExtra * getHealthMod(cinfo.rank)));
             setCreateMana(stats.generateMana(cinfo));
 
             setCreateStat(Stats.Strength, 22);
@@ -165,7 +159,7 @@ public class Guardian extends Minion {
                     val = 0;
                 }
 
-                setBonusDamage((int)(val * 0.15f));
+                setBonusDamage((int) (val * 0.15f));
 
                 setBaseWeaponDamage(WeaponAttackType.BASE_ATTACK, WeaponDamageRange.MIN_DAMAGE, petlevel - (petlevel / 4));
                 setBaseWeaponDamage(WeaponAttackType.BASE_ATTACK, WeaponDamageRange.MAX_DAMAGE, petlevel + (petlevel / 4));
@@ -175,7 +169,7 @@ public class Guardian extends Minion {
             case Hunter: {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: AsPet.SetPetNextLevelExperience((uint)(Global.ObjectMgr.GetXPForLevel(petlevel) * 0.05f));
-                getAsPet().setPetNextLevelExperience((int)(Global.getObjectMgr().getXPForLevel(petlevel) * 0.05f));
+                getAsPet().setPetNextLevelExperience((int) (Global.getObjectMgr().getXPForLevel(petlevel) * 0.05f));
                 //these formula may not be correct; however, it is designed to be close to what it should be
                 //this makes dps 0.5 of pets level
                 setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel - (petlevel / 4));
@@ -188,7 +182,7 @@ public class Guardian extends Minion {
             default: {
                 switch (getEntry()) {
                     case 510: { // mage Water Elemental
-                        setBonusDamage((int)(getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Frost) * 0.33f));
+                        setBonusDamage((int) (getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Frost) * 0.33f));
 
                         break;
                     }
@@ -198,8 +192,8 @@ public class Guardian extends Minion {
                         }
 
                         var bonusDmg = getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Nature) * 0.15f;
-                        setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel * 2.5f - ((float)petlevel / 2) + bonusDmg);
-                        setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, petlevel * 2.5f + ((float)petlevel / 2) + bonusDmg);
+                        setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel * 2.5f - ((float) petlevel / 2) + bonusDmg);
+                        setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, petlevel * 2.5f + ((float) petlevel / 2) + bonusDmg);
 
                         break;
                     }
@@ -219,7 +213,7 @@ public class Guardian extends Minion {
                             setCreateMana(28 + 10 * petlevel);
                         }
 
-                        setBonusDamage((int)(getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Fire) * 0.5f));
+                        setBonusDamage((int) (getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Fire) * 0.5f));
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel * 4 - petlevel);
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, petlevel * 4 + petlevel);
 
@@ -231,7 +225,7 @@ public class Guardian extends Minion {
                             setCreateHealth(28 + 30 * petlevel);
                         }
 
-                        var bonusDmg = (int)(getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Shadow) * 0.3f);
+                        var bonusDmg = (int) (getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Shadow) * 0.3f);
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, (petlevel * 4 - petlevel) + bonusDmg);
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, (petlevel * 4 + petlevel) + bonusDmg);
 
@@ -270,7 +264,7 @@ public class Guardian extends Minion {
                         break;
                     }
                     case 31216: { // Mirror Image
-                        setBonusDamage((int)(getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Frost) * 0.33f));
+                        setBonusDamage((int) (getOwnerUnit().spellBaseDamageBonusDone(SpellSchoolMask.Frost) * 0.33f));
                         setDisplayId(getOwnerUnit().getDisplayId());
 
                         if (pInfo == null) {
@@ -286,7 +280,7 @@ public class Guardian extends Minion {
                             setCreateHealth(28 + 30 * petlevel);
                         }
 
-                        setBonusDamage((int)(getOwnerUnit().getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.5f));
+                        setBonusDamage((int) (getOwnerUnit().getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.5f));
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel - (petlevel / 4));
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, petlevel + (petlevel / 4));
 
@@ -294,7 +288,7 @@ public class Guardian extends Minion {
                     }
                     case 28017: { // Bloodworms
                         setCreateHealth(4 * petlevel);
-                        setBonusDamage((int)(getOwnerUnit().getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.006f));
+                        setBonusDamage((int) (getOwnerUnit().getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.006f));
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MinDamage, petlevel - 30 - (petlevel / 4));
                         setBaseWeaponDamage(WeaponAttackType.BaseAttack, WeaponDamageRange.MaxDamage, petlevel - 30 + (petlevel / 4));
 
@@ -367,7 +361,7 @@ public class Guardian extends Minion {
             }
         }
 
-        setStat(stat, (int)value);
+        setStat(stat, (int) value);
         statFromOwner[stat.getValue()] = ownersBonus;
         updateStatBuffMod(stat);
 
@@ -424,8 +418,8 @@ public class Guardian extends Minion {
                 bonusValue += MathUtil.CalculatePct(owner.getBonusResistanceMod(school), 40);
             }
 
-            setResistance(school, (int)baseValue);
-            setBonusResistanceMod(school, (int)bonusValue);
+            setResistance(school, (int) baseValue);
+            setBonusResistanceMod(school, (int) bonusValue);
         } else {
             updateArmor();
         }
@@ -449,7 +443,7 @@ public class Guardian extends Minion {
         value += getFlatModifierValue(unitMod, UnitModifierFlatType.Total) + bonusArmor;
         value *= getPctModifierValue(unitMod, UnitModifierPctType.Total);
 
-        setArmor((int)baseValue, (int)(value - baseValue));
+        setArmor((int) baseValue, (int) (value - baseValue));
     }
 
     @Override
@@ -497,14 +491,14 @@ public class Guardian extends Minion {
 
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: SetMaxHealth((uint)value);
-        setMaxHealth((int)value);
+        setMaxHealth((int) value);
     }
 
     @Override
     public void updateMaxPower(PowerType power) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: if (GetPowerIndex(power) == (uint)PowerType.Max)
-        if (getPowerIndex(power) == (int)PowerType.Max.getValue()) {
+        if (getPowerIndex(power) == (int) PowerType.Max.getValue()) {
             return;
         }
 
@@ -515,7 +509,7 @@ public class Guardian extends Minion {
         value += getFlatModifierValue(unitMod, UnitModifierFlatType.Total);
         value *= getPctModifierValue(unitMod, UnitModifierPctType.Total);
 
-        setMaxPower(power, (int)value);
+        setMaxPower(power, (int) value);
     }
 
 
@@ -524,7 +518,7 @@ public class Guardian extends Minion {
         updateAttackPowerAndDamage(false);
     }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
 //ORIGINAL LINE: public override void UpdateAttackPowerAndDamage(bool ranged = false)
     @Override
     public void updateAttackPowerAndDamage(boolean ranged) {
@@ -548,14 +542,14 @@ public class Guardian extends Minion {
             if (isHunterPet()) { //hunter pets benefit from owner's attack power
                 var mod = 1.0f; //Hunter contribution modifier
                 bonusAP = owner.getTotalAttackPowerValue(WeaponAttackType.RangedAttack) * 0.22f * mod;
-                setBonusDamage((int)(owner.getTotalAttackPowerValue(WeaponAttackType.RangedAttack) * 0.1287f * mod));
+                setBonusDamage((int) (owner.getTotalAttackPowerValue(WeaponAttackType.RangedAttack) * 0.1287f * mod));
             } else if (isPetGhoul()) { //ghouls benefit from deathknight's attack power (may be summon pet or not)
                 bonusAP = owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.22f;
-                setBonusDamage((int)(owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.1287f));
+                setBonusDamage((int) (owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * 0.1287f));
             } else if (isSpiritWolf()) { //wolf benefit from shaman's attack power
                 var dmgMultiplier = 0.31f;
                 bonusAP = owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * dmgMultiplier;
-                setBonusDamage((int)(owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * dmgMultiplier));
+                setBonusDamage((int) (owner.getTotalAttackPowerValue(WeaponAttackType.BaseAttack) * dmgMultiplier));
             }
             //demons benefit from warlocks shadow or fire damage
             else if (isPet()) {
@@ -567,7 +561,7 @@ public class Guardian extends Minion {
                     maximum = 0;
                 }
 
-                setBonusDamage((int)(maximum * 0.15f));
+                setBonusDamage((int) (maximum * 0.15f));
                 bonusAP = maximum * 0.57f;
             }
             //water elementals benefit from mage's frost damage
@@ -578,7 +572,7 @@ public class Guardian extends Minion {
                     frost = 0;
                 }
 
-                setBonusDamage((int)(frost * 0.4f));
+                setBonusDamage((int) (frost * 0.4f));
             }
         }
 
@@ -588,8 +582,8 @@ public class Guardian extends Minion {
         var baseAttPower = getFlatModifierValue(unitMod, UnitModifierFlatType.Base) * getPctModifierValue(unitMod, UnitModifierPctType.Base);
         var attPowerMultiplier = getPctModifierValue(unitMod, UnitModifierPctType.Total) - 1.0f;
 
-        setAttackPower((int)baseAttPower);
-        setAttackPowerMultiplier((float)attPowerMultiplier);
+        setAttackPower((int) baseAttPower);
+        setAttackPowerMultiplier((float) attPowerMultiplier);
 
         //automatically update weapon damage after attack power modification
         updateDamagePhysical(WeaponAttackType.BaseAttack);
@@ -638,16 +632,12 @@ public class Guardian extends Minion {
         var mindamage = ((baseValue + weaponMindamage) * basePct + totalValue) * totalPct;
         var maxdamage = ((baseValue + weaponMaxdamage) * basePct + totalValue) * totalPct;
 
-        SetUpdateFieldStatValue(values.modifyValue(unitData).modifyValue(unitData.minDamage), (float)mindamage);
-        SetUpdateFieldStatValue(values.modifyValue(unitData).modifyValue(unitData.maxDamage), (float)maxdamage);
+        SetUpdateFieldStatValue(values.modifyValue(unitData).modifyValue(unitData.minDamage), (float) mindamage);
+        SetUpdateFieldStatValue(values.modifyValue(unitData).modifyValue(unitData.maxDamage), (float) maxdamage);
     }
 
     public final float getBonusDamage() {
         return bonusSpellDamage;
-    }
-
-    public final float getBonusStatFromOwner(Stats stat) {
-        return statFromOwner[stat.getValue()];
     }
 
     private void setBonusDamage(float damage) {
@@ -657,7 +647,11 @@ public class Guardian extends Minion {
         if (playerOwner != null) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: playerOwner.SetPetSpellPower((uint)damage);
-            playerOwner.setPetSpellPower((int)damage);
+            playerOwner.setPetSpellPower((int) damage);
         }
+    }
+
+    public final float getBonusStatFromOwner(Stats stat) {
+        return statFromOwner[stat.getValue()];
     }
 }

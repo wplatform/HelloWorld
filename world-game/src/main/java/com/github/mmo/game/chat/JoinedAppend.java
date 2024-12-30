@@ -3,35 +3,29 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class JoinedAppend implements IChannelAppender
-{
-	public JoinedAppend()
-	{
-	}
+final class JoinedAppend implements IChannelAppender {
+    private final ObjectGuid guid;
 
-	public JoinedAppend(ObjectGuid guid)
-	{
+    public JoinedAppend() {
+    }
+
+    public JoinedAppend(ObjectGuid guid) {
         guid = guid;
-	}
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.JoinedNotice;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.JoinedNotice;
+    }
 
-	public void append(ChannelNotify data)
-	{
+    public void append(ChannelNotify data) {
         data.senderGuid = guid;
-	}
+    }
 
-	private final ObjectGuid guid;
-
-	public JoinedAppend clone()
-	{
-		JoinedAppend varCopy = new JoinedAppend();
+    public JoinedAppend clone() {
+        JoinedAppend varCopy = new JoinedAppend();
 
         varCopy.guid = this.guid;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

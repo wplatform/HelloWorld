@@ -10,7 +10,7 @@ import com.github.mmo.game.networking.opcode.ServerOpCode;
 public class PlayOrphanSpellVisual extends ServerPacket {
     public ObjectGuid target = ObjectGuid.EMPTY; // Exclusive with TargetLocation
     public Position sourceLocation;
-        public int spellVisualID;
+    public int spellVisualID;
     public boolean speedAsTime;
     public float travelSpeed;
     public float launchDelay; // Always zero

@@ -1,9 +1,9 @@
 package com.github.mmo.game.networking.packet.npc;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class GossipMessagePkt extends ServerPacket {
     public ArrayList<ClientgossipOptions> gossipOptions = new ArrayList<>();

@@ -38,7 +38,7 @@ public class StaticMapTree {
         this.mapId = mapId;
     }
 
-        public static LoadResult canLoadMap(VMapManager vm, int mapID, int tileX, int tileY) {
+    public static LoadResult canLoadMap(VMapManager vm, int mapID, int tileX, int tileY) {
 
         Path mapPath = vm.getVMapPath().resolve(vm.getMapFileName(mapID));
 
@@ -79,7 +79,7 @@ public class StaticMapTree {
         return LoadResult.Success;
     }
 
-        public static String getTileFileName(int mapID, int tileX, int tileY) {
+    public static String getTileFileName(int mapID, int tileX, int tileY) {
         return String.format("%4d_%2d_%2d.vmtile", mapID, tileY, tileX);
     }
 
@@ -92,7 +92,7 @@ public class StaticMapTree {
         xyPos.setY(id & 0xFF);
     }
 
-        private static Pair<Path, Integer> openMapTileFile(VMapManager vm, int mapID, int tileX, int tileY) {
+    private static Pair<Path, Integer> openMapTileFile(VMapManager vm, int mapID, int tileX, int tileY) {
         Path vmapPath = vm.getVMapPath();
         Path titleFilePath = vmapPath.resolve(getTileFileName(mapID, tileX, tileY));
         if (Files.exists(titleFilePath)) {
@@ -336,7 +336,7 @@ public class StaticMapTree {
 
     }
 
-        public final boolean getAreaInfo(Vector3 outPos, AreaInfo outAreaInfo) {
+    public final boolean getAreaInfo(Vector3 outPos, AreaInfo outAreaInfo) {
         tree.intersectPoint(outPos, (point, entry) -> {
             if (treeValues[entry] == null) {
                 return;

@@ -3,7 +3,9 @@ package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.corpse.Corpse;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class CorpseData extends BaseUpdateData<Corpse> {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class CorpseData extends BaseUpdateData<Corpse> {
     public DynamicUpdateField<ChrCustomizationChoice> customizations = new DynamicUpdateField<ChrCustomizationChoice>(0, 1);
 
     public UpdateField<Integer> dynamicFlags = new UpdateField<Integer>(0, 2);
@@ -17,7 +19,7 @@ import com.github.mmo.game.networking.*;public class CorpseData extends BaseUpda
 
     public UpdateField<Byte> sex = new UpdateField<Byte>(0, 8);
 
-    public UpdateField<Byte> class = new UpdateField<Byte>(0, 9);
+    public UpdateField<Byte>class =new UpdateField<Byte>(0,9);
 
     public UpdateField<Integer> flags = new UpdateField<Integer>(0, 10);
     public UpdateField<Integer> factionTemplate = new UpdateField<Integer>(0, 11);
@@ -43,7 +45,7 @@ import com.github.mmo.game.networking.*;public class CorpseData extends BaseUpda
 
         data.writeInt8(raceID);
         data.writeInt8(sex);
-        data.writeInt8(class);
+        data.writeInt8( class);
         data.writeInt32(customizations.size());
         data.writeInt32(flags);
         data.writeInt32(factionTemplate);
@@ -117,7 +119,7 @@ import com.github.mmo.game.networking.*;public class CorpseData extends BaseUpda
             }
 
             if (changesMask.get(9)) {
-                data.writeInt8(class);
+                data.writeInt8( class);
             }
 
             if (changesMask.get(10)) {
@@ -152,7 +154,7 @@ import com.github.mmo.game.networking.*;public class CorpseData extends BaseUpda
         clearChangesMask(displayID);
         clearChangesMask(raceID);
         clearChangesMask(sex);
-        clearChangesMask(class);
+        clearChangesMask( class);
         clearChangesMask(flags);
         clearChangesMask(factionTemplate);
         clearChangesMask(stateSpellVisualKitID);

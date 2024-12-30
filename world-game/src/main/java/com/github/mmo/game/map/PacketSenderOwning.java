@@ -1,7 +1,8 @@
 package com.github.mmo.game.map;
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.ServerPacket;// C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+import com.github.mmo.game.networking.ServerPacket;
+
 public class PacketSenderOwning<T extends ServerPacket> implements IDoWork<Player> {
     private T data = new T();
 

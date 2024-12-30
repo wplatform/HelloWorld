@@ -2,39 +2,36 @@ package com.github.mmo.game.networking.packet.misc;
 
 
 import com.github.mmo.game.entity.player.HeirloomData;
-
-import java.util.*;
 import com.github.mmo.game.networking.ServerPacket;
-public class AccountHeirloomUpdate extends ServerPacket
-{
-	public boolean isFullUpdate;
-	public HashMap<Integer, HeirloomData> heirlooms = new HashMap<Integer, HeirloomData>();
-	public int unk;
-	public AccountHeirloomUpdate()
-	{
-		super(ServerOpcode.AccountHeirloomUpdate, ConnectionType.instance);
-	}
 
-	@Override
-	public void write()
-	{
-		this.writeBit(isFullUpdate);
-		this.flushBits();
+import java.util.HashMap;
 
-		this.writeInt32(unk);
+public class AccountHeirloomUpdate extends ServerPacket {
+    public boolean isFullUpdate;
+    public HashMap<Integer, HeirloomData> heirlooms = new HashMap<Integer, HeirloomData>();
+    public int unk;
 
-		// both lists have to have the same size
-		this.writeInt32(heirlooms.size());
-		this.writeInt32(heirlooms.size());
+    public AccountHeirloomUpdate() {
+        super(ServerOpcode.AccountHeirloomUpdate, ConnectionType.instance);
+    }
 
-		for (var item : heirlooms.entrySet())
-		{
-			this.writeInt32(item.getKey());
-		}
+    @Override
+    public void write() {
+        this.writeBit(isFullUpdate);
+        this.flushBits();
 
-		for (var flags : heirlooms.entrySet())
-		{
-			this.writeInt32((int)flags.getValue().flags);
-		}
-	}
+        this.writeInt32(unk);
+
+        // both lists have to have the same size
+        this.writeInt32(heirlooms.size());
+        this.writeInt32(heirlooms.size());
+
+        for (var item : heirlooms.entrySet()) {
+            this.writeInt32(item.getKey());
+        }
+
+        for (var flags : heirlooms.entrySet()) {
+            this.writeInt32((int) flags.getValue().flags);
+        }
+    }
 }

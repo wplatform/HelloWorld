@@ -3,35 +3,29 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class PlayerNotBannedAppend implements IChannelAppender
-{
-	public PlayerNotBannedAppend()
-	{
-	}
+final class PlayerNotBannedAppend implements IChannelAppender {
+    private final String playerName;
 
-	public PlayerNotBannedAppend(String playerName)
-	{
-		playerName = playerName;
-	}
+    public PlayerNotBannedAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.PlayerNotBannedNotice;
-	}
+    public PlayerNotBannedAppend(String playerName) {
+        playerName = playerName;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.sender = playerName;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.PlayerNotBannedNotice;
+    }
 
-	private final String playerName;
+    public void append(ChannelNotify data) {
+        data.sender = playerName;
+    }
 
-	public PlayerNotBannedAppend clone()
-	{
-		PlayerNotBannedAppend varCopy = new PlayerNotBannedAppend();
+    public PlayerNotBannedAppend clone() {
+        PlayerNotBannedAppend varCopy = new PlayerNotBannedAppend();
 
-		varCopy.playerName = this.playerName;
+        varCopy.playerName = this.playerName;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

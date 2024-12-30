@@ -3,7 +3,9 @@ package com.github.mmo.game.networking.packet.query;
 
 import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.ArrayList;public class QueryPlayerNamesResponse extends ServerPacket {
+import java.util.ArrayList;
+
+public class QueryPlayerNamesResponse extends ServerPacket {
     public ArrayList<NameCacheLookupResult> players = new ArrayList<>();
 
     public QueryPlayerNamesResponse() {

@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.chat;
 
 import com.github.mmo.game.entity.object.ObjectGuid;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
 import io.netty.buffer.ByteBuf;
 
 class ChatAddonMessageTargeted extends ClientPacket {

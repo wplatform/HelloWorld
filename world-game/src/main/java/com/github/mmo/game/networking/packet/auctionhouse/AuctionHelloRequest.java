@@ -1,19 +1,17 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class AuctionHelloRequest extends ClientPacket
-{
-	public ObjectGuid guid = ObjectGuid.EMPTY;
+class AuctionHelloRequest extends ClientPacket {
+    public ObjectGuid guid = ObjectGuid.EMPTY;
 
-	public AuctionHelloRequest(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public AuctionHelloRequest(WorldPacket packet) {
+        super(packet);
+    }
 
-	@Override
-	public void read()
-	{
-		guid = this.readPackedGuid();
-	}
+    @Override
+    public void read() {
+        guid = this.readPackedGuid();
+    }
 }

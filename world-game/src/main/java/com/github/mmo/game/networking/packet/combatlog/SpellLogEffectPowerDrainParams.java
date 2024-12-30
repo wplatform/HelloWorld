@@ -1,21 +1,19 @@
 package com.github.mmo.game.networking.packet.combatlog;
 
-public final class SpellLogEffectPowerDrainParams
-{
+public final class SpellLogEffectPowerDrainParams {
     public ObjectGuid victim = ObjectGuid.EMPTY;
-	public int points;
-	public int powerType;
-	public float amplitude;
+    public int points;
+    public int powerType;
+    public float amplitude;
 
-	public SpellLogEffectPowerDrainParams clone()
-	{
-		SpellLogEffectPowerDrainParams varCopy = new SpellLogEffectPowerDrainParams();
+    public SpellLogEffectPowerDrainParams clone() {
+        SpellLogEffectPowerDrainParams varCopy = new SpellLogEffectPowerDrainParams();
 
         varCopy.victim = this.victim;
-		varCopy.points = this.points;
-		varCopy.powerType = this.powerType;
-		varCopy.amplitude = this.amplitude;
+        varCopy.points = this.points;
+        varCopy.powerType = this.powerType;
+        varCopy.amplitude = this.amplitude;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

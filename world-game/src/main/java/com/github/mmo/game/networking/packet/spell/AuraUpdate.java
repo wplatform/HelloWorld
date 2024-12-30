@@ -1,30 +1,27 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class AuraUpdate extends ServerPacket
-{
-	public boolean updateAll;
-	public ObjectGuid unitGUID = ObjectGuid.EMPTY;
-	public ArrayList<AuraInfo> auras = new ArrayList<>();
-	public AuraUpdate()
-	{
-		super(ServerOpcode.AuraUpdate, ConnectionType.instance);
-	}
+public class AuraUpdate extends ServerPacket {
+    public boolean updateAll;
+    public ObjectGuid unitGUID = ObjectGuid.EMPTY;
+    public ArrayList<AuraInfo> auras = new ArrayList<>();
 
-	@Override
-	public void write()
-	{
-		this.writeBit(updateAll);
-		this.writeBits(auras.size(), 9);
+    public AuraUpdate() {
+        super(ServerOpcode.AuraUpdate, ConnectionType.instance);
+    }
 
-		for (var aura : auras)
-		{
-			aura.write(this);
-		}
+    @Override
+    public void write() {
+        this.writeBit(updateAll);
+        this.writeBits(auras.size(), 9);
 
-		this.writeGuid(unitGUID);
-	}
+        for (var aura : auras) {
+            aura.write(this);
+        }
+
+        this.writeGuid(unitGUID);
+    }
 }

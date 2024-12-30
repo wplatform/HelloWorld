@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildEventRankChanged extends ServerPacket
-{
-	public int rankID;
-	public GuildEventRankChanged()
-	{
-		super(ServerOpcode.GuildEventRankChanged);
-	}
+public class GuildEventRankChanged extends ServerPacket {
+    public int rankID;
 
-	@Override
-	public void write()
-	{
+    public GuildEventRankChanged() {
+        super(ServerOpcode.GuildEventRankChanged);
+    }
+
+    @Override
+    public void write() {
         this.writeInt32(rankID);
-	}
+    }
 }

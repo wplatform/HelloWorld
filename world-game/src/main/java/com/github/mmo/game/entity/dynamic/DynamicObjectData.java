@@ -6,15 +6,17 @@ import com.github.mmo.game.entity.SpellCastVisualField;
 import com.github.mmo.game.entity.UpdateField;
 import com.github.mmo.game.entity.UpdateMask;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class DynamicObjectData extends BaseUpdateData<DynamicObject> {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class DynamicObjectData extends BaseUpdateData<DynamicObject> {
     public UpdateField<ObjectGuid> caster = new UpdateField<ObjectGuid>(0, 1);
-   
+
     public UpdateField<Byte> type = new UpdateField<Byte>(0, 2);
     public UpdateField<SpellCastVisualField> spellVisual = new UpdateField<SpellCastVisualField>(0, 3);
-   
+
     public UpdateField<Integer> spellID = new UpdateField<Integer>(0, 4);
     public UpdateField<Float> radius = new UpdateField<Float>(0, 5);
-   
+
     public UpdateField<Integer> castTime = new UpdateField<Integer>(0, 6);
 
     public dynamicObjectData() {

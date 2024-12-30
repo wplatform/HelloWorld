@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.calendar;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class CalendarRaidLockoutRemoved extends ServerPacket {
 
     public long instanceID;

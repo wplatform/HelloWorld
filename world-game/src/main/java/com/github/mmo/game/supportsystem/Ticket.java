@@ -1,10 +1,10 @@
 package com.github.mmo.game.supportsystem;
 
 
-
-import com.github.mmo.game.chat.commandHandler;
 import com.github.mmo.game.entity.ObjectGuid;
-import com.github.mmo.game.entity.player.Player;public class Ticket {
+import com.github.mmo.game.entity.player.Player;
+
+public class Ticket {
 
     protected int idProtected;
     protected ObjectGuid playerGuidProtected = ObjectGuid.EMPTY;
@@ -85,16 +85,19 @@ import com.github.mmo.game.entity.player.Player;public class Ticket {
         return commentProtected;
     }
 
+    public final void setComment(String comment) {
+        commentProtected = comment;
+    }
+
     public final void teleportTo(Player player) {
         player.teleportTo(mapIdProtected, posProtected.X, posProtected.Y, posProtected.Z, 0.0f, 0);
     }
-
 
     public String formatViewMessageString(CommandHandler handler) {
         return formatViewMessageString(handler, false);
     }
 
-        public String formatViewMessageString(CommandHandler handler, boolean detailed) {
+    public String formatViewMessageString(CommandHandler handler, boolean detailed) {
         return "";
     }
 
@@ -130,12 +133,11 @@ import com.github.mmo.game.entity.player.Player;public class Ticket {
         return isAssigned() && !isAssignedTo(guid);
     }
 
-
     public void setAssignedTo(ObjectGuid guid) {
         setAssignedTo(guid, false);
     }
 
-        public void setAssignedTo(ObjectGuid guid, boolean isAdmin) {
+    public void setAssignedTo(ObjectGuid guid, boolean isAdmin) {
         assignedToProtected = guid;
     }
 
@@ -146,11 +148,6 @@ import com.github.mmo.game.entity.player.Player;public class Ticket {
     public final void setClosedBy(ObjectGuid value) {
         closedByProtected = value;
     }
-
-    public final void setComment(String comment) {
-        commentProtected = comment;
-    }
-
 
     public final void setPosition(int mapId, Vector3 pos) {
         mapIdProtected = mapId;

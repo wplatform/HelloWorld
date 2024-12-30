@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-import com.github.mmo.game.networking.*;public class GuildEventPlayerLeft extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class GuildEventPlayerLeft extends ServerPacket {
     public ObjectGuid leaverGUID = ObjectGuid.EMPTY;
     public String leaverName;
 

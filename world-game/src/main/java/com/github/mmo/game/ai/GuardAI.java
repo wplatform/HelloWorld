@@ -5,72 +5,60 @@ import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
 
-public class GuardAI extends ScriptedAI
-{
-	public GuardAI(Creature creature)
-	{
-		super(creature);
-	}
+public class GuardAI extends ScriptedAI {
+    public GuardAI(Creature creature) {
+        super(creature);
+    }
 
-	@Override
-	public void updateAI(int diff)
-	{
-		if (!updateVictim())
-		{
-			return;
-		}
+    @Override
+    public void updateAI(int diff) {
+        if (!updateVictim()) {
+            return;
+        }
 
-		doMeleeAttackIfReady();
-	}
+        doMeleeAttackIfReady();
+    }
 
-	@Override
-	public boolean canSeeAlways(WorldObject obj)
-	{
-		var unit = obj.toUnit();
+    @Override
+    public boolean canSeeAlways(WorldObject obj) {
+        var unit = obj.toUnit();
 
-		if (unit != null)
-		{
-			if (unit.isControlledByPlayer() && me.isEngagedBy(unit))
-			{
-				return true;
-			}
-		}
+        if (unit != null) {
+            if (unit.isControlledByPlayer() && me.isEngagedBy(unit)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void enterEvadeMode(EvadeReason why)
-	{
-		if (!me.isAlive())
-		{
-			me.getMotionMaster().moveIdle();
-			me.combatStop(true);
-			engagementOver();
+    @Override
+    public void enterEvadeMode(EvadeReason why) {
+        if (!me.isAlive()) {
+            me.getMotionMaster().moveIdle();
+            me.combatStop(true);
+            engagementOver();
 
-			return;
-		}
+            return;
+        }
 
         Log.outTrace(LogFilter.ScriptsAi, String.format("GuardAI::EnterEvadeMode: %1$s enters evade mode.", me.getGUID()));
 
-		me.removeAllAuras();
-		me.combatStop(true);
-		engagementOver();
+        me.removeAllAuras();
+        me.combatStop(true);
+        engagementOver();
 
-		me.getMotionMaster().moveTargetedHome();
-	}
+        me.getMotionMaster().moveTargetedHome();
+    }
 
-	@Override
-	public void justDied(Unit killer)
-	{
-		if (killer != null)
-		{
-			var player = killer.getCharmerOrOwnerPlayerOrPlayerItself();
+    @Override
+    public void justDied(Unit killer) {
+        if (killer != null) {
+            var player = killer.getCharmerOrOwnerPlayerOrPlayerItself();
 
-			if (player != null)
-			{
-				me.sendZoneUnderAttackMessage(player);
-			}
-		}
-	}
+            if (player != null) {
+                me.sendZoneUnderAttackMessage(player);
+            }
+        }
+    }
 }

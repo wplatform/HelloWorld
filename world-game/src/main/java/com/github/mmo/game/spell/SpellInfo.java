@@ -7,8 +7,6 @@ import com.github.mmo.dbc.domain.SpellCastTime;
 import com.github.mmo.dbc.domain.SpellDuration;
 import com.github.mmo.dbc.domain.SpellRange;
 import com.github.mmo.defines.*;
-import game.ConditionManager;
-
 import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.item.ItemEnchantmentManager;
 import com.github.mmo.game.entity.object.WorldObject;
@@ -18,8 +16,8 @@ import com.github.mmo.game.entity.player.model.SpellModifierByClassMask;
 import com.github.mmo.game.entity.player.model.SpellPctModifierByLabel;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.spell.auras.enums.AuraType;
-import com.github.mmo.game.spell.auras.enums.auraType;
 import com.github.mmo.game.spell.enums.*;
+import game.ConditionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,33 +27,22 @@ public class SpellInfo {
     private final ArrayList<SpellProcsPerMinuteModRecord> procPpmMods = new ArrayList<>();
     private final ArrayList<SpellEffectInfo> effects = new ArrayList<>();
     private final ArrayList<SpellXSpellVisualRecord> visuals = new ArrayList<>();
+    private final Difficulty difficulty = Difficulty.DIFFICULTY_NONE;
     public SpellPowerRecord[] powerCosts = new SpellPowerRecord[SpellConst.MaxPowersPerSpell];
-
     public int[] totem = new int[SpellConst.MAX_SPELL_TOTEMS];
-
     public int[] totemCategory = new int[SpellConst.MAX_SPELL_TOTEMS];
     public int[] reagent = new int[SpellConst.MaxReagents];
-
     public int[] reagentCount = new int[SpellConst.MaxReagents];
     public ArrayList<SpellreagentsCurrencyRecord> reagentsCurrency = new ArrayList<>();
-
     public int chargeCategoryId;
-
     public ArrayList<Integer> labels = new ArrayList<>();
     // SpellScalingEntry
     public ScalingInfo scaling = new ScalingInfo();
     private SpellSpecificType spellSpecific;
     private AuraStateType auraState = AuraStateType.NONE;
-
     private SpellDiminishInfo diminishInfo;
-
     private long allowedMechanicMask;
-
     private int id;
-
-
-    private final Difficulty difficulty = Difficulty.DIFFICULTY_NONE;
-
     private int categoryId;
     private DispelType dispel;
     private Mechanics mechanic;
@@ -99,7 +86,7 @@ public class SpellInfo {
     private int excludeCasterAuraSpell;
 
     private int excludeTargetAuraSpell;
-    private AuraType  casterAuraType = AuraType.NONE;
+    private AuraType casterAuraType = AuraType.NONE;
     private AuraType targetAuraType = AuraType.NONE;
     private AuraType excludeCasterAuraType = AuraType.NONE;
     private AuraType excludeTargetAuraType = AuraType.NONE;
@@ -1188,10 +1175,6 @@ public class SpellInfo {
         return explicitTargetMask;
     }
 
-    public final void setExplicitTargetMask(SpellCastTargetFlag value) {
-        explicitTargetMask = value;
-    }
-
     public final SpellChainNode getChainEntry() {
         return chainEntry;
     }
@@ -1406,11 +1389,11 @@ public class SpellInfo {
 
         var category = CliDB.SpellCategoryStorage.get(getCategoryId());
 
-        return category != null && category.flags.HasAnyFlag(SpellCategoryFlags.CooldownStartsOnEvent);
+        return category != null && category.flags.hasFlag(SpellCategoryFlags.CooldownStartsOnEvent);
     }
 
     public final boolean isAllowingDeadTarget() {
-        if (hasAttribute(SpellAttr2.ALLOW_DEAD_TARGET) || getTargets().HasAnyFlag(SpellCastTargetFlag.CorpseAlly.getValue() | SpellCastTargetFlag.CorpseEnemy.getValue().getValue() | SpellCastTargetFlag.UnitDead.getValue().getValue())) {
+        if (hasAttribute(SpellAttr2.ALLOW_DEAD_TARGET) || getTargets().hasFlag(SpellCastTargetFlag.CorpseAlly.getValue() | SpellCastTargetFlag.CorpseEnemy.getValue().getValue() | SpellCastTargetFlag.UnitDead.getValue().getValue())) {
             return true;
         }
 
@@ -1437,7 +1420,7 @@ public class SpellInfo {
     }
 
     public final boolean isRangedWeaponSpell() {
-        return (getSpellFamilyName() == SpellFamilyNames.Hunter && !getSpellFamilyFlags().get(1).HasAnyFlag(0x10000000)) || (boolean) (getEquippedItemSubClassMask() & ItemSubClassWeapon.MaskRanged.getValue()) || getAttributes().HasAnyFlag(SpellAttr0.UsesRangedSlot);
+        return (getSpellFamilyName() == SpellFamilyNames.Hunter && !getSpellFamilyFlags().get(1).hasFlag(0x10000000)) || (boolean) (getEquippedItemSubClassMask() & ItemSubClassWeapon.MaskRanged.getValue()) || getAttributes().hasFlag(SpellAttr0.UsesRangedSlot);
     }
 
     public final DiminishingGroup getDiminishingReturnsGroupForSpell() {
@@ -1455,7 +1438,6 @@ public class SpellInfo {
     public final int getDiminishingReturnsLimitDuration() {
         return diminishInfo.diminishDurationLimit;
     }
-
 
     public final long getAllowedMechanicMask() {
         return allowedMechanicMask;
@@ -1476,7 +1458,6 @@ public class SpellInfo {
 
         return (getDurationEntry().maxDuration == -1) ? -1 : Math.abs(getDurationEntry().maxDuration);
     }
-
 
     public final int getMaxTicks() {
         int totalTicks = 0;
@@ -1518,7 +1499,6 @@ public class SpellInfo {
         return totalTicks;
     }
 
-
     public final int getRecoveryTime1() {
         return getRecoveryTime() > getCategoryRecoveryTime() ? getRecoveryTime() : getCategoryRecoveryTime();
     }
@@ -1526,7 +1506,6 @@ public class SpellInfo {
     public final boolean isRanked() {
         return getChainEntry() != null;
     }
-
 
     public final byte getRank() {
         if (getChainEntry() == null) {
@@ -1586,7 +1565,7 @@ public class SpellInfo {
                 }
             }
 
-            if (mask.HasAnyFlag(SpellCastTargetFlag.UnitMask)) {
+            if (mask.hasFlag(SpellCastTargetFlag.UnitMask)) {
                 return true;
             }
         }
@@ -1822,11 +1801,11 @@ public class SpellInfo {
                 return SpellCastResult.SpellCastOk;
             }
 
-            actAsShifted = !shapeInfo.flags.HasAnyFlag(SpellShapeshiftFormFlags.Stance);
+            actAsShifted = !shapeInfo.flags.hasFlag(SpellShapeshiftFormFlags.Stance);
         }
 
         if (actAsShifted) {
-            if (hasAttribute(SpellAttr0.NotShapeshifted) || (shapeInfo != null && shapeInfo.flags.HasAnyFlag(SpellShapeshiftFormFlags.CanOnlyCastShapeshiftSpells))) // not while shapeshifted
+            if (hasAttribute(SpellAttr0.NotShapeshifted) || (shapeInfo != null && shapeInfo.flags.hasFlag(SpellShapeshiftFormFlags.CanOnlyCastShapeshiftSpells))) // not while shapeshifted
             {
                 return SpellCastResult.NotShapeshift;
             } else if (getStances() != 0) // needs other shapeshift
@@ -1842,7 +1821,6 @@ public class SpellInfo {
 
         return SpellCastResult.SpellCastOk;
     }
-
 
     public final SpellCastResult checkLocation(int map_id, int zone_id, int area_id, Player player) {
         // normal case
@@ -2039,7 +2017,7 @@ public class SpellInfo {
         return checkTarget(caster, target, true);
     }
 
-        public final SpellCastResult checkTarget(WorldObject caster, WorldObject target, boolean implicit) {
+    public final SpellCastResult checkTarget(WorldObject caster, WorldObject target, boolean implicit) {
         if (hasAttribute(SpellAttr1.ExcludeCaster) && caster == target) {
             return SpellCastResult.BadTargets;
         }
@@ -2238,7 +2216,7 @@ public class SpellInfo {
         return checkExplicitTarget(caster, target, null);
     }
 
-        public final SpellCastResult checkExplicitTarget(WorldObject caster, WorldObject target, Item itemTarget) {
+    public final SpellCastResult checkExplicitTarget(WorldObject caster, WorldObject target, Item itemTarget) {
         var neededTargets = getExplicitTargetMask();
 
         if (target == null) {
@@ -2254,7 +2232,7 @@ public class SpellInfo {
         var unitTarget = target.toUnit();
 
         if (unitTarget != null) {
-            if (neededTargets.HasAnyFlag(SpellCastTargetFlag.UnitEnemy.getValue() | SpellCastTargetFlag.UnitAlly.getValue().getValue() | SpellCastTargetFlag.UnitRaid.getValue().getValue().getValue() | SpellCastTargetFlag.UnitParty.getValue().getValue().getValue().getValue() | SpellCastTargetFlag.UnitMinipet.getValue().getValue().getValue().getValue().getValue() | SpellCastTargetFlag.UnitPassenger.getValue().getValue().getValue().getValue().getValue())) {
+            if (neededTargets.hasFlag(SpellCastTargetFlag.UnitEnemy.getValue() | SpellCastTargetFlag.UnitAlly.getValue().getValue() | SpellCastTargetFlag.UnitRaid.getValue().getValue().getValue() | SpellCastTargetFlag.UnitParty.getValue().getValue().getValue().getValue() | SpellCastTargetFlag.UnitMinipet.getValue().getValue().getValue().getValue().getValue() | SpellCastTargetFlag.UnitPassenger.getValue().getValue().getValue().getValue().getValue())) {
                 var unitCaster = caster.toUnit();
 
                 if (neededTargets.hasFlag(SpellCastTargetFlag.UnitEnemy)) {
@@ -2303,7 +2281,7 @@ public class SpellInfo {
                 if (effectInfo.isAura(AuraType.ModShapeshift)) {
                     var shapeShiftFromEntry = CliDB.SpellShapeshiftFormStorage.get((int) effectInfo.miscValue);
 
-                    if (shapeShiftFromEntry != null && !shapeShiftFromEntry.flags.HasAnyFlag(SpellShapeshiftFormFlags.Stance)) {
+                    if (shapeShiftFromEntry != null && !shapeShiftFromEntry.flags.hasFlag(SpellShapeshiftFormFlags.Stance)) {
                         checkMask = VehicleSeatFlags.forValue(checkMask.getValue() | VehicleSeatFlags.Uncontrolled.getValue());
                     }
 
@@ -2366,7 +2344,6 @@ public class SpellInfo {
         return getTargetCreatureType() == 0 || creatureType == 0 || (boolean) (creatureType & getTargetCreatureType());
     }
 
-
     public final long getAllEffectsMechanicMask() {
         long mask = 0;
 
@@ -2383,7 +2360,6 @@ public class SpellInfo {
         return mask;
     }
 
-
     public final long getEffectMechanicMask(int effIndex) {
         long mask = 0;
 
@@ -2397,7 +2373,6 @@ public class SpellInfo {
 
         return mask;
     }
-
 
     public final long getSpellMechanicMaskByEffectMask(HashSet<Integer> effectMask) {
         long mask = 0;
@@ -2427,13 +2402,16 @@ public class SpellInfo {
         return mechanics.NONE;
     }
 
-
     public final int getDispelMask() {
         return getDispelMask(getDispel());
     }
 
     public final SpellCastTargetFlag getExplicitTargetMask() {
         return getExplicitTargetMask();
+    }
+
+    public final void setExplicitTargetMask(SpellCastTargetFlag value) {
+        explicitTargetMask = value;
     }
 
     public final AuraStateType getAuraState() {
@@ -2449,12 +2427,12 @@ public class SpellInfo {
         }
 
         // Swiftmend state on regrowth, rejuvenation, Wild Growth
-        if (getSpellFamilyName() == SpellFamilyNames.Druid && (getSpellFamilyFlags().get(0).HasAnyFlag(0x50) || getSpellFamilyFlags().get(1).HasAnyFlag(0x4000000))) {
+        if (getSpellFamilyName() == SpellFamilyNames.Druid && (getSpellFamilyFlags().get(0).hasFlag(0x50) || getSpellFamilyFlags().get(1).hasFlag(0x4000000))) {
             auraState = AuraStateType.DruidPeriodicHeal;
         }
 
         // Deadly poison aura state
-        if (getSpellFamilyName() == SpellFamilyNames.Rogue && getSpellFamilyFlags().get(0).HasAnyFlag(0x10000)) {
+        if (getSpellFamilyName() == SpellFamilyNames.Rogue && getSpellFamilyFlags().get(0).hasFlag(0x10000)) {
             auraState = AuraStateType.RoguePoisoned;
         }
 
@@ -2597,16 +2575,16 @@ public class SpellInfo {
             }
             case Mage: {
                 // family flags 18(Molten), 25(Frost/Ice), 28(Mage)
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x12040000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x12040000)) {
                     spellSpecific = SpellSpecificType.MageArmor;
                 }
 
                 // Arcane brillance and Arcane intelect (normal check fails because of flags difference)
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x400)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x400)) {
                     spellSpecific = SpellSpecificType.MageArcaneBrillance;
                 }
 
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x1000000) && getEffect(0).isAura(AuraType.ModConfuse)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x1000000) && getEffect(0).isAura(AuraType.ModConfuse)) {
                     spellSpecific = SpellSpecificType.MagePolymorph;
                 }
 
@@ -2632,12 +2610,12 @@ public class SpellInfo {
                 }
 
                 // Warlock (Demon armor | Demon Skin | Fel armor)
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x20000020) || getSpellFamilyFlags().get(2).HasAnyFlag(0x00000010)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x20000020) || getSpellFamilyFlags().get(2).hasFlag(0x00000010)) {
                     spellSpecific = SpellSpecificType.WarlockArmor;
                 }
 
                 //seed of corruption and corruption
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x10) || getSpellFamilyFlags().get(0).HasAnyFlag(0x2)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x10) || getSpellFamilyFlags().get(0).hasFlag(0x2)) {
                     spellSpecific = SpellSpecificType.WarlockCorruption;
                 }
 
@@ -2645,7 +2623,7 @@ public class SpellInfo {
             }
             case Priest: {
                 // Divine Spirit and Prayer of Spirit
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x20)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x20)) {
                     spellSpecific = SpellSpecificType.PriestDivineSpirit;
                 }
 
@@ -2666,11 +2644,11 @@ public class SpellInfo {
             }
             case Paladin: {
                 // Collection of all the seal family flags. No other paladin spell has any of those.
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0xA2000800)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0xA2000800)) {
                     spellSpecific = SpellSpecificType.Seal;
                 }
 
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x00002190)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x00002190)) {
                     spellSpecific = SpellSpecificType.Hand;
                 }
 
@@ -2691,7 +2669,7 @@ public class SpellInfo {
             }
             case Shaman: {
                 // family flags 10 (Lightning), 42 (Earth), 37 (Water), proc shield from T2 8 pieces bonus
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x420) || getSpellFamilyFlags().get(0).HasAnyFlag(0x00000400) || getId() == 23552) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x420) || getSpellFamilyFlags().get(0).hasFlag(0x00000400) || getId() == 23552) {
                     spellSpecific = SpellSpecificType.ElementalShield;
                 }
 
@@ -2903,33 +2881,33 @@ public class SpellInfo {
                     }
 
                     if (immuneInfo.auraTypeImmune.isEmpty()) {
-                        if (miscVal.HasAnyFlag(1 << 10)) {
+                        if (miscVal.hasFlag(1 << 10)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModStun);
                         }
 
-                        if (miscVal.HasAnyFlag(1 << 1)) {
+                        if (miscVal.hasFlag(1 << 1)) {
                             immuneInfo.auraTypeImmune.add(AuraType.Transform);
                         }
 
                         // These flag can be recognized wrong:
-                        if (miscVal.HasAnyFlag(1 << 6)) {
+                        if (miscVal.hasFlag(1 << 6)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModDecreaseSpeed);
                         }
 
-                        if (miscVal.HasAnyFlag(1 << 0)) {
+                        if (miscVal.hasFlag(1 << 0)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModRoot);
                             immuneInfo.auraTypeImmune.add(AuraType.ModRoot2);
                         }
 
-                        if (miscVal.HasAnyFlag(1 << 2)) {
+                        if (miscVal.hasFlag(1 << 2)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModConfuse);
                         }
 
-                        if (miscVal.HasAnyFlag(1 << 9)) {
+                        if (miscVal.hasFlag(1 << 9)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModFear);
                         }
 
-                        if (miscVal.HasAnyFlag(1 << 7)) {
+                        if (miscVal.hasFlag(1 << 7)) {
                             immuneInfo.auraTypeImmune.add(AuraType.ModDisarm);
                         }
                     }
@@ -3230,7 +3208,7 @@ public class SpellInfo {
         return getMinRange(false);
     }
 
-        public final float getMinRange(boolean positive) {
+    public final float getMinRange(boolean positive) {
         if (getRangeEntry() == null) {
             return 0.0f;
         }
@@ -3251,7 +3229,7 @@ public class SpellInfo {
         return getMaxRange(false, null, null);
     }
 
-        public final float getMaxRange(boolean positive, WorldObject caster, Spell spell) {
+    public final float getMaxRange(boolean positive, WorldObject caster, Spell spell) {
         if (getRangeEntry() == null) {
             return 0.0f;
         }
@@ -3276,7 +3254,7 @@ public class SpellInfo {
         return calcDuration(null);
     }
 
-        public final int calcDuration(WorldObject caster) {
+    public final int calcDuration(WorldObject caster) {
         var duration = getDuration();
 
         if (caster) {
@@ -3297,7 +3275,7 @@ public class SpellInfo {
         return calcCastTime(null);
     }
 
-        public final int calcCastTime(Spell spell) {
+    public final int calcCastTime(Spell spell) {
         var castTime = 0;
 
         if (getCastTimeEntry() != null) {
@@ -3326,7 +3304,7 @@ public class SpellInfo {
         return calcPowerCost(powerType, optionalCost, caster, schoolMask, null);
     }
 
-        public final SpellPowerCost calcPowerCost(Power powerType, boolean optionalCost, WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
+    public final SpellPowerCost calcPowerCost(Power powerType, boolean optionalCost, WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
         // gameobject casts don't use power
         var unitCaster = caster.toUnit();
 
@@ -3353,7 +3331,7 @@ public class SpellInfo {
         return calcPowerCost(power, optionalCost, caster, schoolMask, null);
     }
 
-        public final SpellPowerCost calcPowerCost(SpellPowerRecord power, boolean optionalCost, WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
+    public final SpellPowerCost calcPowerCost(SpellPowerRecord power, boolean optionalCost, WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
         // gameobject casts don't use power
         var unitCaster = caster.toUnit();
 
@@ -3596,7 +3574,7 @@ public class SpellInfo {
         return calcPowerCost(caster, schoolMask, null);
     }
 
-        public final ArrayList<SpellPowerCost> calcPowerCost(WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
+    public final ArrayList<SpellPowerCost> calcPowerCost(WorldObject caster, SpellSchoolMask schoolMask, Spell spell) {
         ArrayList<SpellPowerCost> costs = new ArrayList<>();
 
         if (caster.isUnit()) {
@@ -3663,7 +3641,7 @@ public class SpellInfo {
                     break;
                 }
                 case Class: {
-                    if (caster.getClassMask().HasAnyFlag((int) mod.param)) {
+                    if (caster.getClassMask().hasFlag((int) mod.param)) {
                         ppm *= 1.0f + mod.Coeff;
                     }
 
@@ -3681,7 +3659,7 @@ public class SpellInfo {
                     break;
                 }
                 case Race: {
-                    if (SharedConst.GetMaskForRace(caster.getRace()).HasAnyFlag((int) mod.param)) {
+                    if (SharedConst.GetMaskForRace(caster.getRace()).hasFlag((int) mod.param)) {
                         ppm *= 1.0f + mod.Coeff;
                     }
 
@@ -3795,7 +3773,7 @@ public class SpellInfo {
         return getSpellXSpellVisualId(null, null);
     }
 
-        public final int getSpellXSpellVisualId(WorldObject caster, WorldObject viewer) {
+    public final int getSpellXSpellVisualId(WorldObject caster, WorldObject viewer) {
         for (var visual : visuals) {
             var playerCondition = CliDB.PlayerConditionStorage.get(visual.CasterPlayerConditionID);
 
@@ -3828,7 +3806,7 @@ public class SpellInfo {
         return getSpellVisual(null, null);
     }
 
-        public final int getSpellVisual(WorldObject caster, WorldObject viewer) {
+    public final int getSpellVisual(WorldObject caster, WorldObject viewer) {
         var visual = CliDB.SpellXSpellVisualStorage.get(getSpellXSpellVisualId(caster, viewer));
 
         if (visual != null) {
@@ -4053,24 +4031,24 @@ public class SpellInfo {
         return canBeInterrupted(interruptCaster, interruptTarget, false);
     }
 
-        public final boolean canBeInterrupted(WorldObject interruptCaster, Unit interruptTarget, boolean ignoreImmunity) {
-        return hasAttribute(SpellAttr7.CanAlwaysBeInterrupted) || hasChannelInterruptFlag(SpellAuraInterruptFlag.damage.getValue() | SpellAuraInterruptFlag.EnteringCombat.getValue()) || (interruptTarget.isPlayer() && getInterruptFlags().hasFlag(SpellInterruptFlag.DamageCancelsPlayerOnly)) || getInterruptFlags().hasFlag(SpellInterruptFlag.DamageCancels) || (interruptCaster != null && interruptCaster.isUnit() && interruptCaster.toUnit().hasAuraTypeWithMiscvalue(AuraType.AllowInterruptSpell, (int) getId())) || (((interruptTarget.getMechanicImmunityMask() & (1L << mechanics.Interrupt.getValue())) == 0 || ignoreImmunity) && !interruptTarget.hasAuraTypeWithAffectMask(AuraType.PreventInterrupt, this) && getPreventionType().HasAnyFlag(SpellPreventionType.Silence));
+    public final boolean canBeInterrupted(WorldObject interruptCaster, Unit interruptTarget, boolean ignoreImmunity) {
+        return hasAttribute(SpellAttr7.CanAlwaysBeInterrupted) || hasChannelInterruptFlag(SpellAuraInterruptFlag.damage.getValue() | SpellAuraInterruptFlag.EnteringCombat.getValue()) || (interruptTarget.isPlayer() && getInterruptFlags().hasFlag(SpellInterruptFlag.DamageCancelsPlayerOnly)) || getInterruptFlags().hasFlag(SpellInterruptFlag.DamageCancels) || (interruptCaster != null && interruptCaster.isUnit() && interruptCaster.toUnit().hasAuraTypeWithMiscvalue(AuraType.AllowInterruptSpell, (int) getId())) || (((interruptTarget.getMechanicImmunityMask() & (1L << mechanics.Interrupt.getValue())) == 0 || ignoreImmunity) && !interruptTarget.hasAuraTypeWithAffectMask(AuraType.PreventInterrupt, this) && getPreventionType().hasFlag(SpellPreventionType.Silence));
     }
 
     public final boolean hasAuraInterruptFlag(SpellAuraInterruptFlag flag) {
-        return getAuraInterruptFlags().HasAnyFlag(flag);
+        return getAuraInterruptFlags().hasFlag(flag);
     }
 
     public final boolean hasAuraInterruptFlag(SpellAuraInterruptFlag2 flag) {
-        return getAuraInterruptFlags2().HasAnyFlag(flag);
+        return getAuraInterruptFlags2().hasFlag(flag);
     }
 
     public final boolean hasChannelInterruptFlag(SpellAuraInterruptFlag flag) {
-        return getChannelInterruptFlags().HasAnyFlag(flag);
+        return getChannelInterruptFlags().hasFlag(flag);
     }
 
     public final boolean hasChannelInterruptFlag(SpellAuraInterruptFlag2 flag) {
-        return getChannelInterruptFlags2().HasAnyFlag(flag);
+        return getChannelInterruptFlags2().hasFlag(flag);
     }
 
     private DiminishingGroup diminishingGroupCompute() {
@@ -4130,32 +4108,32 @@ public class SpellInfo {
                 break;
             case Mage: {
                 // Frost Nova -- 122
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x40)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x40)) {
                     return DiminishingGroup.Root;
                 }
 
                 // Freeze (Water Elemental) -- 33395
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x200)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x200)) {
                     return DiminishingGroup.Root;
                 }
 
                 // Dragon's Breath -- 31661
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x800000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Polymorph -- 118
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x1000000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x1000000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Ring of Frost -- 82691
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x40)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x40)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Ice Nova -- 157997
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x800000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
@@ -4163,17 +4141,17 @@ public class SpellInfo {
             }
             case Warrior: {
                 // Shockwave -- 132168
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x8000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x8000)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Storm Bolt -- 132169
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x1000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x1000)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Intimidating Shout -- 5246
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x40000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x40000)) {
                     return DiminishingGroup.Disorient;
                 }
 
@@ -4181,32 +4159,32 @@ public class SpellInfo {
             }
             case Warlock: {
                 // Mortal Coil -- 6789
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x80000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x80000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Banish -- 710
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x8000000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x8000000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Fear -- 118699
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x400)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x400)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Howl of Terror -- 5484
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x8)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x8)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Shadowfury -- 30283
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x1000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x1000)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Summon Infernal -- 22703
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x1000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x1000)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4220,18 +4198,18 @@ public class SpellInfo {
             case WarlockPet: {
                 // Fellash -- 115770
                 // Whiplash -- 6360
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x8000000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x8000000)) {
                     return DiminishingGroup.AOEKnockback;
                 }
 
                 // Mesmerize (Shivarra pet) -- 115268
                 // Seduction (Succubus pet) -- 6358
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x2000000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x2000000)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Axe Toss (Felguard pet) -- 89766
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x4)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x4)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4239,12 +4217,12 @@ public class SpellInfo {
             }
             case Druid: {
                 // Maim -- 22570
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x80)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x80)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Mighty Bash -- 5211
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x2000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x2000)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4254,12 +4232,12 @@ public class SpellInfo {
                 }
 
                 // Incapacitating Roar -- 99, no flags on the stun, 14
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x1)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x1)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Cyclone -- 33786
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x20)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x20)) {
                     return DiminishingGroup.Disorient;
                 }
 
@@ -4269,7 +4247,7 @@ public class SpellInfo {
                 }
 
                 // Typhoon -- 61391
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x1000000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x1000000)) {
                     return DiminishingGroup.AOEKnockback;
                 }
 
@@ -4279,12 +4257,12 @@ public class SpellInfo {
                 }
 
                 // Entangling Roots -- 339
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x200)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x200)) {
                     return DiminishingGroup.Root;
                 }
 
                 // Mass Entanglement -- 102359
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x4)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x4)) {
                     return DiminishingGroup.Root;
                 }
 
@@ -4292,37 +4270,37 @@ public class SpellInfo {
             }
             case Rogue: {
                 // Between the Eyes -- 199804
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x800000)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Cheap Shot -- 1833
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x400)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x400)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Kidney Shot -- 408
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x200000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x200000)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Gouge -- 1776
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x8)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x8)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Sap -- 6770
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x80)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x80)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Blind -- 2094
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x1000000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x1000000)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Garrote -- 1330
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x20000000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x20000000)) {
                     return DiminishingGroup.Silence;
                 }
 
@@ -4346,22 +4324,22 @@ public class SpellInfo {
                 }
 
                 // Freezing Trap -- 3355
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x8)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x8)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Wyvern Sting -- 19386
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x1000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x1000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Bursting Shot -- 224729
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x40)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x40)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Scatter Shot -- 213691
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x8000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x8000)) {
                     return DiminishingGroup.Disorient;
                 }
 
@@ -4374,7 +4352,7 @@ public class SpellInfo {
             }
             case Paladin: {
                 // Repentance -- 20066
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x4)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x4)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
@@ -4384,12 +4362,12 @@ public class SpellInfo {
                 }
 
                 // Avenger's Shield -- 31935
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x4000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x4000)) {
                     return DiminishingGroup.Silence;
                 }
 
                 // Hammer of Justice -- 853
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x800)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x800)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4398,22 +4376,22 @@ public class SpellInfo {
             case Shaman: {
                 // Hex -- 51514
                 // Hex -- 196942 (Voodoo totem)
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x8000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x8000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Thunderstorm -- 51490
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x2000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x2000)) {
                     return DiminishingGroup.AOEKnockback;
                 }
 
                 // Earthgrab Totem -- 64695
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x4000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x4000)) {
                     return DiminishingGroup.Root;
                 }
 
                 // Lightning Lasso -- 204437
-                if (getSpellFamilyFlags().get(3).HasAnyFlag(0x2000000)) {
+                if (getSpellFamilyFlags().get(3).hasFlag(0x2000000)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4431,12 +4409,12 @@ public class SpellInfo {
                 }
 
                 // Strangulate -- 47476
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x200)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x200)) {
                     return DiminishingGroup.Silence;
                 }
 
                 // Asphyxiate -- 108194
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x100000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x100000)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4459,7 +4437,7 @@ public class SpellInfo {
             }
             case Priest: {
                 // Holy Word: Chastise -- 200200
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x20) && getSpellVisual() == 52021) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x20) && getSpellVisual() == 52021) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4469,22 +4447,22 @@ public class SpellInfo {
                 }
 
                 // Mind Control -- 605
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x20000) && getSpellVisual() == 39068) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x20000) && getSpellVisual() == 39068) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Holy Word: Chastise -- 200196
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x20) && getSpellVisual() == 52019) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x20) && getSpellVisual() == 52019) {
                     return DiminishingGroup.Incapacitate;
                 }
 
                 // Psychic Scream -- 8122
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x10000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x10000)) {
                     return DiminishingGroup.Disorient;
                 }
 
                 // Silence -- 15487
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x200000) && getSpellVisual() == 39025) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x200000) && getSpellVisual() == 39025) {
                     return DiminishingGroup.Silence;
                 }
 
@@ -4502,12 +4480,12 @@ public class SpellInfo {
                 }
 
                 // Fists of Fury -- 120086
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x800000) && !getSpellFamilyFlags().get(2).HasAnyFlag(0x8)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x800000) && !getSpellFamilyFlags().get(2).hasFlag(0x8)) {
                     return DiminishingGroup.Stun;
                 }
 
                 // Leg Sweep -- 119381
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x200)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x200)) {
                     return DiminishingGroup.Stun;
                 }
 
@@ -4517,7 +4495,7 @@ public class SpellInfo {
                 }
 
                 // Paralysis -- 115078
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x800000)) {
                     return DiminishingGroup.Incapacitate;
                 }
 
@@ -4579,7 +4557,7 @@ public class SpellInfo {
         switch (getSpellFamilyName()) {
             case Mage:
                 // Dragon's Breath - 3 seconds in PvP
-                if (getSpellFamilyFlags().get(0).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(0).hasFlag(0x800000)) {
                     return 3 * time.InMilliseconds;
                 }
 
@@ -4598,14 +4576,14 @@ public class SpellInfo {
                 }
 
                 // Wyvern Sting - 6 seconds in PvP
-                if (getSpellFamilyFlags().get(1).HasAnyFlag(0x1000)) {
+                if (getSpellFamilyFlags().get(1).hasFlag(0x1000)) {
                     return 6 * time.InMilliseconds;
                 }
 
                 break;
             case Monk:
                 // Paralysis - 4 seconds in PvP regardless of if they are facing you
-                if (getSpellFamilyFlags().get(2).HasAnyFlag(0x800000)) {
+                if (getSpellFamilyFlags().get(2).hasFlag(0x800000)) {
                     return 4 * time.InMilliseconds;
                 }
 
@@ -5302,7 +5280,6 @@ public class SpellInfo {
             return varCopy;
         }
     }
-
 
 
 }

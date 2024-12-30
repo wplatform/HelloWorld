@@ -1,49 +1,47 @@
 package com.github.mmo.game.networking.packet.lfg;
 
 
-import java.util.*;
 import com.github.mmo.game.networking.ServerPacket;
-public class LFGUpdateStatus extends ServerPacket
-{
-	public Rideticket ticket = new rideTicket();
-	public byte subType;
-	public byte reason;
-	public ArrayList<Integer> slots = new ArrayList<>();
-	public int requestedRoles;
-	public ArrayList<ObjectGuid> suspendedPlayers = new ArrayList<>();
-	public int queueMapID;
-	public boolean notifyUI;
-	public boolean isParty;
-	public boolean joined;
-	public boolean lfgJoined;
-	public boolean queued;
-	public boolean unused;
-	public LFGUpdateStatus()
-	{
-		super(ServerOpcode.LfgUpdateStatus);
-	}
 
-	@Override
-	public void write()
-	{
-		ticket.write(this);
+import java.util.ArrayList;
 
-		this.writeInt8(subType);
-		this.writeInt8(reason);
+public class LFGUpdateStatus extends ServerPacket {
+    public Rideticket ticket = new rideTicket();
+    public byte subType;
+    public byte reason;
+    public ArrayList<Integer> slots = new ArrayList<>();
+    public int requestedRoles;
+    public ArrayList<ObjectGuid> suspendedPlayers = new ArrayList<>();
+    public int queueMapID;
+    public boolean notifyUI;
+    public boolean isParty;
+    public boolean joined;
+    public boolean lfgJoined;
+    public boolean queued;
+    public boolean unused;
+
+    public LFGUpdateStatus() {
+        super(ServerOpcode.LfgUpdateStatus);
+    }
+
+    @Override
+    public void write() {
+        ticket.write(this);
+
+        this.writeInt8(subType);
+        this.writeInt8(reason);
         this.writeInt32(slots.size());
         this.writeInt32(requestedRoles);
         this.writeInt32(suspendedPlayers.size());
         this.writeInt32(queueMapID);
 
-		for (var slot : slots)
-		{
+        for (var slot : slots) {
             this.writeInt32(slot);
-		}
+        }
 
-		for (var player : suspendedPlayers)
-		{
+        for (var player : suspendedPlayers) {
             this.writeGuid(player);
-		}
+        }
 
         this.writeBit(isParty);
         this.writeBit(notifyUI);
@@ -52,5 +50,5 @@ public class LFGUpdateStatus extends ServerPacket
         this.writeBit(queued);
         this.writeBit(unused);
         this.flushBits();
-	}
+    }
 }

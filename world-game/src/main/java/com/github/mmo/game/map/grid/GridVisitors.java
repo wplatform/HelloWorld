@@ -6,18 +6,19 @@ import lombok.NoArgsConstructor;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GridVisitors {
 
 
     public static Consumer<GridRefManager<? extends WorldObject>> OBJECT_GRID_EVACUATOR = (refManager) -> {
         for (WorldObject o : refManager) {
-            if(o.isCreature()) {
+            if (o.isCreature()) {
                 // creature in unloading grid can have respawn point in another grid
                 // if it will be unloaded then it will not respawn in original grid until unload/load original grid
                 // move to respawn point to prevent this case. For player view in respawn grid this will be normal respawn.
                 o.toCreature().getMap().creatureRespawnRelocation(o.toCreature(), true);
-            } else if(o.isGameObject()) {
+            } else if (o.isGameObject()) {
                 // GameObject in unloading grid can have respawn point in another grid
                 // if it will be unloaded then it will not respawn in original grid until unload/load original grid
                 // move to respawn point to prevent this case. For player view in respawn grid this will be normal respawn.

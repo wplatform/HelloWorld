@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.garrison;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class GarrisonPlaceBuildingResult extends ServerPacket {
     public GarrisonType garrTypeID = GarrisonType.values()[0];
     public GarrisonError result = GarrisonError.values()[0];

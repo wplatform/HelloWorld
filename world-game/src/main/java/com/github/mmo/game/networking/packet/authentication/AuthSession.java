@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.authentication;
 
-import com.github.mmo.game.networking.*;class AuthSession extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class AuthSession extends ClientPacket {
 
     public int regionID;
 

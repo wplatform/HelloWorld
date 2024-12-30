@@ -30,7 +30,6 @@ public class Grid {
     private final GridRefManager<DynamicObject> worldDynamicObjects = new GridRefManager<>();
 
 
-
     public void addGridObject(GameObject gameObject) {
         gameObject.addToGrid(gridGameObjects);
         Assert.state(gameObject.isInGrid());

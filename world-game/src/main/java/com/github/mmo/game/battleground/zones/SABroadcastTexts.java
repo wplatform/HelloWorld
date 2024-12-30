@@ -1,7 +1,6 @@
 package com.github.mmo.game.battleground.zones;
 
 
-
 final class SABroadcastTexts {
 
     public static final int allianceCapturedTitanPortal = 28944;

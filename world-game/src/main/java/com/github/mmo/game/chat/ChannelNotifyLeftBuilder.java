@@ -19,7 +19,7 @@ class ChannelNotifyLeftBuilder extends MessageBuilder {
         return invoke(locale.enUS);
     }
 
-        @Override
+    @Override
     public PacketSenderOwning<ChannelNotifyLeft> invoke(Locale locale) {
         var localeIdx = global.getWorldMgr().getAvailableDbcLocale(locale);
 

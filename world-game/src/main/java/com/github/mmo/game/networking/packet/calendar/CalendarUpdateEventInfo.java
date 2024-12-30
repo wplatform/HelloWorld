@@ -1,49 +1,47 @@
 package com.github.mmo.game.networking.packet.calendar;
 
-import com.github.mmo.game.networking.*;
-final class CalendarUpdateEventInfo
-{
-	public void read(WorldPacket data)
-	{
-		clubID = data.readUInt64();
-		eventID = data.readUInt64();
-		moderatorID = data.readUInt64();
-		eventType = data.readUInt8();
-		textureID = data.readUInt();
-		time = data.readPackedTime();
-		flags = data.readUInt();
+import com.github.mmo.game.networking.WorldPacket;
 
-		var titleLen = data.<Byte>readBit(8);
-		var descLen = data.<SHORT>readBit(11);
+final class CalendarUpdateEventInfo {
+    public long clubID;
+    public long eventID;
+    public long moderatorID;
+    public String title;
+    public String description;
+    public byte eventType;
+    public int textureID;
+    public long time;
+    public int flags;
 
-		title = data.readString(titleLen);
-		description = data.readString(descLen);
-	}
+    public void read(WorldPacket data) {
+        clubID = data.readUInt64();
+        eventID = data.readUInt64();
+        moderatorID = data.readUInt64();
+        eventType = data.readUInt8();
+        textureID = data.readUInt();
+        time = data.readPackedTime();
+        flags = data.readUInt();
 
-	public long clubID;
-	public long eventID;
-	public long moderatorID;
-	public String title;
-	public String description;
-	public byte eventType;
-	public int textureID;
-	public long time;
-	public int flags;
+        var titleLen = data.<Byte>readBit(8);
+        var descLen = data.<SHORT>readBit(11);
 
-	public CalendarUpdateEventInfo clone()
-	{
-		CalendarUpdateEventInfo varCopy = new calendarUpdateEventInfo();
+        title = data.readString(titleLen);
+        description = data.readString(descLen);
+    }
 
-		varCopy.clubID = this.clubID;
-		varCopy.eventID = this.eventID;
-		varCopy.moderatorID = this.moderatorID;
-		varCopy.title = this.title;
-		varCopy.description = this.description;
-		varCopy.eventType = this.eventType;
-		varCopy.textureID = this.textureID;
-		varCopy.time = this.time;
-		varCopy.flags = this.flags;
+    public CalendarUpdateEventInfo clone() {
+        CalendarUpdateEventInfo varCopy = new calendarUpdateEventInfo();
 
-		return varCopy;
-	}
+        varCopy.clubID = this.clubID;
+        varCopy.eventID = this.eventID;
+        varCopy.moderatorID = this.moderatorID;
+        varCopy.title = this.title;
+        varCopy.description = this.description;
+        varCopy.eventType = this.eventType;
+        varCopy.textureID = this.textureID;
+        varCopy.time = this.time;
+        varCopy.flags = this.flags;
+
+        return varCopy;
+    }
 }

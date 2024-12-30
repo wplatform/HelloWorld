@@ -1,7 +1,6 @@
 package com.github.mmo.game.spell;
 
 
-
 import com.github.mmo.common.Flag128;
 import com.github.mmo.dbc.defines.ExpectedStatType;
 import com.github.mmo.dbc.defines.SpellEffectAttributes;
@@ -11,8 +10,7 @@ import com.github.mmo.defines.Mechanics;
 import com.github.mmo.defines.SpellAttr10;
 import com.github.mmo.defines.SpellAttr11;
 import com.github.mmo.defines.SpellEffectName;
-import com.github.mmo.game.condition.*;
-
+import com.github.mmo.game.condition.Condition;
 import com.github.mmo.game.entity.item.ItemEnchantmentManager;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
@@ -20,7 +18,9 @@ import com.github.mmo.game.spell.auras.enums.AuraType;
 import com.github.mmo.game.spell.enums.SpellEffectImplicitTargetTypes;
 import com.github.mmo.game.spell.enums.SpellTargetObjectTypes;
 
-import java.util.*;public class SpellEffectInfo {
+import java.util.ArrayList;
+
+public class SpellEffectInfo {
 
 
     private static final StaticData[] DATA = {
@@ -366,7 +366,7 @@ import java.util.*;public class SpellEffectInfo {
         this(spellInfo, null);
     }
 
-        public SpellEffectInfo(SpellInfo spellInfo, SpellEffect effect) {
+    public SpellEffectInfo(SpellInfo spellInfo, SpellEffect effect) {
         this.spellInfo = spellInfo;
 
         if (effect != null) {
@@ -482,7 +482,7 @@ import java.util.*;public class SpellEffectInfo {
         return calcValue(null, null, null, 0, -1);
     }
 
-        public final float calcValue(WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
+    public final float calcValue(WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
         return calcValue(out _, CASTER, bp, target, castItemId, itemLevel);
     }
@@ -508,7 +508,7 @@ import java.util.*;public class SpellEffectInfo {
         return calcValue(variance, null, null, null, 0, -1);
     }
 
-        public final float calcValue(tangible.OutObject<Double> variance, WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
+    public final float calcValue(tangible.OutObject<Double> variance, WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
         variance.outArgValue = 0.0f;
         var basePointsPerLevel = realPointsPerLevel;
         var basePoints = calcBaseValue(CASTER, target, castItemId, itemLevel);
@@ -686,7 +686,7 @@ import java.util.*;public class SpellEffectInfo {
         return calcValueMultiplier(CASTER, null);
     }
 
-        public final float calcValueMultiplier(WorldObject CASTER, Spell spell) {
+    public final float calcValueMultiplier(WorldObject CASTER, Spell spell) {
         var multiplier = amplitude;
         var modOwner = (CASTER != null ? CASTER.getSpellModOwner() : null);
 
@@ -704,7 +704,7 @@ import java.util.*;public class SpellEffectInfo {
         return calcDamageMultiplier(CASTER, null);
     }
 
-        public final float calcDamageMultiplier(WorldObject CASTER, Spell spell) {
+    public final float calcDamageMultiplier(WorldObject CASTER, Spell spell) {
         var multiplierPercent = ChainAmplitude * 100.0f;
         var modOwner = (CASTER != null ? CASTER.getSpellModOwner() : null);
 
@@ -741,7 +741,7 @@ import java.util.*;public class SpellEffectInfo {
         return calcRadius(null, null);
     }
 
-        public final float calcRadius(WorldObject CASTER, Spell spell) {
+    public final float calcRadius(WorldObject CASTER, Spell spell) {
         var entry = getLargestRange();
 
         if (entry == null) {
@@ -788,7 +788,7 @@ import java.util.*;public class SpellEffectInfo {
         return getMissingTargetMask(false, false, 0);
     }
 
-        public final SpellCastTargetFlags getMissingTargetMask(boolean srcSet, boolean dstSet, SpellCastTargetFlags mask) {
+    public final SpellCastTargetFlags getMissingTargetMask(boolean srcSet, boolean dstSet, SpellCastTargetFlags mask) {
         var effImplicitTargetMask = spellInfo.getTargetFlagMask(getUsedTargetObjectType());
         var providedTargetMask = SpellCastTargetFlags.forValue(getProvidedTargetMask().getValue() | mask.getValue());
 
@@ -936,7 +936,7 @@ import java.util.*;public class SpellEffectInfo {
         public ScalingInfo clone() {
             ScalingInfo varCopy = new scalingInfo();
 
-            varCopy.class = this.class;
+            varCopy.class = this. class ;
             varCopy.coefficient = this.coefficient;
             varCopy.variance = this.variance;
             varCopy.resourceCoefficient = this.resourceCoefficient;

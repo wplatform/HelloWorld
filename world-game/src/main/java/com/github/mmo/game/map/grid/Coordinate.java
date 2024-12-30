@@ -7,10 +7,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class Coordinate {
 
+    private final int limit;
     private int axisX;
     private int axisY;
-
-    private final int limit;
 
     private Coordinate(int limit, int axisX, int axisY) {
         this.limit = limit;
@@ -18,6 +17,13 @@ public class Coordinate {
         this.axisY = axisY;
     }
 
+    public static Coordinate createGridCoordinate(int x, int y) {
+        return new Coordinate(MapDefine.MAX_NUMBER_OF_GRIDS, x, y);
+    }
+
+    public static Coordinate createCellCoordinate(int x, int y) {
+        return new Coordinate(MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP, x, y);
+    }
 
     public void decX(int val) {
         if (axisX > val)
@@ -71,16 +77,6 @@ public class Coordinate {
 
     public boolean isGridCoordinate() {
         return limit == MapDefine.MAX_NUMBER_OF_GRIDS;
-    }
-
-
-    public static Coordinate createGridCoordinate(int x, int y) {
-        return new Coordinate(MapDefine.MAX_NUMBER_OF_GRIDS, x, y);
-    }
-
-
-    public static Coordinate createCellCoordinate(int x, int y) {
-        return new Coordinate(MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP, x, y);
     }
 
 }

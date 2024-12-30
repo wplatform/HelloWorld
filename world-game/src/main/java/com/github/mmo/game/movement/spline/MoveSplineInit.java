@@ -8,7 +8,6 @@ import com.github.mmo.game.entity.unit.enums.MovementFlag;
 import com.github.mmo.game.entity.unit.enums.NPCFlags2;
 import com.github.mmo.game.movement.*;
 
-
 import java.util.ArrayList;
 
 public class MoveSplineInit {
@@ -219,7 +218,7 @@ public class MoveSplineInit {
         moveTo(dest, true, false);
     }
 
-        public final void moveTo(Vector3 dest, boolean generatePath, boolean forceDestination) {
+    public final void moveTo(Vector3 dest, boolean generatePath, boolean forceDestination) {
         if (generatePath) {
             PathGenerator path = new PathGenerator(unit);
             var result = path.calculatePath(new Position(dest), forceDestination);
@@ -292,7 +291,7 @@ public class MoveSplineInit {
         movebyPath(controls, 0);
     }
 
-        public final void movebyPath(Vector3[] controls, int path_offset) {
+    public final void movebyPath(Vector3[] controls, int path_offset) {
         args.path_Idx_offset = path_offset;
         TransportPathTransform transform = new TransportPathTransform(unit, args.transformForTransport);
 
@@ -310,7 +309,7 @@ public class MoveSplineInit {
         moveTo(x, y, z, true, false);
     }
 
-        public final void moveTo(float x, float y, float z, boolean generatePath, boolean forceDest) {
+    public final void moveTo(float x, float y, float z, boolean generatePath, boolean forceDest) {
         moveTo(new Vector3(x, y, z), generatePath, forceDest);
     }
 
@@ -355,21 +354,21 @@ public class MoveSplineInit {
     }
 
     private UnitMoveType selectSpeedType(MovementFlag moveFlags) {
-        if (moveFlags.HasAnyFlag(MovementFlag.Flying)) {
-            if (moveFlags.HasAnyFlag(MovementFlag.Backward)) {
+        if (moveFlags.hasFlag(MovementFlag.Flying)) {
+            if (moveFlags.hasFlag(MovementFlag.Backward)) {
                 return UnitMoveType.FlightBack;
             } else {
                 return UnitMoveType.flight;
             }
-        } else if (moveFlags.HasAnyFlag(MovementFlag.Swimming)) {
-            if (moveFlags.HasAnyFlag(MovementFlag.Backward)) {
+        } else if (moveFlags.hasFlag(MovementFlag.Swimming)) {
+            if (moveFlags.hasFlag(MovementFlag.Backward)) {
                 return UnitMoveType.SwimBack;
             } else {
                 return UnitMoveType.swim;
             }
-        } else if (moveFlags.HasAnyFlag(MovementFlag.Walking)) {
+        } else if (moveFlags.hasFlag(MovementFlag.Walking)) {
             return UnitMoveType.Walk;
-        } else if (moveFlags.HasAnyFlag(MovementFlag.Backward)) {
+        } else if (moveFlags.hasFlag(MovementFlag.Backward)) {
             return UnitMoveType.RunBack;
         }
 

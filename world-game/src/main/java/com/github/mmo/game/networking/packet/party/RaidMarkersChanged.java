@@ -1,10 +1,12 @@
 package com.github.mmo.game.networking.packet.party;
 
 
-import com.github.mmo.game.group.*;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.group.RaidMarker;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;class RaidMarkersChanged extends ServerPacket {
+import java.util.ArrayList;
+
+class RaidMarkersChanged extends ServerPacket {
     public byte partyIndex;
 
     public int activeMarkers;

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 
 @RequiredArgsConstructor
-public enum  UnitBytes1_Flags {
+public enum UnitBytes1_Flags {
     UNIT_BYTE1_FLAG_ALWAYS_STAND(0x01),
     UNIT_BYTE1_FLAG_HOVER(0x02),
     UNIT_BYTE1_FLAG_UNK_3(0x04),

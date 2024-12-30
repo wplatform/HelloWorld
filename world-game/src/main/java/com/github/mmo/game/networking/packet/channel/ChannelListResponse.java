@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.channel;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;public class ChannelListResponse extends ServerPacket {
+import java.util.ArrayList;
+
+public class ChannelListResponse extends ServerPacket {
     public ArrayList<ChannelPlayer> members;
     public String channel; // Channel Name
     public channelFlags channelFlags = Framework.Constants.channelFlags.values()[0];
@@ -35,6 +37,7 @@ import java.util.*;public class ChannelListResponse extends ServerPacket {
 
         public int virtualRealmAddress;
         public ChannelMemberflags flags = ChannelMemberFlags.values()[0];
+
         public ChannelPlayer() {
         }
 

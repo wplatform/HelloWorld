@@ -7,7 +7,6 @@ import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 
 
-
 public class PhaseShiftChange extends ServerPacket {
     public ObjectGuid client = ObjectGuid.EMPTY;
     public PhaseShiftData phaseshift = new PhaseShiftData();

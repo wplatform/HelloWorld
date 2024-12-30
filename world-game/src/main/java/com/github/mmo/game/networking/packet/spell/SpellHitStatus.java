@@ -1,32 +1,27 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public final class SpellHitStatus
-{
-	public SpellHitStatus()
-	{
-	}
+public final class SpellHitStatus {
+    public SpellMissInfo reason = SpellMissInfo.values()[0];
 
-	public SpellHitStatus(SpellMissInfo reason)
-	{
-		reason = reason;
-	}
+    public SpellHitStatus() {
+    }
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt8((byte)reason.getValue());
-	}
+    public SpellHitStatus(SpellMissInfo reason) {
+        reason = reason;
+    }
 
-	public SpellMissInfo reason = SpellMissInfo.values()[0];
+    public void write(WorldPacket data) {
+        data.writeInt8((byte) reason.getValue());
+    }
 
-	public SpellHitStatus clone()
-	{
-		SpellHitStatus varCopy = new SpellHitStatus();
+    public SpellHitStatus clone() {
+        SpellHitStatus varCopy = new SpellHitStatus();
 
-		varCopy.reason = this.reason;
+        varCopy.reason = this.reason;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

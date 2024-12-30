@@ -1,513 +1,441 @@
 package com.github.mmo.game.map;
 
 
-
-
-import java.util.*;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 
 // C# TO JAVA CONVERTER TASK: C# to Java Converter could not confirm whether this is a namespace alias or a type alias:
 //using InstanceLockKey = Tuple<uint, uint>;
 
-public class InstanceLockManager 
-{
-	private final object lockobject = new object();
-	private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> temporaryInstanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>(); // locks stored here before any boss gets killed
-	private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> instanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>();
-	private final HashMap<Integer, SharedInstanceLockData> instanceLockDataById = new HashMap<Integer, SharedInstanceLockData>();
-	private boolean unloading;
+public class InstanceLockManager {
+    private final object lockobject = new object();
+    private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> temporaryInstanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>(); // locks stored here before any boss gets killed
+    private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> instanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>();
+    private final HashMap<Integer, SharedInstanceLockData> instanceLockDataById = new HashMap<Integer, SharedInstanceLockData>();
+    private boolean unloading;
 
-	private InstanceLockManager()
-	{
-	}
+    private InstanceLockManager() {
+    }
 
-	public final void load()
-	{
-		HashMap<Integer, SharedInstanceLockData> instanceLockDataById = new HashMap<Integer, SharedInstanceLockData>();
+    public final void load() {
+        HashMap<Integer, SharedInstanceLockData> instanceLockDataById = new HashMap<Integer, SharedInstanceLockData>();
 
-		//                                              0           1     2
-		var result = DB.characters.query("SELECT instanceId, data, completedEncountersMask FROM instance");
+        //                                              0           1     2
+        var result = DB.characters.query("SELECT instanceId, data, completedEncountersMask FROM instance");
 
-		if (!result.isEmpty())
-		{
-			do
-			{
-				var instanceId = result.<Integer>Read(0);
+        if (!result.isEmpty()) {
+            do {
+                var instanceId = result.<Integer>Read(0);
 
-				SharedInstanceLockData data = new SharedInstanceLockData();
-				data.setData(result.<String>Read(1));
-				data.setCompletedEncountersMask(result.<Integer>Read(2));
-				data.instanceId = instanceId;
+                SharedInstanceLockData data = new SharedInstanceLockData();
+                data.setData(result.<String>Read(1));
+                data.setCompletedEncountersMask(result.<Integer>Read(2));
+                data.instanceId = instanceId;
 
-				instanceLockDataById.put(instanceId, data);
-			} while (result.NextRow());
-		}
+                instanceLockDataById.put(instanceId, data);
+            } while (result.NextRow());
+        }
 
-		//                                                  0     1      2       3           4           5     6                        7           8
-		var lockResult = DB.characters.query("SELECT guid, mapId, lockId, instanceId, difficulty, data, completedEncountersMask, expiryTime, extended FROM character_instance_lock");
+        //                                                  0     1      2       3           4           5     6                        7           8
+        var lockResult = DB.characters.query("SELECT guid, mapId, lockId, instanceId, difficulty, data, completedEncountersMask, expiryTime, extended FROM character_instance_lock");
 
-		if (!result.isEmpty())
-		{
-			do
-			{
-				var playerGuid = ObjectGuid.create(HighGuid.Player, lockResult.<Long>Read(0));
-				var mapId = lockResult.<Integer>Read(1);
-				var lockId = lockResult.<Integer>Read(2);
-				var instanceId = lockResult.<Integer>Read(3);
-				var difficulty = Difficulty.forValue(lockResult.<Byte>Read(4));
-				var expiryTime = time.UnixTimeToDateTime(lockResult.<Long>Read(7));
+        if (!result.isEmpty()) {
+            do {
+                var playerGuid = ObjectGuid.create(HighGuid.Player, lockResult.<Long>Read(0));
+                var mapId = lockResult.<Integer>Read(1);
+                var lockId = lockResult.<Integer>Read(2);
+                var instanceId = lockResult.<Integer>Read(3);
+                var difficulty = Difficulty.forValue(lockResult.<Byte>Read(4));
+                var expiryTime = time.UnixTimeToDateTime(lockResult.<Long>Read(7));
 
-				// Mark instance id as being used
-				global.getMapMgr().RegisterInstanceId(instanceId);
+                // Mark instance id as being used
+                global.getMapMgr().RegisterInstanceId(instanceId);
 
-				InstanceLock instanceLock;
+                InstanceLock instanceLock;
 
-				if ((new MapDb2Entries(mapId, difficulty)).IsInstanceIdBound())
-				{
-					var sharedData = instanceLockDataById.get(instanceId);
+                if ((new MapDb2Entries(mapId, difficulty)).IsInstanceIdBound()) {
+                    var sharedData = instanceLockDataById.get(instanceId);
 
-					if (sharedData == null)
-					{
-						Log.outError(LogFilter.instance, String.format("Missing instance data for instance id based lock (id %1$s)", instanceId));
-						DB.characters.execute(String.format("DELETE FROM character_instance_lock WHERE instanceId = %1$s", instanceId));
+                    if (sharedData == null) {
+                        Log.outError(LogFilter.instance, String.format("Missing instance data for instance id based lock (id %1$s)", instanceId));
+                        DB.characters.execute(String.format("DELETE FROM character_instance_lock WHERE instanceId = %1$s", instanceId));
 
-						continue;
-					}
+                        continue;
+                    }
 
-					instanceLock = new SharedInstanceLock(mapId, difficulty, expiryTime, instanceId, sharedData);
-					instanceLockDataById.put(instanceId, sharedData);
-				}
-				else
-				{
-					instanceLock = new InstanceLock(mapId, difficulty, expiryTime, instanceId);
-				}
+                    instanceLock = new SharedInstanceLock(mapId, difficulty, expiryTime, instanceId, sharedData);
+                    instanceLockDataById.put(instanceId, sharedData);
+                } else {
+                    instanceLock = new InstanceLock(mapId, difficulty, expiryTime, instanceId);
+                }
 
-				instanceLock.getData().setData(lockResult.<String>Read(5));
-				instanceLock.getData().setCompletedEncountersMask(lockResult.<Integer>Read(6));
-				instanceLock.setExtended(lockResult.<Boolean>Read(8));
+                instanceLock.getData().setData(lockResult.<String>Read(5));
+                instanceLock.getData().setCompletedEncountersMask(lockResult.<Integer>Read(6));
+                instanceLock.setExtended(lockResult.<Boolean>Read(8));
 
                 instanceLocksByPlayer.get(playerGuid).put(Tuple.create(mapId, lockId), instanceLock);
-			} while (result.NextRow());
-		}
-	}
+            } while (result.NextRow());
+        }
+    }
 
-	public final void unload()
-	{
-		unloading = true;
-		instanceLocksByPlayer.clear();
-		instanceLockDataById.clear();
-	}
+    public final void unload() {
+        unloading = true;
+        instanceLocksByPlayer.clear();
+        instanceLockDataById.clear();
+    }
 
-	public final TransferAbortReason canJoinInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries, InstanceLock instanceLock)
-	{
-		if (!entries.MapDifficulty.HasResetSchedule())
-		{
-			return TransferAbortReason.NONE;
-		}
+    public final TransferAbortReason canJoinInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries, InstanceLock instanceLock) {
+        if (!entries.MapDifficulty.HasResetSchedule()) {
+            return TransferAbortReason.NONE;
+        }
 
         var playerInstanceLock = findActiveInstanceLock(playerGuid, entries);
 
-		if (playerInstanceLock == null)
-		{
-			return TransferAbortReason.NONE;
-		}
+        if (playerInstanceLock == null) {
+            return TransferAbortReason.NONE;
+        }
 
-		if (entries.Map.IsFlexLocking())
-		{
-			// compare completed encounters - if instance has any encounters unkilled in players lock then cannot enter
-			if ((playerInstanceLock.getData().getCompletedEncountersMask() & ~instanceLock.getData().getCompletedEncountersMask()) != 0)
-			{
-				return TransferAbortReason.AlreadyCompletedEncounter;
-			}
+        if (entries.Map.IsFlexLocking()) {
+            // compare completed encounters - if instance has any encounters unkilled in players lock then cannot enter
+            if ((playerInstanceLock.getData().getCompletedEncountersMask() & ~instanceLock.getData().getCompletedEncountersMask()) != 0) {
+                return TransferAbortReason.AlreadyCompletedEncounter;
+            }
 
-			return TransferAbortReason.NONE;
-		}
+            return TransferAbortReason.NONE;
+        }
 
-		if (!entries.MapDifficulty.IsUsingEncounterLocks() && playerInstanceLock.getInstanceId() != 0 && playerInstanceLock.getInstanceId() != instanceLock.getInstanceId())
-		{
-			return TransferAbortReason.LockedToDifferentInstance;
-		}
+        if (!entries.MapDifficulty.IsUsingEncounterLocks() && playerInstanceLock.getInstanceId() != 0 && playerInstanceLock.getInstanceId() != instanceLock.getInstanceId()) {
+            return TransferAbortReason.LockedToDifferentInstance;
+        }
 
-		return TransferAbortReason.NONE;
-	}
+        return TransferAbortReason.NONE;
+    }
 
-	public final InstanceLock findInstanceLock(HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> locks, ObjectGuid playerGuid, MapDb2Entries entries)
-	{
+    public final InstanceLock findInstanceLock(HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> locks, ObjectGuid playerGuid, MapDb2Entries entries) {
         var playerLocks = locks.get(playerGuid);
 
-		if (playerLocks == null)
-		{
-			return null;
-		}
+        if (playerLocks == null) {
+            return null;
+        }
 
-		return playerLocks.get(entries.GetKey());
-	}
+        return playerLocks.get(entries.GetKey());
+    }
 
-	public final InstanceLock findActiveInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries)
-	{
-		synchronized (lockObject)
-		{
+    public final InstanceLock findActiveInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries) {
+        synchronized (lockObject) {
             return findActiveInstanceLock(playerGuid, entries, false, true);
-		}
-	}
+        }
+    }
 
-	public final InstanceLock findActiveInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries, boolean ignoreTemporary, boolean ignoreExpired)
-	{
+    public final InstanceLock findActiveInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries, boolean ignoreTemporary, boolean ignoreExpired) {
         var instanceLock = findInstanceLock(instanceLocksByPlayer, playerGuid, entries);
 
-		// Ignore expired and not extended locks
-		if (instanceLock != null && (!instanceLock.isExpired() || instanceLock.isExtended() || !ignoreExpired))
-		{
-			return instanceLock;
-		}
+        // Ignore expired and not extended locks
+        if (instanceLock != null && (!instanceLock.isExpired() || instanceLock.isExtended() || !ignoreExpired)) {
+            return instanceLock;
+        }
 
-		if (ignoreTemporary)
-		{
-			return null;
-		}
+        if (ignoreTemporary) {
+            return null;
+        }
 
         return findInstanceLock(temporaryInstanceLocksByPlayer, playerGuid, entries);
-	}
+    }
 
-	public final Collection<InstanceLock> getInstanceLocksForPlayer(ObjectGuid playerGuid)
-	{
-		TValue dictionary;
-        if (instanceLocksByPlayer.containsKey(playerGuid) && (dictionary = instanceLocksByPlayer.get(playerGuid)) == dictionary)
-		{
-			return dictionary.VALUES;
-		}
+    public final Collection<InstanceLock> getInstanceLocksForPlayer(ObjectGuid playerGuid) {
+        TValue dictionary;
+        if (instanceLocksByPlayer.containsKey(playerGuid) && (dictionary = instanceLocksByPlayer.get(playerGuid)) == dictionary) {
+            return dictionary.VALUES;
+        }
 
-		return new ArrayList<>();
-	}
+        return new ArrayList<>();
+    }
 
-	public final InstanceLock createInstanceLockForNewInstance(ObjectGuid playerGuid, MapDb2Entries entries, int instanceId)
-	{
-		if (!entries.MapDifficulty.HasResetSchedule())
-		{
-			return null;
-		}
+    public final InstanceLock createInstanceLockForNewInstance(ObjectGuid playerGuid, MapDb2Entries entries, int instanceId) {
+        if (!entries.MapDifficulty.HasResetSchedule()) {
+            return null;
+        }
 
-		InstanceLock instanceLock;
+        InstanceLock instanceLock;
 
-		if (entries.IsInstanceIdBound())
-		{
-			SharedInstanceLockData sharedData = new SharedInstanceLockData();
-			instanceLockDataById.put(instanceId, sharedData);
+        if (entries.IsInstanceIdBound()) {
+            SharedInstanceLockData sharedData = new SharedInstanceLockData();
+            instanceLockDataById.put(instanceId, sharedData);
 
             instanceLock = new SharedInstanceLock(entries.MapDifficulty.mapID, Difficulty.forValue((byte) entries.MapDifficulty.difficultyID), getNextResetTime(entries), 0, sharedData);
-		}
-		else
-		{
+        } else {
             instanceLock = new InstanceLock(entries.MapDifficulty.mapID, Difficulty.forValue((byte) entries.MapDifficulty.difficultyID), getNextResetTime(entries), 0);
-		}
+        }
 
-        if (!temporaryInstanceLocksByPlayer.containsKey(playerGuid))
-		{
+        if (!temporaryInstanceLocksByPlayer.containsKey(playerGuid)) {
             temporaryInstanceLocksByPlayer.put(playerGuid, new HashMap<Tuple<Integer, Integer>, InstanceLock>());
-		}
+        }
 
         temporaryInstanceLocksByPlayer.get(playerGuid).put(entries.GetKey(), instanceLock);
 
         Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] Created new temporary instance lock for %3$s in instance %4$s", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, playerGuid, instanceId));
 
-		return instanceLock;
-	}
+        return instanceLock;
+    }
 
-	public final InstanceLock updateInstanceLockForPlayer(SQLTransaction trans, ObjectGuid playerGuid, MapDb2Entries entries, InstanceLockUpdateEvent updateEvent)
-	{
+    public final InstanceLock updateInstanceLockForPlayer(SQLTransaction trans, ObjectGuid playerGuid, MapDb2Entries entries, InstanceLockUpdateEvent updateEvent) {
         var instanceLock = findActiveInstanceLock(playerGuid, entries, true, true);
 
-		if (instanceLock == null)
-		{
-			synchronized (lockObject)
-			{
-				// Move lock from temporary storage if it exists there
-				// This is to avoid destroying expired locks before any boss is killed in a fresh lock
-				// player can still change his mind, exit instance and reactivate old lock
+        if (instanceLock == null) {
+            synchronized (lockObject) {
+                // Move lock from temporary storage if it exists there
+                // This is to avoid destroying expired locks before any boss is killed in a fresh lock
+                // player can still change his mind, exit instance and reactivate old lock
                 var playerLocks = temporaryInstanceLocksByPlayer.get(playerGuid);
 
-				if (playerLocks != null)
-				{
-					var playerInstanceLock = playerLocks.get(entries.GetKey());
+                if (playerLocks != null) {
+                    var playerInstanceLock = playerLocks.get(entries.GetKey());
 
-					if (playerInstanceLock != null)
-					{
-						instanceLock = playerInstanceLock;
+                    if (playerInstanceLock != null) {
+                        instanceLock = playerInstanceLock;
                         instanceLocksByPlayer.get(playerGuid).put(entries.GetKey(), instanceLock);
 
-						playerLocks.remove(entries.GetKey());
+                        playerLocks.remove(entries.GetKey());
 
-						if (playerLocks.isEmpty())
-						{
+                        if (playerLocks.isEmpty()) {
                             temporaryInstanceLocksByPlayer.remove(playerGuid);
-						}
+                        }
 
                         Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] Promoting temporary lock to permanent for %3$s in instance %4$s", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, playerGuid, updateEvent.instanceId));
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
-		if (instanceLock == null)
-		{
-			if (entries.IsInstanceIdBound())
-			{
-				var sharedDataItr = instanceLockDataById.get(updateEvent.instanceId);
+        if (instanceLock == null) {
+            if (entries.IsInstanceIdBound()) {
+                var sharedDataItr = instanceLockDataById.get(updateEvent.instanceId);
 
                 instanceLock = new SharedInstanceLock(entries.MapDifficulty.mapID, Difficulty.forValue((byte) entries.MapDifficulty.difficultyID), getNextResetTime(entries), updateEvent.instanceId, sharedDataItr);
-			}
-			else
-			{
+            } else {
                 instanceLock = new InstanceLock(entries.MapDifficulty.mapID, Difficulty.forValue((byte) entries.MapDifficulty.difficultyID), getNextResetTime(entries), updateEvent.instanceId);
-			}
+            }
 
-			synchronized (lockObject)
-			{
+            synchronized (lockObject) {
                 instanceLocksByPlayer.get(playerGuid).put(entries.GetKey(), instanceLock);
-			}
+            }
 
             Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] Created new instance lock for %3$s in instance %4$s", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, playerGuid, updateEvent.instanceId));
-		}
-		else
-		{
-			instanceLock.setInstanceId(updateEvent.instanceId);
-		}
+        } else {
+            instanceLock.setInstanceId(updateEvent.instanceId);
+        }
 
-		instanceLock.getData().setData(updateEvent.newData);
+        instanceLock.getData().setData(updateEvent.newData);
 
-		if (updateEvent.completedEncounter != null)
-		{
-			instanceLock.getData().setCompletedEncountersMask(instanceLock.getData().getCompletedEncountersMask() | 1 << updateEvent.completedEncounter.bit);
+        if (updateEvent.completedEncounter != null) {
+            instanceLock.getData().setCompletedEncountersMask(instanceLock.getData().getCompletedEncountersMask() | 1 << updateEvent.completedEncounter.bit);
 
             Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] ", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name) + String.format("Instance lock for %1$s in instance %2$s gains completed encounter [%3$s-%4$s]", playerGuid, updateEvent.instanceId, updateEvent.completedEncounter.id, updateEvent.completedEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale())));
-		}
+        }
 
-		// Synchronize map completed encounters into players completed encounters for UI
-		if (!entries.MapDifficulty.IsUsingEncounterLocks())
-		{
-			instanceLock.getData().setCompletedEncountersMask(instanceLock.getData().getCompletedEncountersMask() | updateEvent.instanceCompletedEncountersMask);
-		}
+        // Synchronize map completed encounters into players completed encounters for UI
+        if (!entries.MapDifficulty.IsUsingEncounterLocks()) {
+            instanceLock.getData().setCompletedEncountersMask(instanceLock.getData().getCompletedEncountersMask() | updateEvent.instanceCompletedEncountersMask);
+        }
 
-		if (updateEvent.entranceWorldSafeLocId != null)
-		{
-			instanceLock.getData().setEntranceWorldSafeLocId(updateEvent.entranceWorldSafeLocId.intValue());
-		}
+        if (updateEvent.entranceWorldSafeLocId != null) {
+            instanceLock.getData().setEntranceWorldSafeLocId(updateEvent.entranceWorldSafeLocId.intValue());
+        }
 
-		if (instanceLock.isExpired())
-		{
+        if (instanceLock.isExpired()) {
             instanceLock.setExpiryTime(getNextResetTime(entries));
-			instanceLock.setExtended(false);
+            instanceLock.setExtended(false);
 
             Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] Expired instance lock for %3$s in instance %4$s is now active", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, playerGuid, updateEvent.instanceId));
-		}
+        }
 
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_CHARACTER_INSTANCE_LOCK);
-		stmt.AddValue(0, playerGuid.getCounter());
-		stmt.AddValue(1, entries.MapDifficulty.mapID);
-		stmt.AddValue(2, entries.MapDifficulty.LockID);
-		trans.append(stmt);
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_CHARACTER_INSTANCE_LOCK);
+        stmt.AddValue(0, playerGuid.getCounter());
+        stmt.AddValue(1, entries.MapDifficulty.mapID);
+        stmt.AddValue(2, entries.MapDifficulty.LockID);
+        trans.append(stmt);
 
-		stmt = DB.characters.GetPreparedStatement(CharStatements.INS_CHARACTER_INSTANCE_LOCK);
-		stmt.AddValue(0, playerGuid.getCounter());
-		stmt.AddValue(1, entries.MapDifficulty.mapID);
-		stmt.AddValue(2, entries.MapDifficulty.LockID);
-		stmt.AddValue(3, instanceLock.getInstanceId());
-		stmt.AddValue(4, entries.MapDifficulty.difficultyID);
-		stmt.AddValue(5, instanceLock.getData().getData());
-		stmt.AddValue(6, instanceLock.getData().getCompletedEncountersMask());
-		stmt.AddValue(7, instanceLock.getData().getEntranceWorldSafeLocId());
-		stmt.AddValue(8, (long)time.DateTimeToUnixTime(instanceLock.getExpiryTime()));
-		stmt.AddValue(9, instanceLock.isExtended() ? 1 : 0);
-		trans.append(stmt);
+        stmt = DB.characters.GetPreparedStatement(CharStatements.INS_CHARACTER_INSTANCE_LOCK);
+        stmt.AddValue(0, playerGuid.getCounter());
+        stmt.AddValue(1, entries.MapDifficulty.mapID);
+        stmt.AddValue(2, entries.MapDifficulty.LockID);
+        stmt.AddValue(3, instanceLock.getInstanceId());
+        stmt.AddValue(4, entries.MapDifficulty.difficultyID);
+        stmt.AddValue(5, instanceLock.getData().getData());
+        stmt.AddValue(6, instanceLock.getData().getCompletedEncountersMask());
+        stmt.AddValue(7, instanceLock.getData().getEntranceWorldSafeLocId());
+        stmt.AddValue(8, (long) time.DateTimeToUnixTime(instanceLock.getExpiryTime()));
+        stmt.AddValue(9, instanceLock.isExtended() ? 1 : 0);
+        trans.append(stmt);
 
-		return instanceLock;
-	}
+        return instanceLock;
+    }
 
-	public final void updateSharedInstanceLock(SQLTransaction trans, InstanceLockUpdateEvent updateEvent)
-	{
-		var sharedData = instanceLockDataById.get(updateEvent.instanceId);
-		sharedData.data = updateEvent.newData;
-		sharedData.instanceId = updateEvent.instanceId;
+    public final void updateSharedInstanceLock(SQLTransaction trans, InstanceLockUpdateEvent updateEvent) {
+        var sharedData = instanceLockDataById.get(updateEvent.instanceId);
+        sharedData.data = updateEvent.newData;
+        sharedData.instanceId = updateEvent.instanceId;
 
-		if (updateEvent.completedEncounter != null)
-		{
-			sharedData.completedEncountersMask |= 1 << updateEvent.completedEncounter.bit;
-			Log.outDebug(LogFilter.instance, String.format("Instance %1$s gains completed encounter [%2$s-%3$s]", updateEvent.instanceId, updateEvent.completedEncounter.id, updateEvent.completedEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale())));
-		}
+        if (updateEvent.completedEncounter != null) {
+            sharedData.completedEncountersMask |= 1 << updateEvent.completedEncounter.bit;
+            Log.outDebug(LogFilter.instance, String.format("Instance %1$s gains completed encounter [%2$s-%3$s]", updateEvent.instanceId, updateEvent.completedEncounter.id, updateEvent.completedEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale())));
+        }
 
-		if (updateEvent.entranceWorldSafeLocId != null)
-		{
-			sharedData.entranceWorldSafeLocId = updateEvent.entranceWorldSafeLocId.intValue();
-		}
+        if (updateEvent.entranceWorldSafeLocId != null) {
+            sharedData.entranceWorldSafeLocId = updateEvent.entranceWorldSafeLocId.intValue();
+        }
 
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_INSTANCE);
-		stmt.AddValue(0, sharedData.instanceId);
-		trans.append(stmt);
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_INSTANCE);
+        stmt.AddValue(0, sharedData.instanceId);
+        trans.append(stmt);
 
-		stmt = DB.characters.GetPreparedStatement(CharStatements.INS_INSTANCE);
-		stmt.AddValue(0, sharedData.instanceId);
-		stmt.AddValue(1, sharedData.data);
-		stmt.AddValue(2, sharedData.completedEncountersMask);
-		stmt.AddValue(3, sharedData.entranceWorldSafeLocId);
-		trans.append(stmt);
-	}
+        stmt = DB.characters.GetPreparedStatement(CharStatements.INS_INSTANCE);
+        stmt.AddValue(0, sharedData.instanceId);
+        stmt.AddValue(1, sharedData.data);
+        stmt.AddValue(2, sharedData.completedEncountersMask);
+        stmt.AddValue(3, sharedData.entranceWorldSafeLocId);
+        trans.append(stmt);
+    }
 
-	public final void onSharedInstanceLockDataDelete(int instanceId)
-	{
-		if (unloading)
-		{
-			return;
-		}
+    public final void onSharedInstanceLockDataDelete(int instanceId) {
+        if (unloading) {
+            return;
+        }
 
-		instanceLockDataById.remove(instanceId);
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_INSTANCE);
-		stmt.AddValue(0, instanceId);
-		DB.characters.execute(stmt);
-		Log.outDebug(LogFilter.instance, String.format("Deleting instance %1$s as it is no longer referenced by any player", instanceId));
-	}
+        instanceLockDataById.remove(instanceId);
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_INSTANCE);
+        stmt.AddValue(0, instanceId);
+        DB.characters.execute(stmt);
+        Log.outDebug(LogFilter.instance, String.format("Deleting instance %1$s as it is no longer referenced by any player", instanceId));
+    }
 
-	public final Tuple<LocalDateTime, LocalDateTime> updateInstanceLockExtensionForPlayer(ObjectGuid playerGuid, MapDb2Entries entries, boolean extended)
-	{
+    public final Tuple<LocalDateTime, LocalDateTime> updateInstanceLockExtensionForPlayer(ObjectGuid playerGuid, MapDb2Entries entries, boolean extended) {
         var instanceLock = findActiveInstanceLock(playerGuid, entries, true, false);
 
-		if (instanceLock != null)
-		{
-			var oldExpiryTime = instanceLock.getEffectiveExpiryTime();
-			instanceLock.setExtended(extended);
-			var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_CHARACTER_INSTANCE_LOCK_EXTENSION);
-			stmt.AddValue(0, extended ? 1 : 0);
-			stmt.AddValue(1, playerGuid.getCounter());
-			stmt.AddValue(2, entries.MapDifficulty.mapID);
-			stmt.AddValue(3, entries.MapDifficulty.LockID);
-			DB.characters.execute(stmt);
+        if (instanceLock != null) {
+            var oldExpiryTime = instanceLock.getEffectiveExpiryTime();
+            instanceLock.setExtended(extended);
+            var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_CHARACTER_INSTANCE_LOCK_EXTENSION);
+            stmt.AddValue(0, extended ? 1 : 0);
+            stmt.AddValue(1, playerGuid.getCounter());
+            stmt.AddValue(2, entries.MapDifficulty.mapID);
+            stmt.AddValue(3, entries.MapDifficulty.LockID);
+            DB.characters.execute(stmt);
 
             Log.outDebug(LogFilter.instance, String.format("[%1$s-%2$s | ", entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale())) + String.format("%1$s-%2$s] Instance lock for %3$s is %4$s extended", entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, playerGuid, (extended ? "now" : "no longer")));
 
-			return Tuple.create(oldExpiryTime, instanceLock.getEffectiveExpiryTime());
-		}
+            return Tuple.create(oldExpiryTime, instanceLock.getEffectiveExpiryTime());
+        }
 
-		return Tuple.create(LocalDateTime.MIN, LocalDateTime.MIN);
-	}
+        return Tuple.create(LocalDateTime.MIN, LocalDateTime.MIN);
+    }
 
-	/** 
-	  Resets instances that match given filter - for use in GM commands
-	 
-	 @param playerGuid Guid of player whose locks will be removed 
-	 @param mapId (Optional) Map id of instance locks to reset 
-	 @param difficulty (Optional) Difficulty of instance locks to reset 
-	 @param locksReset All locks that were reset 
-	 @param locksFailedToReset Locks that could not be reset because they are used by existing instance map 
-	*/
-	public final void resetInstanceLocksForPlayer(ObjectGuid playerGuid, Integer mapId, Difficulty difficulty, ArrayList<InstanceLock> locksReset, ArrayList<InstanceLock> locksFailedToReset)
-	{
+    /**
+     * Resets instances that match given filter - for use in GM commands
+     *
+     * @param playerGuid         Guid of player whose locks will be removed
+     * @param mapId              (Optional) Map id of instance locks to reset
+     * @param difficulty         (Optional) Difficulty of instance locks to reset
+     * @param locksReset         All locks that were reset
+     * @param locksFailedToReset Locks that could not be reset because they are used by existing instance map
+     */
+    public final void resetInstanceLocksForPlayer(ObjectGuid playerGuid, Integer mapId, Difficulty difficulty, ArrayList<InstanceLock> locksReset, ArrayList<InstanceLock> locksFailedToReset) {
         var playerLocks = instanceLocksByPlayer.get(playerGuid);
 
-		if (playerLocks == null)
-		{
-			return;
-		}
+        if (playerLocks == null) {
+            return;
+        }
 
-		for (var playerLockPair : playerLocks)
-		{
-			if (playerLockPair.value.isInUse())
-			{
-				locksFailedToReset.add(playerLockPair.value);
+        for (var playerLockPair : playerLocks) {
+            if (playerLockPair.value.isInUse()) {
+                locksFailedToReset.add(playerLockPair.value);
 
-				continue;
-			}
+                continue;
+            }
 
-			if (mapId != null && mapId.intValue() != playerLockPair.value.getMapId())
-			{
-				continue;
-			}
+            if (mapId != null && mapId.intValue() != playerLockPair.value.getMapId()) {
+                continue;
+            }
 
-			if (difficulty != null && difficulty != playerLockPair.value.getDifficultyId())
-			{
-				continue;
-			}
+            if (difficulty != null && difficulty != playerLockPair.value.getDifficultyId()) {
+                continue;
+            }
 
-			locksReset.add(playerLockPair.value);
-		}
+            locksReset.add(playerLockPair.value);
+        }
 
-		if (!locksReset.isEmpty())
-		{
-			SQLTransaction trans = new SQLTransaction();
+        if (!locksReset.isEmpty()) {
+            SQLTransaction trans = new SQLTransaction();
 
-			for (var instanceLock : locksReset)
-			{
-				MapDb2Entries entries = new MapDb2Entries(instanceLock.getMapId(), instanceLock.getDifficultyId());
+            for (var instanceLock : locksReset) {
+                MapDb2Entries entries = new MapDb2Entries(instanceLock.getMapId(), instanceLock.getDifficultyId());
                 var newExpiryTime = getNextResetTime(entries) - duration.FromSeconds(entries.MapDifficulty.GetRaidDuration());
-				// set reset time to last reset time
-				instanceLock.setExpiryTime(newExpiryTime);
-				instanceLock.setExtended(false);
+                // set reset time to last reset time
+                instanceLock.setExpiryTime(newExpiryTime);
+                instanceLock.setExtended(false);
 
-				var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_CHARACTER_INSTANCE_LOCK_FORCE_EXPIRE);
-				stmt.AddValue(0, (long)time.DateTimeToUnixTime(newExpiryTime));
-				stmt.AddValue(1, playerGuid.getCounter());
-				stmt.AddValue(2, entries.MapDifficulty.mapID);
-				stmt.AddValue(3, entries.MapDifficulty.LockID);
-				trans.append(stmt);
-			}
+                var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_CHARACTER_INSTANCE_LOCK_FORCE_EXPIRE);
+                stmt.AddValue(0, (long) time.DateTimeToUnixTime(newExpiryTime));
+                stmt.AddValue(1, playerGuid.getCounter());
+                stmt.AddValue(2, entries.MapDifficulty.mapID);
+                stmt.AddValue(3, entries.MapDifficulty.LockID);
+                trans.append(stmt);
+            }
 
-			DB.characters.CommitTransaction(trans);
-		}
-	}
+            DB.characters.CommitTransaction(trans);
+        }
+    }
 
-	/** 
-	  Retrieves instance lock statistics - for use in GM commands
-	 
-	 @return  Statistics info 
-	*/
-	public final InstanceLocksStatistics getStatistics()
-	{
-		InstanceLocksStatistics statistics = new InstanceLocksStatistics();
-		statistics.instanceCount = instanceLockDataById.size();
-		statistics.playerCount = instanceLocksByPlayer.size();
+    /**
+     * Retrieves instance lock statistics - for use in GM commands
+     *
+     * @return Statistics info
+     */
+    public final InstanceLocksStatistics getStatistics() {
+        InstanceLocksStatistics statistics = new InstanceLocksStatistics();
+        statistics.instanceCount = instanceLockDataById.size();
+        statistics.playerCount = instanceLocksByPlayer.size();
 
         return statistics;
-	}
+    }
 
-	public final LocalDateTime getNextResetTime(MapDb2Entries entries)
-	{
-		var dateTime = gameTime.GetDateAndTime();
-		var resetHour = WorldConfig.getIntValue(WorldCfg.ResetScheduleHour);
+    public final LocalDateTime getNextResetTime(MapDb2Entries entries) {
+        var dateTime = gameTime.GetDateAndTime();
+        var resetHour = WorldConfig.getIntValue(WorldCfg.ResetScheduleHour);
 
-		var hour = 0;
-		var day = 0;
+        var hour = 0;
+        var day = 0;
 
-		switch (entries.MapDifficulty.ResetInterval)
-		{
-			case Daily:
-			{
-				if (dateTime.getHour() >= resetHour)
-				{
-					day++;
-				}
+        switch (entries.MapDifficulty.ResetInterval) {
+            case Daily: {
+                if (dateTime.getHour() >= resetHour) {
+                    day++;
+                }
 
-				hour = resetHour;
+                hour = resetHour;
 
-				break;
-			}
-			case Weekly:
-			{
-				var resetDay = WorldConfig.getIntValue(WorldCfg.ResetScheduleWeekDay);
-				var daysAdjust = resetDay - dateTime.getDayOfMonth();
+                break;
+            }
+            case Weekly: {
+                var resetDay = WorldConfig.getIntValue(WorldCfg.ResetScheduleWeekDay);
+                var daysAdjust = resetDay - dateTime.getDayOfMonth();
 
-				if (dateTime.getDayOfMonth() > resetDay || (dateTime.getDayOfMonth() == resetDay && dateTime.getHour() >= resetHour))
-				{
-					daysAdjust += 7; // passed it for current week, grab time from next week
-				}
+                if (dateTime.getDayOfMonth() > resetDay || (dateTime.getDayOfMonth() == resetDay && dateTime.getHour() >= resetHour)) {
+                    daysAdjust += 7; // passed it for current week, grab time from next week
+                }
 
-				hour = resetHour;
-				day += daysAdjust;
+                hour = resetHour;
+                day += daysAdjust;
 
-				break;
-			}
-			default:
-				break;
-		}
+                break;
+            }
+            default:
+                break;
+        }
 
-		return LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth() + day, hour, 0, 0);
-	}
+        return LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth() + day, hour, 0, 0);
+    }
 }

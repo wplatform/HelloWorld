@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class TutorialSetFlag extends ClientPacket
-{
-	public Tutorialaction action = TutorialAction.values()[0];
-	public int tutorialBit;
-	public TutorialSetFlag(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class TutorialSetFlag extends ClientPacket {
+    public Tutorialaction action = TutorialAction.values()[0];
+    public int tutorialBit;
 
-	@Override
-	public void read()
-	{
-		action = TutorialAction.forValue(this.<Byte>readBit(2));
+    public TutorialSetFlag(WorldPacket packet) {
+        super(packet);
+    }
 
-		if (action == TutorialAction.Update)
-		{
-			tutorialBit = this.readUInt();
-		}
-	}
+    @Override
+    public void read() {
+        action = TutorialAction.forValue(this.<Byte>readBit(2));
+
+        if (action == TutorialAction.Update) {
+            tutorialBit = this.readUInt();
+        }
+    }
 }

@@ -1,37 +1,31 @@
 package com.github.mmo.game.scripting;
 
 import com.github.mmo.game.entity.object.WorldObject;
-import com.github.mmo.game.scripting.interfaces.*;
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
 
-public abstract class ScriptObject implements IScriptObject
-{
-	private final String name;
+public abstract class ScriptObject implements IScriptObject {
+    private final String name;
 
-	public ScriptObject(String name)
-	{
-		name = name;
-	}
+    public ScriptObject(String name) {
+        name = name;
+    }
 
-	public final String getName()
-	{
-		return name;
-	}
+    public static <T> T getInstanceAI(WorldObject obj) {
+        var instance = obj.getMap().getToInstanceMap();
 
-	// It indicates whether or not this script Type must be assigned in the database.
-	public boolean isDatabaseBound()
-	{
-		return false;
-	}
+        if (instance != null && instance.getInstanceScript() != null) {
+            return (T) system.Activator.CreateInstance(T.class, new Object[]{obj});
+        }
 
-	public static <T> T getInstanceAI(WorldObject obj)
-	{
-		var instance = obj.getMap().getToInstanceMap();
+        return null;
+    }
 
-		if (instance != null && instance.getInstanceScript() != null)
-		{
-			return (T)system.Activator.CreateInstance(T.class, new Object[] {obj});
-		}
+    public final String getName() {
+        return name;
+    }
 
-		return null;
-	}
+    // It indicates whether or not this script Type must be assigned in the database.
+    public boolean isDatabaseBound() {
+        return false;
+    }
 }

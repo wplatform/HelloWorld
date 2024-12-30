@@ -1,10 +1,12 @@
 package com.github.mmo.game.scripting.activators;
 
-import com.github.mmo.game.scripting.basescripts.*;
-import com.github.mmo.game.scripting.interfaces.*;
-import com.github.mmo.game.scripting.*;
+import com.github.mmo.game.scripting.ScriptAttribute;
+import com.github.mmo.game.scripting.basescripts.GenericCreatureScript;
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
 
-import java.util.*;public class CreatureAIActivator implements IScriptActivator {
+import java.util.ArrayList;
+
+public class CreatureAIActivator implements IScriptActivator {
     public final ArrayList<String> getScriptBaseTypes() {
         return new () {
             "ScriptedAI", "BossAI", "CreatureAI", "TurretAI", "ArcherAI", "AggressorAI", "NullCreatureAI", "PassiveAI", "PetAI", "ReactorAI", "ScheduledChangeAI", "SmartAI", "VehicleAI", "CasterAI"

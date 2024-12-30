@@ -15,36 +15,30 @@ import com.github.mmo.dbc.domain.SummonProperty;
 import com.github.mmo.defines.LineOfSightChecks;
 import com.github.mmo.defines.SummonCategory;
 import com.github.mmo.defines.SummonTitle;
-
-
-import game.PhasingHandler;
-import com.github.mmo.game.entity.object.*;
-import com.github.mmo.game.entity.object.update.UpdateData;
-import com.github.mmo.game.map.collision.DynamicMapTree;
-import com.github.mmo.game.map.collision.model.GameObjectModel;
 import com.github.mmo.game.entity.ChrCustomizationChoice;
 import com.github.mmo.game.entity.ObjectCellMoveState;
 import com.github.mmo.game.entity.areatrigger.AreaTrigger;
 import com.github.mmo.game.entity.corpse.Corpse;
 import com.github.mmo.game.entity.creature.*;
-
 import com.github.mmo.game.entity.dynamic.DynamicObject;
 import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.gobject.Transport;
+import com.github.mmo.game.entity.object.*;
 import com.github.mmo.game.entity.object.enums.HighGuid;
 import com.github.mmo.game.entity.object.enums.TypeId;
+import com.github.mmo.game.entity.object.update.UpdateData;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.scene.SceneObject;
 import com.github.mmo.game.entity.totem.Totem;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.enums.UnitTypeMask;
+import com.github.mmo.game.map.collision.DynamicMapTree;
+import com.github.mmo.game.map.collision.model.GameObjectModel;
 import com.github.mmo.game.map.enums.LiquidHeaderTypeFlag;
 import com.github.mmo.game.map.enums.ModelIgnoreFlags;
 import com.github.mmo.game.map.enums.SpawnObjectType;
 import com.github.mmo.game.map.enums.ZLiquidStatus;
 import com.github.mmo.game.map.grid.*;
-import com.github.mmo.game.map.grid.Cell;
-import com.github.mmo.game.map.grid.GridVisitor;
 import com.github.mmo.game.map.interfaces.IGridNotifier;
 import com.github.mmo.game.map.model.PositionFullTerrainStatus;
 import com.github.mmo.game.map.model.ZoneAndAreaId;
@@ -57,6 +51,7 @@ import com.github.mmo.game.scripting.interfaces.imap.*;
 import com.github.mmo.game.scripting.interfaces.iplayer.IPlayerOnMapChanged;
 import com.github.mmo.game.scripting.interfaces.iworldstate.IWorldStateOnValueChange;
 import com.github.mmo.game.world.World;
+import game.PhasingHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -105,22 +100,214 @@ public class Map {
     private final MultiPersonalPhaseTracker multiPersonalPhaseTracker = new MultiPersonalPhaseTracker();
     private final IntIntMap worldStateValues;
     private final ArrayList<WorldObject> activeNonPlayers = new ArrayList<>();
-
+    private final SpawnedPoolData poolData;
+    private final ArrayList<Player> activePlayers = new ArrayList<>();
+    //There are 64*64 grids in each map at most, but not all map have such grids.
+    private final IntMap<NGrid> nGrids = new IntMap<>();
+    private final ReadWriteLock nGridsLock = new ReentrantReadWriteLock();
+    private final World world;
     private long gridExpiry;
     private int respawnCheckTimer;
-    private final SpawnedPoolData poolData;
     private HashMap<Long, CreatureGroup> creatureGroupHolder = new HashMap<Long, CreatureGroup>();
-    private final ArrayList<Player> activePlayers = new ArrayList<>();
     private Object mapLock = new Object();
     private int instanceId;
     private int unloadTimer;
     private int visibilityNotifyPeriod;
     private float visibleDistance;
-    //There are 64*64 grids in each map at most, but not all map have such grids.
-    private final IntMap<NGrid> nGrids = new IntMap<>();
-    private final ReadWriteLock nGridsLock = new ReentrantReadWriteLock();
 
-    private final World world;
+    public Map(World world, int id, long expiry, int instanceId, Difficulty spawnMode) {
+        this.world = world;
+        this.mapEntry = world.getDbcObjectManager().map(id);
+        this.spawnMode = spawnMode;
+        this.instanceId = instanceId;
+        this.visibleDistance = ObjectDefine.DEFAULT_VISIBILITY_DISTANCE;
+        this.visibilityNotifyPeriod = MapDefine.DEFAULT_VISIBILITY_NOTIFY_PERIOD;
+        this.gridExpiry = expiry;
+        this.terrain = world.getTerrainManager().loadTerrain(id);
+        zonePlayerCountMap.clear();
+
+        //lets initialize visibility distance for map
+        //init visibility for continents
+        visibleDistance = world.getWorldSettings().visibility.distanceContinents;
+        visibilityNotifyPeriod = world.getWorldSettings().visibility.notifyPeriodOnContinents;
+
+
+        poolData = world.getPoolManager().initPoolsForMap(this);
+
+        world.getTransportManager().createTransportsForMap(this);
+
+
+        world.getTransportManager().createTransportsForMap(this);
+
+        world.getMMapManager().loadMapInstance(getId(), instanceId);
+
+        worldStateValues = world.getWorldStateManager().getInitialWorldStatesForMap(this);
+
+        world.getOutDoorPvpManager().createOutdoorPvPForMap(this);
+        world.getBattleFieldManager().createBattlefieldsForMap(this);
+
+
+        onCreateMap(this);
+    }
+
+    public static boolean isInWMOInterior(int mogpFlags) {
+        return (mogpFlags & 0x2000) != 0;
+    }
+
+    public static TransferAbortParams playerCannotEnter(int mapid, Player player) {
+        var entry = CliDB.MapStorage.get(mapid);
+
+        if (entry == null) {
+            return new TransferAbortParams(TransferAbortReason.MapNotAllowed);
+        }
+
+        if (!entry.IsDungeon()) {
+            return null;
+        }
+
+        var targetDifficulty = player.getDifficultyId(entry);
+        // Get the highest available difficulty if current setting is higher than the instance allows
+        tangible.RefObject<Difficulty> tempRef_targetDifficulty = new tangible.RefObject<Difficulty>(targetDifficulty);
+        var mapDiff = global.getDB2Mgr().GetDownscaledMapDifficultyData(mapid, tempRef_targetDifficulty);
+        targetDifficulty = tempRef_targetDifficulty.refArgValue;
+
+        if (mapDiff == null) {
+            return new TransferAbortParams(TransferAbortReason.Difficulty);
+        }
+
+        //Bypass checks for GMs
+        if (player.isGameMaster()) {
+            return null;
+        }
+
+        {
+            //Other requirements
+            TransferAbortParams abortParams = new TransferAbortParams();
+
+            if (!player.satisfy(global.getObjectMgr().getAccessRequirement(mapid, targetDifficulty), mapid, abortParams, true)) {
+                return abortParams;
+            }
+        }
+
+        var group = player.getGroup();
+
+        if (entry.IsRaid() && (int) entry.expansion() >= WorldConfig.getIntValue(WorldCfg.expansion)) // can only enter in a raid group but raids from old expansion don't need a group
+        {
+            if ((!group || !group.isRaidGroup()) && !WorldConfig.getBoolValue(WorldCfg.InstanceIgnoreRaid)) {
+                return new TransferAbortParams(TransferAbortReason.NeedGroup);
+            }
+        }
+
+        if (entry.Instanceable()) {
+            //Get instance where player's group is bound & its map
+            var instanceIdToCheck = global.getMapMgr().FindInstanceIdForPlayer(mapid, player);
+            var boundMap = global.getMapMgr().findMap(mapid, instanceIdToCheck);
+
+            if (boundMap != null) {
+                var denyReason = boundMap.cannotEnter(player);
+
+                if (denyReason != null) {
+                    return denyReason;
+                }
+            }
+
+            // players are only allowed to enter 10 instances per hour
+            if (!entry.GetFlags2().hasFlag(MapFlags2.IgnoreInstanceFarmLimit) && entry.IsDungeon() && !player.checkInstanceCount(instanceIdToCheck) && !player.isDead()) {
+                return new TransferAbortParams(TransferAbortReason.TooManyInstances);
+            }
+        }
+
+        return null;
+    }
+
+    private static void pushRespawnInfoFrom(ArrayList<RespawnInfo> data, HashMap<Long, RespawnInfo> map) {
+        for (var pair : map.entrySet()) {
+            data.add(pair.getValue());
+        }
+    }
+
+    //MapScript
+    public static void onCreateMap(Map map) {
+        var record = map.getEntry();
+
+        if (record != null && record.isWorldMap()) {
+            global.getScriptMgr().<IMapOnCreate<Map>>ForEach(p -> p.onCreate(map));
+        }
+
+        if (record != null && record.isDungeon()) {
+            global.getScriptMgr().<IMapOnCreate<InstanceMap>>ForEach(p -> p.onCreate(map.getToInstanceMap()));
+        }
+
+        if (record != null && record.isBattleground()) {
+            global.getScriptMgr().<IMapOnCreate<BattlegroundMap>>ForEach(p -> p.onCreate(map.getToBattlegroundMap()));
+        }
+    }
+
+    public static void onDestroyMap(Map map) {
+        var record = map.getEntry();
+
+        if (record != null && record.isWorldMap()) {
+            global.getScriptMgr().<IMapOnDestroy<Map>>ForEach(p -> p.OnDestroy(map));
+        }
+
+        if (record != null && record.isDungeon()) {
+            global.getScriptMgr().<IMapOnDestroy<InstanceMap>>ForEach(p -> p.OnDestroy(map.getToInstanceMap()));
+        }
+
+        if (record != null && record.isBattleground()) {
+            global.getScriptMgr().<IMapOnDestroy<BattlegroundMap>>ForEach(p -> p.OnDestroy(map.getToBattlegroundMap()));
+        }
+    }
+
+    public static void onPlayerEnterMap(Map map, Player player) {
+        global.getScriptMgr().<IPlayerOnMapChanged>ForEach(p -> p.onMapChanged(player));
+
+        var record = map.getEntry();
+
+        if (record != null && record.isWorldMap()) {
+            global.getScriptMgr().<IMapOnPlayerEnter<Map>>ForEach(p -> p.onPlayerEnter(map, player));
+        }
+
+        if (record != null && record.isDungeon()) {
+            global.getScriptMgr().<IMapOnPlayerEnter<InstanceMap>>ForEach(p -> p.onPlayerEnter(map.getToInstanceMap(), player));
+        }
+
+        if (record != null && record.isBattleground()) {
+            global.getScriptMgr().<IMapOnPlayerEnter<BattlegroundMap>>ForEach(p -> p.onPlayerEnter(map.getToBattlegroundMap(), player));
+        }
+    }
+
+    public static void onPlayerLeaveMap(Map map, Player player) {
+        var record = map.getEntry();
+
+        if (record != null && record.isWorldMap()) {
+            global.getScriptMgr().<IMapOnPlayerLeave<Map>>ForEach(p -> p.onPlayerLeave(map, player));
+        }
+
+        if (record != null && record.isDungeon()) {
+            global.getScriptMgr().<IMapOnPlayerLeave<InstanceMap>>ForEach(p -> p.onPlayerLeave(map.getToInstanceMap(), player));
+        }
+
+        if (record != null && record.isBattleground()) {
+            global.getScriptMgr().<IMapOnPlayerLeave<BattlegroundMap>>ForEach(p -> p.onPlayerLeave(map.getToBattlegroundMap(), player));
+        }
+    }
+
+    public static void onMapUpdate(Map map, int diff) {
+        var record = map.getEntry();
+
+        if (record != null && record.isWorldMap()) {
+            global.getScriptMgr().<IMapOnUpdate<Map>>ForEach(p -> p.onUpdate(map, diff));
+        }
+
+        if (record != null && record.isDungeon()) {
+            global.getScriptMgr().<IMapOnUpdate<InstanceMap>>ForEach(p -> p.onUpdate(map.getToInstanceMap(), diff));
+        }
+
+        if (record != null && record.isBattleground()) {
+            global.getScriptMgr().<IMapOnUpdate<BattlegroundMap>>ForEach(p -> p.onUpdate(map.getToBattlegroundMap(), diff));
+        }
+    }
 
     public final String getMapName() {
         return mapEntry.getMapName().get(world.getDbcLocale());
@@ -134,11 +321,9 @@ public class Map {
         return getVisibleDistance();
     }
 
-
     public final Difficulty getDifficultyID() {
         return spawnMode;
     }
-
 
     public final int getId() {
         return mapEntry.getId();
@@ -239,41 +424,6 @@ public class Map {
         return poolData;
     }
 
-    public Map(World world, int id, long expiry, int instanceId, Difficulty spawnMode) {
-        this.world = world;
-        this.mapEntry = world.getDbcObjectManager().map(id);
-        this.spawnMode = spawnMode;
-        this.instanceId = instanceId;
-        this.visibleDistance = ObjectDefine.DEFAULT_VISIBILITY_DISTANCE;
-        this.visibilityNotifyPeriod = MapDefine.DEFAULT_VISIBILITY_NOTIFY_PERIOD;
-        this.gridExpiry = expiry;
-        this.terrain = world.getTerrainManager().loadTerrain(id);
-        zonePlayerCountMap.clear();
-
-        //lets initialize visibility distance for map
-        //init visibility for continents
-        visibleDistance = world.getWorldSettings().visibility.distanceContinents;
-        visibilityNotifyPeriod = world.getWorldSettings().visibility.notifyPeriodOnContinents;
-
-
-        poolData = world.getPoolManager().initPoolsForMap(this);
-
-        world.getTransportManager().createTransportsForMap(this);
-
-
-        world.getTransportManager().createTransportsForMap(this);
-
-        world.getMMapManager().loadMapInstance(getId(), instanceId);
-
-        worldStateValues = world.getWorldStateManager().getInitialWorldStatesForMap(this);
-
-        world.getOutDoorPvpManager().createOutdoorPvPForMap(this);
-        world.getBattleFieldManager().createBattlefieldsForMap(this);
-
-
-        onCreateMap(this);
-    }
-
     public final void close() {
         onDestroyMap(this);
 
@@ -297,7 +447,6 @@ public class Map {
         world.getMMapManager().unloadMapInstance(getId(), instanceId);
     }
 
-
     public final void loadAllCells() {
 
 
@@ -309,7 +458,6 @@ public class Map {
 
     }
 
-
     public final void addToGrid(WorldObject obj, Cell cell) {
         NGrid grid = getNGrid(cell.getGridX(), cell.getGridY());
         if (obj.isWorldObject())
@@ -317,7 +465,6 @@ public class Map {
         else
             grid.getGrid(cell.getCellX(), cell.getCellY()).addGridObject(obj);
     }
-
 
     public void loadGridObjects(NGrid grid, Cell cell) {
         if (grid == null) {
@@ -335,7 +482,6 @@ public class Map {
     public final void loadGridForActiveObject(float x, float y, WorldObject obj) {
         ensureGridLoadedForActiveObject(new Cell(x, y), obj);
     }
-
 
     public boolean addPlayerToMap(Player player) {
         return addPlayerToMap(player, true);
@@ -924,7 +1070,6 @@ public class Map {
         player.updateObjectVisibility(false);
     }
 
-
     public final void creatureRelocation(Creature creature, Position p) {
         creatureRelocation(creature, p, true);
     }
@@ -932,7 +1077,6 @@ public class Map {
     public final void creatureRelocation(Creature creature, Position p, boolean respawnRelocationOnFail) {
         creatureRelocation(creature, p.getX(), p.getY(), p.getZ(), p.getO(), respawnRelocationOnFail);
     }
-
 
     public final void creatureRelocation(Creature creature, float x, float y, float z, float ang) {
         creatureRelocation(creature, x, y, z, ang, true);
@@ -968,7 +1112,6 @@ public class Map {
         }
     }
 
-
     public final void gameObjectRelocation(GameObject go, Position pos) {
         gameObjectRelocation(go, pos, true);
     }
@@ -976,7 +1119,6 @@ public class Map {
     public final void gameObjectRelocation(GameObject go, Position pos, boolean respawnRelocationOnFail) {
         gameObjectRelocation(go, pos.getX(), pos.getY(), pos.getZ(), pos.getO(), respawnRelocationOnFail);
     }
-
 
     public final void gameObjectRelocation(GameObject go, float x, float y, float z, float orientation) {
         gameObjectRelocation(go, x, y, z, orientation, true);
@@ -1219,11 +1361,6 @@ public class Map {
         corpseBones.clear();
     }
 
-    public static boolean isInWMOInterior(int mogpFlags) {
-        return (mogpFlags & 0x2000) != 0;
-    }
-
-
     public final void getFullTerrainStatusForPosition(PhaseShift phaseShift, float x, float y, float z, PositionFullTerrainStatus data, LiquidHeaderTypeFlag reqLiquidType) {
         getFullTerrainStatusForPosition(phaseShift, x, y, z, data, reqLiquidType, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
@@ -1232,7 +1369,6 @@ public class Map {
         terrain.getFullTerrainStatusForPosition(phaseShift, getId(), x, y, z, data, reqLiquidType, collisionHeight, dynamicTree);
     }
 
-
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, Position pos, LiquidHeaderTypeFlag reqLiquidType) {
         return getLiquidStatus(phaseShift, pos, reqLiquidType, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
@@ -1240,7 +1376,6 @@ public class Map {
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, Position pos, LiquidHeaderTypeFlag reqLiquidType, float collisionHeight) {
         return getLiquidStatus(phaseShift, pos.getX(), pos.getY(), pos.getZ(), reqLiquidType, collisionHeight);
     }
-
 
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, float x, float y, float z, LiquidHeaderTypeFlag reqLiquidType) {
         return getLiquidStatus(phaseShift, x, y, z, reqLiquidType, MapDefine.DEFAULT_COLLISION_HEIGHT);
@@ -1253,7 +1388,6 @@ public class Map {
         return tempVar;
     }
 
-
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, Position pos, LiquidHeaderTypeFlag reqLiquidType, tangible.OutObject<LiquidData> data) {
         return getLiquidStatus(phaseShift, pos, reqLiquidType, data, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
@@ -1261,7 +1395,6 @@ public class Map {
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, Position pos, LiquidHeaderTypeFlag reqLiquidType, tangible.OutObject<LiquidData> data, float collisionHeight) {
         return terrain.getLiquidStatus(phaseShift, getId(), pos.getX(), pos.getY(), pos.getZ(), reqLiquidType, data, collisionHeight);
     }
-
 
     public final ZLiquidStatus getLiquidStatus(PhaseShift phaseShift, float x, float y, float z, LiquidHeaderTypeFlag reqLiquidType, tangible.OutObject<LiquidData> data) {
         return getLiquidStatus(phaseShift, x, y, z, reqLiquidType, data, MapDefine.DEFAULT_COLLISION_HEIGHT);
@@ -1295,7 +1428,6 @@ public class Map {
         return terrain.getZoneAndAreaId(phaseShift, getId(), x, y, z, dynamicTree);
     }
 
-
     public final float getHeight(PhaseShift phaseShift, float x, float y, float z, boolean vmap) {
         return getHeight(phaseShift, x, y, z, vmap, MapDefine.DEFAULT_HEIGHT_SEARCH);
     }
@@ -1307,7 +1439,6 @@ public class Map {
     public final float getHeight(PhaseShift phaseShift, float x, float y, float z, boolean vmap, float maxSearchDist) {
         return Math.max(getStaticHeight(phaseShift, x, y, z, vmap, maxSearchDist), getGameObjectFloor(phaseShift, x, y, z, maxSearchDist));
     }
-
 
     public final float getHeight(PhaseShift phaseShift, Position pos, boolean vmap) {
         return getHeight(phaseShift, pos, vmap, MapDefine.DEFAULT_HEIGHT_SEARCH);
@@ -1328,7 +1459,6 @@ public class Map {
     public final float getGridHeight(PhaseShift phaseShift, float x, float y) {
         return terrain.getGridHeight(phaseShift, getId(), x, y);
     }
-
 
     public final float getStaticHeight(PhaseShift phaseShift, float x, float y, float z, boolean checkVMap) {
         return getStaticHeight(phaseShift, x, y, z, checkVMap, MapDefine.DEFAULT_HEIGHT_SEARCH);
@@ -1354,7 +1484,6 @@ public class Map {
         return terrain.isUnderWater(phaseShift, getId(), x, y, z);
     }
 
-
     public final float getWaterOrGroundLevel(PhaseShift phaseShift, float x, float y, float z) {
         return getWaterOrGroundLevel(phaseShift, x, y, z, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
@@ -1367,7 +1496,6 @@ public class Map {
         ground = tempRef_ground.refArgValue;
         return tempVar;
     }
-
 
     public final float getWaterOrGroundLevel(PhaseShift phaseShift, float x, float y, float z, tangible.RefObject<Float> ground, boolean swim) {
         return getWaterOrGroundLevel(phaseShift, x, y, z, ground, swim, MapDefine.DEFAULT_COLLISION_HEIGHT);
@@ -1390,11 +1518,11 @@ public class Map {
     }
 
     public final boolean isInLineOfSight(PhaseShift phaseShift, float x1, float y1, float z1, float x2, float y2, float z2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
-        if (checks.HasAnyFlag(LineOfSightChecks.Vmap) && !global.getVMapMgr().isInLineOfSight(PhasingHandler.getTerrainMapId(phaseShift, getId(), terrain, x1, y1), x1, y1, z1, x2, y2, z2, ignoreFlags)) {
+        if (checks.hasFlag(LineOfSightChecks.Vmap) && !global.getVMapMgr().isInLineOfSight(PhasingHandler.getTerrainMapId(phaseShift, getId(), terrain, x1, y1), x1, y1, z1, x2, y2, z2, ignoreFlags)) {
             return false;
         }
 
-        if (WorldConfig.getBoolValue(WorldCfg.CheckGobjectLos) && checks.HasAnyFlag(LineOfSightChecks.Gobject) && !dynamicTree.isInLineOfSight(new Vector3(x1, y1, z1), new Vector3(x2, y2, z2), phaseShift)) {
+        if (WorldConfig.getBoolValue(WorldCfg.CheckGobjectLos) && checks.hasFlag(LineOfSightChecks.Gobject) && !dynamicTree.isInLineOfSight(new Vector3(x1, y1, z1), new Vector3(x2, y2, z2), phaseShift)) {
             return false;
         }
 
@@ -1415,72 +1543,6 @@ public class Map {
         rz.outArgValue = resultPos.Z;
 
         return result;
-    }
-
-    public static TransferAbortParams playerCannotEnter(int mapid, Player player) {
-        var entry = CliDB.MapStorage.get(mapid);
-
-        if (entry == null) {
-            return new TransferAbortParams(TransferAbortReason.MapNotAllowed);
-        }
-
-        if (!entry.IsDungeon()) {
-            return null;
-        }
-
-        var targetDifficulty = player.getDifficultyId(entry);
-        // Get the highest available difficulty if current setting is higher than the instance allows
-        tangible.RefObject<Difficulty> tempRef_targetDifficulty = new tangible.RefObject<Difficulty>(targetDifficulty);
-        var mapDiff = global.getDB2Mgr().GetDownscaledMapDifficultyData(mapid, tempRef_targetDifficulty);
-        targetDifficulty = tempRef_targetDifficulty.refArgValue;
-
-        if (mapDiff == null) {
-            return new TransferAbortParams(TransferAbortReason.Difficulty);
-        }
-
-        //Bypass checks for GMs
-        if (player.isGameMaster()) {
-            return null;
-        }
-
-        {
-            //Other requirements
-            TransferAbortParams abortParams = new TransferAbortParams();
-
-            if (!player.satisfy(global.getObjectMgr().getAccessRequirement(mapid, targetDifficulty), mapid, abortParams, true)) {
-                return abortParams;
-            }
-        }
-
-        var group = player.getGroup();
-
-        if (entry.IsRaid() && (int) entry.expansion() >= WorldConfig.getIntValue(WorldCfg.expansion)) // can only enter in a raid group but raids from old expansion don't need a group
-        {
-            if ((!group || !group.isRaidGroup()) && !WorldConfig.getBoolValue(WorldCfg.InstanceIgnoreRaid)) {
-                return new TransferAbortParams(TransferAbortReason.NeedGroup);
-            }
-        }
-
-        if (entry.Instanceable()) {
-            //Get instance where player's group is bound & its map
-            var instanceIdToCheck = global.getMapMgr().FindInstanceIdForPlayer(mapid, player);
-            var boundMap = global.getMapMgr().findMap(mapid, instanceIdToCheck);
-
-            if (boundMap != null) {
-                var denyReason = boundMap.cannotEnter(player);
-
-                if (denyReason != null) {
-                    return denyReason;
-                }
-            }
-
-            // players are only allowed to enter 10 instances per hour
-            if (!entry.GetFlags2().hasFlag(MapFlags2.IgnoreInstanceFarmLimit) && entry.IsDungeon() && !player.checkInstanceCount(instanceIdToCheck) && !player.isDead()) {
-                return new TransferAbortParams(TransferAbortReason.TooManyInstances);
-            }
-        }
-
-        return null;
     }
 
     public final void sendInitSelf(Player player) {
@@ -1541,7 +1603,6 @@ public class Map {
         player.sendPacket(packet);
     }
 
-
     public final void respawn(SpawnObjectType type, long spawnId) {
         respawn(type, spawnId, null);
     }
@@ -1553,7 +1614,6 @@ public class Map {
             respawn(info, dbTrans);
         }
     }
-
 
     public final void respawn(RespawnInfo info) {
         respawn(info, null);
@@ -1567,7 +1627,6 @@ public class Map {
         info.setRespawnTime(gameTime.GetGameTime());
         saveRespawnInfoDB(info, dbTrans);
     }
-
 
     public final void removeRespawnTime(SpawnObjectType type, long spawnId, SQLTransaction dbTrans) {
         removeRespawnTime(type, spawnId, dbTrans, false);
@@ -1675,7 +1734,6 @@ public class Map {
         return shouldBeSpawnedOnGridLoad(SpawnData.<T>TypeFor(), spawnId);
     }
 
-
     public final boolean spawnGroupSpawn(int groupId, boolean ignoreRespawn, boolean force) {
         return spawnGroupSpawn(groupId, ignoreRespawn, force, null);
     }
@@ -1691,7 +1749,7 @@ public class Map {
     public final boolean spawnGroupSpawn(int groupId, boolean ignoreRespawn, boolean force, ArrayList<WorldObject> spawnedObjects) {
         var groupData = getSpawnGroupData(groupId);
 
-        if (groupData == null || groupData.getFlags().HasAnyFlag(SpawnGroupFlags.System)) {
+        if (groupData == null || groupData.getFlags().hasFlag(SpawnGroupFlags.System)) {
             Log.outError(LogFilter.Maps, String.format("Tried to spawn non-existing (or system) spawn group %1$s. on map %2$s blocked.", groupId, getId()));
 
             return false;
@@ -1795,7 +1853,6 @@ public class Map {
         return true;
     }
 
-
     public final boolean spawnGroupDespawn(int groupId) {
         return spawnGroupDespawn(groupId, false);
     }
@@ -1811,7 +1868,7 @@ public class Map {
         count.outArgValue = 0;
         var groupData = getSpawnGroupData(groupId);
 
-        if (groupData == null || groupData.getFlags().HasAnyFlag(SpawnGroupFlags.System)) {
+        if (groupData == null || groupData.getFlags().hasFlag(SpawnGroupFlags.System)) {
             Log.outError(LogFilter.Maps, String.format("Tried to despawn non-existing (or system) spawn group %1$s on map %2$s. blocked.", groupId, getId()));
 
             return false;
@@ -1833,13 +1890,13 @@ public class Map {
     public final void setSpawnGroupActive(int groupId, boolean state) {
         var data = getSpawnGroupData(groupId);
 
-        if (data == null || data.getFlags().HasAnyFlag(SpawnGroupFlags.System)) {
+        if (data == null || data.getFlags().hasFlag(SpawnGroupFlags.System)) {
             Log.outError(LogFilter.Maps, String.format("Tried to set non-existing (or system) spawn group %1$s to %2$s on map %3$s. blocked.", groupId, (state ? "active" : "inactive"), getId()));
 
             return;
         }
 
-        if (state != !data.getFlags().HasAnyFlag(SpawnGroupFlags.ManualSpawn)) // toggled
+        if (state != !data.getFlags().hasFlag(SpawnGroupFlags.ManualSpawn)) // toggled
         {
             toggledSpawnGroupIds.add(groupId);
         } else {
@@ -1862,12 +1919,12 @@ public class Map {
             return false;
         }
 
-        if (data.getFlags().HasAnyFlag(SpawnGroupFlags.System)) {
+        if (data.getFlags().hasFlag(SpawnGroupFlags.System)) {
             return true;
         }
 
         // either manual spawn group and toggled, or not manual spawn group and not toggled...
-        return toggledSpawnGroupIds.contains(groupId) != !data.getFlags().HasAnyFlag(SpawnGroupFlags.ManualSpawn);
+        return toggledSpawnGroupIds.contains(groupId) != !data.getFlags().hasFlag(SpawnGroupFlags.ManualSpawn);
     }
 
     public final void updateSpawnGroupConditions() {
@@ -2100,7 +2157,6 @@ public class Map {
         }
     }
 
-
     public final void saveRespawnTime(SpawnObjectType type, long spawnId, int entry, long respawnTime, int gridId, SQLTransaction dbTrans) {
         saveRespawnTime(type, spawnId, entry, respawnTime, gridId, dbTrans, false);
     }
@@ -2145,7 +2201,6 @@ public class Map {
             saveRespawnInfoDB(ri, dbTrans);
         }
     }
-
 
     public final void saveRespawnInfoDB(RespawnInfo info) {
         saveRespawnInfoDB(info, null);
@@ -2324,7 +2379,6 @@ public class Map {
             corpseBones.add(corpse);
         }
     }
-
 
     public final Corpse convertCorpseToBones(ObjectGuid ownerGuid) {
         return convertCorpseToBones(ownerGuid, false);
@@ -2605,7 +2659,6 @@ public class Map {
         return getNGrid(p.getXCoord(), p.getYCoord()) == null || getNGrid(p.getXCoord(), p.getYCoord()).getGridState() == GridState.Removal;
     }
 
-
     public final void resetGridExpiry(Grid grid) {
         resetGridExpiry(grid, 1);
     }
@@ -2672,7 +2725,6 @@ public class Map {
         return dynamicTree.contains(model);
     }
 
-
     public final float getGameObjectFloor(PhaseShift phaseShift, float x, float y, float z) {
         return getGameObjectFloor(phaseShift, x, y, z, MapDefine.DEFAULT_HEIGHT_SEARCH);
     }
@@ -2680,7 +2732,6 @@ public class Map {
     public final float getGameObjectFloor(PhaseShift phaseShift, float x, float y, float z, float maxSearchDist) {
         return dynamicTree.getHeight(x, y, z, maxSearchDist, phaseShift);
     }
-
 
     public int getOwnerGuildId() {
         return getOwnerGuildId(TeamFaction.other);
@@ -2847,7 +2898,6 @@ public class Map {
         }
     }
 
-
     public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration, WorldObject summoner, int spellId, int vehId, ObjectGuid privateObjectOwner) {
         return summonCreature(entry, pos, properties, duration, summoner, spellId, vehId, privateObjectOwner, null);
     }
@@ -2871,6 +2921,12 @@ public class Map {
     public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties) {
         return summonCreature(entry, pos, properties, 0, null, 0, 0, null, null);
     }
+
+// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+//	public static implicit operator bool(Map map)
+//		{
+//			return map != null;
+//		}
 
     public final TempSummon summonCreature(int entry, Position pos) {
         return summonCreature(entry, pos, null, 0, null, 0, 0, null, null);
@@ -3049,12 +3105,6 @@ public class Map {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
-//	public static implicit operator bool(Map map)
-//		{
-//			return map != null;
-//		}
-
     private void switchGridContainers(Creature obj, boolean on) {
         if (obj.isPermanentWorldObject()) {
             return;
@@ -3152,7 +3202,6 @@ public class Map {
         ensureGridCreated(Coordinate.createGridCoordinate(cell.getGridX(), cell.getGridY()));
         var grid = getNGrid(cell.getGridX(), cell.getGridY());
         Objects.requireNonNull(grid);
-
 
 
         if (!isGridObjectDataLoaded(cell.getGridX(), cell.getGridY())) {
@@ -3850,12 +3899,6 @@ public class Map {
         return true;
     }
 
-    private static void pushRespawnInfoFrom(ArrayList<RespawnInfo> data, HashMap<Long, RespawnInfo> map) {
-        for (var pair : map.entrySet()) {
-            data.add(pair.getValue());
-        }
-    }
-
     private HashMap<Long, RespawnInfo> getRespawnMapForType(SpawnObjectType type) {
         switch (type) {
             case Creature:
@@ -3875,7 +3918,6 @@ public class Map {
         creatureRespawnTimesBySpawnId.clear();
         gameObjectRespawnTimesBySpawnId.clear();
     }
-
 
     private void deleteRespawnInfo(RespawnInfo info) {
         deleteRespawnInfo(info, null);
@@ -3898,7 +3940,6 @@ public class Map {
         // database
         deleteRespawnInfoFromDB(info.getObjectType(), info.getSpawnId(), dbTrans);
     }
-
 
     private void deleteRespawnInfoFromDB(SpawnObjectType type, long spawnId) {
         deleteRespawnInfoFromDB(type, spawnId, null);
@@ -4024,7 +4065,7 @@ public class Map {
     private SpawnGroupTemplateData getSpawnGroupData(int groupId) {
         var data = global.getObjectMgr().getSpawnGroupData(groupId);
 
-        if (data != null && (data.getFlags().HasAnyFlag(SpawnGroupFlags.System) || data.getMapId() == getId())) {
+        if (data != null && (data.getFlags().hasFlag(SpawnGroupFlags.System) || data.getMapId() == getId())) {
             return data;
         }
 
@@ -4163,6 +4204,9 @@ public class Map {
         markedCells.set((int) pCellId, true);
     }
 
+// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+    ///#region Script Updates
+
     private void setTimer(int t) {
         gridExpiry = t < MapDefine.MinGridDelay ? MapDefine.MinGridDelay : t;
     }
@@ -4197,92 +4241,6 @@ public class Map {
         }
 
         return guidGenerators.get(high);
-    }
-
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
-    ///#region Script Updates
-
-    //MapScript
-    public static void onCreateMap(Map map) {
-        var record = map.getEntry();
-
-        if (record != null && record.isWorldMap()) {
-            global.getScriptMgr().<IMapOnCreate<Map>>ForEach(p -> p.onCreate(map));
-        }
-
-        if (record != null && record.isDungeon()) {
-            global.getScriptMgr().<IMapOnCreate<InstanceMap>>ForEach(p -> p.onCreate(map.getToInstanceMap()));
-        }
-
-        if (record != null && record.isBattleground()) {
-            global.getScriptMgr().<IMapOnCreate<BattlegroundMap>>ForEach(p -> p.onCreate(map.getToBattlegroundMap()));
-        }
-    }
-
-    public static void onDestroyMap(Map map) {
-        var record = map.getEntry();
-
-        if (record != null && record.isWorldMap()) {
-            global.getScriptMgr().<IMapOnDestroy<Map>>ForEach(p -> p.OnDestroy(map));
-        }
-
-        if (record != null && record.isDungeon()) {
-            global.getScriptMgr().<IMapOnDestroy<InstanceMap>>ForEach(p -> p.OnDestroy(map.getToInstanceMap()));
-        }
-
-        if (record != null && record.isBattleground()) {
-            global.getScriptMgr().<IMapOnDestroy<BattlegroundMap>>ForEach(p -> p.OnDestroy(map.getToBattlegroundMap()));
-        }
-    }
-
-    public static void onPlayerEnterMap(Map map, Player player) {
-        global.getScriptMgr().<IPlayerOnMapChanged>ForEach(p -> p.onMapChanged(player));
-
-        var record = map.getEntry();
-
-        if (record != null && record.isWorldMap()) {
-            global.getScriptMgr().<IMapOnPlayerEnter<Map>>ForEach(p -> p.onPlayerEnter(map, player));
-        }
-
-        if (record != null && record.isDungeon()) {
-            global.getScriptMgr().<IMapOnPlayerEnter<InstanceMap>>ForEach(p -> p.onPlayerEnter(map.getToInstanceMap(), player));
-        }
-
-        if (record != null && record.isBattleground()) {
-            global.getScriptMgr().<IMapOnPlayerEnter<BattlegroundMap>>ForEach(p -> p.onPlayerEnter(map.getToBattlegroundMap(), player));
-        }
-    }
-
-    public static void onPlayerLeaveMap(Map map, Player player) {
-        var record = map.getEntry();
-
-        if (record != null && record.isWorldMap()) {
-            global.getScriptMgr().<IMapOnPlayerLeave<Map>>ForEach(p -> p.onPlayerLeave(map, player));
-        }
-
-        if (record != null && record.isDungeon()) {
-            global.getScriptMgr().<IMapOnPlayerLeave<InstanceMap>>ForEach(p -> p.onPlayerLeave(map.getToInstanceMap(), player));
-        }
-
-        if (record != null && record.isBattleground()) {
-            global.getScriptMgr().<IMapOnPlayerLeave<BattlegroundMap>>ForEach(p -> p.onPlayerLeave(map.getToBattlegroundMap(), player));
-        }
-    }
-
-    public static void onMapUpdate(Map map, int diff) {
-        var record = map.getEntry();
-
-        if (record != null && record.isWorldMap()) {
-            global.getScriptMgr().<IMapOnUpdate<Map>>ForEach(p -> p.onUpdate(map, diff));
-        }
-
-        if (record != null && record.isDungeon()) {
-            global.getScriptMgr().<IMapOnUpdate<InstanceMap>>ForEach(p -> p.onUpdate(map.getToInstanceMap(), diff));
-        }
-
-        if (record != null && record.isBattleground()) {
-            global.getScriptMgr().<IMapOnUpdate<BattlegroundMap>>ForEach(p -> p.onUpdate(map.getToBattlegroundMap(), diff));
-        }
     }
 
 // C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
@@ -4686,7 +4644,7 @@ public class Map {
                             break;
                         }
 
-                        if (step.script.talk.flags.HasAnyFlag(eScriptFlags.TalkUsePlayer)) {
+                        if (step.script.talk.flags.hasFlag(eScriptFlags.TalkUsePlayer)) {
                             source = getScriptPlayerSourceOrTarget(source, target, step.script);
                         } else {
                             source = getScriptCreatureSourceOrTarget(source, target, step.script);
@@ -4739,7 +4697,7 @@ public class Map {
                         var cSource = getScriptCreatureSourceOrTarget(source, target, step.script);
 
                         if (cSource) {
-                            if (step.script.emote.flags.HasAnyFlag(eScriptFlags.EmoteUseState)) {
+                            if (step.script.emote.flags.hasFlag(eScriptFlags.EmoteUseState)) {
                                 cSource.setEmoteState(emote.forValue(step.script.emote.emoteID));
                             } else {
                                 cSource.handleEmoteCommand(emote.forValue(step.script.emote.emoteID));
@@ -4767,7 +4725,7 @@ public class Map {
                         break;
                     }
                     case ScriptCommands.TeleportTo: {
-                        if (step.script.teleportTo.flags.HasAnyFlag(eScriptFlags.TeleportUseCreature)) {
+                        if (step.script.teleportTo.flags.hasFlag(eScriptFlags.TeleportUseCreature)) {
                             // Source or target must be CREATURE.
                             var cSource = getScriptCreatureSourceOrTarget(source, target, step.script);
 
@@ -4843,7 +4801,7 @@ public class Map {
                         var player = getScriptPlayerSourceOrTarget(source, target, step.script);
 
                         if (player) {
-                            if (step.script.killCredit.flags.HasAnyFlag(eScriptFlags.KillcreditRewardGroup)) {
+                            if (step.script.killCredit.flags.hasFlag(eScriptFlags.KillcreditRewardGroup)) {
                                 player.rewardPlayerAndGroupAtEvent(step.script.killCredit.creatureEntry, player);
                             } else {
                                 player.killedMonsterCredit(step.script.killCredit.creatureEntry, ObjectGuid.Empty);
@@ -4945,7 +4903,7 @@ public class Map {
                     }
                     case ScriptCommands.RemoveAura: {
                         // source (datalong2 != 0) or target (datalong2 == 0) must be unit.
-                        var bReverse = step.script.removeAura.flags.HasAnyFlag(eScriptFlags.RemoveauraReverse);
+                        var bReverse = step.script.removeAura.flags.hasFlag(eScriptFlags.RemoveauraReverse);
                         var unit = getScriptUnit(bReverse ? source : target, bReverse, step.script);
 
                         if (unit) {
@@ -5005,7 +4963,7 @@ public class Map {
                             break;
                         }
 
-                        var triggered = ((int) step.script.castSpell.flags != 4) ? step.script.castSpell.creatureEntry.HasAnyFlag(eScriptFlags.CastspellTriggered.getValue()) : step.script.castSpell.creatureEntry < 0;
+                        var triggered = ((int) step.script.castSpell.flags != 4) ? step.script.castSpell.creatureEntry.hasFlag(eScriptFlags.CastspellTriggered.getValue()) : step.script.castSpell.creatureEntry < 0;
 
                         uSource.castSpell(uTarget, step.script.castSpell.spellID, triggered);
 
@@ -5020,7 +4978,7 @@ public class Map {
                             // playSound.Flags bitmask: 0/1=anyone/target
                             Player player2 = null;
 
-                            if (step.script.playSound.flags.HasAnyFlag(eScriptFlags.PlaysoundTargetPlayer)) {
+                            if (step.script.playSound.flags.hasFlag(eScriptFlags.PlaysoundTargetPlayer)) {
                                 // Target must be player.
                                 player2 = getScriptPlayer(target, false, step.script);
 
@@ -5030,7 +4988,7 @@ public class Map {
                             }
 
                             // playSound.Flags bitmask: 0/2=without/with distance dependent
-                            if (step.script.playSound.flags.HasAnyFlag(eScriptFlags.PlaysoundDistanceSound)) {
+                            if (step.script.playSound.flags.hasFlag(eScriptFlags.PlaysoundDistanceSound)) {
                                 obj.playDistanceSound(step.script.playSound.soundID, player2);
                             } else {
                                 obj.playDirectSound(step.script.playSound.soundID, player2);
@@ -5148,7 +5106,7 @@ public class Map {
                         var sourceUnit = getScriptUnit(source, true, step.script);
 
                         if (sourceUnit) {
-                            if (step.script.orientation.flags.HasAnyFlag(eScriptFlags.OrientationFaceTarget)) {
+                            if (step.script.orientation.flags.hasFlag(eScriptFlags.OrientationFaceTarget)) {
                                 // Target must be unit.
                                 var targetUnit = getScriptUnit(target, false, step.script);
 

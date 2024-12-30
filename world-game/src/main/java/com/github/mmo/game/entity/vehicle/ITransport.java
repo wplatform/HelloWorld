@@ -1,115 +1,102 @@
 package com.github.mmo.game.entity.vehicle;
 
-import Framework.Constants.*;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.map.Map;
-import game.maps.*;
 
 
-public interface ITransport
-{
-	ObjectGuid getTransportGUID();
+public interface ITransport {
+    static void updatePassengerPosition(ITransport transport, Map map, WorldObject passenger, Position pos, boolean setHomePosition) {
+        // transport teleported but passenger not yet (can happen for players)
+        if (passenger.getMap() != map) {
+            return;
+        }
 
-	// This method transforms supplied transport offsets into global coordinates
-	void calculatePassengerPosition(Position pos);
+        // Do not use Unit::UpdatePosition here, we don't want to remove auras
+        // as if regular movement occurred
+        switch (passenger.getTypeId()) {
+            case UNIT: {
+                var creature = passenger.toCreature();
+                map.creatureRelocation(creature, pos, false);
 
-	// This method transforms supplied global coordinates into local offsets
-	void calculatePassengerOffset(Position pos);
+                if (setHomePosition) {
+                    pos = creature.getTransportHomePosition();
+                    transport.calculatePassengerPosition(pos);
+                    creature.setHomePosition(pos);
+                }
 
-	float getTransportOrientation();
+                break;
+            }
+            case PLAYER:
+                //relocate only passengers in world and skip any player that might be still logging in/teleporting
+                if (passenger.isInWorld() && !passenger.toPlayer().isBeingTeleported()) {
+                    map.playerRelocation(passenger.toPlayer(), pos);
+                    passenger.toPlayer().setFallInformation(0, passenger.getLocation().getZ());
+                }
 
-	void addPassenger(WorldObject passenger);
+                break;
+            case GAME_OBJECT:
+                map.gameObjectRelocation(passenger.toGameObject(), pos, false);
+                passenger.toGameObject().relocateStationaryPosition(pos);
 
-	ITransport removePassenger(WorldObject passenger);
+                break;
+            case DYNAMIC_OBJECT:
+                map.dynamicObjectRelocation(passenger.toDynObject(), pos);
 
-	static void updatePassengerPosition(ITransport transport, Map map, WorldObject passenger, Position pos, boolean setHomePosition)
-	{
-		// transport teleported but passenger not yet (can happen for players)
-		if (passenger.getMap() != map)
-		{
-			return;
-		}
+                break;
+            case AREA_TRIGGER:
+                map.areaTriggerRelocation(passenger.toAreaTrigger(), pos);
 
-		// Do not use Unit::UpdatePosition here, we don't want to remove auras
-		// as if regular movement occurred
-		switch (passenger.getTypeId())
-		{
-			case UNIT:
-			{
-				var creature = passenger.toCreature();
-				map.creatureRelocation(creature, pos, false);
+                break;
+            default:
+                break;
+        }
 
-				if (setHomePosition)
-				{
-					pos = creature.getTransportHomePosition();
-					transport.calculatePassengerPosition(pos);
-					creature.setHomePosition(pos);
-				}
+        var unit = passenger.toUnit();
 
-				break;
-			}
-			case PLAYER:
-				//relocate only passengers in world and skip any player that might be still logging in/teleporting
-				if (passenger.isInWorld() && !passenger.toPlayer().isBeingTeleported())
-				{
-					map.playerRelocation(passenger.toPlayer(), pos);
-					passenger.toPlayer().setFallInformation(0, passenger.getLocation().getZ());
-				}
+        if (unit != null) {
+            var vehicle = unit.getVehicleKit();
 
-				break;
-			case GAME_OBJECT:
-				map.gameObjectRelocation(passenger.toGameObject(), pos, false);
-				passenger.toGameObject().relocateStationaryPosition(pos);
+            if (vehicle != null) {
+                vehicle.relocatePassengers();
+            }
+        }
+    }
 
-				break;
-			case DYNAMIC_OBJECT:
-				map.dynamicObjectRelocation(passenger.toDynObject(), pos);
+    static void calculatePassengerPosition(Position pos, float transX, float transY, float transZ, float transO) {
+        float inx = pos.getX(), iny = pos.getY(), inz = pos.getZ();
+        pos.setO(Position.normalizeOrientation(transO + pos.getO()));
 
-				break;
-			case AREA_TRIGGER:
-				map.areaTriggerRelocation(passenger.toAreaTrigger(), pos);
+        pos.setX(transX + inx * (float) Math.cos(transO) - iny * (float) Math.sin(transO));
+        pos.setY(transY + iny * (float) Math.cos(transO) + inx * (float) Math.sin(transO));
+        pos.setZ(transZ + inz);
+    }
 
-				break;
-			default:
-				break;
-		}
+    static void calculatePassengerOffset(Position pos, float transX, float transY, float transZ, float transO) {
+        pos.setO(Position.normalizeOrientation(pos.getO() - transO));
 
-		var unit = passenger.toUnit();
+        pos.setZ(pos.getZ() - transZ);
+        pos.setY(pos.getY() - transY); // y = searchedY * std::cos(o) + searchedX * std::sin(o)
+        pos.setX(pos.getX() - transX); // x = searchedX * std::cos(o) + searchedY * std::sin(o + pi)
+        float inx = pos.getX(), iny = pos.getY();
+        pos.setY((iny - inx * (float) Math.tan(transO)) / ((float) Math.cos(transO) + (float) Math.sin(transO) * (float) Math.tan(transO)));
+        pos.setX((inx + iny * (float) Math.tan(transO)) / ((float) Math.cos(transO) + (float) Math.sin(transO) * (float) Math.tan(transO)));
+    }
 
-		if (unit != null)
-		{
-			var vehicle = unit.getVehicleKit();
+    ObjectGuid getTransportGUID();
 
-			if (vehicle != null)
-			{
-				vehicle.relocatePassengers();
-			}
-		}
-	}
+    // This method transforms supplied transport offsets into global coordinates
+    void calculatePassengerPosition(Position pos);
 
-	static void calculatePassengerPosition(Position pos, float transX, float transY, float transZ, float transO)
-	{
-		float inx = pos.getX(), iny = pos.getY(), inz = pos.getZ();
-		pos.setO(Position.normalizeOrientation(transO + pos.getO()));
+    // This method transforms supplied global coordinates into local offsets
+    void calculatePassengerOffset(Position pos);
 
-		pos.setX(transX + inx * (float)Math.cos(transO) - iny * (float)Math.sin(transO));
-		pos.setY(transY + iny * (float)Math.cos(transO) + inx * (float)Math.sin(transO));
-		pos.setZ(transZ + inz);
-	}
+    float getTransportOrientation();
 
-	static void calculatePassengerOffset(Position pos, float transX, float transY, float transZ, float transO)
-	{
-		pos.setO(Position.normalizeOrientation(pos.getO() - transO));
+    void addPassenger(WorldObject passenger);
 
-		pos.setZ(pos.getZ() - transZ);
-		pos.setY(pos.getY() - transY); // y = searchedY * std::cos(o) + searchedX * std::sin(o)
-		pos.setX(pos.getX() - transX); // x = searchedX * std::cos(o) + searchedY * std::sin(o + pi)
-		float inx = pos.getX(), iny = pos.getY();
-		pos.setY((iny - inx * (float)Math.tan(transO)) / ((float)Math.cos(transO) + (float)Math.sin(transO) * (float)Math.tan(transO)));
-		pos.setX((inx + iny * (float)Math.tan(transO)) / ((float)Math.cos(transO) + (float)Math.sin(transO) * (float)Math.tan(transO)));
-	}
+    ITransport removePassenger(WorldObject passenger);
 
-	int GetMapIdForSpawning();
+    int GetMapIdForSpawning();
 }

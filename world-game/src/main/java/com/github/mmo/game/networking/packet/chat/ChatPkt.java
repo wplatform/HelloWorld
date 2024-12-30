@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.chat;
 
 
 import com.github.mmo.game.entity.object.WorldObject;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class ChatPkt extends ServerPacket {
     public ChatMsg slashCmd = ChatMsg.values()[0];
@@ -12,20 +12,20 @@ public class ChatPkt extends ServerPacket {
     public ObjectGuid senderAccountGUID = ObjectGuid.EMPTY;
     public ObjectGuid targetGUID = ObjectGuid.EMPTY;
     public ObjectGuid partyGUID = ObjectGuid.EMPTY;
-   
+
     public int senderVirtualAddress;
-   
+
     public int targetVirtualAddress;
     public String senderName = "";
     public String targetName = "";
     public String prefix = "";
     public String channel = "";
     public String chatText = "";
-   
+
     public int achievementID;
     public ChatFlags _ChatFlags = ChatFlags.values()[0];
     public float displayTime;
-   
+
     public Integer unused_801 = null;
     public boolean hideChatLog;
     public boolean fakeSenderName;
@@ -52,7 +52,7 @@ public class ChatPkt extends ServerPacket {
         initialize(chatType, language, sender, receiver, message, 0, "", locale.enUS, "");
     }
 
-        public final void initialize(ChatMsg chatType, Language language, WorldObject sender, WorldObject receiver, String message, int achievementId, String channelName, Locale locale, String addonPrefix) {
+    public final void initialize(ChatMsg chatType, Language language, WorldObject sender, WorldObject receiver, String message, int achievementId, String channelName, Locale locale, String addonPrefix) {
         // Clear everything because same packet can be used multiple times
         clear();
 

@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.spell;
 
 
 import com.github.mmo.game.entity.object.ObjectGuid;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
 
 public class SpellTargetData {

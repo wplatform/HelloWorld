@@ -3,13 +3,14 @@ package game;
 
 import com.github.mmo.dbc.defines.PhaseEntryFlags;
 import com.github.mmo.dbc.defines.PhaseUseFlagsValue;
-import com.github.mmo.game.chat.*;
-import com.github.mmo.game.condition.*;
-
+import com.github.mmo.game.chat.CommandHandler;
+import com.github.mmo.game.condition.ConditionSourceInfo;
+import com.github.mmo.game.condition.ConditionSourceType;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.map.*;
+import com.github.mmo.game.map.MapDefine;
+import com.github.mmo.game.map.TerrainInfo;
 import com.github.mmo.game.networking.packet.misc.PhaseShiftChange;
 import com.github.mmo.game.networking.packet.misc.PhaseShiftDataPhase;
 import com.github.mmo.game.networking.packet.party.PartyMemberPhase;
@@ -18,8 +19,7 @@ import com.github.mmo.game.phasing.PhaseFlag;
 import com.github.mmo.game.phasing.PhaseShift;
 import com.github.mmo.game.phasing.PhaseShiftFlag;
 
-import java.util.*;
-
+import java.util.ArrayList;
 
 
 public class PhasingHandler {
@@ -36,11 +36,11 @@ public class PhasingHandler {
         var phase = CliDB.PhaseStorage.get(phaseId);
 
         if (phase != null) {
-            if (phase.flags.HasAnyFlag(PhaseEntryFlags.COSMETIC)) {
+            if (phase.flags.hasFlag(PhaseEntryFlags.COSMETIC)) {
                 return phaseFlags.COSMETIC;
             }
 
-            if (phase.flags.HasAnyFlag(PhaseEntryFlags.PERSONAL)) {
+            if (phase.flags.hasFlag(PhaseEntryFlags.PERSONAL)) {
                 return phaseFlags.PERSONAL;
             }
         }
@@ -249,7 +249,7 @@ public class PhasingHandler {
         return onConditionChange(obj, true);
     }
 
-        public static boolean onConditionChange(WorldObject obj, boolean updateVisibility) {
+    public static boolean onConditionChange(WorldObject obj, boolean updateVisibility) {
         var phaseShift = obj.getPhaseShift();
         var suppressedPhaseShift = obj.getSuppressedPhaseShift();
         PhaseShift newSuppressions = new PhaseShift();
@@ -366,7 +366,7 @@ public class PhasingHandler {
         phaseShiftChange.phaseshift.personalGUID = phaseShift.personalGuid;
 
         for (var pair : phaseShift.phases) {
-            phaseShiftChange.phaseshift.phases.add(new PhaseShiftDataPhase(pair.value.flags.value,  pair.key));
+            phaseShiftChange.phaseshift.phases.add(new PhaseShiftDataPhase(pair.value.flags.value, pair.key));
         }
 
         for (var visibleMapId : phaseShift.visibleMapIds) {
@@ -404,11 +404,11 @@ public class PhasingHandler {
 
         var flags = PhaseShiftFlag.NONE;
 
-        if (phaseUseFlags.HasAnyFlag(PhaseUseFlagsValue.ALWAYSVISIBLE)) {
+        if (phaseUseFlags.hasFlag(PhaseUseFlagsValue.ALWAYSVISIBLE)) {
             flags = PhaseShiftFlag.forValue(flags.getValue() | PhaseShiftFlag.ALWAYSVISIBLE.getValue().getValue() | PhaseShiftFlag.UNPHASED.getValue().getValue());
         }
 
-        if (phaseUseFlags.HasAnyFlag(PhaseUseFlagsValue.INVERSE)) {
+        if (phaseUseFlags.hasFlag(PhaseUseFlagsValue.INVERSE)) {
             flags = PhaseShiftFlag.forValue(flags.getValue() | PhaseShiftFlag.INVERSE.getValue());
         }
 

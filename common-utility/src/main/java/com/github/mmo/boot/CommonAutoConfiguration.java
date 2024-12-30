@@ -2,8 +2,8 @@ package com.github.mmo.boot;
 
 import com.github.mmo.cache.MapdbCacheProvider;
 import com.github.mmo.config.ConfigurationRefreshProcessor;
-import com.github.mmo.converter.ClangStyleBoolean;
-import com.github.mmo.converter.IntToEnumConverterFactory;
+import com.github.mmo.converter.IntToBool;
+import com.github.mmo.converter.IntToEnum;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
@@ -17,8 +17,7 @@ public class CommonAutoConfiguration {
     ConversionServiceFactoryBean conversionServiceFactoryBean() {
         ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
         conversionServiceFactoryBean.setConverters(Set.of(
-                new ClangStyleBoolean(),
-                new IntToEnumConverterFactory()
+                new IntToBool()
         ));
         return conversionServiceFactoryBean;
     };

@@ -1,7 +1,7 @@
 package com.github.mmo.game.map;
 
 
-import com.github.mmo.game.battleground.*;
+import com.github.mmo.game.battleground.Battleground;
 import com.github.mmo.game.entity.player.Player;
 
 public class BattlegroundMap extends Map {
@@ -39,7 +39,7 @@ public class BattlegroundMap extends Map {
         return addPlayerToMap(player, true);
     }
 
-        @Override
+    @Override
     public boolean addPlayerToMap(Player player, boolean initPlayer) {
         player.setInstanceValid(true);
 

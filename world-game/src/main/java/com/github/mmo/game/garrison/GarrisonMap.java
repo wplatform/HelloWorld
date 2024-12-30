@@ -2,9 +2,9 @@ package com.github.mmo.game.garrison;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.map.*;
-import com.github.mmo.game.map.grid.*;
+import com.github.mmo.game.map.Map;
 import com.github.mmo.game.map.grid.Cell;
+import com.github.mmo.game.map.grid.Grid;
 
 class GarrisonMap extends Map {
     private final ObjectGuid owner;
@@ -52,7 +52,7 @@ class GarrisonMap extends Map {
         return addPlayerToMap(player, true);
     }
 
-        @Override
+    @Override
     public boolean addPlayerToMap(Player player, boolean initPlayer) {
         if (Objects.equals(player.getGUID(), owner)) {
             loadingPlayer = player;

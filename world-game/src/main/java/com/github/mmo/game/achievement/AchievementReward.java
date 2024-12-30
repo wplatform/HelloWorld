@@ -1,4 +1,6 @@
-package com.github.mmo.game.achievement;public class AchievementReward {
+package com.github.mmo.game.achievement;
+
+public class AchievementReward {
 
     public int[] titleId = new int[2];
 

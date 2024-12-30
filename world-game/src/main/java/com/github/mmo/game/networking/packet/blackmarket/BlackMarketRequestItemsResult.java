@@ -1,27 +1,24 @@
 package com.github.mmo.game.networking.packet.blackmarket;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class BlackMarketRequestItemsResult extends ServerPacket
-{
-	public long lastUpdateID;
-	public ArrayList<BlackMarketItem> items = new ArrayList<>();
-	public BlackMarketRequestItemsResult()
-	{
-		super(ServerOpcode.BlackMarketRequestItemsResult);
-	}
+public class BlackMarketRequestItemsResult extends ServerPacket {
+    public long lastUpdateID;
+    public ArrayList<BlackMarketItem> items = new ArrayList<>();
 
-	@Override
-	public void write()
-	{
-		this.writeInt64(lastUpdateID);
-		this.writeInt32(items.size());
+    public BlackMarketRequestItemsResult() {
+        super(ServerOpcode.BlackMarketRequestItemsResult);
+    }
 
-		for (var item : items)
-		{
-			item.write(this);
-		}
-	}
+    @Override
+    public void write() {
+        this.writeInt64(lastUpdateID);
+        this.writeInt32(items.size());
+
+        for (var item : items) {
+            item.write(this);
+        }
+    }
 }

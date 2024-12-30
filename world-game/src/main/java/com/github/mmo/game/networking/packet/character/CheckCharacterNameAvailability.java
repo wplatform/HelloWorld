@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.character;
 
-import com.github.mmo.game.networking.*;class CheckCharacterNameAvailability extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class CheckCharacterNameAvailability extends ClientPacket {
 
     public int sequenceIndex;
     public String name;

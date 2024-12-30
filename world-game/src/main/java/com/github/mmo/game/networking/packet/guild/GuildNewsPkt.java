@@ -1,27 +1,23 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class GuildNewsPkt extends ServerPacket
-{
-	public ArrayList<GuildNewsEvent> newsEvents;
+public class GuildNewsPkt extends ServerPacket {
+    public ArrayList<GuildNewsEvent> newsEvents;
 
-	public GuildNewsPkt()
-	{
-		super(ServerOpcode.GuildNews);
-		newsEvents = new ArrayList<>();
-	}
+    public GuildNewsPkt() {
+        super(ServerOpcode.GuildNews);
+        newsEvents = new ArrayList<>();
+    }
 
-	@Override
-	public void write()
-	{
+    @Override
+    public void write() {
         this.writeInt32(newsEvents.size());
 
-		for (var newsEvent : newsEvents)
-		{
-			newsEvent.write(this);
-		}
-	}
+        for (var newsEvent : newsEvents) {
+            newsEvent.write(this);
+        }
+    }
 }

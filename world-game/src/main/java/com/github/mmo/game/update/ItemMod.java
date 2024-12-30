@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packets;
 
 
-import com.github.mmo.game.networking.*;public class ItemMod {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class ItemMod {
 
     public int value;
     public ItemModifier type = ItemModifier.values()[0];

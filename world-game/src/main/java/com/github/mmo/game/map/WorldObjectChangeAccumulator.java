@@ -11,7 +11,9 @@ import com.github.mmo.game.map.interfaces.IGridNotifierPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.list;public class WorldObjectChangeAccumulator implements IGridNotifierPlayer, IGridNotifierCreature, IGridNotifierDynamicObject {
+import java.util.list;
+
+public class WorldObjectChangeAccumulator implements IGridNotifierPlayer, IGridNotifierCreature, IGridNotifierDynamicObject {
     private final HashMap<Player, UpdateData> updateData;
     private final WorldObject worldObject;
     private final ArrayList<ObjectGuid> plrList = new ArrayList<>();
@@ -20,11 +22,11 @@ import java.util.list;public class WorldObjectChangeAccumulator implements IGrid
         updateData = d;
         worldObject = obj;
         setGridType(gridType);
-    }    private gridType gridType = getGridType().values()[0];
+    }
 
     public final GridType getGridType() {
         return gridType;
-    }
+    }    private gridType gridType = getGridType().values()[0];
 
     public final void setGridType(GridType value) {
         gridType = value;
@@ -81,6 +83,8 @@ import java.util.list;public class WorldObjectChangeAccumulator implements IGrid
             plrList.add(player.getGUID());
         }
     }
+
+
 
 
 }

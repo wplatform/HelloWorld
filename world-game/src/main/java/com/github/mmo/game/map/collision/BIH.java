@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.IntArray;
 import com.github.mmo.common.Logs;
-import com.github.mmo.utils.MathUtil;
 import com.github.mmo.game.map.collision.model.Distance;
 import com.github.mmo.game.map.collision.model.GameObjectModel;
+import com.github.mmo.utils.MathUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -22,6 +22,7 @@ public class BIH {
     private BoundingBox bounds;
     private int[] tree;
     private int[] objects;
+
     public BIH() {
         initEmpty();
     }

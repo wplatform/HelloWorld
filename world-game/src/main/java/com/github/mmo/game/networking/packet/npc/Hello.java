@@ -1,6 +1,7 @@
 package com.github.mmo.game.networking.packet.npc;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
 // CMSG_BANKER_ACTIVATE
 // CMSG_BINDER_ACTIVATE
@@ -9,19 +10,17 @@ import com.github.mmo.game.networking.*;
 // CMSG_LIST_INVENTORY
 // CMSG_TRAINER_LIST
 // CMSG_BATTLEMASTER_HELLO
-public class Hello extends ClientPacket
-{
-	public ObjectGuid unit = ObjectGuid.EMPTY;
-	public Hello(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class Hello extends ClientPacket {
+    public ObjectGuid unit = ObjectGuid.EMPTY;
 
-	@Override
-	public void read()
-	{
-		unit = this.readPackedGuid();
-	}
+    public Hello(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        unit = this.readPackedGuid();
+    }
 }
 
 //Structs

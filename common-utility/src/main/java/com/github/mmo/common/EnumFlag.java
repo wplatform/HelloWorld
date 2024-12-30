@@ -32,6 +32,19 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
     public boolean hasFlag(T element) {
         return (this.flag & element.getValue()) != 0;
     }
+    @SafeVarargs
+    public final boolean hasNotFlag(T... elements) {
+        for (T element : elements) {
+            if(hasNotFlag(element)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasNotFlag(T element) {
+        return (this.flag & ~element.getValue()) != 0;
+    }
 
     public boolean hasFlag(EnumFlag<T> other) {
         return (this.flag & other.flag) != 0;
@@ -45,10 +58,25 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         return (this.flag & other.flag) == other.flag;
     }
 
+
+    @SafeVarargs
+    public final EnumFlag<T> removeNotFlag(T... elements) {
+        for (T element : elements) {
+            removeNotFlag(element);
+        }
+        return this;
+    }
+
+    public final EnumFlag<T> removeNotFlag(T element) {
+        this.flag &= element.getValue();
+        return this;
+    }
+
+
     @SafeVarargs
     public final EnumFlag<T> removeFlag(T... elements) {
         for (T element : elements) {
-            addFlag(element);
+            removeFlag(element);
         }
         return this;
     }
@@ -57,6 +85,7 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         this.flag &= ~element.getValue();
         return this;
     }
+
 
     public EnumFlag<T> removeFlag(EnumFlag<T> other) {
         this.flag &= ~other.flag;

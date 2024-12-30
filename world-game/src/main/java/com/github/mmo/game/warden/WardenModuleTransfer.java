@@ -1,11 +1,10 @@
 package game;
 
 
-class WardenModuleTransfer
-{
-	public WardenOpcodes command = WardenOpcodes.values()[0];
-	public short dataSize;
-	public byte[] data = new byte[500];
+class WardenModuleTransfer {
+    public WardenOpcodes command = WardenOpcodes.values()[0];
+    public short dataSize;
+    public byte[] data = new byte[500];
 
 // C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
 //	public static implicit operator byte[](WardenModuleTransfer transfer)

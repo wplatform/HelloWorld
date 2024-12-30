@@ -58,7 +58,7 @@ public class ConversationActorFillVisitor {
     }
 
     public final void invoke(ConversationActorActivePlayerTemplate activePlayer) {
-        conversation.addActor(actor.id, actor.index, ObjectGuid.create(HighGuid.Player, (long)0xFFFFFFFFFFFFFFFF));
+        conversation.addActor(actor.id, actor.index, ObjectGuid.create(HighGuid.Player, (long) 0xFFFFFFFFFFFFFFFF));
     }
 
     public final void invoke(ConversationActorTalkingHeadTemplate talkingHead) {

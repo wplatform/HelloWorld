@@ -1,19 +1,18 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
-public class CastSpell extends ClientPacket
-{
-	public SpellcastRequest cast;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public castSpell(WorldPacket packet)
-	{
-		super(packet);
-		cast = new spellCastRequest();
-	}
+public class CastSpell extends ClientPacket {
+    public SpellcastRequest cast;
 
-	@Override
-	public void read()
-	{
-		cast.read(this);
-	}
+    public castSpell(WorldPacket packet) {
+        super(packet);
+        cast = new spellCastRequest();
+    }
+
+    @Override
+    public void read() {
+        cast.read(this);
+    }
 }

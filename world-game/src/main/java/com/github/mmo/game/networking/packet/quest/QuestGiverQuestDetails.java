@@ -5,47 +5,45 @@ import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class QuestGiverQuestDetails extends ServerPacket
-{
+public class QuestGiverQuestDetails extends ServerPacket {
     public ObjectGuid questGiverGUID = ObjectGuid.EMPTY;
     public ObjectGuid informUnit = ObjectGuid.EMPTY;
-	public int questID;
-	public int questPackageID;
-	public int[] questFlags = new int[3];
-	public int suggestedPartyMembers;
-	public QuestRewards rewards = new QuestRewards();
-	public ArrayList<QuestObjectiveSimple> objectives = new ArrayList<>();
-	public ArrayList<QuestDescEmote> descEmotes = new ArrayList<>();
-	public ArrayList<Integer> learnSpells = new ArrayList<>();
-	public int portraitTurnIn;
-	public int portraitGiver;
-	public int portraitGiverMount;
-	public int portraitGiverModelSceneID;
-	public int questStartItemID;
-	public int questSessionBonus;
-	public int questGiverCreatureID;
-	public String portraitGiverText = "";
-	public String portraitGiverName = "";
-	public String portraitTurnInText = "";
-	public String portraitTurnInName = "";
-	public String questTitle = "";
-	public String logDescription = "";
-	public String descriptionText = "";
-	public ArrayList<ConditionalQuestText> conditionalDescriptionText = new ArrayList<>();
-	public boolean displayPopup;
-	public boolean startCheat;
-	public boolean autoLaunched;
-	public QuestGiverQuestDetails()
-	{
-		super(ServerOpCode.SMSG_QUEST_GIVER_QUEST_DETAILS);
-	}
+    public int questID;
+    public int questPackageID;
+    public int[] questFlags = new int[3];
+    public int suggestedPartyMembers;
+    public QuestRewards rewards = new QuestRewards();
+    public ArrayList<QuestObjectiveSimple> objectives = new ArrayList<>();
+    public ArrayList<QuestDescEmote> descEmotes = new ArrayList<>();
+    public ArrayList<Integer> learnSpells = new ArrayList<>();
+    public int portraitTurnIn;
+    public int portraitGiver;
+    public int portraitGiverMount;
+    public int portraitGiverModelSceneID;
+    public int questStartItemID;
+    public int questSessionBonus;
+    public int questGiverCreatureID;
+    public String portraitGiverText = "";
+    public String portraitGiverName = "";
+    public String portraitTurnInText = "";
+    public String portraitTurnInName = "";
+    public String questTitle = "";
+    public String logDescription = "";
+    public String descriptionText = "";
+    public ArrayList<ConditionalQuestText> conditionalDescriptionText = new ArrayList<>();
+    public boolean displayPopup;
+    public boolean startCheat;
+    public boolean autoLaunched;
 
-	@Override
-	public void write()
-	{
+    public QuestGiverQuestDetails() {
+        super(ServerOpCode.SMSG_QUEST_GIVER_QUEST_DETAILS);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(questGiverGUID);
         this.writeGuid(informUnit);
         this.writeInt32(questID);
@@ -66,24 +64,21 @@ public class QuestGiverQuestDetails extends ServerPacket
         this.writeInt32(questGiverCreatureID);
         this.writeInt32(conditionalDescriptionText.size());
 
-		for (var spell : learnSpells)
-		{
+        for (var spell : learnSpells) {
             this.writeInt32(spell);
-		}
+        }
 
-		for (var emote : descEmotes)
-		{
+        for (var emote : descEmotes) {
             this.writeInt32(emote.type);
             this.writeInt32(emote.delay);
-		}
+        }
 
-		for (var obj : objectives)
-		{
+        for (var obj : objectives) {
             this.writeInt32(obj.id);
             this.writeInt32(obj.objectID);
             this.writeInt32(obj.amount);
-			this.writeInt8(obj.type);
-		}
+            this.writeInt8(obj.type);
+        }
 
         this.writeBits(questTitle.getBytes().length, 9);
         this.writeBits(descriptionText.getBytes().length, 12);
@@ -98,7 +93,7 @@ public class QuestGiverQuestDetails extends ServerPacket
         this.writeBit(displayPopup);
         this.flushBits();
 
-		rewards.write(this);
+        rewards.write(this);
 
         this.writeString(questTitle);
         this.writeString(descriptionText);
@@ -108,9 +103,8 @@ public class QuestGiverQuestDetails extends ServerPacket
         this.writeString(portraitTurnInText);
         this.writeString(portraitTurnInName);
 
-		for (var conditionalQuestText : conditionalDescriptionText)
-		{
-			conditionalQuestText.write(this);
-		}
-	}
+        for (var conditionalQuestText : conditionalDescriptionText) {
+            conditionalQuestText.write(this);
+        }
+    }
 }

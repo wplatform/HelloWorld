@@ -1,122 +1,103 @@
 package com.github.mmo.game.entity.unit;
 
 
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.spell.Spell;
+import com.github.mmo.game.spell.SpellInfo;
 
-public class ProcEventInfo
-{
-	private final Unit actor;
-	private final Unit actionTarget;
-	private final Unit procTarget;
-	private final ProcFlagsInit typeMask;
-	private final ProcFlagsSpellType spellTypeMask;
-	private final ProcFlagsSpellPhase spellPhaseMask;
-	private final ProcFlagsHit hitMask;
-	private final Spell spell;
-	private final DamageInfo damageInfo;
-	private final HealInfo healInfo;
+public class ProcEventInfo {
+    private final Unit actor;
+    private final Unit actionTarget;
+    private final Unit procTarget;
+    private final ProcFlagsInit typeMask;
+    private final ProcFlagsSpellType spellTypeMask;
+    private final ProcFlagsSpellPhase spellPhaseMask;
+    private final ProcFlagsHit hitMask;
+    private final Spell spell;
+    private final DamageInfo damageInfo;
+    private final HealInfo healInfo;
 
-	public final Unit getActor()
-	{
-		return actor;
-	}
+    public ProcEventInfo(Unit actor, Unit actionTarget, Unit procTarget, ProcFlagsInit typeMask, ProcFlagsSpellType spellTypeMask, ProcFlagsSpellPhase spellPhaseMask, ProcFlagsHit hitMask, Spell spell, DamageInfo damageInfo, HealInfo healInfo) {
+        actor = actor;
+        actionTarget = actionTarget;
+        procTarget = procTarget;
+        typeMask = typeMask;
+        spellTypeMask = spellTypeMask;
+        spellPhaseMask = spellPhaseMask;
+        hitMask = hitMask;
+        spell = spell;
+        damageInfo = damageInfo;
+        healInfo = healInfo;
+    }
 
-	public final Unit getActionTarget()
-	{
-		return actionTarget;
-	}
+    public final Unit getActor() {
+        return actor;
+    }
 
-	public final Unit getProcTarget()
-	{
-		return procTarget;
-	}
+    public final Unit getActionTarget() {
+        return actionTarget;
+    }
 
-	public final ProcFlagsInit getTypeMask()
-	{
-		return typeMask;
-	}
+    public final Unit getProcTarget() {
+        return procTarget;
+    }
 
-	public final ProcFlagsSpellType getSpellTypeMask()
-	{
-		return spellTypeMask;
-	}
+    public final ProcFlagsInit getTypeMask() {
+        return typeMask;
+    }
 
-	public final ProcFlagsSpellPhase getSpellPhaseMask()
-	{
-		return spellPhaseMask;
-	}
+    public final ProcFlagsSpellType getSpellTypeMask() {
+        return spellTypeMask;
+    }
 
-	public final ProcFlagsHit getHitMask()
-	{
-		return hitMask;
-	}
+    public final ProcFlagsSpellPhase getSpellPhaseMask() {
+        return spellPhaseMask;
+    }
 
-	public final SpellInfo getSpellInfo()
-	{
-		if (spell)
-		{
-			return spell.spellInfo;
-		}
+    public final ProcFlagsHit getHitMask() {
+        return hitMask;
+    }
 
-		if (damageInfo != null)
-		{
-			return damageInfo.getSpellInfo();
-		}
+    public final SpellInfo getSpellInfo() {
+        if (spell) {
+            return spell.spellInfo;
+        }
 
-		if (healInfo != null)
-		{
-			return healInfo.getSpellInfo();
-		}
+        if (damageInfo != null) {
+            return damageInfo.getSpellInfo();
+        }
 
-		return null;
-	}
+        if (healInfo != null) {
+            return healInfo.getSpellInfo();
+        }
 
-	public final SpellSchoolMask getSchoolMask()
-	{
-		if (spell)
-		{
-			return spell.spellInfo.getSchoolMask();
-		}
+        return null;
+    }
 
-		if (damageInfo != null)
-		{
-			return damageInfo.getSchoolMask();
-		}
+    public final SpellSchoolMask getSchoolMask() {
+        if (spell) {
+            return spell.spellInfo.getSchoolMask();
+        }
 
-		if (healInfo != null)
-		{
-			return healInfo.getSchoolMask();
-		}
+        if (damageInfo != null) {
+            return damageInfo.getSchoolMask();
+        }
 
-		return spellSchoolMask.NONE;
-	}
+        if (healInfo != null) {
+            return healInfo.getSchoolMask();
+        }
 
-	public final DamageInfo getDamageInfo()
-	{
-		return damageInfo;
-	}
+        return spellSchoolMask.NONE;
+    }
 
-	public final HealInfo getHealInfo()
-	{
-		return healInfo;
-	}
+    public final DamageInfo getDamageInfo() {
+        return damageInfo;
+    }
 
-	public final Spell getProcSpell()
-	{
-		return spell;
-	}
+    public final HealInfo getHealInfo() {
+        return healInfo;
+    }
 
-	public ProcEventInfo(Unit actor, Unit actionTarget, Unit procTarget, ProcFlagsInit typeMask, ProcFlagsSpellType spellTypeMask, ProcFlagsSpellPhase spellPhaseMask, ProcFlagsHit hitMask, Spell spell, DamageInfo damageInfo, HealInfo healInfo)
-	{
-		actor = actor;
-		actionTarget = actionTarget;
-		procTarget = procTarget;
-		typeMask = typeMask;
-		spellTypeMask = spellTypeMask;
-		spellPhaseMask = spellPhaseMask;
-		hitMask = hitMask;
-		spell = spell;
-		damageInfo = damageInfo;
-		healInfo = healInfo;
-	}
+    public final Spell getProcSpell() {
+        return spell;
+    }
 }

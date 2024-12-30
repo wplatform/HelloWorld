@@ -1,27 +1,26 @@
 package com.github.mmo.game.networking.packet.spell;
 
 import com.github.mmo.game.movement.model.MovementInfo;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class UpdateMissileTrajectory extends ClientPacket
-{
+class UpdateMissileTrajectory extends ClientPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;
     public ObjectGuid castID = ObjectGuid.EMPTY;
-	public short moveMsgID;
-	public int spellID;
-	public float pitch;
-	public float speed;
-	public Vector3 firePos;
-	public Vector3 impactPos;
-	public MovementInfo status;
-	public UpdateMissileTrajectory(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public short moveMsgID;
+    public int spellID;
+    public float pitch;
+    public float speed;
+    public Vector3 firePos;
+    public Vector3 impactPos;
+    public MovementInfo status;
 
-	@Override
-	public void read()
-	{
+    public UpdateMissileTrajectory(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         guid = this.readPackedGuid();
         castID = this.readPackedGuid();
         moveMsgID = this.readUInt16();
@@ -32,11 +31,10 @@ class UpdateMissileTrajectory extends ClientPacket
         impactPos = this.readVector3();
         var hasStatus = this.readBit();
 
-		this.resetBitPos();
+        this.resetBitPos();
 
-		if (hasStatus)
-		{
-			status = MovementExtensions.readMovementInfo(this);
-		}
-	}
+        if (hasStatus) {
+            status = MovementExtensions.readMovementInfo(this);
+        }
+    }
 }

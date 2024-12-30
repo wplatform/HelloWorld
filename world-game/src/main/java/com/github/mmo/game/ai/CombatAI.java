@@ -4,7 +4,9 @@ package com.github.mmo.game.ai;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.unit.Unit;
 
-import java.util.ArrayList;public class CombatAI extends CreatureAI {
+import java.util.ArrayList;
+
+public class CombatAI extends CreatureAI {
 
     protected ArrayList<Integer> spells = new ArrayList<>();
 

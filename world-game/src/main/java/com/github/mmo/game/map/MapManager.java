@@ -9,20 +9,20 @@ import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.object.WorldLocation;
 
 public class MapManager extends Singleton<MapManager> {
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: readonly LoopSafeDoubleDictionary<uint, uint, Map> _maps = new();
     private final LoopSafeDoubleDictionary<Integer, Integer, Map> maps = new LoopSafeDoubleDictionary<Integer, Integer, Map>();
     private final IntervalTimer timer = new IntervalTimer();
     private final Object mapsLock = new Object();
     private final BitSet freeInstanceIds = new BitSet(1);
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: uint _gridCleanUpDelay;
     private int gridCleanUpDelay;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: uint _nextInstanceId;
     private int nextInstanceId;
     private LimitedThreadTaskManager updater;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: uint _scheduledScripts;
     private int scheduledScripts;
 
@@ -45,15 +45,15 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-    /** 
-      create the instance if it's not created already
-      the player is not actually added to the instance(only in InstanceMap::Add)
-     
-     @param mapId 
-     @param player 
-     @param loginInstanceId 
-     @return  the right instance for the object, based on its InstanceId 
-    */
+    /**
+     * create the instance if it's not created already
+     * the player is not actually added to the instance(only in InstanceMap::Add)
+     *
+     * @param mapId
+     * @param player
+     * @param loginInstanceId
+     * @return the right instance for the object, based on its InstanceId
+     */
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public Map CreateMap(uint mapId, Player player)
     public final Map createMap(int mapId, Player player) {
@@ -100,7 +100,7 @@ public class MapManager extends Singleton<MapManager> {
                 var difficulty = group != null ? group.getDifficultyID(entry) : player.getDifficultyId(entry);
                 tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
                 MapDb2Entries entries = new MapDb2Entries(entry, Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty));
-            difficulty = tempRefDifficulty.refArgValue;
+                difficulty = tempRefDifficulty.refArgValue;
                 var instanceOwnerGuid = group != null ? group.getRecentInstanceOwner(mapId) : player.getGUID();
                 var instanceLock = Global.getInstanceLockMgr().findActiveInstanceLock(instanceOwnerGuid.clone(), entries.clone());
 
@@ -147,7 +147,7 @@ public class MapManager extends Singleton<MapManager> {
             } else if (entry.IsGarrison()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: newInstanceId = (uint)player.GUID.Counter;
-                newInstanceId = (int)player.getGUID().getCounter();
+                newInstanceId = (int) player.getGUID().getCounter();
                 map = findMapI(mapId, newInstanceId);
 
                 if (!map) {
@@ -159,7 +159,7 @@ public class MapManager extends Singleton<MapManager> {
                 if (entry.IsSplitByFaction()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: newInstanceId = (uint)player.TeamId;
-                    newInstanceId = (int)player.getTeamId();
+                    newInstanceId = (int) player.getTeamId();
                 }
 
                 map = findMapI(mapId, newInstanceId);
@@ -177,7 +177,7 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public Map FindMap(uint mapId, uint instanceId)
     public final Map findMap(int mapId, int instanceId) {
         synchronized (mapsLock) {
@@ -185,7 +185,7 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint FindInstanceIdForPlayer(uint mapId, Player player)
     public final int findInstanceIdForPlayer(int mapId, Player player) {
         var entry = CliDB.mapStorage.LookupByKey(mapId);
@@ -201,7 +201,7 @@ public class MapManager extends Singleton<MapManager> {
             var difficulty = group != null ? group.getDifficultyID(entry) : player.getDifficultyId(entry);
             tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
             MapDb2Entries entries = new MapDb2Entries(entry, Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty));
-        difficulty = tempRefDifficulty.refArgValue;
+            difficulty = tempRefDifficulty.refArgValue;
 
             var instanceOwnerGuid = group ? group.getRecentInstanceOwner(mapId) : player.getGUID();
             var instanceLock = Global.getInstanceLockMgr().findActiveInstanceLock(instanceOwnerGuid.clone(), entries.clone());
@@ -230,19 +230,19 @@ public class MapManager extends Singleton<MapManager> {
         } else if (entry.IsGarrison()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: return (uint)player.GUID.Counter;
-            return (int)player.getGUID().getCounter();
+            return (int) player.getGUID().getCounter();
         } else {
             if (entry.IsSplitByFaction()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: return (uint)player.TeamId;
-                return (int)player.getTeamId();
+                return (int) player.getTeamId();
             }
 
             return 0;
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void Update(uint diff)
     public final void update(int diff) {
         timer.Update(diff);
@@ -253,15 +253,15 @@ public class MapManager extends Singleton<MapManager> {
 
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: var time = (uint)_timer.Current;
-        var time = (int)timer.getCurrent();
+        var time = (int) timer.getCurrent();
 
         for (var mapkvp : maps) {
             for (var instanceKvp : mapkvp.Value) {
                 if (instanceKvp.Value.CanUnload(diff)) {
                     updater.Schedule(() -> {
-                            if (destroyMap(instanceKvp.Value)) {
-                                maps.QueueRemove(mapkvp.Key, instanceKvp.Key);
-                            }
+                        if (destroyMap(instanceKvp.Value)) {
+                            maps.QueueRemove(mapkvp.Key, instanceKvp.Key);
+                        }
                     });
 
                     continue;
@@ -284,7 +284,7 @@ public class MapManager extends Singleton<MapManager> {
         timer.setCurrent(0);
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public bool IsValidMAP(uint mapId)
     public final boolean isValidMap(int mapId) {
         return CliDB.mapStorage.containsKey(mapId);
@@ -332,23 +332,23 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetNumInstances()
     public final int getNumInstances() {
         synchronized (mapsLock) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: return (uint)_maps.Sum(pair => pair.Value.Count(kvp => kvp.Value.IsDungeon));
-            return (int)maps.Sum(pair -> pair.Value.Count(kvp -> kvp.Value.IsDungeon));
+            return (int) maps.Sum(pair -> pair.Value.Count(kvp -> kvp.Value.IsDungeon));
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetNumPlayersInInstances()
     public final int getNumPlayersInInstances() {
         synchronized (mapsLock) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: return (uint)_maps.Sum(pair => pair.Value.Sum(kvp => kvp.Value.IsDungeon ? kvp.Value.Players.Count : 0));
-            return (int)maps.Sum(pair -> pair.Value.Sum(kvp -> kvp.Value.IsDungeon ? kvp.Value.Players.Count : 0));
+            return (int) maps.Sum(pair -> pair.Value.Sum(kvp -> kvp.Value.IsDungeon ? kvp.Value.Players.Count : 0));
         }
     }
 
@@ -374,16 +374,16 @@ public class MapManager extends Singleton<MapManager> {
             maxExistingInstanceId = Math.max(maxExistingInstanceId, result.<Long>Read(0));
         }
 
-        freeInstanceIds.setLength((int)(maxExistingInstanceId + 2)); // make space for one extra to be able to access [_nextInstanceId] index in case all slots are taken
+        freeInstanceIds.setLength((int) (maxExistingInstanceId + 2)); // make space for one extra to be able to access [_nextInstanceId] index in case all slots are taken
 
         // never allow 0 id
         freeInstanceIds.set(0, false);
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void RegisterInstanceId(uint instanceId)
     public final void registerInstanceId(int instanceId) {
-        freeInstanceIds.set((int)instanceId, false);
+        freeInstanceIds.set((int) instanceId, false);
 
         // Instances are pulled in ascending order from db and nextInstanceId is initialized with 1,
         // so if the instance id is used, increment until we find the first unused one for a potential new instance
@@ -392,7 +392,7 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GenerateInstanceId()
     public final int generateInstanceId() {
         if (nextInstanceId == 0xFFFFFFFF) {
@@ -403,12 +403,12 @@ public class MapManager extends Singleton<MapManager> {
         }
 
         var newInstanceId = nextInstanceId;
-        freeInstanceIds.set((int)newInstanceId, false);
+        freeInstanceIds.set((int) newInstanceId, false);
 
         // Find the lowest available id starting from the current NextInstanceId (which should be the lowest according to the logic in FreeInstanceId()
         var nextFreeId = -1;
 
-        for (var i = (int)nextInstanceId++; i < freeInstanceIds.getLength(); i++) {
+        for (var i = (int) nextInstanceId++; i < freeInstanceIds.getLength(); i++) {
             if (freeInstanceIds.get(i)) {
                 nextFreeId = i;
 
@@ -419,27 +419,27 @@ public class MapManager extends Singleton<MapManager> {
         if (nextFreeId == -1) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: _nextInstanceId = (uint)_freeInstanceIds.Length;
-            nextInstanceId = (int)freeInstanceIds.getLength();
+            nextInstanceId = (int) freeInstanceIds.getLength();
             freeInstanceIds.setLength(freeInstanceIds.Length + 1);
-            freeInstanceIds.set((int)nextInstanceId, true);
+            freeInstanceIds.set((int) nextInstanceId, true);
         } else {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: _nextInstanceId = (uint)nextFreeId;
-            nextInstanceId = (int)nextFreeId;
+            nextInstanceId = (int) nextFreeId;
         }
 
         return newInstanceId;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void FreeInstanceId(uint instanceId)
     public final void freeInstanceId(int instanceId) {
         // If freed instance id is lower than the next id available for new instances, use the freed one instead
         nextInstanceId = Math.min(instanceId, nextInstanceId);
-        freeInstanceIds.set((int)instanceId, true);
+        freeInstanceIds.set((int) instanceId, true);
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void SetGridCleanUpDelay(uint t)
     public final void setGridCleanUpDelay(int t) {
         if (t < MapConst.MinGridDelay) {
@@ -458,13 +458,13 @@ public class MapManager extends Singleton<MapManager> {
         timer.Reset();
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetNextInstanceId()
     public final int getNextInstanceId() {
         return nextInstanceId;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void SetNextInstanceId(uint nextInstanceId)
     public final void setNextInstanceId(int nextInstanceId) {
         this.nextInstanceId = nextInstanceId;
@@ -480,22 +480,22 @@ public class MapManager extends Singleton<MapManager> {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void DoForAllMapsWithMapId(uint mapId, Action<Map> worker)
     public final void doForAllMapsWithMapId(int mapId, tangible.Action1Param<Map> worker) {
         synchronized (mapsLock) {
             TValue instanceDict;
             tangible.OutObject<TValue> tempOutInstanceDict = new tangible.OutObject<TValue>();
             if (maps.TryGetValue(mapId, tempOut_instanceDict)) {
-            instanceDict = tempOutInstanceDict.outArgValue;
+                instanceDict = tempOutInstanceDict.outArgValue;
                 for (var kvp : instanceDict) {
                     if (kvp.Key >= 0) {
                         worker.invoke(kvp.Value);
                     }
                 }
             } else {
-            instanceDict = tempOutInstanceDict.outArgValue;
-        }
+                instanceDict = tempOutInstanceDict.outArgValue;
+            }
         }
     }
 
@@ -515,7 +515,7 @@ public class MapManager extends Singleton<MapManager> {
         --scheduledScripts;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public void DecreaseScheduledScriptCount(uint count)
     public final void decreaseScheduledScriptCount(int count) {
         scheduledScripts -= count;
@@ -525,7 +525,7 @@ public class MapManager extends Singleton<MapManager> {
         return scheduledScripts > 0;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: Map FindMap_i(uint mapId, uint instanceId)
     private Map findMapI(int mapId, int instanceId) {
         var map;
@@ -533,7 +533,7 @@ public class MapManager extends Singleton<MapManager> {
         return maps.TryGetValue(mapId, instanceId, out map) ? map : null;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: Map CreateWorldMap(uint mapId, uint instanceId)
     private Map createWorldMap(int mapId, int instanceId) {
         var map = new Map(mapId, gridCleanUpDelay, instanceId, Difficulty.None);
@@ -547,7 +547,7 @@ public class MapManager extends Singleton<MapManager> {
         return map;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: InstanceMap CreateInstance(uint mapId, uint instanceId, InstanceLock instanceLock, Difficulty difficulty, int team, PlayerGroup group)
     private InstanceMap createInstance(int mapId, int instanceId, InstanceLock instanceLock, Difficulty difficulty, int team, PlayerGroup group) {
         // make sure we have a valid map id
@@ -563,7 +563,7 @@ public class MapManager extends Singleton<MapManager> {
         // some instances only have one difficulty
         tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
         Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty);
-    difficulty = tempRefDifficulty.refArgValue;
+        difficulty = tempRefDifficulty.refArgValue;
 
         Log.outDebug(LogFilter.Maps, String.format("MapInstanced::CreateInstance: %1$smap instance %2$s for %3$s created with difficulty %4$s", (instanceLock == null ? null : instanceLock.getInstanceId() != 0 ? "" : "new "), instanceId, mapId, difficulty));
 
@@ -586,7 +586,7 @@ public class MapManager extends Singleton<MapManager> {
         return map;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: BattlegroundMap CreateBattleground(uint mapId, uint instanceId, Battleground bg)
     private BattlegroundMap createBattleground(int mapId, int instanceId, Battleground bg) {
         Log.outDebug(LogFilter.Maps, String.format("MapInstanced::CreateBattleground: map bg %1$s for %2$s created.", instanceId, mapId));
@@ -598,7 +598,7 @@ public class MapManager extends Singleton<MapManager> {
         return map;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: GarrisonMap CreateGarrison(uint mapId, uint instanceId, Player owner)
     private GarrisonMap createGarrison(int mapId, int instanceId, Player owner) {
         var map = new GarrisonMap(mapId, gridCleanUpDelay, instanceId, owner.getGUID().clone());

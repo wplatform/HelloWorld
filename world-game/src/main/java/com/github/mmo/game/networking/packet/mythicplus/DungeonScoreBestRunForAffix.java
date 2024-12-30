@@ -1,6 +1,8 @@
 package com.github.mmo.game.networking.packet.mythicplus;
 
-import com.github.mmo.game.networking.*;public class DungeonScoreBestRunForAffix {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class DungeonScoreBestRunForAffix {
     public int keystoneAffixID;
     public MythicPlusrun run = new mythicPlusRun();
     public float score;

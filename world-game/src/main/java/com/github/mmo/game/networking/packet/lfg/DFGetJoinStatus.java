@@ -1,15 +1,14 @@
 package com.github.mmo.game.networking.packet.lfg;
 
-import com.github.mmo.game.networking.*;
-class DFGetJoinStatus extends ClientPacket
-{
-	public DFGetJoinStatus(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-	}
+class DFGetJoinStatus extends ClientPacket {
+    public DFGetJoinStatus(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+    }
 }

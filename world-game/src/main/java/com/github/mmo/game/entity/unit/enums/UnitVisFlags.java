@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 // byte flag value (UNIT_FIELD_BYTES_1, 2)
 @Getter
 @RequiredArgsConstructor
-public enum  UnitVisFlags {
+public enum UnitVisFlags {
     UNIT_VIS_FLAGS_INVISIBLE(0x01),
     UNIT_VIS_FLAGS_STEALTHED(0x02),
     UNIT_VIS_FLAGS_UNTRACKABLE(0x04),

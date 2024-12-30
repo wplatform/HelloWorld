@@ -3,6 +3,7 @@ package com.github.mmo.game.movement.model;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
 import lombok.Data;
+
 @Data
 public class TransportInfo {
 

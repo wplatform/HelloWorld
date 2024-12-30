@@ -1,10 +1,12 @@
 package com.github.mmo.game.networking.packet.social;
 
 
-import com.github.mmo.game.entity.player.FriendInfo;
 import com.github.mmo.game.entity.ObjectGuid;
+import com.github.mmo.game.entity.player.FriendInfo;
 import com.github.mmo.game.entity.player.SocialFlag;
-import com.github.mmo.game.networking.WorldPacket;public class ContactInfo {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class ContactInfo {
 
     private final int virtualRealmAddr;
 

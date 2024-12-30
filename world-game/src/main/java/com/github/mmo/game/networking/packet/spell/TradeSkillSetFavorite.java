@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;class TradeSkillSetFavorite extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class TradeSkillSetFavorite extends ClientPacket {
 
     public int recipeID;
     public boolean isFavorite;

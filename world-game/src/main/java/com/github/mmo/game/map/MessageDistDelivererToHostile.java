@@ -8,136 +8,111 @@ import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.interfaces.*;
 
 
-public class MessageDistDelivererToHostile<T extends IDoWork<Player>> implements IGridNotifierPlayer, IGridNotifierDynamicObject, IGridNotifierCreature
-{
-	private final Unit source;
-	private final T packetSender;
-	private final PhaseShift phaseShift;
-	private final float distSq;
+public class MessageDistDelivererToHostile<T extends IDoWork<Player>> implements IGridNotifierPlayer, IGridNotifierDynamicObject, IGridNotifierCreature {
+    private final Unit source;
+    private final T packetSender;
+    private final PhaseShift phaseShift;
+    private final float distSq;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public MessageDistDelivererToHostile(Unit src, T packetSender, float dist, GridType gridType) {
+        source = src;
+        packetSender = packetSender;
+        phaseShift = src.getPhaseShift();
+        distSq = dist * dist;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public MessageDistDelivererToHostile(Unit src, T packetSender, float dist, GridType gridType)
-	{
-		source = src;
-		packetSender = packetSender;
-		phaseShift = src.getPhaseShift();
-		distSq = dist * dist;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<Creature> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var creature = objs.get(i);
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-			if (!creature.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<Creature> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var creature = objs.get(i);
 
-			if (creature.getLocation().getExactDist2DSq(source.getLocation()) > distSq)
-			{
-				continue;
-			}
+            if (!creature.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-			// Send packet to all who are sharing the creature's vision
-			if (creature.getHasSharedVision())
-			{
-				for (var player : creature.getSharedVisionList())
-				{
-					if (player.getSeerView() == creature)
-					{
-						sendPacket(player);
-					}
-				}
-			}
-		}
-	}
+            if (creature.getLocation().getExactDist2DSq(source.getLocation()) > distSq) {
+                continue;
+            }
 
-	public final void visit(list<DynamicObject> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var dynamicObject = objs.get(i);
+            // Send packet to all who are sharing the creature's vision
+            if (creature.getHasSharedVision()) {
+                for (var player : creature.getSharedVisionList()) {
+                    if (player.getSeerView() == creature) {
+                        sendPacket(player);
+                    }
+                }
+            }
+        }
+    }
 
-			if (!dynamicObject.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<DynamicObject> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var dynamicObject = objs.get(i);
 
-			if (dynamicObject.getLocation().getExactDist2DSq(source.getLocation()) > distSq)
-			{
-				continue;
-			}
+            if (!dynamicObject.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-			var caster = dynamicObject.getCaster();
+            if (dynamicObject.getLocation().getExactDist2DSq(source.getLocation()) > distSq) {
+                continue;
+            }
 
-			if (caster != null)
-			{
-				// Send packet back to the caster if the caster has vision of dynamic object
-				var player = caster.toPlayer();
+            var caster = dynamicObject.getCaster();
 
-				if (player && player.getSeerView() == dynamicObject)
-				{
-					sendPacket(player);
-				}
-			}
-		}
-	}
+            if (caster != null) {
+                // Send packet back to the caster if the caster has vision of dynamic object
+                var player = caster.toPlayer();
 
-	public final void visit(list<Player> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var player = objs.get(i);
+                if (player && player.getSeerView() == dynamicObject) {
+                    sendPacket(player);
+                }
+            }
+        }
+    }
 
-			if (!player.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<Player> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var player = objs.get(i);
 
-			if (player.getLocation().getExactDist2DSq(source.getLocation()) > distSq)
-			{
-				continue;
-			}
+            if (!player.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-			// Send packet to all who are sharing the player's vision
-			if (player.getHasSharedVision())
-			{
-				for (var visionPlayer : player.getSharedVisionList())
-				{
-					if (visionPlayer.getSeerView() == player)
-					{
-						sendPacket(visionPlayer);
-					}
-				}
-			}
+            if (player.getLocation().getExactDist2DSq(source.getLocation()) > distSq) {
+                continue;
+            }
 
-			if (player.getSeerView() == player || player.getVehicle1())
-			{
-				sendPacket(player);
-			}
-		}
-	}
+            // Send packet to all who are sharing the player's vision
+            if (player.getHasSharedVision()) {
+                for (var visionPlayer : player.getSharedVisionList()) {
+                    if (visionPlayer.getSeerView() == player) {
+                        sendPacket(visionPlayer);
+                    }
+                }
+            }
 
-	private void sendPacket(Player player)
-	{
-		// never send packet to self
-		if (player == source || !player.haveAtClient(source) || player.isFriendlyTo(source))
-		{
-			return;
-		}
+            if (player.getSeerView() == player || player.getVehicle1()) {
+                sendPacket(player);
+            }
+        }
+    }
 
-		packetSender.invoke(player);
-	}
+    private void sendPacket(Player player) {
+        // never send packet to self
+        if (player == source || !player.haveAtClient(source) || player.isFriendlyTo(source)) {
+            return;
+        }
+
+        packetSender.invoke(player);
+    }
+
+
 }

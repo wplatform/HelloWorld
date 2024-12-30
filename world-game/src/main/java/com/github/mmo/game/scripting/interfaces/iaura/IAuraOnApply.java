@@ -1,7 +1,7 @@
 package com.github.mmo.game.scripting.interfaces.iaura;
 
-import com.github.mmo.game.scripting.interfaces.*;
-public interface IAuraOnApply extends IAuraScript
-{
-	void AuraApply();
+import com.github.mmo.game.scripting.interfaces.IAuraScript;
+
+public interface IAuraOnApply extends IAuraScript {
+    void AuraApply();
 }

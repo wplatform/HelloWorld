@@ -2,9 +2,11 @@ package com.github.mmo.game.networking.packet.party;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.spell.AuraFlags;
 import game.*;
-import com.github.mmo.game.networking.*;class PartyMemberFullState extends ServerPacket {
+
+class PartyMemberFullState extends ServerPacket {
     public boolean forEnemy;
     public ObjectGuid memberGuid = ObjectGuid.EMPTY;
     public PartymemberStats memberStats = new partyMemberStats();
@@ -101,7 +103,7 @@ import com.github.mmo.game.networking.*;class PartyMemberFullState extends Serve
             aura.activeFlags = aurApp.getEffectMask().ToUMask();
             aura.flags = (byte) aurApp.getFlags().getValue();
 
-            if (aurApp.getFlags().HasAnyFlag(AuraFlags.SCALABLE)) {
+            if (aurApp.getFlags().hasFlag(AuraFlags.SCALABLE)) {
                 for (var aurEff : aurApp.getBase().getAuraEffects().entrySet()) {
                     if (aurApp.hasEffect(aurEff.getValue().effIndex)) {
                         aura.points.add((float) aurEff.getValue().amount);
@@ -135,7 +137,7 @@ import com.github.mmo.game.networking.*;class PartyMemberFullState extends Serve
                 aura.activeFlags = aurApp.getEffectMask().ToUMask();
                 aura.flags = (byte) aurApp.getFlags().getValue();
 
-                if (aurApp.getFlags().HasAnyFlag(AuraFlags.SCALABLE)) {
+                if (aurApp.getFlags().hasFlag(AuraFlags.SCALABLE)) {
                     for (var aurEff : aurApp.getBase().getAuraEffects().entrySet()) {
                         if (aurApp.hasEffect(aurEff.getValue().effIndex)) {
                             aura.points.add((float) aurEff.getValue().amount);

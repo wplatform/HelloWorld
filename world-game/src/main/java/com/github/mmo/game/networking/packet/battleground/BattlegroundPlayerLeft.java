@@ -1,16 +1,16 @@
 package com.github.mmo.game.networking.packet.battleground;
-import com.github.mmo.game.networking.ServerPacket;
-public class BattlegroundPlayerLeft extends ServerPacket
-{
-	public ObjectGuid guid = ObjectGuid.EMPTY;
-	public BattlegroundPlayerLeft()
-	{
-		super(ServerOpcode.BattlegroundPlayerLeft, ConnectionType.instance);
-	}
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(guid);
-	}
+import com.github.mmo.game.networking.ServerPacket;
+
+public class BattlegroundPlayerLeft extends ServerPacket {
+    public ObjectGuid guid = ObjectGuid.EMPTY;
+
+    public BattlegroundPlayerLeft() {
+        super(ServerOpcode.BattlegroundPlayerLeft, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(guid);
+    }
 }

@@ -4,7 +4,9 @@ package com.github.mmo.game.map.grid;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.map.Map;
 import com.github.mmo.game.map.MapDefine;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 import java.util.Set;
@@ -14,26 +16,11 @@ import java.util.function.Consumer;
 public class Cell {
 
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Area {
-        private Coordinate lowBound;
-        private Coordinate highBound;
-
-
-        public boolean isSingleCellArea() {
-            return lowBound.equals(highBound);
-        }
-
-    }
-
     public final int gridX;
     public final int gridY;
     public final int cellX;
     public final int cellY;
     public boolean noCreate;
-
     public Cell(Coordinate p) {
         gridX = p.axisX() / MapDefine.MAX_NUMBER_OF_CELLS;
         gridY = p.axisY() / MapDefine.MAX_NUMBER_OF_CELLS;
@@ -49,13 +36,40 @@ public class Cell {
         cellY = p.axisY() % MapDefine.MAX_NUMBER_OF_CELLS;
     }
 
-
     public Cell(Cell cell) {
         gridX = cell.gridX;
         gridY = cell.gridY;
         cellX = cell.cellX;
         cellY = cell.cellY;
         noCreate = cell.noCreate;
+    }
+
+    public static Area CalculateCellArea(float x, float y, float radius) {
+        if (radius <= 0.0f) {
+            Coordinate center = MapDefine.computeCellCoordinate(x, y).normalize();
+            return new Area(center, center);
+        }
+
+        Coordinate centerX = MapDefine.computeCellCoordinate(x - radius, y - radius).normalize();
+        Coordinate centerY = MapDefine.computeCellCoordinate(x + radius, y + radius).normalize();
+        return new Area(centerX, centerY);
+    }
+
+    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius) {
+        visitGrid(options, center, consumer, radius, true);
+    }
+
+    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius, boolean dontLoad) {
+
+        GridVisitor visitor = new GridVisitor(options, consumer);
+        var p = MapDefine.computeCellCoordinate(center.getLocation().getX(), center.getLocation().getY());
+        Cell cell = new Cell(p);
+
+        if (dontLoad) {
+            cell.setNoCreate();
+        }
+
+        cell.visit(p, visitor, center.getMap(), center, radius);
     }
 
     public final boolean isCellValid() {
@@ -70,12 +84,10 @@ public class Cell {
         noCreate = true;
     }
 
-
     public Coordinate getCellCoordinate() {
         return Coordinate.createCellCoordinate(gridX * MapDefine.MAX_NUMBER_OF_CELLS + cellX,
                 gridY * MapDefine.MAX_NUMBER_OF_CELLS + cellY);
     }
-
 
     public boolean diffCell(Cell cell) {
         return (cellX != cell.cellX ||
@@ -85,18 +97,6 @@ public class Cell {
     public boolean diffGrid(Cell cell) {
         return (gridX != cell.gridX ||
                 gridY != cell.gridY);
-    }
-
-
-    public static Area CalculateCellArea(float x, float y, float radius) {
-        if (radius <= 0.0f) {
-            Coordinate center = MapDefine.computeCellCoordinate(x, y).normalize();
-            return new Area(center, center);
-        }
-
-        Coordinate centerX = MapDefine.computeCellCoordinate(x - radius, y - radius).normalize();
-        Coordinate centerY = MapDefine.computeCellCoordinate(x + radius, y + radius).normalize();
-        return new Area(centerX, centerY);
     }
 
     public final void visit(Coordinate standing_cell, GridVisitor visitor, Map map, WorldObject object, float radius) {
@@ -209,7 +209,6 @@ public class Cell {
         cell.visit(coordinate, visitor, center.getMap(), center, radius);
     }
 
-
     public final void visit(float x, float y, Map map, GridVisitor visitor, float radius, boolean dontLoad) {
         Coordinate coordinate = MapDefine.computeCellCoordinate(x, y);
         Cell cell = new Cell(coordinate);
@@ -218,22 +217,18 @@ public class Cell {
         cell.visit(coordinate, visitor, map, x, y, radius);
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Area {
+        private Coordinate lowBound;
+        private Coordinate highBound;
 
-    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius) {
-        visitGrid(options, center, consumer, radius, true);
-    }
 
-    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius, boolean dontLoad) {
-
-        GridVisitor visitor = new GridVisitor(options, consumer);
-        var p = MapDefine.computeCellCoordinate(center.getLocation().getX(), center.getLocation().getY());
-        Cell cell = new Cell(p);
-
-        if (dontLoad) {
-            cell.setNoCreate();
+        public boolean isSingleCellArea() {
+            return lowBound.equals(highBound);
         }
 
-        cell.visit(p, visitor, center.getMap(), center, radius);
     }
 
 }

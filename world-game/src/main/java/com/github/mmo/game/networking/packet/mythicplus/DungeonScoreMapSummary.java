@@ -1,34 +1,32 @@
 package com.github.mmo.game.networking.packet.mythicplus;
 
-import com.github.mmo.game.networking.*;
-public final class DungeonScoreMapSummary
-{
-	public int challengeModeID;
-	public float mapScore;
-	public int bestRunLevel;
-	public int bestRunDurationMS;
-	public boolean finishedSuccess;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(challengeModeID);
-		data.writeFloat(mapScore);
-		data.writeInt32(bestRunLevel);
-		data.writeInt32(bestRunDurationMS);
-		data.writeBit(finishedSuccess);
-		data.flushBits();
-	}
+public final class DungeonScoreMapSummary {
+    public int challengeModeID;
+    public float mapScore;
+    public int bestRunLevel;
+    public int bestRunDurationMS;
+    public boolean finishedSuccess;
 
-	public DungeonScoreMapSummary clone()
-	{
-		DungeonScoreMapSummary varCopy = new DungeonScoreMapSummary();
+    public void write(WorldPacket data) {
+        data.writeInt32(challengeModeID);
+        data.writeFloat(mapScore);
+        data.writeInt32(bestRunLevel);
+        data.writeInt32(bestRunDurationMS);
+        data.writeBit(finishedSuccess);
+        data.flushBits();
+    }
 
-		varCopy.challengeModeID = this.challengeModeID;
-		varCopy.mapScore = this.mapScore;
-		varCopy.bestRunLevel = this.bestRunLevel;
-		varCopy.bestRunDurationMS = this.bestRunDurationMS;
-		varCopy.finishedSuccess = this.finishedSuccess;
+    public DungeonScoreMapSummary clone() {
+        DungeonScoreMapSummary varCopy = new DungeonScoreMapSummary();
 
-		return varCopy;
-	}
+        varCopy.challengeModeID = this.challengeModeID;
+        varCopy.mapScore = this.mapScore;
+        varCopy.bestRunLevel = this.bestRunLevel;
+        varCopy.bestRunDurationMS = this.bestRunDurationMS;
+        varCopy.finishedSuccess = this.finishedSuccess;
+
+        return varCopy;
+    }
 }

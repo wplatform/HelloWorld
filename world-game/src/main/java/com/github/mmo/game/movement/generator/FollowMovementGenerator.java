@@ -33,7 +33,7 @@ public class FollowMovementGenerator extends MovementGenerator {
         return positionOkay(owner, target, range, null);
     }
 
-        private static boolean positionOkay(Unit owner, Unit target, float range, ChaseAngle angle) {
+    private static boolean positionOkay(Unit owner, Unit target, float range, ChaseAngle angle) {
         if (owner.getLocation().getExactDistSq(target.getLocation()) > (owner.getCombatReach() + target.getCombatReach() + range) * (owner.getCombatReach() + target.getCombatReach() + range)) {
             return false;
         }

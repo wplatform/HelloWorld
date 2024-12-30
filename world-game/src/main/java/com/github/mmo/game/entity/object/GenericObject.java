@@ -49,45 +49,31 @@ import static com.github.mmo.game.entity.object.update.UpdateFieldFlags.*;
 public abstract class GenericObject {
 
 
-    private static final int DYNAMIC_FIELD_UNCHANGED = 0;
-    private static final int DYNAMIC_FIELD_VALUE_CHANGED = 0x7FFF;
-    private static final int DYNAMIC_FIELD_VALUE_AND_SIZE_CHANGED = 0x8000;
-
     protected static final byte FIELD_BYTE_OFFSET_0 = 0;
     protected static final byte FIELD_BYTE_OFFSET_1 = 1;
     protected static final byte FIELD_BYTE_OFFSET_2 = 2;
     protected static final byte FIELD_BYTE_OFFSET_3 = 3;
     protected static final byte FIELD_SHORT_OFFSET_0 = 0;
     protected static final byte FIELD_SHORT_OFFSET_1 = 1;
-
-
-    private boolean inWorld;
-    private boolean newObject;
-    private boolean destroyedObject;
-
+    private static final int DYNAMIC_FIELD_UNCHANGED = 0;
+    private static final int DYNAMIC_FIELD_VALUE_CHANGED = 0x7FFF;
+    private static final int DYNAMIC_FIELD_VALUE_AND_SIZE_CHANGED = 0x8000;
     private final short objectType;
     private final TypeId typeId;
     private final int updateFlag;
-
-
     private final int[] int32Values;
-
-
     private final IntArray[] dynamicValues;
-
-
-    protected UpdateMask changesMask;
-    protected int[] dynamicChangesMask;
-    private ByteArray[] dynamicChangesArrayMask;
-
-
     private final short valuesCount;
     private final short dynamicValuesCount;
-
-    private int fieldNotifyFlags;
-    boolean objectUpdated;
-
+    protected UpdateMask changesMask;
+    protected int[] dynamicChangesMask;
     protected MovementInfo movementInfo;
+    boolean objectUpdated;
+    private boolean inWorld;
+    private boolean newObject;
+    private boolean destroyedObject;
+    private ByteArray[] dynamicChangesArrayMask;
+    private int fieldNotifyFlags;
 
 
     protected GenericObject(ObjectGuid guid, short valuesCount, short dynamicValuesCount, EnumFlag<TypeMask> objectType, TypeId typeId, EnumFlag<ObjectUpdateFlag> updateFlag) {
@@ -117,6 +103,12 @@ public abstract class GenericObject {
         destroyedObject = false;
         objectUpdated = false;
 
+    }
+
+    private static float applyPercentModFloatVar(float var, float val, boolean apply) {
+        if (val == -100.0f)     // prevent set var to zero
+            val = -99.99f;
+        return var * (apply ? (100.0f + val) / 100.0f : 100.0f / (100.0f + val));
     }
 
     protected abstract void addToWorld();
@@ -163,11 +155,9 @@ public abstract class GenericObject {
         setInt32Value(OBJECT_DYNAMIC_FLAGS, flag);
     }
 
-
     protected final boolean isType(TypeMask mask) {
         return (mask.value & objectType) != 0;
     }
-
 
     protected void buildCreateUpdateBlockForPlayer(UpdateData data, Player target) {
         if (target == null) return;
@@ -251,7 +241,6 @@ public abstract class GenericObject {
 
     }
 
-
     public final void sendUpdateToPlayer(Player player) {
         // send create update to player
         UpdateData upd = new UpdateData(player.getLocation().getMapId());
@@ -279,7 +268,6 @@ public abstract class GenericObject {
         data.addUpdateBlock(buffer);
     }
 
-
     void buildValuesUpdate(ObjectUpdateType updateType, WorldPacket data, Player target) {
         if (target == null) return;
 
@@ -298,7 +286,6 @@ public abstract class GenericObject {
 
     }
 
-
     private int[] getUpdateFieldFlagsFor(Player target) {
         return switch (typeId) {
             case ITEM, CONTAINER -> ITEM_UPDATE_FIELD_FLAGS;
@@ -312,7 +299,6 @@ public abstract class GenericObject {
             default -> throw new IllegalStateException("Unexpected value: " + typeId);
         };
     }
-
 
     private int getUpdateVisibleFlagFor(Player target) {
         int visibleFlag = UF_FLAG_PUBLIC;
@@ -351,7 +337,6 @@ public abstract class GenericObject {
         return visibleFlag;
     }
 
-
     int[] getDynamicUpdateFieldFlagsFor(Player target) {
         return switch (typeId) {
             case ITEM, CONTAINER -> ITEM_DYNAMIC_UPDATE_FIELD_FLAGS;
@@ -361,7 +346,6 @@ public abstract class GenericObject {
             default -> null;
         };
     }
-
 
     int getDynamicUpdateVisibleFlagFor(Player target) {
 
@@ -399,7 +383,6 @@ public abstract class GenericObject {
         return visibleFlag;
     }
 
-
     void buildDynamicValuesUpdate(ObjectUpdateType updateType, WorldPacket buffer, Player target) {
         if (target == null) return;
 
@@ -434,7 +417,6 @@ public abstract class GenericObject {
         buffer.writeBytes(fieldBuffer);
 
     }
-
 
     public final void buildDestroyUpdateBlock(UpdateData data) {
         data.addDestroyObject(getGUID());
@@ -826,9 +808,7 @@ public abstract class GenericObject {
         }
     }
 
-
     abstract void addToObjectUpdate();
-
 
     private void addToObjectUpdateIfNeeded() {
         if (inWorld && !objectUpdated) {
@@ -836,7 +816,6 @@ public abstract class GenericObject {
             objectUpdated = true;
         }
     }
-
 
     protected final void setInt32Value(int index, int value) {
         checkIndex(index, true);
@@ -847,7 +826,6 @@ public abstract class GenericObject {
             addToObjectUpdateIfNeeded();
         }
     }
-
 
     protected final void updateInt32Value(int index, int value) {
         checkIndex(index, true);
@@ -991,13 +969,6 @@ public abstract class GenericObject {
         cur += (apply ? val : -val);
         setFloatValue(index, cur);
     }
-
-    private static float applyPercentModFloatVar(float var, float val, boolean apply) {
-        if (val == -100.0f)     // prevent set var to zero
-            val = -99.99f;
-        return var * (apply ? (100.0f + val) / 100.0f : 100.0f / (100.0f + val));
-    }
-
 
     protected final void applyModPositiveFloatValue(int index, float val, boolean apply) {
         float cur = getFloatValue(index);
@@ -1355,7 +1326,6 @@ public abstract class GenericObject {
     public final boolean isItem() {
         return typeId == TypeId.ITEM;
     }
-
 
 
     private void checkIndex(int index, boolean set) {

@@ -1,23 +1,22 @@
-package com.github.mmo.game.account;public enum AccountOpResult
-{
-	Ok,
-	NameTooLong,
-	PassTooLong,
-	EmailTooLong,
-	NameAlreadyExist,
-	NameNotExist,
-	DBInternalError,
-	BadLink;
+package com.github.mmo.game.account;
 
-	public static final int SIZE = Integer.SIZE;
+public enum AccountOpResult {
+    Ok,
+    NameTooLong,
+    PassTooLong,
+    EmailTooLong,
+    NameAlreadyExist,
+    NameNotExist,
+    DBInternalError,
+    BadLink;
 
-	public int getValue()
-	{
-		return this.ordinal();
-	}
+    public static final int SIZE = Integer.SIZE;
 
-	public static AccountOpResult forValue(int value)
-	{
-		return values()[value];
-	}
+    public static AccountOpResult forValue(int value) {
+        return values()[value];
+    }
+
+    public int getValue() {
+        return this.ordinal();
+    }
 }

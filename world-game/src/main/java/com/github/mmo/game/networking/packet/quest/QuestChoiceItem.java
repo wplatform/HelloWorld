@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.quest;
 
 
 import com.github.mmo.game.networking.WorldPacket;
+
 public final class QuestChoiceItem {
     public lootItemType lootItemType = Framework.Constants.lootItemType.values()[0];
     public itemInstance item;

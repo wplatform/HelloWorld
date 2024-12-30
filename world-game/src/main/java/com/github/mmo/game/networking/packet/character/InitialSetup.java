@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.character;
 
 
-import com.github.mmo.game.networking.*;public class InitialSetup extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class InitialSetup extends ServerPacket {
 
     public byte serverExpansionTier;
 

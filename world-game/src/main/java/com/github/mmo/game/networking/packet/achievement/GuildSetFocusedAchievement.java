@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.achievement;
 
-import com.github.mmo.game.networking.*;public class GuildSetFocusedAchievement extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class GuildSetFocusedAchievement extends ClientPacket {
 
     public int achievementID;
 

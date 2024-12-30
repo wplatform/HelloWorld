@@ -2,19 +2,20 @@ package com.github.mmo.game.chat;
 
 
 import com.github.mmo.game.WorldSafeLocsEntry;
-import game.*;
 import com.github.mmo.game.entity.gobject.transport;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.AllCreaturesOfEntryInRange;
-import com.github.mmo.game.map.grid.Cell;
 import com.github.mmo.game.map.CreatureSearcher;
+import com.github.mmo.game.map.grid.Cell;
 import com.github.mmo.game.networking.packet.CastFailed;
 import com.github.mmo.game.networking.packet.ChannelNotify;
 import com.github.mmo.game.networking.packet.ChatPkt;
 import com.github.mmo.game.networking.packet.moveUpdate;
 import com.github.mmo.game.scripting.interfaces.iitem.IItemOnExpire;
+import game.*;
 
 import java.util.Objects;
+
 class DebugCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleDebugAnimCommand(CommandHandler handler, Emote emote) {
@@ -137,7 +138,7 @@ class DebugCommands {
         return handleDebugEnterVehicleCommand(handler, entry, -1);
     }
 
-        private static boolean handleDebugEnterVehicleCommand(CommandHandler handler, int entry, byte seatId) {
+    private static boolean handleDebugEnterVehicleCommand(CommandHandler handler, int entry, byte seatId) {
         var target = handler.getSelectedUnit();
 
         if (!target || !target.isVehicle()) {
@@ -1346,7 +1347,7 @@ class DebugCommands {
             return handleDebugWarModeFactionBalanceCommand(handler, command, 0);
         }
 
-                private static boolean handleDebugWarModeFactionBalanceCommand(CommandHandler handler, String command, int rewardValue) {
+        private static boolean handleDebugWarModeFactionBalanceCommand(CommandHandler handler, String command, int rewardValue) {
             // USAGE: .debug pvp fb <alliance|horde|neutral|off> [pct]
             // neutral     Sets faction balance off.
             // alliance    Set faction balance to alliance.

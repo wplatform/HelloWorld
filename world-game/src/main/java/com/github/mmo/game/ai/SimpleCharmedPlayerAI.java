@@ -4,7 +4,10 @@ package com.github.mmo.game.ai;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
 
-import java.util.*;class SimpleCharmedPlayerAI extends PlayerAI {
+import java.util.ArrayList;
+import java.util.Objects;
+
+class SimpleCharmedPlayerAI extends PlayerAI {
     private static final float CASTER_CHASE_DISTANCE = 28.0f;
 
 

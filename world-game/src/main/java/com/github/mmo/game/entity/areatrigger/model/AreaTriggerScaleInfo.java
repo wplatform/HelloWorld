@@ -1,91 +1,82 @@
 package com.github.mmo.game.entity.areatrigger.model;
 
 
-
-/** 6 bool is_override, only valid for AREATRIGGER_OVERRIDE_SCALE_CURVE, if true then use data from AREATRIGGER_OVERRIDE_SCALE_CURVE instead of ScaleCurveId from CreateObject
-*/
+/**
+ * 6 bool is_override, only valid for AREATRIGGER_OVERRIDE_SCALE_CURVE, if true then use data from AREATRIGGER_OVERRIDE_SCALE_CURVE instead of ScaleCurveId from CreateObject
+ */
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-public class AreaTriggerScaleInfo
-{
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	public StructuredData structured = new StructuredData();
+public class AreaTriggerScaleInfo {
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    public StructuredData structured = new StructuredData();
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	public RawData raw = new rawData();
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    public RawData raw = new rawData();
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-	public final static class StructuredData
-	{
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public int startTimeOffset;
+    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    public final static class StructuredData {
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public int startTimeOffset;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public float X;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public float X;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public float Y;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public float Y;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public float Z;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public float Z;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public float W;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public float W;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public int curveParameters;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public int curveParameters;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-		public int overrideActive;
+        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        public int overrideActive;
 
-		public final static class curveparameters
-		{
-			public int raw;
+        public StructuredData clone() {
+            StructuredData varCopy = new structuredData();
 
-			public int getNoData()
-			{
-				return raw & 1;
-			}
+            varCopy.startTimeOffset = this.startTimeOffset;
+            varCopy.X = this.X;
+            varCopy.Y = this.Y;
+            varCopy.Z = this.Z;
+            varCopy.W = this.W;
+            varCopy.curveParameters = this.curveParameters;
+            varCopy.overrideActive = this.overrideActive;
 
-			public int getInterpolationMode()
-			{
-				return (raw & 0x7) << 1;
-			}
+            return varCopy;
+        }
 
-			public int getFirstPointOffset()
-			{
-				return (raw & 0x7FFFFF) << 4;
-			}
+        public final static class curveparameters {
+            public int raw;
 
-			public int getPointCount()
-			{
-				return (raw & 0x1F) << 27;
-			}
+            public int getNoData() {
+                return raw & 1;
+            }
 
-			public curveparameters clone()
-			{
-				curveparameters varCopy = new curveparameters();
+            public int getInterpolationMode() {
+                return (raw & 0x7) << 1;
+            }
 
-				varCopy.raw = this.raw;
+            public int getFirstPointOffset() {
+                return (raw & 0x7FFFFF) << 4;
+            }
 
-				return varCopy;
-			}
-		}
+            public int getPointCount() {
+                return (raw & 0x1F) << 27;
+            }
 
-		public StructuredData clone()
-		{
-			StructuredData varCopy = new structuredData();
+            public curveparameters clone() {
+                curveparameters varCopy = new curveparameters();
 
-			varCopy.startTimeOffset = this.startTimeOffset;
-			varCopy.X = this.X;
-			varCopy.Y = this.Y;
-			varCopy.Z = this.Z;
-			varCopy.W = this.W;
-			varCopy.curveParameters = this.curveParameters;
-			varCopy.overrideActive = this.overrideActive;
+                varCopy.raw = this.raw;
 
-			return varCopy;
-		}
-	}
+                return varCopy;
+            }
+        }
+    }
 
 // C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
 //	public unsafe struct RawData

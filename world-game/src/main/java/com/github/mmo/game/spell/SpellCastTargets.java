@@ -22,23 +22,75 @@ import java.util.Objects;
 
 public class SpellCastTargets {
     private final String strTarget;
-
+    @Getter
+    private final EnumFlag<SpellCastTargetFlag> targetMask = EnumFlag.of(SpellCastTargetFlag.NONE);
     // objects (can be used at spell creating and after Update at casting)
     private WorldObject objectTarget;
     private Item itemTarget;
-
     // object GUID/etc, can be used always
     private ObjectGuid objectTargetGuid = ObjectGuid.EMPTY;
     private ObjectGuid itemTargetGuid = ObjectGuid.EMPTY;
-        private int itemTargetEntry;
-
+    private int itemTargetEntry;
     private SpellDestination src;
     private SpellDestination dst;
+    private float pitch;
+    private float speed;
 
+    public SpellCastTargets() {
+        strTarget = "";
 
-    @Getter
-    private final EnumFlag<SpellCastTargetFlag> targetMask = EnumFlag.of(SpellCastTargetFlag.NONE);
+        src = new SpellDestination();
+        dst = new SpellDestination();
+    }
 
+    public SpellCastTargets(Unit caster, SpellCastRequest spellCastRequest) {
+        targetMask.setFlags(spellCastRequest.target.flags);
+        objectTargetGuid = spellCastRequest.target.unit;
+        itemTargetGuid = spellCastRequest.target.item;
+        strTarget = spellCastRequest.target.name;
+
+        src = new SpellDestination();
+        dst = new SpellDestination();
+
+        if (spellCastRequest.target.srcLocation != null) {
+            src.transportGuid = spellCastRequest.target.srcLocation.transport;
+            Position pos;
+
+            if (!src.transportGuid.isEmpty()) {
+                pos = src.transportOffset;
+            } else {
+                pos = src.position;
+            }
+
+            pos.relocate(spellCastRequest.target.srcLocation.location);
+
+            if (spellCastRequest.target.orientation != null) {
+                pos.setO(spellCastRequest.target.orientation);
+            }
+        }
+
+        if (spellCastRequest.target.dstLocation != null) {
+            dst.transportGuid = spellCastRequest.target.dstLocation.transport;
+            Position pos;
+
+            if (!dst.transportGuid.isEmpty()) {
+                pos = dst.transportOffset;
+            } else {
+                pos = dst.position;
+            }
+
+            pos.relocate(spellCastRequest.target.dstLocation.location);
+
+            if (spellCastRequest.target.orientation != null) {
+                pos.setO(spellCastRequest.target.orientation);
+            }
+        }
+
+        setPitch(spellCastRequest.missileTrajectory.pitch);
+        setSpeed(spellCastRequest.missileTrajectory.speed);
+
+        update(caster);
+    }
 
     public final ObjectGuid getItemTargetGuid() {
         return itemTargetGuid;
@@ -59,7 +111,7 @@ public class SpellCastTargets {
         targetMask.addFlag(SpellCastTargetFlag.ITEM);
     }
 
-        public final int getItemTargetEntry() {
+    public final int getItemTargetEntry() {
         return itemTargetEntry;
     }
 
@@ -75,8 +127,6 @@ public class SpellCastTargets {
         return getSpeed() != 0;
     }
 
-    private float pitch;
-
     public final float getPitch() {
         return pitch;
     }
@@ -84,8 +134,6 @@ public class SpellCastTargets {
     public final void setPitch(float value) {
         pitch = value;
     }
-
-    private float speed;
 
     public final float getSpeed() {
         return speed;
@@ -183,6 +231,16 @@ public class SpellCastTargets {
         return src;
     }
 
+    public final void setSrc(WorldObject wObj) {
+        src = new SpellDestination(wObj);
+        targetMask.addFlag(SpellCastTargetFlag.SOURCE_LOCATION);
+    }
+
+    private void setSrc(Position pos) {
+        src = new SpellDestination(pos);
+        targetMask.addFlag(SpellCastTargetFlag.SOURCE_LOCATION);
+    }
+
     public final Position getSrcPos() {
         return src.position;
     }
@@ -196,6 +254,21 @@ public class SpellCastTargets {
         targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
     }
 
+    public final void setDst(Position pos) {
+        dst = new SpellDestination(pos);
+        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
+    }
+
+    public final void setDst(WorldObject wObj) {
+        dst = new SpellDestination(wObj);
+        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
+    }
+
+    public final void setDst(SpellCastTargets spellTargets) {
+        dst = spellTargets.dst;
+        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
+    }
+
     public final WorldLocation getDstPos() {
         return dst.position;
     }
@@ -206,62 +279,6 @@ public class SpellCastTargets {
         }
 
         return ObjectGuid.EMPTY;
-    }
-
-    public SpellCastTargets() {
-        strTarget = "";
-
-        src = new SpellDestination();
-        dst = new SpellDestination();
-    }
-
-    public SpellCastTargets(Unit caster, SpellCastRequest spellCastRequest) {
-        targetMask.setFlags(spellCastRequest.target.flags);
-        objectTargetGuid = spellCastRequest.target.unit;
-        itemTargetGuid = spellCastRequest.target.item;
-        strTarget = spellCastRequest.target.name;
-
-        src = new SpellDestination();
-        dst = new SpellDestination();
-
-        if (spellCastRequest.target.srcLocation != null) {
-            src.transportGuid = spellCastRequest.target.srcLocation.transport;
-            Position pos;
-
-            if (!src.transportGuid.isEmpty()) {
-                pos = src.transportOffset;
-            } else {
-                pos = src.position;
-            }
-
-            pos.relocate(spellCastRequest.target.srcLocation.location);
-
-            if (spellCastRequest.target.orientation != null) {
-                pos.setO(spellCastRequest.target.orientation);
-            }
-        }
-
-        if (spellCastRequest.target.dstLocation != null) {
-            dst.transportGuid = spellCastRequest.target.dstLocation.transport;
-            Position pos;
-
-            if (!dst.transportGuid.isEmpty()) {
-                pos = dst.transportOffset;
-            } else {
-                pos = dst.position;
-            }
-
-            pos.relocate(spellCastRequest.target.dstLocation.location);
-
-            if (spellCastRequest.target.orientation != null) {
-                pos.setO(spellCastRequest.target.orientation);
-            }
-        }
-
-        setPitch(spellCastRequest.missileTrajectory.pitch);
-        setSpeed(spellCastRequest.missileTrajectory.speed);
-
-        update(caster);
     }
 
     public final void write(SpellTargetData data) {
@@ -327,11 +344,6 @@ public class SpellCastTargets {
         }
     }
 
-    public final void setSrc(WorldObject wObj) {
-        src = new SpellDestination(wObj);
-        targetMask.addFlag(SpellCastTargetFlag.SOURCE_LOCATION);
-    }
-
     public final void modSrc(Position pos) {
         src.relocate(pos);
     }
@@ -340,28 +352,12 @@ public class SpellCastTargets {
         targetMask.removeFlag(SpellCastTargetFlag.SOURCE_LOCATION);
     }
 
-
     public final void setDst(float x, float y, float z, float orientation) {
         setDst(x, y, z, orientation, 0xFFFFFFFF);
     }
 
-        public final void setDst(float x, float y, float z, float orientation, int mapId) {
+    public final void setDst(float x, float y, float z, float orientation, int mapId) {
         dst = new SpellDestination(x, y, z, orientation, mapId);
-        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
-    }
-
-    public final void setDst(Position pos) {
-        dst = new SpellDestination(pos);
-        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
-    }
-
-    public final void setDst(WorldObject wObj) {
-        dst = new SpellDestination(wObj);
-        targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
-    }
-
-    public final void setDst(SpellCastTargets spellTargets) {
-        dst = spellTargets.dst;
         targetMask.addFlag(SpellCastTargetFlag.DEST_LOCATION);
     }
 
@@ -429,11 +425,6 @@ public class SpellCastTargets {
 
     private void setSrc(float x, float y, float z) {
         src = new SpellDestination(x, y, z);
-        targetMask.addFlag(SpellCastTargetFlag.SOURCE_LOCATION);
-    }
-
-    private void setSrc(Position pos) {
-        src = new SpellDestination(pos);
         targetMask.addFlag(SpellCastTargetFlag.SOURCE_LOCATION);
     }
 }

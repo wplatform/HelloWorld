@@ -1,7 +1,9 @@
 package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class Research {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class Research {
     public short researchProjectID;
 
     public final void writeCreate(WorldPacket data, Player owner, Player receiver) {

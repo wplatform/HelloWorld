@@ -1,24 +1,23 @@
 package com.github.mmo.game.networking.packet.petition;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class PetitionRenameGuild extends ClientPacket
-{
-	public ObjectGuid petitionGuid = ObjectGuid.EMPTY;
-	public String newGuildName;
-	public PetitionRenameGuild(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class PetitionRenameGuild extends ClientPacket {
+    public ObjectGuid petitionGuid = ObjectGuid.EMPTY;
+    public String newGuildName;
 
-	@Override
-	public void read()
-	{
-		petitionGuid = this.readPackedGuid();
+    public PetitionRenameGuild(WorldPacket packet) {
+        super(packet);
+    }
 
-		this.resetBitPos();
-		var nameLen = this.<Integer>readBit(7);
+    @Override
+    public void read() {
+        petitionGuid = this.readPackedGuid();
 
-		newGuildName = this.readString(nameLen);
-	}
+        this.resetBitPos();
+        var nameLen = this.<Integer>readBit(7);
+
+        newGuildName = this.readString(nameLen);
+    }
 }

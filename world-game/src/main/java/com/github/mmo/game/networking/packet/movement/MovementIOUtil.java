@@ -7,12 +7,10 @@ import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.unit.enums.MovementFlag;
 import com.github.mmo.game.entity.unit.enums.MovementFlag2;
 import com.github.mmo.game.movement.Spline;
-import com.github.mmo.game.movement.spline.MoveSpline;
 import com.github.mmo.game.movement.model.MovementForce;
-
 import com.github.mmo.game.movement.model.MovementInfo;
 import com.github.mmo.game.movement.model.TransportInfo;
-import com.github.mmo.game.movement.spline;
+import com.github.mmo.game.movement.spline.MoveSpline;
 import com.github.mmo.game.networking.WorldPacket;
 
 public final class MovementIOUtil {
@@ -283,7 +281,7 @@ public final class MovementIOUtil {
         writeMovementForceWithDirection(movementForce, data, null);
     }
 
-        public static void writeMovementForceWithDirection(MovementForce movementForce, WorldPacket data, Position objectPosition) {
+    public static void writeMovementForceWithDirection(MovementForce movementForce, WorldPacket data, Position objectPosition) {
         data.writeGuid(movementForce.getID());
         data.writeVector3(movementForce.getOrigin());
 

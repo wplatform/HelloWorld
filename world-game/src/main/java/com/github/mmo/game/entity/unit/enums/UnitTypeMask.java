@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter(onMethod = @__({@Override}))
 @RequiredArgsConstructor
-public enum  UnitTypeMask {
+public enum UnitTypeMask {
     NONE(0x00000000),
     SUMMON(0x00000001),
     MINION(0x00000002),

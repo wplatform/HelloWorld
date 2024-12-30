@@ -1,25 +1,22 @@
 package com.github.mmo.game.networking.packet.query;
 
-import com.github.mmo.game.networking.*;
-public class PlayerGuidLookupHint
-{
-	public integer virtualRealmAddress = new integer(); // current realm (?) (identifier made from the index, BattleGroup and Region)
-	public Integer nativeRealmAddress = new integer(); // original realm (?) (identifier made from the index, BattleGroup and Region)
+import com.github.mmo.game.networking.WorldPacket;
 
-	public final void write(WorldPacket data)
-	{
-		data.writeBit(virtualRealmAddress != null);
-		data.writeBit(nativeRealmAddress != null);
-		data.flushBits();
+public class PlayerGuidLookupHint {
+    public integer virtualRealmAddress = new integer(); // current realm (?) (identifier made from the index, BattleGroup and Region)
+    public Integer nativeRealmAddress = new integer(); // original realm (?) (identifier made from the index, BattleGroup and Region)
 
-		if (virtualRealmAddress != null)
-		{
-			data.writeInt32(virtualRealmAddress.intValue());
-		}
+    public final void write(WorldPacket data) {
+        data.writeBit(virtualRealmAddress != null);
+        data.writeBit(nativeRealmAddress != null);
+        data.flushBits();
 
-		if (nativeRealmAddress != null)
-		{
-			data.writeInt32(nativeRealmAddress.intValue());
-		}
-	}
+        if (virtualRealmAddress != null) {
+            data.writeInt32(virtualRealmAddress.intValue());
+        }
+
+        if (nativeRealmAddress != null) {
+            data.writeInt32(nativeRealmAddress.intValue());
+        }
+    }
 }

@@ -1,20 +1,19 @@
 package com.github.mmo.game.networking.packet.trait;
 
-import com.github.mmo.game.networking.*;
-class ClassTalentsSetStarterBuildActive extends ClientPacket
-{
-	public int configID;
-	public boolean active;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public ClassTalentsSetStarterBuildActive(WorldPacket packet)
-	{
-		super(packet);
-	}
+class ClassTalentsSetStarterBuildActive extends ClientPacket {
+    public int configID;
+    public boolean active;
 
-	@Override
-	public void read()
-	{
-		configID = this.readInt32();
-		active = this.readBit();
-	}
+    public ClassTalentsSetStarterBuildActive(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        configID = this.readInt32();
+        active = this.readBit();
+    }
 }

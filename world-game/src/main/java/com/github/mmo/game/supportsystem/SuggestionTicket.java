@@ -1,8 +1,7 @@
 package com.github.mmo.game.supportsystem;
 
 
-
-import com.github.mmo.game.chat.*;
+import com.github.mmo.game.chat.CommandHandler;
 import com.github.mmo.game.entity.player.Player;
 
 public class SuggestionTicket extends Ticket {
@@ -84,7 +83,7 @@ public class SuggestionTicket extends Ticket {
         return formatViewMessageString(handler, false);
     }
 
-        @Override
+    @Override
     public String formatViewMessageString(CommandHandler handler, boolean detailed) {
         var curTime = (long) gameTime.GetGameTime();
 
@@ -108,15 +107,15 @@ public class SuggestionTicket extends Ticket {
         return ss.toString();
     }
 
-    public final void setNote(String note) {
-        note = note;
-    }
-
     public final void setFacing(float facing) {
         facing = facing;
     }
 
     private String getNote() {
         return note;
+    }
+
+    public final void setNote(String note) {
+        note = note;
     }
 }

@@ -1,9 +1,9 @@
 package com.github.mmo.game.chat;
 
 
-import game.ObjectManager;
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.entity.player.Player;
+import game.ObjectManager;
 
 class PlayerIdentifier {
     private String name;

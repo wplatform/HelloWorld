@@ -1,7 +1,8 @@
 package com.github.mmo.game.networking.packet.gameobject;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
+
 class GameObjectCustomAnim extends ServerPacket {
     public ObjectGuid objectGUID = ObjectGuid.EMPTY;
 

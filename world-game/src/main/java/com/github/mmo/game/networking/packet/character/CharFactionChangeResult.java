@@ -1,8 +1,8 @@
 package com.github.mmo.game.networking.packet.character;
 
 
-import com.github.mmo.game.entity.*;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.entity.ChrCustomizationChoice;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class CharFactionChangeResult extends ServerPacket {
     public ResponseCodes result = ResponseCodes.forValue(0);

@@ -1,44 +1,40 @@
 package com.github.mmo.game.networking.packet.addon;
 
-import com.github.mmo.game.networking.*;
-public final class AddOnInfo
-{
-	public String name;
-	public String version;
-	public boolean loaded;
-	public boolean disabled;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void read(WorldPacket data)
-	{
-		data.resetBitPos();
+public final class AddOnInfo {
+    public String name;
+    public String version;
+    public boolean loaded;
+    public boolean disabled;
 
-		var nameLength = data.<Integer>readBit(10);
-		var versionLength = data.<Integer>readBit(10);
-		loaded = data.readBit();
-		disabled = data.readBit();
+    public void read(WorldPacket data) {
+        data.resetBitPos();
 
-		if (nameLength > 1)
-		{
-			name = data.readString(nameLength - 1);
-			data.readUInt8(); // null terminator
-		}
+        var nameLength = data.<Integer>readBit(10);
+        var versionLength = data.<Integer>readBit(10);
+        loaded = data.readBit();
+        disabled = data.readBit();
 
-		if (versionLength > 1)
-		{
-			version = data.readString(versionLength - 1);
-			data.readUInt8(); // null terminator
-		}
-	}
+        if (nameLength > 1) {
+            name = data.readString(nameLength - 1);
+            data.readUInt8(); // null terminator
+        }
 
-	public AddOnInfo clone()
-	{
-		AddOnInfo varCopy = new AddOnInfo();
+        if (versionLength > 1) {
+            version = data.readString(versionLength - 1);
+            data.readUInt8(); // null terminator
+        }
+    }
 
-		varCopy.name = this.name;
-		varCopy.version = this.version;
-		varCopy.loaded = this.loaded;
-		varCopy.disabled = this.disabled;
+    public AddOnInfo clone() {
+        AddOnInfo varCopy = new AddOnInfo();
 
-		return varCopy;
-	}
+        varCopy.name = this.name;
+        varCopy.version = this.version;
+        varCopy.loaded = this.loaded;
+        varCopy.disabled = this.disabled;
+
+        return varCopy;
+    }
 }

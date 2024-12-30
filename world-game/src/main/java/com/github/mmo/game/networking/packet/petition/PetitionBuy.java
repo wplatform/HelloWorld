@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.petition;
 
-import com.github.mmo.game.networking.*;public class PetitionBuy extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class PetitionBuy extends ClientPacket {
     public ObjectGuid unit = ObjectGuid.EMPTY;
     public String title;
 

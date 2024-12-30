@@ -1,7 +1,6 @@
 package com.github.mmo.game.battleground.zones;
 
 
-
 final class WSGBroadcastTexts {
 
     public static final int startOneMinute = 10015;

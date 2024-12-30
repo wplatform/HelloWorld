@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.token;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;class CommerceTokenGetLogResponse extends ServerPacket {
+import java.util.ArrayList;
+
+class CommerceTokenGetLogResponse extends ServerPacket {
     private final ArrayList<AuctionableTokenInfo> auctionableTokenAuctionableList = new ArrayList<>();
 
     public int unkInt; // send CMSG_UPDATE_WOW_TOKEN_AUCTIONABLE_LIST

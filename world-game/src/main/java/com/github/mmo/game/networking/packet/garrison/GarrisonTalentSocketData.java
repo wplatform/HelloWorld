@@ -1,24 +1,22 @@
 package com.github.mmo.game.networking.packet.garrison;
 
-import com.github.mmo.game.networking.*;
-final class GarrisonTalentSocketData
-{
-	public int soulbindConduitID;
-	public int soulbindConduitRank;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(soulbindConduitID);
-		data.writeInt32(soulbindConduitRank);
-	}
+final class GarrisonTalentSocketData {
+    public int soulbindConduitID;
+    public int soulbindConduitRank;
 
-	public GarrisonTalentSocketData clone()
-	{
-		GarrisonTalentSocketData varCopy = new GarrisonTalentSocketData();
+    public void write(WorldPacket data) {
+        data.writeInt32(soulbindConduitID);
+        data.writeInt32(soulbindConduitRank);
+    }
 
-		varCopy.soulbindConduitID = this.soulbindConduitID;
-		varCopy.soulbindConduitRank = this.soulbindConduitRank;
+    public GarrisonTalentSocketData clone() {
+        GarrisonTalentSocketData varCopy = new GarrisonTalentSocketData();
 
-		return varCopy;
-	}
+        varCopy.soulbindConduitID = this.soulbindConduitID;
+        varCopy.soulbindConduitRank = this.soulbindConduitRank;
+
+        return varCopy;
+    }
 }

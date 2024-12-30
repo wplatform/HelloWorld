@@ -2,8 +2,8 @@ package com.github.mmo.game.entity.object;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
-import com.github.mmo.utils.MathUtil;
 import com.github.mmo.game.map.MapDefine;
+import com.github.mmo.utils.MathUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -87,6 +87,18 @@ public class Position {
         this.o = normalizeOrientation(o);
     }
 
+    public static float normalizeOrientation(float o) {
+        // fmod only supports positive numbers. Thus we have
+        // to emulate negative numbers
+        if (o < 0) {
+            float mod = o * -1;
+            mod %= 2.0f * MathUtil.PI;
+            mod = -mod + 2.0f * MathUtil.PI;
+            return mod;
+        }
+        return o % 2.0f * MathUtil.PI;
+    }
+
     public void relocate(float x, float y) {
         this.x = x;
         this.y = y;
@@ -135,7 +147,6 @@ public class Position {
         return retOffset;
     }
 
-
     public boolean isWithinBox(Position center, float xRadius, float yRadius, float zRadius) {
         // rotate the WorldObject position instead of rotating the whole cube, that way we can make a simplified
         // is-in-cube check and we have to calculate only one point instead of 4
@@ -159,7 +170,6 @@ public class Position {
                 (!(Math.abs(dy) > yRadius)) &&
                 (!(Math.abs(dz) > zRadius));
     }
-
 
     public boolean isWithinDoubleVerticalCylinder(Position center, float radius, float height) {
         float verticalDelta = getZ() - center.getZ();
@@ -197,7 +207,6 @@ public class Position {
         return Math.abs(Math.sin(angle)) * getExactDist2D(pos.getX(), pos.getY()) < width;
     }
 
-
     public float getExactDist2D(float x, float y) {
         return (float) Math.sqrt(getExactDist2DSq(x, y));
     }
@@ -206,18 +215,15 @@ public class Position {
         return getExactDist2D(pos.x, pos.y);
     }
 
-
     public float getExactDist2DSq(float x, float y) {
         float dx = x - this.x;
         float dy = y - this.y;
         return dx * dx + dy * dy;
     }
 
-
     public float getExactDist2DSq(Position pos) {
         return getExactDist2DSq(pos.x, pos.y);
     }
-
 
     public float getExactDistSq(float x, float y, float z) {
         float dz = z - this.z;
@@ -228,26 +234,13 @@ public class Position {
         return getExactDistSq(pos.x, pos.y, pos.z);
     }
 
-    public float getExactDist(float x, float y, float z)  {
+    public float getExactDist(float x, float y, float z) {
         return (float) Math.sqrt(getExactDistSq(x, y, z));
     }
 
     public float getExactDist(Position pos) {
         return getExactDist(pos.x, pos.y, pos.z);
     }
-
-    public static float normalizeOrientation(float o) {
-        // fmod only supports positive numbers. Thus we have
-        // to emulate negative numbers
-        if (o < 0) {
-            float mod = o * -1;
-            mod %= 2.0f * MathUtil.PI;
-            mod = -mod + 2.0f * MathUtil.PI;
-            return mod;
-        }
-        return o % 2.0f * MathUtil.PI;
-    }
-
 
     public float getAbsoluteAngle(float x, float y) {
         float dx = x - this.x;

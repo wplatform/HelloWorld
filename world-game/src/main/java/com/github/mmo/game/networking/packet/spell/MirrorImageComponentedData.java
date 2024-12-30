@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import com.github.mmo.game.entity.*;
+import com.github.mmo.game.entity.ChrCustomizationChoice;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;import com.github.mmo.game.networking.ServerPacket;
+import java.util.ArrayList;
+
 public class MirrorImageComponentedData extends ServerPacket {
     public ObjectGuid unitGUID = ObjectGuid.EMPTY;
     public int displayID;

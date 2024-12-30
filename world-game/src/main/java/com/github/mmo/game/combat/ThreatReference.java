@@ -81,6 +81,11 @@ public class ThreatReference implements Comparable<ThreatReference> {
         return Math.max(baseAmount + tempModifier, 0.0f);
     }
 
+    public final void setThreat(float amount) {
+        baseAmount = amount;
+        listNotifyChanged();
+    }
+
     public final OnlineState getOnlineState() {
         return online;
     }
@@ -159,7 +164,7 @@ public class ThreatReference implements Comparable<ThreatReference> {
         updateTauntState(TauntState.NONE);
     }
 
-        public final void updateTauntState(TauntState state) {
+    public final void updateTauntState(TauntState state) {
         // Check for SPELL_AURA_MOD_DETAUNT (applied from owner to victim)
         if (state.getValue() < TauntState.Taunt.getValue() && victim.hasAuraTypeWithCaster(AuraType.ModDetaunt, owner.getGUID())) {
             state = TauntState.Detaunt;
@@ -186,11 +191,6 @@ public class ThreatReference implements Comparable<ThreatReference> {
     public final void unregisterAndFree() {
         owner.getThreatManager().purgeThreatListRef(victim.getGUID());
         victim.getThreatManager().purgeThreatenedByMeRef(owner.getGUID());
-    }
-
-    public final void setThreat(float amount) {
-        baseAmount = amount;
-        listNotifyChanged();
     }
 
     public final void modifyThreatByPercent(int percent) {

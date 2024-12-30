@@ -1,7 +1,7 @@
 package com.github.mmo.game.scripting.interfaces.ispell;
 
 
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.spell.SpellDestination;
 
 public class DestinationTargetSelectHandler extends TargetHookHandler implements ISpellDestinationTargetSelectHandler {
     private final tangible.Action1Param<SpellDestination> func;
@@ -11,7 +11,7 @@ public class DestinationTargetSelectHandler extends TargetHookHandler implements
         this(func, effectIndex, targetType, SpellScriptHookType.DestinationTargetSelect);
     }
 
-        public DestinationTargetSelectHandler(tangible.Action1Param<SpellDestination> func, int effectIndex, Targets targetType, SpellScriptHookType hookType) {
+    public DestinationTargetSelectHandler(tangible.Action1Param<SpellDestination> func, int effectIndex, Targets targetType, SpellScriptHookType hookType) {
         super(effectIndex, targetType, false, hookType, true);
         func = func;
     }

@@ -1,7 +1,6 @@
 package com.github.mmo.game.entity.unit;
 
 import com.github.mmo.defines.SpellMissInfo;
-import com.github.mmo.world.entities.unit.model.SpellNonMeleeDamage;
 import com.github.mmo.game.entity.unit.enums.UnitMods;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 import com.github.mmo.game.spell.ProcFlagsInit;
@@ -29,7 +28,6 @@ public interface UnitDefine {
     int UNIT_MOD_RESISTANCE_END = UnitMods.UNIT_MOD_RESISTANCE_ARCANE.ordinal() + 1;
     int UNIT_MOD_POWER_START = UnitMods.UNIT_MOD_MANA.ordinal();
     int UNIT_MOD_POWER_END = UnitMods.UNIT_MOD_ESSENCE.ordinal() + 1;
-
 
 
     int MAX_COMBAT_RATING = 32;

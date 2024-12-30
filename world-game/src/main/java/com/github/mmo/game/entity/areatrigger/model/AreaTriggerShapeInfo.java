@@ -9,50 +9,41 @@ import java.util.ArrayList;
 public class AreaTriggerShapeInfo {
 
 
-        public final boolean isSphere() {
+    public AreaTriggerShapeType Type;
+    public ArrayList<Vector2> PolygonVertices = new ArrayList<>();
+    public ArrayList<Vector2> PolygonVerticesTarget = new ArrayList<>();
+    public DefaultData DefaultData;
+    public SphereData SphereData;
+    public BoxData BoxData;
+// C++ TO JAVA CONVERTER WARNING: 'const' methods are not available in Java:
+    public PolygonData PolygonDatas;
+    public CylinderData CylinderData;
+    public DiskData DiskData;
+    public BoundedPlaneData BoundedPlaneData;
+
+    public final boolean isSphere() {
         return Type == AreaTriggerShapeType.Sphere;
     }
 
-        public final boolean isBox() {
+    public final boolean isBox() {
         return Type == AreaTriggerShapeType.Box;
     }
 
-        public final boolean isPolygon() {
+    public final boolean isPolygon() {
         return Type == AreaTriggerShapeType.Polygon;
     }
 
-        public final boolean isCylinder() {
+    public final boolean isCylinder() {
         return Type == AreaTriggerShapeType.Cylinder;
     }
 
-        public final boolean isDisk() {
+    public final boolean isDisk() {
         return Type == AreaTriggerShapeType.Disk;
     }
 
-        public final boolean isBoundedPlane() {
+    public final boolean isBoundedPlane() {
         return Type == AreaTriggerShapeType.BoundedPlane;
     }
-// C++ TO JAVA CONVERTER WARNING: 'const' methods are not available in Java:
-
-    public AreaTriggerShapeType Type;
-
-    public ArrayList<Vector2> PolygonVertices = new ArrayList<>();
-    public ArrayList<Vector2> PolygonVerticesTarget = new ArrayList<>();
-
-
-    public DefaultData DefaultData;
-
-    public SphereData SphereData;
-
-    public BoxData BoxData;
-
-    public PolygonData PolygonDatas;
-
-    public CylinderData CylinderData;
-
-    public DiskData DiskData;
-
-    public BoundedPlaneData BoundedPlaneData;
 
     public float GetMaxSearchRadius() {
         switch (Type) {

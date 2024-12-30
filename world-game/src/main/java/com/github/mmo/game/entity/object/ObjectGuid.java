@@ -1,18 +1,17 @@
 package com.github.mmo.game.entity.object;
 
-import com.github.mmo.utils.SecureUtils;
 import com.github.mmo.game.entity.object.enums.HighGuid;
+import com.github.mmo.utils.SecureUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
+
 public final class ObjectGuid {
 
-    private static final int OBJECT_GUID_DATA_SIZE = 16;
     public static final ObjectGuid EMPTY = new ObjectGuid();
     public static final ObjectGuid FROM_STRING_FAILED = new ObjectGuid();
     public static final ObjectGuid TRADE_ITEM = new ObjectGuid();
-
-
+    private static final int OBJECT_GUID_DATA_SIZE = 16;
     private final byte[] data;
 
 
@@ -26,187 +25,11 @@ public final class ObjectGuid {
         this(0L, 0L);
     }
 
-    public long highValue() {
-        long result = 0;
-        for (int i = 15; i > 7; i--) {
-            result = (long) (data[i] & 0xff) << (15 - i) | result;
-        }
-        return result;
-    }
-
-    public long lowValue() {
-        long result = 0;
-        for (int i = 7; i > -1; i--) {
-            result = (long) (data[i] & 0xff) << (7 - i) | result;
-        }
-        return result;
-    }
-
-    public String stringValue() {
-        return SecureUtils.bytesToHexString(data);
-    }
-
-    public byte[] bytes() {
-        return data;
-    }
-
-    public void bytes(byte[] guid) {
-        System.arraycopy(guid, 0, data, 0, OBJECT_GUID_DATA_SIZE);
-    }
-
-    private void bytes(long high, long low) {
-        data[15] = (byte) (high & 0xff);
-        data[14] = (byte) (high >>> 8 & 0xff);
-        data[13] = (byte) (high >>> 16 & 0xff);
-        data[12] = (byte) (high >>> 24 & 0xff);
-        data[11] = (byte) (high >>> 32 & 0xff);
-        data[10] = (byte) (high >>> 40 & 0xff);
-        data[9] = (byte) (high >>> 48 & 0xff);
-        data[8] = (byte) (high >>> 56 & 0xff);
-        data[7] = (byte) (low & 0xff);
-        data[6] = (byte) (low >>> 8 & 0xff);
-        data[5] = (byte) (low >>> 16 & 0xff);
-        data[4] = (byte) (low >>> 24 & 0xff);
-        data[3] = (byte) (low >>> 32 & 0xff);
-        data[2] = (byte) (low >>> 40 & 0xff);
-        data[1] = (byte) (low >>> 48 & 0xff);
-        data[0] = (byte) (low >>> 56 & 0xff);
-    }
-
-    public void clear() {
-        Arrays.fill(data, (byte) 0);
-    }
-
-    public HighGuid highGuid() {
-        long highGuidVal = (highValue() >>> 58) & 0x3F;
-        return HighGuid.get((int) highGuidVal);
-    }
-
-    public int realmId() {
-        return (int)((highValue() >>> 42) & 0x1FFF);
-    }
-
-    public int mapId() {
-        return (int)((highValue() >> 29) & 0x1FFF);
-    }
-
-    public int entry() {
-        return (int)((highValue() >> 6) & 0x7FFFFF);
-    }
-
-    public int subType() {
-        return (int)(highValue() & 0x3F);
-    }
-
-    public long counter() {
-        if (Objects.requireNonNull(highGuid()) == HighGuid.Transport) {
-            return ((highValue() >> 38) & 0xFFFFF);
-        }
-        return data[0] & 0x000000FFFFFFFFFFL;
-    }
-
     public static long maxCounter(HighGuid high) {
         if (Objects.requireNonNull(high) == HighGuid.Transport) {
             return 0xFFFFFL;
         }
         return 0xFFFFFFFFFFL;
-    }
-
-    public boolean isEmpty() {
-        return lowValue() == 0 && highValue() == 0;
-    }
-
-    public boolean isCreature() {
-        return highGuid() == HighGuid.Creature;
-    }
-
-    public boolean isPet() {
-        return highGuid() == HighGuid.Pet;
-    }
-
-    public boolean isVehicle() {
-        return highGuid() == HighGuid.Vehicle;
-    }
-
-    public boolean isCreatureOrPet() {
-        return isCreature() || isPet();
-    }
-
-    public boolean isCreatureOrVehicle() {
-        return isCreature() || isVehicle();
-    }
-
-    public boolean isAnyTypeCreature() {
-        return isCreature() || isPet() || isVehicle();
-    }
-
-    public boolean isPlayer() {
-        return !isEmpty() && highGuid() == HighGuid.Player;
-    }
-
-    public boolean isUnit() {
-        return isAnyTypeCreature() || isPlayer();
-    }
-
-    public boolean isItem() {
-        return highGuid() == HighGuid.Item;
-    }
-
-    public boolean isGameObject() {
-        return highGuid() == HighGuid.GameObject;
-    }
-
-    public boolean isDynamicObject() {
-        return highGuid() == HighGuid.DynamicObject;
-    }
-
-    public boolean isCorpse() {
-        return highGuid() == HighGuid.Corpse;
-    }
-
-    public boolean isAreaTrigger() {
-        return highGuid() == HighGuid.AreaTrigger;
-    }
-
-    public boolean isMOTransport() {
-        return highGuid() == HighGuid.Transport;
-    }
-
-    public boolean isAnyTypeGameObject() {
-        return isGameObject() || isMOTransport();
-    }
-
-    public boolean isParty() {
-        return highGuid() == HighGuid.Party;
-    }
-
-    public boolean isGuild() {
-        return highGuid() == HighGuid.Guild;
-    }
-
-    public boolean isSceneObject() {
-        return highGuid() == HighGuid.SceneObject;
-    }
-
-    public boolean isConversation() {
-        return highGuid() == HighGuid.Conversation;
-    }
-
-    public boolean isCast() {
-        return highGuid() == HighGuid.Cast;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ObjectGuid that)) return false;
-
-        return Arrays.equals(data, that.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(data);
     }
 
     public static ObjectGuid create(HighGuid type, int realmId, int dbId) {
@@ -217,8 +40,8 @@ public final class ObjectGuid {
             case HighGuid.Item -> createItem(realmId, dbId);
             case HighGuid.StaticDoor, HighGuid.Transport -> createTransport(type, (int) dbId);
             case HighGuid.Party, HighGuid.WowAccount, HighGuid.BNetAccount, HighGuid.GMTask, HighGuid.RaidGroup,
-                 HighGuid.Spell, HighGuid.Mail, HighGuid.UserRouter, HighGuid.PVPQueueGroup, HighGuid.UserClient,
-                 HighGuid.BattlePet, HighGuid.CommerceObj -> createGlobal(type, 0, dbId);
+                    HighGuid.Spell, HighGuid.Mail, HighGuid.UserRouter, HighGuid.PVPQueueGroup, HighGuid.UserClient,
+                    HighGuid.BattlePet, HighGuid.CommerceObj -> createGlobal(type, 0, dbId);
             case HighGuid.Guild -> createGuild(type, 0, dbId);
             default -> EMPTY;
         };
@@ -274,26 +97,23 @@ public final class ObjectGuid {
         };
     }
 
-
     public static ObjectGuid create(HighGuid type, int realmId, short mapId, int entry, long counter) {
         return switch (type) {
             case HighGuid.WorldTransaction, HighGuid.Conversation, HighGuid.Creature, HighGuid.Vehicle, HighGuid.Pet,
-                 HighGuid.GameObject, HighGuid.DynamicObject, HighGuid.AreaTrigger, HighGuid.Corpse,
-                 HighGuid.LootObject, HighGuid.SceneObject, HighGuid.Scenario, HighGuid.AIGroup, HighGuid.DynamicDoor,
-                 HighGuid.Vignette, HighGuid.CallForHelp, HighGuid.AIResource, HighGuid.AILock, HighGuid.AILockTicket ->
+                    HighGuid.GameObject, HighGuid.DynamicObject, HighGuid.AreaTrigger, HighGuid.Corpse,
+                    HighGuid.LootObject, HighGuid.SceneObject, HighGuid.Scenario, HighGuid.AIGroup, HighGuid.DynamicDoor,
+                    HighGuid.Vignette, HighGuid.CallForHelp, HighGuid.AIResource, HighGuid.AILock, HighGuid.AILockTicket ->
                     createWorldObject(type, (byte) 0, realmId, mapId, 0, entry, counter);
             default -> EMPTY;
         };
     }
 
-
-
     public static boolean isMapSpecific(HighGuid high) {
         return switch (high) {
             case HighGuid.Conversation, HighGuid.Creature, HighGuid.Vehicle, HighGuid.Pet, HighGuid.GameObject,
-                 HighGuid.DynamicObject, HighGuid.AreaTrigger, HighGuid.Corpse, HighGuid.LootObject,
-                 HighGuid.SceneObject, HighGuid.Scenario, HighGuid.AIGroup, HighGuid.DynamicDoor, HighGuid.Vignette,
-                 HighGuid.CallForHelp, HighGuid.AIResource, HighGuid.AILock, HighGuid.AILockTicket -> true;
+                    HighGuid.DynamicObject, HighGuid.AreaTrigger, HighGuid.Corpse, HighGuid.LootObject,
+                    HighGuid.SceneObject, HighGuid.Scenario, HighGuid.AIGroup, HighGuid.DynamicDoor, HighGuid.Vignette,
+                    HighGuid.CallForHelp, HighGuid.AIResource, HighGuid.AILock, HighGuid.AILockTicket -> true;
             default -> false;
         };
     }
@@ -304,8 +124,6 @@ public final class ObjectGuid {
             default -> false;
         };
     }
-
-
 
     private static ObjectGuid createNull() {
         return ObjectGuid.EMPTY;
@@ -405,6 +223,182 @@ public final class ObjectGuid {
                 | ((long) (realmId & 0x1FFF) << 42)
                 | ((arg1 & 0xFFFFFFFFL) << 10),
                 counter);
+    }
+
+    public long highValue() {
+        long result = 0;
+        for (int i = 15; i > 7; i--) {
+            result = (long) (data[i] & 0xff) << (15 - i) | result;
+        }
+        return result;
+    }
+
+    public long lowValue() {
+        long result = 0;
+        for (int i = 7; i > -1; i--) {
+            result = (long) (data[i] & 0xff) << (7 - i) | result;
+        }
+        return result;
+    }
+
+    public String stringValue() {
+        return SecureUtils.bytesToHexString(data);
+    }
+
+    public byte[] bytes() {
+        return data;
+    }
+
+    public void bytes(byte[] guid) {
+        System.arraycopy(guid, 0, data, 0, OBJECT_GUID_DATA_SIZE);
+    }
+
+    private void bytes(long high, long low) {
+        data[15] = (byte) (high & 0xff);
+        data[14] = (byte) (high >>> 8 & 0xff);
+        data[13] = (byte) (high >>> 16 & 0xff);
+        data[12] = (byte) (high >>> 24 & 0xff);
+        data[11] = (byte) (high >>> 32 & 0xff);
+        data[10] = (byte) (high >>> 40 & 0xff);
+        data[9] = (byte) (high >>> 48 & 0xff);
+        data[8] = (byte) (high >>> 56 & 0xff);
+        data[7] = (byte) (low & 0xff);
+        data[6] = (byte) (low >>> 8 & 0xff);
+        data[5] = (byte) (low >>> 16 & 0xff);
+        data[4] = (byte) (low >>> 24 & 0xff);
+        data[3] = (byte) (low >>> 32 & 0xff);
+        data[2] = (byte) (low >>> 40 & 0xff);
+        data[1] = (byte) (low >>> 48 & 0xff);
+        data[0] = (byte) (low >>> 56 & 0xff);
+    }
+
+    public void clear() {
+        Arrays.fill(data, (byte) 0);
+    }
+
+    public HighGuid highGuid() {
+        long highGuidVal = (highValue() >>> 58) & 0x3F;
+        return HighGuid.get((int) highGuidVal);
+    }
+
+    public int realmId() {
+        return (int) ((highValue() >>> 42) & 0x1FFF);
+    }
+
+    public int mapId() {
+        return (int) ((highValue() >> 29) & 0x1FFF);
+    }
+
+    public int entry() {
+        return (int) ((highValue() >> 6) & 0x7FFFFF);
+    }
+
+    public int subType() {
+        return (int) (highValue() & 0x3F);
+    }
+
+    public long counter() {
+        if (Objects.requireNonNull(highGuid()) == HighGuid.Transport) {
+            return ((highValue() >> 38) & 0xFFFFF);
+        }
+        return data[0] & 0x000000FFFFFFFFFFL;
+    }
+
+    public boolean isEmpty() {
+        return lowValue() == 0 && highValue() == 0;
+    }
+
+    public boolean isCreature() {
+        return highGuid() == HighGuid.Creature;
+    }
+
+    public boolean isPet() {
+        return highGuid() == HighGuid.Pet;
+    }
+
+    public boolean isVehicle() {
+        return highGuid() == HighGuid.Vehicle;
+    }
+
+    public boolean isCreatureOrPet() {
+        return isCreature() || isPet();
+    }
+
+    public boolean isCreatureOrVehicle() {
+        return isCreature() || isVehicle();
+    }
+
+    public boolean isAnyTypeCreature() {
+        return isCreature() || isPet() || isVehicle();
+    }
+
+    public boolean isPlayer() {
+        return !isEmpty() && highGuid() == HighGuid.Player;
+    }
+
+    public boolean isUnit() {
+        return isAnyTypeCreature() || isPlayer();
+    }
+
+    public boolean isItem() {
+        return highGuid() == HighGuid.Item;
+    }
+
+    public boolean isGameObject() {
+        return highGuid() == HighGuid.GameObject;
+    }
+
+    public boolean isDynamicObject() {
+        return highGuid() == HighGuid.DynamicObject;
+    }
+
+    public boolean isCorpse() {
+        return highGuid() == HighGuid.Corpse;
+    }
+
+    public boolean isAreaTrigger() {
+        return highGuid() == HighGuid.AreaTrigger;
+    }
+
+    public boolean isMOTransport() {
+        return highGuid() == HighGuid.Transport;
+    }
+
+    public boolean isAnyTypeGameObject() {
+        return isGameObject() || isMOTransport();
+    }
+
+    public boolean isParty() {
+        return highGuid() == HighGuid.Party;
+    }
+
+    public boolean isGuild() {
+        return highGuid() == HighGuid.Guild;
+    }
+
+    public boolean isSceneObject() {
+        return highGuid() == HighGuid.SceneObject;
+    }
+
+    public boolean isConversation() {
+        return highGuid() == HighGuid.Conversation;
+    }
+
+    public boolean isCast() {
+        return highGuid() == HighGuid.Cast;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ObjectGuid that)) return false;
+
+        return Arrays.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(data);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.mmo.game.quest.enums;
+package com.github.mmo.game.service.model.quest;
 
 public enum QuestObjectiveType {
     MONSTER,

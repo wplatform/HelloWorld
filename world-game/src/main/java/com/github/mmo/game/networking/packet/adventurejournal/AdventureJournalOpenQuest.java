@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.adventurejournal;
 
-import com.github.mmo.game.networking.*;class AdventureJournalOpenQuest extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class AdventureJournalOpenQuest extends ClientPacket {
 
     public int adventureJournalID;
 

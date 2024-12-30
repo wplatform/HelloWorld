@@ -1,7 +1,6 @@
 package com.github.mmo.game.networking.packet.quest;
 
 import com.github.mmo.game.networking.ClientPacket;
-import com.github.mmo.game.networking.WorldPacket;
 import io.netty.buffer.ByteBuf;
 
 class ChoiceResponse extends ClientPacket {

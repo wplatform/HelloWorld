@@ -1,18 +1,17 @@
 package com.github.mmo.game.networking.packet.character;
 
-import com.github.mmo.game.networking.*;
-public class SetTitle extends ClientPacket
-{
-	public int titleID;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public setTitle(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class SetTitle extends ClientPacket {
+    public int titleID;
 
-	@Override
-	public void read()
-	{
-		titleID = this.readInt32();
-	}
+    public setTitle(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        titleID = this.readInt32();
+    }
 }

@@ -1,12 +1,13 @@
 package com.github.mmo.game.achievement;
 
 
-
-
 import game.*;
 
-import java.util.*;
-import java.time.*;public class AchievementGlobalMgr  {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class AchievementGlobalMgr {
     // store achievements by referenced achievement id to speed up lookup
     private final MultiMap<Integer, AchievementRecord> achievementListByReferencedId = new MultiMap<Integer, AchievementRecord>();
 
@@ -53,7 +54,7 @@ import java.time.*;public class AchievementGlobalMgr  {
         // Allow completing the realm first kill for entire minute after first person did it
         // it may allow more than one group to achieve it (highly unlikely)
         // but apparently this is how blizz handles it as well
-        if (achievement.flags.HasAnyFlag(AchievementFlags.RealmFirstKill)) {
+        if (achievement.flags.hasFlag(AchievementFlags.RealmFirstKill)) {
             return (LocalDateTime.now() - time) > durationofMinutes(1);
         }
 
@@ -119,7 +120,7 @@ import java.time.*;public class AchievementGlobalMgr  {
             var achievement = CliDB.AchievementStorage.get(achievementId);
 
             if (achievement == null) {
-                Log.outError(LogFilter.Sql, String.format("Table `achievement_scripts` contains non-existing achievement (ID: %1$s), skipped.", achievementId));
+                Logs.SQL.error(String.format("Table `achievement_scripts` contains non-existing achievement (ID: %1$s), skipped.", achievementId));
 
                 continue;
             }
@@ -137,7 +138,7 @@ import java.time.*;public class AchievementGlobalMgr  {
         // while it will not prevent races, it will prevent crashes that happen because std::unordered_map key was added
         // instead the only potential race will happen on value associated with the key
         for (var achievement : CliDB.AchievementStorage.values()) {
-            if (achievement.flags.HasAnyFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
+            if (achievement.flags.hasFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
                 allCompletedAchievements.put(achievement.id, LocalDateTime.MIN);
             }
         }
@@ -163,7 +164,7 @@ import java.time.*;public class AchievementGlobalMgr  {
                 DB.characters.execute(stmt);
 
                 continue;
-            } else if (achievement.flags.HasAnyFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
+            } else if (achievement.flags.hasFlag(AchievementFlags.RealmFirstReach.getValue() | AchievementFlags.RealmFirstKill.getValue())) {
                 allCompletedAchievements.put(achievementId, LocalDateTime.MAX);
             }
         } while (result.NextRow());
@@ -190,7 +191,7 @@ import java.time.*;public class AchievementGlobalMgr  {
             var achievement = CliDB.AchievementStorage.get(id);
 
             if (achievement == null) {
-                Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` contains a wrong achievement ID (%1$s), ignored.", id));
+                Logs.SQL.error(String.format("Table `achievement_reward` contains a wrong achievement ID (%1$s), ignored.", id));
 
                 continue;
             }
@@ -206,20 +207,20 @@ import java.time.*;public class AchievementGlobalMgr  {
 
             // must be title or mail at least
             if (reward.TitleId[0] == 0 && reward.TitleId[1] == 0 && reward.senderCreatureId == 0) {
-                Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) does not contain title or item reward data. Ignored.", id));
+                Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) does not contain title or item reward data. Ignored.", id));
 
                 continue;
             }
 
             if (achievement.faction == AchievementFaction.Any && (reward.TitleId[0] == 0 ^ reward.TitleId[1] == 0)) {
-                Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) contains the title (A: %2$s H: %3$s) for only one team.", id, reward.TitleId[0], reward.TitleId[1]));
+                Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) contains the title (A: %2$s H: %3$s) for only one team.", id, reward.TitleId[0], reward.TitleId[1]));
             }
 
             if (reward.TitleId[0] != 0) {
                 var titleEntry = CliDB.CharTitlesStorage.get(reward.TitleId[0]);
 
                 if (titleEntry == null) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) contains an invalid title ID (%2$s) in `title_A`, set to 0", id, reward.TitleId[0]));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) contains an invalid title ID (%2$s) in `title_A`, set to 0", id, reward.TitleId[0]));
                     reward.TitleId[0] = 0;
                 }
             }
@@ -228,7 +229,7 @@ import java.time.*;public class AchievementGlobalMgr  {
                 var titleEntry = CliDB.CharTitlesStorage.get(reward.TitleId[1]);
 
                 if (titleEntry == null) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) contains an invalid title ID (%2$s) in `title_H`, set to 0", id, reward.TitleId[1]));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) contains an invalid title ID (%2$s) in `title_H`, set to 0", id, reward.TitleId[1]));
                     reward.TitleId[1] = 0;
                 }
             }
@@ -236,39 +237,39 @@ import java.time.*;public class AchievementGlobalMgr  {
             //check mail data before item for report including wrong item case
             if (reward.senderCreatureId != 0) {
                 if (global.getObjectMgr().getCreatureTemplate(reward.senderCreatureId) == null) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) contains an invalid creature ID %2$s as sender, mail reward skipped.", id, reward.senderCreatureId));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) contains an invalid creature ID %2$s as sender, mail reward skipped.", id, reward.senderCreatureId));
                     reward.senderCreatureId = 0;
                 }
             } else {
                 if (reward.itemId != 0) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains an item reward. Item will not be rewarded.", id));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains an item reward. Item will not be rewarded.", id));
                 }
 
                 if (!reward.subject.isEmpty()) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains a mail subject.", id));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains a mail subject.", id));
                 }
 
                 if (!reward.body.isEmpty()) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains mail text.", id));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but contains mail text.", id));
                 }
 
                 if (reward.mailTemplateId != 0) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but has a mailTemplateId.", id));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) does not have sender data, but has a mailTemplateId.", id));
                 }
             }
 
             if (reward.mailTemplateId != 0) {
                 if (!CliDB.MailTemplateStorage.containsKey(reward.mailTemplateId)) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) is using an invalid mailTemplateId (%2$s).", id, reward.mailTemplateId));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) is using an invalid mailTemplateId (%2$s).", id, reward.mailTemplateId));
                     reward.mailTemplateId = 0;
                 } else if (!reward.subject.isEmpty() || !reward.body.isEmpty()) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) is using mailTemplateId (%2$s) and mail subject/text.", id, reward.mailTemplateId));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) is using mailTemplateId (%2$s) and mail subject/text.", id, reward.mailTemplateId));
                 }
             }
 
             if (reward.itemId != 0) {
                 if (global.getObjectMgr().getItemTemplate(reward.itemId) == null) {
-                    Log.outError(LogFilter.Sql, String.format("Table `achievement_reward` (ID: %1$s) contains an invalid item id %2$s, reward mail will not contain the rewarded item.", id, reward.itemId));
+                    Logs.SQL.error(String.format("Table `achievement_reward` (ID: %1$s) contains an invalid item id %2$s, reward mail will not contain the rewarded item.", id, reward.itemId));
                     reward.itemId = 0;
                 }
             }
@@ -298,7 +299,7 @@ import java.time.*;public class AchievementGlobalMgr  {
             var localeName = result.<String>Read(1);
 
             if (!achievementRewards.containsKey(id)) {
-                Log.outError(LogFilter.Sql, String.format("Table `achievement_reward_locale` (ID: %1$s) contains locale strings for a non-existing achievement reward.", id));
+                Logs.SQL.error(String.format("Table `achievement_reward_locale` (ID: %1$s) contains locale strings for a non-existing achievement reward.", id));
 
                 continue;
             }

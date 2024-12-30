@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.mail;
 
-import com.github.mmo.game.networking.*;public class MailDelete extends ClientPacket {
-   
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class MailDelete extends ClientPacket {
+
     public long mailID;
     public int deleteReason;
 

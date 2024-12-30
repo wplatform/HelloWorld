@@ -1,7 +1,6 @@
 package com.github.mmo.game.entity.corpse;
 
 
-import game.PhasingHandler;
 import com.github.mmo.game.entity.ChrCustomizationChoice;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldObject;
@@ -10,6 +9,7 @@ import com.github.mmo.game.loot.Loot;
 import com.github.mmo.game.map.grid.GridObject;
 import com.github.mmo.game.map.grid.GridReference;
 import com.github.mmo.game.networking.WorldPacket;
+import game.PhasingHandler;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         this(CorpseType.Bones);
     }
 
-        public Corpse(CorpseType type) {
+    public Corpse(CorpseType type) {
         super(type != CorpseType.Bones);
         type = type;
         setObjectTypeId(TypeId.Corpse);
@@ -88,12 +88,14 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         return getCorpseData().owner;
     }
 
+    public final void setOwnerGUID(ObjectGuid owner) {
+        setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().owner), owner);
+    }
 
     @Override
     public int getFaction() {
         return (int) (int) getCorpseData().factionTemplate;
     }
-
 
     @Override
     public void setFaction(int value) {
@@ -124,13 +126,11 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         super.removeFromWorld();
     }
 
-
     public final boolean create(long guidlow, Map map) {
         create(ObjectGuid.create(HighGuid.Corpse, map.getId(), 0, guidlow));
 
         return true;
     }
-
 
     public final boolean create(long guidlow, Player owner) {
         getLocation().relocate(owner.getLocation().getX(), owner.getLocation().getY(), owner.getLocation().getZ(), owner.getLocation().getO());
@@ -152,7 +152,6 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
 
         return true;
     }
-
 
     @Override
     public void update(int diff) {
@@ -185,7 +184,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         stmt.AddValue(index++, (int) getCorpseData().displayID); // displayId
         stmt.AddValue(index++, items.toString()); // itemCache
         stmt.AddValue(index++, (byte) getCorpseData().raceID); // race
-        stmt.AddValue(index++, (byte) getCorpseData().class); // class
+        stmt.AddValue(index++, (byte) getCorpseData(). class); // class
         stmt.AddValue(index++, (byte) getCorpseData().sex); // gender
         stmt.AddValue(index++, (int) getCorpseData().flags); // flags
         stmt.AddValue(index++, (int) getCorpseData().dynamicFlags); // dynFlags
@@ -217,7 +216,6 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
     public final void deleteFromDB(SQLTransaction trans) {
         deleteFromDB(getOwnerGUID(), trans);
     }
-
 
     public final boolean loadCorpseFromDB(long guid, SQLFields field) {
         //        0     1     2     3            4      5          6          7     8      9       10     11        12    13          14          15
@@ -340,10 +338,6 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().dynamicFlags), (int) dynamicFlags.getValue());
     }
 
-    public final void setOwnerGUID(ObjectGuid owner) {
-        setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().owner), owner);
-    }
-
     public final void setPartyGUID(ObjectGuid partyGuid) {
         setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().partyGUID), partyGuid);
     }
@@ -364,7 +358,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
 
 
     public final void setClass(byte classId) {
-        setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().class), classId);
+        setUpdateFieldValue(getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData(). class),classId);
     }
 
 

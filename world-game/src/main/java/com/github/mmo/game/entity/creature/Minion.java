@@ -1,156 +1,130 @@
 package com.github.mmo.game.entity.creature;
 
 
-
 import com.github.mmo.dbc.domain.SummonProperty;
-import com.github.mmo.game.entity.PetEntry;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.enums.UnitTypeMask;
 
-public class Minion extends TempSummon
-{
-	protected Unit owner;
-	private float followAngle;
+public class Minion extends TempSummon {
+    protected Unit owner;
+    private float followAngle;
 
-	public final boolean isGuardianPet()
-	{
-		return isPet() || (summonProperty != null && summonProperty.Control == SummonCategory.pet);
-	}
+    public Minion(SummonProperty propertiesRecord, Unit owner, boolean isWorldObject) {
+        super(propertiesRecord, owner, isWorldObject);
+        owner = owner;
+        setUnitTypeMask(UnitTypeMask.forValue(getUnitTypeMask().getValue() | getUnitTypeMask().minion.getValue()));
+        followAngle = SharedConst.PetFollowAngle;
+        /** @todo: Find correct way
+         */
+        initCharmInfo();
+    }
 
-	@Override
-	public float getFollowAngle()
-	{
-		return followAngle;
-	}
+    public final boolean isGuardianPet() {
+        return isPet() || (summonProperty != null && summonProperty.Control == SummonCategory.pet);
+    }
 
-	@Override
-	public Unit getOwnerUnit()
-	{
-		return owner;
-	}
+    @Override
+    public float getFollowAngle() {
+        return followAngle;
+    }
 
-	public Minion(SummonProperty propertiesRecord, Unit owner, boolean isWorldObject)
-	{
-		super(propertiesRecord, owner, isWorldObject);
-		owner = owner;
-		setUnitTypeMask(UnitTypeMask.forValue(getUnitTypeMask().getValue() | getUnitTypeMask().minion.getValue()));
-		followAngle = SharedConst.PetFollowAngle;
-		/** @todo: Find correct way
-		*/
-		initCharmInfo();
-	}
+    public final void setFollowAngle(float angle) {
+        followAngle = angle;
+    }
 
-	@Override
-	public void initStats(int duration)
-	{
-		super.initStats(duration);
+    @Override
+    public Unit getOwnerUnit() {
+        return owner;
+    }
 
-		setReactState(ReactStates.Passive);
+    @Override
+    public void initStats(int duration) {
+        super.initStats(duration);
 
-		setCreatorGUID(getOwnerUnit().getGUID());
-		setFaction(getOwnerUnit().getFaction()); // TODO: Is this correct? Overwrite the use of SummonPropertiesFlags::UseSummonerFaction
+        setReactState(ReactStates.Passive);
 
-		getOwnerUnit().setMinion(this, true);
-	}
+        setCreatorGUID(getOwnerUnit().getGUID());
+        setFaction(getOwnerUnit().getFaction()); // TODO: Is this correct? Overwrite the use of SummonPropertiesFlags::UseSummonerFaction
 
-	@Override
-	public void removeFromWorld()
-	{
-		if (!isInWorld())
-		{
-			return;
-		}
+        getOwnerUnit().setMinion(this, true);
+    }
 
-		getOwnerUnit().setMinion(this, false);
-		super.removeFromWorld();
-	}
+    @Override
+    public void removeFromWorld() {
+        if (!isInWorld()) {
+            return;
+        }
 
-	@Override
-	public void setDeathState(DeathState s)
-	{
-		super.setDeathState(s);
+        getOwnerUnit().setMinion(this, false);
+        super.removeFromWorld();
+    }
 
-		if (s != deathState.JustDied || !isGuardianPet())
-		{
-			return;
-		}
+    @Override
+    public void setDeathState(DeathState s) {
+        super.setDeathState(s);
 
-		var owner = getOwnerUnit();
+        if (s != deathState.JustDied || !isGuardianPet()) {
+            return;
+        }
 
-		if (owner == null || !owner.isPlayer() || ObjectGuid.opNotEquals(owner.getMinionGUID(), getGUID()))
-		{
-			return;
-		}
+        var owner = getOwnerUnit();
 
-		for (var controlled : owner.getControlled())
-		{
-			if (controlled.getEntry() == getEntry() && controlled.isAlive())
-			{
-				owner.setMinionGUID(controlled.getGUID());
-				owner.setPetGUID(controlled.getGUID());
-				owner.toPlayer().charmSpellInitialize();
+        if (owner == null || !owner.isPlayer() || ObjectGuid.opNotEquals(owner.getMinionGUID(), getGUID())) {
+            return;
+        }
 
-				break;
-			}
-		}
-	}
+        for (var controlled : owner.getControlled()) {
+            if (controlled.getEntry() == getEntry() && controlled.isAlive()) {
+                owner.setMinionGUID(controlled.getGUID());
+                owner.setPetGUID(controlled.getGUID());
+                owner.toPlayer().charmSpellInitialize();
 
-	@Override
-	public String getDebugInfo()
-	{
-		return String.format("%1$s\nOwner: %2$s", super.getDebugInfo(), (getOwnerUnit() ? getOwnerUnit().getGUID() : ""));
-	}
+                break;
+            }
+        }
+    }
 
-	public final void setFollowAngle(float angle)
-	{
-		followAngle = angle;
-	}
+    @Override
+    public String getDebugInfo() {
+        return String.format("%1$s\nOwner: %2$s", super.getDebugInfo(), (getOwnerUnit() ? getOwnerUnit().getGUID() : ""));
+    }
 
-	// Warlock pets
-	public final boolean isPetImp()
-	{
-		return getEntry() == (int) PetEntry.Imp.getValue();
-	}
+    // Warlock pets
+    public final boolean isPetImp() {
+        return getEntry() == (int) PetEntry.Imp.getValue();
+    }
 
-	public final boolean isPetFelhunter()
-	{
-		return getEntry() == (int)PetEntry.FelHunter.getValue();
-	}
+    public final boolean isPetFelhunter() {
+        return getEntry() == (int) PetEntry.FelHunter.getValue();
+    }
 
-	public final boolean isPetVoidwalker()
-	{
-		return getEntry() == (int)PetEntry.VoidWalker.getValue();
-	}
+    public final boolean isPetVoidwalker() {
+        return getEntry() == (int) PetEntry.VoidWalker.getValue();
+    }
 
-	public final boolean isPetSuccubus()
-	{
-		return getEntry() == (int)PetEntry.Succubus.getValue();
-	}
+    public final boolean isPetSuccubus() {
+        return getEntry() == (int) PetEntry.Succubus.getValue();
+    }
 
-	public final boolean isPetDoomguard()
-	{
-		return getEntry() == (int)PetEntry.Doomguard.getValue();
-	}
+    public final boolean isPetDoomguard() {
+        return getEntry() == (int) PetEntry.Doomguard.getValue();
+    }
 
-	public final boolean isPetFelguard()
-	{
-		return getEntry() == (int)PetEntry.Felguard.getValue();
-	}
+    public final boolean isPetFelguard() {
+        return getEntry() == (int) PetEntry.Felguard.getValue();
+    }
 
-	// Death Knight pets
-	public final boolean isPetGhoul()
-	{
-		return getEntry() == (int)PetEntry.Ghoul.getValue();
-	} // Ghoul may be guardian or pet
+    // Death Knight pets
+    public final boolean isPetGhoul() {
+        return getEntry() == (int) PetEntry.Ghoul.getValue();
+    } // Ghoul may be guardian or pet
 
-	public final boolean isPetAbomination()
-	{
-		return getEntry() == (int)PetEntry.Abomination.getValue();
-	} // Sludge Belcher dk talent
+    public final boolean isPetAbomination() {
+        return getEntry() == (int) PetEntry.Abomination.getValue();
+    } // Sludge Belcher dk talent
 
-	// Shaman pet
-	public final boolean isSpiritWolf()
-	{
-		return getEntry() == (int)PetEntry.SpiritWolf.getValue();
-	} // Spirit wolf from feral spirits
+    // Shaman pet
+    public final boolean isSpiritWolf() {
+        return getEntry() == (int) PetEntry.SpiritWolf.getValue();
+    } // Spirit wolf from feral spirits
 }

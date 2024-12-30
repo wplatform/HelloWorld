@@ -3,35 +3,29 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class AnnouncementsOnAppend implements IChannelAppender
-{
-	public AnnouncementsOnAppend()
-	{
-	}
+final class AnnouncementsOnAppend implements IChannelAppender {
+    private final ObjectGuid guid;
 
-	public AnnouncementsOnAppend(ObjectGuid guid)
-	{
-		guid = guid;
-	}
+    public AnnouncementsOnAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.AnnouncementsOnNotice;
-	}
+    public AnnouncementsOnAppend(ObjectGuid guid) {
+        guid = guid;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.senderGuid = guid;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.AnnouncementsOnNotice;
+    }
 
-	private final ObjectGuid guid;
+    public void append(ChannelNotify data) {
+        data.senderGuid = guid;
+    }
 
-	public AnnouncementsOnAppend clone()
-	{
-		AnnouncementsOnAppend varCopy = new AnnouncementsOnAppend();
+    public AnnouncementsOnAppend clone() {
+        AnnouncementsOnAppend varCopy = new AnnouncementsOnAppend();
 
-		varCopy.guid = this.guid;
+        varCopy.guid = this.guid;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

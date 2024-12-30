@@ -1,28 +1,22 @@
 package com.github.mmo.game.entity.conversation;
 
 import Framework.Constants.*;
-import game.entities.ConversationLine;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;
-
-
-
-
-
+import java.util.ArrayList;
 
 
 public class ConversationData extends BaseUpdateData<Conversation> {
     public UpdateField<Boolean> dontPlayBroadcastTextSounds = new UpdateField<Boolean>(0, 1);
     public UpdateField<ArrayList<ConversationLine>> lines = new UpdateField<ArrayList<ConversationLine>>(0, 2);
     public DynamicUpdateField<ConversationActorField> actors = new DynamicUpdateField<ConversationActorField>(0, 3);
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> LastLineEndTime = new(0, 4);
     public UpdateField<Integer> lastLineEndTime = new UpdateField<Integer>(0, 4);
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> Progress = new(0, 5);
     public UpdateField<Integer> progress = new UpdateField<Integer>(0, 5);
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> Flags = new(0, 6);
     public UpdateField<Integer> flags = new UpdateField<Integer>(0, 6);
 
@@ -105,6 +99,7 @@ public class ConversationData extends BaseUpdateData<Conversation> {
 
         data.FlushBits();
     }
+
     @Override
     public void clearChangesMask() {
         clearChangesMask(dontPlayBroadcastTextSounds);
@@ -115,13 +110,13 @@ public class ConversationData extends BaseUpdateData<Conversation> {
         changesMask.resetAll();
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetViewerLastLineEndTime(ConversationData conversationLineData, Conversation conversation, Player receiver)
     public final int getViewerLastLineEndTime(ConversationData conversationLineData, Conversation conversation, Player receiver) {
         var locale = receiver.getSession().getSessionDbLocaleIndex();
 
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: return (uint)conversation.GetLastLineEndTime(locale).TotalMilliseconds;
-        return (int)conversation.getLastLineEndTime(locale).getTotalMilliseconds();
+        return (int) conversation.getLastLineEndTime(locale).getTotalMilliseconds();
     }
 }

@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.who;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class WhoResponsePkt extends ServerPacket
-{
-	public int requestID;
-	public ArrayList<WhoEntry> response = new ArrayList<>();
-	public WhoResponsePkt()
-	{
-		super(ServerOpcode.Who);
-	}
+public class WhoResponsePkt extends ServerPacket {
+    public int requestID;
+    public ArrayList<WhoEntry> response = new ArrayList<>();
 
-	@Override
-	public void write()
-	{
+    public WhoResponsePkt() {
+        super(ServerOpcode.Who);
+    }
+
+    @Override
+    public void write() {
         this.writeInt32(requestID);
         this.writeBits(response.size(), 6);
         this.flushBits();
 
-		response.forEach(p -> p.write(this));
-	}
+        response.forEach(p -> p.write(this));
+    }
 }

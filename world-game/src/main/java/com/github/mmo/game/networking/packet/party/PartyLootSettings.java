@@ -1,28 +1,25 @@
 package com.github.mmo.game.networking.packet.party;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-final class PartyLootSettings
-{
-	public void write(WorldPacket data)
-	{
-		data.writeInt8(method);
-		data.writeGuid(lootMaster);
-		data.writeInt8(threshold);
-	}
+final class PartyLootSettings {
+    public byte method;
+    public ObjectGuid lootMaster = ObjectGuid.EMPTY;
+    public byte threshold;
 
-	public byte method;
-	public ObjectGuid lootMaster = ObjectGuid.EMPTY;
-	public byte threshold;
+    public void write(WorldPacket data) {
+        data.writeInt8(method);
+        data.writeGuid(lootMaster);
+        data.writeInt8(threshold);
+    }
 
-	public PartyLootSettings clone()
-	{
-		PartyLootSettings varCopy = new PartyLootSettings();
+    public PartyLootSettings clone() {
+        PartyLootSettings varCopy = new PartyLootSettings();
 
-		varCopy.method = this.method;
-		varCopy.lootMaster = this.lootMaster;
-		varCopy.threshold = this.threshold;
+        varCopy.method = this.method;
+        varCopy.lootMaster = this.lootMaster;
+        varCopy.threshold = this.threshold;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

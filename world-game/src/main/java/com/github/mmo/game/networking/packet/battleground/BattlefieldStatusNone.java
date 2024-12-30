@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.battleground;
 
 
-public class BattlefieldStatusNone extends ServerPacket
-{
-	public Rideticket ticket = new rideTicket();
-	public BattlefieldStatusNone()
-	{
-		super(ServerOpcode.BattlefieldStatusNone);
-	}
+public class BattlefieldStatusNone extends ServerPacket {
+    public Rideticket ticket = new rideTicket();
 
-	@Override
-	public void write()
-	{
-		ticket.write(this);
-	}
+    public BattlefieldStatusNone() {
+        super(ServerOpcode.BattlefieldStatusNone);
+    }
+
+    @Override
+    public void write() {
+        ticket.write(this);
+    }
 }

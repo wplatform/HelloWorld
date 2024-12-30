@@ -1,8 +1,9 @@
 package com.github.mmo.game.networking.packet.hotfix;
 
 
+import com.github.mmo.game.networking.ServerPacket;
 
-import com.github.mmo.game.networking.*;class AvailableHotfixes extends ServerPacket {
+class AvailableHotfixes extends ServerPacket {
 
     public int virtualRealmAddress;
     public MultiMap<Integer, HotfixRecord> hotfixes;

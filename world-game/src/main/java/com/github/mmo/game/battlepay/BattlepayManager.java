@@ -1,491 +1,414 @@
 package com.github.mmo.game.battlepay;
 
 
+import com.github.mmo.game.networking.packet.bpay.*;
 import game.BattlePayDataStoreMgr;
 import game.WorldConfig;
 import game.WorldSession;
-import com.github.mmo.game.networking.packet.bpay.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
 
 
-public class BattlepayManager
-{
-	private final TreeMap<Integer, BpayProduct> existProducts = new TreeMap<Integer, BpayProduct>();
+public class BattlepayManager {
+    private final TreeMap<Integer, BpayProduct> existProducts = new TreeMap<Integer, BpayProduct>();
 
-	private final WorldSession session;
-	private final String walletName = "";
-	private purchase actualTransaction = new purchase();
-	private long purchaseIDCount;
-	private long distributionIDCount;
+    private final WorldSession session;
+    private final String walletName = "";
+    private purchase actualTransaction = new purchase();
+    private long purchaseIDCount;
+    private long distributionIDCount;
 
-	public BattlepayManager(WorldSession session)
-	{
-		session = session;
-		purchaseIDCount = 0;
-		distributionIDCount = 0;
-		walletName = "Credits";
-	}
+    public BattlepayManager(WorldSession session) {
+        session = session;
+        purchaseIDCount = 0;
+        distributionIDCount = 0;
+        walletName = "Credits";
+    }
 
-	public final int getBattlePayCredits()
-	{
-		var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_SEL_BATTLE_PAY_ACCOUNT_CREDITS);
+    public final int getBattlePayCredits() {
+        var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_SEL_BATTLE_PAY_ACCOUNT_CREDITS);
 
-		stmt.AddValue(0, session.getBattlenetAccountId());
+        stmt.AddValue(0, session.getBattlenetAccountId());
 
-		var result_don = DB.Login.query(stmt);
+        var result_don = DB.Login.query(stmt);
 
-		if (result_don == null)
-		{
-			return 0;
-		}
+        if (result_don == null) {
+            return 0;
+        }
 
-		var fields = result_don.GetFields();
-		var credits = fields.<Integer>Read(0);
+        var fields = result_don.GetFields();
+        var credits = fields.<Integer>Read(0);
 
-		return credits * 10000; // currency precision .. in retail it like gold and copper .. 10 usd is 100000 battlepay credit
-	}
+        return credits * 10000; // currency precision .. in retail it like gold and copper .. 10 usd is 100000 battlepay credit
+    }
 
-	public final boolean hasBattlePayCredits(int count)
-	{
-		if (getBattlePayCredits() >= count)
-		{
-			return true;
-		}
+    public final boolean hasBattlePayCredits(int count) {
+        if (getBattlePayCredits() >= count) {
+            return true;
+        }
 
-		session.getPlayer().sendSysMessage(20000, count);
+        session.getPlayer().sendSysMessage(20000, count);
 
-		return false;
-	}
+        return false;
+    }
 
-	public final boolean updateBattlePayCredits(long price)
-	{
-		//TC_LOG_INFO("server.BattlePay", "UpdateBattlePayCredits: getBattlePayCredits(): {} - price: {}", getBattlePayCredits(), price);
-		var calcCredit = (getBattlePayCredits() - price) / 10000;
-		var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_UPD_BATTLE_PAY_ACCOUNT_CREDITS);
-		stmt.AddValue(0, calcCredit);
-		stmt.AddValue(1, session.getBattlenetAccountId());
-		DB.Login.execute(stmt);
+    public final boolean updateBattlePayCredits(long price) {
+        //TC_LOG_INFO("server.BattlePay", "UpdateBattlePayCredits: getBattlePayCredits(): {} - price: {}", getBattlePayCredits(), price);
+        var calcCredit = (getBattlePayCredits() - price) / 10000;
+        var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_UPD_BATTLE_PAY_ACCOUNT_CREDITS);
+        stmt.AddValue(0, calcCredit);
+        stmt.AddValue(1, session.getBattlenetAccountId());
+        DB.Login.execute(stmt);
 
-		return true;
-	}
+        return true;
+    }
 
 
-	public final boolean modifyBattlePayCredits(int credits)
-	{
-		var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_UPD_BATTLE_PAY_ACCOUNT_CREDITS);
-		stmt.AddValue(0, credits);
-		stmt.AddValue(1, session.getBattlenetAccountId());
-		DB.Login.execute(stmt);
-		sendBattlePayMessage(3, "", credits);
+    public final boolean modifyBattlePayCredits(int credits) {
+        var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_UPD_BATTLE_PAY_ACCOUNT_CREDITS);
+        stmt.AddValue(0, credits);
+        stmt.AddValue(1, session.getBattlenetAccountId());
+        DB.Login.execute(stmt);
+        sendBattlePayMessage(3, "", credits);
 
-		return true;
-	}
-
+        return true;
+    }
 
 
-	public final void sendBattlePayMessage(int bpaymessageID, String name)
-	{
-		sendBattlePayMessage(bpaymessageID, name, 0);
-	}
+    public final void sendBattlePayMessage(int bpaymessageID, String name) {
+        sendBattlePayMessage(bpaymessageID, name, 0);
+    }
 
-	public final void sendBattlePayMessage(int bpaymessageID, String name, int value)
-	{
-		var msg = "";
+    public final void sendBattlePayMessage(int bpaymessageID, String name, int value) {
+        var msg = "";
 
-		if (bpaymessageID == 1)
-		{
-			msg += "The purchase '" + name + "' was successful!";
-		}
+        if (bpaymessageID == 1) {
+            msg += "The purchase '" + name + "' was successful!";
+        }
 
-		if (bpaymessageID == 2)
-		{
-			msg += "Remaining credits: " + getBattlePayCredits() / 10000 + " .";
-		}
+        if (bpaymessageID == 2) {
+            msg += "Remaining credits: " + getBattlePayCredits() / 10000 + " .";
+        }
 
-		if (bpaymessageID == 10)
-		{
-			msg += "You cannot purchase '" + name + "' . Contact a game master to find out more.";
-		}
+        if (bpaymessageID == 10) {
+            msg += "You cannot purchase '" + name + "' . Contact a game master to find out more.";
+        }
 
-		if (bpaymessageID == 11)
-		{
-			msg += "Your bags are too full to add : " + name + " .";
-		}
+        if (bpaymessageID == 11) {
+            msg += "Your bags are too full to add : " + name + " .";
+        }
 
-		if (bpaymessageID == 12)
-		{
-			msg += "You have already purchased : " + name + " .";
-		}
+        if (bpaymessageID == 12) {
+            msg += "You have already purchased : " + name + " .";
+        }
 
-		if (bpaymessageID == 20)
-		{
-			msg += "The battle pay credits have been updated for the character '" + name + "' ! Available credits:" + value + " .";
-		}
+        if (bpaymessageID == 20) {
+            msg += "The battle pay credits have been updated for the character '" + name + "' ! Available credits:" + value + " .";
+        }
 
-		if (bpaymessageID == 21)
-		{
-			msg += "You must enter an amount !";
-		}
+        if (bpaymessageID == 21) {
+            msg += "You must enter an amount !";
+        }
 
-		if (bpaymessageID == 3)
-		{
-			msg += "You have now '" + value + "' credits.";
-		}
+        if (bpaymessageID == 3) {
+            msg += "You have now '" + value + "' credits.";
+        }
 
-		session.getCommandHandler().sendSysMessage(msg);
-	}
+        session.getCommandHandler().sendSysMessage(msg);
+    }
 
-	public final void sendBattlePayBattlePetDelivered(ObjectGuid petguid, int creatureID)
-	{
-		var response = new BattlePayBattlePetDelivered();
-		response.setDisplayID(creatureID);
+    public final void sendBattlePayBattlePetDelivered(ObjectGuid petguid, int creatureID) {
+        var response = new BattlePayBattlePetDelivered();
+        response.setDisplayID(creatureID);
         response.setBattlePetGuid(petguid);
-		session.sendPacket(response);
-		Log.outError(LogFilter.BattlePay, "Send BattlePayBattlePetDelivered guid: {} && creatureID: {}", petguid.getCounter(), creatureID);
-	}
+        session.sendPacket(response);
+        Log.outError(LogFilter.BattlePay, "Send BattlePayBattlePetDelivered guid: {} && creatureID: {}", petguid.getCounter(), creatureID);
+    }
 
-	public final int getShopCurrency()
-	{
-		return (int)ConfigMgr.GetDefaultValue("FeatureSystem.BpayStore.Currency", 1);
-	}
+    public final int getShopCurrency() {
+        return (int) ConfigMgr.GetDefaultValue("FeatureSystem.BpayStore.Currency", 1);
+    }
 
-	public final boolean isAvailable()
-	{
-		return WorldConfig.getBoolValue(WorldCfg.FeatureSystemBpayStoreEnabled);
-	}
+    public final boolean isAvailable() {
+        return WorldConfig.getBoolValue(WorldCfg.FeatureSystemBpayStoreEnabled);
+    }
 
-	public final boolean alreadyOwnProduct(int itemId)
-	{
-		var player = session.getPlayer();
+    public final boolean alreadyOwnProduct(int itemId) {
+        var player = session.getPlayer();
 
-		if (player)
-		{
-			var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
+        if (player) {
+            var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
 
-			if (itemTemplate == null)
-			{
-				return true;
-			}
+            if (itemTemplate == null) {
+                return true;
+            }
 
-			for (var itr : itemTemplate.getEffects())
-			{
-				if (itr.triggerType == ItemSpelltriggerType.OnLearn && player.hasSpell((int)itr.spellID))
-				{
-					return true;
-				}
-			}
+            for (var itr : itemTemplate.getEffects()) {
+                if (itr.triggerType == ItemSpelltriggerType.OnLearn && player.hasSpell((int) itr.spellID)) {
+                    return true;
+                }
+            }
 
-			if (player.getItemCount(itemId) != 0)
-			{
-				return true;
-			}
-		}
+            if (player.getItemCount(itemId) != 0) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final void savePurchase(Purchase purchase)
-	{
-		var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(purchase.productID);
-		var displayInfo = BattlePayDataStoreMgr.getInstance().getDisplayInfo(productInfo.getEntry());
-		var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_INS_PURCHASE);
-		stmt.AddValue(0, session.getAccountId());
-		stmt.AddValue(1, global.getWorldMgr().getVirtualRealmAddress());
-		stmt.AddValue(2, session.getPlayer() ? session.getPlayer().getGUID().getCounter() : 0);
-		stmt.AddValue(3, purchase.productID);
-		stmt.AddValue(4, displayInfo.getName1());
-		stmt.AddValue(5, purchase.currentPrice);
-		stmt.AddValue(6, session.getRemoteAddress());
-		DB.Login.execute(stmt);
-	}
+    public final void savePurchase(Purchase purchase) {
+        var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(purchase.productID);
+        var displayInfo = BattlePayDataStoreMgr.getInstance().getDisplayInfo(productInfo.getEntry());
+        var stmt = DB.Login.GetPreparedStatement(LoginStatements.LOGIN_INS_PURCHASE);
+        stmt.AddValue(0, session.getAccountId());
+        stmt.AddValue(1, global.getWorldMgr().getVirtualRealmAddress());
+        stmt.AddValue(2, session.getPlayer() ? session.getPlayer().getGUID().getCounter() : 0);
+        stmt.AddValue(3, purchase.productID);
+        stmt.AddValue(4, displayInfo.getName1());
+        stmt.AddValue(5, purchase.currentPrice);
+        stmt.AddValue(6, session.getRemoteAddress());
+        DB.Login.execute(stmt);
+    }
 
-	public final void processDelivery(Purchase purchase)
-	{
-		var player = session.getPlayer();
+    public final void processDelivery(Purchase purchase) {
+        var player = session.getPlayer();
 
-		if (!player)
-		{
-			return;
-		}
+        if (!player) {
+            return;
+        }
 
-		var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(purchase.productID);
-		var itemstosendinmail = new ArrayList<>();
+        var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(purchase.productID);
+        var itemstosendinmail = new ArrayList<>();
 
-		for (var productId : productInfo.getProductIds())
-		{
-			var product = BattlePayDataStoreMgr.getInstance().getProduct(productId);
-			var item = global.getObjectMgr().getItemTemplate(product.getFlags());
-			var itemsToSendIfInventoryFull = new ArrayList<>();
+        for (var productId : productInfo.getProductIds()) {
+            var product = BattlePayDataStoreMgr.getInstance().getProduct(productId);
+            var item = global.getObjectMgr().getItemTemplate(product.getFlags());
+            var itemsToSendIfInventoryFull = new ArrayList<>();
 
-			switch (ProductType.forValue(product.getType()))
-			{
-				case Item_: // 0
-					itemsToSendIfInventoryFull.clear();
+            switch (ProductType.forValue(product.getType())) {
+                case Item_: // 0
+                    itemsToSendIfInventoryFull.clear();
 
-					if (item != null && player)
-					{
-						if (player.getFreeInventorySpace() > product.getUnk1())
-						{
-							player.addItemWithToast(product.getFlags(), (short)product.getUnk1(), 0);
-						}
-						else
-						{
-							player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop item delivery");
-						}
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                    if (item != null && player) {
+                        if (player.getFreeInventorySpace() > product.getUnk1()) {
+                            player.addItemWithToast(product.getFlags(), (short) product.getUnk1(), 0);
+                        } else {
+                            player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop item delivery");
+                        }
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					for (var _item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.getProductId()))
-					{
-						if (global.getObjectMgr().getItemTemplate(_item.getItemID()) != null)
-						{
-							if (player.getFreeInventorySpace() > _item.getQuantity())
-							{
-								player.addItemWithToast(_item.getItemID(), (short)_item.getQuantity(), 0);
-							}
-							else
-							{
-								itemsToSendIfInventoryFull.add(_item.getItemID()); // problem if the quantity > 0
-							}
-						}
-					}
+                    for (var _item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.getProductId())) {
+                        if (global.getObjectMgr().getItemTemplate(_item.getItemID()) != null) {
+                            if (player.getFreeInventorySpace() > _item.getQuantity()) {
+                                player.addItemWithToast(_item.getItemID(), (short) _item.getQuantity(), 0);
+                            } else {
+                                itemsToSendIfInventoryFull.add(_item.getItemID()); // problem if the quantity > 0
+                            }
+                        }
+                    }
 
-					if (!itemsToSendIfInventoryFull.isEmpty())
-					{
-						player.sendABunchOfItemsInMail(itemsToSendIfInventoryFull, "Ingame Shop Item Delivery");
-					}
+                    if (!itemsToSendIfInventoryFull.isEmpty()) {
+                        player.sendABunchOfItemsInMail(itemsToSendIfInventoryFull, "Ingame Shop Item Delivery");
+                    }
 
-					break;
+                    break;
 
-				case LevelBoost: // 1
-					if (product.getProductId() == 572) // level 50 boost
-					{
-						player.setLevel(50);
+                case LevelBoost: // 1
+                    if (product.getProductId() == 572) // level 50 boost
+                    {
+                        player.setLevel(50);
 
-						player.gearUpByLoadout(9, new ArrayList<Integer>(Arrays.asList(6771)));
+                        player.gearUpByLoadout(9, new ArrayList<Integer>(Arrays.asList(6771)));
 
-						player.initTalentForLevel();
-						player.initStatsForLevel();
-						player.updateSkillsForLevel();
-						player.learnDefaultSkills();
-						player.learnSpecializationSpells();
-						player.updateAllStats();
-						player.setFullHealth();
-						player.setFullPower(powerType.mana);
-					}
+                        player.initTalentForLevel();
+                        player.initStatsForLevel();
+                        player.updateSkillsForLevel();
+                        player.learnDefaultSkills();
+                        player.learnSpecializationSpells();
+                        player.updateAllStats();
+                        player.setFullHealth();
+                        player.setFullPower(powerType.mana);
+                    }
 
-					if (product.getProductId() == 630) // level 60 boost
-					{
-						player.setLevel(60);
+                    if (product.getProductId() == 630) // level 60 boost
+                    {
+                        player.setLevel(60);
 
-						player.gearUpByLoadout(9, new ArrayList<Integer>(Arrays.asList(6771)));
+                        player.gearUpByLoadout(9, new ArrayList<Integer>(Arrays.asList(6771)));
 
-						player.initTalentForLevel();
-						player.initStatsForLevel();
-						player.updateSkillsForLevel();
-						player.learnDefaultSkills();
-						player.learnSpecializationSpells();
-						player.updateAllStats();
-						player.setFullHealth();
-						player.setFullPower(powerType.mana);
-					}
+                        player.initTalentForLevel();
+                        player.initStatsForLevel();
+                        player.updateSkillsForLevel();
+                        player.learnDefaultSkills();
+                        player.learnSpecializationSpells();
+                        player.updateAllStats();
+                        player.setFullHealth();
+                        player.setFullPower(powerType.mana);
+                    }
 
-					break;
+                    break;
 
-				case Pet: // 2
-					if (player) // if logged in
-					{
-						player.getSession().getBattlePayMgr().addBattlePetFromBpayShop(product.getItemId());
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case Pet: // 2
+                    if (player) // if logged in
+                    {
+                        player.getSession().getBattlePayMgr().addBattlePetFromBpayShop(product.getItemId());
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case Mount: // 3
-					session.getCollectionMgr().addMount(product.getDisplayId(), MountStatusFlags.NONE);
+                case Mount: // 3
+                    session.getCollectionMgr().addMount(product.getDisplayId(), MountStatusFlags.NONE);
 
-					break;
+                    break;
 
-				case WoWToken: // 4
-					if (item != null && player)
-					{
-						if (player.getFreeInventorySpace() > product.getUnk1())
-						{
-							player.addItemWithToast(product.getFlags(), (short)product.getUnk1(), 0);
-						}
-						else
-						{
-							player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop - WoW Token Delivery");
-						}
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case WoWToken: // 4
+                    if (item != null && player) {
+                        if (player.getFreeInventorySpace() > product.getUnk1()) {
+                            player.addItemWithToast(product.getFlags(), (short) product.getUnk1(), 0);
+                        } else {
+                            player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop - WoW Token Delivery");
+                        }
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case NameChange: // 5
-					if (player) // if logged in
-					{
-						player.setAtLoginFlag(AtLoginFlags.Rename);
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case NameChange: // 5
+                    if (player) // if logged in
+                    {
+                        player.setAtLoginFlag(AtLoginFlags.Rename);
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case FactionChange: // 6
-					if (player) // if logged in
-					{
-						player.setAtLoginFlag(AtLoginFlags.ChangeFaction); // not ok for 6 or 3 faction change - only does once yet
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case FactionChange: // 6
+                    if (player) // if logged in
+                    {
+                        player.setAtLoginFlag(AtLoginFlags.ChangeFaction); // not ok for 6 or 3 faction change - only does once yet
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case RaceChange: // 8
-					if (player) // if logged in
-					{
-						player.setAtLoginFlag(AtLoginFlags.ChangeRace); // not ok for 6 or 3 faction change - only does once yet
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case RaceChange: // 8
+                    if (player) // if logged in
+                    {
+                        player.setAtLoginFlag(AtLoginFlags.ChangeRace); // not ok for 6 or 3 faction change - only does once yet
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case CharacterTransfer: // 11
-					// if u have multiple realms u have to implement this xD otherwise it sends error
-					session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                case CharacterTransfer: // 11
+                    // if u have multiple realms u have to implement this xD otherwise it sends error
+                    session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
 
-					break;
+                    break;
 
-				case Toy: // 14
-					boolean fan;
-					tangible.OutObject<Boolean> tempOut_fan = new tangible.OutObject<Boolean>();
-					if (Boolean.tryParse(String.valueOf(product.getUnk1()), tempOut_fan))
-					{
-					fan = tempOut_fan.outArgValue;
-						session.getCollectionMgr().addToy(product.getFlags(), false, fan);
-					}
-				else
-				{
-					fan = tempOut_fan.outArgValue;
-				}
+                case Toy: // 14
+                    boolean fan;
+                    tangible.OutObject<Boolean> tempOut_fan = new tangible.OutObject<Boolean>();
+                    if (Boolean.tryParse(String.valueOf(product.getUnk1()), tempOut_fan)) {
+                        fan = tempOut_fan.outArgValue;
+                        session.getCollectionMgr().addToy(product.getFlags(), false, fan);
+                    } else {
+                        fan = tempOut_fan.outArgValue;
+                    }
 
-					break;
+                    break;
 
-				case Expansion: // 18
-					if (player) // if logged in
-					{
-						//player->SendMovieStart(936); // Play SL Intro - xD what else in a private server we don't sell expansions
-						player.sendMovieStart(957); // Play SL Outro - we are preparing for dragonflight xD
-					}
+                case Expansion: // 18
+                    if (player) // if logged in
+                    {
+                        //player->SendMovieStart(936); // Play SL Intro - xD what else in a private server we don't sell expansions
+                        player.sendMovieStart(957); // Play SL Outro - we are preparing for dragonflight xD
+                    }
 
-					break;
+                    break;
 
-				case GameTime: // 20
-					if (item != null && player)
-					{
-						if (player.getFreeInventorySpace() > product.getUnk1())
-						{
-							player.addItemWithToast(product.getFlags(), (short)product.getUnk1(), 0);
-						}
-						else
-						{
-							player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop - WoW Token Delivery");
-						}
-					}
-					else
-					{
-						session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
-					}
+                case GameTime: // 20
+                    if (item != null && player) {
+                        if (player.getFreeInventorySpace() > product.getUnk1()) {
+                            player.addItemWithToast(product.getFlags(), (short) product.getUnk1(), 0);
+                        } else {
+                            player.sendABunchOfItemsInMail(new ArrayList<Integer>(Arrays.asList(product.getFlags())), "Ingame Shop - WoW Token Delivery");
+                        }
+                    } else {
+                        session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                    }
 
-					break;
+                    break;
 
-				case GuildNameChange: // 21
-				case GuildFactionChange: // 22
-				case GuildTransfer: // 23
-				case GuildFactionTranfer: // 24
-					// Not implemented yet - need some more guild functions e.g.: getmembers
-					session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
+                case GuildNameChange: // 21
+                case GuildFactionChange: // 22
+                case GuildTransfer: // 23
+                case GuildFactionTranfer: // 24
+                    // Not implemented yet - need some more guild functions e.g.: getmembers
+                    session.sendStartPurchaseResponse(session, getPurchase(), BpayError.PurchaseDenied);
 
-					break;
+                    break;
 
-				case TransmogAppearance: // 26
-					session.getCollectionMgr().addTransmogSet(product.getUnk7());
+                case TransmogAppearance: // 26
+                    session.getCollectionMgr().addTransmogSet(product.getUnk7());
 
-					break;
+                    break;
 
-				/** Customs:
-				*/
-				case ItemSet:
-				{
-					var its = global.getObjectMgr().getItemTemplates();
+                /** Customs:
+                 */
+                case ItemSet: {
+                    var its = global.getObjectMgr().getItemTemplates();
 
-					//C++ TO C# CONVERTER NOTE: 'auto' variable declarations are not supported in C#:
-					//ORIGINAL LINE: for (auto const& itemTemplatePair : its)
-					for (var itemTemplatePair : its.entrySet())
-					{
-						if (itemTemplatePair.getValue().ItemSet != product.getFlags())
-						{
-							continue;
-						}
+                    //C++ TO C# CONVERTER NOTE: 'auto' variable declarations are not supported in C#:
+                    //ORIGINAL LINE: for (auto const& itemTemplatePair : its)
+                    for (var itemTemplatePair : its.entrySet()) {
+                        if (itemTemplatePair.getValue().ItemSet != product.getFlags()) {
+                            continue;
+                        }
 
-						var dest = new ArrayList<>();
-						var msg = player.canStoreNewItem(ItemConst.NullBag, ItemConst.NullSlot, dest, itemTemplatePair.getKey(), 1);
+                        var dest = new ArrayList<>();
+                        var msg = player.canStoreNewItem(ItemConst.NullBag, ItemConst.NullSlot, dest, itemTemplatePair.getKey(), 1);
 
-						if (msg == InventoryResult.Ok)
-						{
-							var newItem = player.storeNewItem(dest, itemTemplatePair.getKey(), true);
+                        if (msg == InventoryResult.Ok) {
+                            var newItem = player.storeNewItem(dest, itemTemplatePair.getKey(), true);
 
-							player.sendNewItem(newItem, 1, true, false);
-						}
-						else
-						{
-							itemstosendinmail.add(itemTemplatePair.getValue().id);
-						}
-					}
+                            player.sendNewItem(newItem, 1, true, false);
+                        } else {
+                            itemstosendinmail.add(itemTemplatePair.getValue().id);
+                        }
+                    }
 
-					if (!itemstosendinmail.isEmpty())
-					{
-						player.sendABunchOfItemsInMail(itemstosendinmail, "Ingame Shop - You bought an item set!");
-					}
-				}
+                    if (!itemstosendinmail.isEmpty()) {
+                        player.sendABunchOfItemsInMail(itemstosendinmail, "Ingame Shop - You bought an item set!");
+                    }
+                }
 
-					break;
+                break;
 
-				case Gold: // 30
-					if (player)
-					{
-						player.modifyMoney(product.getUnk7());
-					}
+                case Gold: // 30
+                    if (player) {
+                        player.modifyMoney(product.getUnk7());
+                    }
 
-					break;
+                    break;
 
-				case Currency: // 31
-					if (player)
-					{
-						player.modifyCurrency(product.getFlags(), (int)product.getUnk1()); // implement currencyID in DB
-					}
+                case Currency: // 31
+                    if (player) {
+                        player.modifyCurrency(product.getFlags(), (int) product.getUnk1()); // implement currencyID in DB
+                    }
 
-					break;
+                    break;
 				/*
 								case Battlepay::CharacterCustomization:
 									if (player)
@@ -830,212 +753,194 @@ public class BattlepayManager
 									return;
 									break;
 				*/
-				case PremadePve:
-					if (!player) // Bags
-					{
-						for (var slot = InventorySlots.BagStart; slot < InventorySlots.BagEnd; slot++)
-						{
-							player.equipNewItem(slot, 142075, itemContext.NONE, true);
-						}
-					}
+                case PremadePve:
+                    if (!player) // Bags
+                    {
+                        for (var slot = InventorySlots.BagStart; slot < InventorySlots.BagEnd; slot++) {
+                            player.equipNewItem(slot, 142075, itemContext.NONE, true);
+                        }
+                    }
 
-					player.giveLevel(60);
-					player.initTalentForLevel();
-					player.modifyMoney(200000000);
-					player.learnSpell(33388, true); // Equitacion
-					player.learnSpell(33391, true);
-					player.learnSpell(34090, true);
-					player.learnSpell(34091, true);
-					player.learnSpell(90265, true);
-					player.learnSpell(54197, true);
-					player.learnSpell(90267, true);
-					player.learnSpell(115913, true);
-					player.learnSpell(110406, true);
-					player.learnSpell(104381, true);
+                    player.giveLevel(60);
+                    player.initTalentForLevel();
+                    player.modifyMoney(200000000);
+                    player.learnSpell(33388, true); // Equitacion
+                    player.learnSpell(33391, true);
+                    player.learnSpell(34090, true);
+                    player.learnSpell(34091, true);
+                    player.learnSpell(90265, true);
+                    player.learnSpell(54197, true);
+                    player.learnSpell(90267, true);
+                    player.learnSpell(115913, true);
+                    player.learnSpell(110406, true);
+                    player.learnSpell(104381, true);
 
-					if (player.getClass() == playerClass.Shaman)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199444, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199448, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199447, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199443, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199441, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199445, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199446, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199442, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Shaman) {
+                        player.equipNewItem(EquipmentSlot.Head, 199444, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199448, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199447, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199443, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199441, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199445, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199446, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199442, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Hunter)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 198592, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 198596, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 198595, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 198591, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 198589, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 198593, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 198594, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 198590, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Hunter) {
+                        player.equipNewItem(EquipmentSlot.Head, 198592, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 198596, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 198595, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 198591, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 198589, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 198593, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 198594, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 198590, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Mage)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 198568, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 198571, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 198570, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 198567, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 198565, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 198569, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 198572, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 198566, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Mage) {
+                        player.equipNewItem(EquipmentSlot.Head, 198568, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 198571, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 198570, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 198567, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 198565, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 198569, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 198572, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 198566, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Priest)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199420, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199423, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199422, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199419, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199417, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199421, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 19942, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199418, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Priest) {
+                        player.equipNewItem(EquipmentSlot.Head, 199420, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199423, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199422, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199419, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199417, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199421, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 19942, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199418, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Warlock)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199420, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199423, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199422, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199419, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199417, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199421, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 19942, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199418, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Warlock) {
+                        player.equipNewItem(EquipmentSlot.Head, 199420, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199423, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199422, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199419, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199417, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199421, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 19942, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199418, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.DemonHunter)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 198575, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 198578, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 198577, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 198574, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 198579, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 198576, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 198580, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 198573, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.DemonHunter) {
+                        player.equipNewItem(EquipmentSlot.Head, 198575, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 198578, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 198577, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 198574, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 198579, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 198576, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 198580, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 198573, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Rogue)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199427, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199430, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199429, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199426, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199431, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199428, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199432, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199425, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Rogue) {
+                        player.equipNewItem(EquipmentSlot.Head, 199427, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199430, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199429, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199426, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199431, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199428, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199432, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199425, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Monk)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 198575, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 198578, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 198577, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 198574, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 198579, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 198576, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 198580, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 198573, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Monk) {
+                        player.equipNewItem(EquipmentSlot.Head, 198575, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 198578, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 198577, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 198574, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 198579, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 198576, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 198580, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 198573, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Druid)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199427, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199430, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199429, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199426, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199431, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199428, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199432, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199425, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Druid) {
+                        player.equipNewItem(EquipmentSlot.Head, 199427, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199430, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199429, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199426, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199431, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199428, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199432, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199425, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Warrior)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199433, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199440, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199439, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199436, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199434, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199437, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199438, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199435, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Warrior) {
+                        player.equipNewItem(EquipmentSlot.Head, 199433, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199440, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199439, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199436, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199434, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199437, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199438, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199435, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Paladin)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199433, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199440, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199439, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199436, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199434, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199437, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199438, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199435, itemContext.NONE, true);
-					}
+                    if (player.getClass() == playerClass.Paladin) {
+                        player.equipNewItem(EquipmentSlot.Head, 199433, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199440, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199439, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199436, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199434, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199437, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199438, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199435, itemContext.NONE, true);
+                    }
 
-					if (player.getClass() == playerClass.Deathknight)
-					{
-						var quest = global.getObjectMgr().getQuestTemplate(12801);
+                    if (player.getClass() == playerClass.Deathknight) {
+                        var quest = global.getObjectMgr().getQuestTemplate(12801);
 
-						if (global.getObjectMgr().getQuestTemplate(12801) != null)
-						{
-							player.addQuest(quest, null);
-							player.completeQuest(quest.id);
-							player.rewardQuest(quest, lootItemType.item, 0, null, false);
-						}
+                        if (global.getObjectMgr().getQuestTemplate(12801) != null) {
+                            player.addQuest(quest, null);
+                            player.completeQuest(quest.id);
+                            player.rewardQuest(quest, lootItemType.item, 0, null, false);
+                        }
 
-						if (player.getTeamId() == TeamIds.Alliance)
-						{
-							player.teleportTo(0, -8829.8710f, 625.3872f, 94.1712f, 3.808243f);
-						}
-						else
-						{
-							player.teleportTo(1, 1570.6693f, -4399.3388f, 16.0058f, 3.382241f);
-						}
+                        if (player.getTeamId() == TeamIds.Alliance) {
+                            player.teleportTo(0, -8829.8710f, 625.3872f, 94.1712f, 3.808243f);
+                        } else {
+                            player.teleportTo(1, 1570.6693f, -4399.3388f, 16.0058f, 3.382241f);
+                        }
 
-						player.learnSpell(53428, true); // runeforging
-						player.learnSpell(53441, true); // runeforging
-						player.learnSpell(54586, true); // runeforging credit
-						player.learnSpell(48778, true); //acherus deathcharger
-						player.learnSkillRewardedSpells(776, 375, race.NONE);
-						player.learnSkillRewardedSpells(960, 375, race.NONE);
+                        player.learnSpell(53428, true); // runeforging
+                        player.learnSpell(53441, true); // runeforging
+                        player.learnSpell(54586, true); // runeforging credit
+                        player.learnSpell(48778, true); //acherus deathcharger
+                        player.learnSkillRewardedSpells(776, 375, race.NONE);
+                        player.learnSkillRewardedSpells(960, 375, race.NONE);
 
-						player.equipNewItem(EquipmentSlot.Head, 198581, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 198587, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 198588, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 198584, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 198582, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 198585, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 198586, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 198583, itemContext.NONE, true);
-					}
+                        player.equipNewItem(EquipmentSlot.Head, 198581, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 198587, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 198588, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 198584, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 198582, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 198585, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 198586, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 198583, itemContext.NONE, true);
+                    }
 
-					// DRACTHYR DF
-					if (player.getClass() == playerClass.Evoker)
-					{
-						player.equipNewItem(EquipmentSlot.Head, 199444, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Wrist, 199448, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Waist, 199447, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Hands, 199443, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.chest, 199441, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Legs, 199445, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Shoulders, 199446, itemContext.NONE, true);
-						player.equipNewItem(EquipmentSlot.Feet, 199442, itemContext.NONE, true);
-					}
+                    // DRACTHYR DF
+                    if (player.getClass() == playerClass.Evoker) {
+                        player.equipNewItem(EquipmentSlot.Head, 199444, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Wrist, 199448, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Waist, 199447, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Hands, 199443, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.chest, 199441, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Legs, 199445, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Shoulders, 199446, itemContext.NONE, true);
+                        player.equipNewItem(EquipmentSlot.Feet, 199442, itemContext.NONE, true);
+                    }
 
-					break;
+                    break;
 				/*
 			case Battlepay::VueloDL:
 				if (!player)
@@ -1048,311 +953,279 @@ public class BattlepayManager
 				//default:
 					//break;
 					*/
-			}
-		}
+            }
+        }
 		/*
 		if (!product->scriptName.empty())
 			sScriptMgr->OnBattlePayProductDelivery(session, product);
 			*/
-	}
+    }
 
-	public final void registerStartPurchase(Purchase purchase)
-	{
-		actualTransaction = purchase;
-	}
+    public final void registerStartPurchase(Purchase purchase) {
+        actualTransaction = purchase;
+    }
 
-	public final long generateNewPurchaseID()
-	{
-		return (0x1E77800000000000 | ++purchaseIDCount);
-	}
+    public final long generateNewPurchaseID() {
+        return (0x1E77800000000000 | ++purchaseIDCount);
+    }
 
-	public final long generateNewDistributionId()
-	{
-		return (0x1E77800000000000 | ++distributionIDCount);
-	}
+    public final long generateNewDistributionId() {
+        return (0x1E77800000000000 | ++distributionIDCount);
+    }
 
-	public final Purchase getPurchase()
-	{
-		return actualTransaction;
-	}
+    public final Purchase getPurchase() {
+        return actualTransaction;
+    }
 
-	//C++ TO C# CONVERTER WARNING: 'const' methods are not available in C#:
-	//ORIGINAL LINE: string const& getDefaultWalletName() const
-	public final String getDefaultWalletName()
-	{
-		return walletName;
-	}
+    //C++ TO C# CONVERTER WARNING: 'const' methods are not available in C#:
+    //ORIGINAL LINE: string const& getDefaultWalletName() const
+    public final String getDefaultWalletName() {
+        return walletName;
+    }
 
 
-	public final Tuple<Boolean, BpayDisplayInfo> writeDisplayInfo(int displayInfoEntry)
-	{
-		return writeDisplayInfo(displayInfoEntry, 0);
-	}
+    public final Tuple<Boolean, BpayDisplayInfo> writeDisplayInfo(int displayInfoEntry) {
+        return writeDisplayInfo(displayInfoEntry, 0);
+    }
 
-	public final Tuple<Boolean, BpayDisplayInfo> writeDisplayInfo(int displayInfoEntry, int productId)
-	{
-		//C++ TO C# CONVERTER TASK: Lambda expressions cannot be assigned to 'var':
-		var qualityColor = (int displayInfoOrProductInfoEntry) ->
-		{
-				var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(displayInfoOrProductInfoEntry);
+    public final Tuple<Boolean, BpayDisplayInfo> writeDisplayInfo(int displayInfoEntry, int productId) {
+        //C++ TO C# CONVERTER TASK: Lambda expressions cannot be assigned to 'var':
+        var qualityColor = (int displayInfoOrProductInfoEntry) ->
+        {
+            var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(displayInfoOrProductInfoEntry);
 
-				if (productAddon == null)
-				{
-					return "|cffffffff";
-				}
+            if (productAddon == null) {
+                return "|cffffffff";
+            }
 
-				switch (BattlePayDataStoreMgr.getInstance().getProductAddon(displayInfoOrProductInfoEntry).getNameColorIndex())
-				{
-					case 0:
-						return "|cffffffff";
-					case 1:
-						return "|cff1eff00";
-					case 2:
-						return "|cff0070dd";
-					case 3:
-						return "|cffa335ee";
-					case 4:
-						return "|cffff8000";
-					case 5:
-						return "|cffe5cc80";
-					case 6:
-						return "|cffe5cc80";
-					default:
-						return "|cffffffff";
-				}
-		};
+            switch (BattlePayDataStoreMgr.getInstance().getProductAddon(displayInfoOrProductInfoEntry).getNameColorIndex()) {
+                case 0:
+                    return "|cffffffff";
+                case 1:
+                    return "|cff1eff00";
+                case 2:
+                    return "|cff0070dd";
+                case 3:
+                    return "|cffa335ee";
+                case 4:
+                    return "|cffff8000";
+                case 5:
+                    return "|cffe5cc80";
+                case 6:
+                    return "|cffe5cc80";
+                default:
+                    return "|cffffffff";
+            }
+        };
 
-		var info = new BpayDisplayInfo();
+        var info = new BpayDisplayInfo();
 
-		var displayInfo = BattlePayDataStoreMgr.getInstance().getDisplayInfo(displayInfoEntry);
+        var displayInfo = BattlePayDataStoreMgr.getInstance().getDisplayInfo(displayInfoEntry);
 
-		if (displayInfo == null)
-		{
-			return Tuple.create(false, info);
-		}
+        if (displayInfo == null) {
+            return Tuple.create(false, info);
+        }
 
-		info.setCreatureDisplayID(displayInfo.getCreatureDisplayID());
-		info.setVisualID(displayInfo.getVisualID());
-		info.setName1(qualityColor(displayInfoEntry) + displayInfo.getName1());
-		info.setName2(displayInfo.getName2());
-		info.setName3(displayInfo.getName3());
-		info.setName4(displayInfo.getName4());
-		info.setName5(displayInfo.getName5());
-		info.setName6(displayInfo.getName6());
-		info.setName7(displayInfo.getName7());
-		info.setFlags(displayInfo.getFlags());
-		info.setUnk1(displayInfo.getUnk1());
-		info.setUnk2(displayInfo.getUnk2());
-		info.setUnk3(displayInfo.getUnk3());
-		info.setUnkInt1(displayInfo.getUnkInt1());
-		info.setUnkInt2(displayInfo.getUnkInt2());
-		info.setUnkInt3(displayInfo.getUnkInt3());
+        info.setCreatureDisplayID(displayInfo.getCreatureDisplayID());
+        info.setVisualID(displayInfo.getVisualID());
+        info.setName1(qualityColor(displayInfoEntry) + displayInfo.getName1());
+        info.setName2(displayInfo.getName2());
+        info.setName3(displayInfo.getName3());
+        info.setName4(displayInfo.getName4());
+        info.setName5(displayInfo.getName5());
+        info.setName6(displayInfo.getName6());
+        info.setName7(displayInfo.getName7());
+        info.setFlags(displayInfo.getFlags());
+        info.setUnk1(displayInfo.getUnk1());
+        info.setUnk2(displayInfo.getUnk2());
+        info.setUnk3(displayInfo.getUnk3());
+        info.setUnkInt1(displayInfo.getUnkInt1());
+        info.setUnkInt2(displayInfo.getUnkInt2());
+        info.setUnkInt3(displayInfo.getUnkInt3());
 
-		for (var v = 0; v < displayInfo.getVisuals().size(); v++)
-		{
-			var visual = displayInfo.getVisuals().get(v);
+        for (var v = 0; v < displayInfo.getVisuals().size(); v++) {
+            var visual = displayInfo.getVisuals().get(v);
 
-			var _Visual = new BpayVisual();
-			_Visual.setName(visual.getName());
-			_Visual.setDisplayId(visual.getDisplayId());
-			_Visual.setVisualId(visual.getVisualId());
-			_Visual.setUnk(visual.getUnk());
+            var _Visual = new BpayVisual();
+            _Visual.setName(visual.getName());
+            _Visual.setDisplayId(visual.getDisplayId());
+            _Visual.setVisualId(visual.getVisualId());
+            _Visual.setUnk(visual.getUnk());
 
-			info.getVisuals().add(_Visual);
-		}
+            info.getVisuals().add(_Visual);
+        }
 
-		if (displayInfo.getFlags() != 0)
-		{
-			info.setFlags(displayInfo.getFlags());
-		}
+        if (displayInfo.getFlags() != 0) {
+            info.setFlags(displayInfo.getFlags());
+        }
 
-		return Tuple.create(true, info);
-	}
+        return Tuple.create(true, info);
+    }
 
-	//C++ TO C# CONVERTER TASK: There is no C# equivalent to C++ suffix return type syntax:
-	//ORIGINAL LINE: auto ProductFilter(WorldPackets::BattlePay::Product product)->bool;
-	//C++ TO C# CONVERTER TASK: The return type of the following function could not be determined:
-	//C++ TO C# CONVERTER TASK: The implementation of the following method could not be found:
-	//	auto ProductFilter(WorldPackets::BattlePay::Product product);
-	public final void sendProductList()
-	{
-		var response = new ProductListResponse();
-		var player = session.getPlayer(); // it's a false value if player is in character screen
+    //C++ TO C# CONVERTER TASK: There is no C# equivalent to C++ suffix return type syntax:
+    //ORIGINAL LINE: auto ProductFilter(WorldPackets::BattlePay::Product product)->bool;
+    //C++ TO C# CONVERTER TASK: The return type of the following function could not be determined:
+    //C++ TO C# CONVERTER TASK: The implementation of the following method could not be found:
+    //	auto ProductFilter(WorldPackets::BattlePay::Product product);
+    public final void sendProductList() {
+        var response = new ProductListResponse();
+        var player = session.getPlayer(); // it's a false value if player is in character screen
 
-		if (!isAvailable())
-		{
-			response.setResult((int)ProductListResult.LockUnk1.getValue());
-			session.sendPacket(response);
+        if (!isAvailable()) {
+            response.setResult((int) ProductListResult.LockUnk1.getValue());
+            session.sendPacket(response);
 
-			return;
-		}
+            return;
+        }
 
-		response.setResult((int)ProductListResult.Available.getValue());
-		response.setCurrencyID(getShopCurrency() > 0 ? getShopCurrency() : 1);
+        response.setResult((int) ProductListResult.Available.getValue());
+        response.setCurrencyID(getShopCurrency() > 0 ? getShopCurrency() : 1);
 
-		// BATTLEPAY GROUP
-		for (var itr : BattlePayDataStoreMgr.getInstance().getProductGroups())
-		{
-			var group = new BpayGroup();
-			group.setGroupId(itr.getGroupId());
-			group.setIconFileDataID(itr.getIconFileDataID());
-			group.setDisplayType(itr.getDisplayType());
-			group.setOrdering(itr.getOrdering());
-			group.setUnk(itr.getUnk());
-			group.setName(itr.getName());
-			group.setDescription(itr.getDescription());
+        // BATTLEPAY GROUP
+        for (var itr : BattlePayDataStoreMgr.getInstance().getProductGroups()) {
+            var group = new BpayGroup();
+            group.setGroupId(itr.getGroupId());
+            group.setIconFileDataID(itr.getIconFileDataID());
+            group.setDisplayType(itr.getDisplayType());
+            group.setOrdering(itr.getOrdering());
+            group.setUnk(itr.getUnk());
+            group.setName(itr.getName());
+            group.setDescription(itr.getDescription());
 
-			response.getProductGroups().add(group);
-		}
+            response.getProductGroups().add(group);
+        }
 
-		// BATTLEPAY SHOP
-		for (var itr : BattlePayDataStoreMgr.getInstance().getShopEntries())
-		{
-			var shop = new BpayShop();
-			shop.setEntryId(itr.getEntryId());
-			shop.setGroupID(itr.getGroupID());
-			shop.setProductID(itr.getProductID());
-			shop.setOrdering(itr.getOrdering());
-			shop.setVasServiceType(itr.getVasServiceType());
-			shop.setStoreDeliveryType(itr.getStoreDeliveryType());
+        // BATTLEPAY SHOP
+        for (var itr : BattlePayDataStoreMgr.getInstance().getShopEntries()) {
+            var shop = new BpayShop();
+            shop.setEntryId(itr.getEntryId());
+            shop.setGroupID(itr.getGroupID());
+            shop.setProductID(itr.getProductID());
+            shop.setOrdering(itr.getOrdering());
+            shop.setVasServiceType(itr.getVasServiceType());
+            shop.setStoreDeliveryType(itr.getStoreDeliveryType());
 
-			// shop entry and display entry must be the same
-			var data = writeDisplayInfo(itr.getEntry());
+            // shop entry and display entry must be the same
+            var data = writeDisplayInfo(itr.getEntry());
 
-			if (data.Item1)
-			{
-				shop.setDisplay(data.item2);
-			}
+            if (data.Item1) {
+                shop.setDisplay(data.item2);
+            }
 
-			// when logged out don't show everything
-			if (player == null && shop.getStoreDeliveryType() != 2)
-			{
-				continue;
-			}
+            // when logged out don't show everything
+            if (player == null && shop.getStoreDeliveryType() != 2) {
+                continue;
+            }
 
-			var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(itr.getEntry());
+            var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(itr.getEntry());
 
-			if (productAddon != null)
-			{
-				if (productAddon.getDisableListing() > 0)
-				{
-					continue;
-				}
-			}
+            if (productAddon != null) {
+                if (productAddon.getDisableListing() > 0) {
+                    continue;
+                }
+            }
 
-			response.getShops().add(shop);
-		}
+            response.getShops().add(shop);
+        }
 
-		// BATTLEPAY PRODUCT INFO
-		for (var itr : BattlePayDataStoreMgr.getInstance().getProductInfos().entrySet())
-		{
-			var productInfo = itr.getValue();
+        // BATTLEPAY PRODUCT INFO
+        for (var itr : BattlePayDataStoreMgr.getInstance().getProductInfos().entrySet()) {
+            var productInfo = itr.getValue();
 
-			var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(productInfo.entry);
+            var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(productInfo.entry);
 
-			if (productAddon != null)
-			{
-				if (productAddon.getDisableListing() > 0)
-				{
-					continue;
-				}
-			}
+            if (productAddon != null) {
+                if (productAddon.getDisableListing() > 0) {
+                    continue;
+                }
+            }
 
-			var productinfo = new BpayProductInfo();
-			productinfo.setProductId(productInfo.productId);
-			productinfo.setNormalPriceFixedPoint(productInfo.normalPriceFixedPoint);
-			productinfo.setCurrentPriceFixedPoint(productInfo.currentPriceFixedPoint);
-			productinfo.setProductIds(productInfo.productIds);
-			productinfo.setUnk1(productInfo.unk1);
-			productinfo.setUnk2(productInfo.unk2);
-			productinfo.setUnkInts(productInfo.unkInts);
-			productinfo.setUnk3(productInfo.unk3);
-			productinfo.setChoiceType(productInfo.choiceType);
+            var productinfo = new BpayProductInfo();
+            productinfo.setProductId(productInfo.productId);
+            productinfo.setNormalPriceFixedPoint(productInfo.normalPriceFixedPoint);
+            productinfo.setCurrentPriceFixedPoint(productInfo.currentPriceFixedPoint);
+            productinfo.setProductIds(productInfo.productIds);
+            productinfo.setUnk1(productInfo.unk1);
+            productinfo.setUnk2(productInfo.unk2);
+            productinfo.setUnkInts(productInfo.unkInts);
+            productinfo.setUnk3(productInfo.unk3);
+            productinfo.setChoiceType(productInfo.choiceType);
 
-			// productinfo entry and display entry must be the same
-			var data = writeDisplayInfo(productInfo.entry);
+            // productinfo entry and display entry must be the same
+            var data = writeDisplayInfo(productInfo.entry);
 
-			if (data.Item1)
-			{
-				productinfo.setDisplay(data.item2);
-			}
+            if (data.Item1) {
+                productinfo.setDisplay(data.item2);
+            }
 
-			response.getProductInfos().add(productinfo);
-		}
+            response.getProductInfos().add(productinfo);
+        }
 
-		for (var itr : BattlePayDataStoreMgr.getInstance().getProducts().entrySet())
-		{
-			var product = itr.getValue();
-			var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(product.productId);
+        for (var itr : BattlePayDataStoreMgr.getInstance().getProducts().entrySet()) {
+            var product = itr.getValue();
+            var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(product.productId);
 
-			var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(productInfo.getEntry());
+            var productAddon = BattlePayDataStoreMgr.getInstance().getProductAddon(productInfo.getEntry());
 
-			if (productAddon != null)
-			{
-				if (productAddon.getDisableListing() > 0)
-				{
-					continue;
-				}
-			}
+            if (productAddon != null) {
+                if (productAddon.getDisableListing() > 0) {
+                    continue;
+                }
+            }
 
-			// BATTLEPAY PRODUCTS
-			var pProduct = new BpayProduct();
-			pProduct.setProductId(product.productId);
-			pProduct.setType(product.type);
-			pProduct.setFlags(product.flags);
-			pProduct.setUnk1(product.unk1);
-			pProduct.setDisplayId(product.displayId);
-			pProduct.setItemId(product.itemId);
-			pProduct.setUnk4(product.unk4);
-			pProduct.setUnk5(product.unk5);
-			pProduct.setUnk6(product.unk6);
-			pProduct.setUnk7(product.unk7);
-			pProduct.setUnk8(product.unk8);
-			pProduct.setUnk9(product.unk9);
-			pProduct.setUnkString(product.unkString);
-			pProduct.setUnkBit(product.unkBit);
-			pProduct.setUnkBits(product.unkBits);
+            // BATTLEPAY PRODUCTS
+            var pProduct = new BpayProduct();
+            pProduct.setProductId(product.productId);
+            pProduct.setType(product.type);
+            pProduct.setFlags(product.flags);
+            pProduct.setUnk1(product.unk1);
+            pProduct.setDisplayId(product.displayId);
+            pProduct.setItemId(product.itemId);
+            pProduct.setUnk4(product.unk4);
+            pProduct.setUnk5(product.unk5);
+            pProduct.setUnk6(product.unk6);
+            pProduct.setUnk7(product.unk7);
+            pProduct.setUnk8(product.unk8);
+            pProduct.setUnk9(product.unk9);
+            pProduct.setUnkString(product.unkString);
+            pProduct.setUnkBit(product.unkBit);
+            pProduct.setUnkBits(product.unkBits);
 
-			// BATTLEPAY ITEM
-			if (product.items.count > 0)
-			{
-				for (var item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.productId))
-				{
-					var pItem = new BpayProductItem();
-					pItem.setID(item.getID());
-					pItem.setUnkByte(item.getUnkByte());
-					pItem.setItemID(item.getItemID());
-					pItem.setQuantity(item.getQuantity());
-					pItem.setUnkInt1(item.getUnkInt1());
-					pItem.setUnkInt2(item.getUnkInt2());
-					pItem.setPet(item.isPet());
-					pItem.setPetResult(item.getPetResult());
+            // BATTLEPAY ITEM
+            if (product.items.count > 0) {
+                for (var item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.productId)) {
+                    var pItem = new BpayProductItem();
+                    pItem.setID(item.getID());
+                    pItem.setUnkByte(item.getUnkByte());
+                    pItem.setItemID(item.getItemID());
+                    pItem.setQuantity(item.getQuantity());
+                    pItem.setUnkInt1(item.getUnkInt1());
+                    pItem.setUnkInt2(item.getUnkInt2());
+                    pItem.setPet(item.isPet());
+                    pItem.setPetResult(item.getPetResult());
 
-					if (BattlePayDataStoreMgr.getInstance().displayInfoExist(productInfo.getEntry()))
-					{
-						// productinfo entry and display entry must be the same
-						var disInfo = writeDisplayInfo(productInfo.getEntry());
+                    if (BattlePayDataStoreMgr.getInstance().displayInfoExist(productInfo.getEntry())) {
+                        // productinfo entry and display entry must be the same
+                        var disInfo = writeDisplayInfo(productInfo.getEntry());
 
-						if (disInfo.Item1)
-						{
-							pItem.setDisplay(disInfo.item2);
-						}
-					}
+                        if (disInfo.Item1) {
+                            pItem.setDisplay(disInfo.item2);
+                        }
+                    }
 
-					pProduct.getItems().add(pItem);
-				}
-			}
+                    pProduct.getItems().add(pItem);
+                }
+            }
 
-			// productinfo entry and display entry must be the same
-			var data = writeDisplayInfo(productInfo.getEntry());
+            // productinfo entry and display entry must be the same
+            var data = writeDisplayInfo(productInfo.getEntry());
 
-			if (data.Item1)
-			{
-				pProduct.setDisplay(data.item2);
-			}
+            if (data.Item1) {
+                pProduct.setDisplay(data.item2);
+            }
 
-			response.getProducts().add(pProduct);
-		}
+            response.getProducts().add(pProduct);
+        }
 
 		/*
 		// debug
@@ -1365,126 +1238,118 @@ public class BattlepayManager
 		}
 		*/
 
-		session.sendPacket(response);
-	}
+        session.sendPacket(response);
+    }
 
-	public final void sendAccountCredits()
-	{
-		//    auto sessionId = _session->GetAccountId();
-		//
-		//    LoginDatabasePreparedStatement* stmt = DB.Login.GetPreparedStatement(LOGIN_SEL_BATTLE_PAY_ACCOUNT_CREDITS);
-		//    stmt->setUInt32(0, _session->GetAccountId());
-		//    PreparedQueryResult result = DB.Login.query(stmt);
-		//
-		//    auto sSession = sWorld->FindSession(sessionId);
-		//    if (!sSession)
-		//        return;
-		//
-		//    uint64 balance = 0;
-		//    if (result)
-		//    {
-		//        auto fields = result->Fetch();
-		//        if (auto balanceStr = fields[0].GetCString())
-		//            balance = atoi(balanceStr);
-		//    }
-		//
-		//    auto player = sSession->GetPlayer();
-		//    if (!player)
-		//        return;
-		//
-		//    sendBattlePayMessage(2, "");
-	}
+    public final void sendAccountCredits() {
+        //    auto sessionId = _session->GetAccountId();
+        //
+        //    LoginDatabasePreparedStatement* stmt = DB.Login.GetPreparedStatement(LOGIN_SEL_BATTLE_PAY_ACCOUNT_CREDITS);
+        //    stmt->setUInt32(0, _session->GetAccountId());
+        //    PreparedQueryResult result = DB.Login.query(stmt);
+        //
+        //    auto sSession = sWorld->FindSession(sessionId);
+        //    if (!sSession)
+        //        return;
+        //
+        //    uint64 balance = 0;
+        //    if (result)
+        //    {
+        //        auto fields = result->Fetch();
+        //        if (auto balanceStr = fields[0].GetCString())
+        //            balance = atoi(balanceStr);
+        //    }
+        //
+        //    auto player = sSession->GetPlayer();
+        //    if (!player)
+        //        return;
+        //
+        //    sendBattlePayMessage(2, "");
+    }
 
-	public final void sendBattlePayDistribution(int productId, short status, long distributionId, ObjectGuid targetGuid)
-	{
-		var distributionBattlePay = new DistributionUpdate();
-		var product = BattlePayDataStoreMgr.getInstance().getProduct(productId);
+    public final void sendBattlePayDistribution(int productId, short status, long distributionId, ObjectGuid targetGuid) {
+        var distributionBattlePay = new DistributionUpdate();
+        var product = BattlePayDataStoreMgr.getInstance().getProduct(productId);
 
-		var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(productId);
+        var productInfo = BattlePayDataStoreMgr.getInstance().getProductInfoForProduct(productId);
 
-		distributionBattlePay.getDistributionObject().setDistributionID(distributionId);
-		distributionBattlePay.getDistributionObject().setStatus(status);
-		distributionBattlePay.getDistributionObject().setProductID(productId);
-		distributionBattlePay.getDistributionObject().setRevoked(false); // not needed for us
+        distributionBattlePay.getDistributionObject().setDistributionID(distributionId);
+        distributionBattlePay.getDistributionObject().setStatus(status);
+        distributionBattlePay.getDistributionObject().setProductID(productId);
+        distributionBattlePay.getDistributionObject().setRevoked(false); // not needed for us
 
-		if (!targetGuid.isEmpty())
-		{
+        if (!targetGuid.isEmpty()) {
             distributionBattlePay.getDistributionObject().setTargetPlayer(targetGuid);
-			distributionBattlePay.getDistributionObject().setTargetVirtualRealm(global.getWorldMgr().getVirtualRealmAddress());
-			distributionBattlePay.getDistributionObject().setTargetNativeRealm(global.getWorldMgr().getVirtualRealmAddress());
-		}
+            distributionBattlePay.getDistributionObject().setTargetVirtualRealm(global.getWorldMgr().getVirtualRealmAddress());
+            distributionBattlePay.getDistributionObject().setTargetNativeRealm(global.getWorldMgr().getVirtualRealmAddress());
+        }
 
-		var productData = new BpayProduct();
+        var productData = new BpayProduct();
 
-		productData.setProductId(product.getProductId());
-		productData.setType(product.getType());
-		productData.setFlags(product.getFlags());
-		productData.setUnk1(product.getUnk1());
-		productData.setDisplayId(product.getDisplayId());
-		productData.setItemId(product.getItemId());
-		productData.setUnk4(product.getUnk4());
-		productData.setUnk5(product.getUnk5());
-		productData.setUnk6(product.getUnk6());
-		productData.setUnk7(product.getUnk7());
-		productData.setUnk8(product.getUnk8());
-		productData.setUnk9(product.getUnk9());
-		productData.setUnkString(product.getUnkString());
-		productData.setUnkBit(product.getUnkBit());
-		productData.setUnkBits(product.getUnkBits());
+        productData.setProductId(product.getProductId());
+        productData.setType(product.getType());
+        productData.setFlags(product.getFlags());
+        productData.setUnk1(product.getUnk1());
+        productData.setDisplayId(product.getDisplayId());
+        productData.setItemId(product.getItemId());
+        productData.setUnk4(product.getUnk4());
+        productData.setUnk5(product.getUnk5());
+        productData.setUnk6(product.getUnk6());
+        productData.setUnk7(product.getUnk7());
+        productData.setUnk8(product.getUnk8());
+        productData.setUnk9(product.getUnk9());
+        productData.setUnkString(product.getUnkString());
+        productData.setUnkBit(product.getUnkBit());
+        productData.setUnkBits(product.getUnkBits());
 
-		for (var item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.getProductId()))
-		{
-			var productItem = new BpayProductItem();
+        for (var item : BattlePayDataStoreMgr.getInstance().getItemsOfProduct(product.getProductId())) {
+            var productItem = new BpayProductItem();
 
-			productItem.setID(item.getID());
-			productItem.setUnkByte(item.getUnkByte());
-			productItem.setItemID(item.getItemID());
-			productItem.setQuantity(item.getQuantity());
-			productItem.setUnkInt1(item.getUnkInt1());
-			productItem.setUnkInt2(item.getUnkInt2());
-			productItem.setPet(item.isPet());
-			productItem.setPetResult(item.getPetResult());
+            productItem.setID(item.getID());
+            productItem.setUnkByte(item.getUnkByte());
+            productItem.setItemID(item.getItemID());
+            productItem.setQuantity(item.getQuantity());
+            productItem.setUnkInt1(item.getUnkInt1());
+            productItem.setUnkInt2(item.getUnkInt2());
+            productItem.setPet(item.isPet());
+            productItem.setPetResult(item.getPetResult());
 
-			var dInfo = writeDisplayInfo(productInfo.getEntry());
+            var dInfo = writeDisplayInfo(productInfo.getEntry());
 
-			if (dInfo.Item1)
-			{
-				productItem.setDisplay(dInfo.item2);
-			}
-		}
+            if (dInfo.Item1) {
+                productItem.setDisplay(dInfo.item2);
+            }
+        }
 
-		var data = writeDisplayInfo(productInfo.getEntry());
+        var data = writeDisplayInfo(productInfo.getEntry());
 
-		if (data.Item1)
-		{
-			productData.setDisplay(data.item2);
-		}
+        if (data.Item1) {
+            productData.setDisplay(data.item2);
+        }
 
-		distributionBattlePay.getDistributionObject().setProduct(productData);
-		session.sendPacket(distributionBattlePay);
-	}
+        distributionBattlePay.getDistributionObject().setProduct(productData);
+        session.sendPacket(distributionBattlePay);
+    }
 
-	public final void assignDistributionToCharacter(final ObjectGuid targetCharGuid, long distributionId, int productId, short specialization_id, short choice_id)
-	{
-		var upgrade = new UpgradeStarted();
+    public final void assignDistributionToCharacter(final ObjectGuid targetCharGuid, long distributionId, int productId, short specialization_id, short choice_id) {
+        var upgrade = new UpgradeStarted();
         upgrade.setCharacterGUID(targetCharGuid);
-		session.sendPacket(upgrade);
+        session.sendPacket(upgrade);
 
-		var assignResponse = new BattlePayStartDistributionAssignToTargetResponse();
-		assignResponse.setDistributionID(distributionId);
-		assignResponse.setUnkint1(0);
-		assignResponse.setUnkint2(0);
-		session.sendPacket(upgrade);
+        var assignResponse = new BattlePayStartDistributionAssignToTargetResponse();
+        assignResponse.setDistributionID(distributionId);
+        assignResponse.setUnkint1(0);
+        assignResponse.setUnkint2(0);
+        session.sendPacket(upgrade);
 
-		var purchase = getPurchase();
-		purchase.status = (short)BpayDistributionStatus.ADD_TO_PROCESS.getValue(); // DistributionStatus.Globals.BATTLE_PAY_DIST_STATUS_ADD_TO_PROCESS;
+        var purchase = getPurchase();
+        purchase.status = (short) BpayDistributionStatus.ADD_TO_PROCESS.getValue(); // DistributionStatus.Globals.BATTLE_PAY_DIST_STATUS_ADD_TO_PROCESS;
 
         sendBattlePayDistribution(productId, purchase.status, distributionId, targetCharGuid);
-	}
+    }
 
-	public final void update(int diff)
-	{
-		Log.outInfo(LogFilter.BattlePay, "BattlepayManager::Update");
+    public final void update(int diff) {
+        Log.outInfo(LogFilter.BattlePay, "BattlepayManager::Update");
 		/*
 		auto& data = actualTransaction;
 		auto product = sBattlePayDataStore->GetProduct(data.productID);
@@ -1550,20 +1415,18 @@ public class BattlepayManager
 			break;
 		}
 		*/
-	}
+    }
 
-	//C++ TO C# CONVERTER WARNING: 'const' methods are not available in C#:
-	//ORIGINAL LINE: void addBattlePetFromBpayShop(uint battlePetCreatureID) const
-	public final void addBattlePetFromBpayShop(int battlePetCreatureID)
-	{
-		var speciesEntry = battlepets.BattlePetMgr.getBattlePetSpeciesByCreature(battlePetCreatureID);
+    //C++ TO C# CONVERTER WARNING: 'const' methods are not available in C#:
+    //ORIGINAL LINE: void addBattlePetFromBpayShop(uint battlePetCreatureID) const
+    public final void addBattlePetFromBpayShop(int battlePetCreatureID) {
+        var speciesEntry = battlepets.BattlePetMgr.getBattlePetSpeciesByCreature(battlePetCreatureID);
 
-		if (battlepets.BattlePetMgr.getBattlePetSpeciesByCreature(battlePetCreatureID) != null)
-		{
-			session.getBattlePetMgr().addPet(speciesEntry.id, battlepets.BattlePetMgr.selectPetDisplay(speciesEntry), battlepets.BattlePetMgr.rollPetBreed(speciesEntry.id), battlepets.BattlePetMgr.getDefaultPetQuality(speciesEntry.id));
+        if (battlepets.BattlePetMgr.getBattlePetSpeciesByCreature(battlePetCreatureID) != null) {
+            session.getBattlePetMgr().addPet(speciesEntry.id, battlepets.BattlePetMgr.selectPetDisplay(speciesEntry), battlepets.BattlePetMgr.rollPetBreed(speciesEntry.id), battlepets.BattlePetMgr.getDefaultPetQuality(speciesEntry.id));
 
-			//it gives back false information need to get the pet guid from the add pet method somehow
-			sendBattlePayBattlePetDelivered(ObjectGuid.create(HighGuid.BattlePet, global.getObjectMgr().getGenerator(HighGuid.BattlePet).generate()), speciesEntry.creatureID);
-		}
-	}
+            //it gives back false information need to get the pet guid from the add pet method somehow
+            sendBattlePayBattlePetDelivered(ObjectGuid.create(HighGuid.BattlePet, global.getObjectMgr().getGenerator(HighGuid.BattlePet).generate()), speciesEntry.creatureID);
+        }
+    }
 }

@@ -1,31 +1,28 @@
 package com.github.mmo.game.networking.packet.inspect;
 
-import com.github.mmo.game.networking.*;
-public final class TraitInspectInfo
-{
-	public int level;
-	public int chrSpecializationID;
-	public TraitconfigPacket config;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(level);
-		data.writeInt32(chrSpecializationID);
+public final class TraitInspectInfo {
+    public int level;
+    public int chrSpecializationID;
+    public TraitconfigPacket config;
 
-		if (config != null)
-		{
-			config.write(data);
-		}
-	}
+    public void write(WorldPacket data) {
+        data.writeInt32(level);
+        data.writeInt32(chrSpecializationID);
 
-	public TraitInspectInfo clone()
-	{
-		TraitInspectInfo varCopy = new traitInspectInfo();
+        if (config != null) {
+            config.write(data);
+        }
+    }
 
-		varCopy.level = this.level;
-		varCopy.chrSpecializationID = this.chrSpecializationID;
-		varCopy.config = this.config;
+    public TraitInspectInfo clone() {
+        TraitInspectInfo varCopy = new traitInspectInfo();
 
-		return varCopy;
-	}
+        varCopy.level = this.level;
+        varCopy.chrSpecializationID = this.chrSpecializationID;
+        varCopy.config = this.config;
+
+        return varCopy;
+    }
 }

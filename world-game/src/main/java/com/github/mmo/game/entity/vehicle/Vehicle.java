@@ -2,53 +2,36 @@ package com.github.mmo.game.entity.vehicle;
 
 import Framework.Constants.*;
 import com.github.mmo.dbc.domain.VehicleEntry;
-import game.datastorage.*;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.scripting.interfaces.ivehicle.*;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnInstall;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnRemovePassenger;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnReset;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnUninstall;
+import game.datastorage.*;
 
-import java.util.*;
-
-
-
-
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Vehicle implements ITransport {
-    public enum Status {
-        None,
-        Installed,
-        UnInstalling;
-
-        public static final int SIZE = Integer.SIZE;
-
-        public int getValue() {
-            return this.ordinal();
-        }
-
-        public static Status forValue(int value) {
-            return values()[value];
-        }
-    }
-
-    public HashMap<Byte, VehicleSeat> seats = new HashMap<Byte, VehicleSeat>();
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: public uint UsableSeatNum;
-    public int usableSeatNum; //< Number of seats that match VehicleSeatEntry.UsableByPlayer, used for proper display flags
-
+    //C# TO JAVA CONVERTER TODO TASK: The following operator overload is not converted by C# to Java Converter:
+    public static implicit operator
     private final Unit me;
     private final VehicleEntry vehicleInfo; //< DBC data for vehicle
-
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: readonly uint _creatureEntry;
     private final int creatureEntry; //< Can be different than the entry of _me in case of players
-
     private final ArrayList<VehicleJoinEvent> pendingJoinEvents = new ArrayList<VehicleJoinEvent>();
+    public HashMap<Byte, VehicleSeat> seats = new HashMap<Byte, VehicleSeat>();
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+//ORIGINAL LINE: public uint UsableSeatNum;
+    public int usableSeatNum; //< Number of seats that match VehicleSeatEntry.UsableByPlayer, used for proper display flags
     private Status status = Status.values()[0]; //< Internal variable for sanity checks
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public Vehicle(Unit unit, VehicleRecord vehInfo, uint creatureEntry)
     public Vehicle(Unit unit, VehicleEntry vehInfo, int creatureEntry) {
         me = unit;
@@ -68,7 +51,7 @@ public class Vehicle implements ITransport {
 
                 if (veSeat != null) {
                     var addon = Global.getObjectMgr().getVehicleSeatAddon(seatId);
-                    seats.put((byte)i, new VehicleSeat(veSeat, addon));
+                    seats.put((byte) i, new VehicleSeat(veSeat, addon));
 
                     if (veSeat.CanEnterOrExit()) {
                         ++usableSeatNum;
@@ -86,6 +69,11 @@ public class Vehicle implements ITransport {
 
         initMovementInfoForBase();
     }
+
+    boolean(Vehicle vehicle) {
+        return vehicle != null;
+    }
+
     public final ITransport removePassenger(WorldObject passenger) {
         var unit = passenger.toUnit();
 
@@ -164,7 +152,7 @@ public class Vehicle implements ITransport {
     }
 
     public final int getMapIdForSpawning() {
-        return (int)getBase().location.mapId;
+        return (int) getBase().location.mapId;
     }
 
     public final void install() {
@@ -210,12 +198,11 @@ public class Vehicle implements ITransport {
         }
     }
 
-
     public final void reset() {
         reset(false);
     }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
 //ORIGINAL LINE: public void Reset(bool evading = false)
     public final void reset(boolean evading) {
         if (!getBase().isTypeId(TypeId.Unit)) {
@@ -309,12 +296,12 @@ public class Vehicle implements ITransport {
         return seat;
     }
 
-    /** 
-      Gets the vehicle seat addon data for the seat of a passenger
-     
-     @param passenger Identifier for the current seat user 
-     @return  The seat addon data for the currently used seat of a passenger 
-    */
+    /**
+     * Gets the vehicle seat addon data for the seat of a passenger
+     *
+     * @param passenger Identifier for the current seat user
+     * @return The seat addon data for the currently used seat of a passenger
+     */
     public final VehicleSeatAddon getSeatAddonForSeatOfPassenger(Unit passenger) {
         for (var pair : seats.entrySet()) {
             if (!pair.getValue().IsEmpty() && game.entities.Objects.equals(pair.getValue().Passenger.Guid, passenger.getGUID().clone())) {
@@ -432,7 +419,7 @@ public class Vehicle implements ITransport {
         return null;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public byte GetAvailableSeatCount()
     public final byte getAvailableSeatCount() {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
@@ -520,15 +507,10 @@ public class Vehicle implements ITransport {
         return vehicleInfo;
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint GetCreatureEntry()
     public final int getCreatureEntry() {
         return creatureEntry;
-    }
-
-//C# TO JAVA CONVERTER TODO TASK: The following operator overload is not converted by C# to Java Converter:
-    public static implicit operator boolean(Vehicle vehicle) {
-        return vehicle != null;
     }
 
     private void applyAllImmunities() {
@@ -552,13 +534,13 @@ public class Vehicle implements ITransport {
             me.ApplySpellImmune(0, SpellImmunity.State, AuraType.SchoolAbsorb, true);
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: _me.ApplySpellImmune(0, SpellImmunity.Mechanic, (uint)Mechanics.Banish, true);
-            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int)Mechanics.Banish.getValue(), true);
+            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int) Mechanics.Banish.getValue(), true);
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: _me.ApplySpellImmune(0, SpellImmunity.Mechanic, (uint)Mechanics.Shield, true);
-            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int)Mechanics.Shield.getValue(), true);
+            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int) Mechanics.Shield.getValue(), true);
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: _me.ApplySpellImmune(0, SpellImmunity.Mechanic, (uint)Mechanics.ImmuneShield, true);
-            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int)Mechanics.ImmuneShield.getValue(), true);
+            me.ApplySpellImmune(0, SpellImmunity.Mechanic, (int) Mechanics.ImmuneShield.getValue(), true);
 
             // ... Resistance, Split damage, Change stats ...
             me.ApplySpellImmune(0, SpellImmunity.State, AuraType.DamageShield, true);
@@ -592,7 +574,7 @@ public class Vehicle implements ITransport {
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: void InstallAccessory(uint entry, sbyte seatId, bool minion, byte type, uint summonTime)
     private void installAccessory(int entry, byte seatId, boolean minion, byte type, int summonTime) {
         // @Prevent adding accessories when vehicle is uninstalling. (Bad script in OnUninstall/OnRemovePassenger/PassengerBoarded hook.)
@@ -620,23 +602,23 @@ public class Vehicle implements ITransport {
     private void initMovementInfoForBase() {
         var vehicleFlags = VehicleFlags.forValue(getVehicleInfo().flags);
 
-        if (vehicleFlags.HasAnyFlag(VehicleFlags.NoStrafe)) {
+        if (vehicleFlags.hasFlag(VehicleFlags.NoStrafe)) {
             me.addUnitMovementFlag2(MovementFlag2.NoStrafe);
         }
 
-        if (vehicleFlags.HasAnyFlag(VehicleFlags.NoJumping)) {
+        if (vehicleFlags.hasFlag(VehicleFlags.NoJumping)) {
             me.addUnitMovementFlag2(MovementFlag2.NoJumping);
         }
 
-        if (vehicleFlags.HasAnyFlag(VehicleFlags.Fullspeedturning)) {
+        if (vehicleFlags.hasFlag(VehicleFlags.Fullspeedturning)) {
             me.addUnitMovementFlag2(MovementFlag2.FullSpeedTurning);
         }
 
-        if (vehicleFlags.HasAnyFlag(VehicleFlags.AllowPitching)) {
+        if (vehicleFlags.hasFlag(VehicleFlags.AllowPitching)) {
             me.addUnitMovementFlag2(MovementFlag2.AlwaysAllowPitching);
         }
 
-        if (vehicleFlags.HasAnyFlag(VehicleFlags.Fullspeedpitching)) {
+        if (vehicleFlags.hasFlag(VehicleFlags.Fullspeedpitching)) {
             me.addUnitMovementFlag2(MovementFlag2.FullSpeedPitching);
         }
     }
@@ -661,5 +643,21 @@ public class Vehicle implements ITransport {
         }
 
         return false;
+    }
+
+    public enum Status {
+        None,
+        Installed,
+        UnInstalling;
+
+        public static final int SIZE = Integer.SIZE;
+
+        public static Status forValue(int value) {
+            return values()[value];
+        }
+
+        public int getValue() {
+            return this.ordinal();
+        }
     }
 }

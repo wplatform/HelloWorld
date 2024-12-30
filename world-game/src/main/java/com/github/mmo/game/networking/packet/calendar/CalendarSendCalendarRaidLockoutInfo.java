@@ -1,30 +1,28 @@
 package com.github.mmo.game.networking.packet.calendar;
 
-import com.github.mmo.game.networking.*;
-final class CalendarSendCalendarRaidLockoutInfo
-{
-	public void write(WorldPacket data)
-	{
-		data.writeInt64(instanceID);
-		data.writeInt32(mapID);
-		data.writeInt32(difficultyID);
-		data.writeInt32(expireTime);
-	}
+import com.github.mmo.game.networking.WorldPacket;
 
-	public long instanceID;
-	public int mapID;
-	public int difficultyID;
-	public int expireTime;
+final class CalendarSendCalendarRaidLockoutInfo {
+    public long instanceID;
+    public int mapID;
+    public int difficultyID;
+    public int expireTime;
 
-	public CalendarSendCalendarRaidLockoutInfo clone()
-	{
-		CalendarSendCalendarRaidLockoutInfo varCopy = new CalendarSendCalendarRaidLockoutInfo();
+    public void write(WorldPacket data) {
+        data.writeInt64(instanceID);
+        data.writeInt32(mapID);
+        data.writeInt32(difficultyID);
+        data.writeInt32(expireTime);
+    }
 
-		varCopy.instanceID = this.instanceID;
-		varCopy.mapID = this.mapID;
-		varCopy.difficultyID = this.difficultyID;
-		varCopy.expireTime = this.expireTime;
+    public CalendarSendCalendarRaidLockoutInfo clone() {
+        CalendarSendCalendarRaidLockoutInfo varCopy = new CalendarSendCalendarRaidLockoutInfo();
 
-		return varCopy;
-	}
+        varCopy.instanceID = this.instanceID;
+        varCopy.mapID = this.mapID;
+        varCopy.difficultyID = this.difficultyID;
+        varCopy.expireTime = this.expireTime;
+
+        return varCopy;
+    }
 }

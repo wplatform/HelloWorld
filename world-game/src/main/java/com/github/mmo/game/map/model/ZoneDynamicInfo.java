@@ -14,9 +14,11 @@ public class ZoneDynamicInfo {
     private Weather defaultWeather;
     private WeatherState weatherId;
     private float Intensity;
+    private List<LightOverride> LightOverrides;
+
+    ;
 
     record LightOverride(int areaLightId, int overrideLightId, int transitionMilliseconds) {
 
-    };
-    private List<LightOverride> LightOverrides;
+    }
 }

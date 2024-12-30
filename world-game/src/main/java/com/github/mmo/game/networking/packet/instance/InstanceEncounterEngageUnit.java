@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.instance;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class InstanceEncounterEngageUnit extends ServerPacket {
     public ObjectGuid unit = ObjectGuid.EMPTY;
 

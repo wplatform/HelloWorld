@@ -1,4 +1,6 @@
-package com.github.mmo.game.loot;public class LootStorage {
+package com.github.mmo.game.loot;
+
+public class LootStorage {
     public static LootStore CREATURE;
     public static LootStore FISHING;
     public static LootStore GAMEOBJECT;

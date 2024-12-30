@@ -1,18 +1,17 @@
 package com.github.mmo.game.networking.packet.character;
 
-import com.github.mmo.game.networking.*;
-public class OverrideScreenFlash extends ClientPacket
-{
-	public boolean screenFlashEnabled;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public overrideScreenFlash(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class OverrideScreenFlash extends ClientPacket {
+    public boolean screenFlashEnabled;
 
-	@Override
-	public void read()
-	{
+    public overrideScreenFlash(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         screenFlashEnabled = this.readBit() == 1;
-	}
+    }
 }

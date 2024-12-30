@@ -1,7 +1,9 @@
 package com.github.mmo.game.account;
 
 
-import java.util.*;public class RBACData {
+import java.util.ArrayList;
+
+public class RBACData {
 
     private final int id; // Account id
     private final String name; // Account name
@@ -61,7 +63,7 @@ import java.util.*;public class RBACData {
         return grantPermission(permissionId, 0);
     }
 
-        public final RBACCommandResult grantPermission(int permissionId, int realmId) {
+    public final RBACCommandResult grantPermission(int permissionId, int realmId) {
         // Check if permission Id exists
         var perm = global.getAccountMgr().getRBACPermission(permissionId);
 
@@ -105,7 +107,7 @@ import java.util.*;public class RBACData {
         return denyPermission(permissionId, 0);
     }
 
-        public final RBACCommandResult denyPermission(int permissionId, int realmId) {
+    public final RBACCommandResult denyPermission(int permissionId, int realmId) {
         // Check if permission Id exists
         var perm = global.getAccountMgr().getRBACPermission(permissionId);
 
@@ -149,7 +151,7 @@ import java.util.*;public class RBACData {
         return revokePermission(permissionId, 0);
     }
 
-        public final RBACCommandResult revokePermission(int permissionId, int realmId) {
+    public final RBACCommandResult revokePermission(int permissionId, int realmId) {
         // Check if it's present in any list
         if (!hasGrantedPermission(permissionId) && !hasDeniedPermission(permissionId)) {
             Log.outDebug(LogFilter.Rbac, "RBACData.RevokePermission [Id: {0} Name: {1}] (Permission {2}, RealmId {3}). Not granted or revoked", getId(), getName(), permissionId, realmId);
@@ -235,17 +237,14 @@ import java.util.*;public class RBACData {
         return globalPerms.contains((int) permission.getValue());
     }
 
+    public final byte getSecurityLevel() {
+        return secLevel;
+    }
 
     public final void setSecurityLevel(byte id) {
         secLevel = id;
         loadFromDB();
     }
-
-
-    public final byte getSecurityLevel() {
-        return secLevel;
-    }
-
 
     private void savePermission(int permission, boolean granted, int realmId) {
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.INS_RBAC_ACCOUNT_PERMISSION);

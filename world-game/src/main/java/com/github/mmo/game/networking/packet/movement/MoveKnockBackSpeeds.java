@@ -1,30 +1,27 @@
 package com.github.mmo.game.networking.packet.movement;
 
-import com.github.mmo.game.networking.*;
-public final class MoveKnockBackSpeeds
-{
-	public void write(WorldPacket data)
-	{
-		data.writeFloat(horzSpeed);
-		data.writeFloat(vertSpeed);
-	}
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void read(WorldPacket data)
-	{
-		horzSpeed = data.readFloat();
-		vertSpeed = data.readFloat();
-	}
+public final class MoveKnockBackSpeeds {
+    public float horzSpeed;
+    public float vertSpeed;
 
-	public float horzSpeed;
-	public float vertSpeed;
+    public void write(WorldPacket data) {
+        data.writeFloat(horzSpeed);
+        data.writeFloat(vertSpeed);
+    }
 
-	public MoveKnockBackSpeeds clone()
-	{
-		MoveKnockBackSpeeds varCopy = new moveKnockBackSpeeds();
+    public void read(WorldPacket data) {
+        horzSpeed = data.readFloat();
+        vertSpeed = data.readFloat();
+    }
 
-		varCopy.horzSpeed = this.horzSpeed;
-		varCopy.vertSpeed = this.vertSpeed;
+    public MoveKnockBackSpeeds clone() {
+        MoveKnockBackSpeeds varCopy = new moveKnockBackSpeeds();
 
-		return varCopy;
-	}
+        varCopy.horzSpeed = this.horzSpeed;
+        varCopy.vertSpeed = this.vertSpeed;
+
+        return varCopy;
+    }
 }

@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.lfg;
 
 
-import com.github.mmo.game.networking.*;class LfgOfferContinue extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class LfgOfferContinue extends ServerPacket {
 
     public int slot;
 

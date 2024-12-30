@@ -1,9 +1,7 @@
 package com.github.mmo.game.entity.dynamic;
 
 
-import game.PhasingHandler;
 import com.github.mmo.game.entity.SpellCastVisualField;
-
 import com.github.mmo.game.entity.object.MapObject;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
@@ -16,9 +14,9 @@ import com.github.mmo.game.map.grid.GridReference;
 import com.github.mmo.game.networking.WorldPacket;
 import com.github.mmo.game.scripting.interfaces.idynamicobject.IDynamicObjectOnUpdate;
 import com.github.mmo.game.spell.Aura;
-
 import com.github.mmo.game.spell.AuraRemoveMode;
 import com.github.mmo.game.spell.SpellInfo;
+import game.PhasingHandler;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -201,14 +199,6 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
         }
     }
 
-    public final void setDuration(int newDuration) {
-        if (aura == null) {
-            duration = newDuration;
-        } else {
-            aura.setDuration(newDuration);
-        }
-    }
-
     public final void delay(int delaytime) {
         setDuration(getDuration() - delaytime);
     }
@@ -272,7 +262,6 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
         return caster;
     }
 
-
     public final int getSpellId() {
         return dynamicObjectData.spellID;
     }
@@ -290,6 +279,14 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
             return duration;
         } else {
             return aura.getDuration();
+        }
+    }
+
+    public final void setDuration(int newDuration) {
+        if (aura == null) {
+            duration = newDuration;
+        } else {
+            aura.setDuration(newDuration);
         }
     }
 
@@ -352,6 +349,12 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
         data.addUpdateBlock(buffer1);
     }
 
+    @Override
+    public final void setNewCellPosition(float x, float y, float z, float o) {
+        moveState = CellMoveState.ACTIVE;
+        newPosition.relocate(x, y, z, o);
+    }
+
     private static class ValuesUpdateForPlayerWithMaskSender implements IDoWork<Player> {
         private final DynamicObject owner;
         private final objectFieldData objectMask = new objectFieldData();
@@ -372,11 +375,5 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
             packet = tempOut_packet.outArgValue;
             player.sendPacket(packet);
         }
-    }
-
-    @Override
-    public final void setNewCellPosition(float x, float y, float z, float o) {
-        moveState = CellMoveState.ACTIVE;
-        newPosition.relocate(x, y, z, o);
     }
 }

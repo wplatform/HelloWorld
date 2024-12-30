@@ -3,7 +3,7 @@ package com.github.mmo.game.networking.packet.character;
 
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.player.enums.PlayerLogXPReason;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 
 public class LogXPGain extends ServerPacket {

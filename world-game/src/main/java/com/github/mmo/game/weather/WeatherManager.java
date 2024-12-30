@@ -1,9 +1,9 @@
 package com.github.mmo.game.weather;
 
 
+import java.util.HashMap;
 
-import java.util.*;
-public class WeatherManager  {
+public class WeatherManager {
 
     private final HashMap<Integer, WeatherData> weatherData = new HashMap<Integer, WeatherData>();
 
@@ -35,17 +35,17 @@ public class WeatherManager  {
 
                 if (wzc.Data[season].rainChance > 100) {
                     wzc.Data[season].rainChance = 25;
-                    Log.outError(LogFilter.Sql, "Weather for zone {0} season {1} has wrong rain chance > 100%", zone_id, season);
+                    Logs.SQL.error("Weather for zone {0} season {1} has wrong rain chance > 100%", zone_id, season);
                 }
 
                 if (wzc.Data[season].snowChance > 100) {
                     wzc.Data[season].snowChance = 25;
-                    Log.outError(LogFilter.Sql, "Weather for zone {0} season {1} has wrong snow chance > 100%", zone_id, season);
+                    Logs.SQL.error("Weather for zone {0} season {1} has wrong snow chance > 100%", zone_id, season);
                 }
 
                 if (wzc.Data[season].stormChance > 100) {
                     wzc.Data[season].stormChance = 25;
-                    Log.outError(LogFilter.Sql, "Weather for zone {0} season {1} has wrong storm chance > 100%", zone_id, season);
+                    Logs.SQL.error("Weather for zone {0} season {1} has wrong storm chance > 100%", zone_id, season);
                 }
             }
 

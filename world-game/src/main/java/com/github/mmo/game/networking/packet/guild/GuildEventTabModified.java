@@ -1,26 +1,24 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildEventTabModified extends ServerPacket
-{
-	public String icon;
-	public String name;
-	public int tab;
-	public GuildEventTabModified()
-	{
-		super(ServerOpcode.GuildEventTabModified);
-	}
+public class GuildEventTabModified extends ServerPacket {
+    public String icon;
+    public String name;
+    public int tab;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(tab);
+    public GuildEventTabModified() {
+        super(ServerOpcode.GuildEventTabModified);
+    }
 
-		this.writeBits(name.getBytes().length, 7);
-		this.writeBits(icon.getBytes().length, 9);
-		this.flushBits();
+    @Override
+    public void write() {
+        this.writeInt32(tab);
 
-		this.writeString(name);
-		this.writeString(icon);
-	}
+        this.writeBits(name.getBytes().length, 7);
+        this.writeBits(icon.getBytes().length, 9);
+        this.flushBits();
+
+        this.writeString(name);
+        this.writeString(icon);
+    }
 }

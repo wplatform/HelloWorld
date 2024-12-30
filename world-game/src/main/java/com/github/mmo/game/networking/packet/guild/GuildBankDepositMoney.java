@@ -1,20 +1,19 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class GuildBankDepositMoney extends ClientPacket
-{
+public class GuildBankDepositMoney extends ClientPacket {
     public ObjectGuid banker = ObjectGuid.EMPTY;
-	public long money;
-	public GuildBankDepositMoney(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public long money;
 
-	@Override
-	public void read()
-	{
+    public GuildBankDepositMoney(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         banker = this.readPackedGuid();
         money = this.readUInt64();
-	}
+    }
 }

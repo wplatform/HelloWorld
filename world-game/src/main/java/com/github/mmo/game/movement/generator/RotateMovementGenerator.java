@@ -2,8 +2,8 @@ package com.github.mmo.game.movement.generator;
 
 
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.movement.spline.MoveSplineInit;
 import com.github.mmo.game.movement.MovementGenerator;
+import com.github.mmo.game.movement.spline.MoveSplineInit;
 
 public class RotateMovementGenerator extends MovementGenerator {
 

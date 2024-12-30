@@ -2,12 +2,6 @@ package com.github.mmo.game.entity.player;
 
 
 import com.github.mmo.game.*;
-import com.github.mmo.game.globals.ObjectManager;
-import com.github.mmo.game.networking.packet.quest.DisplayPlayerChoice;
-import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
-import com.github.mmo.utils.MathUtil;
-import game.*;
-import game.WorldSession;
 import com.github.mmo.game.achievement.CriteriaManager;
 import com.github.mmo.game.achievement.PlayerAchievementMgr;
 import com.github.mmo.game.ai.IUnitAI;
@@ -25,23 +19,20 @@ import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.gobject.Transport;
 import com.github.mmo.game.entity.item.*;
 import com.github.mmo.game.entity.object.GenericObject;
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldLocation;
+import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.enums.PlayerFlag;
 import com.github.mmo.game.entity.player.enums.PlayerFlagEx;
 import com.github.mmo.game.entity.player.enums.SpellModType;
 import com.github.mmo.game.entity.player.model.*;
-import com.github.mmo.game.map.grid.GridObject;
-import com.github.mmo.game.map.grid.GridReference;
-import com.github.mmo.game.map.grid.Cell;
-import com.github.mmo.game.movement.model.MovementInfo;
-import com.github.mmo.game.entity.object.ObjectGuid;
-import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.scene.SceneMgr;
 import com.github.mmo.game.entity.unit.DamageInfo;
 import com.github.mmo.game.entity.unit.DeclinedName;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.UnitActionBarEntry;
 import com.github.mmo.game.garrison.Garrison;
+import com.github.mmo.game.globals.ObjectManager;
 import com.github.mmo.game.group.GroupReference;
 import com.github.mmo.game.group.PlayerGroup;
 import com.github.mmo.game.guild.Guild;
@@ -51,9 +42,14 @@ import com.github.mmo.game.mail.MailDraft;
 import com.github.mmo.game.mail.MailReceiver;
 import com.github.mmo.game.mail.MailSender;
 import com.github.mmo.game.map.*;
+import com.github.mmo.game.map.grid.Cell;
+import com.github.mmo.game.map.grid.GridObject;
+import com.github.mmo.game.map.grid.GridReference;
 import com.github.mmo.game.misc.PlayerMenu;
+import com.github.mmo.game.movement.model.MovementInfo;
 import com.github.mmo.game.networking.WorldPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
+import com.github.mmo.game.networking.packet.quest.DisplayPlayerChoice;
 import com.github.mmo.game.networking.packet.spell.SetSpellModifier;
 import com.github.mmo.game.networking.packet.spell.SpellModifierInfo;
 import com.github.mmo.game.pvp.OutdoorPvP;
@@ -65,8 +61,12 @@ import com.github.mmo.game.scripting.interfaces.iitem.IItemOnRemove;
 import com.github.mmo.game.scripting.interfaces.iplayer.*;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnQuestObjectiveChange;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnQuestStatusChange;
+import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
 import com.github.mmo.game.spell.*;
 import com.github.mmo.game.spell.enums.SpellModOp;
+import com.github.mmo.utils.MathUtil;
+import game.*;
+import game.WorldSession;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -161,10 +161,10 @@ public class Player extends Unit implements GridObject<Player> {
     private final float[] parry_cap = {65.631440f, 65.631440f, 145.560408f, 145.560408f, 0.0f, 65.631440f, 145.560408f, 0.0f, 0.0f, 90.6425f, 0.0f, 65.631440f, 0.0f, 0.0f};
     private final float[] dodge_cap = {65.631440f, 65.631440f, 145.560408f, 145.560408f, 150.375940f, 65.631440f, 145.560408f, 150.375940f, 150.375940f, 145.560408f, 116.890707f, 145.560408f, 145.560408f, 0.0f};
     public PvpInfo pvpInfo = new PvpInfo();
-QuestObjectiveType Type
-int ObjectID
-QuestObjectiveType Type
-int ObjectID
+    QuestObjectiveType Type
+    int ObjectID
+    QuestObjectiveType Type
+    int ObjectID
     private PlayerSocial social;
 
     private int weaponProficiency;
@@ -604,7 +604,7 @@ int ObjectID
         deleteFromDB(playerGuid, accountId, true, false);
     }
 
-        public static void deleteFromDB(ObjectGuid playerGuid, int accountId, boolean updateRealmChars, boolean deleteFinally) {
+    public static void deleteFromDB(ObjectGuid playerGuid, int accountId, boolean updateRealmChars, boolean deleteFinally) {
         // Avoid realm-update for non-existing account
         if (accountId == 0) {
             updateRealmChars = false;
@@ -1121,7 +1121,7 @@ int ObjectID
         savePositionInDB(loc, zoneId, guid, null);
     }
 
-        public static void savePositionInDB(WorldLocation loc, int zoneId, ObjectGuid guid, SQLTransaction trans) {
+    public static void savePositionInDB(WorldLocation loc, int zoneId, ObjectGuid guid, SQLTransaction trans) {
         var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_CHARACTER_POSITION);
         stmt.AddValue(0, loc.getX());
         stmt.AddValue(1, loc.getY());
@@ -1243,7 +1243,7 @@ int ObjectID
         removeFromGroup(group, guid, RemoveMethod.Default, null, null);
     }
 
-        public static void removeFromGroup(PlayerGroup group, ObjectGuid guid, RemoveMethod method, ObjectGuid kicker, String reason) {
+    public static void removeFromGroup(PlayerGroup group, ObjectGuid guid, RemoveMethod method, ObjectGuid kicker, String reason) {
         if (!group) {
             return;
         }
@@ -1383,7 +1383,7 @@ int ObjectID
             return Difficulty.NORMAL;
         }
 
-        if (!difficultyEntry.flags.HasAnyFlag(DifficultyFlags.CanSelect)) {
+        if (!difficultyEntry.flags.hasFlag(DifficultyFlags.CanSelect)) {
             return Difficulty.NORMAL;
         }
 
@@ -1403,7 +1403,7 @@ int ObjectID
             return Difficulty.NormalRaid;
         }
 
-        if (!difficultyEntry.flags.HasAnyFlag(DifficultyFlags.CanSelect) || difficultyEntry.flags.HasAnyFlag(DifficultyFlags.legacy)) {
+        if (!difficultyEntry.flags.hasFlag(DifficultyFlags.CanSelect) || difficultyEntry.flags.hasFlag(DifficultyFlags.legacy)) {
             return Difficulty.NormalRaid;
         }
 
@@ -1421,7 +1421,7 @@ int ObjectID
             return Difficulty.Raid10N;
         }
 
-        if (!difficultyEntry.flags.HasAnyFlag(DifficultyFlags.CanSelect) || !difficultyEntry.flags.HasAnyFlag(DifficultyFlags.legacy)) {
+        if (!difficultyEntry.flags.hasFlag(DifficultyFlags.CanSelect) || !difficultyEntry.flags.hasFlag(DifficultyFlags.legacy)) {
             return Difficulty.Raid10N;
         }
 
@@ -1475,7 +1475,7 @@ int ObjectID
         startCriteriaTimer(startEvent, entry, 0);
     }
 
-        public final void startCriteriaTimer(CriteriaStartEvent startEvent, int entry, int timeLost) {
+    public final void startCriteriaTimer(CriteriaStartEvent startEvent, int entry, int timeLost) {
         _AchievementSys.startCriteriaTimer(startEvent, entry, timeLost);
     }
 
@@ -1488,7 +1488,7 @@ int ObjectID
         resetCriteria(failEvent, failAsset, false);
     }
 
-        public final void resetCriteria(CriteriaFailEvent failEvent, int failAsset, boolean evenIfCriteriaComplete) {
+    public final void resetCriteria(CriteriaFailEvent failEvent, int failAsset, boolean evenIfCriteriaComplete) {
         _AchievementSys.resetCriteria(failEvent, failAsset, evenIfCriteriaComplete);
         questObjectiveCriteriaManager.resetCriteria(failEvent, failAsset, evenIfCriteriaComplete);
     }
@@ -1505,7 +1505,7 @@ int ObjectID
         updateCriteria(type, miscValue1, 0, 0, null);
     }
 
-        public final void updateCriteria(CriteriaType type, double miscValue1, double miscValue2, double miscValue3, WorldObject refe) {
+    public final void updateCriteria(CriteriaType type, double miscValue1, double miscValue2, double miscValue3, WorldObject refe) {
         updateCriteria(type, (long) miscValue1, (long) miscValue2, (long) miscValue3, refe);
     }
 
@@ -1525,7 +1525,7 @@ int ObjectID
         updateCriteria(type, 0, 0, 0, null);
     }
 
-        public final void updateCriteria(CriteriaType type, long miscValue1, long miscValue2, long miscValue3, WorldObject refe) {
+    public final void updateCriteria(CriteriaType type, long miscValue1, long miscValue2, long miscValue3, WorldObject refe) {
         _AchievementSys.updateCriteria(type, miscValue1, miscValue2, miscValue3, refe, this);
         questObjectiveCriteriaManager.updateCriteria(type, miscValue1, miscValue2, miscValue3, refe, this);
 
@@ -1654,7 +1654,7 @@ int ObjectID
         setCanTitanGrip(value, 0);
     }
 
-        public final void setCanTitanGrip(boolean value, int penaltySpellId) {
+    public final void setCanTitanGrip(boolean value, int penaltySpellId) {
         if (value == canTitanGrip) {
             return;
         }
@@ -1747,24 +1747,6 @@ int ObjectID
         }
 
         return Math.min(blockArmor / (blockArmor + armorConstant), 0.85f);
-    }
-
-    public final void setCanParry(boolean value) {
-        if (canParry == value) {
-            return;
-        }
-
-        canParry = value;
-        updateParryPercentage();
-    }
-
-    public final void setCanBlock(boolean value) {
-        if (canBlock == value) {
-            return;
-        }
-
-        canBlock = value;
-        updateBlockPercentage();
     }
 
     // duel health and mana reset methods
@@ -1905,7 +1887,6 @@ int ObjectID
         }
     }
 
-
     public final void setContestedPvPTimer(int newTime) {
         contestedPvPTimer = newTime;
     }
@@ -1920,7 +1901,7 @@ int ObjectID
         setContestedPvP(null);
     }
 
-        public final void setContestedPvP(Player attackedPlayer) {
+    public final void setContestedPvP(Player attackedPlayer) {
         if (attackedPlayer != null && (attackedPlayer == this || (getDuel() != null && getDuel().getOpponent() == attackedPlayer))) {
             return;
         }
@@ -1943,7 +1924,6 @@ int ObjectID
             }
         }
     }
-
 
     public final void updateContestedPvP(int diff) {
         if (contestedPvPTimer == 0 || isInCombat()) {
@@ -1978,7 +1958,7 @@ int ObjectID
         updatePvP(state, false);
     }
 
-        public final void updatePvP(boolean state, boolean override) {
+    public final void updatePvP(boolean state, boolean override) {
         if (!state || override) {
             setPvP(state);
             pvpInfo.endTimer = 0;
@@ -1992,7 +1972,7 @@ int ObjectID
         updatePvPState(false);
     }
 
-        public final void updatePvPState(boolean onlyFfa) {
+    public final void updatePvPState(boolean onlyFfa) {
         // @todo should we always synchronize UNIT_FIELD_BYTES_2, 1 of controller and controlled?
         // no, we shouldn't, those are checked for affecting player by client
         if (!pvpInfo.isInNoPvPArea && !isGameMaster() && (pvpInfo.isInFfaPvPArea || global.getWorldMgr().isFFAPvPRealm() || hasAuraType(AuraType.SetFFAPvp))) {
@@ -2275,7 +2255,6 @@ int ObjectID
         }
     }
 
-
     private void setDuelTeam(int duelTeam) {
         setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().duelTeam), duelTeam);
     }
@@ -2344,7 +2323,6 @@ int ObjectID
         return petStable;
     }
 
-
     public final byte getCUFProfilesCount() {
         return (byte) cufProfiles.count(p -> p != null);
     }
@@ -2358,12 +2336,76 @@ int ObjectID
         return hasPlayerFlag(playerFlags.Developer);
     }
 
+    public final void setDeveloper(boolean on) {
+        if (on) {
+            setPlayerFlag(playerFlags.Developer);
+        } else {
+            removePlayerFlag(playerFlags.Developer);
+        }
+    }
+
     public final boolean isAcceptWhispers() {
-        return extraFlags.HasAnyFlag(PlayerExtraFlags.AcceptWhispers);
+        return extraFlags.hasFlag(PlayerExtraFlags.AcceptWhispers);
+    }
+
+    public final void setAcceptWhispers(boolean on) {
+        if (on) {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.AcceptWhispers.getValue());
+        } else {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.AcceptWhispers.getValue());
+        }
     }
 
     public final boolean isGameMaster() {
-        return extraFlags.HasAnyFlag(PlayerExtraFlags.GMOn);
+        return extraFlags.hasFlag(PlayerExtraFlags.GMOn);
+    }
+
+    public final void setGameMaster(boolean on) {
+        if (on) {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMOn.getValue());
+            setFaction(35);
+            setPlayerFlag(playerFlags.GM);
+            setUnitFlag2(UnitFlag2.AllowCheatSpells);
+
+            var pet = getCurrentPet();
+
+            if (pet != null) {
+                pet.setFaction(35);
+            }
+
+            removePvpFlag(UnitPVPStateFlags.FFAPvp);
+            resetContestedPvP();
+
+            combatStopWithPets();
+
+            PhasingHandler.setAlwaysVisible(this, true, false);
+            getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.GM, getSession().getSecurity());
+        } else {
+            PhasingHandler.setAlwaysVisible(this, hasAuraType(AuraType.PhaseAlwaysVisible), false);
+
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMOn.getValue());
+            restoreFaction();
+            removePlayerFlag(playerFlags.GM);
+            removeUnitFlag2(UnitFlag2.AllowCheatSpells);
+
+            var pet = getCurrentPet();
+
+            if (pet != null) {
+                pet.setFaction(getFaction());
+            }
+
+            // restore FFA PvP Server state
+            if (global.getWorldMgr().isFFAPvPRealm()) {
+                setPvpFlag(UnitPVPStateFlags.FFAPvp);
+            }
+
+            // restore FFA PvP area state, remove not allowed for GM mounts
+            updateArea(areaUpdateId);
+
+            getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.GM, AccountTypes.player);
+        }
+
+        updateObjectVisibility();
     }
 
     public final boolean isGameMasterAcceptingWhispers() {
@@ -2375,15 +2417,49 @@ int ObjectID
     }
 
     public final boolean isGMChat() {
-        return extraFlags.HasAnyFlag(PlayerExtraFlags.GMChat);
+        return extraFlags.hasFlag(PlayerExtraFlags.GMChat);
+    }
+
+    public final void setGMChat(boolean on) {
+        if (on) {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMChat.getValue());
+        } else {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMChat.getValue());
+        }
     }
 
     public final boolean isTaxiCheater() {
-        return extraFlags.HasAnyFlag(PlayerExtraFlags.TaxiCheat);
+        return extraFlags.hasFlag(PlayerExtraFlags.TaxiCheat);
+    }
+
+    public final void setTaxiCheater(boolean on) {
+        if (on) {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.TaxiCheat.getValue());
+        } else {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.TaxiCheat.getValue());
+        }
     }
 
     public final boolean isGMVisible() {
-        return !extraFlags.HasAnyFlag(PlayerExtraFlags.GMInvisible);
+        return !extraFlags.hasFlag(PlayerExtraFlags.GMInvisible);
+    }
+
+    public final void setGMVisible(boolean on) {
+        if (on) {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMInvisible.getValue()); //remove flag
+            getServerSideVisibility().setValue(ServerSideVisibilityType.GM, AccountTypes.player);
+        } else {
+            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMInvisible.getValue()); //add flag
+
+            setAcceptWhispers(false);
+            setGameMaster(true);
+
+            getServerSideVisibility().setValue(ServerSideVisibilityType.GM, getSession().getSecurity());
+        }
+
+        for (var channel : channels) {
+            channel.setInvisible(this, !on);
+        }
     }
 
     public final ArrayList<channel> getJoinedChannels() {
@@ -2393,7 +2469,6 @@ int ObjectID
     public final ArrayList<MAIL> getMails() {
         return mail;
     }
-
 
     public final int getMailSize() {
         return (int) mail.size();
@@ -2408,7 +2483,6 @@ int ObjectID
     public final int getTotalPlayedTime() {
         return playedTimeTotal;
     }
-
 
     public final int getLevelPlayedTime() {
         return playedTimeLevel;
@@ -2471,7 +2545,6 @@ int ObjectID
         return getActivePlayerData().coinage;
     }
 
-
     public final void setMoney(long value) {
         var loading = getSession().getPlayerLoading();
 
@@ -2486,21 +2559,21 @@ int ObjectID
         }
     }
 
-
     public final int getGuildRank() {
         return getPlayerData().guildRankID;
     }
 
+    public final void setGuildRank(byte rankId) {
+        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().guildRankID), rankId);
+    }
 
     public final int getGuildLevel() {
         return getPlayerData().guildLevel;
     }
 
-
     public final void setGuildLevel(int value) {
         setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().guildLevel), value);
     }
-
 
     public final long getGuildId() {
         return ((ObjectGuid) getUnitData().guildGUID).getCounter();
@@ -2512,11 +2585,9 @@ int ObjectID
         return guildId != 0 ? global.getGuildMgr().getGuildById(guildId) : null;
     }
 
-
     public final long getGuildIdInvited() {
         return guildIdInvited;
     }
-
 
     public final void setGuildIdInvited(long value) {
         guildIdInvited = value;
@@ -2530,8 +2601,26 @@ int ObjectID
         return canParry;
     }
 
+    public final void setCanParry(boolean value) {
+        if (canParry == value) {
+            return;
+        }
+
+        canParry = value;
+        updateParryPercentage();
+    }
+
     public final boolean getCanBlock() {
         return canBlock;
+    }
+
+    public final void setCanBlock(boolean value) {
+        if (canBlock == value) {
+            return;
+        }
+
+        canBlock = value;
+        updateBlockPercentage();
     }
 
     public final boolean isAFK() {
@@ -2572,11 +2661,9 @@ int ObjectID
         return tag;
     }
 
-
     public final int getSaveTimer() {
         return nextSave;
     }
-
 
     private void setSaveTimer(int value) {
         nextSave = value;
@@ -2590,31 +2677,25 @@ int ObjectID
         return createMode;
     }
 
-
     public final byte getCinematic() {
         return cinematic;
     }
-
 
     public final void setCinematic(byte value) {
         cinematic = value;
     }
 
-
     public final int getMovie() {
         return movie;
     }
-
 
     public final void setMovie(int value) {
         movie = value;
     }
 
-
     public final int getXP() {
         return getActivePlayerData().XP;
     }
-
 
     public final void setXP(int value) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().XP), value);
@@ -2629,16 +2710,17 @@ int ObjectID
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().scalingPlayerLevelDelta), playerLevelDelta);
     }
 
-
     public final int getXPForNextLevel() {
         return getActivePlayerData().nextLevelXP;
     }
-
 
     public final byte getDrunkValue() {
         return getPlayerData().inebriation;
     }
 
+    public final void setDrunkValue(byte newDrunkValue) {
+        setDrunkValue(newDrunkValue, 0);
+    }
 
     public final int getDeathTimer() {
         return deathTimer;
@@ -2661,13 +2743,12 @@ int ObjectID
     }
 
     public final boolean isBeingTeleportedSeamlessly() {
-        return isBeingTeleportedFar() && teleportOptions.HasAnyFlag(TeleportToOptions.Seamless);
+        return isBeingTeleportedFar() && teleportOptions.hasFlag(TeleportToOptions.Seamless);
     }
 
     public final boolean isReagentBankUnlocked() {
         return hasPlayerFlagEx(playerFlagsEx.ReagentBankUnlocked);
     }
-
 
     public final int getFreePrimaryProfessionPoints() {
         return getActivePlayerData().characterPoints;
@@ -2686,7 +2767,6 @@ int ObjectID
     public final WorldLocation getTeleportDest() {
         return teleportDest;
     }
-
 
     public final Integer getTeleportDestInstanceId() {
         return teleportInstanceId;
@@ -2714,9 +2794,16 @@ int ObjectID
         return getActivePlayerData().summonedBattlePetGUID;
     }
 
+    public final void setSummonedBattlePetGUID(ObjectGuid guid) {
+        setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().summonedBattlePetGUID), guid);
+    }
 
     public final byte getNumRespecs() {
         return getActivePlayerData().numRespecs;
+    }
+
+    public final void setNumRespecs(byte numRespecs) {
+        setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().numRespecs), numRespecs);
     }
 
     public final boolean getCanTameExoticPets() {
@@ -2726,6 +2813,10 @@ int ObjectID
     //Movement
     private boolean isCanDelayTeleport() {
         return canDelayTeleport;
+    }
+
+    private void setCanDelayTeleport(boolean setting) {
+        canDelayTeleport = setting;
     }
 
     private boolean isHasDelayedTeleport() {
@@ -2763,6 +2854,33 @@ int ObjectID
         return hasPlayerFlag(playerFlags.WarModeDesired);
     }
 
+    public final void setWarModeDesired(boolean enabled) {
+        // Only allow to toggle on when in stormwind/orgrimmar, and to toggle off in any rested place.
+        // Also disallow when in combat
+        if ((enabled == isWarModeDesired()) || isInCombat() || !hasPlayerFlag(playerFlags.Resting)) {
+            return;
+        }
+
+        if (enabled && !canEnableWarModeInArea()) {
+            return;
+        }
+
+        // Don't allow to chang when aura SPELL_PVP_RULES_ENABLED is on
+        if (hasAura(PlayerConst.SpellPvpRulesEnabled)) {
+            return;
+        }
+
+        if (enabled) {
+            setPlayerFlag(playerFlags.WarModeDesired);
+            setPvP(true);
+        } else {
+            removePlayerFlag(playerFlags.WarModeDesired);
+            setPvP(false);
+        }
+
+        updateWarModeAuras();
+    }
+
     private boolean isWarModeActive() {
         return hasPlayerFlag(playerFlags.WarModeActive);
     }
@@ -2777,16 +2895,13 @@ int ObjectID
         return lastpetnumber;
     }
 
-
     public final void setLastPetNumber(int value) {
         lastpetnumber = value;
     }
 
-
     public final int getTemporaryUnsummonedPetNumber() {
         return temporaryUnsummonedPetNumber;
     }
-
 
     public final void setTemporaryUnsummonedPetNumber(int value) {
         temporaryUnsummonedPetNumber = value;
@@ -3058,7 +3173,6 @@ int ObjectID
 
         return true;
     }
-
 
     @Override
     public void update(int diff) {
@@ -3431,7 +3545,7 @@ int ObjectID
         cleanupsBeforeDelete(true);
     }
 
-        @Override
+    @Override
     public void cleanupsBeforeDelete(boolean finalCleanup) {
         tradeCancel(false);
         duelComplete(DuelCompleteType.Interrupted);
@@ -3497,26 +3611,26 @@ int ObjectID
             return;
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.ResurrectPlayer)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.ResurrectPlayer)) {
             resurrectUsingRequestDataImpl();
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.SavePlayer)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.SavePlayer)) {
             saveToDB();
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.SpellCastDeserter)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.SpellCastDeserter)) {
             castSpell(this, 26013, true); // Deserter
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.BGMountRestore)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.BGMountRestore)) {
             if (bgData.getMountSpell() != 0) {
                 castSpell(this, bgData.getMountSpell(), true);
                 bgData.setMountSpell(0);
             }
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.BGTaxiRestore)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.BGTaxiRestore)) {
             if (bgData.hasTaxiPath()) {
                 getTaxi().addTaxiDestination(bgData.getTaxiPath()[0]);
                 getTaxi().addTaxiDestination(bgData.getTaxiPath()[1]);
@@ -3526,7 +3640,7 @@ int ObjectID
             }
         }
 
-        if (delayedOperations.HasAnyFlag(PlayerDelayedOperations.BGGroupRestore)) {
+        if (delayedOperations.hasFlag(PlayerDelayedOperations.BGGroupRestore)) {
             var g = getGroup();
 
             if (g != null) {
@@ -3543,7 +3657,6 @@ int ObjectID
         session.sendPacket(data);
     }
 
-
     public final void createGarrison(int garrSiteId) {
         garrison = new Garrison(this);
 
@@ -3555,7 +3668,6 @@ int ObjectID
     public final void setAdvancedCombatLogging(boolean enabled) {
         advancedCombatLoggingEnabled = enabled;
     }
-
 
     public final void setInvSlot(int slot, ObjectGuid guid) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
@@ -3639,7 +3751,7 @@ int ObjectID
         setBattlePetData(null);
     }
 
-        public final void setBattlePetData(BattlePet pet) {
+    public final void setBattlePetData(BattlePet pet) {
         if (pet != null) {
             setSummonedBattlePetGUID(pet.packetInfo.guid);
             setCurrentBattlePetBreedQuality(pet.packetInfo.quality);
@@ -3822,7 +3934,7 @@ int ObjectID
         modifyCurrency(id, amount, CurrencyGainSource.Cheat, CurrencyDestroyReason.Cheat);
     }
 
-        public final void modifyCurrency(int id, int amount, CurrencyGainSource gainSource, CurrencyDestroyReason destroyReason) {
+    public final void modifyCurrency(int id, int amount, CurrencyGainSource gainSource, CurrencyDestroyReason destroyReason) {
         if (amount == 0) {
             return;
         }
@@ -3972,7 +4084,7 @@ int ObjectID
         addCurrency(id, amount, CurrencyGainSource.Cheat);
     }
 
-        public final void addCurrency(int id, int amount, CurrencyGainSource gainSource) {
+    public final void addCurrency(int id, int amount, CurrencyGainSource gainSource) {
         modifyCurrency(id, (int) amount, gainSource);
     }
 
@@ -3980,10 +4092,9 @@ int ObjectID
         removeCurrency(id, amount, CurrencyDestroyReason.Cheat);
     }
 
-        public final void removeCurrency(int id, int amount, CurrencyDestroyReason destroyReason) {
+    public final void removeCurrency(int id, int amount, CurrencyDestroyReason destroyReason) {
         modifyCurrency(id, -amount, null, destroyReason);
     }
-
 
     public final void increaseCurrencyCap(int id, int amount) {
         if (amount == 0) {
@@ -4045,7 +4156,6 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final int getCurrencyQuantity(int id) {
         var playerCurrency = currencyStorage.get(id);
 
@@ -4056,7 +4166,6 @@ int ObjectID
         return playerCurrency.quantity;
     }
 
-
     public final int getCurrencyWeeklyQuantity(int id) {
         var playerCurrency = currencyStorage.get(id);
 
@@ -4066,7 +4175,6 @@ int ObjectID
 
         return playerCurrency.weeklyQuantity;
     }
-
 
     public final int getCurrencyTrackedQuantity(int id) {
         var playerCurrency = currencyStorage.get(id);
@@ -4086,7 +4194,7 @@ int ObjectID
         return getCurrencyMaxQuantity(currency, false, false);
     }
 
-        public final int getCurrencyMaxQuantity(CurrencyTypesRecord currency, boolean onLoad, boolean onUpdateVersion) {
+    public final int getCurrencyMaxQuantity(CurrencyTypesRecord currency, boolean onLoad, boolean onUpdateVersion) {
         if (!currency.HasMaxQuantity(onLoad, onUpdateVersion)) {
             return 0;
         }
@@ -4106,7 +4214,6 @@ int ObjectID
         return maxQuantity + increasedCap;
     }
 
-
     public final boolean hasCurrency(int id, int amount) {
         var playerCurrency = currencyStorage.get(id);
 
@@ -4118,16 +4225,13 @@ int ObjectID
         _cufProfiles[id] = profile;
     }
 
-
     public final CufProfile getCUFProfile(byte id) {
         return _cufProfiles[id];
     }
 
-
     public final void setMultiActionBars(byte mask) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().multiActionBars), mask);
     }
-
 
     public final ActionButton addActionButton(byte button, long action, int type) {
         if (!isActionButtonDataValid(button, action, type)) {
@@ -4149,7 +4253,6 @@ int ObjectID
         return ab;
     }
 
-
     public final void removeActionButton(byte _button) {
         var button = actionButtons.get(_button);
 
@@ -4166,7 +4269,6 @@ int ObjectID
         Log.outDebug(LogFilter.player, "Action Button '{0}' Removed from Player '{1}'", button, getGUID().toString());
     }
 
-
     public final ActionButton getActionButton(byte _button) {
         var button = actionButtons.get(_button);
 
@@ -4181,7 +4283,7 @@ int ObjectID
         return calculateReputationGain(source, creatureOrQuestLevel, rep, faction, false);
     }
 
-        public final int calculateReputationGain(ReputationSource source, int creatureOrQuestLevel, int rep, int faction, boolean noQuestBonus) {
+    public final int calculateReputationGain(ReputationSource source, int creatureOrQuestLevel, int rep, int faction, boolean noQuestBonus) {
         var noBonuses = false;
         var factionEntry = CliDB.FactionStorage.get(faction);
 
@@ -4189,7 +4291,7 @@ int ObjectID
             var friendshipReputation = CliDB.FriendshipReputationStorage.get(factionEntry.FriendshipRepID);
 
             if (friendshipReputation != null) {
-                if (friendshipReputation.flags.HasAnyFlag(FriendshipReputationFlags.NoRepGainModifiers)) {
+                if (friendshipReputation.flags.hasFlag(FriendshipReputationFlags.NoRepGainModifiers)) {
                     noBonuses = true;
                 }
             }
@@ -4362,7 +4464,7 @@ int ObjectID
         return teleportTo(loc, 0, null);
     }
 
-        public final boolean teleportTo(WorldLocation loc, TeleportToOptions options, Integer instanceId) {
+    public final boolean teleportTo(WorldLocation loc, TeleportToOptions options, Integer instanceId) {
         return teleportTo(loc.getMapId(), loc.getX(), loc.getY(), loc.getZ(), loc.getO(), options, instanceId);
     }
 
@@ -4374,7 +4476,7 @@ int ObjectID
         return teleportTo(mapid, loc, 0, null);
     }
 
-        public final boolean teleportTo(int mapid, Position loc, TeleportToOptions options, Integer instanceId) {
+    public final boolean teleportTo(int mapid, Position loc, TeleportToOptions options, Integer instanceId) {
         return teleportTo(mapid, loc.getX(), loc.getY(), loc.getZ(), loc.getO(), options, instanceId);
     }
 
@@ -4386,7 +4488,7 @@ int ObjectID
         return teleportTo(mapid, x, y, z, orientation, 0, null);
     }
 
-        public final boolean teleportTo(int mapid, float x, float y, float z, float orientation, TeleportToOptions options, Integer instanceId) {
+    public final boolean teleportTo(int mapid, float x, float y, float z, float orientation, TeleportToOptions options, Integer instanceId) {
         if (!MapDefine.isValidMapCoordinatei(mapid, x, y, z, orientation)) {
             Log.outError(LogFilter.Maps, "TeleportTo: invalid map ({0}) or invalid coordinates (X: {1}, Y: {2}, Z: {3}, O: {4}) given when teleporting player (GUID: {5}, name: {6}, map: {7}, {8}).", mapid, x, y, z, orientation, getGUID().toString(), getName(), getLocation().getMapId(), getLocation().toString());
 
@@ -4442,7 +4544,7 @@ int ObjectID
         var transport = getTransport();
 
         if (transport != null) {
-            if (!options.HasAnyFlag(TeleportToOptions.NotLeaveTransport)) {
+            if (!options.hasFlag(TeleportToOptions.NotLeaveTransport)) {
                 transport.removePassenger(this);
             }
         }
@@ -4472,18 +4574,18 @@ int ObjectID
                 return true;
             }
 
-            if (!options.HasAnyFlag(TeleportToOptions.NotUnSummonPet)) {
+            if (!options.hasFlag(TeleportToOptions.NotUnSummonPet)) {
                 //same map, only remove pet if out of range for new Position
                 if (pet && !pet.isWithinDist3d(x, y, z, getMap().getVisibilityRange())) {
                     unsummonPetTemporaryIfAny();
                 }
             }
 
-            if (!isAlive() && options.HasAnyFlag(TeleportToOptions.ReviveAtTeleport)) {
+            if (!isAlive() && options.hasFlag(TeleportToOptions.ReviveAtTeleport)) {
                 resurrectPlayer(0.5f);
             }
 
-            if (!options.HasAnyFlag(TeleportToOptions.NotLeaveCombat)) {
+            if (!options.hasFlag(TeleportToOptions.NotLeaveCombat)) {
                 combatStop();
             }
 
@@ -4585,7 +4687,7 @@ int ObjectID
 
             // stop spellcasting
             // not attempt interrupt teleportation spell at caster teleport
-            if (!options.HasAnyFlag(TeleportToOptions.spell)) {
+            if (!options.hasFlag(TeleportToOptions.spell)) {
                 if (isNonMeleeSpellCast(true)) {
                     interruptNonMeleeSpells(true);
                 }
@@ -4594,7 +4696,7 @@ int ObjectID
             //remove auras before removing from map...
             removeAurasWithInterruptFlags(SpellAuraInterruptFlags.Moving.getValue() | SpellAuraInterruptFlags.Turning.getValue());
 
-            if (!getSession().getPlayerLogout() && !options.HasAnyFlag(TeleportToOptions.Seamless)) {
+            if (!getSession().getPlayerLogout() && !options.hasFlag(TeleportToOptions.Seamless)) {
                 // send transfer packets
                 TransferPending transferPending = new TransferPending();
                 transferPending.mapID = (int) mapid;
@@ -4627,7 +4729,7 @@ int ObjectID
             if (!getSession().getPlayerLogout()) {
                 SuspendToken suspendToken = new SuspendToken();
                 suspendToken.sequenceIndex = getMovementCounter(); // not incrementing
-                suspendToken.reason = options.HasAnyFlag(TeleportToOptions.Seamless) ? 2 : 1;
+                suspendToken.reason = options.hasFlag(TeleportToOptions.Seamless) ? 2 : 1;
                 sendPacket(suspendToken);
             }
 
@@ -4655,10 +4757,10 @@ int ObjectID
         return getStartLevel(race, playerClass, null);
     }
 
-        public final int getStartLevel(Race race, PlayerClass playerClass, Integer characterTemplateId) {
+    public final int getStartLevel(Race race, PlayerClass playerClass, Integer characterTemplateId) {
         var startLevel = WorldConfig.getUIntValue(WorldCfg.StartPlayerLevel);
 
-        if (CliDB.ChrRacesStorage.get(race).getFlags().HasAnyFlag(ChrRacesFlag.IsAlliedRace)) {
+        if (CliDB.ChrRacesStorage.get(race).getFlags().hasFlag(ChrRacesFlag.IsAlliedRace)) {
             startLevel = WorldConfig.getUIntValue(WorldCfg.StartAlliedRaceLevel);
         }
 
@@ -4703,7 +4805,7 @@ int ObjectID
             }
         };
 
-        if (!getUnitMovedByMe().getVehicleBase() || !getUnitMovedByMe().getVehicle1().GetVehicleInfo().flags.HasAnyFlag(VehicleFlags.FixedPosition)) {
+        if (!getUnitMovedByMe().getVehicleBase() || !getUnitMovedByMe().getVehicle1().GetVehicleInfo().flags.hasFlag(VehicleFlags.FixedPosition)) {
             RemoveViolatingFlags.invoke(mi.hasMovementFlag(MovementFlag.Root), MovementFlag.Root);
         }
 
@@ -4932,109 +5034,11 @@ int ObjectID
         getMap().updatePersonalPhasesForPlayer(this);
     }
 
-    public final void setDeveloper(boolean on) {
-        if (on) {
-            setPlayerFlag(playerFlags.Developer);
-        } else {
-            removePlayerFlag(playerFlags.Developer);
-        }
-    }
-
-    public final void setAcceptWhispers(boolean on) {
-        if (on) {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.AcceptWhispers.getValue());
-        } else {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.AcceptWhispers.getValue());
-        }
-    }
-
-    public final void setGameMaster(boolean on) {
-        if (on) {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMOn.getValue());
-            setFaction(35);
-            setPlayerFlag(playerFlags.GM);
-            setUnitFlag2(UnitFlag2.AllowCheatSpells);
-
-            var pet = getCurrentPet();
-
-            if (pet != null) {
-                pet.setFaction(35);
-            }
-
-            removePvpFlag(UnitPVPStateFlags.FFAPvp);
-            resetContestedPvP();
-
-            combatStopWithPets();
-
-            PhasingHandler.setAlwaysVisible(this, true, false);
-            getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.GM, getSession().getSecurity());
-        } else {
-            PhasingHandler.setAlwaysVisible(this, hasAuraType(AuraType.PhaseAlwaysVisible), false);
-
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMOn.getValue());
-            restoreFaction();
-            removePlayerFlag(playerFlags.GM);
-            removeUnitFlag2(UnitFlag2.AllowCheatSpells);
-
-            var pet = getCurrentPet();
-
-            if (pet != null) {
-                pet.setFaction(getFaction());
-            }
-
-            // restore FFA PvP Server state
-            if (global.getWorldMgr().isFFAPvPRealm()) {
-                setPvpFlag(UnitPVPStateFlags.FFAPvp);
-            }
-
-            // restore FFA PvP area state, remove not allowed for GM mounts
-            updateArea(areaUpdateId);
-
-            getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.GM, AccountTypes.player);
-        }
-
-        updateObjectVisibility();
-    }
-
-    public final void setGMChat(boolean on) {
-        if (on) {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMChat.getValue());
-        } else {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMChat.getValue());
-        }
-    }
-
-    public final void setTaxiCheater(boolean on) {
-        if (on) {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.TaxiCheat.getValue());
-        } else {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.TaxiCheat.getValue());
-        }
-    }
-
-    public final void setGMVisible(boolean on) {
-        if (on) {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() & ~PlayerExtraFlags.GMInvisible.getValue()); //remove flag
-            getServerSideVisibility().setValue(ServerSideVisibilityType.GM, AccountTypes.player);
-        } else {
-            extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GMInvisible.getValue()); //add flag
-
-            setAcceptWhispers(false);
-            setGameMaster(true);
-
-            getServerSideVisibility().setValue(ServerSideVisibilityType.GM, getSession().getSecurity());
-        }
-
-        for (var channel : channels) {
-            channel.setInvisible(this, !on);
-        }
-    }
-
     public final void prepareGossipMenu(WorldObject source, int menuId) {
         prepareGossipMenu(source, menuId, false);
     }
 
-        public final void prepareGossipMenu(WorldObject source, int menuId, boolean showQuests) {
+    public final void prepareGossipMenu(WorldObject source, int menuId, boolean showQuests) {
         var menu = getPlayerTalkClass();
         menu.clearMenus();
 
@@ -5126,7 +5130,7 @@ int ObjectID
                         break;
                     default:
                         if (gossipMenuItem.getOptionNpc().getValue() >= GossipOptionNpc.max.getValue()) {
-                            Log.outError(LogFilter.Sql, String.format("Creature entry %1$s has an unknown gossip option icon %2$s for menu %3$s.", creature.getEntry(), gossipMenuItem.getOptionNpc(), gossipMenuItem.getMenuId()));
+                            Logs.SQL.error(String.format("Creature entry %1$s has an unknown gossip option icon %2$s for menu %3$s.", creature.getEntry(), gossipMenuItem.getOptionNpc(), gossipMenuItem.getMenuId()));
                             canTalk = false;
                         }
 
@@ -5178,7 +5182,6 @@ int ObjectID
 
         getPlayerTalkClass().sendGossipMenu(textId, source.getGUID());
     }
-
 
     public final void onGossipSelect(WorldObject source, int gossipOptionId, int menuId) {
         var gossipMenu = getPlayerTalkClass().getGossipMenu();
@@ -5372,7 +5375,6 @@ int ObjectID
         modifyMoney(-cost);
     }
 
-
     public final int getGossipTextId(WorldObject source) {
         if (source == null) {
             return SharedConst.DefaultGossipMessage;
@@ -5380,7 +5382,6 @@ int ObjectID
 
         return getGossipTextId(getDefaultGossipMenuForSource(source), source);
     }
-
 
     public final int getGossipTextId(int menuId, WorldObject source) {
         int textId = SharedConst.DefaultGossipMessage;
@@ -5401,19 +5402,19 @@ int ObjectID
     }
 
     public final boolean canJoinConstantChannelInZone(ChatChannelsRecord channel, AreaTableRecord zone) {
-        if (channel.flags.HasAnyFlag(ChannelDBCFlags.ZoneDep) && zone.hasFlag(AreaFlags.ArenaInstance)) {
+        if (channel.flags.hasFlag(ChannelDBCFlags.ZoneDep) && zone.hasFlag(AreaFlags.ArenaInstance)) {
             return false;
         }
 
-        if (channel.flags.HasAnyFlag(ChannelDBCFlags.CityOnly) && !zone.hasFlag(AreaFlags.Capital)) {
+        if (channel.flags.hasFlag(ChannelDBCFlags.CityOnly) && !zone.hasFlag(AreaFlags.Capital)) {
             return false;
         }
 
-        if (channel.flags.HasAnyFlag(ChannelDBCFlags.GuildReq) && getGuildId() != 0) {
+        if (channel.flags.hasFlag(ChannelDBCFlags.GuildReq) && getGuildId() != 0) {
             return false;
         }
 
-        if (channel.flags.HasAnyFlag(ChannelDBCFlags.NoClientJoin)) {
+        if (channel.flags.hasFlag(ChannelDBCFlags.NoClientJoin)) {
             return false;
         }
 
@@ -5452,7 +5453,6 @@ int ObjectID
         mail.add(0, mail);
     }
 
-
     public final void removeMail(long id) {
         for (var mail : mail) {
             if (mail.messageID == id) {
@@ -5476,7 +5476,7 @@ int ObjectID
         sendMailResult(mailId, mailAction, mailError, 0, 0, 0);
     }
 
-        public final void sendMailResult(long mailId, MailResponseType mailAction, MailResponseResult mailError, InventoryResult equipError, long itemGuid, int itemCount) {
+    public final void sendMailResult(long mailId, MailResponseType mailAction, MailResponseResult mailError, InventoryResult equipError, long itemGuid, int itemCount) {
         MailCommandResult result = new MailCommandResult();
         result.mailID = mailId;
         result.command = mailAction.getValue();
@@ -5527,21 +5527,17 @@ int ObjectID
         mailItems.put(it.getGUID().getCounter(), it);
     }
 
-
     public final boolean removeMItem(long id) {
         return mailItems.remove(id);
     }
-
 
     public final Item getMItem(long id) {
         return mailItems.get(id);
     }
 
-
     public final Mail getMail(long id) {
         return tangible.ListHelper.find(mail, p -> p.messageID == id);
     }
-
 
     public final void setHomebind(WorldLocation loc, int areaId) {
         homeBind.WorldRelocate(loc);
@@ -5575,7 +5571,6 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final void sendPlayerBound(ObjectGuid binderGuid, int areaId) {
         PlayerBound packet = new PlayerBound(binderGuid, areaId);
         sendPacket(packet);
@@ -5585,7 +5580,7 @@ int ObjectID
         sendUpdateWorldState(variable, value, false);
     }
 
-        public final void sendUpdateWorldState(WorldStates variable, int value, boolean hidden) {
+    public final void sendUpdateWorldState(WorldStates variable, int value, boolean hidden) {
         sendUpdateWorldState((int) variable.getValue(), value, hidden);
     }
 
@@ -5593,7 +5588,7 @@ int ObjectID
         sendUpdateWorldState(variable, value, false);
     }
 
-        public final void sendUpdateWorldState(int variable, int value, boolean hidden) {
+    public final void sendUpdateWorldState(int variable, int value, boolean hidden) {
         UpdateWorldState worldstate = new updateWorldState();
         worldstate.variableID = variable;
         worldstate.value = (int) value;
@@ -5633,18 +5628,12 @@ int ObjectID
         return cost;
     }
 
-
-    public final void setChampioningFaction(int faction) {
-        championingFaction = faction;
-    }
-
     public final void setFactionForRace(Race race) {
         team = teamForRace(race);
 
         var rEntry = CliDB.ChrRacesStorage.get(race);
         setFaction(rEntry != null ? (int) rEntry.FactionID : 0);
     }
-
 
     public final void setResurrectRequestData(WorldObject caster, int health, int mana, int appliedAura) {
         resurrectionData = new ResurrectionData();
@@ -5788,7 +5777,7 @@ int ObjectID
         return isImmunedToSpellEffect(spellInfo, spellEffectInfo, caster, false);
     }
 
-        @Override
+    @Override
     public boolean isImmunedToSpellEffect(SpellInfo spellInfo, SpellEffectInfo spellEffectInfo, WorldObject caster, boolean requireImmunityPurgesEffectAttribute) {
         // players are immune to taunt (the aura and the spell effect).
         if (spellEffectInfo.isAura(AuraType.ModTaunt)) {
@@ -6032,7 +6021,7 @@ int ObjectID
         resurrectPlayer(restore_percent, false);
     }
 
-        public final void resurrectPlayer(float restore_percent, boolean applySickness) {
+    public final void resurrectPlayer(float restore_percent, boolean applySickness) {
         DeathReleaseLoc packet = new DeathReleaseLoc();
         packet.mapID = -1;
         sendPacket(packet);
@@ -6165,7 +6154,7 @@ int ObjectID
         spawnCorpseBones(true);
     }
 
-        public final void spawnCorpseBones(boolean triggerSave) {
+    public final void spawnCorpseBones(boolean triggerSave) {
         corpseLocation = new worldLocation();
 
         if (getMap().convertCorpseToBones(getGUID())) {
@@ -6233,7 +6222,6 @@ int ObjectID
         removePlayerFlag(playerFlags.IsOutOfBounds);
     }
 
-
     public final int getCorpseReclaimDelay(boolean pvp) {
         if (pvp) {
             if (!WorldConfig.getBoolValue(WorldCfg.DeathCorpseReclaimDelayPvp)) {
@@ -6257,14 +6245,12 @@ int ObjectID
         return pet.outArgValue != null;
     }
 
-
     public final Pet summonPet(int entry, PetSaveMode slot, Position pos, int duration) {
         tangible.OutObject<Boolean> tempOut__ = new tangible.OutObject<Boolean>();
         var tempVar = summonPet(entry, slot, pos, duration, tempOut__);
         _ = tempOut__.outArgValue;
         return tempVar;
     }
-
 
     public final Pet summonPet(int entry, PetSaveMode slot, Position pos, int duration, tangible.OutObject<Boolean> isNew) {
         isNew.outArgValue = false;
@@ -6355,7 +6341,10 @@ int ObjectID
         removePet(pet, mode, false);
     }
 
-        public final void removePet(Pet pet, PetSaveMode mode, boolean returnreagent) {
+// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+    ///#region Sends / Updates
+
+    public final void removePet(Pet pet, PetSaveMode mode, boolean returnreagent) {
         if (!pet) {
             pet = getCurrentPet();
         }
@@ -6458,9 +6447,6 @@ int ObjectID
     public final void sendOnCancelExpectedVehicleRideAura() {
         sendPacket(new OnCancelExpectedRideVehicleAura());
     }
-
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
-    ///#region Sends / Updates
 
     public final void sendMovementSetCollisionHeight(float height, UpdateCollisionHeightReason reason) {
         MoveSetCollisionHeight setCollisionHeight = new MoveSetCollisionHeight();
@@ -6629,7 +6615,6 @@ int ObjectID
         sendPacket(displayPlayerChoice);
     }
 
-
     public final boolean meetPlayerCondition(int conditionId) {
         var playerCondition = CliDB.PlayerConditionStorage.get(conditionId);
 
@@ -6640,33 +6625,6 @@ int ObjectID
         }
 
         return true;
-    }
-
-    public final void setWarModeDesired(boolean enabled) {
-        // Only allow to toggle on when in stormwind/orgrimmar, and to toggle off in any rested place.
-        // Also disallow when in combat
-        if ((enabled == isWarModeDesired()) || isInCombat() || !hasPlayerFlag(playerFlags.Resting)) {
-            return;
-        }
-
-        if (enabled && !canEnableWarModeInArea()) {
-            return;
-        }
-
-        // Don't allow to chang when aura SPELL_PVP_RULES_ENABLED is on
-        if (hasAura(PlayerConst.SpellPvpRulesEnabled)) {
-            return;
-        }
-
-        if (enabled) {
-            setPlayerFlag(playerFlags.WarModeDesired);
-            setPvP(true);
-        } else {
-            removePlayerFlag(playerFlags.WarModeDesired);
-            setPvP(false);
-        }
-
-        updateWarModeAuras();
     }
 
     public final boolean canEnableWarModeInArea() {
@@ -6714,22 +6672,19 @@ int ObjectID
         return true;
     }
 
-
     public final void setRegenTimerCount(int time) {
         regenTimerCount = time;
     }
-
 
     public final boolean hasEnoughMoney(long amount) {
         return getMoney() >= amount;
     }
 
-
     public final boolean modifyMoney(long amount) {
         return modifyMoney(amount, true);
     }
 
-        public final boolean modifyMoney(long amount, boolean sendError) {
+    public final boolean modifyMoney(long amount, boolean sendError) {
         if (amount == 0) {
             return true;
         }
@@ -6776,7 +6731,7 @@ int ObjectID
         removeAtLoginFlag(flags, false);
     }
 
-        public final void removeAtLoginFlag(AtLoginFlags flags, boolean persist) {
+    public final void removeAtLoginFlag(AtLoginFlags flags, boolean persist) {
         setLoginFlags(AtLoginFlags.forValue(getLoginFlags().getValue() & ~flags.getValue()));
 
         if (persist) {
@@ -6802,16 +6757,9 @@ int ObjectID
         global.getCharacterCacheStorage().updateCharacterGuildId(getGUID(), guildId);
     }
 
-
-    public final void setGuildRank(byte rankId) {
-        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().guildRankID), rankId);
-    }
-
-
     public final void setFreePrimaryProfessions(int profs) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().characterPoints), profs);
     }
-
 
     public final void giveLevel(int level) {
         var oldLevel = getLevel();
@@ -7072,8 +7020,14 @@ int ObjectID
         return go;
     }
 
+// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+    ///#endregion
+
+// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+    ///#region Chat
+
     public final void sendInitialPacketsBeforeAddToMap() {
-        if (!teleportOptions.HasAnyFlag(TeleportToOptions.Seamless)) {
+        if (!teleportOptions.hasFlag(TeleportToOptions.Seamless)) {
             setMovementCounter(0);
             getSession().resetTimeSync();
         }
@@ -7315,12 +7269,6 @@ int ObjectID
         social = null;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
-    ///#endregion
-
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
-    ///#region Chat
-
     public final void saveRecallPosition() {
         recallLocation = new worldLocation(getLocation());
         recallInstanceId = getInstanceId();
@@ -7334,7 +7282,7 @@ int ObjectID
         initStatsForLevel(false);
     }
 
-        public final void initStatsForLevel(boolean reapplyMods) {
+    public final void initStatsForLevel(boolean reapplyMods) {
         if (reapplyMods) //reapply stats values only on .reset stats (level) command
         {
             _RemoveAllStatBonuses();
@@ -7539,7 +7487,7 @@ int ObjectID
         initDataForForm(false);
     }
 
-        public final void initDataForForm(boolean reapplyMods) {
+    public final void initDataForForm(boolean reapplyMods) {
         var form = getShapeshiftForm();
 
         var ssEntry = CliDB.SpellShapeshiftFormStorage.get((int) form.getValue());
@@ -7563,18 +7511,15 @@ int ObjectID
         updateAttackPowerAndDamage(true);
     }
 
-
     public final ReputationRank getReputationRank(int faction) {
         var factionEntry = CliDB.FactionStorage.get(faction);
 
         return getReputationMgr().getRank(factionEntry);
     }
 
-
     public final void setReputation(int factionentry, int value) {
         getReputationMgr().setReputation(CliDB.FactionStorage.get(factionentry), value);
     }
-
 
     public final int getReputation(int factionentry) {
         return getReputationMgr().getReputation(CliDB.FactionStorage.get(factionentry));
@@ -7596,12 +7541,10 @@ int ObjectID
         whisperList.remove(guid);
     }
 
-
     public final void setFallInformation(int time, float z) {
         lastFallTime = time;
         lastFallZ = z;
     }
-
 
     public final void sendCinematicStart(int CinematicSequenceId) {
         TriggerCinematic packet = new TriggerCinematic();
@@ -7614,7 +7557,6 @@ int ObjectID
             cinematicMgr.beginCinematic(sequence);
         }
     }
-
 
     public final void sendMovieStart(int movieId) {
         setMovie(movieId);
@@ -7633,18 +7575,6 @@ int ObjectID
 
     public final boolean hasBeenGrantedLevelsFromRaF() {
         return extraFlags.hasFlag(PlayerExtraFlags.GrantedLevelsFromRaf);
-    }
-
-    public final void setBeenGrantedLevelsFromRaF() {
-        extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GrantedLevelsFromRaf.getValue());
-    }
-
-    public final boolean hasLevelBoosted() {
-        return extraFlags.hasFlag(PlayerExtraFlags.LevelBoosted);
-    }
-
-    public final void setHasLevelBoosted() {
-        extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.LevelBoosted.getValue());
     }
 
 // C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
@@ -7668,11 +7598,23 @@ int ObjectID
     //    return (sbyte)_covenantId;
     //}
 
+    public final void setBeenGrantedLevelsFromRaF() {
+        extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.GrantedLevelsFromRaf.getValue());
+    }
+
+    public final boolean hasLevelBoosted() {
+        return extraFlags.hasFlag(PlayerExtraFlags.LevelBoosted);
+    }
+
+    public final void setHasLevelBoosted() {
+        extraFlags = PlayerExtraFlags.forValue(extraFlags.getValue() | PlayerExtraFlags.LevelBoosted.getValue());
+    }
+
     public final void giveXP(int xp, Unit victim) {
         giveXP(xp, victim, 1.0f);
     }
 
-        public final void giveXP(int xp, Unit victim, float group_rate) {
+    public final void giveXP(int xp, Unit victim, float group_rate) {
         if (xp < 1) {
             return;
         }
@@ -7782,7 +7724,7 @@ int ObjectID
         updateDamageDoneMods(attackType, -1);
     }
 
-        @Override
+    @Override
     public void updateDamageDoneMods(WeaponAttackType attackType, int skipEnchantSlot) {
         super.updateDamageDoneMods(attackType, skipEnchantSlot);
 
@@ -7833,11 +7775,7 @@ int ObjectID
         handleStatFlatModifier(unitMod, UnitModifierFlatType.Total, amount, true);
     }
 
-    public final void setDrunkValue(byte newDrunkValue) {
-        setDrunkValue(newDrunkValue, 0);
-    }
-
-        public final void setDrunkValue(byte newDrunkValue, int itemId) {
+    public final void setDrunkValue(byte newDrunkValue, int itemId) {
         var isSobering = newDrunkValue < getDrunkValue();
         var oldDrunkenState = getDrunkenstateByValue(getDrunkValue());
 
@@ -7887,7 +7825,7 @@ int ObjectID
         return activateTaxiPathTo(nodes, null, 0, 0);
     }
 
-        public final boolean activateTaxiPathTo(ArrayList<Integer> nodes, Creature npc, int spellid, int preferredMountDisplay) {
+    public final boolean activateTaxiPathTo(ArrayList<Integer> nodes, Creature npc, int spellid, int preferredMountDisplay) {
         if (nodes.size() < 2) {
             getSession().sendActivateTaxiReply(ActivateTaxiReply.NoSuchPath);
 
@@ -8030,7 +7968,7 @@ int ObjectID
         // can use this taxi.
         int mount_display_id;
 
-        if (node.flags.HasAnyFlag(TaxiNodeFlags.UseFavoriteMount) && preferredMountDisplay != 0) {
+        if (node.flags.hasFlag(TaxiNodeFlags.UseFavoriteMount) && preferredMountDisplay != 0) {
             mount_display_id = preferredMountDisplay;
         } else {
             mount_display_id = global.getObjectMgr().getTaxiMountDisplayId(sourcenode, getTeam(), npc == null || (sourcenode == 315 && getClass() == playerClass.Deathknight));
@@ -8087,7 +8025,7 @@ int ObjectID
         return activateTaxiPathTo(taxi_path_id, 0);
     }
 
-        public final boolean activateTaxiPathTo(int taxi_path_id, int spellid) {
+    public final boolean activateTaxiPathTo(int taxi_path_id, int spellid) {
         var entry = CliDB.TaxiPathStorage.get(taxi_path_id);
 
         if (entry == null) {
@@ -8290,7 +8228,6 @@ int ObjectID
         return 1.0f - 0.05f * (rank - ReputationRank.Neutral);
     }
 
-
     public final boolean isSpellFitByClassAndRace(int spell_id) {
         var racemask = SharedConst.GetMaskForRace(getRace());
         var classmask = getClassMask();
@@ -8324,14 +8261,13 @@ int ObjectID
     }
 
     public final boolean haveAtClient(GenericObject object) {
-        return Objects.equals(object.getGUID(),this.getGUID())
+        return Objects.equals(object.getGUID(), this.getGUID())
                 || getClientGuiDs().contains(object.getGUID());
     }
 
     public final boolean hasTitle(CharTitlesRecord title) {
         return hasTitle(title.MaskID);
     }
-
 
     public final boolean hasTitle(int bitIndex) {
         var fieldIndexOffset = bitIndex / 64;
@@ -8349,7 +8285,7 @@ int ObjectID
         setTitle(title, false);
     }
 
-        public final void setTitle(CharTitlesRecord title, boolean lost) {
+    public final void setTitle(CharTitlesRecord title, boolean lost) {
         var fieldIndexOffset = (title.MaskID / 64);
         var flag = 1 << (title.MaskID % 64);
 
@@ -8372,11 +8308,9 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final void setChosenTitle(int title) {
         setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().playerTitle), title);
     }
-
 
     public final void setKnownTitles(int index, long mask) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().knownTitles, index), mask);
@@ -8464,7 +8398,7 @@ int ObjectID
         return getWeaponForAttack(attackType, false);
     }
 
-        public final Item getWeaponForAttack(WeaponAttackType attackType, boolean useable) {
+    public final Item getWeaponForAttack(WeaponAttackType attackType, boolean useable) {
         byte slot;
 
         switch (attackType) {
@@ -8515,7 +8449,7 @@ int ObjectID
         autoUnequipOffhandIfNeed(false);
     }
 
-        public final void autoUnequipOffhandIfNeed(boolean force) {
+    public final void autoUnequipOffhandIfNeed(boolean force) {
         var offItem = getItemByPos(InventorySlots.Bag0, EquipmentSlot.OffHand);
 
         if (offItem == null) {
@@ -8557,7 +8491,6 @@ int ObjectID
         var restInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().restInfo, type.getValue());
         setUpdateFieldValue(restInfo.modifyValue(restInfo.stateID), (byte) state.getValue());
     }
-
 
     public final void setRestThreshold(RestTypes type, int threshold) {
         var restInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().restInfo, type.getValue());
@@ -8604,7 +8537,6 @@ int ObjectID
         setFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL + 1, newItemLevel);
     }
 
-
     public final int getCustomizationChoice(int chrCustomizationOptionId) {
         var choiceIndex = getPlayerData().customizations.FindIndexIf(choice ->
         {
@@ -8622,7 +8554,7 @@ int ObjectID
         setCustomizations(customizations, true);
     }
 
-        public final void setCustomizations(ArrayList<ChrCustomizationChoice> customizations, boolean markChanged) {
+    public final void setCustomizations(ArrayList<ChrCustomizationChoice> customizations, boolean markChanged) {
         if (markChanged) {
             customizationsChanged = true;
         }
@@ -8637,11 +8569,9 @@ int ObjectID
         }
     }
 
-
     public final void setPvpTitle(byte pvpTitle) {
         setByteValue(PLAYER_BYTES_4, PLAYER_BYTES_4_OFFSET_PVP_TITLE, pvpTitle);
     }
-
 
     public final void setArenaFaction(byte arenaFaction) {
         setByteValue(PLAYER_BYTES_4, PLAYER_BYTES_4_OFFSET_ARENA_FACTION, arenaFaction);
@@ -8651,27 +8581,22 @@ int ObjectID
         applyModInt32Value(PLAYER_FAKE_INEBRIATION, mod, apply);
     }
 
-
     public final void setVirtualPlayerRealm(int virtualRealmAddress) {
         setInt32Value(PLAYER_FIELD_VIRTUAL_PLAYER_REALM, virtualRealmAddress);
     }
 
-
     public final void setCurrentBattlePetBreedQuality(byte battlePetBreedQuality) {
         setByteValue(PLAYER_FIELD_CURRENT_BATTLE_PET_BREED_QUALITY, FIELD_BYTE_OFFSET_0, battlePetBreedQuality);
     }
-
 
     public final void addHeirloom(int itemId, int flags) {
         addDynamicValue(PLAYER_DYNAMIC_FIELD_HEIRLOOMS, itemId);
         addDynamicValue(PLAYER_DYNAMIC_FIELD_HEIRLOOM_FLAGS, flags);
     }
 
-
     public final void setHeirloom(int slot, int itemId) {
         setDynamicValue(PLAYER_DYNAMIC_FIELD_HEIRLOOMS, slot, itemId);
     }
-
 
     public final void setHeirloomFlags(int slot, int flags) {
         setDynamicValue(PLAYER_DYNAMIC_FIELD_HEIRLOOM_FLAGS, slot, flags);
@@ -8681,22 +8606,18 @@ int ObjectID
         addDynamicValue(PLAYER_DYNAMIC_FIELD_TOYS, itemId);
     }
 
-
     public final void addTransmogBlock(int blockValue) {
         addDynamicValue(PLAYER_DYNAMIC_FIELD_TRANSMOG, blockValue);
     }
-
 
     public final void addTransmogFlag(int slot, int flag) {
         int currentMask = getDynamicValue(PLAYER_DYNAMIC_FIELD_TRANSMOG, slot);
         setDynamicValue(PLAYER_DYNAMIC_FIELD_TRANSMOG, slot, currentMask | flag);
     }
 
-
     public final void addConditionalTransmog(int itemModifiedAppearanceId) {
         addDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().conditionalTransmog), itemModifiedAppearanceId);
     }
-
 
     public final void removeConditionalTransmog(int itemModifiedAppearanceId) {
         var index = getActivePlayerData().conditionalTransmog.FindIndex(itemModifiedAppearanceId);
@@ -8706,21 +8627,17 @@ int ObjectID
         }
     }
 
-
     public final void addIllusionBlock(int blockValue) {
         addDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().transmogIllusions), blockValue);
     }
-
 
     public final void addIllusionFlag(int slot, int flag) {
         setUpdateFieldFlagValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().transmogIllusions, slot), flag);
     }
 
-
     public final void addSelfResSpell(int spellId) {
         addDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().selfResSpells), spellId);
     }
-
 
     public final void removeSelfResSpell(int spellId) {
         var index = getActivePlayerData().selfResSpells.FindIndex(spellId);
@@ -8734,15 +8651,9 @@ int ObjectID
         clearDynamicUpdateFieldValues(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().selfResSpells));
     }
 
-    public final void setSummonedBattlePetGUID(ObjectGuid guid) {
-        setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().summonedBattlePetGUID), guid);
-    }
-
-
     public final void setTrackCreatureFlag(int flags) {
         setUpdateFieldFlagValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().trackCreatureMask), flags);
     }
-
 
     public final void removeTrackCreatureFlag(int flags) {
         removeUpdateFieldFlagValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().trackCreatureMask), flags);
@@ -8775,12 +8686,6 @@ int ObjectID
     public final void replaceAllPlayerLocalFlags(PlayerLocalFlags flags) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().localFlags), (int) flags.getValue());
     }
-
-
-    public final void setNumRespecs(byte numRespecs) {
-        setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().numRespecs), numRespecs);
-    }
-
 
     public final void setWatchedFactionIndex(int index) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().watchedFactionIndex), index);
@@ -9239,14 +9144,9 @@ int ObjectID
         }
     }
 
-    private void setCanDelayTeleport(boolean setting) {
-        canDelayTeleport = setting;
-    }
-
     private void setDelayedTeleportFlag(boolean setting) {
         hasDelayedTeleport = setting;
     }
-
 
     private void updateLocalChannels(int newZone) {
         if (getSession().getPlayerLoading() && !isBeingTeleportedFar()) {
@@ -9266,7 +9166,7 @@ int ObjectID
         }
 
         for (var channelEntry : CliDB.ChatChannelsStorage.values()) {
-            if (!channelEntry.flags.HasAnyFlag(ChannelDBCFlags.initial)) {
+            if (!channelEntry.flags.hasFlag(ChannelDBCFlags.initial)) {
                 continue;
             }
 
@@ -9285,8 +9185,8 @@ int ObjectID
             var sendRemove = true;
 
             if (canJoinConstantChannelInZone(channelEntry, current_zone)) {
-                if (!channelEntry.flags.HasAnyFlag(ChannelDBCFlags.global)) {
-                    if (channelEntry.flags.HasAnyFlag(ChannelDBCFlags.CityOnly) && usedChannel != null) {
+                if (!channelEntry.flags.hasFlag(ChannelDBCFlags.global)) {
+                    if (channelEntry.flags.hasFlag(ChannelDBCFlags.CityOnly) && usedChannel != null) {
                         continue; // Already on the channel, as city channel names are not changing
                     }
 
@@ -9324,7 +9224,6 @@ int ObjectID
         sendPacket(new NotifyReceivedMail());
     }
 
-
     private void updateHomebindTime(int time) {
         // GMs never get homebind timer online
         if (getInstanceValid() || isGameMaster()) {
@@ -9351,7 +9250,6 @@ int ObjectID
         }
     }
 
-
     private void sendInitWorldStates(int zoneId, int areaId) {
         // data depends on zoneid/mapid...
         var mapid = getLocation().getMapId();
@@ -9366,9 +9264,12 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     private int getChampioningFaction() {
         return championingFaction;
+    }
+
+    public final void setChampioningFaction(int faction) {
+        championingFaction = faction;
     }
 
     private void resurrectUsingRequestDataImpl() {
@@ -9664,7 +9565,7 @@ int ObjectID
         var fireTimer = MirrorTimerType.Fire.getValue();
 
         // In water
-        if (mirrorTimerFlags.HasAnyFlag(PlayerUnderwaterState.InWater)) {
+        if (mirrorTimerFlags.hasFlag(PlayerUnderwaterState.InWater)) {
             // Breath timer not activated - activate it
             if (_mirrorTimer[breathTimer] == -1) {
                 _mirrorTimer[breathTimer] = getMaxTimer(MirrorTimerType.Breath);
@@ -9680,7 +9581,7 @@ int ObjectID
                     // @todo Check this formula
                     var damage = (int) (getMaxHealth() / 5 + RandomUtil.URand(0, getLevel() - 1));
                     environmentalDamage(EnviromentalDamage.Drowning, damage);
-                } else if (!mirrorTimerFlagsLast.HasAnyFlag(PlayerUnderwaterState.InWater)) // Update time in client if need
+                } else if (!mirrorTimerFlagsLast.hasFlag(PlayerUnderwaterState.InWater)) // Update time in client if need
                 {
                     sendMirrorTimer(MirrorTimerType.Breath, getMaxTimer(MirrorTimerType.Breath), _mirrorTimer[breathTimer], -1);
                 }
@@ -9693,13 +9594,13 @@ int ObjectID
 
             if (_mirrorTimer[breathTimer] >= UnderWaterTime || !isAlive()) {
                 stopMirrorTimer(MirrorTimerType.Breath);
-            } else if (mirrorTimerFlagsLast.HasAnyFlag(PlayerUnderwaterState.InWater)) {
+            } else if (mirrorTimerFlagsLast.hasFlag(PlayerUnderwaterState.InWater)) {
                 sendMirrorTimer(MirrorTimerType.Breath, UnderWaterTime, _mirrorTimer[breathTimer], 10);
             }
         }
 
         // In dark water
-        if (mirrorTimerFlags.HasAnyFlag(PlayerUnderwaterState.InDarkWater)) {
+        if (mirrorTimerFlags.hasFlag(PlayerUnderwaterState.InDarkWater)) {
             // Fatigue timer not activated - activate it
             if (_mirrorTimer[fatigueTimer] == -1) {
                 _mirrorTimer[fatigueTimer] = getMaxTimer(MirrorTimerType.Fatigue);
@@ -9719,7 +9620,7 @@ int ObjectID
                     {
                         repopAtGraveyard();
                     }
-                } else if (!mirrorTimerFlagsLast.HasAnyFlag(PlayerUnderwaterState.InDarkWater)) {
+                } else if (!mirrorTimerFlagsLast.hasFlag(PlayerUnderwaterState.InDarkWater)) {
                     sendMirrorTimer(MirrorTimerType.Fatigue, getMaxTimer(MirrorTimerType.Fatigue), _mirrorTimer[fatigueTimer], -1);
                 }
             }
@@ -9730,12 +9631,12 @@ int ObjectID
 
             if (_mirrorTimer[fatigueTimer] >= DarkWaterTime || !isAlive()) {
                 stopMirrorTimer(MirrorTimerType.Fatigue);
-            } else if (mirrorTimerFlagsLast.HasAnyFlag(PlayerUnderwaterState.InDarkWater)) {
+            } else if (mirrorTimerFlagsLast.hasFlag(PlayerUnderwaterState.InDarkWater)) {
                 sendMirrorTimer(MirrorTimerType.Fatigue, DarkWaterTime, _mirrorTimer[fatigueTimer], 10);
             }
         }
 
-        if (mirrorTimerFlags.HasAnyFlag(PlayerUnderwaterState.InLava) && !(getLastLiquid() != null && getLastLiquid().spellID != 0)) {
+        if (mirrorTimerFlags.hasFlag(PlayerUnderwaterState.InLava) && !(getLastLiquid() != null && getLastLiquid().spellID != 0)) {
             // Breath timer not activated - activate it
             if (_mirrorTimer[fireTimer] == -1) {
                 _mirrorTimer[fireTimer] = getMaxTimer(MirrorTimerType.Fire);
@@ -9748,7 +9649,7 @@ int ObjectID
                     // @todo Check this formula
                     var damage = RandomUtil.URand(600, 700);
 
-                    if (mirrorTimerFlags.HasAnyFlag(PlayerUnderwaterState.InLava)) {
+                    if (mirrorTimerFlags.hasFlag(PlayerUnderwaterState.InLava)) {
                         environmentalDamage(EnviromentalDamage.Lava, damage);
                     }
                     // need to skip Slime damage in Undercity,
@@ -9892,7 +9793,7 @@ int ObjectID
     }
 
     private void updateCorpseReclaimDelay() {
-        var pvp = extraFlags.HasAnyFlag(PlayerExtraFlags.PVPDeath);
+        var pvp = extraFlags.hasFlag(PlayerExtraFlags.PVPDeath);
 
         if ((pvp && !WorldConfig.getBoolValue(WorldCfg.DeathCorpseReclaimDelayPvp)) || (!pvp && !WorldConfig.getBoolValue(WorldCfg.DeathCorpseReclaimDelayPve))) {
             return;
@@ -9918,7 +9819,7 @@ int ObjectID
         return calculateCorpseReclaimDelay(false);
     }
 
-        private int calculateCorpseReclaimDelay(boolean load) {
+    private int calculateCorpseReclaimDelay(boolean load) {
         var corpse = getCorpse();
 
         if (load && !corpse) {
@@ -10333,7 +10234,7 @@ int ObjectID
         updateObjectVisibility(true);
     }
 
-        @Override
+    @Override
     public void updateObjectVisibility(boolean forced) {
         // Prevent updating visibility if player is not in world (example: LoadFromDB sets drunkstate which updates invisibility while player is not in map)
         if (!isInWorld()) {
@@ -10374,7 +10275,7 @@ int ObjectID
         sendMessageToSetInRange(data, dist, self, own_team_only, false);
     }
 
-        private void sendMessageToSetInRange(ServerPacket data, float dist, boolean self, boolean own_team_only, boolean required3dDist) {
+    private void sendMessageToSetInRange(ServerPacket data, float dist, boolean self, boolean own_team_only, boolean required3dDist) {
         if (self) {
             sendPacket(data);
         }
@@ -10407,7 +10308,7 @@ int ObjectID
         return updatePosition(pos, false);
     }
 
-        @Override
+    @Override
     public boolean updatePosition(Position pos, boolean teleport) {
         return updatePosition(pos.getX(), pos.getY(), pos.getZ(), pos.getO(), teleport);
     }
@@ -10417,7 +10318,7 @@ int ObjectID
         return updatePosition(x, y, z, orientation, false);
     }
 
-        @Override
+    @Override
     public boolean updatePosition(float x, float y, float z, float orientation, boolean teleport) {
         if (!super.updatePosition(x, y, z, orientation, teleport)) {
             return false;
@@ -10659,7 +10560,7 @@ int ObjectID
         say(text, language, null);
     }
 
-        @Override
+    @Override
     public void say(String text, Language language, WorldObject obj) {
         global.getScriptMgr().onPlayerChat(this, ChatMsg.Say, language, text);
 
@@ -10683,7 +10584,7 @@ int ObjectID
         say(textId, null);
     }
 
-        @Override
+    @Override
     public void say(int textId, WorldObject target) {
         talk(textId, ChatMsg.Say, WorldConfig.getFloatValue(WorldCfg.ListenRangeSay), target);
     }
@@ -10693,7 +10594,7 @@ int ObjectID
         yell(text, language, null);
     }
 
-        @Override
+    @Override
     public void yell(String text, Language language, WorldObject obj) {
         global.getScriptMgr().onPlayerChat(this, ChatMsg.Yell, language, text);
 
@@ -10707,7 +10608,7 @@ int ObjectID
         yell(textId, null);
     }
 
-        @Override
+    @Override
     public void yell(int textId, WorldObject target) {
         talk(textId, ChatMsg.Yell, WorldConfig.getFloatValue(WorldCfg.ListenRangeYell), target);
     }
@@ -10722,7 +10623,7 @@ int ObjectID
         textEmote(text, null, false);
     }
 
-        @Override
+    @Override
     public void textEmote(String text, WorldObject obj, boolean something) {
         global.getScriptMgr().onPlayerChat(this, ChatMsg.emote, language.Universal, text);
 
@@ -10741,7 +10642,7 @@ int ObjectID
         textEmote(textId, null, false);
     }
 
-        @Override
+    @Override
     public void textEmote(int textId, WorldObject target, boolean isBossEmote) {
         talk(textId, ChatMsg.emote, WorldConfig.getFloatValue(WorldCfg.ListenRangeTextemote), target);
     }
@@ -10768,7 +10669,7 @@ int ObjectID
         whisper(text, language, null, false);
     }
 
-        @Override
+    @Override
     public void whisper(String text, Language language, Player target, boolean something) {
         var isAddonMessage = language == language.Addon;
 
@@ -10811,7 +10712,7 @@ int ObjectID
         whisper(textId, target, false);
     }
 
-        @Override
+    @Override
     public void whisper(int textId, Player target, boolean isBossWhisper) {
         if (!target) {
             return;
@@ -11671,7 +11572,7 @@ int ObjectID
 
                     break; // enable
                 case 2: // save state
-                    if (extra_flags.HasAnyFlag(PlayerExtraFlags.GMOn)) {
+                    if (extra_flags.hasFlag(PlayerExtraFlags.GMOn)) {
                         setGameMaster(true);
                     }
 
@@ -11687,7 +11588,7 @@ int ObjectID
                 case 1:
                     break; // visible
                 case 2: // save state
-                    if (extra_flags.HasAnyFlag(PlayerExtraFlags.GMInvisible)) {
+                    if (extra_flags.hasFlag(PlayerExtraFlags.GMInvisible)) {
                         setGMVisible(false);
                     }
 
@@ -11703,7 +11604,7 @@ int ObjectID
 
                     break; // enable
                 case 2: // save state
-                    if (extra_flags.HasAnyFlag(PlayerExtraFlags.GMChat)) {
+                    if (extra_flags.hasFlag(PlayerExtraFlags.GMChat)) {
                         setGMChat(true);
                     }
 
@@ -11719,7 +11620,7 @@ int ObjectID
 
                     break; // enable
                 case 2: // save state
-                    if (extra_flags.HasAnyFlag(PlayerExtraFlags.AcceptWhispers)) {
+                    if (extra_flags.hasFlag(PlayerExtraFlags.AcceptWhispers)) {
                         setAcceptWhispers(true);
                     }
 
@@ -11799,7 +11700,7 @@ int ObjectID
         saveToDB(false);
     }
 
-        public final void saveToDB(boolean create) {
+    public final void saveToDB(boolean create) {
         SQLTransaction loginTransaction = new SQLTransaction();
         SQLTransaction characterTransaction = new SQLTransaction();
 
@@ -11813,7 +11714,7 @@ int ObjectID
         saveToDB(loginTransaction, characterTransaction, false);
     }
 
-        public final void saveToDB(SQLTransaction loginTransaction, SQLTransaction characterTransaction, boolean create) {
+    public final void saveToDB(SQLTransaction loginTransaction, SQLTransaction characterTransaction, boolean create) {
         // delay auto save at any saves (manual, in code, or autosave)
         nextSave = WorldConfig.getUIntValue(WorldCfg.IntervalSave);
 
@@ -13058,7 +12959,7 @@ int ObjectID
                             var rewardProto = global.getObjectMgr().getItemTemplate(questPackageItem.itemID);
 
                             if (rewardProto != null) {
-                                if (rewardProto.getItemSpecClassMask().HasAnyFlag(getClassMask())) {
+                                if (rewardProto.getItemSpecClassMask().hasFlag(getClassMask())) {
                                     getSession().getCollectionMgr().addItemAppearance(questPackageItem.itemID);
                                 }
                             }
@@ -14168,7 +14069,7 @@ int ObjectID
         }
 
         PreparedStatement stmt;
-        var keepAbandoned = !global.getWorldMgr().getCleaningFlags().HasAnyFlag(CleaningFlags.QUESTSTATUS);
+        var keepAbandoned = !global.getWorldMgr().getCleaningFlags().hasFlag(CleaningFlags.QUESTSTATUS);
 
         for (var save : questStatusSave.entrySet()) {
             if (save.getValue() == QuestSaveType.Default) {
@@ -14975,10 +14876,13 @@ int ObjectID
         return group.getTarget();
     }
 
+    public final void setGroup(PlayerGroup group) {
+        setGroup(group, 0);
+    }
+
     public final GroupReference getGroupRef() {
         return group;
     }
-
 
     public final byte getSubGroup() {
         return group.getSubGroup();
@@ -14988,14 +14892,21 @@ int ObjectID
         return groupUpdateFlags;
     }
 
+    public final void setGroupUpdateFlag(GroupUpdateFlags flag) {
+        groupUpdateFlags = GroupUpdateFlags.forValue(groupUpdateFlags.getValue() | flag.getValue());
+    }
+
     public final PlayerGroup getOriginalGroup() {
         return originalGroup.getTarget();
+    }
+
+    public final void setOriginalGroup(PlayerGroup group) {
+        setOriginalGroup(group, 0);
     }
 
     public final GroupReference getOriginalGroupRef() {
         return originalGroup;
     }
-
 
     public final byte getOriginalSubGroup() {
         return originalGroup.getSubGroup();
@@ -15023,7 +14934,7 @@ int ObjectID
         return canUninviteFromGroup(null);
     }
 
-        public final PartyResult canUninviteFromGroup(ObjectGuid guidMember) {
+    public final PartyResult canUninviteFromGroup(ObjectGuid guidMember) {
         var grp = getGroup();
 
         if (!grp) {
@@ -15085,7 +14996,6 @@ int ObjectID
         return PartyResult.Ok;
     }
 
-
     public final void setBattlegroundOrBattlefieldRaid(PlayerGroup group, byte subgroup) {
         //we must move references from m_group to m_originalGroup
         setOriginalGroup(getGroup(), getSubGroup());
@@ -15108,11 +15018,7 @@ int ObjectID
         setOriginalGroup(null);
     }
 
-    public final void setOriginalGroup(PlayerGroup group) {
-        setOriginalGroup(group, 0);
-    }
-
-        public final void setOriginalGroup(PlayerGroup group, byte subgroup) {
+    public final void setOriginalGroup(PlayerGroup group, byte subgroup) {
         if (!group) {
             originalGroup.Unlink();
         } else {
@@ -15139,11 +15045,7 @@ int ObjectID
         return false;
     }
 
-    public final void setGroup(PlayerGroup group) {
-        setGroup(group, 0);
-    }
-
-        public final void setGroup(PlayerGroup group, byte subgroup) {
+    public final void setGroup(PlayerGroup group, byte subgroup) {
         if (!group) {
             group.Unlink();
         } else {
@@ -15193,10 +15095,6 @@ int ObjectID
         }
 
         return pRewardSource.getDistance(player) <= WorldConfig.getFloatValue(WorldCfg.GroupXpDistance);
-    }
-
-    public final void setGroupUpdateFlag(GroupUpdateFlags flag) {
-        groupUpdateFlags = GroupUpdateFlags.forValue(groupUpdateFlags.getValue() | flag.getValue());
     }
 
     public final void removeGroupUpdateFlag(GroupUpdateFlags flag) {
@@ -15249,7 +15147,7 @@ int ObjectID
         removeFromGroup(RemoveMethod.Default);
     }
 
-        public final void removeFromGroup(RemoveMethod method) {
+    public final void removeFromGroup(RemoveMethod method) {
         removeFromGroup(getGroup(), getGUID(), method);
     }
 
@@ -15390,7 +15288,7 @@ int ObjectID
 
         // Grant back currencies
         for (byte i = 0; i < ItemConst.MaxItemExtCostCurrencies; ++i) {
-            if (iece.flags.HasAnyFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+            if (iece.flags.hasFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                 continue;
             }
 
@@ -15451,7 +15349,7 @@ int ObjectID
 
         for (byte i = 0; i < ItemConst.MaxItemExtCostCurrencies; ++i) // currency cost data
         {
-            if (iece.flags.HasAnyFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+            if (iece.flags.hasFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                 continue;
             }
 
@@ -15480,7 +15378,7 @@ int ObjectID
 
             for (byte i = 0; i < ItemConst.MaxItemExtCostCurrencies; ++i) // currency cost data
             {
-                if (iece.flags.HasAnyFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+                if (iece.flags.hasFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                     continue;
                 }
 
@@ -15496,16 +15394,16 @@ int ObjectID
         itemSoulboundTradeable.remove(item.getGUID());
     }
 
-    public final void setTradeData(TradeData data) {
-        trade = data;
-    }
-
     public final Player getTrader() {
         return (trade == null ? null : trade.getTrader());
     }
 
     public final TradeData getTradeData() {
         return trade;
+    }
+
+    public final void setTradeData(TradeData data) {
+        trade = data;
     }
 
     public final void tradeCancel(boolean sendback) {
@@ -15809,7 +15707,7 @@ int ObjectID
         return canStoreItem(bag, slot, dest, pItem, false);
     }
 
-        public final InventoryResult canStoreItem(byte bag, byte slot, ArrayList<ItemPosCount> dest, Item pItem, boolean swap) {
+    public final InventoryResult canStoreItem(byte bag, byte slot, ArrayList<ItemPosCount> dest, Item pItem, boolean swap) {
         if (pItem == null) {
             return InventoryResult.ItemNotFound;
         }
@@ -16105,7 +16003,7 @@ int ObjectID
         return storeNewItem(pos, itemId, update, 0, null, 0, null, true);
     }
 
-        public final Item storeNewItem(ArrayList<ItemPosCount> pos, int itemId, boolean update, int randomBonusListId, ArrayList<ObjectGuid> allowedLooters, ItemContext context, ArrayList<Integer> bonusListIDs, boolean addToCollection) {
+    public final Item storeNewItem(ArrayList<ItemPosCount> pos, int itemId, boolean update, int randomBonusListId, ArrayList<ObjectGuid> allowedLooters, ItemContext context, ArrayList<Integer> bonusListIDs, boolean addToCollection) {
         int count = 0;
 
         for (var itemPosCount : pos) {
@@ -16182,7 +16080,7 @@ int ObjectID
         return canUseItem(pItem, true);
     }
 
-        public final InventoryResult canUseItem(Item pItem, boolean not_loading) {
+    public final InventoryResult canUseItem(Item pItem, boolean not_loading) {
         if (pItem != null) {
             Log.outDebug(LogFilter.player, "ItemStorage: CanUseItem item = {0}", pItem.getEntry());
 
@@ -16246,7 +16144,7 @@ int ObjectID
         return canUseItem(proto, false);
     }
 
-        public final InventoryResult canUseItem(ItemTemplate proto, boolean skipRequiredLevelCheck) {
+    public final InventoryResult canUseItem(ItemTemplate proto, boolean skipRequiredLevelCheck) {
         // Used by group, function GroupLoot, to know if a prototype can be used by a player
 
         if (proto == null) {
@@ -16559,7 +16457,7 @@ int ObjectID
         sendEquipError(msg, null, null, 0);
     }
 
-        public final void sendEquipError(InventoryResult msg, Item item1, Item item2, int itemId) {
+    public final void sendEquipError(InventoryResult msg, Item item1, Item item2, int itemId) {
         InventoryChangeFailure failure = new InventoryChangeFailure();
         failure.bagResult = msg;
 
@@ -16737,7 +16635,7 @@ int ObjectID
         sendABunchOfItemsInMail(BunchOfItems, subject, null);
     }
 
-        public final void sendABunchOfItemsInMail(ArrayList<Integer> BunchOfItems, String subject, ArrayList<Integer> bonusListIDs) {
+    public final void sendABunchOfItemsInMail(ArrayList<Integer> BunchOfItems, String subject, ArrayList<Integer> bonusListIDs) {
         var trans = new SQLTransaction();
         var _subject = subject;
         var draft = new MailDraft(_subject, "This is a system message. Do not answer! Don't forget to take out the items! :)");
@@ -17399,7 +17297,7 @@ int ObjectID
         sendNewItem(item, quantity, pushed, created, false, 0);
     }
 
-        public final void sendNewItem(Item item, int quantity, boolean pushed, boolean created, boolean broadcast, int dungeonEncounterId) {
+    public final void sendNewItem(Item item, int quantity, boolean pushed, boolean created, boolean broadcast, int dungeonEncounterId) {
         if (item == null) // prevent crash
         {
             return;
@@ -17543,7 +17441,7 @@ int ObjectID
         return getItemCount(item, false, null);
     }
 
-        public final int getItemCount(int item, boolean inBankAlso, Item skipItem) {
+    public final int getItemCount(int item, boolean inBankAlso, Item skipItem) {
         var countGems = skipItem != null && skipItem.getTemplate().getGemProperties() != 0;
 
         var location = ItemSearchLocation.forValue(ItemSearchLocation.Equipment.getValue() | ItemSearchLocation.Inventory.getValue().getValue() | ItemSearchLocation.ReagentBank.getValue().getValue());
@@ -17614,7 +17512,7 @@ int ObjectID
         return getItemByEntry(entry, ItemSearchLocation.Default);
     }
 
-        public final Item getItemByEntry(int entry, ItemSearchLocation where) {
+    public final Item getItemByEntry(int entry, ItemSearchLocation where) {
         Item result = null;
 
         forEachItem(where, item ->
@@ -17635,7 +17533,7 @@ int ObjectID
         return getItemListByEntry(entry, false);
     }
 
-        public final ArrayList<item> getItemListByEntry(int entry, boolean inBankAlso) {
+    public final ArrayList<item> getItemListByEntry(int entry, boolean inBankAlso) {
         var location = ItemSearchLocation.forValue(ItemSearchLocation.Equipment.getValue() | ItemSearchLocation.Inventory.getValue().getValue() | ItemSearchLocation.ReagentBank.getValue().getValue());
 
         if (inBankAlso) {
@@ -17664,7 +17562,7 @@ int ObjectID
         return hasItemCount(item, 1, false);
     }
 
-        public final boolean hasItemCount(int item, int count, boolean inBankAlso) {
+    public final boolean hasItemCount(int item, int count, boolean inBankAlso) {
         var location = ItemSearchLocation.forValue(ItemSearchLocation.Equipment.getValue() | ItemSearchLocation.Inventory.getValue().getValue() | ItemSearchLocation.ReagentBank.getValue().getValue());
 
         if (inBankAlso) {
@@ -18030,7 +17928,7 @@ int ObjectID
                     return false;
                 }
 
-                if (iece.flags.HasAnyFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+                if (iece.flags.hasFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                     // Not implemented
                     sendEquipError(InventoryResult.VendorMissingTurnins); // Find correct error
 
@@ -18056,7 +17954,7 @@ int ObjectID
                 return false;
             }
 
-            if (iece.flags.HasAnyFlag((byte) ItemExtendedCostFlags.RequireGuild.getValue()) && getGuildId() == 0) {
+            if (iece.flags.hasFlag((byte) ItemExtendedCostFlags.RequireGuild.getValue()) && getGuildId() == 0) {
                 sendEquipError(InventoryResult.VendorMissingTurnins); // Find correct error
 
                 return false;
@@ -18090,7 +17988,7 @@ int ObjectID
                     continue;
                 }
 
-                if (iece.flags.HasAnyFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+                if (iece.flags.hasFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                     continue;
                 }
 
@@ -18237,7 +18135,7 @@ int ObjectID
                     return false;
                 }
 
-                if (iece.flags.HasAnyFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+                if (iece.flags.hasFlag((byte) ((int) ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                     sendEquipError(InventoryResult.VendorMissingTurnins); // Find correct error
 
                     return false;
@@ -18262,7 +18160,7 @@ int ObjectID
                 return false;
             }
 
-            if (iece.flags.HasAnyFlag((byte) ItemExtendedCostFlags.RequireGuild.getValue()) && getGuildId() == 0) {
+            if (iece.flags.hasFlag((byte) ItemExtendedCostFlags.RequireGuild.getValue()) && getGuildId() == 0) {
                 sendEquipError(InventoryResult.VendorMissingTurnins); // Find correct error
 
                 return false;
@@ -18485,7 +18383,7 @@ int ObjectID
         _ApplyItemMods(item, slot, apply, true);
     }
 
-        public final void _ApplyItemMods(Item item, byte slot, boolean apply, boolean updateItemAuras) {
+    public final void _ApplyItemMods(Item item, byte slot, boolean apply, boolean updateItemAuras) {
         if (slot >= InventorySlots.BagEnd || item == null) {
             return;
         }
@@ -18826,7 +18724,7 @@ int ObjectID
         applyEquipSpell(spellInfo, item, apply, false);
     }
 
-        public final void applyEquipSpell(SpellInfo spellInfo, Item item, boolean apply, boolean formChange) {
+    public final void applyEquipSpell(SpellInfo spellInfo, Item item, boolean apply, boolean formChange) {
         if (apply) {
             // Cannot be used in this stance/form
             if (spellInfo.checkShapeshift(getShapeshiftForm()) != SpellCastResult.SpellCastOk) {
@@ -18945,7 +18843,7 @@ int ObjectID
         moveItemToInventory(dest, pItem, update, false);
     }
 
-        public final void moveItemToInventory(ArrayList<ItemPosCount> dest, Item pItem, boolean update, boolean in_characterInventoryDB) {
+    public final void moveItemToInventory(ArrayList<ItemPosCount> dest, Item pItem, boolean update, boolean in_characterInventoryDB) {
         var itemId = pItem.getEntry();
         var count = pItem.getCount();
 
@@ -18981,7 +18879,7 @@ int ObjectID
         return canBankItem(bag, slot, dest, pItem, swap, true, false);
     }
 
-        public final InventoryResult canBankItem(byte bag, byte slot, ArrayList<ItemPosCount> dest, Item pItem, boolean swap, boolean not_loading, boolean reagentBankOnly) {
+    public final InventoryResult canBankItem(byte bag, byte slot, ArrayList<ItemPosCount> dest, Item pItem, boolean swap, boolean not_loading, boolean reagentBankOnly) {
         if (pItem == null) {
             return swap ? InventoryResult.CantSwap : InventoryResult.ItemNotFound;
         }
@@ -19245,7 +19143,7 @@ int ObjectID
         return getFreeInventorySlotCount(ItemSearchLocation.Inventory);
     }
 
-        public final int getFreeInventorySlotCount(ItemSearchLocation location) {
+    public final int getFreeInventorySlotCount(ItemSearchLocation location) {
         int freeSlotCount = 0;
 
         if (location.hasFlag(ItemSearchLocation.Equipment)) {
@@ -19369,7 +19267,7 @@ int ObjectID
         return canEquipItem(slot, dest, pItem, swap, true);
     }
 
-        public final InventoryResult canEquipItem(byte slot, tangible.OutObject<SHORT> dest, Item pItem, boolean swap, boolean not_loading) {
+    public final InventoryResult canEquipItem(byte slot, tangible.OutObject<SHORT> dest, Item pItem, boolean swap, boolean not_loading) {
         dest.outArgValue = 0;
 
         if (pItem != null) {
@@ -19661,7 +19559,7 @@ int ObjectID
         return canEquipUniqueItem(pItem, ItemConst.NullSlot, 1);
     }
 
-        public final InventoryResult canEquipUniqueItem(Item pItem, byte eslot, int limit_count) {
+    public final InventoryResult canEquipUniqueItem(Item pItem, byte eslot, int limit_count) {
         var pProto = pItem.getTemplate();
 
         // proto based limitations
@@ -19700,7 +19598,7 @@ int ObjectID
         return canEquipUniqueItem(itemProto, ItemConst.NullSlot, 1);
     }
 
-        public final InventoryResult canEquipUniqueItem(ItemTemplate itemProto, byte except_slot, int limit_count) {
+    public final InventoryResult canEquipUniqueItem(ItemTemplate itemProto, byte except_slot, int limit_count) {
         // check unique-equipped on item
         if (itemProto.hasFlag(ItemFlags.UniqueEquippable)) {
             // there is an equip limit on this item
@@ -19892,7 +19790,7 @@ int ObjectID
         return hasItemOrGemWithIdEquipped(item, count, ItemConst.NullSlot);
     }
 
-        public final boolean hasItemOrGemWithIdEquipped(int item, int count, byte except_slot) {
+    public final boolean hasItemOrGemWithIdEquipped(int item, int count, byte except_slot) {
         int tempcount = 0;
 
         var pProto = global.getObjectMgr().getItemTemplate(item);
@@ -20042,7 +19940,7 @@ int ObjectID
         return destroyItemCount(itemEntry, count, update, true);
     }
 
-        public final int destroyItemCount(int itemEntry, int count, boolean update, boolean unequip_check) {
+    public final int destroyItemCount(int itemEntry, int count, boolean update, boolean unequip_check) {
         Log.outDebug(LogFilter.player, "STORAGE: DestroyItemCount item = {0}, count = {1}", itemEntry, count);
         int remcount = 0;
 
@@ -20339,7 +20237,7 @@ int ObjectID
         autoStoreLoot(loot_id, store, 0, false, false);
     }
 
-        public final void autoStoreLoot(int loot_id, LootStore store, ItemContext context, boolean broadcast, boolean createdByPlayer) {
+    public final void autoStoreLoot(int loot_id, LootStore store, ItemContext context, boolean broadcast, boolean createdByPlayer) {
         autoStoreLoot(ItemConst.NullBag, ItemConst.NullSlot, loot_id, store, context, broadcast);
     }
 
@@ -20419,7 +20317,7 @@ int ObjectID
         storeLootItem(lootWorldObjectGuid, lootSlot, loot, null);
     }
 
-        public final void storeLootItem(ObjectGuid lootWorldObjectGuid, byte lootSlot, Loot loot, AELootResult aeResult) {
+    public final void storeLootItem(ObjectGuid lootWorldObjectGuid, byte lootSlot, Loot loot, AELootResult aeResult) {
         NotNormalLootItem ffaItem;
         tangible.OutObject<NotNormalLootItem> tempOut_ffaItem = new tangible.OutObject<NotNormalLootItem>();
         var item = loot.lootItemInSlot(lootSlot, this, tempOut_ffaItem);
@@ -20576,7 +20474,7 @@ int ObjectID
         sendLoot(loot, false);
     }
 
-        public final void sendLoot(Loot loot, boolean aeLooting) {
+    public final void sendLoot(Loot loot, boolean aeLooting) {
         if (!getLootGUID().isEmpty() && !aeLooting) {
             session.doLootReleaseAll();
         }
@@ -20781,7 +20679,7 @@ int ObjectID
     }
 
     public final boolean forEachItem(ItemSearchLocation location, tangible.Func1Param<item, Boolean> callback) {
-        if (location.HasAnyFlag(ItemSearchLocation.Equipment)) {
+        if (location.hasFlag(ItemSearchLocation.Equipment)) {
             for (var i = EquipmentSlot.start; i < EquipmentSlot.End; i++) {
                 var item = getItemByPos(InventorySlots.Bag0, i);
 
@@ -20803,7 +20701,7 @@ int ObjectID
             }
         }
 
-        if (location.HasAnyFlag(ItemSearchLocation.Inventory)) {
+        if (location.hasFlag(ItemSearchLocation.Inventory)) {
             var inventoryEnd = InventorySlots.ItemStart + getInventorySlotCount();
 
             for (var i = InventorySlots.ItemStart; i < inventoryEnd; i++) {
@@ -20843,7 +20741,7 @@ int ObjectID
             }
         }
 
-        if (location.HasAnyFlag(ItemSearchLocation.Bank)) {
+        if (location.hasFlag(ItemSearchLocation.Bank)) {
             for (var i = InventorySlots.BankItemStart; i < InventorySlots.BankItemEnd; ++i) {
                 var item = getItemByPos(InventorySlots.Bag0, i);
 
@@ -20871,7 +20769,7 @@ int ObjectID
             }
         }
 
-        if (location.HasAnyFlag(ItemSearchLocation.ReagentBank)) {
+        if (location.hasFlag(ItemSearchLocation.ReagentBank)) {
             for (var i = InventorySlots.ReagentBagStart; i < InventorySlots.ReagentBagEnd; ++i) {
                 var bag = getBagByPos(i);
 
@@ -21743,7 +21641,7 @@ int ObjectID
             }
 
             for (var i = 0; i < ItemConst.MaxItemExtCostCurrencies; ++i) {
-                if (iece.flags.HasAnyFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
+                if (iece.flags.hasFlag((byte) (ItemExtendedCostFlags.RequireSeasonEarned1.getValue() << i))) {
                     continue;
                 }
 
@@ -21802,7 +21700,7 @@ int ObjectID
         updateItemDuration(time, false);
     }
 
-        private void updateItemDuration(int time, boolean realtimeonly) {
+    private void updateItemDuration(int time, boolean realtimeonly) {
         if (itemDuration.isEmpty()) {
             return;
         }
@@ -21900,7 +21798,7 @@ int ObjectID
         applyItemEquipSpell(item, apply, false);
     }
 
-        private void applyItemEquipSpell(Item item, boolean apply, boolean formChange) {
+    private void applyItemEquipSpell(Item item, boolean apply, boolean formChange) {
         if (item == null || item.getTemplate().hasFlag(ItemFlags.legacy)) {
             return;
         }
@@ -22592,7 +22490,7 @@ int ObjectID
                 continue;
             }
 
-            if (CliDB.ArtifactPowerStorage.get(artifactPower.artifactPowerId).flags.HasAnyFlag(ArtifactPowerFlag.ScalesWithNumPowers)) {
+            if (CliDB.ArtifactPowerStorage.get(artifactPower.artifactPowerId).flags.hasFlag(ArtifactPowerFlag.ScalesWithNumPowers)) {
                 rank = 1;
             }
 
@@ -22775,7 +22673,7 @@ int ObjectID
         autoStoreLoot(bag, slot, loot_id, store, 0, false, false);
     }
 
-        private void autoStoreLoot(byte bag, byte slot, int loot_id, LootStore store, ItemContext context, boolean broadcast, boolean createdByPlayer) {
+    private void autoStoreLoot(byte bag, byte slot, int loot_id, LootStore store, ItemContext context, boolean broadcast, boolean createdByPlayer) {
         Loot loot = new loot(null, ObjectGuid.Empty, LootType.NONE, null);
         loot.fillLoot(loot_id, store, this, true, false, LootModes.Default, context);
 
@@ -22801,7 +22699,7 @@ int ObjectID
     private void updateItemLevelAreaBasedScaling() {
         // @todo Activate pvp item levels during world pvp
         var map = getMap();
-        var pvpActivity = map.isBattlegroundOrArena() || (new integer(map.getEntry().Flags[1])).HasAnyFlag(0x40) || hasPvpRulesEnabled();
+        var pvpActivity = map.isBattlegroundOrArena() || (new integer(map.getEntry().Flags[1])).hasFlag(0x40) || hasPvpRulesEnabled();
 
         if (usePvpItemLevels != pvpActivity) {
             var healthPct = getHealthPct();
@@ -22948,7 +22846,7 @@ int ObjectID
 
         var difficulty = CliDB.DifficultyStorage.get(defaultDifficulty.difficultyID);
 
-        if (difficulty == null || difficulty.flags.HasAnyFlag(DifficultyFlags.legacy)) {
+        if (difficulty == null || difficulty.flags.hasFlag(DifficultyFlags.legacy)) {
             return legacyRaidDifficulty;
         }
 
@@ -23072,9 +22970,9 @@ int ObjectID
                 } else {
                     var factionTemplate = getFactionTemplateEntry();
 
-                    if (factionTemplate == null || factionTemplate.FriendGroup.HasAnyFlag(area.FactionGroupMask)) {
+                    if (factionTemplate == null || factionTemplate.FriendGroup.hasFlag(area.FactionGroupMask)) {
                         pvpInfo.isInHostileArea = false; // friend area are considered hostile if war mode is active
-                    } else if (factionTemplate.EnemyGroup.HasAnyFlag(area.FactionGroupMask)) {
+                    } else if (factionTemplate.EnemyGroup.hasFlag(area.FactionGroupMask)) {
                         pvpInfo.isInHostileArea = true;
                     } else {
                         pvpInfo.isInHostileArea = global.getWorldMgr().isPvPRealm();
@@ -23150,7 +23048,7 @@ int ObjectID
         return satisfy(ar, targetMap, null, false);
     }
 
-        public final boolean satisfy(AccessRequirement ar, int targetMap, TransferAbortParams abortParams, boolean report) {
+    public final boolean satisfy(AccessRequirement ar, int targetMap, TransferAbortParams abortParams, boolean report) {
         if (!isGameMaster()) {
             byte levelMin = 0;
             byte levelMax = 0;
@@ -23302,7 +23200,7 @@ int ObjectID
         sendDungeonDifficulty(-1);
     }
 
-        public final void sendDungeonDifficulty(int forcedDifficulty) {
+    public final void sendDungeonDifficulty(int forcedDifficulty) {
         DungeonDifficultySet dungeonDifficultySet = new DungeonDifficultySet();
         dungeonDifficultySet.difficultyID = forcedDifficulty == -1 ? getDungeonDifficultyId().getValue() : forcedDifficulty;
         sendPacket(dungeonDifficultySet);
@@ -23312,7 +23210,7 @@ int ObjectID
         sendRaidDifficulty(legacy, -1);
     }
 
-        public final void sendRaidDifficulty(boolean legacy, int forcedDifficulty) {
+    public final void sendRaidDifficulty(boolean legacy, int forcedDifficulty) {
         RaidDifficultySet raidDifficultySet = new RaidDifficultySet();
         raidDifficultySet.difficultyID = forcedDifficulty == -1 ? (int) (legacy ? getLegacyRaidDifficultyId() : getRaidDifficultyId()) : forcedDifficulty;
         raidDifficultySet.legacy = legacy;
@@ -23384,7 +23282,7 @@ int ObjectID
         sendTransferAborted(mapid, reason, 0, 0);
     }
 
-        public final void sendTransferAborted(int mapid, TransferAbortReason reason, byte arg, int mapDifficultyXConditionId) {
+    public final void sendTransferAborted(int mapid, TransferAbortReason reason, byte arg, int mapDifficultyXConditionId) {
         TransferAborted transferAborted = new TransferAborted();
         transferAborted.mapID = mapid;
         transferAborted.arg = arg;
@@ -23420,27 +23318,27 @@ int ObjectID
         // player specific logic for mirror timers
         if (getLiquidStatus() != 0 && newLiquidData != null) {
             // Breath bar state (under water in any liquid type)
-            if (newLiquidData.type_flags.HasAnyFlag(LiquidHeaderTypeFlags.AllLiquids)) {
-                if (getLiquidStatus().HasAnyFlag(ZLiquidStatus.UnderWater)) {
+            if (newLiquidData.type_flags.hasFlag(LiquidHeaderTypeFlags.AllLiquids)) {
+                if (getLiquidStatus().hasFlag(ZLiquidStatus.UnderWater)) {
                     mirrorTimerFlags = PlayerUnderwaterState.forValue(mirrorTimerFlags.getValue() | PlayerUnderwaterState.InWater.getValue());
                 }
             }
 
             // Fatigue bar state (if not on flight path or transport)
-            if (newLiquidData.type_flags.HasAnyFlag(LiquidHeaderTypeFlags.DarkWater) && !isInFlight() && getTransport() == null) {
+            if (newLiquidData.type_flags.hasFlag(LiquidHeaderTypeFlags.DarkWater) && !isInFlight() && getTransport() == null) {
                 mirrorTimerFlags = PlayerUnderwaterState.forValue(mirrorTimerFlags.getValue() | PlayerUnderwaterState.InDarkWater.getValue());
             }
 
             // Lava state (any contact)
-            if (newLiquidData.type_flags.HasAnyFlag(LiquidHeaderTypeFlags.Magma)) {
-                if (getLiquidStatus().HasAnyFlag(ZLiquidStatus.InContact)) {
+            if (newLiquidData.type_flags.hasFlag(LiquidHeaderTypeFlags.Magma)) {
+                if (getLiquidStatus().hasFlag(ZLiquidStatus.InContact)) {
                     mirrorTimerFlags = PlayerUnderwaterState.forValue(mirrorTimerFlags.getValue() | PlayerUnderwaterState.InLava.getValue());
                 }
             }
 
             // Slime state (any contact)
-            if (newLiquidData.type_flags.HasAnyFlag(LiquidHeaderTypeFlags.Slime)) {
-                if (getLiquidStatus().HasAnyFlag(ZLiquidStatus.InContact)) {
+            if (newLiquidData.type_flags.hasFlag(LiquidHeaderTypeFlags.Slime)) {
+                if (getLiquidStatus().hasFlag(ZLiquidStatus.InContact)) {
                     mirrorTimerFlags = PlayerUnderwaterState.forValue(mirrorTimerFlags.getValue() | PlayerUnderwaterState.InSlime.getValue());
                 }
             }
@@ -23531,6 +23429,19 @@ int ObjectID
         return getPlayerData().honorLevel;
     }
 
+    private void setHonorLevel(byte level) {
+        var oldHonorLevel = (byte) getHonorLevel();
+
+        if (level == oldHonorLevel) {
+            return;
+        }
+
+        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().honorLevel), level);
+        updateHonorNextLevel();
+
+        updateCriteria(CriteriaType.HonorLevelIncrease);
+    }
+
     public final boolean isMaxHonorLevel() {
         return getHonorLevel() == PlayerConst.MaxHonorLevel;
     }
@@ -23565,7 +23476,6 @@ int ObjectID
     public final boolean getInBattleground() {
         return bgData.getBgInstanceId() != 0;
     }
-
 
     public final int getBattlegroundId() {
         return bgData.getBgInstanceId();
@@ -23611,7 +23521,7 @@ int ObjectID
         return rewardHonor(victim, groupsize, -1, false);
     }
 
-        public final boolean rewardHonor(Unit victim, int groupsize, int honor, boolean pvptoken) {
+    public final boolean rewardHonor(Unit victim, int groupsize, int honor, boolean pvptoken) {
         // do not reward honor in arenas, but enable onkill spellproc
         if (getInArena()) {
             if (!victim || victim == this || !victim.isTypeId(TypeId.PLAYER)) {
@@ -23776,7 +23686,6 @@ int ObjectID
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().lifetimeHonorableKills), 0);
     }
 
-
     public final void addHonorXp(int xp) {
         int currentHonorXp = getActivePlayerData().honor;
         int nextHonorLevelXp = getActivePlayerData().honorNextLevel;
@@ -23809,7 +23718,7 @@ int ObjectID
         enablePvpRules(false);
     }
 
-        public final void enablePvpRules(boolean dueToCombat) {
+    public final void enablePvpRules(boolean dueToCombat) {
         if (hasPvpRulesEnabled()) {
             return;
         }
@@ -23833,7 +23742,6 @@ int ObjectID
         updateItemLevelAreaBasedScaling();
     }
 
-
     public final int[] getPvpTalentMap(byte spec) {
         return specializationInfo.getPvpTalents()[spec];
     }
@@ -23842,7 +23750,7 @@ int ObjectID
         return inBattlegroundQueue(false);
     }
 
-        public final boolean inBattlegroundQueue(boolean ignoreArena) {
+    public final boolean inBattlegroundQueue(boolean ignoreArena) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
             if (BattlegroundQueueTypeId.opNotEquals(_battlegroundQueueIdRecs[i].getBgQueueTypeId(), null) && (!ignoreArena || _battlegroundQueueIdRecs[i].getBgQueueTypeId().battlemasterListId != (short) getBattlegroundTypeId().AA.getValue())) {
                 return true;
@@ -23852,7 +23760,6 @@ int ObjectID
         return false;
     }
 
-
     public final BattlegroundQueueTypeId getBattlegroundQueueTypeId(int index) {
         if (index < SharedConst.MaxPlayerBGQueues) {
             return _battlegroundQueueIdRecs[index].getBgQueueTypeId();
@@ -23860,7 +23767,6 @@ int ObjectID
 
         return null;
     }
-
 
     public final int getBattlegroundQueueIndex(BattlegroundQueueTypeId bgQueueTypeId) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
@@ -23886,12 +23792,10 @@ int ObjectID
         return getBattlegroundQueueIndex(bgQueueTypeId) < SharedConst.MaxPlayerBGQueues;
     }
 
-
     public final void setBattlegroundId(int val, BattlegroundTypeId bgTypeId) {
         bgData.setBgInstanceId(val);
         bgData.setBgTypeId(bgTypeId);
     }
-
 
     public final int addBattlegroundQueueId(BattlegroundQueueTypeId val) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
@@ -23921,7 +23825,6 @@ int ObjectID
         }
     }
 
-
     public final void setInviteForBattlegroundQueueType(BattlegroundQueueTypeId bgQueueTypeId, int instanceId) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
             if (BattlegroundQueueTypeId.opEquals(_battlegroundQueueIdRecs[i].getBgQueueTypeId(), bgQueueTypeId)) {
@@ -23929,7 +23832,6 @@ int ObjectID
             }
         }
     }
-
 
     public final boolean isInvitedForBattlegroundInstance(int instanceId) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
@@ -23950,7 +23852,6 @@ int ObjectID
 
         return false;
     }
-
 
     public final int getBattlegroundQueueJoinTime(BattlegroundQueueTypeId bgQueueTypeId) {
         for (byte i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
@@ -24023,20 +23924,20 @@ int ObjectID
         }
     }
 
+    public final TeamFaction getBgTeam() {
+        return bgData.getBgTeam() != 0 ? TeamFaction.forValue(bgData.getBgTeam()) : getTeam();
+    }
+
     public final void setBgTeam(TeamFaction team) {
         bgData.setBgTeam((int) team.getValue());
         setArenaFaction((byte) (team == TeamFaction.Alliance ? 1 : 0));
-    }
-
-    public final TeamFaction getBgTeam() {
-        return bgData.getBgTeam() != 0 ? TeamFaction.forValue(bgData.getBgTeam()) : getTeam();
     }
 
     public final void leaveBattleground() {
         leaveBattleground(true);
     }
 
-        public final void leaveBattleground(boolean teleportToEntryPoint) {
+    public final void leaveBattleground(boolean teleportToEntryPoint) {
         var bg = getBattleground();
 
         if (bg) {
@@ -24154,32 +24055,26 @@ int ObjectID
     public final void setArenaTeamInfoField(byte slot, ArenaTeamInfoType type, int value) {
     }
 
-
     public final void setInArenaTeam(int arenaTeamId, byte slot, byte type) {
         setArenaTeamInfoField(slot, ArenaTeamInfoType.id, arenaTeamId);
         setArenaTeamInfoField(slot, ArenaTeamInfoType.type, type);
     }
 
-
     public final int getArenaTeamId(byte slot) {
         return 0;
     }
-
-
-    public final void setArenaTeamIdInvited(int arenaTeamId) {
-        arenaTeamIdInvited = arenaTeamId;
-    }
-
 
     public final int getArenaTeamIdInvited() {
         return arenaTeamIdInvited;
     }
 
+    public final void setArenaTeamIdInvited(int arenaTeamId) {
+        arenaTeamIdInvited = arenaTeamId;
+    }
 
     public final int getRbgPersonalRating() {
         return getArenaPersonalRating((byte) 3);
     }
-
 
     public final int getArenaPersonalRating(byte slot) {
         var pvpInfo = getPvpInfoForBracket(slot);
@@ -24190,7 +24085,6 @@ int ObjectID
 
         return 0;
     }
-
 
     public final PVPInfo getPvpInfoForBracket(byte bracket) {
         var index = getActivePlayerData().pvpInfo.FindIndexIf(pvpInfo ->
@@ -24214,14 +24108,12 @@ int ObjectID
         return global.getOutdoorPvPMgr().getOutdoorPvPToZoneId(getMap(), getZone());
     }
 
-
     private void _InitHonorLevelOnLoadFromDB(int honor, int honorLevel) {
         setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().honorLevel), honorLevel);
         updateHonorNextLevel();
 
         addHonorXp(honor);
     }
-
 
     private void rewardPlayerWithRewardPack(int rewardPackId) {
         rewardPlayerWithRewardPack(CliDB.RewardPackStorage.get(rewardPackId));
@@ -24251,20 +24143,6 @@ int ObjectID
         for (var rewardPackXItem : rewardPackXItems) {
             addItem(rewardPackXItem.itemID, rewardPackXItem.itemQuantity);
         }
-    }
-
-
-    private void setHonorLevel(byte level) {
-        var oldHonorLevel = (byte) getHonorLevel();
-
-        if (level == oldHonorLevel) {
-            return;
-        }
-
-        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().honorLevel), level);
-        updateHonorNextLevel();
-
-        updateCriteria(CriteriaType.HonorLevelIncrease);
     }
 
     private void updateHonorNextLevel() {
@@ -24350,7 +24228,6 @@ int ObjectID
     }
 
 
-
     public final int getSharedQuestID() {
         return sharedQuestId;
     }
@@ -24370,16 +24247,9 @@ int ObjectID
         sharedQuestId = 0;
     }
 
-
-    public final void setInGameTime(int time) {
-        ingametime = time;
-    }
-
-
     public final void removeTimedQuest(int questId) {
         timedquests.remove((Integer) questId);
     }
-
 
     public final ArrayList<Integer> getRewardedQuests() {
         return rewardedQuests;
@@ -24396,7 +24266,6 @@ int ObjectID
 
         return getQuestLevel(quest.contentTuningId);
     }
-
 
     public final int getQuestLevel(int contentTuningId) {
         var questLevels = global.getDB2Mgr().GetContentTuningData(contentTuningId, getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
@@ -24540,7 +24409,6 @@ int ObjectID
         weeklyQuestChanged = false;
     }
 
-
     public final void resetSeasonalQuestStatus(short event_id, long eventStartTime) {
         // DB data deleted in caller
         seasonalQuestChanged = false;
@@ -24603,7 +24471,6 @@ int ObjectID
 
         return false;
     }
-
 
     public final boolean isQuestRewarded(int quest_id) {
         return rewardedQuests.contains(quest_id);
@@ -24713,7 +24580,6 @@ int ObjectID
         getPlayerTalkClass().sendQuestGiverQuestListMessage(source);
     }
 
-
     public final boolean isActiveQuest(int quest_id) {
         return mQuestStatus.containsKey(quest_id);
     }
@@ -24805,12 +24671,11 @@ int ObjectID
         return true;
     }
 
-
     public final boolean canCompleteQuest(int questId) {
         return canCompleteQuest(questId, 0);
     }
 
-        public final boolean canCompleteQuest(int questId, int ignoredQuestObjectiveId) {
+    public final boolean canCompleteQuest(int questId, int ignoredQuestObjectiveId) {
         if (questId != 0) {
             var qInfo = global.getObjectMgr().getQuestTemplate(questId);
 
@@ -24839,14 +24704,14 @@ int ObjectID
                         continue;
                     }
 
-                    if (!obj.flags.HasAnyFlag(QuestObjectiveFlags.Optional) && !obj.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar)) {
+                    if (!obj.flags.hasFlag(QuestObjectiveFlags.Optional) && !obj.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar)) {
                         if (!isQuestObjectiveComplete(q_status.slot, qInfo, obj)) {
                             return false;
                         }
                     }
                 }
 
-                if (qInfo.hasSpecialFlag(QuestSpecialFlags.ExplorationOrEvent) && !q_status.explored) {
+                if (qInfo.hasSpecialFlag(QuestSpecialFlag.ExplorationOrEvent) && !q_status.explored) {
                     return false;
                 }
 
@@ -24938,7 +24803,6 @@ int ObjectID
 
         return true;
     }
-
 
     public final boolean canRewardQuest(Quest quest, LootItemType rewardType, int rewardId, boolean msg) {
         ArrayList<ItemPosCount> dest = new ArrayList<>();
@@ -25163,7 +25027,7 @@ int ObjectID
             questStatusData.timer = 0;
         }
 
-        if (quest.hasFlag(questFlags.Pvp)) {
+        if (quest.hasFlag(QuestFlag.Pvp)) {
             pvpInfo.isHostile = true;
             updatePvPState();
         }
@@ -25172,7 +25036,7 @@ int ObjectID
             var spellInfo = global.getSpellMgr().getSpellInfo(quest.getSourceSpellID(), getMap().getDifficultyID());
             Unit caster = this;
 
-            if (questGiver != null && questGiver.isType(TypeMask.unit) && !quest.hasFlag(questFlags.PlayerCastOnAccept) && !spellInfo.hasTargetType(targets.UnitCaster) && !spellInfo.hasTargetType(targets.DestCasterSummon)) {
+            if (questGiver != null && questGiver.isType(TypeMask.unit) && !quest.hasFlag(QuestFlag.PlayerCastOnAccept) && !spellInfo.hasTargetType(targets.UnitCaster) && !spellInfo.hasTargetType(targets.DestCasterSummon)) {
                 var unit = questGiver.toUnit();
 
                 if (unit != null) {
@@ -25196,7 +25060,6 @@ int ObjectID
         global.getScriptMgr().<IQuestOnQuestStatusChange>RunScript(script -> script.OnQuestStatusChange(this, quest, oldStatus, questStatusData.status), quest.getScriptId());
     }
 
-
     public final void completeQuest(int quest_id) {
         if (quest_id != 0) {
             setQuestStatus(quest_id, QuestStatus.Complete);
@@ -25210,13 +25073,12 @@ int ObjectID
             var qInfo = global.getObjectMgr().getQuestTemplate(quest_id);
 
             if (qInfo != null) {
-                if (qInfo.hasFlag(questFlags.Tracking)) {
+                if (qInfo.hasFlag(QuestFlag.Tracking)) {
                     rewardQuest(qInfo, lootItemType.item, 0, this, false);
                 }
             }
         }
     }
-
 
     public final void incompleteQuest(int quest_id) {
         if (quest_id != 0) {
@@ -25230,11 +25092,9 @@ int ObjectID
         }
     }
 
-
     public final int getQuestMoneyReward(Quest quest) {
         return (int) (quest.moneyValue(this) * WorldConfig.getFloatValue(WorldCfg.RateMoneyQuest));
     }
-
 
     public final int getQuestXPReward(Quest quest) {
         var rewarded = isQuestRewarded(quest.id) && !quest.isDFQuest();
@@ -25283,12 +25143,11 @@ int ObjectID
         return false;
     }
 
-
     public final void rewardQuestPackage(int questPackageId) {
         rewardQuestPackage(questPackageId, 0);
     }
 
-        public final void rewardQuestPackage(int questPackageId, int onlyItemId) {
+    public final void rewardQuestPackage(int questPackageId, int onlyItemId) {
         var hasFilteredQuestPackageReward = false;
         var questPackageItems = global.getDB2Mgr().GetQuestPackageItems(questPackageId);
 
@@ -25330,12 +25189,11 @@ int ObjectID
         }
     }
 
-
     public final void rewardQuest(Quest quest, LootItemType rewardType, int rewardId, WorldObject questGiver) {
         rewardQuest(quest, rewardType, rewardId, questGiver, true);
     }
 
-        public final void rewardQuest(Quest quest, LootItemType rewardType, int rewardId, WorldObject questGiver, boolean announce) {
+    public final void rewardQuest(Quest quest, LootItemType rewardType, int rewardId, WorldObject questGiver, boolean announce) {
         //this THING should be here to protect code from quest, which cast on player far teleport as a reward
         //should work fine, cause far teleport will be executed in update()
         setCanDelayTeleport(true);
@@ -25356,7 +25214,7 @@ int ObjectID
             }
         }
 
-        if (!quest.flagsEx.HasAnyFlag(questFlagsEx.KeepAdditionalItems)) {
+        if (!quest.flagsEx.hasFlag(questFlagsEx.KeepAdditionalItems)) {
             for (byte i = 0; i < SharedConst.QuestItemDropCount; ++i) {
                 if (quest.ItemDrop[i] != 0) {
                     var count = quest.ItemDropQuantity[i];
@@ -25533,7 +25391,7 @@ int ObjectID
             var spellInfo = global.getSpellMgr().getSpellInfo(quest.getRewardSpell(), getMap().getDifficultyID());
             Unit caster = this;
 
-            if (questGiver != null && questGiver.isType(TypeMask.unit) && !quest.hasFlag(questFlags.PlayerCastOnComplete) && !spellInfo.hasTargetType(targets.UnitCaster)) {
+            if (questGiver != null && questGiver.isType(TypeMask.unit) && !quest.hasFlag(QuestFlag.PlayerCastOnComplete) && !spellInfo.hasTargetType(targets.UnitCaster)) {
                 var unit = questGiver.toUnit();
 
                 if (unit != null) {
@@ -25555,7 +25413,7 @@ int ObjectID
                 var spellInfo = global.getSpellMgr().getSpellInfo(displaySpell.spellId, getMap().getDifficultyID());
                 Unit caster = this;
 
-                if (questGiver && questGiver.isType(TypeMask.unit) && !quest.hasFlag(questFlags.PlayerCastOnComplete) && !spellInfo.hasTargetType(targets.UnitCaster)) {
+                if (questGiver && questGiver.isType(TypeMask.unit) && !quest.hasFlag(QuestFlag.PlayerCastOnComplete) && !spellInfo.hasTargetType(targets.UnitCaster)) {
                     var unit = questGiver.toUnit();
 
                     if (unit) {
@@ -25584,7 +25442,7 @@ int ObjectID
             setQuestCompletedBit(questBit, true);
         }
 
-        if (quest.hasFlag(questFlags.Pvp)) {
+        if (quest.hasFlag(QuestFlag.Pvp)) {
             pvpInfo.isHostile = pvpInfo.isInHostileArea || hasPvPForcingQuest();
             updatePvPState();
         }
@@ -25597,7 +25455,7 @@ int ObjectID
         setCanDelayTeleport(false);
 
         if (questGiver != null) {
-            var canHaveNextQuest = quest.hasFlag(questFlags.AutoComplete) || !questGiver.isPlayer();
+            var canHaveNextQuest = quest.hasFlag(QuestFlag.AutoComplete) || !questGiver.isPlayer();
 
             if (canHaveNextQuest) {
                 switch (questGiver.getTypeId()) {
@@ -25662,12 +25520,10 @@ int ObjectID
         }
     }
 
-
     public final void setRewardedQuest(int quest_id) {
         rewardedQuests.add(quest_id);
         rewardedQuestsSave.put(quest_id, QuestSaveType.Default);
     }
-
 
     public final void failQuest(int questId) {
         var quest = global.getObjectMgr().getQuestTemplate(questId);
@@ -25727,7 +25583,6 @@ int ObjectID
             }
         }
     }
-
 
     public final void abandonQuest(int questId) {
         var quest = global.getObjectMgr().getQuestTemplate(questId);
@@ -26106,7 +25961,6 @@ int ObjectID
         return true;
     }
 
-
     public final boolean takeQuestSourceItem(int questId, boolean msg) {
         var quest = global.getObjectMgr().getQuestTemplate(questId);
 
@@ -26143,7 +25997,6 @@ int ObjectID
         return true;
     }
 
-
     public final boolean getQuestRewardStatus(int quest_id) {
         var qInfo = global.getObjectMgr().getQuestTemplate(quest_id);
 
@@ -26163,7 +26016,6 @@ int ObjectID
         return false;
     }
 
-
     public final QuestStatus getQuestStatus(int questId) {
         if (questId != 0) {
             var questStatusData = mQuestStatus.get(questId);
@@ -26180,11 +26032,10 @@ int ObjectID
         return QuestStatus.NONE;
     }
 
-
     public final boolean canShareQuest(int quest_id) {
         var qInfo = global.getObjectMgr().getQuestTemplate(quest_id);
 
-        if (qInfo != null && qInfo.hasFlag(questFlags.Sharable)) {
+        if (qInfo != null && qInfo.hasFlag(QuestFlag.Sharable)) {
             var questStatusData = mQuestStatus.get(quest_id);
 
             return questStatusData != null;
@@ -26193,12 +26044,11 @@ int ObjectID
         return false;
     }
 
-
     public final void setQuestStatus(int questId, QuestStatus status) {
         setQuestStatus(questId, status, true);
     }
 
-        public final void setQuestStatus(int questId, QuestStatus status, boolean update) {
+    public final void setQuestStatus(int questId, QuestStatus status, boolean update) {
         var quest = global.getObjectMgr().getQuestTemplate(questId);
 
         if (quest != null) {
@@ -26222,12 +26072,11 @@ int ObjectID
         }
     }
 
-
     public final void removeActiveQuest(int questId) {
         removeActiveQuest(questId, true);
     }
 
-        public final void removeActiveQuest(int questId, boolean update) {
+    public final void removeActiveQuest(int questId, boolean update) {
         var questStatus = mQuestStatus.get(questId);
 
         if (questStatus != null) {
@@ -26241,12 +26090,11 @@ int ObjectID
         }
     }
 
-
     public final void removeRewardedQuest(int questId) {
         removeRewardedQuest(questId, true);
     }
 
-        public final void removeRewardedQuest(int questId, boolean update) {
+    public final void removeRewardedQuest(int questId, boolean update) {
         if (rewardedQuests.contains(questId)) {
             rewardedQuests.remove((Integer) questId);
             rewardedQuestsSave.put(questId, QuestSaveType.ForceDelete);
@@ -26331,11 +26179,11 @@ int ObjectID
             switch (getQuestStatus(questId)) {
                 case Complete:
                     if (quest.getQuestTag() == QuestTagType.CovenantCalling) {
-                        result = result.getValue() | quest.hasFlag(questFlags.HideRewardPoi).getValue() ? QuestGiverStatus.CovenantCallingRewardCompleteNoPOI : QuestGiverStatus.CovenantCallingRewardCompletePOI;
+                        result = result.getValue() | quest.hasFlag(QuestFlag.HideRewardPoi).getValue() ? QuestGiverStatus.CovenantCallingRewardCompleteNoPOI : QuestGiverStatus.CovenantCallingRewardCompletePOI;
                     } else if (quest.hasFlagEx(questFlagsEx.LegendaryQuest)) {
-                        result = result.getValue() | quest.hasFlag(questFlags.HideRewardPoi).getValue() ? QuestGiverStatus.LegendaryRewardCompleteNoPOI : QuestGiverStatus.LegendaryRewardCompletePOI;
+                        result = result.getValue() | quest.hasFlag(QuestFlag.HideRewardPoi).getValue() ? QuestGiverStatus.LegendaryRewardCompleteNoPOI : QuestGiverStatus.LegendaryRewardCompletePOI;
                     } else {
-                        result = result.getValue() | quest.hasFlag(questFlags.HideRewardPoi).getValue() ? QuestGiverStatus.RewardCompleteNoPOI : QuestGiverStatus.RewardCompletePOI;
+                        result = result.getValue() | quest.hasFlag(QuestFlag.HideRewardPoi).getValue() ? QuestGiverStatus.RewardCompleteNoPOI : QuestGiverStatus.RewardCompletePOI;
                     }
 
                     break;
@@ -26399,7 +26247,6 @@ int ObjectID
         return result;
     }
 
-
     public final short getReqKillOrCastCurrentCount(int quest_id, int entry) {
         var qInfo = global.getObjectMgr().getQuestTemplate(quest_id);
 
@@ -26439,7 +26286,6 @@ int ObjectID
         }
     }
 
-
     public final short findQuestSlot(int quest_id) {
         for (short i = 0; i < SharedConst.MaxQuestLogSize; ++i) {
             if (getQuestSlotQuestId(i) == quest_id) {
@@ -26450,16 +26296,13 @@ int ObjectID
         return SharedConst.MaxQuestLogSize;
     }
 
-
     public final int getQuestSlotQuestId(short slot) {
         return getPlayerData().questLog.get(slot).questID;
     }
 
-
     public final int getQuestSlotState(short slot, byte counter) {
         return getPlayerData().questLog.get(slot).stateFlags;
     }
-
 
     public final short getQuestSlotCounter(short slot, byte counter) {
         if (counter < SharedConst.MaxQuestCounts) {
@@ -26469,16 +26312,13 @@ int ObjectID
         return 0;
     }
 
-
     public final int getQuestSlotEndTime(short slot) {
         return getPlayerData().questLog.get(slot).endTime;
     }
 
-
     public final int getQuestSlotAcceptTime(short slot) {
         return getPlayerData().questLog.get(slot).acceptTime;
     }
-
 
     public final int getQuestSlotObjectiveData(short slot, QuestObjective objective) {
         if (objective.storageIndex < 0) {
@@ -26500,7 +26340,6 @@ int ObjectID
         return getQuestSlotObjectiveFlag(slot, objective.storageIndex) ? 1 : 0;
     }
 
-
     public final void setQuestSlot(short slot, int quest_id) {
         var questLogField = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
         setUpdateFieldValue(questLogField.modifyValue(questLogField.questID), quest_id);
@@ -26515,7 +26354,6 @@ int ObjectID
         }
     }
 
-
     public final void setQuestSlotCounter(short slot, byte counter, short count) {
         if (counter >= SharedConst.MaxQuestCounts) {
             return;
@@ -26526,30 +26364,25 @@ int ObjectID
         setUpdateFieldValue(ref questLog.modifyValue(questLog.objectiveProgress, counter), count);
     }
 
-
     public final void setQuestSlotState(short slot, QuestSlotStateMask state) {
         var questLogField = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
         setUpdateFieldFlagValue(questLogField.modifyValue(questLogField.stateFlags), (int) state.getValue());
     }
-
 
     public final void removeQuestSlotState(short slot, QuestSlotStateMask state) {
         var questLogField = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
         removeUpdateFieldFlagValue(questLogField.modifyValue(questLogField.stateFlags), (int) state.getValue());
     }
 
-
     public final void setQuestSlotEndTime(short slot, long endTime) {
         var questLog = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
         setUpdateFieldValue(questLog.modifyValue(questLog.endTime), (int) endTime);
     }
 
-
     public final void setQuestSlotAcceptTime(short slot, long acceptTime) {
         var questLog = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
         setUpdateFieldValue(questLog.modifyValue(questLog.acceptTime), (int) acceptTime);
     }
-
 
     public final void areaExploredOrEventHappens(int questId) {
         if (questId != 0) {
@@ -26571,7 +26404,6 @@ int ObjectID
         }
     }
 
-
     public final void groupEventHappens(int questId, WorldObject pEventObject) {
         var group = getGroup();
 
@@ -26589,11 +26421,9 @@ int ObjectID
         }
     }
 
-
     public final void itemAddedQuestCheck(int entry, int count) {
         updateQuestObjectiveProgress(QuestObjectiveType.item, (int) entry, count);
     }
-
 
     public final void itemRemovedQuestCheck(int entry, int count) {
         for (var objectiveStatusData : _questObjectiveStatus.get((QuestObjectiveType.item, (int) entry)))
@@ -26630,12 +26460,11 @@ int ObjectID
         }
     }
 
-
     public final void killedMonsterCredit(int entry) {
         killedMonsterCredit(entry, null);
     }
 
-        public final void killedMonsterCredit(int entry, ObjectGuid guid) {
+    public final void killedMonsterCredit(int entry, ObjectGuid guid) {
         short addKillCount = 1;
         var real_entry = entry;
         Creature killed = null;
@@ -26658,12 +26487,11 @@ int ObjectID
         updateQuestObjectiveProgress(QuestObjectiveType.PlayerKills, 0, 1, victimGuid);
     }
 
-
     public final void killCreditGO(int entry) {
         killCreditGO(entry, null);
     }
 
-        public final void killCreditGO(int entry, ObjectGuid guid) {
+    public final void killCreditGO(int entry, ObjectGuid guid) {
         updateQuestObjectiveProgress(QuestObjectiveType.gameObject, (int) entry, 1, guid);
     }
 
@@ -26671,11 +26499,9 @@ int ObjectID
         updateQuestObjectiveProgress(QuestObjectiveType.CriteriaTree, questObjective.objectID, 1);
     }
 
-
     public final void talkedToCreature(int entry, ObjectGuid guid) {
         updateQuestObjectiveProgress(QuestObjectiveType.TalkTo, (int) entry, 1, guid);
     }
-
 
     public final void moneyChanged(long value) {
         updateQuestObjectiveProgress(QuestObjectiveType.money, 0, value - getMoney());
@@ -26687,12 +26513,11 @@ int ObjectID
         updateQuestObjectiveProgress(QuestObjectiveType.IncreaseReputation, (int) FactionRecord.id, change);
     }
 
-
     public final void updateQuestObjectiveProgress(QuestObjectiveType objectiveType, int objectId, long addCount) {
         updateQuestObjectiveProgress(objectiveType, objectId, addCount, null);
     }
 
-        public final void updateQuestObjectiveProgress(QuestObjectiveType objectiveType, int objectId, long addCount, ObjectGuid victimGuid) {
+    public final void updateQuestObjectiveProgress(QuestObjectiveType objectiveType, int objectId, long addCount, ObjectGuid victimGuid) {
         var anyObjectiveChangedCompletionState = false;
 
         for (var objectiveStatusData : _questObjectiveStatus.get((objectiveType, objectId)))
@@ -26719,7 +26544,7 @@ int ObjectID
                 var objectiveIsNowComplete = false;
 
                 if (objective.isStoringValue()) {
-                    if (objectiveType == QuestObjectiveType.PlayerKills && objective.flags.HasAnyFlag(QuestObjectiveFlags.KillPlayersSameFaction)) {
+                    if (objectiveType == QuestObjectiveType.PlayerKills && objective.flags.hasFlag(QuestObjectiveFlags.KillPlayersSameFaction)) {
                         var victim = global.getObjAccessor().getPlayer(getMap(), victimGuid);
 
                         if ((victim == null ? null : victim.getEffectiveTeam()) != getEffectiveTeam()) {
@@ -26733,7 +26558,7 @@ int ObjectID
                         var newProgress = (int) Math.Clamp(currentProgress + addCount, 0, objective.amount);
                         setQuestObjectiveData(objective, newProgress);
 
-                        if (addCount > 0 && !objective.flags.HasAnyFlag(QuestObjectiveFlags.HideCreditMsg)) {
+                        if (addCount > 0 && !objective.flags.hasFlag(QuestObjectiveFlags.HideCreditMsg)) {
                             switch (objectiveType) {
                                 case Item:
                                     break;
@@ -26753,7 +26578,7 @@ int ObjectID
                 } else if (objective.isStoringFlag()) {
                     setQuestObjectiveData(objective, addCount > 0 ? 1 : 0);
 
-                    if (addCount > 0 && !objective.flags.HasAnyFlag(QuestObjectiveFlags.HideCreditMsg)) {
+                    if (addCount > 0 && !objective.flags.hasFlag(QuestObjectiveFlags.HideCreditMsg)) {
                         sendQuestUpdateAddCreditSimple(objective);
                     }
 
@@ -26787,9 +26612,9 @@ int ObjectID
                     }
                 }
 
-                if (objective.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar)) {
+                if (objective.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar)) {
                     if (isQuestObjectiveProgressBarComplete(logSlot, quest)) {
-                        var progressBarObjective = tangible.ListHelper.find(quest.objectives, otherObjective -> otherObjective.type == QuestObjectiveType.ProgressBar && !otherObjective.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar));
+                        var progressBarObjective = tangible.ListHelper.find(quest.objectives, otherObjective -> otherObjective.type == QuestObjectiveType.ProgressBar && !otherObjective.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar));
 
                         if (progressBarObjective != null) {
                             sendQuestUpdateAddCreditSimple(progressBarObjective);
@@ -26817,7 +26642,6 @@ int ObjectID
 
         PhasingHandler.onConditionChange(this);
     }
-
 
     public final boolean hasQuestForItem(int itemid) {
         // Search incomplete objective first
@@ -26944,11 +26768,10 @@ int ObjectID
         }
     }
 
-
     public final boolean isQuestObjectiveCompletable(short slot, Quest quest, QuestObjective objective) {
-        if (objective.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar)) {
+        if (objective.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar)) {
             // delegate check to actual progress bar objective
-            var progressBarObjective = tangible.ListHelper.find(quest.objectives, otherObjective -> otherObjective.type == QuestObjectiveType.ProgressBar && !otherObjective.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar));
+            var progressBarObjective = tangible.ListHelper.find(quest.objectives, otherObjective -> otherObjective.type == QuestObjectiveType.ProgressBar && !otherObjective.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar));
 
             if (progressBarObjective == null) {
                 return false;
@@ -26972,7 +26795,7 @@ int ObjectID
         do {
             var previousObjective = quest.objectives.get(previousIndex);
 
-            if (previousObjective.flags.HasAnyFlag(QuestObjectiveFlags.Sequenced)) {
+            if (previousObjective.flags.hasFlag(QuestObjectiveFlags.Sequenced)) {
                 previousSequencedObjectiveIndex = previousIndex;
                 previousSequencedObjectiveComplete = isQuestObjectiveComplete(slot, quest, previousObjective);
 
@@ -26980,13 +26803,13 @@ int ObjectID
             }
 
             if (objectiveSequenceSatisfied) {
-                objectiveSequenceSatisfied = isQuestObjectiveComplete(slot, quest, previousObjective) || previousObjective.flags.HasAnyFlag(QuestObjectiveFlags.Optional.getValue() | QuestObjectiveFlags.PartOfProgressBar.getValue());
+                objectiveSequenceSatisfied = isQuestObjectiveComplete(slot, quest, previousObjective) || previousObjective.flags.hasFlag(QuestObjectiveFlags.Optional.getValue() | QuestObjectiveFlags.PartOfProgressBar.getValue());
             }
 
             --previousIndex;
         } while (previousIndex >= 0);
 
-        if (objective.flags.HasAnyFlag(QuestObjectiveFlags.Sequenced)) {
+        if (objective.flags.hasFlag(QuestObjectiveFlags.Sequenced)) {
             if (previousSequencedObjectiveIndex == -1) {
                 return objectiveSequenceSatisfied;
             }
@@ -26998,7 +26821,6 @@ int ObjectID
 
         return true;
     }
-
 
     public final boolean isQuestObjectiveComplete(short slot, Quest quest, QuestObjective objective) {
         switch (objective.type) {
@@ -27072,12 +26894,11 @@ int ObjectID
         return true;
     }
 
-
     public final boolean isQuestObjectiveProgressBarComplete(short slot, Quest quest) {
         var progress = 0.0f;
 
         for (var obj : quest.objectives) {
-            if (obj.flags.HasAnyFlag(QuestObjectiveFlags.PartOfProgressBar)) {
+            if (obj.flags.hasFlag(QuestObjectiveFlags.PartOfProgressBar)) {
                 progress += getQuestSlotObjectiveData(slot, obj) * obj.progressBarWeight;
 
                 if (progress >= 100.0f) {
@@ -27089,7 +26910,6 @@ int ObjectID
         return false;
     }
 
-
     public final void sendQuestComplete(int questId) {
         if (questId != 0) {
             QuestUpdateComplete data = new QuestUpdateComplete();
@@ -27097,7 +26917,6 @@ int ObjectID
             sendPacket(data);
         }
     }
-
 
     public final void sendQuestReward(Quest quest, Creature questGiver, int xp, boolean hideChatMessage) {
         var questId = quest.id;
@@ -27126,7 +26945,7 @@ int ObjectID
                 packet.launchGossip = true;
             } else if (questGiver.isQuestGiver()) {
                 packet.launchQuest = true;
-            } else if (quest.getNextQuestInChain() != 0 && !quest.hasFlag(questFlags.AutoComplete)) {
+            } else if (quest.getNextQuestInChain() != 0 && !quest.hasFlag(QuestFlag.AutoComplete)) {
                 var rewardQuest = global.getObjectMgr().getQuestTemplate(quest.getNextQuestInChain());
 
                 if (rewardQuest != null) {
@@ -27140,12 +26959,11 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final void sendQuestFailed(int questId) {
         sendQuestFailed(questId, InventoryResult.Ok);
     }
 
-        public final void sendQuestFailed(int questId, InventoryResult reason) {
+    public final void sendQuestFailed(int questId, InventoryResult reason) {
         if (questId != 0) {
             QuestGiverQuestFailed questGiverQuestFailed = new QuestGiverQuestFailed();
             questGiverQuestFailed.questID = questId;
@@ -27153,7 +26971,6 @@ int ObjectID
             sendPacket(questGiverQuestFailed);
         }
     }
-
 
     public final void sendQuestTimerFailed(int questId) {
         if (questId != 0) {
@@ -27163,7 +26980,6 @@ int ObjectID
         }
     }
 
-
     public final void sendCanTakeQuestResponse(QuestFailedReasons reason, boolean sendErrorMessage) {
         sendCanTakeQuestResponse(reason, sendErrorMessage, "");
     }
@@ -27172,7 +26988,7 @@ int ObjectID
         sendCanTakeQuestResponse(reason, true, "");
     }
 
-        public final void sendCanTakeQuestResponse(QuestFailedReasons reason, boolean sendErrorMessage, String reasonText) {
+    public final void sendCanTakeQuestResponse(QuestFailedReasons reason, boolean sendErrorMessage, String reasonText) {
         QuestGiverInvalidQuest questGiverInvalidQuest = new QuestGiverInvalidQuest();
 
         questGiverInvalidQuest.reason = reason;
@@ -27209,12 +27025,11 @@ int ObjectID
         receiver.sendPacket(packet);
     }
 
-
     public final void sendPushToPartyResponse(Player player, QuestPushReason reason) {
         sendPushToPartyResponse(player, reason, null);
     }
 
-        public final void sendPushToPartyResponse(Player player, QuestPushReason reason, Quest quest) {
+    public final void sendPushToPartyResponse(Player player, QuestPushReason reason, Quest quest) {
         if (player != null) {
             QuestPushResultResponse response = new QuestPushResultResponse();
             response.senderGUID = player.getGUID();
@@ -27246,7 +27061,6 @@ int ObjectID
         packet.objectiveType = obj.type;
         sendPacket(packet);
     }
-
 
     public final void sendQuestUpdateAddPlayer(Quest quest, int newCount) {
         QuestUpdateAddPvPCredit packet = new QuestUpdateAddPvPCredit();
@@ -27306,7 +27120,7 @@ int ObjectID
                 continue;
             }
 
-            if (quest.hasFlag(questFlags.Pvp)) {
+            if (quest.hasFlag(QuestFlag.Pvp)) {
                 return true;
             }
         }
@@ -27415,16 +27229,17 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final boolean isDailyQuestDone(int quest_id) {
         return getActivePlayerData().dailyQuestsCompleted.FindIndex(quest_id) >= 0;
     }
-
 
     private int getInGameTime() {
         return ingametime;
     }
 
+    public final void setInGameTime(int time) {
+        ingametime = time;
+    }
 
     private void addTimedQuest(int questId) {
         timedquests.add(questId);
@@ -27553,7 +27368,7 @@ int ObjectID
         return sendQuestUpdate(questId, true);
     }
 
-        private boolean sendQuestUpdate(int questId, boolean updateVisiblity) {
+    private boolean sendQuestUpdate(int questId, boolean updateVisiblity) {
         var saBounds = global.getSpellMgr().getSpellAreaForQuestMapBounds(questId);
 
         if (!saBounds.isEmpty()) {
@@ -27568,9 +27383,9 @@ int ObjectID
             zone = tempOut_zone.outArgValue;
 
             for (var spell : saBounds) {
-                if (spell.flags.HasAnyFlag(SpellAreaFlag.AutoRemove) && !spell.isFitToRequirements(this, zone, area)) {
+                if (spell.flags.hasFlag(SpellAreaFlag.AutoRemove) && !spell.isFitToRequirements(this, zone, area)) {
                     aurasToRemove.add(spell.spellId);
-                } else if (spell.flags.HasAnyFlag(SpellAreaFlag.AutoCast) && !spell.flags.HasAnyFlag(SpellAreaFlag.IgnoreAutocastOnQuestStatusChange)) {
+                } else if (spell.flags.hasFlag(SpellAreaFlag.AutoCast) && !spell.flags.hasFlag(SpellAreaFlag.IgnoreAutocastOnQuestStatusChange)) {
                     aurasToCast.add(spell.spellId);
                 }
             }
@@ -27737,7 +27552,7 @@ int ObjectID
         sendDisplayToast(entry, type, isBonusRoll, quantity, method, questId, null);
     }
 
-        private void sendDisplayToast(int entry, DisplayToastType type, boolean isBonusRoll, int quantity, DisplayToastMethod method, int questId, Item item) {
+    private void sendDisplayToast(int entry, DisplayToastType type, boolean isBonusRoll, int quantity, DisplayToastMethod method, int questId, Item item) {
         DisplayToast displayToast = new DisplayToast();
         displayToast.quantity = quantity;
         displayToast.displayToastMethod = method;
@@ -27787,7 +27602,7 @@ int ObjectID
             }
 
             if (global.getSpellMgr().getSkillRangeType(rcEntry) == SkillRangeType.level) {
-                if (rcEntry.flags.HasAnyFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
+                if (rcEntry.flags.hasFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
                     setSkillRank(pair.getValue().pos, maxSkill);
                 }
 
@@ -28148,7 +27963,7 @@ int ObjectID
         applyEnchantment(item, slot, apply, true, false);
     }
 
-        public final void applyEnchantment(Item item, EnchantmentSlot slot, boolean apply, boolean apply_dur, boolean ignore_condition) {
+    public final void applyEnchantment(Item item, EnchantmentSlot slot, boolean apply, boolean apply_dur, boolean ignore_condition) {
         if (item == null || !item.isEquipped()) {
             return;
         }
@@ -28629,7 +28444,7 @@ int ObjectID
         updatePotionCooldown(null);
     }
 
-        public final void updatePotionCooldown(Spell spell) {
+    public final void updatePotionCooldown(Spell spell) {
         // no potion used i combat or still in combat
         if (lastPotionId == 0 || isInCombat()) {
             return;
@@ -28963,7 +28778,7 @@ int ObjectID
         return updateGatherSkill(skillId, SkillValue, RedLevel, 1, null);
     }
 
-        public final boolean updateGatherSkill(int skillId, int SkillValue, int RedLevel, int multiplicator, WorldObject obj) {
+    public final boolean updateGatherSkill(int skillId, int SkillValue, int RedLevel, int multiplicator, WorldObject obj) {
         return updateGatherSkill(SkillType.forValue(skillId), SkillValue, RedLevel, multiplicator, obj);
     }
 
@@ -28976,7 +28791,7 @@ int ObjectID
         return updateGatherSkill(skillId, SkillValue, RedLevel, 1, null);
     }
 
-        public final boolean updateGatherSkill(SkillType skillId, int SkillValue, int RedLevel, int multiplicator, WorldObject obj) {
+    public final boolean updateGatherSkill(SkillType skillId, int SkillValue, int RedLevel, int multiplicator, WorldObject obj) {
         Log.outDebug(LogFilter.player, "UpdateGatherSkill(SkillId {0} SkillLevel {1} RedLevel {2})", skillId, SkillValue, RedLevel);
 
         var gathering_skill_gain = WorldConfig.getUIntValue(WorldCfg.SkillGainGathering);
@@ -29182,7 +28997,7 @@ int ObjectID
                 case OnSkillLearn:
                     break;
                 case RewardedFromQuest:
-                    if (!ability.flags.HasAnyFlag(SkillLineAbilityFlags.CanFallbackToLearnedOnSkillLearn) || !spellInfo.meetsFutureSpellPlayerCondition(this)) {
+                    if (!ability.flags.hasFlag(SkillLineAbilityFlags.CanFallbackToLearnedOnSkillLearn) || !spellInfo.meetsFutureSpellPlayerCondition(this)) {
                         continue;
                     }
 
@@ -29254,7 +29069,7 @@ int ObjectID
         return hasItemFitToSpellRequirements(spellInfo, null);
     }
 
-        public final boolean hasItemFitToSpellRequirements(SpellInfo spellInfo, Item ignoreItem) {
+    public final boolean hasItemFitToSpellRequirements(SpellInfo spellInfo, Item ignoreItem) {
         if (spellInfo.getEquippedItemClass().getValue() < 0) {
             return true;
         }
@@ -29348,7 +29163,7 @@ int ObjectID
         return getMeleeDamageSchoolMask(WeaponAttackType.BaseAttack);
     }
 
-        @Override
+    @Override
     public SpellSchoolMask getMeleeDamageSchoolMask(WeaponAttackType attackType) {
         var weapon = getWeaponForAttack(attackType, true);
 
@@ -29449,7 +29264,7 @@ int ObjectID
         var saBounds = global.getSpellMgr().getSpellAreaForAreaMapBounds(newZone);
 
         for (var spell : saBounds) {
-            if (spell.flags.HasAnyFlag(SpellAreaFlag.AutoCast) && spell.isFitToRequirements(this, newZone, 0)) {
+            if (spell.flags.hasFlag(SpellAreaFlag.AutoCast) && spell.isFitToRequirements(this, newZone, 0)) {
                 if (!hasAura(spell.spellId)) {
                     castSpell(this, spell.spellId, true);
                 }
@@ -29467,7 +29282,7 @@ int ObjectID
         var saBounds = global.getSpellMgr().getSpellAreaForAreaMapBounds(newArea);
 
         for (var spell : saBounds) {
-            if (spell.flags.HasAnyFlag(SpellAreaFlag.AutoCast) && spell.isFitToRequirements(this, zoneUpdateId, newArea)) {
+            if (spell.flags.hasFlag(SpellAreaFlag.AutoCast) && spell.isFitToRequirements(this, zoneUpdateId, newArea)) {
                 if (!hasAura(spell.spellId)) {
                     castSpell(this, spell.spellId, true);
                 }
@@ -29538,7 +29353,7 @@ int ObjectID
                 short skillValue = 1;
                 var maxValue = getMaxSkillValueForLevel();
 
-                if (rcInfo.flags.HasAnyFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
+                if (rcInfo.flags.hasFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
                     skillValue = maxValue;
                 } else if (getClass() == playerClass.Deathknight) {
                     skillValue = (short) Math.min(Math.max(1, (getLevel() - 1) * 5), maxValue);
@@ -29557,7 +29372,7 @@ int ObjectID
                 var maxValue = (short) tier.Value[0];
                 short skillValue = 1;
 
-                if (rcInfo.flags.HasAnyFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
+                if (rcInfo.flags.hasFlag(SkillRaceClassInfoFlags.AlwaysMaxValue)) {
                     skillValue = maxValue;
                 } else if (getClass() == playerClass.Deathknight) {
                     skillValue = (short) Math.min(Math.max(1, (getLevel() - 1) * 5), maxValue);
@@ -29603,7 +29418,7 @@ int ObjectID
         learnSpell(spellId, dependent, 0, false, null);
     }
 
-        public final void learnSpell(int spellId, boolean dependent, int fromSkill, boolean suppressMessaging, Integer traitDefinitionId) {
+    public final void learnSpell(int spellId, boolean dependent, int fromSkill, boolean suppressMessaging, Integer traitDefinitionId) {
         var spell = spells.get(spellId);
 
         var disabled = (spell != null) && spell.disabled;
@@ -29681,7 +29496,7 @@ int ObjectID
         removeSpell(spellId, false, true, false);
     }
 
-        public final void removeSpell(int spellId, boolean disabled, boolean learnLowRank, boolean suppressMessaging) {
+    public final void removeSpell(int spellId, boolean disabled, boolean learnLowRank, boolean suppressMessaging) {
         var pSpell = spells.get(spellId);
 
         if (pSpell == null) {
@@ -30020,14 +29835,13 @@ int ObjectID
     }
 
 
-
     public final int applySpellMod(SpellInfo spellInfo, SpellModOp op, int basevalue) {
         return applySpellMod(spellInfo, op, basevalue, null);
     }
 
     public final int applySpellMod(SpellInfo spellInfo, SpellModOp op, int baseValue, Spell spell) {
-        double val = applySpellMod(spellInfo, op, (double)baseValue, spell);
-        return (int)Math.round(val);
+        double val = applySpellMod(spellInfo, op, (double) baseValue, spell);
+        return (int) Math.round(val);
     }
 
     public final double applySpellMod(SpellInfo spellInfo, SpellModOp op, double baseValue) {
@@ -30055,7 +29869,7 @@ int ObjectID
                 SpellModifier modInstantSpell = null;
 
                 for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.PCT.ordinal()]) {
-                    SpellModifierByClassMask mod = (SpellModifierByClassMask)item;
+                    SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
                     if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                         continue;
                     }
@@ -30069,7 +29883,7 @@ int ObjectID
 
                 if (modInstantSpell == null) {
                     for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_PCT.ordinal()]) {
-                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel)item;
+                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
                         if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                             continue;
                         }
@@ -30096,7 +29910,7 @@ int ObjectID
                 SpellModifier modCritical = null;
 
                 for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.FLAT.ordinal()]) {
-                    SpellModifierByClassMask mod = (SpellModifierByClassMask)item;
+                    SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
                     if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                         continue;
                     }
@@ -30110,7 +29924,7 @@ int ObjectID
 
                 if (modCritical == null) {
                     for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_FLAT.ordinal()]) {
-                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel)item;
+                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
                         if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                             continue;
                         }
@@ -30137,7 +29951,7 @@ int ObjectID
         }
 
         for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.FLAT.ordinal()]) {
-            SpellModifierByClassMask mod = (SpellModifierByClassMask)item;
+            SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
             if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                 continue;
             }
@@ -30153,7 +29967,7 @@ int ObjectID
         }
 
         for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_FLAT.ordinal()]) {
-            SpellPctModifierByLabel mod = (SpellPctModifierByLabel)item;
+            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
             if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                 continue;
             }
@@ -30169,7 +29983,7 @@ int ObjectID
         }
 
         for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.PCT.ordinal()]) {
-            SpellModifierByClassMask mod = (SpellModifierByClassMask)item;
+            SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
             if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                 continue;
             }
@@ -30197,7 +30011,7 @@ int ObjectID
         }
 
         for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_PCT.ordinal()]) {
-            SpellPctModifierByLabel mod = (SpellPctModifierByLabel)item;
+            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
             if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                 continue;
             }
@@ -30463,7 +30277,7 @@ int ObjectID
     public final void castItemCombatSpell(DamageInfo damageInfo, Item item, ItemTemplate proto) {
         // Can do effect if any damage done to target
         // for done procs allow normal + critical + absorbs by default
-        var canTrigger = damageInfo.getHitMask().HasAnyFlag(ProcFlagsHit.NORMAL.getValue() | ProcFlagsHit.critical.getValue().getValue() | ProcFlagsHit.absorb.getValue().getValue());
+        var canTrigger = damageInfo.getHitMask().hasFlag(ProcFlagsHit.NORMAL.getValue() | ProcFlagsHit.critical.getValue().getValue() | ProcFlagsHit.absorb.getValue().getValue());
 
         if (canTrigger) {
             if (!item.getTemplate().hasFlag(ItemFlags.legacy)) {
@@ -30526,7 +30340,7 @@ int ObjectID
                 }
 
                 // check if enchant procs only on white hits
-                if (entry != null && entry.attributesMask.HasAnyFlag(EnchantProcAttributes.WhiteHit) && damageInfo.getSpellInfo() != null) {
+                if (entry != null && entry.attributesMask.hasFlag(EnchantProcAttributes.WhiteHit) && damageInfo.getSpellInfo() != null) {
                     continue;
                 }
 
@@ -30572,7 +30386,7 @@ int ObjectID
                     CastSpellExtraArgs args = new CastSpellExtraArgs(item);
 
                     // reduce effect values if enchant is limited
-                    if (entry != null && entry.attributesMask.HasAnyFlag(EnchantProcAttributes.Limit60) && target.getLevelForTarget(this) > 60) {
+                    if (entry != null && entry.attributesMask.hasFlag(EnchantProcAttributes.Limit60) && target.getLevelForTarget(this) > 60) {
                         var lvlDifference = target.getLevelForTarget(this) - 60;
                         var lvlPenaltyFactor = 4; // 4% lost effectiveness per level
 
@@ -30596,7 +30410,7 @@ int ObjectID
         resetSpells(false);
     }
 
-        public final void resetSpells(boolean myClassOnly) {
+    public final void resetSpells(boolean myClassOnly) {
         // not need after this call
         if (hasAtLoginFlag(AtLoginFlags.ResetSpells)) {
             removeAtLoginFlag(AtLoginFlags.ResetSpells, true);
@@ -30739,7 +30553,7 @@ int ObjectID
 
         for (var auraEffect : dummyAuras) {
             // Soulstone Resurrection                           // prio: 3 (max, non death persistent)
-            if (auraEffect.getSpellInfo().getSpellFamilyName() == SpellFamilyNames.Warlock && auraEffect.getSpellInfo().getSpellFamilyFlags().get(1).HasAnyFlag(0x1000000)) {
+            if (auraEffect.getSpellInfo().getSpellFamilyName() == SpellFamilyNames.Warlock && auraEffect.getSpellInfo().getSpellFamilyFlags().get(1).hasFlag(0x1000000)) {
                 spells[0] = 3026;
             }
             // Twisting Nether                                  // prio: 2 (max)
@@ -31305,7 +31119,7 @@ int ObjectID
         return addSpell(spellId, active, learning, dependent, disabled, false, 0, false, null);
     }
 
-        private boolean addSpell(int spellId, boolean active, boolean learning, boolean dependent, boolean disabled, boolean loading, int fromSkill, boolean favorite, Integer traitDefinitionId) {
+    private boolean addSpell(int spellId, boolean active, boolean learning, boolean dependent, boolean disabled, boolean loading, int fromSkill, boolean favorite, Integer traitDefinitionId) {
         var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
 
         if (spellInfo == null) {
@@ -31835,7 +31649,7 @@ int ObjectID
         updateItemSetAuras(false);
     }
 
-        private void updateItemSetAuras(boolean formChange) {
+    private void updateItemSetAuras(boolean formChange) {
         // item set bonuses not dependent from item broken state
         for (var setindex = 0; setindex < getItemSetEff().size(); ++setindex) {
             var eff = getItemSetEff().get(setindex);
@@ -32139,7 +31953,7 @@ int ObjectID
         updateAttackPowerAndDamage(false);
     }
 
-        @Override
+    @Override
     public void updateAttackPowerAndDamage(boolean ranged) {
         float val2;
         float level = getLevel();
@@ -32718,7 +32532,7 @@ int ObjectID
         var effectiveCorruption = getRatingBonusValue(CombatRating.corruption) - getRatingBonusValue(CombatRating.CorruptionResistance);
 
         for (var corruptionEffect : CliDB.CorruptionEffectsStorage.values()) {
-            if ((CorruptionEffectsFlag.forValue(corruptionEffect.flags)).HasAnyFlag(CorruptionEffectsFlag.disabled)) {
+            if ((CorruptionEffectsFlag.forValue(corruptionEffect.flags)).hasFlag(CorruptionEffectsFlag.disabled)) {
                 continue;
             }
 
@@ -33169,21 +32983,26 @@ int ObjectID
         return getPlayerData().currentSpecID;
     }
 
+    private void setPrimarySpecialization(int spec) {
+        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().currentSpecID), spec);
+    }
 
     public final byte getActiveTalentGroup() {
         return specializationInfo.getActiveGroup();
+    }
+
+    private void setActiveTalentGroup(byte group) {
+        specializationInfo.setActiveGroup(group);
+    }
+
+    public final int getLootSpecId() {
+        return getActivePlayerData().lootSpecID;
     }
 
     // Loot Spec
     public final void setLootSpecId(int id) {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().lootSpecID), (short) id);
     }
-
-
-    public final int getLootSpecId() {
-        return getActivePlayerData().lootSpecID;
-    }
-
 
     public final int getDefaultSpecId() {
         return global.getDB2Mgr().GetDefaultChrSpecializationForClass(getClass()).id;
@@ -33422,16 +33241,13 @@ int ObjectID
         }
     }
 
-
     public final HashMap<Integer, PlayerSpellState> getTalentMap(int spec) {
         return specializationInfo.getTalents()[spec];
     }
 
-
     public final ArrayList<Integer> getGlyphs(byte spec) {
         return specializationInfo.getGlyphs()[spec];
     }
-
 
     public final int getNextResetTalentsCost() {
         // The first time reset costs 1 gold
@@ -33472,7 +33288,7 @@ int ObjectID
         return resetTalents(false);
     }
 
-        public final boolean resetTalents(boolean noCost) {
+    public final boolean resetTalents(boolean noCost) {
         global.getScriptMgr().<IPlayerOnTalentsReset>ForEach(p -> p.OnTalentsReset(this, noCost));
 
         // not need after this call
@@ -33607,7 +33423,6 @@ int ObjectID
         sendPacket(packet);
     }
 
-
     public final void sendRespecWipeConfirm(ObjectGuid guid, int cost, SpecResetType respecType) {
         RespecWipeConfirm respecWipeConfirm = new RespecWipeConfirm();
         respecWipeConfirm.respecMaster = guid;
@@ -33615,7 +33430,6 @@ int ObjectID
         respecWipeConfirm.respecType = respecType;
         sendPacket(respecWipeConfirm);
     }
-
 
     public final TalentLearnResult learnPvpTalent(int talentID, byte slot, tangible.RefObject<Integer> spellOnCooldown) {
         if (slot >= PlayerConst.MaxPvpTalentSlots) {
@@ -33916,16 +33730,13 @@ int ObjectID
         traitConfigStates.put(traitConfigId, PlayerSpellState.changed);
     }
 
-
     private boolean hasTalent(int talentId, byte group) {
         return getTalentMap(group).containsKey(talentId) && !getTalentMap(group).get(talentId).equals(PlayerSpellState.removed);
     }
 
-
     private int getTalentResetCost() {
         return specializationInfo.getResetTalentsCost();
     }
-
 
     private void setTalentResetCost(int cost) {
         specializationInfo.setResetTalentsCost(cost);
@@ -33939,21 +33750,11 @@ int ObjectID
         specializationInfo.setResetTalentsTime(time_);
     }
 
-
-    private void setPrimarySpecialization(int spec) {
-        setUpdateFieldValue(getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().currentSpecID), spec);
-    }
-
-
-    private void setActiveTalentGroup(byte group) {
-        specializationInfo.setActiveGroup(group);
-    }
-
     private void startLoadingActionButtons() {
         startLoadingActionButtons(null);
     }
 
-        private void startLoadingActionButtons(tangible.Action0Param callback) {
+    private void startLoadingActionButtons(tangible.Action0Param callback) {
         int traitConfigId = 0;
 
         var traitConfig = getTraitConfig((int) getActivePlayerData().activeCombatTraitConfigID);

@@ -1,7 +1,9 @@
 package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class UnlockedAzeriteEssence {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class UnlockedAzeriteEssence {
 
     public int azeriteEssenceID;
 

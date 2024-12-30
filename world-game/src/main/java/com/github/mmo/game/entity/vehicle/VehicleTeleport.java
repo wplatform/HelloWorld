@@ -4,7 +4,7 @@ package com.github.mmo.game.entity.vehicle;
 //C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
 //ORIGINAL LINE: public struct VehicleTeleport
 public final class VehicleTeleport {
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public byte VehicleSeatIndex;
     public byte vehicleSeatIndex;
     public boolean vehicleExitVoluntary;

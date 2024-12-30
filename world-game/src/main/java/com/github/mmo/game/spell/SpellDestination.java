@@ -25,7 +25,7 @@ public class SpellDestination {
         this(x, y, z, 0.0f, (int) 0xFFFFFFFF);
     }
 
-        public SpellDestination(float x, float y, float z, float orientation, int mapId) {
+    public SpellDestination(float x, float y, float z, float orientation, int mapId) {
         this();
         position.relocate(x, y, z, orientation);
         transportGuid = ObjectGuid.EMPTY;

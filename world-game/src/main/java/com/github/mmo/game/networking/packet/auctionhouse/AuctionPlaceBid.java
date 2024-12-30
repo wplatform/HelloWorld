@@ -1,30 +1,27 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class AuctionPlaceBid extends ClientPacket
-{
-	public ObjectGuid auctioneer = ObjectGuid.EMPTY;
-	public long bidAmount;
-	public int auctionID;
-	public AddOnInfo taintedBy = null;
+class AuctionPlaceBid extends ClientPacket {
+    public ObjectGuid auctioneer = ObjectGuid.EMPTY;
+    public long bidAmount;
+    public int auctionID;
+    public AddOnInfo taintedBy = null;
 
-	public AuctionPlaceBid(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public AuctionPlaceBid(WorldPacket packet) {
+        super(packet);
+    }
 
-	@Override
-	public void read()
-	{
-		auctioneer = this.readPackedGuid();
-		auctionID = this.readUInt();
-		bidAmount = this.readUInt64();
+    @Override
+    public void read() {
+        auctioneer = this.readPackedGuid();
+        auctionID = this.readUInt();
+        bidAmount = this.readUInt64();
 
-		if (this.readBit())
-		{
-			taintedBy = new AddOnInfo();
-			taintedBy.getValue().read(this);
-		}
-	}
+        if (this.readBit()) {
+            taintedBy = new AddOnInfo();
+            taintedBy.getValue().read(this);
+        }
+    }
 }

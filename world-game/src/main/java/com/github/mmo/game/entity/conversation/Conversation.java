@@ -11,8 +11,8 @@ import game.spells.*;
 import lombok.Getter;
 
 import java.time.Duration;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.Locale;
 
 
 public class Conversation extends WorldObject implements GridObject<Conversation> {
@@ -24,20 +24,33 @@ public class Conversation extends WorldObject implements GridObject<Conversation
     private final Position stationaryPosition = new Position();
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: readonly Dictionary<(Locale locale, uint lineId), TimeSpan> _lineStartTimes = new();
-    private final HashMap<(Locale locale, int lineId), TimeSpan> lineStartTimes = new HashMap<(Locale locale, int lineId), TimeSpan>();
-    private final TimeSpan[] lastLineEndTimes = new TimeSpan[Locale.Total.getValue()];
+    private final HashMap<(
+        private final TimeSpan[] lastLineEndTimes = new TimeSpan[Locale.Total.getValue()];, Locale locale),TimeSpan>lineStartTimes =new HashMap<(
+    int lineId, Locale locale),TimeSpan>();
+int lineId
     private ObjectGuid creatorGuid = ObjectGuid.EMPTY;
     private Duration duration;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: uint _textureKitId;
     private int textureKitId;
+
+    public Conversation() {
+        super(false);
+        objectTypeMask = TypeMask.forValue(objectTypeMask.getValue() | TypeMask.Conversation.getValue());
+        objectTypeId = TypeId.Conversation;
+
+        updateFlag.stationary = true;
+        updateFlag.conversation = true;
+
+        mConversationData = new ConversationData();
+    }
 
     @Override
     public ObjectGuid getOwnerGUID() {
         return getCreatorGuid();
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override uint getFaction()
     @Override
     public int getFaction() {
@@ -64,17 +77,6 @@ public class Conversation extends WorldObject implements GridObject<Conversation
         return stationaryPosition.getOrientation();
     }
 
-    public Conversation() {
-        super(false);
-        objectTypeMask = TypeMask.forValue(objectTypeMask.getValue() | TypeMask.Conversation.getValue());
-        objectTypeId = TypeId.Conversation;
-
-        updateFlag.stationary = true;
-        updateFlag.conversation = true;
-
-        mConversationData = new ConversationData();
-    }
-
     @Override
     public void addToWorld() {
         //- Register the Conversation for guid lookup and for caster
@@ -93,11 +95,11 @@ public class Conversation extends WorldObject implements GridObject<Conversation
             tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
 //C# TO JAVA CONVERTER TODO TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
             getMap().getObjectsStore().TryRemove(getGUID().clone(), tempOut__);
-        _ = tempOut__.outArgValue;
+            _ = tempOut__.outArgValue;
         }
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override void Update(uint diff)
     @Override
     public void update(int diff) {
@@ -105,9 +107,9 @@ public class Conversation extends WorldObject implements GridObject<Conversation
             duration -= TimeSpan.FromMilliseconds(diff);
 
             doWithSuppressingObjectUpdates(() -> {
-                    // Only sent in CreateObject
-                    ApplyModUpdateFieldValue(values.modifyValue(mConversationData).modifyValue(mConversationData.progress), diff, true);
-                    mConversationData.clearChanged(mConversationData.progress);
+                // Only sent in CreateObject
+                ApplyModUpdateFieldValue(values.modifyValue(mConversationData).modifyValue(mConversationData.progress), diff, true);
+                mConversationData.clearChanged(mConversationData.progress);
             });
         } else {
             remove(); // expired

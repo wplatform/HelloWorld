@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.equipment;
 
 
-import com.github.mmo.game.networking.*;class UseEquipmentSetResult extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class UseEquipmentSetResult extends ServerPacket {
 
     public long GUID; //Set Identifier
 

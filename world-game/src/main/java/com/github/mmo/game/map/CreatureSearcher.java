@@ -6,57 +6,49 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.map.interfaces.*;
 
 
-public class CreatureSearcher implements IGridNotifierCreature
-{
-	private final PhaseShift phaseShift;
-	private final ICheck<Creature> check;
-	private Creature object;
+public class CreatureSearcher implements IGridNotifierCreature {
+    private final PhaseShift phaseShift;
+    private final ICheck<Creature> check;
+    private Creature object;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public CreatureSearcher(WorldObject searcher, ICheck<Creature> check, GridType gridType) {
+        phaseShift = searcher.getPhaseShift();
+        check = check;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public CreatureSearcher(WorldObject searcher, ICheck<Creature> check, GridType gridType)
-	{
-		phaseShift = searcher.getPhaseShift();
-		check = check;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<Creature> objs)
-	{
-		// already found
-		if (object)
-		{
-			return;
-		}
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var creature = objs.get(i);
+    public final void visit(list<Creature> objs) {
+        // already found
+        if (object) {
+            return;
+        }
 
-			if (!creature.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+        for (var i = 0; i < objs.size(); ++i) {
+            var creature = objs.get(i);
 
-			if (check.invoke(creature))
-			{
-				object = creature;
+            if (!creature.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-				return;
-			}
-		}
-	}
+            if (check.invoke(creature)) {
+                object = creature;
 
-	public final Creature getTarget()
-	{
-		return object;
-	}
+                return;
+            }
+        }
+    }
+
+    public final Creature getTarget() {
+        return object;
+    }
+
+
 }

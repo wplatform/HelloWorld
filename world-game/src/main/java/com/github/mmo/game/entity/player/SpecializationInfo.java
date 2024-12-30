@@ -1,8 +1,10 @@
 package com.github.mmo.game.entity.player;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import java.util.*;public class SpecializationInfo {
+public class SpecializationInfo {
 
     private HashMap<Integer, PlayerSpellState>[] talents = new HashMap<Integer, PlayerSpellState>[PlayerConst.MaxSpecializations];
 

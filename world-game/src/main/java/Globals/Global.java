@@ -1,35 +1,31 @@
 package Globals;
 
-import com.github.mmo.game.globals.ObjectManager;
-import game.*;
 import com.github.mmo.game.account.AccountManager;
 import com.github.mmo.game.account.BNetAccountManager;
-import com.github.mmo.game.achievement.*;
-import com.github.mmo.game.ai.*;
-import com.github.mmo.game.arena.*;
-import com.github.mmo.game.battlefield.*;
-import com.github.mmo.game.battleground.*;
-import com.github.mmo.game.blackmarket.*;
-import com.github.mmo.game.cache.*;
-import com.github.mmo.game.chat.*;
-
-import com.github.mmo.game.dungeonfinding.*;
+import com.github.mmo.game.achievement.AchievementGlobalMgr;
+import com.github.mmo.game.achievement.CriteriaManager;
+import com.github.mmo.game.ai.SmartAIManager;
+import com.github.mmo.game.arena.ArenaTeamManager;
+import com.github.mmo.game.battlefield.BattleFieldManager;
+import com.github.mmo.game.battleground.BattlegroundManager;
+import com.github.mmo.game.blackmarket.BlackMarketManager;
+import com.github.mmo.game.cache.CharacterCache;
+import com.github.mmo.game.chat.LanguageManager;
+import com.github.mmo.game.dungeonfinding.LFGManager;
 import com.github.mmo.game.entity.player.PetitionManager;
 import com.github.mmo.game.entity.player.SocialManager;
-import com.github.mmo.game.garrison.*;
-import com.github.mmo.game.group.*;
-import com.github.mmo.game.loot.*;
+import com.github.mmo.game.garrison.GarrisonManager;
+import com.github.mmo.game.globals.ObjectManager;
+import com.github.mmo.game.group.GroupManager;
+import com.github.mmo.game.loot.LootItemStorage;
 import com.github.mmo.game.map.*;
 import com.github.mmo.game.map.collision.VMapManager;
-import com.github.mmo.game.pvp.*;
-import com.github.mmo.game.scenario.*;
-import com.github.mmo.game.scripting.*;
-import com.github.mmo.game.service.*;
-import com.github.mmo.game.supportsystem.*;
-
-
-
-
+import com.github.mmo.game.pvp.OutdoorPvPManager;
+import com.github.mmo.game.scenario.ScenarioManager;
+import com.github.mmo.game.scripting.ScriptManager;
+import com.github.mmo.game.service.WorldServiceManager;
+import com.github.mmo.game.supportsystem.SupportManager;
+import game.*;
 
 
 public final class Global {

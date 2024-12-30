@@ -1,4 +1,6 @@
-package com.github.mmo.game.entity.item;public class ArtifactPowerData {
+package com.github.mmo.game.entity.item;
+
+public class ArtifactPowerData {
 
     public int artifactPowerId;
 

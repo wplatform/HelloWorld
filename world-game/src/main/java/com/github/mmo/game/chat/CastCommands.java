@@ -1,7 +1,8 @@
 package com.github.mmo.game.chat;
 
 
-import com.github.mmo.game.spell.*;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+import com.github.mmo.game.spell.CastSpellExtraArgs;
+
 class CastCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:

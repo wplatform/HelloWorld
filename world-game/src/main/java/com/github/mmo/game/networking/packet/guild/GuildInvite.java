@@ -1,30 +1,28 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildInvite extends ServerPacket
-{
+public class GuildInvite extends ServerPacket {
     public ObjectGuid guildGUID = ObjectGuid.EMPTY;
     public ObjectGuid oldGuildGUID = ObjectGuid.EMPTY;
-	public int achievementPoints;
-	public int emblemColor;
-	public int emblemStyle;
-	public int borderStyle;
-	public int borderColor;
-	public int background;
-	public int guildVirtualRealmAddress;
-	public int oldGuildVirtualRealmAddress;
-	public int inviterVirtualRealmAddress;
-	public String inviterName;
-	public String guildName;
-	public String oldGuildName;
-	public GuildInvite()
-	{
-		super(ServerOpcode.GuildInvite);
-	}
+    public int achievementPoints;
+    public int emblemColor;
+    public int emblemStyle;
+    public int borderStyle;
+    public int borderColor;
+    public int background;
+    public int guildVirtualRealmAddress;
+    public int oldGuildVirtualRealmAddress;
+    public int inviterVirtualRealmAddress;
+    public String inviterName;
+    public String guildName;
+    public String oldGuildName;
 
-	@Override
-	public void write()
-	{
+    public GuildInvite() {
+        super(ServerOpcode.GuildInvite);
+    }
+
+    @Override
+    public void write() {
         this.writeBits(inviterName.getBytes().length, 6);
         this.writeBits(guildName.getBytes().length, 7);
         this.writeBits(oldGuildName.getBytes().length, 7);
@@ -44,5 +42,5 @@ public class GuildInvite extends ServerPacket
         this.writeString(inviterName);
         this.writeString(guildName);
         this.writeString(oldGuildName);
-	}
+    }
 }

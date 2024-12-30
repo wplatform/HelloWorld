@@ -1,8 +1,9 @@
 package com.github.mmo.game.chat.commands;
 
 
+import com.github.mmo.game.chat.CommandHandler;
 import game.*;
-import com.github.mmo.game.chat.*;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class BanCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleBanAccountCommand(CommandHandler handler, String playerName, int duration, String reason) {

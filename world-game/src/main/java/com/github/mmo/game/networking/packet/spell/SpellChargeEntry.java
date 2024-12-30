@@ -1,6 +1,8 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;public class SpellChargeEntry {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class SpellChargeEntry {
 
     public int category;
 

@@ -1,15 +1,14 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;
-public class GuildEventLogQuery extends ClientPacket
-{
-	public GuildEventLogQuery(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-	}
+public class GuildEventLogQuery extends ClientPacket {
+    public GuildEventLogQuery(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+    }
 }

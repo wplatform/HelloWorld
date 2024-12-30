@@ -33,7 +33,7 @@ public class CreatureTextBuilder extends MessageBuilder {
         return invoke(locale.enUS);
     }
 
-        @Override
+    @Override
     public ChatPacketSender invoke(Locale locale) {
         var text = global.getCreatureTextMgr().getLocalizedChatString(source.getEntry(), gender, textGroup, textId, locale);
 

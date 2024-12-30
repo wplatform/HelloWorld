@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.movement;
 
 
 import com.github.mmo.game.movement.model.MovementInfo;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class MoveUpdateCollisionHeight extends ServerPacket {
     public MovementInfo status;

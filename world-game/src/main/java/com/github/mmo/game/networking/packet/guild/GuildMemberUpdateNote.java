@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildMemberUpdateNote extends ServerPacket
-{
-	public ObjectGuid member = ObjectGuid.EMPTY;
-	public boolean isPublic; // 0 == officer, 1 == Public
-	public String note;
-	public GuildMemberUpdateNote()
-	{
-		super(ServerOpcode.GuildMemberUpdateNote);
-	}
+public class GuildMemberUpdateNote extends ServerPacket {
+    public ObjectGuid member = ObjectGuid.EMPTY;
+    public boolean isPublic; // 0 == officer, 1 == Public
+    public String note;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(member);
+    public GuildMemberUpdateNote() {
+        super(ServerOpcode.GuildMemberUpdateNote);
+    }
 
-		this.writeBits(note.getBytes().length, 8);
-		this.writeBit(isPublic);
-		this.flushBits();
+    @Override
+    public void write() {
+        this.writeGuid(member);
 
-		this.writeString(note);
-	}
+        this.writeBits(note.getBytes().length, 8);
+        this.writeBit(isPublic);
+        this.flushBits();
+
+        this.writeString(note);
+    }
 }

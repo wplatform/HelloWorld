@@ -1,23 +1,22 @@
 package com.github.mmo.game.networking.packet.calendar;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class HandleCalendarRsvp extends ClientPacket
-{
-	public long inviteID;
-	public long eventID;
-	public CalendarInvitestatus status = CalendarInviteStatus.values()[0];
-	public handleCalendarRsvp(WorldPacket packet)
-	{
-		super(packet);
-	}
+class HandleCalendarRsvp extends ClientPacket {
+    public long inviteID;
+    public long eventID;
+    public CalendarInvitestatus status = CalendarInviteStatus.values()[0];
 
-	@Override
-	public void read()
-	{
+    public handleCalendarRsvp(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         eventID = this.readUInt64();
         inviteID = this.readUInt64();
         status = CalendarInviteStatus.forValue(this.readUInt8());
-	}
+    }
 }

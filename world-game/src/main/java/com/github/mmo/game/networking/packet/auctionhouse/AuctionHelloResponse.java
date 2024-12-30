@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
 
-import com.github.mmo.game.networking.*;class AuctionHelloResponse extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class AuctionHelloResponse extends ServerPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;
 
     public int deliveryDelay;

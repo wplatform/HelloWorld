@@ -76,6 +76,14 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return aura.getDuration();
     }
 
+    public final void setDuration(int duration) {
+        setDuration(duration, false);
+    }
+
+    public final void setDuration(double duration) {
+        setDuration(duration, false);
+    }
+
     public final int getMaxDuration() {
         return aura.getMaxDuration();
     }
@@ -83,6 +91,9 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
     public final void setMaxDuration(int value) {
         aura.setMaxDuration(value);
     }
+
+    // AuraScript interface - functions which are redirecting to AuraApplication class
+    // Do not call these in hooks in which AuraApplication is not avalible, otherwise result will differ from expected (the functions will return null)
 
     // expired - duration just went to 0
     public final boolean isExpired() {
@@ -93,10 +104,6 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
     public final byte getStackAmount() {
         return aura.getStackAmount();
     }
-
-    // AuraScript interface - functions which are redirecting to AuraApplication class
-    // Do not call these in hooks in which AuraApplication is not avalible, otherwise result will differ from expected (the functions will return null)
-
 
     public final void setStackAmount(byte value) {
         aura.setStackAmount(value);
@@ -168,7 +175,6 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return aura.getCharges();
     }
 
-
     public final void setCharges(byte value) {
         aura.setCharges(value);
     }
@@ -192,12 +198,11 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return load;
     }
 
-
     public final void _PrepareScriptCall(AuraScriptHookType hookType) {
         _PrepareScriptCall(hookType, null);
     }
 
-        public final void _PrepareScriptCall(AuraScriptHookType hookType, AuraApplication aurApp) {
+    public final void _PrepareScriptCall(AuraScriptHookType hookType, AuraApplication aurApp) {
         scriptStates.push(new ScriptStateStore(getCurrentScriptState(), auraApplication, defaultActionPrevented));
         setCurrentScriptState((byte) hookType.getValue());
         defaultActionPrevented = false;
@@ -228,6 +233,7 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         }
     }
 
+    // removes aura with remove mode (see AuraRemoveMode enum)
 
     // prevents default Action of a hook from being executed (works only while called in a hook which default Action can be prevented)
     public final void preventDefaultAction() {
@@ -253,31 +259,23 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return aura.getSpellInfo().getEffect(effIndex);
     }
 
-    // removes aura with remove mode (see AuraRemoveMode enum)
-
     public final void remove() {
         remove(0);
     }
 
-        public final void remove(AuraRemoveMode removeMode) {
+    public final void remove(AuraRemoveMode removeMode) {
         aura.remove(removeMode);
     }
 
-
-    public final void setDuration(int duration) {
-        setDuration(duration, false);
-    }
-
-        public final void setDuration(int duration, boolean withMods) {
+    public final void setDuration(int duration, boolean withMods) {
         aura.setDuration(duration, withMods);
     }
-
 
     public final boolean modStackAmount(int num) {
         return modStackAmount(num, AuraRemoveMode.Default);
     }
 
-        public final boolean modStackAmount(int num, AuraRemoveMode removeMode) {
+    public final boolean modStackAmount(int num, AuraRemoveMode removeMode) {
         return aura.modStackAmount(num, removeMode);
     }
 
@@ -307,12 +305,7 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return false;
     }
 
-
-    public final void setDuration(double duration) {
-        setDuration(duration, false);
-    }
-
-        public final void setDuration(double duration, boolean withMods) {
+    public final void setDuration(double duration, boolean withMods) {
         aura.setDuration(duration, withMods);
     }
 
@@ -335,7 +328,7 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return modCharges(num, AuraRemoveMode.Default);
     }
 
-        public final boolean modCharges(byte num, AuraRemoveMode removeMode) {
+    public final boolean modCharges(byte num, AuraRemoveMode removeMode) {
         return aura.modCharges(num, removeMode);
     }
 
@@ -345,7 +338,7 @@ public class AuraScript extends BaseSpellScript implements IAuraScript {
         return dropCharge(AuraRemoveMode.Default);
     }
 
-        public final boolean dropCharge(AuraRemoveMode removeMode) {
+    public final boolean dropCharge(AuraRemoveMode removeMode) {
         return aura.dropCharge(removeMode);
     }
 

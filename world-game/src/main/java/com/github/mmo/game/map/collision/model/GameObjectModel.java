@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.mmo.common.Logs;
-import com.github.mmo.game.map.collision.*;
+import com.github.mmo.game.map.collision.VMapManager;
 import com.github.mmo.game.map.enums.ModelIgnoreFlags;
 import com.github.mmo.game.map.model.AreaInfo;
 import com.github.mmo.game.phasing.PhaseShift;
@@ -226,7 +226,7 @@ public class GameObjectModel {
         return isWmo;
     }
 
-        public final byte getNameSetId() {
+    public final byte getNameSetId() {
         return modelOwner.getNameSetId();
     }
 

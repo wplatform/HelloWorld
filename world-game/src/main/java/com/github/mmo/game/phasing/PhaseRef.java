@@ -1,23 +1,21 @@
 package com.github.mmo.game.phasing;
 
-import com.github.mmo.game.condition.*;
-import java.util.*;
+import com.github.mmo.game.condition.Condition;
 
-public class PhaseRef
-{
-	public PhaseFlag flags = PhaseFlag.NONE;
-	public int references;
-	public ArrayList<Condition> areaConditions;
+import java.util.ArrayList;
 
-	public PhaseRef(PhaseFlag flags, ArrayList<Condition> conditions)
-	{
-		this.flags = flags;
-		references = 0;
-		areaConditions = conditions;
-	}
+public class PhaseRef {
+    public PhaseFlag flags = PhaseFlag.NONE;
+    public int references;
+    public ArrayList<Condition> areaConditions;
 
-	public final boolean isPersonal()
-	{
-		return (flags.value & PhaseFlag.PERSONAL.value) != 0;
-	}
+    public PhaseRef(PhaseFlag flags, ArrayList<Condition> conditions) {
+        this.flags = flags;
+        references = 0;
+        areaConditions = conditions;
+    }
+
+    public final boolean isPersonal() {
+        return (flags.value & PhaseFlag.PERSONAL.value) != 0;
+    }
 }

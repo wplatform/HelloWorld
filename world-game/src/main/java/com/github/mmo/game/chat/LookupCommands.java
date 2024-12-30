@@ -1,10 +1,10 @@
 package com.github.mmo.game.chat;
 
 
-
+import com.github.mmo.game.entity.ObjectGuid;
 import game.WorldConfig;
 import game.datastorage.CliDB;
-import com.github.mmo.game.entity.ObjectGuid;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class LookupCommands {
     private static final int maxResults = 50;
 
@@ -953,7 +953,7 @@ class LookupCommands {
             return handleLookupPlayerIpCommand(handler, ip, -1);
         }
 
-                private static boolean handleLookupPlayerIpCommand(CommandHandler handler, String ip, int limit) {
+        private static boolean handleLookupPlayerIpCommand(CommandHandler handler, String ip, int limit) {
             var target = handler.getSelectedPlayer();
 
             if (ip.isEmpty()) {
@@ -977,7 +977,7 @@ class LookupCommands {
             return handleLookupPlayerAccountCommand(handler, account, -1);
         }
 
-                private static boolean handleLookupPlayerAccountCommand(CommandHandler handler, String account, int limit) {
+        private static boolean handleLookupPlayerAccountCommand(CommandHandler handler, String account, int limit) {
             var stmt = DB.Login.GetPreparedStatement(LoginStatements.SEL_ACCOUNT_LIST_BY_NAME);
             stmt.AddValue(0, account);
 
@@ -990,7 +990,7 @@ class LookupCommands {
             return handleLookupPlayerEmailCommand(handler, email, -1);
         }
 
-                private static boolean handleLookupPlayerEmailCommand(CommandHandler handler, String email, int limit) {
+        private static boolean handleLookupPlayerEmailCommand(CommandHandler handler, String email, int limit) {
             var stmt = DB.Login.GetPreparedStatement(LoginStatements.SEL_ACCOUNT_LIST_BY_EMAIL);
             stmt.AddValue(0, email);
 

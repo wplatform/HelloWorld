@@ -1,34 +1,30 @@
 package com.github.mmo.game.networking.packet.reputation;
 
-import com.github.mmo.game.networking.*;
-final class FactionStandingData
-{
-	public FactionStandingData()
-	{
-	}
+import com.github.mmo.game.networking.WorldPacket;
 
-	public FactionStandingData(int index, int standing)
-	{
-		index = index;
-		standing = standing;
-	}
+final class FactionStandingData {
+    private final int index;
+    private final int standing;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(index);
-		data.writeInt32(standing);
-	}
+    public FactionStandingData() {
+    }
 
-	private final int index;
-	private final int standing;
+    public FactionStandingData(int index, int standing) {
+        index = index;
+        standing = standing;
+    }
 
-	public FactionStandingData clone()
-	{
-		FactionStandingData varCopy = new FactionStandingData();
+    public void write(WorldPacket data) {
+        data.writeInt32(index);
+        data.writeInt32(standing);
+    }
 
-		varCopy.index = this.index;
-		varCopy.standing = this.standing;
+    public FactionStandingData clone() {
+        FactionStandingData varCopy = new FactionStandingData();
 
-		return varCopy;
-	}
+        varCopy.index = this.index;
+        varCopy.standing = this.standing;
+
+        return varCopy;
+    }
 }

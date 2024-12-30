@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.combat;
 
 
-public class CancelAutoRepeat extends ServerPacket
-{
-	public ObjectGuid guid = ObjectGuid.EMPTY;
-	public CancelAutoRepeat()
-	{
-		super(ServerOpcode.CancelAutoRepeat);
-	}
+public class CancelAutoRepeat extends ServerPacket {
+    public ObjectGuid guid = ObjectGuid.EMPTY;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(guid);
-	}
+    public CancelAutoRepeat() {
+        super(ServerOpcode.CancelAutoRepeat);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(guid);
+    }
 }

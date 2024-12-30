@@ -1,9 +1,12 @@
 package com.github.mmo.game.networking.packet.pet;
 
 
-import java.util.*;import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.ServerPacket;
+
+import java.util.ArrayList;
+
 public class PetLearnedSpells extends ServerPacket {
-   
+
     public ArrayList<Integer> spells = new ArrayList<>();
 
     public PetLearnedSpells() {

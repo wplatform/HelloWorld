@@ -1,8 +1,8 @@
 package com.github.mmo.game.networking.packet.battlenet;
 
 
-
 import com.github.mmo.game.networking.ServerPacket;
+
 public class Response extends ServerPacket {
     public BattlenetRpcErrorCode bnetStatus = BattlenetRpcErrorCode.Ok;
     public methodCall method = new methodCall();

@@ -1,25 +1,22 @@
 package com.github.mmo.game.networking.packet.clientconfig;
 
 
-public class AccountDataTimes extends ServerPacket
-{
-	public ObjectGuid playerGuid = ObjectGuid.EMPTY;
-	public long serverTime;
-	public long[] accountTimes = new long[AccountDataTypes.max.getValue()];
-	public AccountDataTimes()
-	{
-		super(ServerOpcode.AccountDataTimes);
-	}
+public class AccountDataTimes extends ServerPacket {
+    public ObjectGuid playerGuid = ObjectGuid.EMPTY;
+    public long serverTime;
+    public long[] accountTimes = new long[AccountDataTypes.max.getValue()];
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(playerGuid);
-		this.writeInt64(serverTime);
+    public AccountDataTimes() {
+        super(ServerOpcode.AccountDataTimes);
+    }
 
-		for (var accounttime : accountTimes)
-		{
-			this.writeInt64(accounttime);
-		}
-	}
+    @Override
+    public void write() {
+        this.writeGuid(playerGuid);
+        this.writeInt64(serverTime);
+
+        for (var accounttime : accountTimes) {
+            this.writeInt64(accounttime);
+        }
+    }
 }

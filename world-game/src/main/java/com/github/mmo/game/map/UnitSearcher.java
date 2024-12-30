@@ -8,71 +8,60 @@ import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.interfaces.*;
 
 
-public class UnitSearcher implements IGridNotifierPlayer, IGridNotifierCreature
-{
-	private final PhaseShift phaseShift;
-	private final ICheck<unit> check;
-	private Unit object;
+public class UnitSearcher implements IGridNotifierPlayer, IGridNotifierCreature {
+    private final PhaseShift phaseShift;
+    private final ICheck<unit> check;
+    private Unit object;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public UnitSearcher(WorldObject searcher, ICheck<unit> check, GridType gridType) {
+        phaseShift = searcher.getPhaseShift();
+        check = check;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public UnitSearcher(WorldObject searcher, ICheck<unit> check, GridType gridType)
-	{
-		phaseShift = searcher.getPhaseShift();
-		check = check;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<Creature> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var creature = objs.get(i);
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-			if (!creature.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<Creature> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var creature = objs.get(i);
 
-			if (check.invoke(creature))
-			{
-				object = creature;
+            if (!creature.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-				return;
-			}
-		}
-	}
+            if (check.invoke(creature)) {
+                object = creature;
 
-	public final void visit(list<Player> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var player = objs.get(i);
+                return;
+            }
+        }
+    }
 
-			if (!player.inSamePhase(phaseShift))
-			{
-				continue;
-			}
+    public final void visit(list<Player> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var player = objs.get(i);
 
-			if (check.invoke(player))
-			{
-				object = player;
+            if (!player.inSamePhase(phaseShift)) {
+                continue;
+            }
 
-				return;
-			}
-		}
-	}
+            if (check.invoke(player)) {
+                object = player;
 
-	public final Unit getTarget()
-	{
-		return object;
-	}
+                return;
+            }
+        }
+    }
+
+    public final Unit getTarget() {
+        return object;
+    }
+
+
 }

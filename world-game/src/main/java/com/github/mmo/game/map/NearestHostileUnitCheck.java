@@ -4,50 +4,42 @@ package com.github.mmo.game.map;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.unit.Unit;
 
-public class NearestHostileUnitCheck implements ICheck<unit>
-{
-	private final Creature me;
-	private final boolean playerOnly;
-	private float range;
+public class NearestHostileUnitCheck implements ICheck<unit> {
+    private final Creature me;
+    private final boolean playerOnly;
+    private float range;
 
 
-	public NearestHostileUnitCheck(Creature creature, float dist)
-	{
-		this(creature, dist, false);
-	}
+    public NearestHostileUnitCheck(Creature creature, float dist) {
+        this(creature, dist, false);
+    }
 
-	public NearestHostileUnitCheck(Creature creature)
-	{
-		this(creature, 0, false);
-	}
+    public NearestHostileUnitCheck(Creature creature) {
+        this(creature, 0, false);
+    }
 
-	public NearestHostileUnitCheck(Creature creature, float dist, boolean playerOnly)
-	{
-		me = creature;
-		playerOnly = playerOnly;
+    public NearestHostileUnitCheck(Creature creature, float dist, boolean playerOnly) {
+        me = creature;
+        playerOnly = playerOnly;
 
-		range = (dist == 0 ? 9999 : dist);
-	}
+        range = (dist == 0 ? 9999 : dist);
+    }
 
-	public final boolean invoke(Unit u)
-	{
-		if (!me.isWithinDist(u, range))
-		{
-			return false;
-		}
+    public final boolean invoke(Unit u) {
+        if (!me.isWithinDist(u, range)) {
+            return false;
+        }
 
-		if (!me.isValidAttackTarget(u))
-		{
-			return false;
-		}
+        if (!me.isValidAttackTarget(u)) {
+            return false;
+        }
 
-		if (playerOnly && !u.isTypeId(TypeId.PLAYER))
-		{
-			return false;
-		}
+        if (playerOnly && !u.isTypeId(TypeId.PLAYER)) {
+            return false;
+        }
 
-		range = me.getDistance(u); // use found unit range as new range limit for next check
+        range = me.getDistance(u); // use found unit range as new range limit for next check
 
-		return true;
-	}
+        return true;
+    }
 }

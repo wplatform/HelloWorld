@@ -4,6 +4,7 @@ import com.github.mmo.world.map.enums.SpawnObjectType;
 import lombok.Data;
 
 import java.time.Instant;
+
 @Data
 public class RespawnInfo {
 

@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.query;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class CorpseLocation extends ServerPacket {
     public ObjectGuid player = ObjectGuid.EMPTY;

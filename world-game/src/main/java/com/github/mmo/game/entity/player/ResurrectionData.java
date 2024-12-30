@@ -1,4 +1,6 @@
-package com.github.mmo.game.entity.player;public class ResurrectionData {
+package com.github.mmo.game.entity.player;
+
+public class ResurrectionData {
     private ObjectGuid guid = ObjectGuid.EMPTY;
     private Worldlocation location = new worldLocation();
 

@@ -1,7 +1,10 @@
 package com.github.mmo.game.scripting.registers;
 
-import com.github.mmo.game.scripting.interfaces.*;
-import com.github.mmo.game.scripting.*;public class CreatureScriptRegister implements IScriptRegister {
+import com.github.mmo.game.scripting.CreatureScriptAttribute;
+import com.github.mmo.game.scripting.ScriptAttribute;
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
+
+public class CreatureScriptRegister implements IScriptRegister {
     public final Class getAttributeType() {
         return CreatureScriptAttribute.class;
     }

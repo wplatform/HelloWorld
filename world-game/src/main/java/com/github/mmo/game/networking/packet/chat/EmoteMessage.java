@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.chat;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;public class EmoteMessage extends ServerPacket {
+import java.util.ArrayList;
+
+public class EmoteMessage extends ServerPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;
 
     public int emoteID;

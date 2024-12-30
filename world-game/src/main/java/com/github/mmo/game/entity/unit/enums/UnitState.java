@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter(onMethod = @__({@Override}))
 @RequiredArgsConstructor
-public enum  UnitState implements EnumFlag.FlagValue {
+public enum UnitState implements EnumFlag.FlagValue {
     DIED(0x00000001), // player has fake death aura
     MELEE_ATTACKING(0x00000002), // player is melee attacking someone
     CHARMED(0x00000004), // having any kind of charm aura on self

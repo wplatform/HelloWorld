@@ -6,50 +6,66 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.spell.*;
 
-public interface IAuraScript extends IBaseSpellScript
-{
-	Aura getAura();
+public interface IAuraScript extends IBaseSpellScript {
+    Aura getAura();
 
-	Difficulty getCastDifficulty();
-	Unit getCaster();
-	ObjectGuid getCasterGUID();
+    Difficulty getCastDifficulty();
 
-	int getDuration();
-	GameObject getGObjCaster();
-	int getId();
+    Unit getCaster();
 
-	int getMaxDuration();
-	void setMaxDuration(int value);
-	WorldObject getOwner();
-	SpellInfo getSpellInfo();
+    ObjectGuid getCasterGUID();
 
-	byte getStackAmount();
+    int getDuration();
 
-	Unit getTarget();
+    void setDuration(int duration);
 
-	AuraApplication getTargetApplication();
-	Unit getOwnerAsUnit();
-	boolean isExpired();
+    GameObject getGObjCaster();
 
-	AuraEffect getEffect(byte effIndex);
-	SpellEffectInfo getEffectInfo(int effIndex);
+    int getId();
 
-	boolean hasEffect(byte effIndex);
+    int getMaxDuration();
 
+    void setMaxDuration(int value);
 
-	boolean modStackAmount(int num);
-	boolean modStackAmount(int num, AuraRemoveMode removeMode);
-	void preventDefaultAction();
+    WorldObject getOwner();
 
-	void remove();
-	void remove(AuraRemoveMode removeMode);
+    SpellInfo getSpellInfo();
 
-	void setDuration(int duration);
-	void setDuration(int duration, boolean withMods);
-	void _FinishScriptCall();
-	boolean _IsDefaultActionPrevented();
-	boolean _Load(Aura aura);
+    byte getStackAmount();
 
-	void _PrepareScriptCall(AuraScriptHookType hookType);
-	void _PrepareScriptCall(AuraScriptHookType hookType, AuraApplication aurApp);
+    Unit getTarget();
+
+    AuraApplication getTargetApplication();
+
+    Unit getOwnerAsUnit();
+
+    boolean isExpired();
+
+    AuraEffect getEffect(byte effIndex);
+
+    SpellEffectInfo getEffectInfo(int effIndex);
+
+    boolean hasEffect(byte effIndex);
+
+    boolean modStackAmount(int num);
+
+    boolean modStackAmount(int num, AuraRemoveMode removeMode);
+
+    void preventDefaultAction();
+
+    void remove();
+
+    void remove(AuraRemoveMode removeMode);
+
+    void setDuration(int duration, boolean withMods);
+
+    void _FinishScriptCall();
+
+    boolean _IsDefaultActionPrevented();
+
+    boolean _Load(Aura aura);
+
+    void _PrepareScriptCall(AuraScriptHookType hookType);
+
+    void _PrepareScriptCall(AuraScriptHookType hookType, AuraApplication aurApp);
 }

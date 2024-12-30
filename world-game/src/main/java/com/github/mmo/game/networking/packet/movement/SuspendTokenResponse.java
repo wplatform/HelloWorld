@@ -1,17 +1,17 @@
 package com.github.mmo.game.networking.packet.movement;
 
-import com.github.mmo.game.networking.*;
-class SuspendTokenResponse extends ClientPacket
-{
-	public int sequenceIndex;
-	public SuspendTokenResponse(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-		sequenceIndex = this.readUInt();
-	}
+class SuspendTokenResponse extends ClientPacket {
+    public int sequenceIndex;
+
+    public SuspendTokenResponse(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        sequenceIndex = this.readUInt();
+    }
 }

@@ -1,29 +1,26 @@
 package com.github.mmo.game.networking.packet.npc;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class VendorInventory extends ServerPacket
-{
-	public byte reason = 0;
-	public ArrayList<VendorItemPkt> items = new ArrayList<>();
-	public ObjectGuid vendor = ObjectGuid.EMPTY;
-	public VendorInventory()
-	{
-		super(ServerOpcode.VendorInventory, ConnectionType.instance);
-	}
+public class VendorInventory extends ServerPacket {
+    public byte reason = 0;
+    public ArrayList<VendorItemPkt> items = new ArrayList<>();
+    public ObjectGuid vendor = ObjectGuid.EMPTY;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(vendor);
-		this.writeInt8(reason);
-		this.writeInt32(items.size());
+    public VendorInventory() {
+        super(ServerOpcode.VendorInventory, ConnectionType.instance);
+    }
 
-		for (var item : items)
-		{
-			item.write(this);
-		}
-	}
+    @Override
+    public void write() {
+        this.writeGuid(vendor);
+        this.writeInt8(reason);
+        this.writeInt32(items.size());
+
+        for (var item : items) {
+            item.write(this);
+        }
+    }
 }

@@ -1,105 +1,92 @@
 package com.github.mmo.game.map;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import java.util.*;
 
+public class TransportAnimation {
+    private final HashMap<Integer, TransportAnimationRecord> path = new HashMap<Integer, TransportAnimationRecord>();
+    private final HashMap<Integer, TransportRotationRecord> rotations = new HashMap<Integer, TransportRotationRecord>();
+    private ArrayList<Integer> path;
+    private ArrayList<Integer> rotation;
+    private int totalTime;
 
-public class TransportAnimation
-{
-	private ArrayList<Integer> path;
-	private ArrayList<Integer> rotation;
-	private int totalTime;
-	public final int getTotalTime()
-	{
-		return totalTime;
-	}
-	public final void setTotalTime(int value)
-	{
-		totalTime = value;
-	}
-	private final HashMap<Integer, TransportAnimationRecord> path = new HashMap<Integer, TransportAnimationRecord>();
-	public final HashMap<Integer, TransportAnimationRecord> getPath()
-	{
-		return path;
-	}
-	private final HashMap<Integer, TransportRotationRecord> rotations = new HashMap<Integer, TransportRotationRecord>();
-	public final HashMap<Integer, TransportRotationRecord> getRotations()
-	{
-		return rotations;
-	}
+    public final int getTotalTime() {
+        return totalTime;
+    }
 
-	public final TransportAnimationRecord getPrevAnimNode(int time)
-	{
-		if (getPath().isEmpty())
-		{
-			return null;
-		}
+    public final void setTotalTime(int value) {
+        totalTime = value;
+    }
 
-		if (path == null)
-		{
-			path = getPath().keySet().ToList();
-		}
+    public final HashMap<Integer, TransportAnimationRecord> getPath() {
+        return path;
+    }
 
-		var reqIndex = path.indexOf(time) - 1;
+    public final HashMap<Integer, TransportRotationRecord> getRotations() {
+        return rotations;
+    }
 
-		if (reqIndex != -2 && reqIndex != -1)
-		{
-			return getPath().get(path.get(reqIndex));
-		}
+    public final TransportAnimationRecord getPrevAnimNode(int time) {
+        if (getPath().isEmpty()) {
+            return null;
+        }
 
-		return getPath().LastOrDefault().value;
-	}
+        if (path == null) {
+            path = getPath().keySet().ToList();
+        }
 
-	public final TransportRotationRecord getPrevAnimRotation(int time)
-	{
-		if (getRotations().isEmpty())
-		{
-			return null;
-		}
+        var reqIndex = path.indexOf(time) - 1;
 
-		if (rotation == null)
-		{
-			rotation = getRotations().keySet().ToList();
-		}
+        if (reqIndex != -2 && reqIndex != -1) {
+            return getPath().get(path.get(reqIndex));
+        }
 
-		var reqIndex = rotation.indexOf(time) - 1; // indexof returns -1 if index is not found, - 1 from that is -2
+        return getPath().LastOrDefault().value;
+    }
 
-		if (reqIndex != -2 && reqIndex != -1)
-		{
-			return getRotations().get(rotation.get(reqIndex));
-		}
+    public final TransportRotationRecord getPrevAnimRotation(int time) {
+        if (getRotations().isEmpty()) {
+            return null;
+        }
 
-		return getRotations().LastOrDefault().value;
-	}
+        if (rotation == null) {
+            rotation = getRotations().keySet().ToList();
+        }
 
-	public final TransportAnimationRecord getNextAnimNode(int time)
-	{
-		if (getPath().isEmpty())
-		{
-			return null;
-		}
+        var reqIndex = rotation.indexOf(time) - 1; // indexof returns -1 if index is not found, - 1 from that is -2
 
-		if (getPath().containsKey(time) && (var record = getPath().get(time)) == var record)
-		{
-			return record;
-		}
+        if (reqIndex != -2 && reqIndex != -1) {
+            return getRotations().get(rotation.get(reqIndex));
+        }
 
-		return getPath().FirstOrDefault().value;
-	}
+        return getRotations().LastOrDefault().value;
+    }
 
-	public final TransportRotationRecord getNextAnimRotation(int time)
-	{
-		if (getRotations().isEmpty())
-		{
-			return null;
-		}
+    public final TransportAnimationRecord getNextAnimNode(int time) {
+        if (getPath().isEmpty()) {
+            return null;
+        }
 
-		if (getRotations().containsKey(time) && (var record = getRotations().get(time)) == var record)
-		{
-			return record;
-		}
+        if (getPath().containsKey(time) && (var record = getPath().get(time)) ==var record)
+        {
+            return record;
+        }
 
-		return getRotations().FirstOrDefault().value;
-	}
+        return getPath().FirstOrDefault().value;
+    }
+
+    public final TransportRotationRecord getNextAnimRotation(int time) {
+        if (getRotations().isEmpty()) {
+            return null;
+        }
+
+        if (getRotations().containsKey(time) && (var record = getRotations().get(time)) ==var record)
+        {
+            return record;
+        }
+
+        return getRotations().FirstOrDefault().value;
+    }
 }

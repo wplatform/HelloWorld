@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.item;
 
-import com.github.mmo.game.networking.*;class SortBags extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class SortBags extends ClientPacket {
     public SortBags(WorldPacket packet) {
         super(packet);
     }

@@ -1,8 +1,10 @@
 package game;
 
 
+import java.util.ArrayList;
+import java.util.Comparator;
 
-import java.util.*;class AuctionsResultBuilder<T> {
+class AuctionsResultBuilder<T> {
 
     private final int offset;
     private final Comparator<T> sorter;

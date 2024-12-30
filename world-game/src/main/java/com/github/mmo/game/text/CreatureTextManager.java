@@ -1,18 +1,19 @@
 package game;
 
 
-
-
-import com.github.mmo.game.chat.*;
-
+import com.github.mmo.game.chat.MessageBuilder;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.map.*;
+import com.github.mmo.game.map.PlayerDistWorker;
 import com.github.mmo.game.map.grid.Cell;
 
-import java.util.*;public final class CreatureTextManager  {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+
+public final class CreatureTextManager {
 
     private final HashMap<Integer, MultiMap<Byte, CreatureTextEntry>> textMap = new HashMap<Integer, MultiMap<Byte, CreatureTextEntry>>();
     private final HashMap<CreatureTextId, CreatureTextLocale> localeTextMap = new HashMap<CreatureTextId, CreatureTextLocale>();
@@ -60,7 +61,7 @@ import java.util.*;public final class CreatureTextManager  {
                     if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                         DB.World.execute(String.format("UPDATE creature_text SET Sound = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                     } else {
-                        Log.outError(LogFilter.Sql, String.format("GossipManager: Entry %1$s, Group %2$s in table `creature_texts` has Sound %3$s but sound does not exist.", temp.creatureId, temp.groupId, temp.sound));
+                        Logs.SQL.error(String.format("GossipManager: Entry %1$s, Group %2$s in table `creature_texts` has Sound %3$s but sound does not exist.", temp.creatureId, temp.groupId, temp.sound));
                     }
 
                     temp.sound = 0;
@@ -71,7 +72,7 @@ import java.util.*;public final class CreatureTextManager  {
                 if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                     DB.World.execute(String.format("UPDATE creature_text SET soundPlayType = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                 } else {
-                    Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_text` has PlayType %3$s but does not exist.", temp.creatureId, temp.groupId, temp.soundPlayType));
+                    Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_text` has PlayType %3$s but does not exist.", temp.creatureId, temp.groupId, temp.soundPlayType));
                 }
 
                 temp.soundPlayType = SoundKitPlayType.NORMAL;
@@ -81,7 +82,7 @@ import java.util.*;public final class CreatureTextManager  {
                 if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                     DB.World.execute(String.format("UPDATE creature_text SET language = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                 } else {
-                    Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` using Language %3$s but Language does not exist.", temp.creatureId, temp.groupId, temp.lang));
+                    Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` using Language %3$s but Language does not exist.", temp.creatureId, temp.groupId, temp.lang));
                 }
 
                 temp.lang = language.Universal;
@@ -91,7 +92,7 @@ import java.util.*;public final class CreatureTextManager  {
                 if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                     DB.World.execute(String.format("UPDATE creature_text SET type = %1$s WHERE creatureID = %2$s AND groupID = %3$s", ChatMsg.Say, temp.creatureId, temp.groupId));
                 } else {
-                    Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` has Type %3$s but this Chat Type does not exist.", temp.creatureId, temp.groupId, temp.type));
+                    Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` has Type %3$s but this Chat Type does not exist.", temp.creatureId, temp.groupId, temp.type));
                 }
 
                 temp.type = ChatMsg.Say;
@@ -102,7 +103,7 @@ import java.util.*;public final class CreatureTextManager  {
                     if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                         DB.World.execute(String.format("UPDATE creature_text SET emote = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                     } else {
-                        Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` has Emote %3$s but emote does not exist.", temp.creatureId, temp.groupId, temp.emote));
+                        Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s in table `creature_texts` has Emote %3$s but emote does not exist.", temp.creatureId, temp.groupId, temp.emote));
                     }
 
                     temp.emote = emote.OneshotNone;
@@ -114,7 +115,7 @@ import java.util.*;public final class CreatureTextManager  {
                     if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                         DB.World.execute(String.format("UPDATE creature_text SET broadcastTextId = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                     } else {
-                        Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s, Id %3$s in table `creature_texts` has non-existing or incompatible BroadcastTextId %4$s.", temp.creatureId, temp.groupId, temp.id, temp.broadcastTextId));
+                        Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s, Id %3$s in table `creature_texts` has non-existing or incompatible BroadcastTextId %4$s.", temp.creatureId, temp.groupId, temp.id, temp.broadcastTextId));
                     }
 
                     temp.broadcastTextId = 0;
@@ -125,7 +126,7 @@ import java.util.*;public final class CreatureTextManager  {
                 if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                     DB.World.execute(String.format("UPDATE creature_text SET textRange = 0 WHERE creatureID = %1$s AND groupID = %2$s", temp.creatureId, temp.groupId));
                 } else {
-                    Log.outError(LogFilter.Sql, String.format("CreatureTextMgr: Entry %1$s, Group %2$s, Id %3$s in table `creature_text` has incorrect TextRange %4$s.", temp.creatureId, temp.groupId, temp.id, temp.textRange));
+                    Logs.SQL.error(String.format("CreatureTextMgr: Entry %1$s, Group %2$s, Id %3$s in table `creature_text` has incorrect TextRange %4$s.", temp.creatureId, temp.groupId, temp.id, temp.textRange));
                 }
 
                 temp.textRange = CreatureTextRange.NORMAL;
@@ -215,7 +216,7 @@ import java.util.*;public final class CreatureTextManager  {
         return sendChat(source, textGroup, null, ChatMsg.Addon, language.Addon, CreatureTextRange.NORMAL, 0, SoundKitPlayType.NORMAL, TeamFaction.other, false, null);
     }
 
-        public int sendChat(Creature source, byte textGroup, WorldObject whisperTarget, ChatMsg msgType, Language language, CreatureTextRange range, int sound, SoundKitPlayType playType, TeamFaction team, boolean gmOnly, Player srcPlr) {
+    public int sendChat(Creature source, byte textGroup, WorldObject whisperTarget, ChatMsg msgType, Language language, CreatureTextRange range, int sound, SoundKitPlayType playType, TeamFaction team, boolean gmOnly, Player srcPlr) {
         if (source == null) {
             return 0;
         }
@@ -223,7 +224,7 @@ import java.util.*;public final class CreatureTextManager  {
         var sList = textMap.get(source.getEntry());
 
         if (sList == null) {
-            Log.outError(LogFilter.Sql, "GossipManager: Could not find Text for CREATURE({0}) Entry {1} in 'creature_text' table. Ignoring.", source.getName(), source.getEntry());
+            Logs.SQL.error("GossipManager: Could not find Text for CREATURE({0}) Entry {1} in 'creature_text' table. Ignoring.", source.getName(), source.getEntry());
 
             return 0;
         }
@@ -348,7 +349,7 @@ import java.util.*;public final class CreatureTextManager  {
         sendSound(source, sound, msgType, null, CreatureTextRange.NORMAL, TeamFaction.other, false, 0, SoundKitPlayType.NORMAL);
     }
 
-        public void sendSound(Creature source, int sound, ChatMsg msgType, WorldObject whisperTarget, CreatureTextRange range, TeamFaction team, boolean gmOnly, int keyBroadcastTextId, SoundKitPlayType playType) {
+    public void sendSound(Creature source, int sound, ChatMsg msgType, WorldObject whisperTarget, CreatureTextRange range, TeamFaction team, boolean gmOnly, int keyBroadcastTextId, SoundKitPlayType playType) {
         if (sound == 0 || !source) {
             return;
         }
@@ -396,7 +397,7 @@ import java.util.*;public final class CreatureTextManager  {
         return getLocalizedChatString(entry, gender, textGroup, id, locale.enUS);
     }
 
-        public String getLocalizedChatString(int entry, Gender gender, byte textGroup, int id, Locale locale) {
+    public String getLocalizedChatString(int entry, Gender gender, byte textGroup, int id, Locale locale) {
         var multiMap = textMap.get(entry);
 
         if (multiMap == null) {
@@ -466,7 +467,7 @@ import java.util.*;public final class CreatureTextManager  {
         sendChatPacket(source, builder, msgType, null, CreatureTextRange.NORMAL, TeamFaction.other, false);
     }
 
-        public void sendChatPacket(WorldObject source, MessageBuilder builder, ChatMsg msgType, WorldObject whisperTarget, CreatureTextRange range, TeamFaction team, boolean gmOnly) {
+    public void sendChatPacket(WorldObject source, MessageBuilder builder, ChatMsg msgType, WorldObject whisperTarget, CreatureTextRange range, TeamFaction team, boolean gmOnly) {
         if (source == null) {
             return;
         }

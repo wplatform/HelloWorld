@@ -1,12 +1,12 @@
 package com.github.mmo.game.networking.packet.hotfix;
 
 
-
-import game.datastorage.HotfixRecord;
 import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.ArrayList;class HotfixConnect extends ServerPacket {
+import java.util.ArrayList;
+
+class HotfixConnect extends ServerPacket {
     public ArrayList<HotfixData> hotfixes = new ArrayList<>();
     public byteBuffer hotfixContent = new byteBuffer();
 

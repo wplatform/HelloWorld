@@ -4,508 +4,403 @@ package com.github.mmo.game.combat;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
 
-import java.util.*;
+import java.util.HashMap;
 
 
-public class CombatManager
-{
-	private final Unit owner;
-	private final HashMap<ObjectGuid, CombatReference> pveRefs = new HashMap<ObjectGuid, CombatReference>();
-	private final HashMap<ObjectGuid, PvPCombatReference> pvpRefs = new HashMap<ObjectGuid, PvPCombatReference>();
+public class CombatManager {
+    private final Unit owner;
+    private final HashMap<ObjectGuid, CombatReference> pveRefs = new HashMap<ObjectGuid, CombatReference>();
+    private final HashMap<ObjectGuid, PvPCombatReference> pvpRefs = new HashMap<ObjectGuid, PvPCombatReference>();
 
-	public final Unit getOwner()
-	{
-		return owner;
-	}
+    public CombatManager(Unit owner) {
+        owner = owner;
+    }
 
-	public final boolean getHasCombat()
-	{
-		return hasPvECombat() || hasPvPCombat();
-	}
+    public static boolean canBeginCombat(Unit a, Unit b) {
+        // Checks combat validity before initial reference creation.
+        // For the combat to be valid...
+        // ...the two units need to be different
+        if (a == b) {
+            return false;
+        }
 
-	public final HashMap<ObjectGuid, CombatReference> getPvECombatRefs()
-	{
-		return pveRefs;
-	}
+        // ...the two units need to be in the world
+        if (!a.isInWorld() || !b.isInWorld()) {
+            return false;
+        }
 
-	public final HashMap<ObjectGuid, PvPCombatReference> getPvPCombatRefs()
-	{
-		return pvpRefs;
-	}
+        // ...the two units need to both be alive
+        if (!a.isAlive() || !b.isAlive()) {
+            return false;
+        }
 
-	public CombatManager(Unit owner)
-	{
-		owner = owner;
-	}
+        // ...the two units need to be on the same map
+        if (a.getMap() != b.getMap()) {
+            return false;
+        }
 
-	public static boolean canBeginCombat(Unit a, Unit b)
-	{
-		// Checks combat validity before initial reference creation.
-		// For the combat to be valid...
-		// ...the two units need to be different
-		if (a == b)
-		{
-			return false;
-		}
+        // ...the two units need to be in the same phase
+        if (!WorldObject.inSamePhase(a, b)) {
+            return false;
+        }
 
-		// ...the two units need to be in the world
-		if (!a.isInWorld() || !b.isInWorld())
-		{
-			return false;
-		}
+        if (a.hasUnitState(UnitState.Evade) || b.hasUnitState(UnitState.Evade)) {
+            return false;
+        }
 
-		// ...the two units need to both be alive
-		if (!a.isAlive() || !b.isAlive())
-		{
-			return false;
-		}
+        if (a.hasUnitState(UnitState.InFlight) || b.hasUnitState(UnitState.InFlight)) {
+            return false;
+        }
 
-		// ...the two units need to be on the same map
-		if (a.getMap() != b.getMap())
-		{
-			return false;
-		}
+        // ... both units must be allowed to enter combat
+        if (a.isCombatDisallowed() || b.isCombatDisallowed()) {
+            return false;
+        }
 
-		// ...the two units need to be in the same phase
-		if (!WorldObject.inSamePhase(a, b))
-		{
-			return false;
-		}
+        if (a.isFriendlyTo(b) || b.isFriendlyTo(a)) {
+            return false;
+        }
 
-		if (a.hasUnitState(UnitState.Evade) || b.hasUnitState(UnitState.Evade))
-		{
-			return false;
-		}
+        var playerA = a.getCharmerOrOwnerPlayerOrPlayerItself();
+        var playerB = b.getCharmerOrOwnerPlayerOrPlayerItself();
 
-		if (a.hasUnitState(UnitState.InFlight) || b.hasUnitState(UnitState.InFlight))
-		{
-			return false;
-		}
+        // ...neither of the two units must be (owned by) a player with .gm on
+        if ((playerA && playerA.isGameMaster()) || (playerB && playerB.isGameMaster())) {
+            return false;
+        }
 
-		// ... both units must be allowed to enter combat
-		if (a.isCombatDisallowed() || b.isCombatDisallowed())
-		{
-			return false;
-		}
+        return true;
+    }
 
-		if (a.isFriendlyTo(b) || b.isFriendlyTo(a))
-		{
-			return false;
-		}
+    public static void notifyAICombat(Unit me, Unit other) {
+        var ai = me.getAI();
 
-		var playerA = a.getCharmerOrOwnerPlayerOrPlayerItself();
-		var playerB = b.getCharmerOrOwnerPlayerOrPlayerItself();
+        if (ai != null) {
+            ai.justEnteredCombat(other);
+        }
+    }
 
-		// ...neither of the two units must be (owned by) a player with .gm on
-		if ((playerA && playerA.isGameMaster()) || (playerB && playerB.isGameMaster()))
-		{
-			return false;
-		}
+    public final Unit getOwner() {
+        return owner;
+    }
 
-		return true;
-	}
+    public final boolean getHasCombat() {
+        return hasPvECombat() || hasPvPCombat();
+    }
 
-	public final void update(int tdiff)
-	{
-		for (var pair : pvpRefs.ToList())
-		{
-			var refe = pair.value;
+    public final HashMap<ObjectGuid, CombatReference> getPvECombatRefs() {
+        return pveRefs;
+    }
 
-			if (refe.first == owner && !refe.update(tdiff)) // only update if we're the first unit involved (otherwise double decrement)
-			{
-				pvpRefs.remove(pair.key);
-				refe.endCombat(); // this will remove it from the other side
-			}
-		}
-	}
+    public final HashMap<ObjectGuid, PvPCombatReference> getPvPCombatRefs() {
+        return pvpRefs;
+    }
 
-	public final boolean hasPvECombat()
-	{
-		synchronized (pveRefs)
-		{
+    public final void update(int tdiff) {
+        for (var pair : pvpRefs.ToList()) {
+            var refe = pair.value;
+
+            if (refe.first == owner && !refe.update(tdiff)) // only update if we're the first unit involved (otherwise double decrement)
+            {
+                pvpRefs.remove(pair.key);
+                refe.endCombat(); // this will remove it from the other side
+            }
+        }
+    }
+
+    public final boolean hasPvECombat() {
+        synchronized (pveRefs) {
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-			for (var(_, refe) : pveRefs)
-			{
-				if (!refe.isSuppressedFor(owner))
-				{
-					return true;
-				}
-			}
-		}
+            for (var(_, refe) : pveRefs) {
+                if (!refe.isSuppressedFor(owner)) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final boolean hasPvECombatWithPlayers()
-	{
-		synchronized (pveRefs)
-		{
-			for (var reference : pveRefs.entrySet())
-			{
-				if (!reference.getValue().isSuppressedFor(owner) && reference.getValue().getOther(owner).IsPlayer)
-				{
-					return true;
-				}
-			}
-		}
+    public final boolean hasPvECombatWithPlayers() {
+        synchronized (pveRefs) {
+            for (var reference : pveRefs.entrySet()) {
+                if (!reference.getValue().isSuppressedFor(owner) && reference.getValue().getOther(owner).IsPlayer) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final boolean hasPvPCombat()
-	{
-		synchronized (pveRefs)
-		{
-			for (var pair : pvpRefs.entrySet())
-			{
-				if (!pair.getValue().isSuppressedFor(owner))
-				{
-					return true;
-				}
-			}
-		}
+    public final boolean hasPvPCombat() {
+        synchronized (pveRefs) {
+            for (var pair : pvpRefs.entrySet()) {
+                if (!pair.getValue().isSuppressedFor(owner)) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public final Unit getAnyTarget()
-	{
-		synchronized (pveRefs)
-		{
-			for (var pair : pveRefs.entrySet())
-			{
-				if (!pair.getValue().isSuppressedFor(owner))
-				{
-					return pair.getValue().getOther(owner);
-				}
-			}
+    public final Unit getAnyTarget() {
+        synchronized (pveRefs) {
+            for (var pair : pveRefs.entrySet()) {
+                if (!pair.getValue().isSuppressedFor(owner)) {
+                    return pair.getValue().getOther(owner);
+                }
+            }
 
-			for (var pair : pvpRefs.entrySet())
-			{
-				if (!pair.getValue().isSuppressedFor(owner))
-				{
-					return pair.getValue().getOther(owner);
-				}
-			}
-		}
+            for (var pair : pvpRefs.entrySet()) {
+                if (!pair.getValue().isSuppressedFor(owner)) {
+                    return pair.getValue().getOther(owner);
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
+    public final boolean setInCombatWith(Unit who) {
+        return setInCombatWith(who, false);
+    }
 
-	public final boolean setInCombatWith(Unit who)
-	{
-		return setInCombatWith(who, false);
-	}
+    public final boolean setInCombatWith(Unit who, boolean addSecondUnitSuppressed) {
+        // Are we already in combat? If yes, refresh pvp combat
+        synchronized (pveRefs) {
+            var existingPvpRef = pvpRefs.get(who.getGUID());
 
-	public final boolean setInCombatWith(Unit who, boolean addSecondUnitSuppressed)
-	{
-		// Are we already in combat? If yes, refresh pvp combat
-		synchronized (pveRefs)
-		{
-			var existingPvpRef = pvpRefs.get(who.getGUID());
+            if (existingPvpRef != null) {
+                existingPvpRef.refreshTimer();
+                existingPvpRef.refresh();
 
-			if (existingPvpRef != null)
-			{
-				existingPvpRef.refreshTimer();
-				existingPvpRef.refresh();
-
-				return true;
-			}
+                return true;
+            }
 
 
-			var existingPveRef = pveRefs.get(who.getGUID());
+            var existingPveRef = pveRefs.get(who.getGUID());
 
-			if (existingPveRef != null)
-			{
-				existingPveRef.refresh();
+            if (existingPveRef != null) {
+                existingPveRef.refresh();
 
-				return true;
-			}
-		}
+                return true;
+            }
+        }
 
-		// Otherwise, check validity...
-		if (!canBeginCombat(owner, who))
-		{
-			return false;
-		}
+        // Otherwise, check validity...
+        if (!canBeginCombat(owner, who)) {
+            return false;
+        }
 
-		// ...then create new reference
-		CombatReference refe;
+        // ...then create new reference
+        CombatReference refe;
 
-		if (owner.isControlledByPlayer() && who.isControlledByPlayer())
-		{
-			refe = new PvPCombatReference(owner, who);
-		}
-		else
-		{
-			refe = new CombatReference(owner, who);
-		}
+        if (owner.isControlledByPlayer() && who.isControlledByPlayer()) {
+            refe = new PvPCombatReference(owner, who);
+        } else {
+            refe = new CombatReference(owner, who);
+        }
 
-		if (addSecondUnitSuppressed)
-		{
-			refe.suppress(who);
-		}
+        if (addSecondUnitSuppressed) {
+            refe.suppress(who);
+        }
 
-		// ...and insert it into both managers
-		putReference(who.getGUID(), refe);
-		who.getCombatManager().putReference(owner.getGUID(), refe);
+        // ...and insert it into both managers
+        putReference(who.getGUID(), refe);
+        who.getCombatManager().putReference(owner.getGUID(), refe);
 
-		// now, sequencing is important - first we update the combat state, which will set both units in combat and do non-AI combat start stuff
-		var needSelfAI = updateOwnerCombatState();
-		var needOtherAI = who.getCombatManager().updateOwnerCombatState();
+        // now, sequencing is important - first we update the combat state, which will set both units in combat and do non-AI combat start stuff
+        var needSelfAI = updateOwnerCombatState();
+        var needOtherAI = who.getCombatManager().updateOwnerCombatState();
 
-		// then, we finally notify the AI (if necessary) and let it safely do whatever it feels like
-		if (needSelfAI)
-		{
-			notifyAICombat(owner, who);
-		}
+        // then, we finally notify the AI (if necessary) and let it safely do whatever it feels like
+        if (needSelfAI) {
+            notifyAICombat(owner, who);
+        }
 
-		if (needOtherAI)
-		{
-			notifyAICombat(who, owner);
-		}
+        if (needOtherAI) {
+            notifyAICombat(who, owner);
+        }
 
-		return isInCombatWith(who);
-	}
+        return isInCombatWith(who);
+    }
 
-	public final boolean isInCombatWith(ObjectGuid guid)
-	{
-		synchronized (pveRefs)
-		{
-			return pveRefs.containsKey(guid) || pvpRefs.containsKey(guid);
-		}
-	}
+    public final boolean isInCombatWith(ObjectGuid guid) {
+        synchronized (pveRefs) {
+            return pveRefs.containsKey(guid) || pvpRefs.containsKey(guid);
+        }
+    }
 
-	public final boolean isInCombatWith(Unit who)
-	{
-		return isInCombatWith(who.getGUID());
-	}
+    public final boolean isInCombatWith(Unit who) {
+        return isInCombatWith(who.getGUID());
+    }
 
-	public final void inheritCombatStatesFrom(Unit who)
-	{
-		var mgr = who.getCombatManager();
+    public final void inheritCombatStatesFrom(Unit who) {
+        var mgr = who.getCombatManager();
 
-		synchronized (pveRefs)
-		{
-			for (var refe : mgr.pveRefs.entrySet())
-			{
-				if (!isInCombatWith(refe.getKey()))
-				{
-					var target = refe.getValue().getOther(who);
+        synchronized (pveRefs) {
+            for (var refe : mgr.pveRefs.entrySet()) {
+                if (!isInCombatWith(refe.getKey())) {
+                    var target = refe.getValue().getOther(who);
 
-					if ((owner.isImmuneToPC() && target.hasUnitFlag(UnitFlag.PlayerControlled)) || (owner.isImmuneToNPC() && !target.hasUnitFlag(UnitFlag.PlayerControlled)))
-					{
-						continue;
-					}
+                    if ((owner.isImmuneToPC() && target.hasUnitFlag(UnitFlag.PlayerControlled)) || (owner.isImmuneToNPC() && !target.hasUnitFlag(UnitFlag.PlayerControlled))) {
+                        continue;
+                    }
 
-					setInCombatWith(target);
-				}
-			}
+                    setInCombatWith(target);
+                }
+            }
 
-			for (var refe : mgr.pvpRefs.entrySet())
-			{
-				var target = refe.getValue().getOther(who);
+            for (var refe : mgr.pvpRefs.entrySet()) {
+                var target = refe.getValue().getOther(who);
 
-				if ((owner.isImmuneToPC() && target.hasUnitFlag(UnitFlag.PlayerControlled)) || (owner.isImmuneToNPC() && !target.hasUnitFlag(UnitFlag.PlayerControlled)))
-				{
-					continue;
-				}
+                if ((owner.isImmuneToPC() && target.hasUnitFlag(UnitFlag.PlayerControlled)) || (owner.isImmuneToNPC() && !target.hasUnitFlag(UnitFlag.PlayerControlled))) {
+                    continue;
+                }
 
-				setInCombatWith(target);
-			}
-		}
-	}
+                setInCombatWith(target);
+            }
+        }
+    }
 
-	public final void endCombatBeyondRange(float range, boolean includingPvP)
-	{
-		synchronized (pveRefs)
-		{
-			for (var pair : pveRefs.ToList())
-			{
-				var refe = pair.value;
+    public final void endCombatBeyondRange(float range, boolean includingPvP) {
+        synchronized (pveRefs) {
+            for (var pair : pveRefs.ToList()) {
+                var refe = pair.value;
 
-				if (!refe.first.isWithinDistInMap(refe.second, range))
-				{
-					pveRefs.remove(pair.key);
-					refe.endCombat();
-				}
-			}
+                if (!refe.first.isWithinDistInMap(refe.second, range)) {
+                    pveRefs.remove(pair.key);
+                    refe.endCombat();
+                }
+            }
 
-			if (!includingPvP)
-			{
-				return;
-			}
+            if (!includingPvP) {
+                return;
+            }
 
-			for (var pair : pvpRefs.ToList())
-			{
-				CombatReference refe = pair.value;
+            for (var pair : pvpRefs.ToList()) {
+                CombatReference refe = pair.value;
 
-				if (!refe.first.isWithinDistInMap(refe.second, range))
-				{
-					pvpRefs.remove(pair.key);
-					refe.endCombat();
-				}
-			}
-		}
-	}
+                if (!refe.first.isWithinDistInMap(refe.second, range)) {
+                    pvpRefs.remove(pair.key);
+                    refe.endCombat();
+                }
+            }
+        }
+    }
 
-	public final void suppressPvPCombat()
-	{
-		synchronized (pveRefs)
-		{
-			for (var pair : pvpRefs.entrySet())
-			{
-				pair.getValue().suppress(owner);
-			}
-		}
+    public final void suppressPvPCombat() {
+        synchronized (pveRefs) {
+            for (var pair : pvpRefs.entrySet()) {
+                pair.getValue().suppress(owner);
+            }
+        }
 
-		if (updateOwnerCombatState())
-		{
-			var ownerAI = owner.getAI();
+        if (updateOwnerCombatState()) {
+            var ownerAI = owner.getAI();
 
-			if (ownerAI != null)
-			{
-				ownerAI.justExitedCombat();
-			}
-		}
-	}
+            if (ownerAI != null) {
+                ownerAI.justExitedCombat();
+            }
+        }
+    }
 
-	public final void endAllPvECombat()
-	{
-		// cannot have threat without combat
-		owner.getThreatManager().removeMeFromThreatLists();
-		owner.getThreatManager().clearAllThreat();
+    public final void endAllPvECombat() {
+        // cannot have threat without combat
+        owner.getThreatManager().removeMeFromThreatLists();
+        owner.getThreatManager().clearAllThreat();
 
-		synchronized (pveRefs)
-		{
-			while (!pveRefs.isEmpty())
-			{
-				pveRefs.firstEntry().value.endCombat();
-			}
-		}
-	}
+        synchronized (pveRefs) {
+            while (!pveRefs.isEmpty()) {
+                pveRefs.firstEntry().value.endCombat();
+            }
+        }
+    }
 
-	public final void revalidateCombat()
-	{
-		synchronized (pveRefs)
-		{
+    public final void revalidateCombat() {
+        synchronized (pveRefs) {
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-			for (var(guid, refe) : pveRefs.ToList())
-			{
-				if (!canBeginCombat(owner, refe.getOther(owner)))
-				{
-					pveRefs.remove(guid); // erase manually here to avoid iterator invalidation
-					refe.endCombat();
-				}
-			}
+            for (var(guid, refe) : pveRefs.ToList()) {
+                if (!canBeginCombat(owner, refe.getOther(owner))) {
+                    pveRefs.remove(guid); // erase manually here to avoid iterator invalidation
+                    refe.endCombat();
+                }
+            }
 
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-			for (var(guid, refe) : pvpRefs.ToList())
-			{
-				if (!canBeginCombat(owner, refe.getOther(owner)))
-				{
-					pvpRefs.remove(guid); // erase manually here to avoid iterator invalidation
-					refe.endCombat();
-				}
-			}
-		}
-	}
+            for (var(guid, refe) : pvpRefs.ToList()) {
+                if (!canBeginCombat(owner, refe.getOther(owner))) {
+                    pvpRefs.remove(guid); // erase manually here to avoid iterator invalidation
+                    refe.endCombat();
+                }
+            }
+        }
+    }
 
-	public static void notifyAICombat(Unit me, Unit other)
-	{
-		var ai = me.getAI();
+    public final void purgeReference(ObjectGuid guid, boolean pvp) {
+        synchronized (pveRefs) {
+            if (pvp) {
+                pvpRefs.remove(guid);
+            } else {
+                pveRefs.remove(guid);
+            }
+        }
+    }
 
-		if (ai != null)
-		{
-			ai.justEnteredCombat(other);
-		}
-	}
+    public final boolean updateOwnerCombatState() {
+        var combatState = getHasCombat();
 
-	public final void purgeReference(ObjectGuid guid, boolean pvp)
-	{
-		synchronized (pveRefs)
-		{
-			if (pvp)
-			{
-				pvpRefs.remove(guid);
-			}
-			else
-			{
-				pveRefs.remove(guid);
-			}
-		}
-	}
+        if (combatState == owner.isInCombat()) {
+            return false;
+        }
 
-	public final boolean updateOwnerCombatState()
-	{
-		var combatState = getHasCombat();
+        if (combatState) {
+            owner.setUnitFlag(UnitFlag.IN_COMBAT);
+            owner.atEnterCombat();
 
-		if (combatState == owner.isInCombat())
-		{
-			return false;
-		}
+            if (!owner.isCreature()) {
+                owner.atEngage(getAnyTarget());
+            }
+        } else {
+            owner.removeUnitFlag(UnitFlag.IN_COMBAT);
+            owner.atExitCombat();
 
-		if (combatState)
-		{
-			owner.setUnitFlag(UnitFlag.IN_COMBAT);
-			owner.atEnterCombat();
+            if (!owner.isCreature()) {
+                owner.atDisengage();
+            }
+        }
 
-			if (!owner.isCreature())
-			{
-				owner.atEngage(getAnyTarget());
-			}
-		}
-		else
-		{
-			owner.removeUnitFlag(UnitFlag.IN_COMBAT);
-			owner.atExitCombat();
+        var master = owner.getCharmerOrOwner();
 
-			if (!owner.isCreature())
-			{
-				owner.atDisengage();
-			}
-		}
+        if (master != null) {
+            master.updatePetCombatState();
+        }
 
-		var master = owner.getCharmerOrOwner();
+        return true;
+    }
 
-		if (master != null)
-		{
-			master.updatePetCombatState();
-		}
+    public final void endAllCombat() {
+        endAllPvECombat();
+        endAllPvPCombat();
+    }
 
-		return true;
-	}
+    private void endAllPvPCombat() {
+        synchronized (pveRefs) {
+            while (!pvpRefs.isEmpty()) {
+                pvpRefs.firstEntry().value.endCombat();
+            }
+        }
+    }
 
-	public final void endAllCombat()
-	{
-		endAllPvECombat();
-		endAllPvPCombat();
-	}
-
-	private void endAllPvPCombat()
-	{
-		synchronized (pveRefs)
-		{
-			while (!pvpRefs.isEmpty())
-			{
-				pvpRefs.firstEntry().value.endCombat();
-			}
-		}
-	}
-
-	private void putReference(ObjectGuid guid, CombatReference refe)
-	{
-		synchronized (pveRefs)
-		{
-			if (refe.isPvP)
-			{
-				pvpRefs.put(guid, (PvPCombatReference)refe);
-			}
-			else
-			{
-				pveRefs.put(guid, refe);
-			}
-		}
-	}
+    private void putReference(ObjectGuid guid, CombatReference refe) {
+        synchronized (pveRefs) {
+            if (refe.isPvP) {
+                pvpRefs.put(guid, (PvPCombatReference) refe);
+            } else {
+                pveRefs.put(guid, refe);
+            }
+        }
+    }
 }

@@ -2,7 +2,9 @@ package com.github.mmo.game.networking.packet.loot;
 
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.networking.ClientPacket;
-import com.github.mmo.game.networking.WorldPacket;class MasterLootItem extends ClientPacket {
+import com.github.mmo.game.networking.WorldPacket;
+
+class MasterLootItem extends ClientPacket {
     public Array<lootRequest> loot = new Array<LootRequest>(1000);
     public ObjectGuid target = ObjectGuid.EMPTY;
 

@@ -1,12 +1,11 @@
 package com.github.mmo.game.entity.scene;
 
 
-import game.PhasingHandler;
 import com.github.mmo.game.entity.UpdateMask;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
-import com.github.mmo.game.entity.object.enums.TypeId;
 import com.github.mmo.game.entity.object.WorldObject;
+import com.github.mmo.game.entity.object.enums.TypeId;
 import com.github.mmo.game.entity.object.enums.TypeMask;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
@@ -14,293 +13,254 @@ import com.github.mmo.game.map.Map;
 import com.github.mmo.game.map.grid.GridObject;
 import com.github.mmo.game.map.grid.GridReference;
 import com.github.mmo.game.networking.WorldPacket;
+import game.PhasingHandler;
 import lombok.Getter;
 
-public class SceneObject extends WorldObject implements GridObject<SceneObject>
-{
-	@Getter
-	private final GridReference<SceneObject> gridReference = new GridReference<>();
-	private final SceneObjectData sceneObjectData;
-	private final position stationaryposition = new Position();
-	private ObjectGuid createdBySpellCast = ObjectGuid.EMPTY;
+public class SceneObject extends WorldObject implements GridObject<SceneObject> {
+    @Getter
+    private final GridReference<SceneObject> gridReference = new GridReference<>();
+    private final SceneObjectData sceneObjectData;
+    private final position stationaryposition = new Position();
+    private ObjectGuid createdBySpellCast = ObjectGuid.EMPTY;
 
-	@Override
-	public ObjectGuid getOwnerGUID()
-	{
-		return sceneObjectData.createdBy;
-	}
+    public sceneObject() {
+        super(false);
+        setObjectTypeMask(TypeMask.forValue(getObjectTypeMask().getValue() | TypeMask.sceneObject.getValue()));
+        setObjectTypeId(TypeId.SCENE_OBJECT);
 
-	@Override
-	public int getFaction()
-	{
-		return 0;
-	}
+        updateFlag.stationary = true;
+        updateFlag.sceneObject = true;
 
-	@Override
-	public float getStationaryX()
-	{
-		return stationaryPosition.getX();
-	}
+        sceneObjectData = new sceneObjectData();
+        stationaryPosition = new Position();
+    }
 
-	@Override
-	public float getStationaryY()
-	{
-		return stationaryPosition.getY();
-	}
+    public static SceneObject createSceneObject(int sceneId, Unit creator, Position pos, ObjectGuid privateObjectOwner) {
+        var sceneTemplate = global.getObjectMgr().getSceneTemplate(sceneId);
 
-	@Override
-	public float getStationaryZ()
-	{
-		return stationaryPosition.getZ();
-	}
+        if (sceneTemplate == null) {
+            return null;
+        }
 
-	@Override
-	public float getStationaryO()
-	{
-		return stationaryPosition.getO();
-	}
+        var lowGuid = creator.getMap().generateLowGuid(HighGuid.SceneObject);
 
-	public sceneObject()
-	{
-		super(false);
-		setObjectTypeMask(TypeMask.forValue(getObjectTypeMask().getValue() | TypeMask.sceneObject.getValue()));
-		setObjectTypeId(TypeId.SCENE_OBJECT);
+        SceneObject sceneObject = new sceneObject();
 
-		updateFlag.stationary = true;
-		updateFlag.sceneObject = true;
+        if (!sceneObject.create(lowGuid, sceneType.NORMAL, sceneId, sceneTemplate != null ? sceneTemplate.ScenePackageId : 0, creator.getMap(), creator, pos, privateObjectOwner)) {
+            sceneObject.close();
 
-		sceneObjectData = new sceneObjectData();
-		stationaryPosition = new Position();
-	}
+            return null;
+        }
 
-	@Override
-	public void addToWorld()
-	{
-		if (!isInWorld())
-		{
+        return sceneObject;
+    }
+
+    @Override
+    public ObjectGuid getOwnerGUID() {
+        return sceneObjectData.createdBy;
+    }
+
+    @Override
+    public int getFaction() {
+        return 0;
+    }
+
+    @Override
+    public float getStationaryX() {
+        return stationaryPosition.getX();
+    }
+
+    @Override
+    public float getStationaryY() {
+        return stationaryPosition.getY();
+    }
+
+    @Override
+    public float getStationaryZ() {
+        return stationaryPosition.getZ();
+    }
+
+    @Override
+    public float getStationaryO() {
+        return stationaryPosition.getO();
+    }
+
+    @Override
+    public void addToWorld() {
+        if (!isInWorld()) {
 // C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
-			getMap().getObjectsStore().TryAdd(getGUID(), this);
-			super.addToWorld();
-		}
-	}
+            getMap().getObjectsStore().TryAdd(getGUID(), this);
+            super.addToWorld();
+        }
+    }
 
-	@Override
-	public void removeFromWorld()
-	{
-		if (isInWorld())
-		{
-			super.removeFromWorld();
-			tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
+    @Override
+    public void removeFromWorld() {
+        if (isInWorld()) {
+            super.removeFromWorld();
+            tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
 // C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
-			getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
-		_ = tempOut__.outArgValue;
-		}
-	}
+            getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
+            _ = tempOut__.outArgValue;
+        }
+    }
 
-	@Override
-	public void update(int diff)
-	{
-		super.update(diff);
+    @Override
+    public void update(int diff) {
+        super.update(diff);
 
-		if (shouldBeRemoved())
-		{
-			remove();
-		}
-	}
+        if (shouldBeRemoved()) {
+            remove();
+        }
+    }
 
-	public static SceneObject createSceneObject(int sceneId, Unit creator, Position pos, ObjectGuid privateObjectOwner)
-	{
-		var sceneTemplate = global.getObjectMgr().getSceneTemplate(sceneId);
+    @Override
+    public void buildValuesCreate(WorldPacket data, Player target) {
+        var flags = getUpdateFieldFlagsFor(target);
+        WorldPacket buffer = new WorldPacket();
 
-		if (sceneTemplate == null)
-		{
-			return null;
-		}
+        getObjectData().writeCreate(buffer, flags, this, target);
+        sceneObjectData.writeCreate(buffer, flags, this, target);
 
-		var lowGuid = creator.getMap().generateLowGuid(HighGuid.SceneObject);
+        data.writeInt32(buffer.getSize());
+        data.writeInt8((byte) flags.getValue());
+        data.writeBytes(buffer);
+    }
 
-		SceneObject sceneObject = new sceneObject();
+    @Override
+    public void buildValuesUpdate(WorldPacket data, Player target) {
+        var flags = getUpdateFieldFlagsFor(target);
+        WorldPacket buffer = new WorldPacket();
 
-		if (!sceneObject.create(lowGuid, sceneType.NORMAL, sceneId, sceneTemplate != null ? sceneTemplate.ScenePackageId : 0, creator.getMap(), creator, pos, privateObjectOwner))
-		{
-			sceneObject.close();
+        buffer.writeInt32(getValues().getChangedObjectTypeMask());
 
-			return null;
-		}
+        if (getValues().hasChanged(TypeId.object)) {
+            getObjectData().writeUpdate(buffer, flags, this, target);
+        }
 
-		return sceneObject;
-	}
+        if (getValues().hasChanged(TypeId.sceneObject)) {
+            sceneObjectData.writeUpdate(buffer, flags, this, target);
+        }
 
-	@Override
-	public void buildValuesCreate(WorldPacket data, Player target)
-	{
-		var flags = getUpdateFieldFlagsFor(target);
-		WorldPacket buffer = new WorldPacket();
+        data.writeInt32(buffer.getSize());
+        data.writeBytes(buffer);
+    }
 
-		getObjectData().writeCreate(buffer, flags, this, target);
-		sceneObjectData.writeCreate(buffer, flags, this, target);
+    @Override
+    public void clearUpdateMask(boolean remove) {
+        getValues().clearChangesMask(sceneObjectData);
+        super.clearUpdateMask(remove);
+    }
 
-		data.writeInt32(buffer.getSize());
-		data.writeInt8((byte)flags.getValue());
-		data.writeBytes(buffer);
-	}
+    public final void setCreatedBySpellCast(ObjectGuid castId) {
+        createdBySpellCast = castId;
+    }
 
-	@Override
-	public void buildValuesUpdate(WorldPacket data, Player target)
-	{
-		var flags = getUpdateFieldFlagsFor(target);
-		WorldPacket buffer = new WorldPacket();
+    private void remove() {
+        if (isInWorld()) {
+            addObjectToRemoveList();
+        }
+    }
 
-		buffer.writeInt32(getValues().getChangedObjectTypeMask());
+    private boolean shouldBeRemoved() {
+        var creator = global.getObjAccessor().GetUnit(this, getOwnerGUID());
 
-		if (getValues().hasChanged(TypeId.object))
-		{
-			getObjectData().writeUpdate(buffer, flags, this, target);
-		}
+        if (creator == null) {
+            return true;
+        }
 
-		if (getValues().hasChanged(TypeId.sceneObject))
-		{
-			sceneObjectData.writeUpdate(buffer, flags, this, target);
-		}
+        if (!createdBySpellCast.isEmpty()) {
+            // search for a dummy aura on creator
 
-		data.writeInt32(buffer.getSize());
-		data.writeBytes(buffer);
-	}
+            var linkedAura = creator.getAuraQuery().hasSpellId(createdBySpellCast.getEntry()).hasCastId(createdBySpellCast).getResults().FirstOrDefault();
 
-	@Override
-	public void clearUpdateMask(boolean remove)
-	{
-		getValues().clearChangesMask(sceneObjectData);
-		super.clearUpdateMask(remove);
-	}
+            if (linkedAura == null) {
+                return true;
+            }
+        }
 
-	public final void setCreatedBySpellCast(ObjectGuid castId)
-	{
-		createdBySpellCast = castId;
-	}
+        return false;
+    }
 
-	private void remove()
-	{
-		if (isInWorld())
-		{
-			addObjectToRemoveList();
-		}
-	}
+    private boolean create(long lowGuid, SceneType type, int sceneId, int scriptPackageId, Map map, Unit creator, Position pos, ObjectGuid privateObjectOwner) {
+        setMap(map);
+        getLocation().relocate(pos);
+        relocateStationaryPosition(pos);
 
-	private boolean shouldBeRemoved()
-	{
-		var creator = global.getObjAccessor().GetUnit(this, getOwnerGUID());
+        setPrivateObjectOwner(privateObjectOwner);
 
-		if (creator == null)
-		{
-			return true;
-		}
+        create(ObjectGuid.create(HighGuid.SceneObject, getLocation().getMapId(), sceneId, lowGuid));
+        PhasingHandler.inheritPhaseShift(this, creator);
 
-		if (!createdBySpellCast.isEmpty())
-		{
-			// search for a dummy aura on creator
+        setEntry(scriptPackageId);
+        setObjectScale(1.0f);
 
-			var linkedAura = creator.getAuraQuery().hasSpellId(createdBySpellCast.getEntry()).hasCastId(createdBySpellCast).getResults().FirstOrDefault();
+        setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.scriptPackageID), (int) scriptPackageId);
+        setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.rndSeedVal), gameTime.GetGameTimeMS());
+        setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.createdBy), creator.getGUID());
+        setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.sceneType), (int) type.getValue());
 
-			if (linkedAura == null)
-			{
-				return true;
-			}
-		}
+        if (!getMap().addToMap(this)) {
+            return false;
+        }
 
-		return false;
-	}
+        return true;
+    }
 
-	private boolean create(long lowGuid, SceneType type, int sceneId, int scriptPackageId, Map map, Unit creator, Position pos, ObjectGuid privateObjectOwner)
-	{
-		setMap(map);
-		getLocation().relocate(pos);
-		relocateStationaryPosition(pos);
+    private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedSceneObjectMask, Player target) {
+        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
 
-		setPrivateObjectOwner(privateObjectOwner);
+        if (requestedObjectMask.isAnySet()) {
+            valuesMask.set(getTypeId().object.getValue());
+        }
 
-		create(ObjectGuid.create(HighGuid.SceneObject, getLocation().getMapId(), sceneId, lowGuid));
-		PhasingHandler.inheritPhaseShift(this, creator);
+        if (requestedSceneObjectMask.isAnySet()) {
+            valuesMask.set(getTypeId().sceneObject.getValue());
+        }
 
-		setEntry(scriptPackageId);
-		setObjectScale(1.0f);
+        WorldPacket buffer = new WorldPacket();
+        buffer.writeInt32(valuesMask.getBlock(0));
 
-		setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.scriptPackageID), (int)scriptPackageId);
-		setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.rndSeedVal), gameTime.GetGameTimeMS());
-		setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.createdBy), creator.getGUID());
-		setUpdateFieldValue(getValues().modifyValue(sceneObjectData).modifyValue(sceneObjectData.sceneType), (int)type.getValue());
+        if (valuesMask.get(getTypeId().object.getValue())) {
+            getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
+        }
 
-		if (!getMap().addToMap(this))
-		{
-			return false;
-		}
+        if (valuesMask.get(getTypeId().sceneObject.getValue())) {
+            sceneObjectData.writeUpdate(buffer, requestedSceneObjectMask, true, this, target);
+        }
 
-		return true;
-	}
+        WorldPacket buffer1 = new WorldPacket();
+        buffer1.writeInt8((byte) UpdateType.VALUES.getValue());
+        buffer1.writeGuid(getGUID());
+        buffer1.writeInt32(buffer.getSize());
+        buffer1.writeBytes(buffer.getByteBuf());
 
-	private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedSceneObjectMask, Player target)
-	{
-		UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        data.addUpdateBlock(buffer1);
+    }
 
-		if (requestedObjectMask.isAnySet())
-		{
-			valuesMask.set(getTypeId().object.getValue());
-		}
+    private void relocateStationaryPosition(Position pos) {
+        stationaryPosition.relocate(pos);
+    }
 
-		if (requestedSceneObjectMask.isAnySet())
-		{
-			valuesMask.set(getTypeId().sceneObject.getValue());
-		}
+    private static class ValuesUpdateForPlayerWithMaskSender implements IDoWork<Player> {
+        private final SceneObject owner;
+        private final objectFieldData objectMask = new objectFieldData();
+        private final sceneObjectData sceneObjectData = new sceneObjectData();
 
-		WorldPacket buffer = new WorldPacket();
-		buffer.writeInt32(valuesMask.getBlock(0));
+        public ValuesUpdateForPlayerWithMaskSender(SceneObject owner) {
+            owner = owner;
+        }
 
-		if (valuesMask.get(getTypeId().object.getValue()))
-		{
-			getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
-		}
+        public final void invoke(Player player) {
+            UpdateData udata = new UpdateData(owner.getLocation().getMapId());
 
-		if (valuesMask.get(getTypeId().sceneObject.getValue()))
-		{
-			sceneObjectData.writeUpdate(buffer, requestedSceneObjectMask, true, this, target);
-		}
-
-		WorldPacket buffer1 = new WorldPacket();
-		buffer1.writeInt8((byte)UpdateType.VALUES.getValue());
-		buffer1.writeGuid(getGUID());
-		buffer1.writeInt32(buffer.getSize());
-		buffer1.writeBytes(buffer.getByteBuf());
-
-		data.addUpdateBlock(buffer1);
-	}
-
-	private void relocateStationaryPosition(Position pos)
-	{
-		stationaryPosition.relocate(pos);
-	}
-
-	private static class ValuesUpdateForPlayerWithMaskSender implements IDoWork<Player>
-	{
-		private final SceneObject owner;
-		private final objectFieldData objectMask = new objectFieldData();
-		private final sceneObjectData sceneObjectData = new sceneObjectData();
-
-		public ValuesUpdateForPlayerWithMaskSender(SceneObject owner)
-		{
-			owner = owner;
-		}
-
-		public final void invoke(Player player)
-		{
-			UpdateData udata = new UpdateData(owner.getLocation().getMapId());
-
-			owner.buildValuesUpdateForPlayerWithMask(udata, objectMask.getUpdateMask(), sceneObjectData.getUpdateMask(), player);
+            owner.buildValuesUpdateForPlayerWithMask(udata, objectMask.getUpdateMask(), sceneObjectData.getUpdateMask(), player);
 
             com.github.mmo.game.networking.packet.UpdateObject packet;
             tangible.OutObject<com.github.mmo.game.networking.packet.UpdateObject> tempOut_packet = new tangible.OutObject<com.github.mmo.game.networking.packet.UpdateObject>();
-			udata.buildPacket(tempOut_packet);
-		packet = tempOut_packet.outArgValue;
-			player.sendPacket(packet);
-		}
-	}
+            udata.buildPacket(tempOut_packet);
+            packet = tempOut_packet.outArgValue;
+            player.sendPacket(packet);
+        }
+    }
 }

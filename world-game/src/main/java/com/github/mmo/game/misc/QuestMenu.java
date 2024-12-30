@@ -1,57 +1,47 @@
 package com.github.mmo.game.misc;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class QuestMenu
-{
-	private final ArrayList<QuestMenuItem> questMenuItems = new ArrayList<>();
+public class QuestMenu {
+    private final ArrayList<QuestMenuItem> questMenuItems = new ArrayList<>();
 
-	public final void addMenuItem(int questId, byte icon)
-	{
-		if (global.getObjectMgr().getQuestTemplate(questId) == null)
-		{
-			return;
-		}
+    public final void addMenuItem(int questId, byte icon) {
+        if (global.getObjectMgr().getQuestTemplate(questId) == null) {
+            return;
+        }
 
-		QuestMenuItem questMenuItem = new QuestMenuItem();
+        QuestMenuItem questMenuItem = new QuestMenuItem();
 
-		questMenuItem.questId = questId;
-		questMenuItem.questIcon = icon;
+        questMenuItem.questId = questId;
+        questMenuItem.questIcon = icon;
 
-		questMenuItems.add(questMenuItem);
-	}
+        questMenuItems.add(questMenuItem);
+    }
 
-	public final void clearMenu()
-	{
-		questMenuItems.clear();
-	}
+    public final void clearMenu() {
+        questMenuItems.clear();
+    }
 
-	public final int getMenuItemCount()
-	{
-		return questMenuItems.size();
-	}
+    public final int getMenuItemCount() {
+        return questMenuItems.size();
+    }
 
-	public final boolean isEmpty()
-	{
-		return questMenuItems.isEmpty();
-	}
+    public final boolean isEmpty() {
+        return questMenuItems.isEmpty();
+    }
 
-	public final QuestMenuItem getItem(int index)
-	{
-		return questMenuItems.LookupByIndex(index);
-	}
+    public final QuestMenuItem getItem(int index) {
+        return questMenuItems.LookupByIndex(index);
+    }
 
-	private boolean hasItem(int questId)
-	{
-		for (var item : questMenuItems)
-		{
-			if (item.questId == questId)
-			{
-				return true;
-			}
-		}
+    private boolean hasItem(int questId) {
+        for (var item : questMenuItems) {
+            if (item.questId == questId) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

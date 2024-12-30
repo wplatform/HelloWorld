@@ -1,4 +1,6 @@
-package com.github.mmo.game.spell;public class SpellTargetPosition {
+package com.github.mmo.game.spell;
+
+public class SpellTargetPosition {
 
     public int targetMapId;
     public float X;

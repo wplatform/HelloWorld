@@ -1,9 +1,13 @@
 package com.github.mmo.game.chat.commands;
 
 
-import com.github.mmo.game.supportsystem.*;
+import com.github.mmo.game.chat.CommandHandler;
+import com.github.mmo.game.chat.QuotedString;
+import com.github.mmo.game.supportsystem.BugTicket;
+import com.github.mmo.game.supportsystem.ComplaintTicket;
+import com.github.mmo.game.supportsystem.SuggestionTicket;
 import game.*;
-import com.github.mmo.game.chat.*;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class TicketCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleToggleGMTicketSystem(CommandHandler handler) {

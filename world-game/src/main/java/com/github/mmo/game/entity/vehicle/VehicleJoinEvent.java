@@ -2,9 +2,9 @@ package com.github.mmo.game.entity.vehicle;
 
 import Framework.Constants.*;
 import Framework.Dynamic.*;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnAddPassenger;
+import com.github.mmo.game.scripting.interfaces.ivehicle.IVehicleOnInstallAccessory;
 import game.entities.Vehicle;
-import game.entities.VehicleSeat;
-import com.github.mmo.game.scripting.interfaces.ivehicle.*;
 
 
 public class VehicleJoinEvent extends BasicEvent {
@@ -18,12 +18,13 @@ public class VehicleJoinEvent extends BasicEvent {
         seat = target.seats.Last();
     }
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override bool Execute(ulong etime, uint pTime)
     @Override
     public boolean execute(long etime, int pTime) {
         var vehicleAuras = target.getBase().getAuraEffectsByType(AuraType.ControlVehicle);
-        var aurEffect = tangible.ListHelper.find(vehicleAuras, aurEff = game.entities.Objects.equals(> aurEff.CasterGuid, passenger.getGUID().clone()));
+        var aurEffect = tangible.ListHelper.find(vehicleAuras, aurEff = game.entities.Objects.equals( > aurEff.CasterGuid, passenger.getGUID().clone()))
+        ;
 
         var aurApp = aurEffect.getBase().getApplicationOfTarget(target.getBase().getGUID().clone());
 
@@ -114,10 +115,10 @@ public class VehicleJoinEvent extends BasicEvent {
         // also adds MOVEMENTFLAG_ROOT
 
         var initializer = (MoveSplineInit init) -> {
-                init.disableTransportPathTransformations();
-                init.MoveTo(x, y, z, false, true);
-                init.setFacing(o);
-                init.setTransportEnter();
+            init.disableTransportPathTransformations();
+            init.MoveTo(x, y, z, false, true);
+            init.setFacing(o);
+            init.setTransportEnter();
         };
 
         passenger.getMotionMaster().launchMoveSpline(initializer, EventId.VehicleBoard, MovementGeneratorPriority.Highest);
@@ -145,7 +146,8 @@ public class VehicleJoinEvent extends BasicEvent {
 
         return true;
     }
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public override void Abort(ulong e_time)
     @Override
     public void abort(long eTime) {

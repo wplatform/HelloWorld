@@ -1,17 +1,17 @@
 package com.github.mmo.game.networking.packet.quest;
 
-import com.github.mmo.game.networking.*;
-public class QuestLogRemoveQuest extends ClientPacket
-{
-	public byte entry;
-	public QuestLogRemoveQuest(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
+public class QuestLogRemoveQuest extends ClientPacket {
+    public byte entry;
+
+    public QuestLogRemoveQuest(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         entry = this.readUInt8();
-	}
+    }
 }

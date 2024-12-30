@@ -1,48 +1,45 @@
 package com.github.mmo.game.networking.packet.garrison;
 
-import com.github.mmo.game.networking.*;
-final class GarrisonMissionReward
-{
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(itemID);
-		data.writeInt32(itemQuantity);
-		data.writeInt32(currencyID);
-		data.writeInt32(currencyQuantity);
-		data.writeInt32(followerXP);
-		data.writeInt32(garrMssnBonusAbilityID);
-		data.writeInt32(itemFileDataID);
-		data.writeBit(itemInstance != null);
-		data.flushBits();
+import com.github.mmo.game.networking.WorldPacket;
 
-		if (itemInstance != null)
-		{
-			itemInstance.write(data);
-		}
-	}
+final class GarrisonMissionReward {
+    public int itemID;
+    public int itemQuantity;
+    public int currencyID;
+    public int currencyQuantity;
+    public int followerXP;
+    public int garrMssnBonusAbilityID;
+    public int itemFileDataID;
+    public itemInstance itemInstance;
 
-	public int itemID;
-	public int itemQuantity;
-	public int currencyID;
-	public int currencyQuantity;
-	public int followerXP;
-	public int garrMssnBonusAbilityID;
-	public int itemFileDataID;
-	public itemInstance itemInstance;
+    public void write(WorldPacket data) {
+        data.writeInt32(itemID);
+        data.writeInt32(itemQuantity);
+        data.writeInt32(currencyID);
+        data.writeInt32(currencyQuantity);
+        data.writeInt32(followerXP);
+        data.writeInt32(garrMssnBonusAbilityID);
+        data.writeInt32(itemFileDataID);
+        data.writeBit(itemInstance != null);
+        data.flushBits();
 
-	public GarrisonMissionReward clone()
-	{
-		GarrisonMissionReward varCopy = new GarrisonMissionReward();
+        if (itemInstance != null) {
+            itemInstance.write(data);
+        }
+    }
 
-		varCopy.itemID = this.itemID;
-		varCopy.itemQuantity = this.itemQuantity;
-		varCopy.currencyID = this.currencyID;
-		varCopy.currencyQuantity = this.currencyQuantity;
-		varCopy.followerXP = this.followerXP;
-		varCopy.garrMssnBonusAbilityID = this.garrMssnBonusAbilityID;
-		varCopy.itemFileDataID = this.itemFileDataID;
-		varCopy.itemInstance = this.itemInstance;
+    public GarrisonMissionReward clone() {
+        GarrisonMissionReward varCopy = new GarrisonMissionReward();
 
-		return varCopy;
-	}
+        varCopy.itemID = this.itemID;
+        varCopy.itemQuantity = this.itemQuantity;
+        varCopy.currencyID = this.currencyID;
+        varCopy.currencyQuantity = this.currencyQuantity;
+        varCopy.followerXP = this.followerXP;
+        varCopy.garrMssnBonusAbilityID = this.garrMssnBonusAbilityID;
+        varCopy.itemFileDataID = this.itemFileDataID;
+        varCopy.itemInstance = this.itemInstance;
+
+        return varCopy;
+    }
 }

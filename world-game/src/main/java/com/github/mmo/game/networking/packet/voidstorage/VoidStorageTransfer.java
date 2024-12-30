@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.voidstorage;
 
 
-import com.github.mmo.game.networking.*;class VoidStorageTransfer extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class VoidStorageTransfer extends ClientPacket {
     public ObjectGuid[] withdrawals = new ObjectGuid[(int) SharedConst.VoidStorageMaxWithdraw];
     public ObjectGuid[] deposits = new ObjectGuid[(int) SharedConst.VoidStorageMaxDeposit];
     public ObjectGuid npc = ObjectGuid.EMPTY;

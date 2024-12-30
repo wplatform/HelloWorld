@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.bank;
 
-import com.github.mmo.game.networking.*;public class AutoBankItem extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class AutoBankItem extends ClientPacket {
     public invUpdate inv = new invUpdate();
 
     public byte bag;

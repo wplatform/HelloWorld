@@ -2,7 +2,9 @@ package com.github.mmo.game.spell.events;
 
 
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.spell.*;public class DelayedCastEvent extends BasicEvent {
+import com.github.mmo.game.spell.CastSpellExtraArgs;
+
+public class DelayedCastEvent extends BasicEvent {
     private Unit trigger;
     private Unit target;
 

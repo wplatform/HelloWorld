@@ -3,35 +3,29 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class YouLeftAppend implements IChannelAppender
-{
-	public YouLeftAppend()
-	{
-	}
+final class YouLeftAppend implements IChannelAppender {
+    private final Channel channel;
 
-	public YouLeftAppend(Channel channel)
-	{
-		channel = channel;
-	}
+    public YouLeftAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.YouLeftNotice;
-	}
+    public YouLeftAppend(Channel channel) {
+        channel = channel;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.chatChannelID = (int)channel.getChannelId();
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.YouLeftNotice;
+    }
 
-	private final Channel channel;
+    public void append(ChannelNotify data) {
+        data.chatChannelID = (int) channel.getChannelId();
+    }
 
-	public YouLeftAppend clone()
-	{
-		YouLeftAppend varCopy = new YouLeftAppend();
+    public YouLeftAppend clone() {
+        YouLeftAppend varCopy = new YouLeftAppend();
 
-		varCopy.channel = this.channel;
+        varCopy.channel = this.channel;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

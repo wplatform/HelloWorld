@@ -1,8 +1,9 @@
 package com.github.mmo.game.networking.packet.quest;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
+import com.github.mmo.game.service.model.quest.QuestInfo;
 
 public class QueryQuestInfoResponse extends ServerPacket {
     public boolean allow;
@@ -35,7 +36,7 @@ public class QueryQuestInfoResponse extends ServerPacket {
             this.writeInt32(info.rewardMoneyDifficulty);
             this.writeFloat(info.rewardMoneyMultiplier);
             this.writeInt32(info.rewardBonusMoney);
-            this.writeInt32(info.rewardDisplaySpell.size());
+            this.writeInt32(info.rewardDisplaySpell.length);
             this.writeInt32(info.rewardSpell);
             this.writeInt32(info.rewardHonor);
             this.writeFloat(info.rewardKillHonor);
@@ -43,8 +44,8 @@ public class QueryQuestInfoResponse extends ServerPacket {
             this.writeFloat(info.rewardArtifactXPMultiplier);
             this.writeInt32(info.rewardArtifactCategoryID);
             this.writeInt32(info.startItem);
-            this.writeInt32(info.flags);
-            this.writeInt32(info.flagsEx);
+            this.writeInt32(info.flags.getFlag());
+            this.writeInt32(info.flagsEx.getFlag());
             this.writeInt32(info.flagsEx2);
 
             for (int i = 0; i < SharedConst.QuestRewardItemCount; ++i) {

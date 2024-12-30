@@ -1,24 +1,22 @@
 package com.github.mmo.game.networking.packet.garrison;
 
-import com.github.mmo.game.networking.*;
-final class GarrisonEventEntry
-{
-	public int entryID;
-	public long eventValue;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt64(eventValue);
-		data.writeInt32(entryID);
-	}
+final class GarrisonEventEntry {
+    public int entryID;
+    public long eventValue;
 
-	public GarrisonEventEntry clone()
-	{
-		GarrisonEventEntry varCopy = new GarrisonEventEntry();
+    public void write(WorldPacket data) {
+        data.writeInt64(eventValue);
+        data.writeInt32(entryID);
+    }
 
-		varCopy.entryID = this.entryID;
-		varCopy.eventValue = this.eventValue;
+    public GarrisonEventEntry clone() {
+        GarrisonEventEntry varCopy = new GarrisonEventEntry();
 
-		return varCopy;
-	}
+        varCopy.entryID = this.entryID;
+        varCopy.eventValue = this.eventValue;
+
+        return varCopy;
+    }
 }

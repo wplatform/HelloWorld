@@ -18,18 +18,17 @@ public class MessageDistDeliverer<T extends IDoWork<Player>> implements IGridNot
 
     public MessageDistDeliverer(WorldObject src, T packetSender, float dist, boolean own_team_only, Player skipped) {
         this(src, packetSender, dist, own_team_only, skipped, false);
-    }    private gridType gridType = gridType.World;
+    }
 
     public MessageDistDeliverer(WorldObject src, T packetSender, float dist, boolean own_team_only) {
         this(src, packetSender, dist, own_team_only, null, false);
-    }
+    }    private gridType gridType = gridType.World;
 
     public MessageDistDeliverer(WorldObject src, T packetSender, float dist) {
         this(src, packetSender, dist, false, null, false);
     }
 
-
-        public MessageDistDeliverer(WorldObject src, T packetSender, float dist, boolean own_team_only, Player skipped, boolean req3dDist) {
+    public MessageDistDeliverer(WorldObject src, T packetSender, float dist, boolean own_team_only, Player skipped, boolean req3dDist) {
         source = src;
         packetSender = packetSender;
         phaseShift = src.getPhaseShift();
@@ -138,6 +137,8 @@ public class MessageDistDeliverer<T extends IDoWork<Player>> implements IGridNot
 
         packetSender.invoke(player);
     }
+
+
 
 
 }

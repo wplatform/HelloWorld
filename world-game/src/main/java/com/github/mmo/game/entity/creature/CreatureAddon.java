@@ -1,8 +1,9 @@
 package com.github.mmo.game.entity.creature;
 
 
+import java.util.ArrayList;
 
-import java.util.*;public class CreatureAddon {
+public class CreatureAddon {
 
     public int pathId;
 

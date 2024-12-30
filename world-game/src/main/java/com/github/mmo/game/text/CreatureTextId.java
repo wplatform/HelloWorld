@@ -1,4 +1,6 @@
-package game;public class CreatureTextId {
+package game;
+
+public class CreatureTextId {
 
     public int entry;
 

@@ -1,59 +1,51 @@
 package com.github.mmo.game.battleground.zones;
 
 
-import com.github.mmo.game.battleground.battlegroundScore;
 import com.github.mmo.game.networking.packet.PVPMatchStatistics;
 
-class BattlegroundABScore extends BattlegroundScore
-{
-	private int basesAssaulted;
-	private int basesDefended;
+class BattlegroundABScore extends BattlegroundScore {
+    private int basesAssaulted;
+    private int basesDefended;
 
-	public BattlegroundABScore(ObjectGuid playerGuid, TeamFaction team)
-	{
+    public BattlegroundABScore(ObjectGuid playerGuid, TeamFaction team) {
         super(playerGuid, team);
-		basesAssaulted = 0;
-		basesDefended = 0;
-	}
+        basesAssaulted = 0;
+        basesDefended = 0;
+    }
 
-	@Override
-	public void updateScore(ScoreType type, int value)
-	{
-		switch (type)
-		{
-			case BasesAssaulted:
-				basesAssaulted += value;
+    @Override
+    public void updateScore(ScoreType type, int value) {
+        switch (type) {
+            case BasesAssaulted:
+                basesAssaulted += value;
 
-				break;
-			case BasesDefended:
-				basesDefended += value;
+                break;
+            case BasesDefended:
+                basesDefended += value;
 
-				break;
-			default:
-				super.updateScore(type, value);
+                break;
+            default:
+                super.updateScore(type, value);
 
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	@Override
-	public void buildPvPLogPlayerDataPacket(tangible.OutObject<PVPMatchStatistics.PVPMatchPlayerStatistics> playerData)
-	{
-		super.buildPvPLogPlayerDataPacket(playerData);
+    @Override
+    public void buildPvPLogPlayerDataPacket(tangible.OutObject<PVPMatchStatistics.PVPMatchPlayerStatistics> playerData) {
+        super.buildPvPLogPlayerDataPacket(playerData);
 
-		playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(ABObjectives.AssaultBase.getValue(), basesAssaulted));
-		playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(ABObjectives.DefendBase.getValue(), basesDefended));
-	}
+        playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(ABObjectives.AssaultBase.getValue(), basesAssaulted));
+        playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(ABObjectives.DefendBase.getValue(), basesDefended));
+    }
 
-	@Override
-	public int getAttr1()
-	{
-		return basesAssaulted;
-	}
+    @Override
+    public int getAttr1() {
+        return basesAssaulted;
+    }
 
-	@Override
-	public int getAttr2()
-	{
-		return basesDefended;
-	}
+    @Override
+    public int getAttr2() {
+        return basesDefended;
+    }
 }

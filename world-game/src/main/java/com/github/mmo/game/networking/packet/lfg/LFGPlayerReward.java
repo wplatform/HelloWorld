@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.lfg;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;class LFGPlayerReward extends ServerPacket {
+import java.util.ArrayList;
+
+class LFGPlayerReward extends ServerPacket {
 
     public int queuedSlot;
 

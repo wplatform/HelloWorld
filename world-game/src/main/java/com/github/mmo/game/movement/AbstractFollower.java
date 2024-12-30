@@ -2,43 +2,35 @@ package com.github.mmo.game.movement;
 
 import com.github.mmo.game.entity.unit.Unit;
 
-public class AbstractFollower
-{
-	private Unit target;
+public class AbstractFollower {
+    private Unit target;
 
 
-	public AbstractFollower()
-	{
-		this(null);
-	}
+    public AbstractFollower() {
+        this(null);
+    }
 
-	public AbstractFollower(Unit target)
-	{
-		setTarget(target);
-	}
+    public AbstractFollower(Unit target) {
+        setTarget(target);
+    }
 
-	public final void setTarget(Unit unit)
-	{
-		if (unit == target)
-		{
-			return;
-		}
+    public final Unit getTarget() {
+        return target;
+    }
 
-		if (target)
-		{
-			target.followerRemoved(this);
-		}
+    public final void setTarget(Unit unit) {
+        if (unit == target) {
+            return;
+        }
 
-		target = unit;
+        if (target) {
+            target.followerRemoved(this);
+        }
 
-		if (target)
-		{
-			target.followerAdded(this);
-		}
-	}
+        target = unit;
 
-	public final Unit getTarget()
-	{
-		return target;
-	}
+        if (target) {
+            target.followerAdded(this);
+        }
+    }
 }

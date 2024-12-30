@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum  HitInfo {
+public enum HitInfo {
     HITINFO_NORMALSWING(0x00000000),
     HITINFO_UNK1(0x00000001),               // req correct packet structure
     HITINFO_AFFECTS_VICTIM(0x00000002),

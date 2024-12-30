@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 // these are modes, in which aura effect handler may be called
 @RequiredArgsConstructor
-public enum  AuraEffectHandleModes {
+public enum AuraEffectHandleModes {
     AURA_EFFECT_HANDLE_DEFAULT(0x0),
     AURA_EFFECT_HANDLE_REAL(0x01), // handler applies/removes effect from unit
     AURA_EFFECT_HANDLE_SEND_FOR_CLIENT(0x02), // handler sends apply/remove packet to unit

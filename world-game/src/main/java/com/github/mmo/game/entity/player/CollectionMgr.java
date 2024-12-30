@@ -1,19 +1,20 @@
 package com.github.mmo.game.entity.player;
 
 
-
+import com.github.mmo.game.entity.item.Item;
+import com.github.mmo.game.networking.packet.AccountMountUpdate;
+import com.github.mmo.game.networking.packet.AccountTransmogUpdate;
 import game.ConditionManager;
 import game.WorldSession;
 import game.datastorage.CliDB;
 import game.datastorage.HeirloomRecord;
 import game.datastorage.ItemModifiedAppearanceRecord;
-import com.github.mmo.game.entity.item.Item;
-import com.github.mmo.game.networking.packet.AccountMountUpdate;
-import com.github.mmo.game.networking.packet.AccountTransmogUpdate;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;public class CollectionMgr {
+import java.util.HashMap;
+
+public class CollectionMgr {
 
     private static final HashMap<Integer, Integer> FACTIONSPECIFICMOUNTS = new HashMap<Integer, Integer>();
     private final WorldSession owner;
@@ -56,13 +57,13 @@ import java.util.HashMap;public class CollectionMgr {
             var otherFactionSpellId = result.<Integer>Read(1);
 
             if (global.getDB2Mgr().GetMount(spellId) == null) {
-                Log.outError(LogFilter.Sql, "Mount spell {0} defined in `mount_definitions` does not exist in mount.db2, skipped", spellId);
+                Logs.SQL.error("Mount spell {0} defined in `mount_definitions` does not exist in mount.db2, skipped", spellId);
 
                 continue;
             }
 
             if (otherFactionSpellId != 0 && global.getDB2Mgr().GetMount(otherFactionSpellId) == null) {
-                Log.outError(LogFilter.Sql, "otherFactionSpellId {0} defined in `mount_definitions` for spell {1} does not exist in mount.db2, skipped", otherFactionSpellId, spellId);
+                Logs.SQL.error("otherFactionSpellId {0} defined in `mount_definitions` for spell {1} does not exist in mount.db2, skipped", otherFactionSpellId, spellId);
 
                 continue;
             }
@@ -110,8 +111,8 @@ import java.util.HashMap;public class CollectionMgr {
             stmt = DB.Login.GetPreparedStatement(LoginStatements.REP_ACCOUNT_TOYS);
             stmt.AddValue(0, owner.getBattlenetAccountId());
             stmt.AddValue(1, pair.getKey());
-            stmt.AddValue(2, pair.getValue().HasAnyFlag(toyFlags.favorite));
-            stmt.AddValue(3, pair.getValue().HasAnyFlag(toyFlags.HasFanfare));
+            stmt.AddValue(2, pair.getValue().hasFlag(toyFlags.favorite));
+            stmt.AddValue(3, pair.getValue().hasFlag(toyFlags.HasFanfare));
             trans.append(stmt);
         }
     }
@@ -363,7 +364,7 @@ import java.util.HashMap;public class CollectionMgr {
         return addMount(spellId, flags, false, false);
     }
 
-        public final boolean addMount(int spellId, MountStatusFlags flags, boolean factionMount, boolean learned) {
+    public final boolean addMount(int spellId, MountStatusFlags flags, boolean factionMount, boolean learned) {
         var player = owner.getPlayer();
 
         if (!player) {
@@ -541,7 +542,7 @@ import java.util.HashMap;public class CollectionMgr {
         addItemAppearance(itemId, 0);
     }
 
-        public final void addItemAppearance(int itemId, int appearanceModId) {
+    public final void addItemAppearance(int itemId, int appearanceModId) {
         var itemModifiedAppearance = global.getDB2Mgr().getItemModifiedAppearance(itemId, appearanceModId);
 
         if (!canAddAppearance(itemModifiedAppearance)) {

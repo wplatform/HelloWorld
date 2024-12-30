@@ -1,34 +1,33 @@
 package game;
 
 
-class WardenInitModuleRequest
-{
-	public WardenOpcodes command1 = WardenOpcodes.values()[0];
-	public short size1;
-	public int checkSumm1;
-	public byte unk1;
-	public byte unk2;
-	public byte type;
-	public byte string_library1;
-	public int[] function1 = new int[4];
+class WardenInitModuleRequest {
+    public WardenOpcodes command1 = WardenOpcodes.values()[0];
+    public short size1;
+    public int checkSumm1;
+    public byte unk1;
+    public byte unk2;
+    public byte type;
+    public byte string_library1;
+    public int[] function1 = new int[4];
 
-	public WardenOpcodes command2 = WardenOpcodes.values()[0];
-	public short size2;
-	public int checkSumm2;
-	public byte unk3;
-	public byte unk4;
-	public byte string_library2;
-	public int function2;
-	public byte function2_set;
+    public WardenOpcodes command2 = WardenOpcodes.values()[0];
+    public short size2;
+    public int checkSumm2;
+    public byte unk3;
+    public byte unk4;
+    public byte string_library2;
+    public int function2;
+    public byte function2_set;
 
-	public WardenOpcodes command3 = WardenOpcodes.values()[0];
-	public short size3;
-	public int checkSumm3;
-	public byte unk5;
-	public byte unk6;
-	public byte string_library3;
-	public int function3;
-	public byte function3_set;
+    public WardenOpcodes command3 = WardenOpcodes.values()[0];
+    public short size3;
+    public int checkSumm3;
+    public byte unk5;
+    public byte unk6;
+    public byte string_library3;
+    public int function3;
+    public byte function3_set;
 
 // C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
 //	public static implicit operator byte[](WardenInitModuleRequest request)

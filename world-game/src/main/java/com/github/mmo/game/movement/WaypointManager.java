@@ -5,139 +5,127 @@ import com.github.mmo.game.WaypointMoveType;
 import com.github.mmo.game.WaypointNode;
 import com.github.mmo.game.WaypointPath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public final class WaypointManager 
-{
-	private final HashMap<Integer, waypointPath> waypointStore = new HashMap<Integer, waypointPath>();
-	private WaypointManager()
-	{
-	}
+public final class WaypointManager {
+    private final HashMap<Integer, waypointPath> waypointStore = new HashMap<Integer, waypointPath>();
 
-	public void load()
-	{
-		var oldMSTime = System.currentTimeMillis();
+    private WaypointManager() {
+    }
 
-		//                                          0    1         2           3          4            5           6        7      8           9
-		var result = DB.World.query("SELECT id, point, position_x, position_y, position_z, orientation, move_type, delay, action, action_chance FROM waypoint_data ORDER BY id, point");
+    public void load() {
+        var oldMSTime = System.currentTimeMillis();
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 waypoints. DB table `waypoint_data` is empty!");
+        //                                          0    1         2           3          4            5           6        7      8           9
+        var result = DB.World.query("SELECT id, point, position_x, position_y, position_z, orientation, move_type, delay, action, action_chance FROM waypoint_data ORDER BY id, point");
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 waypoints. DB table `waypoint_data` is empty!");
 
-		int count = 0;
+            return;
+        }
 
-		do
-		{
-			var pathId = result.<Integer>Read(0);
+        int count = 0;
 
-			var x = result.<Float>Read(2);
-			var y = result.<Float>Read(3);
-			var z = result.<Float>Read(4);
-			Float o = null;
+        do {
+            var pathId = result.<Integer>Read(0);
 
-			if (!result.IsNull(5))
-			{
-				o = result.<Float>Read(5);
-			}
+            var x = result.<Float>Read(2);
+            var y = result.<Float>Read(3);
+            var z = result.<Float>Read(4);
+            Float o = null;
 
-			x = MapDefine.normalizeMapCoord(x);
-			y = MapDefine.normalizeMapCoord(y);
+            if (!result.IsNull(5)) {
+                o = result.<Float>Read(5);
+            }
 
-			WaypointNode waypoint = new WaypointNode();
-			waypoint.id = result.<Integer>Read(1);
-			waypoint.x = x;
-			waypoint.y = y;
-			waypoint.z = z;
-			waypoint.orientation = o;
-			waypoint.moveType = WaypointMoveType.forValue(result.<Integer>Read(6));
+            x = MapDefine.normalizeMapCoord(x);
+            y = MapDefine.normalizeMapCoord(y);
 
-			if (waypoint.moveType.getValue() >= WaypointMoveType.max.getValue())
-			{
-				Log.outError(LogFilter.Sql, String.format("Waypoint %1$s in waypoint_data has invalid move_type, ignoring", waypoint.id));
+            WaypointNode waypoint = new WaypointNode();
+            waypoint.id = result.<Integer>Read(1);
+            waypoint.x = x;
+            waypoint.y = y;
+            waypoint.z = z;
+            waypoint.orientation = o;
+            waypoint.moveType = WaypointMoveType.forValue(result.<Integer>Read(6));
 
-				continue;
-			}
+            if (waypoint.moveType.getValue() >= WaypointMoveType.max.getValue()) {
+                Logs.SQL.error(String.format("Waypoint %1$s in waypoint_data has invalid move_type, ignoring", waypoint.id));
 
-			waypoint.delay = result.<Integer>Read(7);
-			waypoint.eventId = result.<Integer>Read(8);
-			waypoint.eventChance = result.<Byte>Read(9);
+                continue;
+            }
 
-			if (!waypointStore.containsKey(pathId))
-			{
-				waypointStore.put(pathId, new waypointPath());
-			}
+            waypoint.delay = result.<Integer>Read(7);
+            waypoint.eventId = result.<Integer>Read(8);
+            waypoint.eventChance = result.<Byte>Read(9);
 
-			var path = waypointStore.get(pathId);
-			path.id = pathId;
-			path.nodes.add(waypoint);
+            if (!waypointStore.containsKey(pathId)) {
+                waypointStore.put(pathId, new waypointPath());
+            }
 
-			++count;
-		} while (result.NextRow());
+            var path = waypointStore.get(pathId);
+            path.id = pathId;
+            path.nodes.add(waypoint);
 
-		Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s waypoints in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
-	}
+            ++count;
+        } while (result.NextRow());
 
-	public void reloadPath(int id)
-	{
-		waypointStore.remove(id);
+        Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s waypoints in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+    }
 
-		var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_WAYPOINT_DATA_BY_ID);
-		stmt.AddValue(0, id);
-		var result = DB.World.query(stmt);
+    public void reloadPath(int id) {
+        waypointStore.remove(id);
 
-		if (result.isEmpty())
-		{
-			return;
-		}
+        var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_WAYPOINT_DATA_BY_ID);
+        stmt.AddValue(0, id);
+        var result = DB.World.query(stmt);
 
-		ArrayList<WaypointNode> values = new ArrayList<>();
+        if (result.isEmpty()) {
+            return;
+        }
 
-		do
-		{
-			var x = result.<Float>Read(1);
-			var y = result.<Float>Read(2);
-			var z = result.<Float>Read(3);
-			Float o = null;
+        ArrayList<WaypointNode> values = new ArrayList<>();
 
-			if (!result.IsNull(4))
-			{
-				o = result.<Float>Read(4);
-			}
+        do {
+            var x = result.<Float>Read(1);
+            var y = result.<Float>Read(2);
+            var z = result.<Float>Read(3);
+            Float o = null;
 
-			x = MapDefine.normalizeMapCoord(x);
-			y = MapDefine.normalizeMapCoord(y);
+            if (!result.IsNull(4)) {
+                o = result.<Float>Read(4);
+            }
 
-			WaypointNode waypoint = new WaypointNode();
-			waypoint.id = result.<Integer>Read(0);
-			waypoint.x = x;
-			waypoint.y = y;
-			waypoint.z = z;
-			waypoint.orientation = o;
-			waypoint.moveType = WaypointMoveType.forValue(result.<Integer>Read(5));
+            x = MapDefine.normalizeMapCoord(x);
+            y = MapDefine.normalizeMapCoord(y);
 
-			if (waypoint.moveType.getValue() >= WaypointMoveType.max.getValue())
-			{
-				Log.outError(LogFilter.Sql, String.format("Waypoint %1$s in waypoint_data has invalid move_type, ignoring", waypoint.id));
+            WaypointNode waypoint = new WaypointNode();
+            waypoint.id = result.<Integer>Read(0);
+            waypoint.x = x;
+            waypoint.y = y;
+            waypoint.z = z;
+            waypoint.orientation = o;
+            waypoint.moveType = WaypointMoveType.forValue(result.<Integer>Read(5));
 
-				continue;
-			}
+            if (waypoint.moveType.getValue() >= WaypointMoveType.max.getValue()) {
+                Logs.SQL.error(String.format("Waypoint %1$s in waypoint_data has invalid move_type, ignoring", waypoint.id));
 
-			waypoint.delay = result.<Integer>Read(6);
-			waypoint.eventId = result.<Integer>Read(7);
-			waypoint.eventChance = result.<Byte>Read(8);
+                continue;
+            }
 
-			values.add(waypoint);
-		} while (result.NextRow());
+            waypoint.delay = result.<Integer>Read(6);
+            waypoint.eventId = result.<Integer>Read(7);
+            waypoint.eventChance = result.<Byte>Read(8);
 
-		waypointStore.put(id, new waypointPath(id, values));
-	}
+            values.add(waypoint);
+        } while (result.NextRow());
 
-	public WaypointPath getPath(int id)
-	{
-		return waypointStore.get(id);
-	}
+        waypointStore.put(id, new waypointPath(id, values));
+    }
+
+    public WaypointPath getPath(int id) {
+        return waypointStore.get(id);
+    }
 }

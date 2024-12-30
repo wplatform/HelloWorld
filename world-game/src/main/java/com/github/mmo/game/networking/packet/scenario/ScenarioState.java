@@ -4,7 +4,9 @@ package com.github.mmo.game.networking.packet.scenario;
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.ArrayList;class ScenarioState extends ServerPacket {
+import java.util.ArrayList;
+
+class ScenarioState extends ServerPacket {
     public int scenarioID;
     public int currentStep = -1;
 

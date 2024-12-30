@@ -3,43 +3,37 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class ModeChangeAppend implements IChannelAppender
-{
-	public ModeChangeAppend()
-	{
-	}
+final class ModeChangeAppend implements IChannelAppender {
+    private final ObjectGuid guid;
+    private final ChannelMemberFlags oldFlags;
+    private final ChannelMemberFlags newFlags;
 
-	public ModeChangeAppend(ObjectGuid guid, ChannelMemberFlags oldFlags, ChannelMemberFlags newFlags)
-	{
-		guid = guid;
-		oldFlags = oldFlags;
-		newFlags = newFlags;
-	}
+    public ModeChangeAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.ModeChangeNotice;
-	}
+    public ModeChangeAppend(ObjectGuid guid, ChannelMemberFlags oldFlags, ChannelMemberFlags newFlags) {
+        guid = guid;
+        oldFlags = oldFlags;
+        newFlags = newFlags;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.senderGuid = guid;
-		data.oldFlags = oldFlags;
-		data.newFlags = newFlags;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.ModeChangeNotice;
+    }
 
-	private final ObjectGuid guid;
-	private final ChannelMemberFlags oldFlags;
-	private final ChannelMemberFlags newFlags;
+    public void append(ChannelNotify data) {
+        data.senderGuid = guid;
+        data.oldFlags = oldFlags;
+        data.newFlags = newFlags;
+    }
 
-	public ModeChangeAppend clone()
-	{
-		ModeChangeAppend varCopy = new ModeChangeAppend();
+    public ModeChangeAppend clone() {
+        ModeChangeAppend varCopy = new ModeChangeAppend();
 
-		varCopy.guid = this.guid;
-		varCopy.oldFlags = this.oldFlags;
-		varCopy.newFlags = this.newFlags;
+        varCopy.guid = this.guid;
+        varCopy.oldFlags = this.oldFlags;
+        varCopy.newFlags = this.newFlags;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

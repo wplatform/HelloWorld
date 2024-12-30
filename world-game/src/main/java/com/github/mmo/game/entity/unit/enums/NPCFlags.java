@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 // EnumUtils: DESCRIBE THIS
 @Getter
 @RequiredArgsConstructor
-public enum  NPCFlags implements EnumFlag.FlagValue {
+public enum NPCFlags implements EnumFlag.FlagValue {
     UNIT_NPC_FLAG_NONE(0x00000000),
     UNIT_NPC_FLAG_GOSSIP(0x00000001),     // TITLE has gossip menu DESCRIPTION 100%
     UNIT_NPC_FLAG_QUESTGIVER(0x00000002),     // TITLE is quest giver DESCRIPTION 100%

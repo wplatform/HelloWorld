@@ -18,11 +18,11 @@ public class DelayedUnitRelocation implements IGridNotifierCreature, IGridNotifi
         p = pair;
         radius = radius;
         setGridType(gridType);
-    }    private gridType gridType = getGridType().values()[0];
+    }
 
     public final GridType getGridType() {
         return gridType;
-    }
+    }    private gridType gridType = getGridType().values()[0];
 
     public final void setGridType(GridType value) {
         gridType = value;
@@ -61,6 +61,8 @@ public class DelayedUnitRelocation implements IGridNotifierCreature, IGridNotifi
             relocate.sendToSelf();
         }
     }
+
+
 
 
 }

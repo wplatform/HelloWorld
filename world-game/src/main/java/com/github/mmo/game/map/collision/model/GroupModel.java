@@ -11,36 +11,33 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 @Data
-public class GroupModel
-{
+public class GroupModel {
 
 
     private final ArrayList<Vector3> vertices = new ArrayList<>();
-	private final ArrayList<MeshTriangle> triangles = new ArrayList<>();
-	private final BIH meshTree = new BIH();
+    private final ArrayList<MeshTriangle> triangles = new ArrayList<>();
+    private final BIH meshTree = new BIH();
     private BoundingBox boundingBox;
-	private int iMogpFlags;
-	private int iGroupWmoid;
-	private WmoLiquid iLiquid;
+    private int iMogpFlags;
+    private int iGroupWmoid;
+    private WmoLiquid iLiquid;
 
-	public GroupModel()
-	{
-		iLiquid = null;
-	}
+    public GroupModel() {
+        iLiquid = null;
+    }
 
 
-        public GroupModel(int mogpFlags, int groupWMOID, BoundingBox bound)
-	{
+    public GroupModel(int mogpFlags, int groupWMOID, BoundingBox bound) {
         boundingBox = bound;
-		iMogpFlags = mogpFlags;
-		iGroupWmoid = groupWMOID;
-		iLiquid = null;
-	}
+        iMogpFlags = mogpFlags;
+        iGroupWmoid = groupWMOID;
+        iLiquid = null;
+    }
 
     public final boolean readFromFile(ByteBuffer buffer) {
-		triangles.clear();
-		vertices.clear();
-		iLiquid = null;
+        triangles.clear();
+        vertices.clear();
+        iLiquid = null;
 
 
         var lo = new Vector3(buffer.getFloat(), buffer.getFloat(), buffer.getFloat());
@@ -54,135 +51,117 @@ public class GroupModel
         buffer.get(bytes);
         String chunkName = new String(bytes, StandardCharsets.UTF_8);
 
-		// read vertices
-        if (!"VERT".equals(chunkName))
-		{
-			return false;
-		}
+        // read vertices
+        if (!"VERT".equals(chunkName)) {
+            return false;
+        }
 
         var chunkSize = buffer.getInt();
         var count = buffer.getInt();
 
-		if (count == 0)
-		{
-			return false;
-		}
+        if (count == 0) {
+            return false;
+        }
 
-		for (var i = 0; i < count; ++i)
-		{
+        for (var i = 0; i < count; ++i) {
             vertices.add(new Vector3(buffer.getFloat(), buffer.getFloat(), buffer.getFloat()));
-		}
+        }
 
-		// read triangle mesh
+        // read triangle mesh
         bytes = new byte[4];
         buffer.get(bytes);
         chunkName = new String(bytes, StandardCharsets.UTF_8);
-        if (!"TRIM".equals(chunkName))
-		{
-			return false;
-		}
+        if (!"TRIM".equals(chunkName)) {
+            return false;
+        }
 
         chunkSize = buffer.getInt();
         count = buffer.getInt();
 
-		for (var i = 0; i < count; ++i)
-		{
+        for (var i = 0; i < count; ++i) {
             triangles.add(new MeshTriangle(buffer.getInt(), buffer.getInt(), buffer.getInt()));
-		}
+        }
 
-		// read mesh BIH
+        // read mesh BIH
         bytes = new byte[4];
         buffer.get(bytes);
         chunkName = new String(bytes, StandardCharsets.UTF_8);
-        if (!"MBIH".equals(chunkName))
-		{
-			return false;
-		}
+        if (!"MBIH".equals(chunkName)) {
+            return false;
+        }
 
         meshTree.readFromFile(buffer);
 
-		// write liquid data
+        // write liquid data
         bytes = new byte[4];
         buffer.get(bytes);
         chunkName = new String(bytes, StandardCharsets.UTF_8);
-        if (!"LIQU".equals(chunkName))
-		{
-			return false;
-		}
+        if (!"LIQU".equals(chunkName)) {
+            return false;
+        }
 
         chunkSize = buffer.getInt();
 
-		if (chunkSize > 0)
-		{
+        if (chunkSize > 0) {
             iLiquid = WmoLiquid.readFromFile(buffer);
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-    public boolean intersectRay(Ray ray, Distance distance, boolean stopAtFirstHit)
-	{
-		if (triangles.isEmpty())
-		{
-			return false;
-		}
+    public boolean intersectRay(Ray ray, Distance distance, boolean stopAtFirstHit) {
+        if (triangles.isEmpty()) {
+            return false;
+        }
 
         meshTree.intersectRay(ray, distance, stopAtFirstHit, (r, entry, maxDist, stopAtFirst) -> {
             distance.hit = intersectTriangle(triangles.get(entry), vertices, ray, distance) || distance.hit;
             return distance.hit;
         });
 
-		return distance.hit;
-	}
+        return distance.hit;
+    }
 
-    public final boolean isInsideObject(Vector3 pos, Vector3 down, Distance z_dist)
-	{
+    public final boolean isInsideObject(Vector3 pos, Vector3 down, Distance z_dist) {
 
 
-        if (triangles.isEmpty() || !boundingBox.contains(pos))
-		{
-			return false;
-		}
+        if (triangles.isEmpty() || !boundingBox.contains(pos)) {
+            return false;
+        }
 
         var rPos = pos.sub(down.scl(0.1f));
         var dist = new Distance(Float.POSITIVE_INFINITY);
-		Ray ray = new Ray(rPos, down);
+        Ray ray = new Ray(rPos, down);
 
         var hit = intersectRay(ray, dist, false);
-		if (hit)
-		{
+        if (hit) {
             z_dist.distance = dist.distance - 0.1f;
             z_dist.hit = true;
-		}
+        }
 
-		return hit;
-	}
+        return hit;
+    }
 
-    public final boolean getLiquidLevel(Vector3 pos, Distance liqHeight)
-	{
-
-
-		if (iLiquid != null)
-		{
-			return iLiquid.getLiquidHeight(pos, liqHeight);
-		}
-
-		return false;
-	}
-
-	public final int getLiquidType()
-	{
-		if (iLiquid != null)
-		{
-			return iLiquid.getLiquidType();
-		}
-
-		return 0;
-	}
+    public final boolean getLiquidLevel(Vector3 pos, Distance liqHeight) {
 
 
-    private boolean intersectTriangle(MeshTriangle tri, ArrayList<Vector3> points, Ray ray, Distance distance)
-	{
+        if (iLiquid != null) {
+            return iLiquid.getLiquidHeight(pos, liqHeight);
+        }
+
+        return false;
+    }
+
+    public final int getLiquidType() {
+        if (iLiquid != null) {
+            return iLiquid.getLiquidType();
+        }
+
+        return 0;
+    }
+
+
+    private boolean intersectTriangle(MeshTriangle tri, ArrayList<Vector3> points, Ray ray, Distance distance) {
         final float eps = 1e-5f;
 
         // See RTR2 ch. 13.7 for the algorithm.
@@ -227,5 +206,5 @@ public class GroupModel
 
         // This hit is after the previous hit, so ignore it
         return false;
-	}
+    }
 }

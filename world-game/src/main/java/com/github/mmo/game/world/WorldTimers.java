@@ -1,33 +1,33 @@
-package com.github.mmo.game.world;/** Timers for different object refresh rates
-*/
-public enum WorldTimers
-{
-	auctions,
-	AuctionsPending,
-	UpTime,
-	Corpses,
-	events,
-	CleanDB,
-	AutoBroadcast,
-	mailBox,
-	DeleteChars,
-	AhBot,
-	PingDB,
-	GuildSave,
-	Blackmarket,
-	WhoList,
-	ChannelSave,
-	max;
+package com.github.mmo.game.world;
 
-	public static final int SIZE = Integer.SIZE;
+/**
+ * Timers for different object refresh rates
+ */
+public enum WorldTimers {
+    auctions,
+    AuctionsPending,
+    UpTime,
+    Corpses,
+    events,
+    CleanDB,
+    AutoBroadcast,
+    mailBox,
+    DeleteChars,
+    AhBot,
+    PingDB,
+    GuildSave,
+    Blackmarket,
+    WhoList,
+    ChannelSave,
+    max;
 
-	public int getValue()
-	{
-		return this.ordinal();
-	}
+    public static final int SIZE = Integer.SIZE;
 
-	public static WorldTimers forValue(int value)
-	{
-		return values()[value];
-	}
+    public static WorldTimers forValue(int value) {
+        return values()[value];
+    }
+
+    public int getValue() {
+        return this.ordinal();
+    }
 }

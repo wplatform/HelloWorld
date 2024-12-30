@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.character;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class UndeleteCooldownStatusResponse extends ServerPacket {
     public boolean onCooldown;

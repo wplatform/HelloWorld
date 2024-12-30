@@ -1,26 +1,22 @@
 package com.github.mmo.game.map;
-class PersistentInstanceScriptValue<T> extends PersistentInstanceScriptValueBase
-{
-	public PersistentInstanceScriptValue(InstanceScript instance, String name, T value)
-	{
-		super(instance, name, value);
-	}
 
-	public final PersistentInstanceScriptValue<T> setValue(T value)
-	{
-		value = value;
-		notifyValueChanged();
+class PersistentInstanceScriptValue<T> extends PersistentInstanceScriptValueBase {
+    public PersistentInstanceScriptValue(InstanceScript instance, String name, T value) {
+        super(instance, name, value);
+    }
 
-		return this;
-	}
+    public final PersistentInstanceScriptValue<T> setValue(T value) {
+        value = value;
+        notifyValueChanged();
 
-	private void notifyValueChanged()
-	{
+        return this;
+    }
+
+    private void notifyValueChanged() {
         instance.getInstance().updateInstanceLock(createEvent());
-	}
+    }
 
-	private void loadValue(T value)
-	{
-		value = value;
-	}
+    private void loadValue(T value) {
+        value = value;
+    }
 }

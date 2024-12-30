@@ -1,62 +1,55 @@
 package com.github.mmo.game.networking.packet.query;
 
 
-public class QueryGameObjectResponse extends ServerPacket
-{
-	public int gameObjectID;
-	public ObjectGuid guid = ObjectGuid.EMPTY;
-	public boolean allow;
-	public GameObjectstats stats;
-	public QueryGameObjectResponse()
-	{
-		super(ServerOpcode.QueryGameObjectResponse, ConnectionType.instance);
-	}
+public class QueryGameObjectResponse extends ServerPacket {
+    public int gameObjectID;
+    public ObjectGuid guid = ObjectGuid.EMPTY;
+    public boolean allow;
+    public GameObjectstats stats;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(gameObjectID);
-		this.writeGuid(guid);
-		this.writeBit(allow);
-		this.flushBits();
+    public QueryGameObjectResponse() {
+        super(ServerOpcode.QueryGameObjectResponse, ConnectionType.instance);
+    }
 
-		ByteBuffer statsData = new byteBuffer();
+    @Override
+    public void write() {
+        this.writeInt32(gameObjectID);
+        this.writeGuid(guid);
+        this.writeBit(allow);
+        this.flushBits();
 
-		if (allow)
-		{
-			statsData.writeInt32(stats.type);
-			statsData.writeInt32(stats.displayID);
+        ByteBuffer statsData = new byteBuffer();
 
-			for (var i = 0; i < 4; i++)
-			{
-				statsData.writeCString(stats.name.charAt(i));
-			}
+        if (allow) {
+            statsData.writeInt32(stats.type);
+            statsData.writeInt32(stats.displayID);
 
-			statsData.writeCString(stats.iconName);
-			statsData.writeCString(stats.castBarCaption);
-			statsData.writeCString(stats.unkString);
+            for (var i = 0; i < 4; i++) {
+                statsData.writeCString(stats.name.charAt(i));
+            }
 
-			for (int i = 0; i < SharedConst.MaxGOData; i++)
-			{
-				statsData.writeInt32(stats.Data[i]);
-			}
+            statsData.writeCString(stats.iconName);
+            statsData.writeCString(stats.castBarCaption);
+            statsData.writeCString(stats.unkString);
 
-			statsData.writeFloat(stats.size);
-			statsData.writeInt8((byte)stats.questItems.size());
+            for (int i = 0; i < SharedConst.MaxGOData; i++) {
+                statsData.writeInt32(stats.Data[i]);
+            }
 
-			for (var questItem : stats.questItems)
-			{
-				statsData.writeInt32(questItem);
-			}
+            statsData.writeFloat(stats.size);
+            statsData.writeInt8((byte) stats.questItems.size());
 
-			statsData.writeInt32(stats.contentTuningId);
-		}
+            for (var questItem : stats.questItems) {
+                statsData.writeInt32(questItem);
+            }
 
-		this.writeInt32(statsData.getSize());
+            statsData.writeInt32(stats.contentTuningId);
+        }
 
-		if (statsData.getSize() != 0)
-		{
-			this.writeBytes(statsData);
-		}
-	}
+        this.writeInt32(statsData.getSize());
+
+        if (statsData.getSize() != 0) {
+            this.writeBytes(statsData);
+        }
+    }
 }

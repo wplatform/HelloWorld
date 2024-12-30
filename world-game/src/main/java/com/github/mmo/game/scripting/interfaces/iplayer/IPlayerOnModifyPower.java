@@ -2,9 +2,9 @@ package com.github.mmo.game.scripting.interfaces.iplayer;
 
 
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.scripting.interfaces.*;
+import com.github.mmo.game.scripting.interfaces.IClassRescriction;
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
 
-public interface IPlayerOnModifyPower extends IScriptObject, IClassRescriction
-{
-	void OnModifyPower(Player player, Power power, int oldValue, tangible.RefObject<Integer> newValue, boolean regen);
+public interface IPlayerOnModifyPower extends IScriptObject, IClassRescriction {
+    void OnModifyPower(Player player, Power power, int oldValue, tangible.RefObject<Integer> newValue, boolean regen);
 }

@@ -1,18 +1,17 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class GuildDemoteMember extends ClientPacket
-{
+public class GuildDemoteMember extends ClientPacket {
     public ObjectGuid demotee = ObjectGuid.EMPTY;
-	public GuildDemoteMember(WorldPacket packet)
-	{
-		super(packet);
-	}
 
-	@Override
-	public void read()
-	{
+    public GuildDemoteMember(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         demotee = this.readPackedGuid();
-	}
+    }
 }

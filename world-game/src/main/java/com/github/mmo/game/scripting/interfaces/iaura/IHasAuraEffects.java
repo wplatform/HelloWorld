@@ -1,9 +1,8 @@
 package com.github.mmo.game.scripting.interfaces.iaura;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public interface IHasAuraEffects
-{
-	ArrayList<IAuraEffectHandler> getAuraEffects();
+public interface IHasAuraEffects {
+    ArrayList<IAuraEffectHandler> getAuraEffects();
 }

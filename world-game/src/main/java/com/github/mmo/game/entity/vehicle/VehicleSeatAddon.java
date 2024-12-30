@@ -11,7 +11,7 @@ public class VehicleSeatAddon {
     public float exitParameterO;
     public VehicleExitParameters exitParameter = VehicleExitParameters.values()[0];
 
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public VehicleSeatAddon(float orientatonOffset, float exitX, float exitY, float exitZ, float exitO, byte param)
     public VehicleSeatAddon(float orientatonOffset, float exitX, float exitY, float exitZ, float exitO, byte param) {
         seatOrientationOffset = orientatonOffset;

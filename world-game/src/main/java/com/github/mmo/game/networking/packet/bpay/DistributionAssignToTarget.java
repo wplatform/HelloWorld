@@ -2,66 +2,63 @@ package com.github.mmo.game.networking.packet.bpay;
 
 import com.github.mmo.game.networking.WorldPacket;
 
-public class DistributionAssignToTarget extends ClientPacket
-{
-	private ObjectGuid targetCharacter = ObjectGuid.EMPTY;
-	public final ObjectGuid getTargetCharacter()
-	{
-		return targetCharacter;
-	}
-	public final void setTargetCharacter(ObjectGuid value)
-	{
-		targetCharacter = value;
-	}
-	private long distributionID = 0;
-	public final long getDistributionID()
-	{
-		return distributionID;
-	}
-	public final void setDistributionID(long value)
-	{
-		distributionID = value;
-	}
-	private int productID = 0;
-	public final int getProductID()
-	{
-		return productID;
-	}
-	public final void setProductID(int value)
-	{
-		productID = value;
-	}
-	private short specializationID = 0;
-	public final short getSpecializationID()
-	{
-		return specializationID;
-	}
-	public final void setSpecializationID(short value)
-	{
-		specializationID = value;
-	}
-	private short choiceID = 0;
-	public final short getChoiceID()
-	{
-		return choiceID;
-	}
-	public final void setChoiceID(short value)
-	{
-		choiceID = value;
-	}
+public class DistributionAssignToTarget extends ClientPacket {
+    private ObjectGuid targetCharacter = ObjectGuid.EMPTY;
+    private long distributionID = 0;
+    private int productID = 0;
+    private short specializationID = 0;
+    private short choiceID = 0;
 
-	public DistributionAssignToTarget(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public DistributionAssignToTarget(WorldPacket packet) {
+        super(packet);
+    }
 
-	@Override
-	public void read()
-	{
-		setProductID(this.readUInt());
-		setDistributionID(this.readUInt64());
-		setTargetCharacter(this.readPackedGuid());
-		setSpecializationID(this.readUInt16());
-		setChoiceID(this.readUInt16());
-	}
+    public final ObjectGuid getTargetCharacter() {
+        return targetCharacter;
+    }
+
+    public final void setTargetCharacter(ObjectGuid value) {
+        targetCharacter = value;
+    }
+
+    public final long getDistributionID() {
+        return distributionID;
+    }
+
+    public final void setDistributionID(long value) {
+        distributionID = value;
+    }
+
+    public final int getProductID() {
+        return productID;
+    }
+
+    public final void setProductID(int value) {
+        productID = value;
+    }
+
+    public final short getSpecializationID() {
+        return specializationID;
+    }
+
+    public final void setSpecializationID(short value) {
+        specializationID = value;
+    }
+
+    public final short getChoiceID() {
+        return choiceID;
+    }
+
+    public final void setChoiceID(short value) {
+        choiceID = value;
+    }
+
+    @Override
+    public void read() {
+        setProductID(this.readUInt());
+        setDistributionID(this.readUInt64());
+        setTargetCharacter(this.readPackedGuid());
+        setSpecializationID(this.readUInt16());
+        setChoiceID(this.readUInt16());
+    }
 }

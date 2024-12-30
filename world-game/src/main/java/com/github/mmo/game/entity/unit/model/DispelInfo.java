@@ -2,7 +2,6 @@ package com.github.mmo.game.entity.unit.model;
 
 import com.github.mmo.world.entities.object.WorldObject;
 import lombok.AllArgsConstructor;
-import lombok.data;
 
 @Data
 @AllArgsConstructor

@@ -1,21 +1,21 @@
 package com.github.mmo.game.networking.packet.item;
-import com.github.mmo.game.networking.ServerPacket;
-public class ReadItemResultFailed extends ServerPacket
-{
-	public ObjectGuid item = ObjectGuid.EMPTY;
-	public byte subcode;
-	public int delay;
-	public ReadItemResultFailed()
-	{
-		super(ServerOpcode.ReadItemResultFailed);
-	}
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(item);
-		this.writeInt32(delay);
-		this.writeBits(subcode, 2);
-		this.flushBits();
-	}
+import com.github.mmo.game.networking.ServerPacket;
+
+public class ReadItemResultFailed extends ServerPacket {
+    public ObjectGuid item = ObjectGuid.EMPTY;
+    public byte subcode;
+    public int delay;
+
+    public ReadItemResultFailed() {
+        super(ServerOpcode.ReadItemResultFailed);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(item);
+        this.writeInt32(delay);
+        this.writeBits(subcode, 2);
+        this.flushBits();
+    }
 }

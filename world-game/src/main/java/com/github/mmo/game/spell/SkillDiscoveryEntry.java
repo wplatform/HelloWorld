@@ -1,4 +1,6 @@
-package com.github.mmo.game.spell;public class SkillDiscoveryEntry {
+package com.github.mmo.game.spell;
+
+public class SkillDiscoveryEntry {
 
     public int spellId; // discavered spell
 
@@ -18,7 +20,7 @@ package com.github.mmo.game.spell;public class SkillDiscoveryEntry {
         this(0, 0, 0);
     }
 
-        public SkillDiscoveryEntry(int spellId, int reqSkillVal, double chance) {
+    public SkillDiscoveryEntry(int spellId, int reqSkillVal, double chance) {
         spellId = spellId;
         reqSkillValue = reqSkillVal;
         chance = chance;

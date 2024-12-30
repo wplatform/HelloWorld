@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.guild;
 
-import com.github.mmo.game.networking.*;public class GuildChangeNameRequest extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class GuildChangeNameRequest extends ClientPacket {
     public String newName;
 
     public GuildChangeNameRequest(WorldPacket packet) {

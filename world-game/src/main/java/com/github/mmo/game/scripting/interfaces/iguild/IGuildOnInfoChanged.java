@@ -1,6 +1,8 @@
 package com.github.mmo.game.scripting.interfaces.iguild;
 
-import com.github.mmo.game.guild.*;
-import com.github.mmo.game.scripting.interfaces.*;public interface IGuildOnInfoChanged extends IScriptObject {
+import com.github.mmo.game.guild.Guild;
+import com.github.mmo.game.scripting.interfaces.IScriptObject;
+
+public interface IGuildOnInfoChanged extends IScriptObject {
     void OnInfoChanged(Guild guild, String newInfo);
 }

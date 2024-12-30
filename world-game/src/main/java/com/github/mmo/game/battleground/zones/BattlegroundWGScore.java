@@ -1,56 +1,49 @@
 package com.github.mmo.game.battleground.zones;
 
 
-import com.github.mmo.game.battleground.battlegroundScore;
 import com.github.mmo.game.networking.packet.PVPMatchStatistics;
 
-class BattlegroundWGScore extends BattlegroundScore
-{
-	private int flagCaptures;
-	private int flagReturns;
-	public BattlegroundWGScore(ObjectGuid playerGuid, TeamFaction team)
-	{
-		super(playerGuid, team);
-	}
+class BattlegroundWGScore extends BattlegroundScore {
+    private int flagCaptures;
+    private int flagReturns;
 
-	@Override
-	public void updateScore(ScoreType type, int value)
-	{
-		switch (type)
-		{
-			case FlagCaptures: // Flags captured
-				flagCaptures += value;
+    public BattlegroundWGScore(ObjectGuid playerGuid, TeamFaction team) {
+        super(playerGuid, team);
+    }
 
-				break;
-			case FlagReturns: // Flags returned
-				flagReturns += value;
+    @Override
+    public void updateScore(ScoreType type, int value) {
+        switch (type) {
+            case FlagCaptures: // Flags captured
+                flagCaptures += value;
 
-				break;
-			default:
-				super.updateScore(type, value);
+                break;
+            case FlagReturns: // Flags returned
+                flagReturns += value;
 
-				break;
-		}
-	}
+                break;
+            default:
+                super.updateScore(type, value);
 
-	@Override
-	public void buildPvPLogPlayerDataPacket(tangible.OutObject<PVPMatchStatistics.PVPMatchPlayerStatistics> playerData)
-	{
-		super.buildPvPLogPlayerDataPacket(playerData);
+                break;
+        }
+    }
 
-		playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(WSObjectives.CAPTUREFLAG, flagCaptures));
-		playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(WSObjectives.RETURNFLAG, flagReturns));
-	}
+    @Override
+    public void buildPvPLogPlayerDataPacket(tangible.OutObject<PVPMatchStatistics.PVPMatchPlayerStatistics> playerData) {
+        super.buildPvPLogPlayerDataPacket(playerData);
 
-	@Override
-	public int getAttr1()
-	{
-		return flagCaptures;
-	}
+        playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(WSObjectives.CAPTUREFLAG, flagCaptures));
+        playerData.outArgValue.stats.add(new PVPMatchStatistics.PVPMatchPlayerPVPStat(WSObjectives.RETURNFLAG, flagReturns));
+    }
 
-	@Override
-	public int getAttr2()
-	{
-		return flagReturns;
-	}
+    @Override
+    public int getAttr1() {
+        return flagCaptures;
+    }
+
+    @Override
+    public int getAttr2() {
+        return flagReturns;
+    }
 }

@@ -1,9 +1,7 @@
 package com.github.mmo.game.ai;
 
 
-
-import com.github.mmo.game.combat.*;
-
+import com.github.mmo.game.combat.CombatManager;
 import com.github.mmo.game.entity.areatrigger.AreaTrigger;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.dynamic.DynamicObject;
@@ -11,10 +9,12 @@ import com.github.mmo.game.entity.gobject.GameObject;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
-import com.github.mmo.game.map.*;
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.map.AreaBoundary;
+import com.github.mmo.game.spell.SpellInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class CreatureAI extends UnitAI {
 
     protected final Creature me;
@@ -83,6 +83,10 @@ public class CreatureAI extends UnitAI {
         return boundary;
     }
 
+    public final void setBoundary(ArrayList<AreaBoundary> boundary) {
+        setBoundary(boundary, false);
+    }
+
     public final boolean isEngaged() {
         return isEngaged;
     }
@@ -91,7 +95,7 @@ public class CreatureAI extends UnitAI {
         talk(id, null);
     }
 
-        public final void talk(int id, WorldObject whisperTarget) {
+    public final void talk(int id, WorldObject whisperTarget) {
         global.getCreatureTextMgr().sendChat(me, (byte) id, whisperTarget);
     }
 
@@ -116,7 +120,7 @@ public class CreatureAI extends UnitAI {
         doZoneInCombat(null);
     }
 
-        public final void doZoneInCombat(Creature creature) {
+    public final void doZoneInCombat(Creature creature) {
         if (creature == null) {
             creature = me;
         }
@@ -199,6 +203,8 @@ public class CreatureAI extends UnitAI {
         me.getMotionMaster().moveDistract(5 * time.InMilliseconds, me.getLocation().getAbsoluteAngle(who.getLocation()));
     }
 
+    // Called for reaction at stopping attack at no attackers or targets
+
     // Called when creature appears in the world (spawn, respawn, grid load etc...)
     public void justAppeared() {
         if (!isEngaged()) {
@@ -218,8 +224,6 @@ public class CreatureAI extends UnitAI {
         }
     }
 
-    // Called for reaction at stopping attack at no attackers or targets
-
     @Override
     public void justEnteredCombat(Unit who) {
         if (!isEngaged() && !me.getCanHaveThreatList()) {
@@ -231,7 +235,7 @@ public class CreatureAI extends UnitAI {
         enterEvadeMode(EvadeReason.other);
     }
 
-        public void enterEvadeMode(EvadeReason why) {
+    public void enterEvadeMode(EvadeReason why) {
         if (!_EnterEvadeMode(why)) {
             return;
         }
@@ -314,7 +318,7 @@ public class CreatureAI extends UnitAI {
         return _EnterEvadeMode(EvadeReason.other);
     }
 
-        public final boolean _EnterEvadeMode(EvadeReason why) {
+    public final boolean _EnterEvadeMode(EvadeReason why) {
         if (me.isInEvadeMode()) {
             return false;
         }
@@ -349,7 +353,7 @@ public class CreatureAI extends UnitAI {
         return visualizeBoundary(duration, null, false);
     }
 
-        public final CypherStrings visualizeBoundary(Duration duration, Unit owner, boolean fill) {
+    public final CypherStrings visualizeBoundary(Duration duration, Unit owner, boolean fill) {
         if (owner == null) {
             return 0;
         }
@@ -440,7 +444,7 @@ public class CreatureAI extends UnitAI {
         return isInBoundary(null);
     }
 
-        public final boolean isInBoundary(Position who) {
+    public final boolean isInBoundary(Position who) {
         if (boundary == null) {
             return true;
         }
@@ -466,7 +470,7 @@ public class CreatureAI extends UnitAI {
         return doSummon(entry, pos, despawnTime, TempSummonType.CorpseTimedDespawn);
     }
 
-        public final Creature doSummon(int entry, Position pos, Duration despawnTime, TempSummonType summonType) {
+    public final Creature doSummon(int entry, Position pos, Duration despawnTime, TempSummonType summonType) {
         return me.summonCreature(entry, pos, summonType, despawnTime);
     }
 
@@ -482,7 +486,7 @@ public class CreatureAI extends UnitAI {
         return doSummon(entry, obj, 5.0f, null, TempSummonType.CorpseTimedDespawn);
     }
 
-        public final Creature doSummon(int entry, WorldObject obj, float radius, Duration despawnTime, TempSummonType summonType) {
+    public final Creature doSummon(int entry, WorldObject obj, float radius, Duration despawnTime, TempSummonType summonType) {
         var pos = obj.getRandomNearPosition(radius);
 
         return me.summonCreature(entry, pos, summonType, despawnTime);
@@ -500,18 +504,14 @@ public class CreatureAI extends UnitAI {
         return doSummonFlyer(entry, obj, flightZ, 5.0f, null, TempSummonType.CorpseTimedDespawn);
     }
 
-        public final Creature doSummonFlyer(int entry, WorldObject obj, float flightZ, float radius, Duration despawnTime, TempSummonType summonType) {
+    public final Creature doSummonFlyer(int entry, WorldObject obj, float flightZ, float radius, Duration despawnTime, TempSummonType summonType) {
         var pos = obj.getRandomNearPosition(radius);
         pos.setZ(pos.getZ() + flightZ);
 
         return me.summonCreature(entry, pos, summonType, despawnTime);
     }
 
-    public final void setBoundary(ArrayList<AreaBoundary> boundary) {
-        setBoundary(boundary, false);
-    }
-
-        public final void setBoundary(ArrayList<AreaBoundary> boundary, boolean negateBoundaries) {
+    public final void setBoundary(ArrayList<AreaBoundary> boundary, boolean negateBoundaries) {
         boundary = boundary;
         negateBoundary = negateBoundaries;
         me.doImmediateBoundaryCheck();

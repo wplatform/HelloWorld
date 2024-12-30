@@ -1,18 +1,18 @@
 package com.github.mmo.game.networking.packet.spell;
+
 import com.github.mmo.game.networking.ServerPacket;
-public class SpellPrepare extends ServerPacket
-{
+
+public class SpellPrepare extends ServerPacket {
     public ObjectGuid clientCastID = ObjectGuid.EMPTY;
     public ObjectGuid serverCastID = ObjectGuid.EMPTY;
-	public SpellPrepare()
-	{
-		super(ServerOpcode.SpellPrepare);
-	}
 
-	@Override
-	public void write()
-	{
+    public SpellPrepare() {
+        super(ServerOpcode.SpellPrepare);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(clientCastID);
         this.writeGuid(serverCastID);
-	}
+    }
 }

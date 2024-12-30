@@ -2,510 +2,439 @@ package com.github.mmo.game.supportsystem;
 
 
 import game.WorldConfig;
-import com.github.mmo.game.chat.commandHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class SupportManager 
-{
-	private final HashMap<Integer, BugTicket> bugTicketList = new HashMap<Integer, BugTicket>();
-	private final HashMap<Integer, ComplaintTicket> complaintTicketList = new HashMap<Integer, ComplaintTicket>();
-	private final HashMap<Integer, SuggestionTicket> suggestionTicketList = new HashMap<Integer, SuggestionTicket>();
+public class SupportManager {
+    private final HashMap<Integer, BugTicket> bugTicketList = new HashMap<Integer, BugTicket>();
+    private final HashMap<Integer, ComplaintTicket> complaintTicketList = new HashMap<Integer, ComplaintTicket>();
+    private final HashMap<Integer, SuggestionTicket> suggestionTicketList = new HashMap<Integer, SuggestionTicket>();
 
-	private boolean supportSystemStatus;
-	private boolean ticketSystemStatus;
-	private boolean bugSystemStatus;
-	private boolean complaintSystemStatus;
-	private boolean suggestionSystemStatus;
-	private int lastBugId;
-	private int lastComplaintId;
-	private int lastSuggestionId;
-	private int openBugTicketCount;
-	private int openComplaintTicketCount;
-	private int openSuggestionTicketCount;
-	private long lastChange;
-	private SupportManager()
-	{
-	}
+    private boolean supportSystemStatus;
+    private boolean ticketSystemStatus;
+    private boolean bugSystemStatus;
+    private boolean complaintSystemStatus;
+    private boolean suggestionSystemStatus;
+    private int lastBugId;
+    private int lastComplaintId;
+    private int lastSuggestionId;
+    private int openBugTicketCount;
+    private int openComplaintTicketCount;
+    private int openSuggestionTicketCount;
+    private long lastChange;
 
-	public final void initialize()
-	{
-		setSupportSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportEnabled));
-		setTicketSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportTicketsEnabled));
-		setBugSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportBugsEnabled));
-		setComplaintSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportComplaintsEnabled));
-		setSuggestionSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportSuggestionsEnabled));
-	}
+    private SupportManager() {
+    }
 
-	public final <T extends ticket> T getTicket(int id)
-	{
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				return (T)bugTicketList.get(id);
-			case "ComplaintTicket":
-				return (T)complaintTicketList.get(id);
-			case "SuggestionTicket":
-				return (T)suggestionTicketList.get(id);
-		}
+    public final void initialize() {
+        setSupportSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportEnabled));
+        setTicketSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportTicketsEnabled));
+        setBugSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportBugsEnabled));
+        setComplaintSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportComplaintsEnabled));
+        setSuggestionSystemStatus(WorldConfig.getBoolValue(WorldCfg.SupportSuggestionsEnabled));
+    }
 
-		return null;
-	}
+    public final <T extends ticket> T getTicket(int id) {
+        switch (T.class.name) {
+            case "BugTicket":
+                return (T) bugTicketList.get(id);
+            case "ComplaintTicket":
+                return (T) complaintTicketList.get(id);
+            case "SuggestionTicket":
+                return (T) suggestionTicketList.get(id);
+        }
 
-	public final <T extends ticket> int getOpenTicketCount()
-	{
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				return openBugTicketCount;
-			case "ComplaintTicket":
-				return openComplaintTicketCount;
-			case "SuggestionTicket":
-				return openSuggestionTicketCount;
-		}
+        return null;
+    }
 
-		return 0;
-	}
+    public final <T extends ticket> int getOpenTicketCount() {
+        switch (T.class.name) {
+            case "BugTicket":
+                return openBugTicketCount;
+            case "ComplaintTicket":
+                return openComplaintTicketCount;
+            case "SuggestionTicket":
+                return openSuggestionTicketCount;
+        }
 
-	public final void loadBugTickets()
-	{
-		var oldMSTime = System.currentTimeMillis();
-		bugTicketList.clear();
+        return 0;
+    }
 
-		lastBugId = 0;
-		openBugTicketCount = 0;
+    public final void loadBugTickets() {
+        var oldMSTime = System.currentTimeMillis();
+        bugTicketList.clear();
 
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_BUGS);
-		var result = DB.characters.query(stmt);
+        lastBugId = 0;
+        openBugTicketCount = 0;
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM bugs. DB table `gm_bug` is empty!");
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_BUGS);
+        var result = DB.characters.query(stmt);
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM bugs. DB table `gm_bug` is empty!");
 
-		int count = 0;
+            return;
+        }
 
-		do
-		{
-			BugTicket bug = new BugTicket();
-			bug.loadFromDB(result.GetFields());
+        int count = 0;
 
-			if (!bug.isClosed())
-			{
-				++openBugTicketCount;
-			}
+        do {
+            BugTicket bug = new BugTicket();
+            bug.loadFromDB(result.GetFields());
 
-			var id = bug.getId();
+            if (!bug.isClosed()) {
+                ++openBugTicketCount;
+            }
 
-			if (lastBugId < id)
-			{
-				lastBugId = id;
-			}
+            var id = bug.getId();
 
-			bugTicketList.put(id, bug);
-			++count;
-		} while (result.NextRow());
+            if (lastBugId < id) {
+                lastBugId = id;
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM bugs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-	}
+            bugTicketList.put(id, bug);
+            ++count;
+        } while (result.NextRow());
 
-	public final void loadComplaintTickets()
-	{
-		var oldMSTime = System.currentTimeMillis();
-		complaintTicketList.clear();
+        Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM bugs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+    }
 
-		lastComplaintId = 0;
-		openComplaintTicketCount = 0;
+    public final void loadComplaintTickets() {
+        var oldMSTime = System.currentTimeMillis();
+        complaintTicketList.clear();
 
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_COMPLAINTS);
-		var result = DB.characters.query(stmt);
+        lastComplaintId = 0;
+        openComplaintTicketCount = 0;
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM complaints. DB table `gm_complaint` is empty!");
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_COMPLAINTS);
+        var result = DB.characters.query(stmt);
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM complaints. DB table `gm_complaint` is empty!");
 
-		int count = 0;
-		PreparedStatement chatLogStmt;
-		SQLResult chatLogResult;
+            return;
+        }
 
-		do
-		{
-			ComplaintTicket complaint = new ComplaintTicket();
-			complaint.loadFromDB(result.GetFields());
+        int count = 0;
+        PreparedStatement chatLogStmt;
+        SQLResult chatLogResult;
 
-			if (!complaint.isClosed())
-			{
-				++openComplaintTicketCount;
-			}
+        do {
+            ComplaintTicket complaint = new ComplaintTicket();
+            complaint.loadFromDB(result.GetFields());
 
-			var id = complaint.getId();
+            if (!complaint.isClosed()) {
+                ++openComplaintTicketCount;
+            }
 
-			if (lastComplaintId < id)
-			{
-				lastComplaintId = id;
-			}
+            var id = complaint.getId();
 
-			chatLogStmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_COMPLAINT_CHATLINES);
-			chatLogStmt.AddValue(0, id);
-			chatLogResult = DB.characters.query(stmt);
+            if (lastComplaintId < id) {
+                lastComplaintId = id;
+            }
 
-			if (!chatLogResult.isEmpty())
-			{
-				do
-				{
-					complaint.loadChatLineFromDB(chatLogResult.GetFields());
-				} while (chatLogResult.NextRow());
-			}
+            chatLogStmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_COMPLAINT_CHATLINES);
+            chatLogStmt.AddValue(0, id);
+            chatLogResult = DB.characters.query(stmt);
 
-			complaintTicketList.put(id, complaint);
-			++count;
-		} while (result.NextRow());
+            if (!chatLogResult.isEmpty()) {
+                do {
+                    complaint.loadChatLineFromDB(chatLogResult.GetFields());
+                } while (chatLogResult.NextRow());
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM complaints in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-	}
+            complaintTicketList.put(id, complaint);
+            ++count;
+        } while (result.NextRow());
 
-	public final void loadSuggestionTickets()
-	{
-		var oldMSTime = System.currentTimeMillis();
-		suggestionTicketList.clear();
+        Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM complaints in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+    }
 
-		lastSuggestionId = 0;
-		openSuggestionTicketCount = 0;
+    public final void loadSuggestionTickets() {
+        var oldMSTime = System.currentTimeMillis();
+        suggestionTicketList.clear();
 
-		var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_SUGGESTIONS);
-		var result = DB.characters.query(stmt);
+        lastSuggestionId = 0;
+        openSuggestionTicketCount = 0;
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM suggestions. DB table `gm_suggestion` is empty!");
+        var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_GM_SUGGESTIONS);
+        var result = DB.characters.query(stmt);
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 GM suggestions. DB table `gm_suggestion` is empty!");
 
-		int count = 0;
+            return;
+        }
 
-		do
-		{
-			SuggestionTicket suggestion = new SuggestionTicket();
-			suggestion.loadFromDB(result.GetFields());
+        int count = 0;
 
-			if (!suggestion.isClosed())
-			{
-				++openSuggestionTicketCount;
-			}
+        do {
+            SuggestionTicket suggestion = new SuggestionTicket();
+            suggestion.loadFromDB(result.GetFields());
 
-			var id = suggestion.getId();
+            if (!suggestion.isClosed()) {
+                ++openSuggestionTicketCount;
+            }
 
-			if (lastSuggestionId < id)
-			{
-				lastSuggestionId = id;
-			}
+            var id = suggestion.getId();
 
-			suggestionTicketList.put(id, suggestion);
-			++count;
-		} while (result.NextRow());
+            if (lastSuggestionId < id) {
+                lastSuggestionId = id;
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM suggestions in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-	}
+            suggestionTicketList.put(id, suggestion);
+            ++count;
+        } while (result.NextRow());
 
-	public final <T extends ticket> void addTicket(T ticket)
-	{
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				bugTicketList.put(ticket.getId(), ticket instanceof BugTicket ? (BugTicket)ticket : null);
+        Log.outInfo(LogFilter.ServerLoading, "Loaded {0} GM suggestions in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+    }
 
-				if (!ticket.isClosed())
-				{
-					++openBugTicketCount;
-				}
+    public final <T extends ticket> void addTicket(T ticket) {
+        switch (T.class.name) {
+            case "BugTicket":
+                bugTicketList.put(ticket.getId(), ticket instanceof BugTicket ? (BugTicket) ticket : null);
 
-				break;
-			case "ComplaintTicket":
-				complaintTicketList.put(ticket.getId(), ticket instanceof ComplaintTicket ? (ComplaintTicket)ticket : null);
+                if (!ticket.isClosed()) {
+                    ++openBugTicketCount;
+                }
 
-				if (!ticket.isClosed())
-				{
-					++openComplaintTicketCount;
-				}
+                break;
+            case "ComplaintTicket":
+                complaintTicketList.put(ticket.getId(), ticket instanceof ComplaintTicket ? (ComplaintTicket) ticket : null);
 
-				break;
-			case "SuggestionTicket":
-				suggestionTicketList.put(ticket.getId(), ticket instanceof SuggestionTicket ? (SuggestionTicket)ticket : null);
+                if (!ticket.isClosed()) {
+                    ++openComplaintTicketCount;
+                }
 
-				if (!ticket.isClosed())
-				{
-					++openSuggestionTicketCount;
-				}
+                break;
+            case "SuggestionTicket":
+                suggestionTicketList.put(ticket.getId(), ticket instanceof SuggestionTicket ? (SuggestionTicket) ticket : null);
 
-				break;
-		}
+                if (!ticket.isClosed()) {
+                    ++openSuggestionTicketCount;
+                }
 
-		ticket.saveToDB();
-	}
+                break;
+        }
 
-	public final <T extends ticket> void removeTicket(int ticketId)
-	{
-		var ticket = this.<T>GetTicket(ticketId);
+        ticket.saveToDB();
+    }
 
-		if (ticket != null)
-		{
-			ticket.deleteFromDB();
+    public final <T extends ticket> void removeTicket(int ticketId) {
+        var ticket = this.<T>GetTicket(ticketId);
 
-			switch (T.class.name)
-			{
-				case "BugTicket":
-					bugTicketList.remove(ticketId);
+        if (ticket != null) {
+            ticket.deleteFromDB();
 
-					break;
-				case "ComplaintTicket":
-					complaintTicketList.remove(ticketId);
+            switch (T.class.name) {
+                case "BugTicket":
+                    bugTicketList.remove(ticketId);
 
-					break;
-				case "SuggestionTicket":
-					suggestionTicketList.remove(ticketId);
+                    break;
+                case "ComplaintTicket":
+                    complaintTicketList.remove(ticketId);
 
-					break;
-			}
-		}
-	}
+                    break;
+                case "SuggestionTicket":
+                    suggestionTicketList.remove(ticketId);
 
-	public final <T extends ticket> void closeTicket(int ticketId, ObjectGuid closedBy)
-	{
-		var ticket = this.<T>GetTicket(ticketId);
+                    break;
+            }
+        }
+    }
 
-		if (ticket != null)
-		{
+    public final <T extends ticket> void closeTicket(int ticketId, ObjectGuid closedBy) {
+        var ticket = this.<T>GetTicket(ticketId);
+
+        if (ticket != null) {
             ticket.setClosedBy(closedBy);
 
-			if (!closedBy.isEmpty())
-			{
-				switch (T.class.name)
-				{
-					case "BugTicket":
-						--_openBugTicketCount;
+            if (!closedBy.isEmpty()) {
+                switch (T.class.name) {
+                    case "BugTicket":
+                        --_openBugTicketCount;
 
-						break;
-					case "ComplaintTicket":
-						--_openComplaintTicketCount;
+                        break;
+                    case "ComplaintTicket":
+                        --_openComplaintTicketCount;
 
-						break;
-					case "SuggestionTicket":
-						--_openSuggestionTicketCount;
+                        break;
+                    case "SuggestionTicket":
+                        --_openSuggestionTicketCount;
 
-						break;
-				}
-			}
+                        break;
+                }
+            }
 
-			ticket.saveToDB();
-		}
-	}
+            ticket.saveToDB();
+        }
+    }
 
-	public final <T extends ticket> void resetTickets()
-	{
-		PreparedStatement stmt;
+    public final <T extends ticket> void resetTickets() {
+        PreparedStatement stmt;
 
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				bugTicketList.clear();
+        switch (T.class.name) {
+            case "BugTicket":
+                bugTicketList.clear();
 
-				lastBugId = 0;
+                lastBugId = 0;
 
-				stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_BUGS);
-				DB.characters.execute(stmt);
+                stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_BUGS);
+                DB.characters.execute(stmt);
 
-				break;
-			case "ComplaintTicket":
-				complaintTicketList.clear();
+                break;
+            case "ComplaintTicket":
+                complaintTicketList.clear();
 
-				lastComplaintId = 0;
+                lastComplaintId = 0;
 
-				SQLTransaction trans = new SQLTransaction();
-				trans.append(DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_COMPLAINTS));
-				trans.append(DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_COMPLAINT_CHATLOGS));
-				DB.characters.CommitTransaction(trans);
+                SQLTransaction trans = new SQLTransaction();
+                trans.append(DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_COMPLAINTS));
+                trans.append(DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_COMPLAINT_CHATLOGS));
+                DB.characters.CommitTransaction(trans);
 
-				break;
-			case "SuggestionTicket":
-				suggestionTicketList.clear();
+                break;
+            case "SuggestionTicket":
+                suggestionTicketList.clear();
 
-				lastSuggestionId = 0;
+                lastSuggestionId = 0;
 
-				stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_SUGGESTIONS);
-				DB.characters.execute(stmt);
+                stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_ALL_GM_SUGGESTIONS);
+                DB.characters.execute(stmt);
 
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	public final <T extends ticket> void showList(CommandHandler handler)
-	{
-		handler.sendSysMessage(CypherStrings.CommandTicketshowlist);
+    public final <T extends ticket> void showList(CommandHandler handler) {
+        handler.sendSysMessage(CypherStrings.CommandTicketshowlist);
 
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				for (var ticket : bugTicketList.values())
-				{
-					if (!ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+        switch (T.class.name) {
+            case "BugTicket":
+                for (var ticket : bugTicketList.values()) {
+                    if (!ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-			case "ComplaintTicket":
-				for (var ticket : complaintTicketList.values())
-				{
-					if (!ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+                break;
+            case "ComplaintTicket":
+                for (var ticket : complaintTicketList.values()) {
+                    if (!ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-			case "SuggestionTicket":
-				for (var ticket : suggestionTicketList.values())
-				{
-					if (!ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+                break;
+            case "SuggestionTicket":
+                for (var ticket : suggestionTicketList.values()) {
+                    if (!ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	public final <T extends ticket> void showClosedList(CommandHandler handler)
-	{
-		handler.sendSysMessage(CypherStrings.CommandTicketshowclosedlist);
+    public final <T extends ticket> void showClosedList(CommandHandler handler) {
+        handler.sendSysMessage(CypherStrings.CommandTicketshowclosedlist);
 
-		switch (T.class.name)
-		{
-			case "BugTicket":
-				for (var ticket : bugTicketList.values())
-				{
-					if (ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+        switch (T.class.name) {
+            case "BugTicket":
+                for (var ticket : bugTicketList.values()) {
+                    if (ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-			case "ComplaintTicket":
-				for (var ticket : complaintTicketList.values())
-				{
-					if (ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+                break;
+            case "ComplaintTicket":
+                for (var ticket : complaintTicketList.values()) {
+                    if (ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-			case "SuggestionTicket":
-				for (var ticket : suggestionTicketList.values())
-				{
-					if (ticket.IsClosed)
-					{
-						handler.sendSysMessage(ticket.formatViewMessageString(handler));
-					}
-				}
+                break;
+            case "SuggestionTicket":
+                for (var ticket : suggestionTicketList.values()) {
+                    if (ticket.IsClosed) {
+                        handler.sendSysMessage(ticket.formatViewMessageString(handler));
+                    }
+                }
 
-				break;
-		}
-	}
+                break;
+        }
+    }
 
-	public final boolean getSupportSystemStatus()
-	{
-		return supportSystemStatus;
-	}
+    public final boolean getSupportSystemStatus() {
+        return supportSystemStatus;
+    }
 
-	public final boolean getTicketSystemStatus()
-	{
-		return supportSystemStatus && ticketSystemStatus;
-	}
+    public final void setSupportSystemStatus(boolean status) {
+        supportSystemStatus = status;
+    }
 
-	public final boolean getBugSystemStatus()
-	{
-		return supportSystemStatus && bugSystemStatus;
-	}
+    public final boolean getTicketSystemStatus() {
+        return supportSystemStatus && ticketSystemStatus;
+    }
 
-	public final boolean getComplaintSystemStatus()
-	{
-		return supportSystemStatus && complaintSystemStatus;
-	}
+    public final void setTicketSystemStatus(boolean status) {
+        ticketSystemStatus = status;
+    }
 
-	public final boolean getSuggestionSystemStatus()
-	{
-		return supportSystemStatus && suggestionSystemStatus;
-	}
+    public final boolean getBugSystemStatus() {
+        return supportSystemStatus && bugSystemStatus;
+    }
 
-	public final long getLastChange()
-	{
-		return lastChange;
-	}
+    public final void setBugSystemStatus(boolean status) {
+        bugSystemStatus = status;
+    }
 
-	public final void setSupportSystemStatus(boolean status)
-	{
-		supportSystemStatus = status;
-	}
+    public final boolean getComplaintSystemStatus() {
+        return supportSystemStatus && complaintSystemStatus;
+    }
 
-	public final void setTicketSystemStatus(boolean status)
-	{
-		ticketSystemStatus = status;
-	}
+    public final void setComplaintSystemStatus(boolean status) {
+        complaintSystemStatus = status;
+    }
 
-	public final void setBugSystemStatus(boolean status)
-	{
-		bugSystemStatus = status;
-	}
+    public final boolean getSuggestionSystemStatus() {
+        return supportSystemStatus && suggestionSystemStatus;
+    }
 
-	public final void setComplaintSystemStatus(boolean status)
-	{
-		complaintSystemStatus = status;
-	}
+    public final void setSuggestionSystemStatus(boolean status) {
+        suggestionSystemStatus = status;
+    }
 
-	public final void setSuggestionSystemStatus(boolean status)
-	{
-		suggestionSystemStatus = status;
-	}
+    public final long getLastChange() {
+        return lastChange;
+    }
 
-	public final void updateLastChange()
-	{
-		lastChange = (long)gameTime.GetGameTime();
-	}
+    public final void updateLastChange() {
+        lastChange = (long) gameTime.GetGameTime();
+    }
 
-	public final int generateBugId()
-	{
-		return ++lastBugId;
-	}
+    public final int generateBugId() {
+        return ++lastBugId;
+    }
 
-	public final int generateComplaintId()
-	{
-		return ++lastComplaintId;
-	}
+    public final int generateComplaintId() {
+        return ++lastComplaintId;
+    }
 
-	public final int generateSuggestionId()
-	{
-		return ++lastSuggestionId;
-	}
+    public final int generateSuggestionId() {
+        return ++lastSuggestionId;
+    }
 
-	private long getAge(long t)
-	{
-		return (gameTime.GetGameTime() - (long)t) / time.Day;
-	}
+    private long getAge(long t) {
+        return (gameTime.GetGameTime() - (long) t) / time.Day;
+    }
 
-	private Iterable<Map.entry<Integer, ComplaintTicket>> getComplaintsByPlayerGuid(ObjectGuid playerGuid)
-	{
-		return complaintTicketList.where(ticket -> Objects.equals(ticket.value.playerGuid, playerGuid));
-	}
+    private Iterable<Map.entry<Integer, ComplaintTicket>> getComplaintsByPlayerGuid(ObjectGuid playerGuid) {
+        return complaintTicketList.where(ticket -> Objects.equals(ticket.value.playerGuid, playerGuid));
+    }
 }

@@ -6,57 +6,48 @@ import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.map.interfaces.*;
 
 
-public class CreatureRelocationNotifier implements IGridNotifierCreature, IGridNotifierPlayer
-{
-	private final Creature creature;
+public class CreatureRelocationNotifier implements IGridNotifierCreature, IGridNotifierPlayer {
+    private final Creature creature;
 
-	private gridType gridType = getGridType().values()[0];
-	public final GridType getGridType()
-	{
-		return gridType;
-	}
-	public final void setGridType(GridType value)
-	{
-		gridType = value;
-	}
+    public CreatureRelocationNotifier(Creature c, GridType gridType) {
+        creature = c;
+        setGridType(gridType);
+    }    private gridType gridType = getGridType().values()[0];
 
-	public CreatureRelocationNotifier(Creature c, GridType gridType)
-	{
-		creature = c;
-		setGridType(gridType);
-	}
+    public final GridType getGridType() {
+        return gridType;
+    }
 
-	public final void visit(list<Creature> objs)
-	{
-		if (!creature.isAlive())
-		{
-			return;
-		}
+    public final void setGridType(GridType value) {
+        gridType = value;
+    }
 
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var creature = objs.get(i);
-			NotifierHelpers.creatureUnitRelocationWorker(creature, creature);
+    public final void visit(list<Creature> objs) {
+        if (!creature.isAlive()) {
+            return;
+        }
 
-			if (!creature.isNeedNotify(NotifyFlag.VisibilityChanged))
-			{
-				NotifierHelpers.creatureUnitRelocationWorker(creature, creature);
-			}
-		}
-	}
+        for (var i = 0; i < objs.size(); ++i) {
+            var creature = objs.get(i);
+            NotifierHelpers.creatureUnitRelocationWorker(creature, creature);
 
-	public final void visit(list<Player> objs)
-	{
-		for (var i = 0; i < objs.size(); ++i)
-		{
-			var player = objs.get(i);
+            if (!creature.isNeedNotify(NotifyFlag.VisibilityChanged)) {
+                NotifierHelpers.creatureUnitRelocationWorker(creature, creature);
+            }
+        }
+    }
 
-			if (!player.getSeerView().isNeedNotify(NotifyFlag.VisibilityChanged))
-			{
-				player.updateVisibilityOf(creature);
-			}
+    public final void visit(list<Player> objs) {
+        for (var i = 0; i < objs.size(); ++i) {
+            var player = objs.get(i);
 
-			NotifierHelpers.creatureUnitRelocationWorker(creature, player);
-		}
-	}
+            if (!player.getSeerView().isNeedNotify(NotifyFlag.VisibilityChanged)) {
+                player.updateVisibilityOf(creature);
+            }
+
+            NotifierHelpers.creatureUnitRelocationWorker(creature, player);
+        }
+    }
+
+
 }

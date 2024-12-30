@@ -1,58 +1,50 @@
 package com.github.mmo.game.world;
 
 
-
-import com.github.mmo.game.chat.*;
+import com.github.mmo.game.chat.MessageBuilder;
 import com.github.mmo.game.entity.player.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Locale;
 
-public class WorldWorldTextBuilder extends MessageBuilder
-{
-	private final int iTextId;
-	private final Object[] iArgs;
+public class WorldWorldTextBuilder extends MessageBuilder {
+    private final int iTextId;
+    private final Object[] iArgs;
 
-	public WorldWorldTextBuilder(int textId, object... args)
-	{
-		iTextId = textId;
-		iArgs = args;
-	}
+    public WorldWorldTextBuilder(int textId, object... args) {
+        iTextId = textId;
+        iArgs = args;
+    }
 
-	@Override
-	public MultiplePacketSender invoke(Locale locale)
-	{
-		var text = global.getObjectMgr().getCypherString(iTextId, locale);
+    @Override
+    public MultiplePacketSender invoke(Locale locale) {
+        var text = global.getObjectMgr().getCypherString(iTextId, locale);
 
-		if (iArgs != null)
-		{
-			text = String.format(text, iArgs);
-		}
+        if (iArgs != null) {
+            text = String.format(text, iArgs);
+        }
 
-		MultiplePacketSender sender = new MultiplePacketSender();
+        MultiplePacketSender sender = new MultiplePacketSender();
 
-		var lines = new LocalizedString();
+        var lines = new LocalizedString();
 
-		for (var i = 0; i < lines.length; ++i)
-		{
-			ChatPkt messageChat = new ChatPkt();
-			messageChat.initialize(ChatMsg.System, language.Universal, null, null, lines.get(i));
-			messageChat.write();
-			sender.packets.add(messageChat);
-		}
+        for (var i = 0; i < lines.length; ++i) {
+            ChatPkt messageChat = new ChatPkt();
+            messageChat.initialize(ChatMsg.System, language.Universal, null, null, lines.get(i));
+            messageChat.write();
+            sender.packets.add(messageChat);
+        }
 
-		return sender;
-	}
+        return sender;
+    }
 
-	public static class MultiplePacketSender implements IDoWork<Player>
-	{
-		public ArrayList<ServerPacket> packets = new ArrayList<>();
+    public static class MultiplePacketSender implements IDoWork<Player> {
+        public ArrayList<ServerPacket> packets = new ArrayList<>();
 
-		public final void invoke(Player receiver)
-		{
-			for (var packet : packets)
-			{
-				receiver.sendPacket(packet);
-			}
-		}
-	}
+        public final void invoke(Player receiver) {
+            for (var packet : packets) {
+                receiver.sendPacket(packet);
+            }
+        }
+    }
 }

@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.combat;
 
 
-public class ThreatClear extends ServerPacket
-{
-	public ObjectGuid unitGUID = ObjectGuid.EMPTY;
-	public ThreatClear()
-	{
-		super(ServerOpcode.ThreatClear);
-	}
+public class ThreatClear extends ServerPacket {
+    public ObjectGuid unitGUID = ObjectGuid.EMPTY;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(unitGUID);
-	}
+    public ThreatClear() {
+        super(ServerOpcode.ThreatClear);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(unitGUID);
+    }
 }

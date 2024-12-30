@@ -1,24 +1,19 @@
 package com.github.mmo.game.networking.packet.quest;
 
-public final class QuestDescEmote
-{
+public final class QuestDescEmote {
 
-	public QuestDescEmote(int type)
-	{
-		this(type, 0);
-	}
+    public int type;
+    public int delay;
 
-	public QuestDescEmote()
-	{
-	}
+    public QuestDescEmote(int type) {
+        this(type, 0);
+    }
 
-	public QuestDescEmote(int type, int delay)
-	{
-		this.type = type;
-		this.delay = delay;
-	}
-
-	public int type;
-	public int delay;
+    public QuestDescEmote() {
+    }
+    public QuestDescEmote(int type, int delay) {
+        this.type = type;
+        this.delay = delay;
+    }
 
 }

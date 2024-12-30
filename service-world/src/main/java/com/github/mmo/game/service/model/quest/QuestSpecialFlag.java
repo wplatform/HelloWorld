@@ -1,10 +1,13 @@
-package com.github.mmo.game.quest.enums;
+package com.github.mmo.game.service.model.quest;
 
+import com.github.mmo.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public
-enum QuestSpecialFlag {
+enum QuestSpecialFlag implements EnumFlag.FlagValue {
     NONE(0x000),
     // Trinity flags for set SpecialFlags in DB if required but used only at server
     REPEATABLE(0x001),   // Set by 1 in SpecialFlags from DB

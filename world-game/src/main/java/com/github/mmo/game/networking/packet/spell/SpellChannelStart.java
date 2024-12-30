@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.spell;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class SpellChannelStart extends ServerPacket {
     public int spellID;

@@ -5,7 +5,7 @@ import com.github.mmo.common.Assert;
 public interface GridObject<T> {
 
 
-    default boolean isInGrid()  {
+    default boolean isInGrid() {
         return getGridReference().isValid();
     }
 
@@ -15,6 +15,7 @@ public interface GridObject<T> {
         T object = (T) this;
         getGridReference().link(m, object);
     }
+
     default void removeFromGrid() {
         Assert.state(isInGrid());
         getGridReference().unlink();

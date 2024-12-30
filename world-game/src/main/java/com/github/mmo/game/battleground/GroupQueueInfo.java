@@ -1,7 +1,6 @@
 package com.github.mmo.game.battleground;
 
 
-
 import com.github.mmo.game.entity.ObjectGuid;
 
 import java.util.HashMap;

@@ -1,18 +1,17 @@
 package com.github.mmo.game.networking.packet.item;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class UseCritterItem extends ClientPacket
-{
+class UseCritterItem extends ClientPacket {
     public ObjectGuid itemGuid = ObjectGuid.EMPTY;
-	public UseCritterItem(WorldPacket packet)
-	{
-		super(packet);
-	}
 
-	@Override
-	public void read()
-	{
+    public UseCritterItem(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
         itemGuid = this.readPackedGuid();
-	}
+    }
 }

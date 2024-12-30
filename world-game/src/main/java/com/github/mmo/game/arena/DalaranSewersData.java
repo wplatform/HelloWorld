@@ -1,8 +1,6 @@
 package com.github.mmo.game.arena;
 
 
-
-
 final class DalaranSewersData {
 
     public static final int pipeKnockbackTotalCount = 2;

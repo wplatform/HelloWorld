@@ -1,49 +1,44 @@
 package com.github.mmo.game.networking.packet.spell;
 
-import com.github.mmo.game.networking.*;
-public final class LearnedSpellInfo
-{
-	public int spellID;
-	public boolean isFavorite;
-	public Integer field_8 = null;
-	public Integer superceded = null;
-	public Integer traitDefinitionID = null;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(spellID);
-		data.writeBit(isFavorite);
-		data.writeBit(field_8 != null);
-		data.writeBit(superceded != null);
-		data.writeBit(traitDefinitionID != null);
-		data.flushBits();
+public final class LearnedSpellInfo {
+    public int spellID;
+    public boolean isFavorite;
+    public Integer field_8 = null;
+    public Integer superceded = null;
+    public Integer traitDefinitionID = null;
 
-		if (field_8 != null)
-		{
-			data.writeInt32(field_8.intValue());
-		}
+    public void write(WorldPacket data) {
+        data.writeInt32(spellID);
+        data.writeBit(isFavorite);
+        data.writeBit(field_8 != null);
+        data.writeBit(superceded != null);
+        data.writeBit(traitDefinitionID != null);
+        data.flushBits();
 
-		if (superceded != null)
-		{
-			data.writeInt32(superceded.intValue());
-		}
+        if (field_8 != null) {
+            data.writeInt32(field_8.intValue());
+        }
 
-		if (traitDefinitionID != null)
-		{
-			data.writeInt32(traitDefinitionID.intValue());
-		}
-	}
+        if (superceded != null) {
+            data.writeInt32(superceded.intValue());
+        }
 
-	public LearnedSpellInfo clone()
-	{
-		LearnedSpellInfo varCopy = new LearnedSpellInfo();
+        if (traitDefinitionID != null) {
+            data.writeInt32(traitDefinitionID.intValue());
+        }
+    }
 
-		varCopy.spellID = this.spellID;
-		varCopy.isFavorite = this.isFavorite;
-		varCopy.field_8 = this.field_8;
-		varCopy.superceded = this.superceded;
-		varCopy.traitDefinitionID = this.traitDefinitionID;
+    public LearnedSpellInfo clone() {
+        LearnedSpellInfo varCopy = new LearnedSpellInfo();
 
-		return varCopy;
-	}
+        varCopy.spellID = this.spellID;
+        varCopy.isFavorite = this.isFavorite;
+        varCopy.field_8 = this.field_8;
+        varCopy.superceded = this.superceded;
+        varCopy.traitDefinitionID = this.traitDefinitionID;
+
+        return varCopy;
+    }
 }

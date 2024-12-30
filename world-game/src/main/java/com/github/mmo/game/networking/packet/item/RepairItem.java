@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.item;
 
-import com.github.mmo.game.networking.*;public class RepairItem extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class RepairItem extends ClientPacket {
     public ObjectGuid npcGUID = ObjectGuid.EMPTY;
     public ObjectGuid itemGUID = ObjectGuid.EMPTY;
     public boolean useGuildBank;

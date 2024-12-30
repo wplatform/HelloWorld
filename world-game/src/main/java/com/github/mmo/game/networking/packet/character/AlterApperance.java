@@ -1,34 +1,32 @@
 package com.github.mmo.game.networking.packet.character;
 
-import com.github.mmo.game.entity.*;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.entity.ChrCustomizationChoice;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
 
-public class AlterApperance extends ClientPacket
-{
-	public byte newSex;
-	public Array<ChrCustomizationChoice> customizations = new Array<ChrCustomizationChoice>(72);
-	public int customizedRace;
-	public AlterApperance(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class AlterApperance extends ClientPacket {
+    public byte newSex;
+    public Array<ChrCustomizationChoice> customizations = new Array<ChrCustomizationChoice>(72);
+    public int customizedRace;
 
-	@Override
-	public void read()
-	{
-		var customizationCount = this.readUInt();
-		newSex = this.readUInt8();
-		customizedRace = this.readInt32();
+    public AlterApperance(WorldPacket packet) {
+        super(packet);
+    }
 
-		for (var i = 0; i < customizationCount; ++i)
-		{
-			ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
-			tempVar.chrCustomizationOptionID = this.readUInt();
-			tempVar.chrCustomizationChoiceID = this.readUInt();
-			customizations.set(i, tempVar);
-		}
+    @Override
+    public void read() {
+        var customizationCount = this.readUInt();
+        newSex = this.readUInt8();
+        customizedRace = this.readInt32();
 
-		collections.sort(customizations);
-	}
+        for (var i = 0; i < customizationCount; ++i) {
+            ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
+            tempVar.chrCustomizationOptionID = this.readUInt();
+            tempVar.chrCustomizationChoiceID = this.readUInt();
+            customizations.set(i, tempVar);
+        }
+
+        collections.sort(customizations);
+    }
 }

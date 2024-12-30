@@ -1,23 +1,21 @@
 package com.github.mmo.game.networking.packet.petition;
 
 
-public class PetitionSignResults extends ServerPacket
-{
-	public ObjectGuid item = ObjectGuid.EMPTY;
-	public ObjectGuid player = ObjectGuid.EMPTY;
-	public PetitionSigns error = PetitionSigns.forValue(0);
-	public PetitionSignResults()
-	{
-		super(ServerOpcode.PetitionSignResults);
-	}
+public class PetitionSignResults extends ServerPacket {
+    public ObjectGuid item = ObjectGuid.EMPTY;
+    public ObjectGuid player = ObjectGuid.EMPTY;
+    public PetitionSigns error = PetitionSigns.forValue(0);
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(item);
-		this.writeGuid(player);
+    public PetitionSignResults() {
+        super(ServerOpcode.PetitionSignResults);
+    }
 
-		this.writeBits(error, 4);
-		this.flushBits();
-	}
+    @Override
+    public void write() {
+        this.writeGuid(item);
+        this.writeGuid(player);
+
+        this.writeBits(error, 4);
+        this.flushBits();
+    }
 }

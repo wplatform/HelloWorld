@@ -5,158 +5,128 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 
-public class CommandManager
-{
-	private static final TreeMap<String, ChatCommandNode> COMMANDS = new TreeMap<String, ChatCommandNode>();
+public class CommandManager {
+    private static final TreeMap<String, ChatCommandNode> COMMANDS = new TreeMap<String, ChatCommandNode>();
 
-	public static TreeMap<String, ChatCommandNode> getCommands()
-	{
-		return COMMANDS;
-	}
+    static {
+        for (var type : Assembly.GetExecutingAssembly().GetTypes()) {
+            if (type.Attributes.hasFlag(TypeAttributes.NestedPrivate.getValue() | TypeAttributes.NestedPublic.getValue())) {
+                continue;
+            }
 
-	static
-	{
-		for (var type : Assembly.GetExecutingAssembly().GetTypes())
-		{
-			if (type.Attributes.HasAnyFlag(TypeAttributes.NestedPrivate.getValue() | TypeAttributes.NestedPublic.getValue()))
-			{
-				continue;
-			}
+            var groupAttribute = type.<CommandGroupAttribute>GetCustomAttribute(true);
 
-			var groupAttribute = type.<CommandGroupAttribute>GetCustomAttribute(true);
+            if (groupAttribute != null) {
+                ChatCommandNode command = new ChatCommandNode(groupAttribute);
+                buildSubCommandsForCommand(command, type);
+                COMMANDS.put(groupAttribute.name, command);
+            }
 
-			if (groupAttribute != null)
-			{
-				ChatCommandNode command = new ChatCommandNode(groupAttribute);
-				buildSubCommandsForCommand(command, type);
-				COMMANDS.put(groupAttribute.name, command);
-			}
+            //This check for any command not part of that group,  but saves us from having to add them into a new class.
+            for (var method : type.GetMethods(BindingFlags.Static.getValue() | BindingFlags.NonPublic.getValue())) {
+                var commandAttribute = method.<CommandNonGroupAttribute>GetCustomAttribute(true);
 
-			//This check for any command not part of that group,  but saves us from having to add them into a new class.
-			for (var method : type.GetMethods(BindingFlags.Static.getValue() | BindingFlags.NonPublic.getValue()))
-			{
-				var commandAttribute = method.<CommandNonGroupAttribute>GetCustomAttribute(true);
+                if (commandAttribute != null) {
+                    COMMANDS.put(commandAttribute.name, new ChatCommandNode(commandAttribute, method));
+                }
+            }
+        }
 
-				if (commandAttribute != null)
-				{
-					COMMANDS.put(commandAttribute.name, new ChatCommandNode(commandAttribute, method));
-				}
-			}
-		}
+        var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_COMMANDS);
+        var result = DB.World.query(stmt);
 
-		var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_COMMANDS);
-		var result = DB.World.query(stmt);
+        if (!result.isEmpty()) {
+            do {
+                var name = result.<String>Read(0);
+                var help = result.<String>Read(1);
 
-		if (!result.isEmpty())
-		{
-			do
-			{
-				var name = result.<String>Read(0);
-				var help = result.<String>Read(1);
+                ChatCommandNode cmd = null;
+                var map = COMMANDS;
 
-				ChatCommandNode cmd = null;
-				var map = COMMANDS;
+                for (var key : name.split(' ', StringSplitOptions.RemoveEmptyEntries)) {
+                    var it = map.get(key);
 
-				for (var key : name.split(' ', StringSplitOptions.RemoveEmptyEntries))
-				{
-					var it = map.get(key);
+                    if (it != null) {
+                        cmd = it;
+                        map = cmd.subCommands;
+                    } else {
+                        Logs.SQL.error(String.format("Table `command` contains data for non-existant command '%1$s'. Skipped.", name));
+                        cmd = null;
 
-					if (it != null)
-					{
-						cmd = it;
-						map = cmd.subCommands;
-					}
-					else
-					{
-						Log.outError(LogFilter.Sql, String.format("Table `command` contains data for non-existant command '%1$s'. Skipped.", name));
-						cmd = null;
+                        break;
+                    }
+                }
 
-						break;
-					}
-				}
+                if (cmd == null) {
+                    continue;
+                }
 
-				if (cmd == null)
-				{
-					continue;
-				}
+                if (!cmd.helpText.isEmpty()) {
+                    Logs.SQL.error(String.format("Table `command` contains duplicate data for command '%1$s'. Skipped.", name));
+                }
 
-				if (!cmd.helpText.isEmpty())
-				{
-					Log.outError(LogFilter.Sql, String.format("Table `command` contains duplicate data for command '%1$s'. Skipped.", name));
-				}
-
-				if (cmd.helpString == 0)
-				{
-					cmd.helpText = help;
-				}
-				else
-				{
-					Log.outError(LogFilter.Sql, String.format("Table `command` contains legacy help text for command '%1$s', which uses `trinity_string`. Skipped.", name));
-				}
-			} while (result.NextRow());
-		}
+                if (cmd.helpString == 0) {
+                    cmd.helpText = help;
+                } else {
+                    Logs.SQL.error(String.format("Table `command` contains legacy help text for command '%1$s', which uses `trinity_string`. Skipped.", name));
+                }
+            } while (result.NextRow());
+        }
 
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-		for (var(name, cmd) : COMMANDS)
-		{
-			cmd.resolveNames(name);
-		}
-	}
+        for (var(name, cmd) : COMMANDS) {
+            cmd.resolveNames(name);
+        }
+    }
 
-	public static void initConsole()
-	{
-		if (ConfigMgr.GetDefaultValue("BeepAtStart", true))
-		{
-			Console.Beep();
-		}
+    public static TreeMap<String, ChatCommandNode> getCommands() {
+        return COMMANDS;
+    }
 
-		Console.ForegroundColor = ConsoleColor.Green;
-		system.out.print("Forged>> ");
+    public static void initConsole() {
+        if (ConfigMgr.GetDefaultValue("BeepAtStart", true)) {
+            Console.Beep();
+        }
 
-		var handler = new ConsoleHandler();
+        Console.ForegroundColor = ConsoleColor.Green;
+        system.out.print("Forged>> ");
 
-		while (!global.getWorldMgr().isStopped)
-		{
-			handler.parseCommands(new Scanner(system.in).nextLine());
-			Console.ForegroundColor = ConsoleColor.Green;
-			system.out.print("Forged>> ");
-		}
-	}
+        var handler = new ConsoleHandler();
 
-	private static void buildSubCommandsForCommand(ChatCommandNode command, Class type)
-	{
-		for (var nestedType : type.getClasses(BindingFlags.NonPublic))
-		{
-			var groupAttribute = nestedType.<CommandGroupAttribute>GetCustomAttribute(true);
+        while (!global.getWorldMgr().isStopped) {
+            handler.parseCommands(new Scanner(system.in).nextLine());
+            Console.ForegroundColor = ConsoleColor.Green;
+            system.out.print("Forged>> ");
+        }
+    }
 
-			if (groupAttribute == null)
-			{
-				continue;
-			}
+    private static void buildSubCommandsForCommand(ChatCommandNode command, Class type) {
+        for (var nestedType : type.getClasses(BindingFlags.NonPublic)) {
+            var groupAttribute = nestedType.<CommandGroupAttribute>GetCustomAttribute(true);
 
-			ChatCommandNode subCommand = new ChatCommandNode(groupAttribute);
-			buildSubCommandsForCommand(subCommand, nestedType);
-			command.addSubCommand(subCommand);
-		}
+            if (groupAttribute == null) {
+                continue;
+            }
 
-		for (var method : type.getMethods(BindingFlags.Static.getValue() | BindingFlags.NonPublic.getValue()))
-		{
-			var commandAttributes = method.<CommandAttribute>GetCustomAttributes(false).ToList();
+            ChatCommandNode subCommand = new ChatCommandNode(groupAttribute);
+            buildSubCommandsForCommand(subCommand, nestedType);
+            command.addSubCommand(subCommand);
+        }
 
-			if (commandAttributes.isEmpty())
-			{
-				continue;
-			}
+        for (var method : type.getMethods(BindingFlags.Static.getValue() | BindingFlags.NonPublic.getValue())) {
+            var commandAttributes = method.<CommandAttribute>GetCustomAttributes(false).ToList();
 
-			for (var commandAttribute : commandAttributes)
-			{
-				if (commandAttribute.getClass() == CommandNonGroupAttribute.class)
-				{
-					continue;
-				}
+            if (commandAttributes.isEmpty()) {
+                continue;
+            }
 
-				command.addSubCommand(new ChatCommandNode(commandAttribute, method));
-			}
-		}
-	}
+            for (var commandAttribute : commandAttributes) {
+                if (commandAttribute.getClass() == CommandNonGroupAttribute.class) {
+                    continue;
+                }
+
+                command.addSubCommand(new ChatCommandNode(commandAttribute, method));
+            }
+        }
+    }
 }

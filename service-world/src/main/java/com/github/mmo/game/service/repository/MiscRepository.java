@@ -79,4 +79,8 @@ public interface MiscRepository {
     @Transactional(readOnly = true)
     @Query("SELECT MenuID, FriendshipFactionID FROM gossip_menu_addon")
     Stream<GossipMenuAddon> streamAllGossipMenuAddon();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT ID, positionX, positionY, positionZ, icon, flags, importance, name, WMOGroupID FROM points_of_interest")
+    Stream<PointOfInterest> streamAllPointsOfInterest();
 }

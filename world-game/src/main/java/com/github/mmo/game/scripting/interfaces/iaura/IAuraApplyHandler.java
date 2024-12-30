@@ -1,10 +1,10 @@
 package com.github.mmo.game.scripting.interfaces.iaura;
 
 
-import com.github.mmo.game.spell.*;
+import com.github.mmo.game.spell.AuraEffect;
 
-public interface IAuraApplyHandler extends IAuraEffectHandler
-{
-	AuraEffectHandleModes getModes();
-	void apply(AuraEffect aura, AuraEffectHandleModes auraMode);
+public interface IAuraApplyHandler extends IAuraEffectHandler {
+    AuraEffectHandleModes getModes();
+
+    void apply(AuraEffect aura, AuraEffectHandleModes auraMode);
 }

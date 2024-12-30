@@ -1,21 +1,19 @@
 package com.github.mmo.game.networking.packet.query;
 
 
-public class CorpseTransportQuery extends ServerPacket
-{
+public class CorpseTransportQuery extends ServerPacket {
     public ObjectGuid player = ObjectGuid.EMPTY;
-	public Vector3 position;
-	public float facing;
-	public CorpseTransportQuery()
-	{
-		super(ServerOpcode.CorpseTransportQuery);
-	}
+    public Vector3 position;
+    public float facing;
 
-	@Override
-	public void write()
-	{
+    public CorpseTransportQuery() {
+        super(ServerOpcode.CorpseTransportQuery);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(player);
         this.writeVector3(position);
         this.writeFloat(facing);
-	}
+    }
 }

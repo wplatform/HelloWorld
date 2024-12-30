@@ -1,10 +1,7 @@
 package com.github.mmo.game.garrison;
 
 
-
-
-
-import java.util.*;
+import java.util.ArrayList;
 
 class GarrAbilities {
     public ArrayList<GarrAbilityRecord> counters = new ArrayList<>();

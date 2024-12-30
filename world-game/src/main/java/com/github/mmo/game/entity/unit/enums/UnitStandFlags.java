@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 // byte flag value (UNIT_FIELD_BYTES_1, 2)
 @Getter
 @RequiredArgsConstructor
-public enum  UnitStandFlags implements EnumFlag.FlagValue {
+public enum UnitStandFlags implements EnumFlag.FlagValue {
     UNIT_STAND_FLAGS_UNK1(0x01),
     UNIT_STAND_FLAGS_CREEP(0x02),
     UNIT_STAND_FLAGS_UNTRACKABLE(0x04),

@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.battleground;
 
 
 import com.github.mmo.game.entity.object.ObjectGuid;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class BattlefieldStatusFailed extends ServerPacket {
 

@@ -8,241 +8,211 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class ScenarioManager 
-{
-	private final HashMap<Integer, ScenarioData> scenarioData = new HashMap<Integer, ScenarioData>();
-	private final MultiMap<Integer, ScenarioPOI> scenarioPOIStore = new MultiMap<Integer, ScenarioPOI>();
-	private final HashMap<Tuple<Integer, Byte>, ScenarioDBData> scenarioDBData = new HashMap<Tuple<Integer, Byte>, ScenarioDBData>();
-	private ScenarioManager()
-	{
-	}
+public class ScenarioManager {
+    private final HashMap<Integer, ScenarioData> scenarioData = new HashMap<Integer, ScenarioData>();
+    private final MultiMap<Integer, ScenarioPOI> scenarioPOIStore = new MultiMap<Integer, ScenarioPOI>();
+    private final HashMap<Tuple<Integer, Byte>, ScenarioDBData> scenarioDBData = new HashMap<Tuple<Integer, Byte>, ScenarioDBData>();
 
-	public final InstanceScenario createInstanceScenario(InstanceMap map, int team)
-	{
-		var dbData = scenarioDBData.get(Tuple.create(map.getId(), (byte)map.getDifficultyID().getValue()));
+    private ScenarioManager() {
+    }
 
-		// No scenario registered for this map and difficulty in the database
-		if (dbData == null)
-		{
-			return null;
-		}
+    public final InstanceScenario createInstanceScenario(InstanceMap map, int team) {
+        var dbData = scenarioDBData.get(Tuple.create(map.getId(), (byte) map.getDifficultyID().getValue()));
 
-		int scenarioID = 0;
+        // No scenario registered for this map and difficulty in the database
+        if (dbData == null) {
+            return null;
+        }
 
-		switch (team)
-		{
-			case TeamIds.Alliance:
-				scenarioID = dbData.scenario_A;
+        int scenarioID = 0;
 
-				break;
-			case TeamIds.Horde:
-				scenarioID = dbData.scenario_H;
+        switch (team) {
+            case TeamIds.Alliance:
+                scenarioID = dbData.scenario_A;
 
-				break;
-			default:
-				break;
-		}
+                break;
+            case TeamIds.Horde:
+                scenarioID = dbData.scenario_H;
 
-		var scenarioData = scenarioData.get(scenarioID);
+                break;
+            default:
+                break;
+        }
 
-		if (scenarioData == null)
-		{
-			Log.outError(LogFilter.Scenario, "Table `scenarios` contained data linking scenario (Id: {0}) to map (Id: {1}), difficulty (Id: {2}) but no scenario data was found related to that scenario id.", scenarioID, map.getId(), map.getDifficultyID());
+        var scenarioData = scenarioData.get(scenarioID);
 
-			return null;
-		}
+        if (scenarioData == null) {
+            Log.outError(LogFilter.Scenario, "Table `scenarios` contained data linking scenario (Id: {0}) to map (Id: {1}), difficulty (Id: {2}) but no scenario data was found related to that scenario id.", scenarioID, map.getId(), map.getDifficultyID());
 
-		return new InstanceScenario(map, scenarioData);
-	}
+            return null;
+        }
 
-	public final void loadDBData()
-	{
-		scenarioDBData.clear();
+        return new InstanceScenario(map, scenarioData);
+    }
 
-		var oldMSTime = System.currentTimeMillis();
+    public final void loadDBData() {
+        scenarioDBData.clear();
 
-		var result = DB.World.query("SELECT map, difficulty, scenario_A, scenario_H FROM scenarios");
+        var oldMSTime = System.currentTimeMillis();
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 scenarios. DB table `scenarios` is empty!");
+        var result = DB.World.query("SELECT map, difficulty, scenario_A, scenario_H FROM scenarios");
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 scenarios. DB table `scenarios` is empty!");
 
-		do
-		{
-			var mapId = result.<Integer>Read(0);
-			var difficulty = result.<Byte>Read(1);
+            return;
+        }
 
-			var scenarioAllianceId = result.<Integer>Read(2);
+        do {
+            var mapId = result.<Integer>Read(0);
+            var difficulty = result.<Byte>Read(1);
 
-			if (scenarioAllianceId > 0 && !scenarioData.containsKey(scenarioAllianceId))
-			{
-				Log.outError(LogFilter.Sql, "ScenarioMgr.LoadDBData: DB Table `scenarios`, column scenario_A contained an invalid scenario (Id: {0})!", scenarioAllianceId);
+            var scenarioAllianceId = result.<Integer>Read(2);
 
-				continue;
-			}
+            if (scenarioAllianceId > 0 && !scenarioData.containsKey(scenarioAllianceId)) {
+                Logs.SQL.error("ScenarioMgr.LoadDBData: DB Table `scenarios`, column scenario_A contained an invalid scenario (Id: {0})!", scenarioAllianceId);
 
-			var scenarioHordeId = result.<Integer>Read(3);
+                continue;
+            }
 
-			if (scenarioHordeId > 0 && !scenarioData.containsKey(scenarioHordeId))
-			{
-				Log.outError(LogFilter.Sql, "ScenarioMgr.LoadDBData: DB Table `scenarios`, column scenario_H contained an invalid scenario (Id: {0})!", scenarioHordeId);
+            var scenarioHordeId = result.<Integer>Read(3);
 
-				continue;
-			}
+            if (scenarioHordeId > 0 && !scenarioData.containsKey(scenarioHordeId)) {
+                Logs.SQL.error("ScenarioMgr.LoadDBData: DB Table `scenarios`, column scenario_H contained an invalid scenario (Id: {0})!", scenarioHordeId);
 
-			if (scenarioHordeId == 0)
-			{
-				scenarioHordeId = scenarioAllianceId;
-			}
+                continue;
+            }
 
-			ScenarioDBData data = new ScenarioDBData();
-			data.mapID = mapId;
-			data.difficultyID = difficulty;
-			data.scenario_A = scenarioAllianceId;
-			data.scenario_H = scenarioHordeId;
-			scenarioDBData.put(Tuple.create(mapId, difficulty), data);
-		} while (result.NextRow());
+            if (scenarioHordeId == 0) {
+                scenarioHordeId = scenarioAllianceId;
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} instance scenario entries in {1} ms", scenarioDBData.size(), time.GetMSTimeDiffToNow(oldMSTime));
-	}
+            ScenarioDBData data = new ScenarioDBData();
+            data.mapID = mapId;
+            data.difficultyID = difficulty;
+            data.scenario_A = scenarioAllianceId;
+            data.scenario_H = scenarioHordeId;
+            scenarioDBData.put(Tuple.create(mapId, difficulty), data);
+        } while (result.NextRow());
 
-	public final void loadDB2Data()
-	{
-		scenarioData.clear();
+        Log.outInfo(LogFilter.ServerLoading, "Loaded {0} instance scenario entries in {1} ms", scenarioDBData.size(), time.GetMSTimeDiffToNow(oldMSTime));
+    }
 
-		HashMap<Integer, HashMap<Byte, ScenarioStepRecord>> scenarioSteps = new HashMap<Integer, HashMap<Byte, ScenarioStepRecord>>();
-		int deepestCriteriaTreeSize = 0;
+    public final void loadDB2Data() {
+        scenarioData.clear();
 
-		for (var step : CliDB.ScenarioStepStorage.values())
-		{
-			if (!scenarioSteps.containsKey(step.scenarioID))
-			{
-				scenarioSteps.put(step.scenarioID, new HashMap<Byte, ScenarioStepRecord>());
-			}
+        HashMap<Integer, HashMap<Byte, ScenarioStepRecord>> scenarioSteps = new HashMap<Integer, HashMap<Byte, ScenarioStepRecord>>();
+        int deepestCriteriaTreeSize = 0;
 
-			scenarioSteps.get(step.scenarioID).put(step.orderIndex, step);
-			var tree = global.getCriteriaMgr().getCriteriaTree(step.CriteriaTreeId);
+        for (var step : CliDB.ScenarioStepStorage.values()) {
+            if (!scenarioSteps.containsKey(step.scenarioID)) {
+                scenarioSteps.put(step.scenarioID, new HashMap<Byte, ScenarioStepRecord>());
+            }
 
-			if (tree != null)
-			{
-				int criteriaTreeSize = 0;
-				CriteriaManager.walkCriteriaTree(tree, treeFunc ->
-				{
-						++criteriaTreeSize;
-				});
-				deepestCriteriaTreeSize = Math.max(deepestCriteriaTreeSize, criteriaTreeSize);
-			}
-		}
+            scenarioSteps.get(step.scenarioID).put(step.orderIndex, step);
+            var tree = global.getCriteriaMgr().getCriteriaTree(step.CriteriaTreeId);
 
-		//ASSERT(deepestCriteriaTreeSize < MAX_ALLOWED_SCENARIO_POI_QUERY_SIZE, "MAX_ALLOWED_SCENARIO_POI_QUERY_SIZE must be at least {0}", deepestCriteriaTreeSize + 1);
+            if (tree != null) {
+                int criteriaTreeSize = 0;
+                CriteriaManager.walkCriteriaTree(tree, treeFunc ->
+                {
+                    ++criteriaTreeSize;
+                });
+                deepestCriteriaTreeSize = Math.max(deepestCriteriaTreeSize, criteriaTreeSize);
+            }
+        }
 
-		for (var scenario : CliDB.ScenarioStorage.values())
-		{
-			ScenarioData data = new ScenarioData();
-			data.entry = scenario;
-			data.steps = scenarioSteps.get(scenario.id);
-			scenarioData.put(scenario.id, data);
-		}
-	}
+        //ASSERT(deepestCriteriaTreeSize < MAX_ALLOWED_SCENARIO_POI_QUERY_SIZE, "MAX_ALLOWED_SCENARIO_POI_QUERY_SIZE must be at least {0}", deepestCriteriaTreeSize + 1);
 
-	public final void loadScenarioPOI()
-	{
-		var oldMSTime = System.currentTimeMillis();
+        for (var scenario : CliDB.ScenarioStorage.values()) {
+            ScenarioData data = new ScenarioData();
+            data.entry = scenario;
+            data.steps = scenarioSteps.get(scenario.id);
+            scenarioData.put(scenario.id, data);
+        }
+    }
 
-		scenarioPOIStore.clear(); // need for reload case
+    public final void loadScenarioPOI() {
+        var oldMSTime = System.currentTimeMillis();
 
-		int count = 0;
+        scenarioPOIStore.clear(); // need for reload case
 
-		//                                         0               1          2     3      4        5         6      7              8                  9
-		var result = DB.World.query("SELECT criteriaTreeID, blobIndex, idx1, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, NavigationPlayerConditionID FROM scenario_poi ORDER BY criteriaTreeID, Idx1");
+        int count = 0;
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 scenario POI definitions. DB table `scenario_poi` is empty.");
+        //                                         0               1          2     3      4        5         6      7              8                  9
+        var result = DB.World.query("SELECT criteriaTreeID, blobIndex, idx1, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, NavigationPlayerConditionID FROM scenario_poi ORDER BY criteriaTreeID, Idx1");
 
-			return;
-		}
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 scenario POI definitions. DB table `scenario_poi` is empty.");
 
-		HashMap<Integer, MultiMap<Integer, ScenarioPOIPoint>> allPoints = new HashMap<Integer, MultiMap<Integer, ScenarioPOIPoint>>();
+            return;
+        }
 
-		//                                               0               1    2  3  4
-		var pointsResult = DB.World.query("SELECT criteriaTreeID, idx1, X, Y, Z FROM scenario_poi_points ORDER BY CriteriaTreeID DESC, idx1, Idx2");
+        HashMap<Integer, MultiMap<Integer, ScenarioPOIPoint>> allPoints = new HashMap<Integer, MultiMap<Integer, ScenarioPOIPoint>>();
 
-		if (!pointsResult.isEmpty())
-		{
-			do
-			{
-				var criteriaTreeID = pointsResult.<Integer>Read(0);
-				var idx1 = pointsResult.<Integer>Read(1);
-				var X = pointsResult.<Integer>Read(2);
-				var Y = pointsResult.<Integer>Read(3);
-				var Z = pointsResult.<Integer>Read(4);
+        //                                               0               1    2  3  4
+        var pointsResult = DB.World.query("SELECT criteriaTreeID, idx1, X, Y, Z FROM scenario_poi_points ORDER BY CriteriaTreeID DESC, idx1, Idx2");
 
-				if (!allPoints.containsKey(criteriaTreeID))
-				{
-					allPoints.put(criteriaTreeID, new MultiMap<Integer, ScenarioPOIPoint>());
-				}
+        if (!pointsResult.isEmpty()) {
+            do {
+                var criteriaTreeID = pointsResult.<Integer>Read(0);
+                var idx1 = pointsResult.<Integer>Read(1);
+                var X = pointsResult.<Integer>Read(2);
+                var Y = pointsResult.<Integer>Read(3);
+                var Z = pointsResult.<Integer>Read(4);
 
-				allPoints.get(criteriaTreeID).add(idx1, new ScenarioPOIPoint(X, Y, Z));
-			} while (pointsResult.NextRow());
-		}
+                if (!allPoints.containsKey(criteriaTreeID)) {
+                    allPoints.put(criteriaTreeID, new MultiMap<Integer, ScenarioPOIPoint>());
+                }
 
-		do
-		{
-			var criteriaTreeID = result.<Integer>Read(0);
-			var blobIndex = result.<Integer>Read(1);
-			var idx1 = result.<Integer>Read(2);
-			var mapID = result.<Integer>Read(3);
-			var uiMapID = result.<Integer>Read(4);
-			var priority = result.<Integer>Read(5);
-			var flags = result.<Integer>Read(6);
-			var worldEffectID = result.<Integer>Read(7);
-			var playerConditionID = result.<Integer>Read(8);
-			var navigationPlayerConditionID = result.<Integer>Read(9);
+                allPoints.get(criteriaTreeID).add(idx1, new ScenarioPOIPoint(X, Y, Z));
+            } while (pointsResult.NextRow());
+        }
 
-			if (global.getCriteriaMgr().getCriteriaTree(criteriaTreeID) == null)
-			{
-				Log.outError(LogFilter.Sql, String.format("`scenario_poi` criteriaTreeID (%1$s) idx1 (%2$s) does not correspond to a valid criteria tree", criteriaTreeID, idx1));
-			}
+        do {
+            var criteriaTreeID = result.<Integer>Read(0);
+            var blobIndex = result.<Integer>Read(1);
+            var idx1 = result.<Integer>Read(2);
+            var mapID = result.<Integer>Read(3);
+            var uiMapID = result.<Integer>Read(4);
+            var priority = result.<Integer>Read(5);
+            var flags = result.<Integer>Read(6);
+            var worldEffectID = result.<Integer>Read(7);
+            var playerConditionID = result.<Integer>Read(8);
+            var navigationPlayerConditionID = result.<Integer>Read(9);
 
-			var blobs = allPoints.get(criteriaTreeID);
+            if (global.getCriteriaMgr().getCriteriaTree(criteriaTreeID) == null) {
+                Logs.SQL.error(String.format("`scenario_poi` criteriaTreeID (%1$s) idx1 (%2$s) does not correspond to a valid criteria tree", criteriaTreeID, idx1));
+            }
 
-			if (blobs != null)
-			{
-				var points = blobs.get(idx1);
+            var blobs = allPoints.get(criteriaTreeID);
 
-				if (!points.isEmpty())
-				{
-					scenarioPOIStore.add(criteriaTreeID, new ScenarioPOI(blobIndex, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, navigationPlayerConditionID, points));
-					++count;
+            if (blobs != null) {
+                var points = blobs.get(idx1);
 
-					continue;
-				}
-			}
+                if (!points.isEmpty()) {
+                    scenarioPOIStore.add(criteriaTreeID, new ScenarioPOI(blobIndex, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, navigationPlayerConditionID, points));
+                    ++count;
 
-			if (ConfigMgr.GetDefaultValue("load.autoclean", false))
-			{
-				DB.World.execute(String.format("DELETE FROM scenario_poi WHERE criteriaTreeID = %1$s", criteriaTreeID));
-			}
-			else
-			{
-				Log.outError(LogFilter.Sql, String.format("Table scenario_poi references unknown scenario poi points for criteria tree id %1$s POI id %2$s", criteriaTreeID, blobIndex));
-			}
-		} while (result.NextRow());
+                    continue;
+                }
+            }
 
-		Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s scenario POI definitions in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
-	}
+            if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
+                DB.World.execute(String.format("DELETE FROM scenario_poi WHERE criteriaTreeID = %1$s", criteriaTreeID));
+            } else {
+                Logs.SQL.error(String.format("Table scenario_poi references unknown scenario poi points for criteria tree id %1$s POI id %2$s", criteriaTreeID, blobIndex));
+            }
+        } while (result.NextRow());
 
-	public final ArrayList<ScenarioPOI> getScenarioPOIs(int criteriaTreeID)
-	{
-		if (!scenarioPOIStore.ContainsKey(criteriaTreeID))
-		{
-			return null;
-		}
+        Log.outInfo(LogFilter.ServerLoading, String.format("Loaded %1$s scenario POI definitions in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+    }
 
-		return scenarioPOIStore.get(criteriaTreeID);
-	}
+    public final ArrayList<ScenarioPOI> getScenarioPOIs(int criteriaTreeID) {
+        if (!scenarioPOIStore.ContainsKey(criteriaTreeID)) {
+            return null;
+        }
+
+        return scenarioPOIStore.get(criteriaTreeID);
+    }
 }

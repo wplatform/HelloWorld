@@ -2,7 +2,9 @@ package com.github.mmo.game.map;
 
 import com.github.mmo.game.movement.model.EvaluationMode;
 
-import java.util.ArrayList;public class SplineRawInitializer {
+import java.util.ArrayList;
+
+public class SplineRawInitializer {
     private final ArrayList<Vector3> points;
 
     public SplineRawInitializer(ArrayList<Vector3> points) {

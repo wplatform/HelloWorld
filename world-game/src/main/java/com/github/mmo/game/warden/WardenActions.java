@@ -1,18 +1,17 @@
-package game;public enum WardenActions
-{
-	Log,
-	kick,
-	Ban;
+package game;
 
-	public static final int SIZE = Integer.SIZE;
+public enum WardenActions {
+    Log,
+    kick,
+    Ban;
 
-	public int getValue()
-	{
-		return this.ordinal();
-	}
+    public static final int SIZE = Integer.SIZE;
 
-	public static WardenActions forValue(int value)
-	{
-		return values()[value];
-	}
+    public static WardenActions forValue(int value) {
+        return values()[value];
+    }
+
+    public int getValue() {
+        return this.ordinal();
+    }
 }

@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.clientconfig;
 
 
-import com.github.mmo.game.networking.*;public class RequestAccountData extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class RequestAccountData extends ClientPacket {
     public ObjectGuid playerGuid = ObjectGuid.EMPTY;
     public AccountdataTypes dataType = AccountDataTypes.forValue(0);
 

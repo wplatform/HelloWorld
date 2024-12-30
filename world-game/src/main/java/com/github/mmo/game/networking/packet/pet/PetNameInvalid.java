@@ -1,38 +1,35 @@
 package com.github.mmo.game.networking.packet.pet;
+
 import com.github.mmo.game.networking.ServerPacket;
-public class PetNameInvalid extends ServerPacket
-{
-	public PetrenameData renameData = new petRenameData();
-	public PetNameInvalidReason result = PetNameInvalidReason.values()[0];
-	public PetNameInvalid()
-	{
-		super(ServerOpcode.PetNameInvalid);
-	}
 
-	@Override
-	public void write()
-	{
-		this.writeInt8((byte)result.getValue());
-		this.writeGuid(renameData.petGUID);
-		this.writeInt32(renameData.petNumber);
+public class PetNameInvalid extends ServerPacket {
+    public PetrenameData renameData = new petRenameData();
+    public PetNameInvalidReason result = PetNameInvalidReason.values()[0];
 
-		this.writeInt8((byte)renameData.newName.getBytes().length);
+    public PetNameInvalid() {
+        super(ServerOpcode.PetNameInvalid);
+    }
 
-		this.writeBit(renameData.hasDeclinedNames);
+    @Override
+    public void write() {
+        this.writeInt8((byte) result.getValue());
+        this.writeGuid(renameData.petGUID);
+        this.writeInt32(renameData.petNumber);
 
-		if (renameData.hasDeclinedNames)
-		{
-			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)
-			{
-				this.writeBits(renameData.declinedNames.name.charAt(i).getBytes().length, 7);
-			}
+        this.writeInt8((byte) renameData.newName.getBytes().length);
 
-			for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++)
-			{
-				this.writeString(renameData.declinedNames.name.charAt(i));
-			}
-		}
+        this.writeBit(renameData.hasDeclinedNames);
 
-		this.writeString(renameData.newName);
-	}
+        if (renameData.hasDeclinedNames) {
+            for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++) {
+                this.writeBits(renameData.declinedNames.name.charAt(i).getBytes().length, 7);
+            }
+
+            for (var i = 0; i < SharedConst.MaxDeclinedNameCases; i++) {
+                this.writeString(renameData.declinedNames.name.charAt(i));
+            }
+        }
+
+        this.writeString(renameData.newName);
+    }
 }

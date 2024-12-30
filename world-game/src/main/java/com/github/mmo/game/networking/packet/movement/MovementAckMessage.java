@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.movement;
 
-import com.github.mmo.game.networking.*;public class MovementAckMessage extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class MovementAckMessage extends ClientPacket {
     public Movementack ack = new movementAck();
 
     public MovementAckMessage(WorldPacket packet) {

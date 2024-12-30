@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.battleground;
 
-import com.github.mmo.game.networking.*;class BattlemasterJoin extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class BattlemasterJoin extends ClientPacket {
 
     public Array<Long> queueIDs = new Array<Long>(1);
 

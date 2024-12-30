@@ -1,39 +1,37 @@
 package com.github.mmo.game.networking.packet.character;
 
 
-import com.github.mmo.game.entity.*;import com.github.mmo.game.networking.ServerPacket;
-public class CharCustomizeSuccess extends ServerPacket
-{
-	private final String charName = "";
-	private final byte sexID;
-	private final Array<ChrCustomizationChoice> customizations = new Array<ChrCustomizationChoice>(72);
+import com.github.mmo.game.entity.ChrCustomizationChoice;
+import com.github.mmo.game.networking.ServerPacket;
 
-	private final ObjectGuid charGUID;
+public class CharCustomizeSuccess extends ServerPacket {
+    private final String charName = "";
+    private final byte sexID;
+    private final Array<ChrCustomizationChoice> customizations = new Array<ChrCustomizationChoice>(72);
 
-	public CharCustomizeSuccess(CharCustomizeInfo customizeInfo)
-	{
-		super(ServerOpcode.CharCustomizeSuccess);
-		charGUID = customizeInfo.charGUID;
-		sexID = (byte)customizeInfo.sexID.getValue();
-		charName = customizeInfo.charName;
-		customizations = customizeInfo.customizations;
-	}
+    private final ObjectGuid charGUID;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(charGUID);
-		this.writeInt8(sexID);
-		this.writeInt32(customizations.size());
+    public CharCustomizeSuccess(CharCustomizeInfo customizeInfo) {
+        super(ServerOpcode.CharCustomizeSuccess);
+        charGUID = customizeInfo.charGUID;
+        sexID = (byte) customizeInfo.sexID.getValue();
+        charName = customizeInfo.charName;
+        customizations = customizeInfo.customizations;
+    }
 
-		for (var customization : customizations)
-		{
-			this.writeInt32(customization.chrCustomizationOptionID);
-			this.writeInt32(customization.chrCustomizationChoiceID);
-		}
+    @Override
+    public void write() {
+        this.writeGuid(charGUID);
+        this.writeInt8(sexID);
+        this.writeInt32(customizations.size());
 
-		this.writeBits(charName.getBytes().length, 6);
-		this.flushBits();
-		this.writeString(charName);
-	}
+        for (var customization : customizations) {
+            this.writeInt32(customization.chrCustomizationOptionID);
+            this.writeInt32(customization.chrCustomizationChoiceID);
+        }
+
+        this.writeBits(charName.getBytes().length, 6);
+        this.flushBits();
+        this.writeString(charName);
+    }
 }

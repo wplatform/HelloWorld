@@ -1,31 +1,29 @@
 package com.github.mmo.game.networking.packet.bpay;
 
 
-public class BattlePayBattlePetDelivered extends ServerPacket
-{
-	private ObjectGuid battlePetGuid = ObjectGuid.EMPTY;
-	public final ObjectGuid getBattlePetGuid()
-	{
-		return battlePetGuid;
-	}
-	public final void setBattlePetGuid(ObjectGuid value)
-	{
-		battlePetGuid = value;
-	}
-	private int displayID = 0;
-	public final int getDisplayID()
-	{
-		return displayID;
-	}
-	public final void setDisplayID(int value)
-	{
-		displayID = value;
-	}
+public class BattlePayBattlePetDelivered extends ServerPacket {
+    private ObjectGuid battlePetGuid = ObjectGuid.EMPTY;
+    private int displayID = 0;
 
-	public BattlePayBattlePetDelivered()
-	{
-		super(ServerOpcode.BattlePayBattlePetDelivered);
-	}
+    public BattlePayBattlePetDelivered() {
+        super(ServerOpcode.BattlePayBattlePetDelivered);
+    }
+
+    public final ObjectGuid getBattlePetGuid() {
+        return battlePetGuid;
+    }
+
+    public final void setBattlePetGuid(ObjectGuid value) {
+        battlePetGuid = value;
+    }
+
+    public final int getDisplayID() {
+        return displayID;
+    }
+
+    public final void setDisplayID(int value) {
+        displayID = value;
+    }
 
 
 	/*WorldPacket const* WorldPackets::BattlePay::PurchaseDetails::Write()
@@ -53,10 +51,9 @@ public class BattlePayBattlePetDelivered extends ServerPacket
 		return &this;
 	}*/
 
-	@Override
-	public void write()
-	{
-		this.write(getDisplayID());
-		this.write(getBattlePetGuid());
-	}
+    @Override
+    public void write() {
+        this.write(getDisplayID());
+        this.write(getBattlePetGuid());
+    }
 }

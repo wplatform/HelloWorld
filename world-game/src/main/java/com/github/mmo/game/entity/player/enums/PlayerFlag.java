@@ -3,6 +3,7 @@ package com.github.mmo.game.entity.player.enums;
 import com.github.mmo.common.EnumFlag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 @Getter(onMethod_ = {@Override})
 @RequiredArgsConstructor
 public

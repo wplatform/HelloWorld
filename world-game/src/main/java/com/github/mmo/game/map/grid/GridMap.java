@@ -9,13 +9,12 @@ import com.github.mmo.common.Logs;
 import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.domain.AreaTable;
 import com.github.mmo.dbc.domain.LiquidType;
-import com.github.mmo.utils.Flags;
-import com.github.mmo.game.map.*;
-import com.github.mmo.game.map.enums.LoadResult;
+import com.github.mmo.game.map.MapDefine;
 import com.github.mmo.game.map.enums.LiquidHeaderTypeFlag;
+import com.github.mmo.game.map.enums.LoadResult;
 import com.github.mmo.game.map.enums.ZLiquidStatus;
 import com.github.mmo.game.map.model.*;
-
+import com.github.mmo.utils.Flags;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -57,13 +56,19 @@ public class GridMap {
             {-533.33331f, -266.66666f},
             {-533.33331f, -533.33331f}
     };
-
+    private final DbcObjectManager dbcObjectManager;
+    public float[] V9;
+    public int[] uint16V9;
+    public short[] ubyteV9;
+    public float[] V8;
+    public int[] uint16V8;
+    public short[] ubyteV8;
+    //Area data
+    public int[] areaMap;
     private BiFunction<Float, Float, Float> gridGetHeightFunc;
-
     private Plane[] _minHeightPlanes;
     private float gridHeight;
     private float gridIntHeightMultiplier;
-
     //Liquid Map
     private float liquidLevel;
     private short[] liquidEntry;
@@ -77,19 +82,6 @@ public class GridMap {
     private byte liquidWidth;
     private byte liquidHeight;
     private byte[] holes;
-
-    public float[] V9;
-    public int[] uint16V9;
-    public short[] ubyteV9;
-
-    public float[] V8;
-    public int[] uint16V8;
-    public short[] ubyteV8;
-
-    //Area data
-    public int[] areaMap;
-
-    private final DbcObjectManager dbcObjectManager;
 
 
     public GridMap(DbcObjectManager dbcObjectManager) {
@@ -260,7 +252,7 @@ public class GridMap {
                 }
             }
 
-            typeFlags.or(LiquidHeaderTypeFlag.valueOf (1 << liqTypeIdx));
+            typeFlags.or(LiquidHeaderTypeFlag.valueOf(1 << liqTypeIdx));
         }
 
         if (typeFlags.equals(LiquidHeaderTypeFlag.NoWater))
@@ -278,7 +270,8 @@ public class GridMap {
         if (lx_int < 0 || lx_int >= liquidHeight)
             return EnumFlag.of(ZLiquidStatus.NO_WATER);
         if (ly_int < 0 || ly_int >= liquidWidth)
-            return EnumFlag.of(ZLiquidStatus.NO_WATER);;
+            return EnumFlag.of(ZLiquidStatus.NO_WATER);
+        ;
 
         // Get water level
         float liquid_level = liquidMap != null ? liquidMap[lx_int * liquidWidth + ly_int] : liquidLevel;

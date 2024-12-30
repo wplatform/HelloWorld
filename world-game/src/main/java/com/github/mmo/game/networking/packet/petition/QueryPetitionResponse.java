@@ -1,26 +1,23 @@
 package com.github.mmo.game.networking.packet.petition;
 
 
-public class QueryPetitionResponse extends ServerPacket
-{
-	public int petitionID = 0;
-	public boolean allow = false;
-	public Petitioninfo info;
-	public QueryPetitionResponse()
-	{
-		super(ServerOpcode.QueryPetitionResponse);
-	}
+public class QueryPetitionResponse extends ServerPacket {
+    public int petitionID = 0;
+    public boolean allow = false;
+    public Petitioninfo info;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(petitionID);
-		this.writeBit(allow);
-		this.flushBits();
+    public QueryPetitionResponse() {
+        super(ServerOpcode.QueryPetitionResponse);
+    }
 
-		if (allow)
-		{
-			info.write(this);
-		}
-	}
+    @Override
+    public void write() {
+        this.writeInt32(petitionID);
+        this.writeBit(allow);
+        this.flushBits();
+
+        if (allow) {
+            info.write(this);
+        }
+    }
 }

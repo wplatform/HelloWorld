@@ -1,8 +1,11 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;class AuctionListBiddedItems extends ClientPacket {
+import java.util.ArrayList;
+
+class AuctionListBiddedItems extends ClientPacket {
     public ObjectGuid auctioneer = ObjectGuid.EMPTY;
 
     public int offset;

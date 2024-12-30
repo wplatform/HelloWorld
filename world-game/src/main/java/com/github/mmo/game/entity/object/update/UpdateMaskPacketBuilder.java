@@ -17,6 +17,18 @@ public class UpdateMaskPacketBuilder {
         Arrays.fill(_mask, 0);
     }
 
+    private static int calculateBlockCount(int fieldCount) {
+        return (fieldCount + CLIENT_UPDATE_MASK_BITS - 1) / CLIENT_UPDATE_MASK_BITS;
+    }
+
+    private static int getBlockIndex(int bit) {
+        return bit / 32;
+    }
+
+    private static int getBlockFlag(int bit) {
+        return 1 << (bit % 32);
+    }
+
     public void setBit(int bit) {
         _mask[getBlockIndex(bit)] |= getBlockFlag(bit);
         _lastSetBit = bit;
@@ -30,18 +42,6 @@ public class UpdateMaskPacketBuilder {
                 data.writeInt32(_mask[i]);
             }
         }
-    }
-
-    private static int calculateBlockCount(int fieldCount) {
-        return (fieldCount + CLIENT_UPDATE_MASK_BITS - 1) / CLIENT_UPDATE_MASK_BITS;
-    }
-
-    private static int getBlockIndex(int bit) {
-        return bit / 32;
-    }
-
-    private static int getBlockFlag(int bit) {
-        return 1 << (bit % 32);
     }
 }
 

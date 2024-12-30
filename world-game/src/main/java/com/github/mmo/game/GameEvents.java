@@ -3,79 +3,67 @@ package com.github.mmo.game;
 
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.map.*;
-class GameEvents
-{
-	public static void trigger(int gameEventId, WorldObject source, WorldObject target)
-	{
-		var refForMapAndZoneScript = source != null ? source : target;
+import com.github.mmo.game.map.Map;
 
-		var zoneScript = refForMapAndZoneScript.getZoneScript();
+class GameEvents {
+    public static void trigger(int gameEventId, WorldObject source, WorldObject target) {
+        var refForMapAndZoneScript = source != null ? source : target;
 
-		if (zoneScript == null && refForMapAndZoneScript.isPlayer())
-		{
-			zoneScript = refForMapAndZoneScript.findZoneScript();
-		}
+        var zoneScript = refForMapAndZoneScript.getZoneScript();
 
-		if (zoneScript != null)
-		{
-			zoneScript.processEvent(target, gameEventId, source);
-		}
+        if (zoneScript == null && refForMapAndZoneScript.isPlayer()) {
+            zoneScript = refForMapAndZoneScript.findZoneScript();
+        }
 
-		var map = refForMapAndZoneScript.getMap();
-		var goTarget = target == null ? null : target.toGameObject();
+        if (zoneScript != null) {
+            zoneScript.processEvent(target, gameEventId, source);
+        }
 
-		if (goTarget != null)
-		{
-			var goAI = goTarget.getAI();
+        var map = refForMapAndZoneScript.getMap();
+        var goTarget = target == null ? null : target.toGameObject();
 
-			if (goAI != null)
-			{
-				goAI.eventInform(gameEventId);
-			}
-		}
+        if (goTarget != null) {
+            var goAI = goTarget.getAI();
 
-		var sourcePlayer = source == null ? null : source.toPlayer();
+            if (goAI != null) {
+                goAI.eventInform(gameEventId);
+            }
+        }
 
-		if (sourcePlayer != null)
-		{
-			triggerForPlayer(gameEventId, sourcePlayer);
-		}
+        var sourcePlayer = source == null ? null : source.toPlayer();
 
-		triggerForMap(gameEventId, map, source, target);
-	}
+        if (sourcePlayer != null) {
+            triggerForPlayer(gameEventId, sourcePlayer);
+        }
 
-	public static void triggerForPlayer(int gameEventId, Player source)
-	{
-		var map = source.getMap();
+        triggerForMap(gameEventId, map, source, target);
+    }
 
-		if (map.isInstanceable())
-		{
-			source.startCriteriaTimer(CriteriaStartEvent.SendEvent, gameEventId);
-			source.resetCriteria(CriteriaFailEvent.SendEvent, gameEventId);
-		}
+    public static void triggerForPlayer(int gameEventId, Player source) {
+        var map = source.getMap();
 
-		source.updateCriteria(CriteriaType.PlayerTriggerGameEvent, gameEventId, 0, 0, source);
+        if (map.isInstanceable()) {
+            source.startCriteriaTimer(CriteriaStartEvent.SendEvent, gameEventId);
+            source.resetCriteria(CriteriaFailEvent.SendEvent, gameEventId);
+        }
 
-		if (map.isScenario())
-		{
-			source.updateCriteria(CriteriaType.AnyoneTriggerGameEventScenario, gameEventId, 0, 0, source);
-		}
-	}
+        source.updateCriteria(CriteriaType.PlayerTriggerGameEvent, gameEventId, 0, 0, source);
+
+        if (map.isScenario()) {
+            source.updateCriteria(CriteriaType.AnyoneTriggerGameEventScenario, gameEventId, 0, 0, source);
+        }
+    }
 
 
-	public static void triggerForMap(int gameEventId, Map map, WorldObject source)
-	{
-		triggerForMap(gameEventId, map, source, null);
-	}
+    public static void triggerForMap(int gameEventId, Map map, WorldObject source) {
+        triggerForMap(gameEventId, map, source, null);
+    }
 
-	public static void triggerForMap(int gameEventId, Map map)
-	{
-		triggerForMap(gameEventId, map, null, null);
-	}
+    public static void triggerForMap(int gameEventId, Map map) {
+        triggerForMap(gameEventId, map, null, null);
+    }
 
-	public static void triggerForMap(int gameEventId, Map map, WorldObject source, WorldObject target)
-	{
-		map.scriptsStart(ScriptsType.event, gameEventId, source, target);
-	}
+    public static void triggerForMap(int gameEventId, Map map, WorldObject source, WorldObject target) {
+        map.scriptsStart(ScriptsType.event, gameEventId, source, target);
+    }
 }

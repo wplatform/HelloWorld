@@ -1,6 +1,7 @@
 package com.github.mmo.game.spell;
 
-import java.util.*;
+import java.util.HashMap;
+
 public class PetAura {
 
     private final HashMap<Integer, Integer> auras = new HashMap<Integer, Integer>();

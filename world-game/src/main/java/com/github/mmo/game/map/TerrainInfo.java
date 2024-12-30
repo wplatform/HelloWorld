@@ -7,29 +7,31 @@ import com.github.mmo.common.Logs;
 import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.domain.AreaTable;
 import com.github.mmo.dbc.domain.MapEntry;
-import com.github.mmo.utils.MathUtil;
-import com.github.mmo.utils.StringUtil;
-import game.PhasingHandler;
-
 import com.github.mmo.game.entity.object.Position;
-import com.github.mmo.game.map.collision.*;
+import com.github.mmo.game.map.collision.DynamicMapTree;
+import com.github.mmo.game.map.collision.VMapManager;
 import com.github.mmo.game.map.enums.LiquidHeaderTypeFlag;
 import com.github.mmo.game.map.enums.LoadResult;
 import com.github.mmo.game.map.enums.ZLiquidStatus;
 import com.github.mmo.game.map.grid.GridMap;
 import com.github.mmo.game.map.model.*;
 import com.github.mmo.game.phasing.PhaseShift;
+import com.github.mmo.utils.MathUtil;
+import com.github.mmo.utils.StringUtil;
+import game.PhasingHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
-import java.util.*;
-import java.io.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,24 +43,29 @@ import static com.github.mmo.game.map.MapDefine.*;
 public class TerrainInfo {
 
     private static final Duration CLEANUP_INTERVAL = Duration.ofMinutes(1);
-	private final int mapId;
-	private LocalizedString name;
-	private TerrainInfo parentTerrain;
-	private final boolean keepLoaded = false;
-	private final ArrayList<TerrainInfo> childTerrain = new ArrayList<>();
-	private final ReentrantLock loadLock = new ReentrantLock();
-	private final GridMap[][] gridMap = new GridMap[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
-	private final AtomicIntegerArray referenceCountFromMap = new AtomicIntegerArray(new int[MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS]);
-	private final BitSet loadedGrids = new BitSet(MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS);
-	private final BitSet gridFileExists = new BitSet(MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS);
-
-
+    private final int mapId;
+    private final boolean keepLoaded = false;
+    private final ArrayList<TerrainInfo> childTerrain = new ArrayList<>();
+    private final ReentrantLock loadLock = new ReentrantLock();
+    private final GridMap[][] gridMap = new GridMap[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+    private final AtomicIntegerArray referenceCountFromMap = new AtomicIntegerArray(new int[MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS]);
+    private final BitSet loadedGrids = new BitSet(MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS);
+    private final BitSet gridFileExists = new BitSet(MAX_NUMBER_OF_GRIDS * MAX_NUMBER_OF_GRIDS);
     private final ApplicationContext applicationContext;
     private final VMapManager vMapManager;
     private final MMapManager mMapManager;
     private final DbcObjectManager dbcObjectManager;
     private final WorldProperties worldProperties;
+    private LocalizedString name;
+    private TerrainInfo parentTerrain;
 
+    public static boolean isNotInWMOInterior(int mogpFlags) {
+        return (mogpFlags & 0x2000) == 0;
+    }
+
+    private static int indexFor(int gx, int gy) {
+        return gx * MAX_NUMBER_OF_GRIDS + gy;
+    }
 
     public String getMapName() {
         if (name == null) {
@@ -319,11 +326,6 @@ public class TerrainInfo {
                     releaseMap(x, y);
     }
 
-    public static boolean isNotInWMOInterior(int mogpFlags) {
-        return (mogpFlags & 0x2000) == 0;
-    }
-
-
     public PositionFullTerrainStatus getFullTerrainStatusForPosition(PhaseShift phaseShift, int mapId, float x, float y, float z,
                                                                      EnumFlag<LiquidHeaderTypeFlag> reqLiquidType, float collisionHeight,
                                                                      DynamicMapTree dynamicMapTree) {
@@ -364,7 +366,6 @@ public class TerrainInfo {
         }
 
 
-
         // NOTE: Objects will not detect a case when a wmo providing area/liquid despawns from under them
         // but this is fine as these kind of objects are not meant to be spawned and despawned a lot
         // example: Lich King platform
@@ -390,7 +391,7 @@ public class TerrainInfo {
                 data.setOutdoors((areaInfo.getMogpFlags() & 0x8) != 0);
 
                 if (wmoEntry != null) {
-                    data.setAreaId( wmoEntry.getAreaTableID());
+                    data.setAreaId(wmoEntry.getAreaTableID());
 
                     if ((wmoEntry.getFlags() & 4) != 0)
                         data.setOutdoors(true);
@@ -497,7 +498,6 @@ public class TerrainInfo {
 
         return data;
     }
-
 
     public EnumFlag<ZLiquidStatus> getLiquidStatus(PhaseShift phaseShift, int mapId, float x, float y, float z, EnumFlag<LiquidHeaderTypeFlag> reqLiquidType, LiquidData data, float collisionHeight) {
 
@@ -806,7 +806,7 @@ public class TerrainInfo {
 
             var res = getLiquidStatus(phaseShift, mapId, x, y, ground_z, EnumFlag.of(LiquidHeaderTypeFlag.AllLiquids), liquid_status, collisionHeight);
             Optional<ZLiquidStatus> element = res.toElement();
-            if(element.isPresent()) {
+            if (element.isPresent()) {
                 return switch (element.get()) {
                     case ABOVE_WATER -> Math.max(liquid_status.getLevel(), ground_z);
                     case NO_WATER -> ground_z;
@@ -817,11 +817,6 @@ public class TerrainInfo {
         }
 
         return MapDefine.VMAP_INVALID_HEIGHT_VALUE;
-    }
-
-
-    private static int indexFor(int gx, int gy) {
-        return gx * MAX_NUMBER_OF_GRIDS + gy;
     }
 
 }

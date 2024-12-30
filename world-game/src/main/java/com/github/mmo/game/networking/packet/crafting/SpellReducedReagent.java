@@ -1,24 +1,22 @@
 package com.github.mmo.game.networking.packet.crafting;
 
-import com.github.mmo.game.networking.*;
-final class SpellReducedReagent
-{
-	public int itemID;
-	public int quantity;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt32(itemID);
-		data.writeInt32(quantity);
-	}
+final class SpellReducedReagent {
+    public int itemID;
+    public int quantity;
 
-	public SpellReducedReagent clone()
-	{
-		SpellReducedReagent varCopy = new SpellReducedReagent();
+    public void write(WorldPacket data) {
+        data.writeInt32(itemID);
+        data.writeInt32(quantity);
+    }
 
-		varCopy.itemID = this.itemID;
-		varCopy.quantity = this.quantity;
+    public SpellReducedReagent clone() {
+        SpellReducedReagent varCopy = new SpellReducedReagent();
 
-		return varCopy;
-	}
+        varCopy.itemID = this.itemID;
+        varCopy.quantity = this.quantity;
+
+        return varCopy;
+    }
 }

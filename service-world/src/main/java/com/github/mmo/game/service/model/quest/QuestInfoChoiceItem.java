@@ -1,4 +1,4 @@
-package com.github.mmo.game.networking.packet.quest;
+package com.github.mmo.game.service.model.quest;
 
 public final class QuestInfoChoiceItem
 {

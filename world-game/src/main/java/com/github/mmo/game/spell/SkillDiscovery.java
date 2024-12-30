@@ -1,273 +1,228 @@
 package com.github.mmo.game.spell;
 
 
-
-
 import com.github.mmo.game.entity.player.Player;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class SkillDiscovery
-{
-	private static final MultiMap<Integer, SkillDiscoveryEntry> SKILLDISCOVERYSTORAGE = new MultiMap<Integer, SkillDiscoveryEntry>();
+public class SkillDiscovery {
+    private static final MultiMap<Integer, SkillDiscoveryEntry> SKILLDISCOVERYSTORAGE = new MultiMap<Integer, SkillDiscoveryEntry>();
 
-	public static void loadSkillDiscoveryTable()
-	{
-		var oldMsTime = System.currentTimeMillis();
+    public static void loadSkillDiscoveryTable() {
+        var oldMsTime = System.currentTimeMillis();
 
-		SKILLDISCOVERYSTORAGE.clear(); // need for reload
+        SKILLDISCOVERYSTORAGE.clear(); // need for reload
 
-		//                                                0        1         2              3
-		var result = DB.World.query("SELECT spellId, reqSpell, reqSkillValue, chance FROM skill_discovery_template");
+        //                                                0        1         2              3
+        var result = DB.World.query("SELECT spellId, reqSpell, reqSkillValue, chance FROM skill_discovery_template");
 
-		if (result.isEmpty())
-		{
-			Log.outInfo(LogFilter.ServerLoading, "Loaded 0 skill discovery definitions. DB table `skill_discovery_template` is empty.");
+        if (result.isEmpty()) {
+            Log.outInfo(LogFilter.ServerLoading, "Loaded 0 skill discovery definitions. DB table `skill_discovery_template` is empty.");
 
-			return;
-		}
+            return;
+        }
 
-		int count = 0;
+        int count = 0;
 
-		StringBuilder ssNonDiscoverableEntries = new StringBuilder();
-		ArrayList<Integer> reportedReqSpells = new ArrayList<>();
+        StringBuilder ssNonDiscoverableEntries = new StringBuilder();
+        ArrayList<Integer> reportedReqSpells = new ArrayList<>();
 
-		do
-		{
-			var spellId = result.<Integer>Read(0);
-			var reqSkillOrSpell = result.<Integer>Read(1);
-			var reqSkillValue = result.<Integer>Read(2);
-			var chance = result.<Double>Read(3);
+        do {
+            var spellId = result.<Integer>Read(0);
+            var reqSkillOrSpell = result.<Integer>Read(1);
+            var reqSkillValue = result.<Integer>Read(2);
+            var chance = result.<Double>Read(3);
 
-			if (chance <= 0) // chance
-			{
-				ssNonDiscoverableEntries.append(String.format("spellId = %1$s reqSkillOrSpell = %2$s reqSkillValue = %3$s chance = %4$s (chance problem)\n", spellId, reqSkillOrSpell, reqSkillValue, chance));
+            if (chance <= 0) // chance
+            {
+                ssNonDiscoverableEntries.append(String.format("spellId = %1$s reqSkillOrSpell = %2$s reqSkillValue = %3$s chance = %4$s (chance problem)\n", spellId, reqSkillOrSpell, reqSkillValue, chance));
 
-				continue;
-			}
+                continue;
+            }
 
-			if (reqSkillOrSpell > 0) // spell case
-			{
-				var absReqSkillOrSpell = (int)reqSkillOrSpell;
-				var reqSpellInfo = global.getSpellMgr().getSpellInfo(absReqSkillOrSpell, Difficulty.NONE);
+            if (reqSkillOrSpell > 0) // spell case
+            {
+                var absReqSkillOrSpell = (int) reqSkillOrSpell;
+                var reqSpellInfo = global.getSpellMgr().getSpellInfo(absReqSkillOrSpell, Difficulty.NONE);
 
-				if (reqSpellInfo == null)
-				{
-					if (!reportedReqSpells.contains(absReqSkillOrSpell))
-					{
-						Log.outError(LogFilter.Sql, "Spell (ID: {0}) have not existed spell (ID: {1}) in `reqSpell` field in `skill_discovery_template` table", spellId, reqSkillOrSpell);
-						reportedReqSpells.add(absReqSkillOrSpell);
-					}
+                if (reqSpellInfo == null) {
+                    if (!reportedReqSpells.contains(absReqSkillOrSpell)) {
+                        Logs.SQL.error("Spell (ID: {0}) have not existed spell (ID: {1}) in `reqSpell` field in `skill_discovery_template` table", spellId, reqSkillOrSpell);
+                        reportedReqSpells.add(absReqSkillOrSpell);
+                    }
 
-					continue;
-				}
+                    continue;
+                }
 
-				// mechanic discovery
-				if (reqSpellInfo.getMechanic() != mechanics.Discovery && !reqSpellInfo.isExplicitDiscovery())
-				{
-					if (!reportedReqSpells.contains(absReqSkillOrSpell))
-					{
-						Log.outError(LogFilter.Sql, "Spell (ID: {0}) not have MECHANIC_DISCOVERY (28) value in Mechanic field in spell.dbc" + " and not 100%% chance random discovery ability but listed for spellId {1} (and maybe more) in `skill_discovery_template` table", absReqSkillOrSpell, spellId);
+                // mechanic discovery
+                if (reqSpellInfo.getMechanic() != mechanics.Discovery && !reqSpellInfo.isExplicitDiscovery()) {
+                    if (!reportedReqSpells.contains(absReqSkillOrSpell)) {
+                        Logs.SQL.error("Spell (ID: {0}) not have MECHANIC_DISCOVERY (28) value in Mechanic field in spell.dbc" + " and not 100%% chance random discovery ability but listed for spellId {1} (and maybe more) in `skill_discovery_template` table", absReqSkillOrSpell, spellId);
 
-						reportedReqSpells.add(absReqSkillOrSpell);
-					}
+                        reportedReqSpells.add(absReqSkillOrSpell);
+                    }
 
-					continue;
-				}
+                    continue;
+                }
 
-				SKILLDISCOVERYSTORAGE.add(reqSkillOrSpell, new SkillDiscoveryEntry(spellId, reqSkillValue, chance));
-			}
-			else if (reqSkillOrSpell == 0) // skill case
-			{
-				var bounds = global.getSpellMgr().getSkillLineAbilityMapBounds(spellId);
+                SKILLDISCOVERYSTORAGE.add(reqSkillOrSpell, new SkillDiscoveryEntry(spellId, reqSkillValue, chance));
+            } else if (reqSkillOrSpell == 0) // skill case
+            {
+                var bounds = global.getSpellMgr().getSkillLineAbilityMapBounds(spellId);
 
-				if (bounds.isEmpty())
-				{
-					Log.outError(LogFilter.Sql, "Spell (ID: {0}) not listed in `SkillLineAbility.dbc` but listed with `reqSpell`=0 in `skill_discovery_template` table", spellId);
+                if (bounds.isEmpty()) {
+                    Logs.SQL.error("Spell (ID: {0}) not listed in `SkillLineAbility.dbc` but listed with `reqSpell`=0 in `skill_discovery_template` table", spellId);
 
-					continue;
-				}
+                    continue;
+                }
 
-				for (var _spell_idx : bounds)
-				{
-					SKILLDISCOVERYSTORAGE.add(-(int)_spell_idx.skillLine, new SkillDiscoveryEntry(spellId, reqSkillValue, chance));
-				}
-			}
-			else
-			{
-				Log.outError(LogFilter.Sql, "Spell (ID: {0}) have negative value in `reqSpell` field in `skill_discovery_template` table", spellId);
+                for (var _spell_idx : bounds) {
+                    SKILLDISCOVERYSTORAGE.add(-(int) _spell_idx.skillLine, new SkillDiscoveryEntry(spellId, reqSkillValue, chance));
+                }
+            } else {
+                Logs.SQL.error("Spell (ID: {0}) have negative value in `reqSpell` field in `skill_discovery_template` table", spellId);
 
-				continue;
-			}
+                continue;
+            }
 
-			++count;
-		} while (result.NextRow());
+            ++count;
+        } while (result.NextRow());
 
-		if (ssNonDiscoverableEntries.length() != 0)
-		{
-			Log.outError(LogFilter.Sql, "Some items can't be successfully discovered: have in chance field value < 0.000001 in `skill_discovery_template` DB table . List:\n{0}", ssNonDiscoverableEntries.toString());
-		}
+        if (ssNonDiscoverableEntries.length() != 0) {
+            Logs.SQL.error("Some items can't be successfully discovered: have in chance field value < 0.000001 in `skill_discovery_template` DB table . List:\n{0}", ssNonDiscoverableEntries.toString());
+        }
 
-		// report about empty data for explicit discovery spells
-		for (var spellNameEntry : CliDB.SpellNameStorage.values())
-		{
-			var spellEntry = global.getSpellMgr().getSpellInfo(spellNameEntry.id, Difficulty.NONE);
+        // report about empty data for explicit discovery spells
+        for (var spellNameEntry : CliDB.SpellNameStorage.values()) {
+            var spellEntry = global.getSpellMgr().getSpellInfo(spellNameEntry.id, Difficulty.NONE);
 
-			if (spellEntry == null)
-			{
-				continue;
-			}
+            if (spellEntry == null) {
+                continue;
+            }
 
-			// skip not explicit discovery spells
-			if (!spellEntry.IsExplicitDiscovery)
-			{
-				continue;
-			}
+            // skip not explicit discovery spells
+            if (!spellEntry.IsExplicitDiscovery) {
+                continue;
+            }
 
-			if (!SKILLDISCOVERYSTORAGE.ContainsKey((int)spellEntry.id))
-			{
-				Log.outError(LogFilter.Sql, "Spell (ID: {0}) is 100% chance random discovery ability but not have data in `skill_discovery_template` table", spellEntry.id);
-			}
-		}
+            if (!SKILLDISCOVERYSTORAGE.ContainsKey((int) spellEntry.id)) {
+                Logs.SQL.error("Spell (ID: {0}) is 100% chance random discovery ability but not have data in `skill_discovery_template` table", spellEntry.id);
+            }
+        }
 
-		Log.outInfo(LogFilter.ServerLoading, "Loaded {0} skill discovery definitions in {1} ms", count, time.GetMSTimeDiffToNow(oldMsTime));
-	}
+        Log.outInfo(LogFilter.ServerLoading, "Loaded {0} skill discovery definitions in {1} ms", count, time.GetMSTimeDiffToNow(oldMsTime));
+    }
 
-	public static int getExplicitDiscoverySpell(int spellId, Player player)
-	{
-		// explicit discovery spell chances (always success if case exist)
-		// in this case we have both skill and spell
-		var tab = SKILLDISCOVERYSTORAGE.get((int)spellId);
+    public static int getExplicitDiscoverySpell(int spellId, Player player) {
+        // explicit discovery spell chances (always success if case exist)
+        // in this case we have both skill and spell
+        var tab = SKILLDISCOVERYSTORAGE.get((int) spellId);
 
-		if (tab.isEmpty())
-		{
-			return 0;
-		}
+        if (tab.isEmpty()) {
+            return 0;
+        }
 
-		var bounds = global.getSpellMgr().getSkillLineAbilityMapBounds(spellId);
-		var skillvalue = !bounds.isEmpty() ? (int)player.getSkillValue(SkillType.forValue(bounds.FirstOrDefault().skillLine)) : 0;
+        var bounds = global.getSpellMgr().getSkillLineAbilityMapBounds(spellId);
+        var skillvalue = !bounds.isEmpty() ? (int) player.getSkillValue(SkillType.forValue(bounds.FirstOrDefault().skillLine)) : 0;
 
-		double full_chance = 0;
+        double full_chance = 0;
 
-		for (var item_iter : tab)
-		{
-			if (item_iter.reqSkillValue <= skillvalue)
-			{
-				if (!player.hasSpell(item_iter.spellId))
-				{
-					full_chance += item_iter.chance;
-				}
-			}
-		}
+        for (var item_iter : tab) {
+            if (item_iter.reqSkillValue <= skillvalue) {
+                if (!player.hasSpell(item_iter.spellId)) {
+                    full_chance += item_iter.chance;
+                }
+            }
+        }
 
-		var rate = full_chance / 100.0f;
-		var roll = (double)RandomUtil.randChance() * rate; // roll now in range 0..full_chance
+        var rate = full_chance / 100.0f;
+        var roll = (double) RandomUtil.randChance() * rate; // roll now in range 0..full_chance
 
-		for (var item_iter : tab)
-		{
-			if (item_iter.reqSkillValue > skillvalue)
-			{
-				continue;
-			}
+        for (var item_iter : tab) {
+            if (item_iter.reqSkillValue > skillvalue) {
+                continue;
+            }
 
-			if (player.hasSpell(item_iter.spellId))
-			{
-				continue;
-			}
+            if (player.hasSpell(item_iter.spellId)) {
+                continue;
+            }
 
-			if (item_iter.chance > roll)
-			{
-				return item_iter.spellId;
-			}
+            if (item_iter.chance > roll) {
+                return item_iter.spellId;
+            }
 
-			roll -= item_iter.chance;
-		}
+            roll -= item_iter.chance;
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	public static boolean hasDiscoveredAllSpells(int spellId, Player player)
-	{
-		var tab = SKILLDISCOVERYSTORAGE.get((int)spellId);
+    public static boolean hasDiscoveredAllSpells(int spellId, Player player) {
+        var tab = SKILLDISCOVERYSTORAGE.get((int) spellId);
 
-		if (tab.isEmpty())
-		{
-			return true;
-		}
+        if (tab.isEmpty()) {
+            return true;
+        }
 
-		for (var item_iter : tab)
-		{
-			if (!player.hasSpell(item_iter.spellId))
-			{
-				return false;
-			}
-		}
+        for (var item_iter : tab) {
+            if (!player.hasSpell(item_iter.spellId)) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public static boolean hasDiscoveredAnySpell(int spellId, Player player)
-	{
-		var tab = SKILLDISCOVERYSTORAGE.get((int)spellId);
+    public static boolean hasDiscoveredAnySpell(int spellId, Player player) {
+        var tab = SKILLDISCOVERYSTORAGE.get((int) spellId);
 
-		if (tab.isEmpty())
-		{
-			return false;
-		}
+        if (tab.isEmpty()) {
+            return false;
+        }
 
-		for (var item_iter : tab)
-		{
-			if (player.hasSpell(item_iter.spellId))
-			{
-				return true;
-			}
-		}
+        for (var item_iter : tab) {
+            if (player.hasSpell(item_iter.spellId)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static int getSkillDiscoverySpell(int skillId, int spellId, Player player)
-	{
-		var skillvalue = skillId != 0 ? (int)player.getSkillValue(SkillType.forValue(skillId)) : 0;
+    public static int getSkillDiscoverySpell(int skillId, int spellId, Player player) {
+        var skillvalue = skillId != 0 ? (int) player.getSkillValue(SkillType.forValue(skillId)) : 0;
 
-		// check spell case
-		var tab = SKILLDISCOVERYSTORAGE.get((int)spellId);
+        // check spell case
+        var tab = SKILLDISCOVERYSTORAGE.get((int) spellId);
 
-		if (!tab.isEmpty())
-		{
-			for (var item_iter : tab)
-			{
-				if (RandomUtil.randChance(item_iter.Chance * WorldConfig.getFloatValue(WorldCfg.RateSkillDiscovery)) && item_iter.reqSkillValue <= skillvalue && !player.hasSpell(item_iter.spellId))
-				{
-					return item_iter.spellId;
-				}
-			}
+        if (!tab.isEmpty()) {
+            for (var item_iter : tab) {
+                if (RandomUtil.randChance(item_iter.Chance * WorldConfig.getFloatValue(WorldCfg.RateSkillDiscovery)) && item_iter.reqSkillValue <= skillvalue && !player.hasSpell(item_iter.spellId)) {
+                    return item_iter.spellId;
+                }
+            }
 
-			return 0;
-		}
+            return 0;
+        }
 
-		if (skillId == 0)
-		{
-			return 0;
-		}
+        if (skillId == 0) {
+            return 0;
+        }
 
-		// check skill line case
-		tab = SKILLDISCOVERYSTORAGE.get(-(int)skillId);
+        // check skill line case
+        tab = SKILLDISCOVERYSTORAGE.get(-(int) skillId);
 
-		if (!tab.isEmpty())
-		{
-			for (var item_iter : tab)
-			{
-				if (RandomUtil.randChance(item_iter.Chance * WorldConfig.getFloatValue(WorldCfg.RateSkillDiscovery)) && item_iter.reqSkillValue <= skillvalue && !player.hasSpell(item_iter.spellId))
-				{
-					return item_iter.spellId;
-				}
-			}
+        if (!tab.isEmpty()) {
+            for (var item_iter : tab) {
+                if (RandomUtil.randChance(item_iter.Chance * WorldConfig.getFloatValue(WorldCfg.RateSkillDiscovery)) && item_iter.reqSkillValue <= skillvalue && !player.hasSpell(item_iter.spellId)) {
+                    return item_iter.spellId;
+                }
+            }
 
-			return 0;
-		}
+            return 0;
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 }

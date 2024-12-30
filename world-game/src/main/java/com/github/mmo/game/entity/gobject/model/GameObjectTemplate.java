@@ -4,6 +4,439 @@ import com.github.mmo.world.entities.gobject.enums.GameObjectTypes;
 
 public class GameObjectTemplate {
 
+    int entry;
+    GameObjectTypes type;
+    int displayId;
+    String name;
+    String iconName;
+    String castBarCaption;
+    String unk1;
+    float size;
+    int requiredLevel;
+    // 0 GAMEOBJECT_TYPE_DOOR
+    Door door;
+    Button button;
+    QuestGiver questgiver;
+    Chest chest;
+    Binder binder;
+    Generic generic;
+    Trap trap;
+    Chair chair;
+    SpellFocus spellFocus;
+    Text text;
+    Goober goober;
+    Transport transport;
+    AreaDamage areaDamage;
+    Camera camera;
+    Mapobject mapobject;
+    MoTransport moTransport;
+    DuelFlag duelFlag;
+    FishingNode fishingNode;
+    Ritual ritual;
+    Mailbox mailbox;
+    DoNotUse DONOTUSE;
+    GuardPost guardPost;
+    SpellCaster spellCaster;
+    MeetingStone meetingStone;
+    FlagStand flagStand;
+    FishingHole fishingHole;
+    FlagDrop flagDrop;
+    MiniGame miniGame;
+    DoNotUse DONOTUSE2;
+    ControlZone controlZone;
+    AuraGenerator auraGenerator;
+    DungeonDifficulty dungeonDifficulty;
+    BarberChair barberChair;
+    DestructibleBuilding destructibleBuilding;
+    GuildBank guildbank;
+    TrapDoor trapdoor;
+    NewFlag newflag;
+    NewFlagDrop newflagdrop;
+    GarrisonBuilding garrisonBuilding;
+    GarrisonPlot garrisonPlot;
+    ClientCreature clientCreature;
+    ClientItem clientItem;
+    CapturePoint capturePoint;
+    PhaseableMO phaseableMO;
+    GarrisonMonument garrisonMonument;
+    GarrisonShipment garrisonShipment;
+    GarrisonMonumentPlaque garrisonMonumentPlaque;
+    ItemForge itemForge;
+    UILink UILink;
+    KeystoneReceptacle keystoneReceptacle;
+    GatheringNode gatheringNode;
+    ChallengeModeReward challengeModeReward;
+    String aiName;
+    int scriptId;
+    // 1 GAMEOBJECT_TYPE_BUTTON
+    String stringId;
+    // 2 GAMEOBJECT_TYPE_QUESTGIVER
+
+    // helpers
+    boolean isDespawnAtAction() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.consumable != 0;
+            case TYPE_GOOBER -> goober.consumable != 0;
+            default -> false;
+        };
+    }
+    // 3 GAMEOBJECT_TYPE_CHEST
+
+    boolean isUsableMounted() {
+        return switch (type) {
+            case TYPE_MAILBOX -> true;
+            case TYPE_BARBER_CHAIR -> false;
+            case TYPE_QUESTGIVER -> questgiver.allowMounted != 0;
+            case TYPE_TEXT -> text.allowMounted != 0;
+            case TYPE_GOOBER -> goober.allowMounted != 0;
+            case TYPE_SPELLCASTER -> spellCaster.allowMounted != 0;
+            case TYPE_UI_LINK -> UILink.allowMounted != 0;
+            default -> false;
+        };
+    }
+    // 4 GAMEOBJECT_TYPE_BINDER
+
+    int getConditionID1() {
+        return switch (type) {
+            case TYPE_DOOR -> door.conditionID1;
+            case TYPE_BUTTON -> button.conditionID1;
+            case TYPE_QUESTGIVER -> questgiver.conditionID1;
+            case TYPE_CHEST -> chest.conditionID1;
+            case TYPE_GENERIC -> generic.conditionID1;
+            case TYPE_TRAP -> trap.conditionID1;
+            case TYPE_CHAIR -> chair.conditionID1;
+            case TYPE_SPELL_FOCUS -> spellFocus.conditionID1;
+            case TYPE_TEXT -> text.conditionID1;
+            case TYPE_GOOBER -> goober.conditionID1;
+            case TYPE_CAMERA -> camera.conditionID1;
+            case TYPE_RITUAL -> ritual.conditionID1;
+            case TYPE_MAILBOX -> mailbox.conditionID1;
+            case TYPE_SPELLCASTER -> spellCaster.conditionID1;
+            case TYPE_FLAGSTAND -> flagStand.conditionID1;
+            case TYPE_AURA_GENERATOR -> auraGenerator.conditionID1;
+            case TYPE_GUILD_BANK -> guildbank.conditionID1;
+            case TYPE_NEW_FLAG -> newflag.conditionID1;
+            case TYPE_ITEM_FORGE -> itemForge.conditionID1;
+            case TYPE_GATHERING_NODE -> gatheringNode.conditionID1;
+            default -> 0;
+        };
+    }
+    // 5 GAMEOBJECT_TYPE_GENERIC
+
+    int getInteractRadiusOverride() {
+        return switch (type) {
+            case TYPE_DOOR -> door.interactRadiusOverride;
+            case TYPE_BUTTON -> button.interactRadiusOverride;
+            case TYPE_QUESTGIVER -> questgiver.interactRadiusOverride;
+            case TYPE_CHEST -> chest.interactRadiusOverride;
+            case TYPE_BINDER -> binder.interactRadiusOverride;
+            case TYPE_GENERIC -> generic.interactRadiusOverride;
+            case TYPE_TRAP -> trap.interactRadiusOverride;
+            case TYPE_CHAIR -> chair.interactRadiusOverride;
+            case TYPE_SPELL_FOCUS -> spellFocus.interactRadiusOverride;
+            case TYPE_TEXT -> text.interactRadiusOverride;
+            case TYPE_GOOBER -> goober.interactRadiusOverride;
+            case TYPE_TRANSPORT -> transport.interactRadiusOverride;
+            case TYPE_AREADAMAGE -> areaDamage.interactRadiusOverride;
+            case TYPE_CAMERA -> camera.interactRadiusOverride;
+            case TYPE_MAP_OBJ_TRANSPORT -> moTransport.interactRadiusOverride;
+            case TYPE_DUEL_ARBITER -> duelFlag.interactRadiusOverride;
+            case TYPE_FISHINGNODE -> fishingNode.interactRadiusOverride;
+            case TYPE_RITUAL -> ritual.interactRadiusOverride;
+            case TYPE_MAILBOX -> mailbox.interactRadiusOverride;
+            case TYPE_GUARDPOST -> guardPost.interactRadiusOverride;
+            case TYPE_SPELLCASTER -> spellCaster.interactRadiusOverride;
+            case TYPE_MEETINGSTONE -> meetingStone.interactRadiusOverride;
+            case TYPE_FLAGSTAND -> flagStand.interactRadiusOverride;
+            case TYPE_FISHINGHOLE -> fishingHole.interactRadiusOverride;
+            case TYPE_FLAGDROP -> flagDrop.interactRadiusOverride;
+            case TYPE_CONTROL_ZONE -> controlZone.interactRadiusOverride;
+            case TYPE_AURA_GENERATOR -> auraGenerator.interactRadiusOverride;
+            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.interactRadiusOverride;
+            case TYPE_BARBER_CHAIR -> barberChair.interactRadiusOverride;
+            case TYPE_DESTRUCTIBLE_BUILDING -> destructibleBuilding.interactRadiusOverride;
+            case TYPE_GUILD_BANK -> guildbank.interactRadiusOverride;
+            case TYPE_TRAPDOOR -> trapdoor.interactRadiusOverride;
+            case TYPE_NEW_FLAG -> newflag.interactRadiusOverride;
+            case TYPE_NEW_FLAG_DROP -> newflagdrop.interactRadiusOverride;
+            case TYPE_GARRISON_BUILDING -> garrisonBuilding.interactRadiusOverride;
+            case TYPE_GARRISON_PLOT -> garrisonPlot.interactRadiusOverride;
+            case TYPE_CAPTURE_POINT -> capturePoint.interactRadiusOverride;
+            case TYPE_PHASEABLE_MO -> phaseableMO.interactRadiusOverride;
+            case TYPE_GARRISON_MONUMENT -> garrisonMonument.interactRadiusOverride;
+            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.interactRadiusOverride;
+            case TYPE_GARRISON_MONUMENT_PLAQUE -> garrisonMonumentPlaque.interactRadiusOverride;
+            case TYPE_ITEM_FORGE -> itemForge.interactRadiusOverride;
+            case TYPE_UI_LINK -> UILink.interactRadiusOverride;
+            case TYPE_KEYSTONE_RECEPTACLE -> keystoneReceptacle.interactRadiusOverride;
+            case TYPE_GATHERING_NODE -> gatheringNode.interactRadiusOverride;
+            case TYPE_CHALLENGE_MODE_REWARD -> challengeModeReward.interactRadiusOverride;
+            default -> 0;
+        };
+    }
+    // 6 GAMEOBJECT_TYPE_TRAP
+
+    int getRequireLOS() {
+        return switch (type) {
+            case TYPE_BUTTON -> button.requireLOS;
+            case TYPE_QUESTGIVER -> questgiver.requireLOS;
+            case TYPE_CHEST -> chest.requireLOS;
+            case TYPE_TRAP -> trap.requireLOS;
+            case TYPE_GOOBER -> goober.requireLOS;
+            case TYPE_FLAGSTAND -> flagStand.requireLOS;
+            case TYPE_NEW_FLAG -> newflag.requireLOS;
+            case TYPE_GATHERING_NODE -> gatheringNode.requireLOS;
+            default -> 0;
+        };
+    }
+    // 7 GAMEOBJECT_TYPE_CHAIR
+
+    int getLockId() {
+        return switch (type) {
+            case TYPE_DOOR -> door.open;
+            case TYPE_BUTTON -> button.open;
+            case TYPE_QUESTGIVER -> questgiver.open;
+            case TYPE_CHEST -> chest.open;
+            case TYPE_TRAP -> trap.open;
+            case TYPE_GOOBER -> goober.open;
+            case TYPE_AREADAMAGE -> areaDamage.open;
+            case TYPE_CAMERA -> camera.open;
+            case TYPE_FLAGSTAND -> flagStand.open;
+            case TYPE_FISHINGHOLE -> fishingHole.open;
+            case TYPE_FLAGDROP -> flagDrop.open;
+            case TYPE_NEW_FLAG -> newflag.open;
+            case TYPE_NEW_FLAG_DROP -> newflagdrop.open;
+            case TYPE_CAPTURE_POINT -> capturePoint.open;
+            case TYPE_GATHERING_NODE -> gatheringNode.open;
+            case TYPE_CHALLENGE_MODE_REWARD -> challengeModeReward.open;
+            default -> 0;
+        };
+    }
+    // 8 GAMEOBJECT_TYPE_SPELL_FOCUS
+
+    boolean getDespawnPossibility()                      // despawn at targeting of cast?
+
+    {
+        return switch (type) {
+            case TYPE_DOOR -> door.noDamageImmune != 0;
+            case TYPE_BUTTON -> button.noDamageImmune != 0;
+            case TYPE_QUESTGIVER -> questgiver.noDamageImmune != 0;
+            case TYPE_GOOBER -> goober.noDamageImmune != 0;
+            case TYPE_FLAGSTAND -> flagStand.noDamageImmune != 0;
+            case TYPE_FLAGDROP -> flagDrop.noDamageImmune != 0;
+            default -> true;
+        };
+    }
+    // 9 GAMEOBJECT_TYPE_TEXT
+
+    // Cannot be used/activated/looted by players under immunity effects (example: Divine Shield)
+    int getNoDamageImmune() {
+        return switch (type) {
+            case TYPE_DOOR -> door.noDamageImmune;
+            case TYPE_BUTTON -> button.noDamageImmune;
+            case TYPE_QUESTGIVER -> questgiver.noDamageImmune;
+            case TYPE_CHEST -> 1;
+            case TYPE_GOOBER -> goober.noDamageImmune;
+            case TYPE_FLAGSTAND -> flagStand.noDamageImmune;
+            case TYPE_FLAGDROP -> flagDrop.noDamageImmune;
+            default -> 0;
+        };
+    }
+    // 10 GAMEOBJECT_TYPE_GOOBER
+
+    int getNotInCombat() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.notInCombat;
+            case TYPE_GATHERING_NODE -> gatheringNode.notInCombat;
+            default -> 0;
+        };
+    }
+    // 11 GAMEOBJECT_TYPE_TRANSPORT
+
+    int getCharges()                               // despawn at uses amount
+
+    {
+        return switch (type) {
+            //case GAMEOBJECT_TYPE_TRAP:        return trap.charges;
+            case TYPE_GUARDPOST -> guardPost.charges;
+            case TYPE_SPELLCASTER -> spellCaster.charges;
+            default -> 0;
+        };
+    }
+    // 12 GAMEOBJECT_TYPE_AREADAMAGE
+
+    int getLinkedGameObjectEntry() {
+        return switch (type) {
+            case TYPE_BUTTON -> button.linkedTrap;
+            case TYPE_CHEST -> chest.linkedTrap;
+            case TYPE_SPELL_FOCUS -> spellFocus.linkedTrap;
+            case TYPE_GOOBER -> goober.linkedTrap;
+            case TYPE_GATHERING_NODE -> gatheringNode.linkedTrap;
+            default -> 0;
+        };
+    }
+    // 13 GAMEOBJECT_TYPE_CAMERA
+
+    int getAutoCloseTime() {
+        return switch (type) {
+            case TYPE_DOOR -> door.autoClose;
+            case TYPE_BUTTON -> button.autoClose;
+            case TYPE_TRAP -> trap.autoClose;
+            case TYPE_GOOBER -> goober.autoClose;
+            case TYPE_TRANSPORT -> transport.autoClose;
+            case TYPE_AREADAMAGE -> areaDamage.autoClose;
+            case TYPE_TRAPDOOR -> trapdoor.autoClose;
+            default -> 0;
+        };
+    }
+    // 14 GAMEOBJECT_TYPE_MAP_OBJECT
+
+    int getLootId() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.chestLoot;
+            case TYPE_FISHINGHOLE -> fishingHole.chestLoot;
+            case TYPE_GATHERING_NODE -> gatheringNode.chestLoot;
+            default -> 0;
+        };
+    }
+    // 15 GAMEOBJECT_TYPE_MAP_OBJ_TRANSPORT
+
+    int getGossipMenuId() {
+        return switch (type) {
+            case TYPE_QUESTGIVER -> questgiver.gossipID;
+            case TYPE_GOOBER -> goober.gossipID;
+            default -> 0;
+        };
+    }
+    // 16 GAMEOBJECT_TYPE_DUEL_ARBITER
+
+    int getEventScriptId() {
+        return switch (type) {
+            case TYPE_GOOBER -> goober.eventID;
+            case TYPE_CHEST -> chest.triggeredEvent;
+            case TYPE_CHAIR -> chair.triggeredEvent;
+            case TYPE_CAMERA -> camera.eventID;
+            case TYPE_GATHERING_NODE -> gatheringNode.triggeredEvent;
+            default -> 0;
+        };
+    }
+    // 17 GAMEOBJECT_TYPE_FISHINGNODE
+
+    int getTrivialSkillHigh() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.trivialSkillHigh;
+            case TYPE_GATHERING_NODE -> gatheringNode.trivialSkillHigh;
+            default -> 0;
+        };
+    }
+    // 18 GAMEOBJECT_TYPE_RITUAL
+
+    int getTrivialSkillLow() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.trivialSkillLow;
+            case TYPE_GATHERING_NODE -> gatheringNode.trivialSkillLow;
+            default -> 0;
+        };
+    }
+    // 19 GAMEOBJECT_TYPE_MAILBOX
+
+    int getCooldown()                              // Cooldown preventing goober and traps to cast spell
+
+    {
+        return switch (type) {
+            case TYPE_TRAP -> trap.cooldown;
+            case TYPE_GOOBER -> goober.cooldown;
+            default -> 0;
+        };
+    }
+    // 20 GAMEOBJECT_TYPE_DO_NOT_USE
+
+    boolean isInfiniteGameObject() {
+        return switch (type) {
+            case TYPE_DOOR -> door.infiniteAOI != 0;
+            case TYPE_FLAGSTAND -> flagStand.infiniteAOI != 0;
+            case TYPE_FLAGDROP -> flagDrop.infiniteAOI != 0;
+            case TYPE_DESTRUCTIBLE_BUILDING -> true;
+            case TYPE_TRAPDOOR -> trapdoor.infiniteAOI != 0;
+            case TYPE_NEW_FLAG -> newflag.infiniteAOI != 0;
+            case TYPE_GARRISON_BUILDING -> true;
+            case TYPE_PHASEABLE_MO -> true;
+            default -> false;
+        };
+    }
+    // 21 GAMEOBJECT_TYPE_GUARDPOST
+
+    boolean isGiganticGameObject() {
+        return switch (type) {
+            case TYPE_DOOR -> door.giganticAOI != 0;
+            case TYPE_BUTTON -> button.giganticAOI != 0;
+            case TYPE_QUESTGIVER -> questgiver.giganticAOI != 0;
+            case TYPE_CHEST -> chest.giganticAOI != 0;
+            case TYPE_GENERIC -> generic.giganticAOI != 0;
+            case TYPE_TRAP -> trap.giganticAOI != 0;
+            case TYPE_SPELL_FOCUS -> spellFocus.giganticAOI != 0;
+            case TYPE_GOOBER -> goober.giganticAOI != 0;
+            case TYPE_TRANSPORT -> true;
+            case TYPE_SPELLCASTER -> spellCaster.giganticAOI != 0;
+            case TYPE_FLAGSTAND -> flagStand.giganticAOI != 0;
+            case TYPE_FLAGDROP -> flagDrop.giganticAOI != 0;
+            case TYPE_CONTROL_ZONE -> controlZone.giganticAOI != 0;
+            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.giganticAOI != 0;
+            case TYPE_TRAPDOOR -> trapdoor.giganticAOI != 0;
+            case TYPE_NEW_FLAG -> newflag.giganticAOI != 0;
+            case TYPE_GARRISON_PLOT -> true;
+            case TYPE_CAPTURE_POINT -> capturePoint.giganticAOI != 0;
+            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.giganticAOI != 0;
+            case TYPE_UI_LINK -> UILink.giganticAOI != 0;
+            case TYPE_GATHERING_NODE -> gatheringNode.giganticAOI != 0;
+            default -> false;
+        };
+    }
+    // 22 GAMEOBJECT_TYPE_SPELLCASTER
+
+    boolean isLargeGameObject() {
+        return switch (type) {
+            case TYPE_CHEST -> chest.largeAOI != 0;
+            case TYPE_GENERIC -> generic.largeAOI != 0;
+            case TYPE_GOOBER -> goober.largeAOI != 0;
+            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.largeAOI != 0;
+            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.largeAOI != 0;
+            case TYPE_ITEM_FORGE -> itemForge.largeAOI != 0;
+            case TYPE_GATHERING_NODE -> gatheringNode.largeAOI != 0;
+            default -> false;
+        };
+    }
+    // 23 GAMEOBJECT_TYPE_MEETINGSTONE
+
+    int getServerOnly() {
+        return switch (type) {
+            case TYPE_GENERIC -> generic.serverOnly;
+            case TYPE_TRAP -> trap.serverOnly;
+            case TYPE_SPELL_FOCUS -> spellFocus.serverOnly;
+            case TYPE_AURA_GENERATOR -> auraGenerator.serverOnly;
+            default -> 0;
+        };
+    }
+    // 24 GAMEOBJECT_TYPE_FLAGSTAND
+
+    int getSpellFocusType() {
+        return switch (type) {
+            case TYPE_SPELL_FOCUS -> spellFocus.spellFocusType;
+            case TYPE_UI_LINK -> UILink.spellFocusType;
+            default -> 0;
+        };
+    }
+    // 25 GAMEOBJECT_TYPE_FISHINGHOLE
+
+    int getSpellFocusRadius() {
+        return switch (type) {
+            case TYPE_SPELL_FOCUS -> spellFocus.radius;
+            case TYPE_UI_LINK -> UILink.radius;
+            default -> 0;
+        };
+    }
+    // 26 GAMEOBJECT_TYPE_FLAGDROP
+
     public static class Door {
         int startOpen;                               // 0 startOpen, enum { false, true, }; Default: false
         int open;                                    // 1 open, References: Lock_, NOVALUE = 0
@@ -20,6 +453,7 @@ public class GameObjectTemplate {
         int interactRadiusOverride;                  // 12 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         int collisionupdatedelayafteropen;           // 13 Collision update delay(ms) after open, int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 27 GAMEOBJECT_TYPE_MINI_GAME
 
     public static class Button {
         int startOpen;                               // 0 startOpen, enum { false, true, }; Default: false
@@ -34,6 +468,7 @@ public class GameObjectTemplate {
         int conditionID1;                            // 9 conditionID1, References: PlayerCondition, NOVALUE = 0
         int interactRadiusOverride;                  // 10 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 28 GAMEOBJECT_TYPE_DO_NOT_USE_2
 
     public static class QuestGiver {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -50,6 +485,7 @@ public class GameObjectTemplate {
         int neverUsableWhileMounted;                 // 11 Never Usable While Mounted, enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 12 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 29 GAMEOBJECT_TYPE_CONTROL_ZONE
 
     public static class Chest {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -88,10 +524,12 @@ public class GameObjectTemplate {
         int chestPushLoot;                           // 33 chest Push loot, References: treasure, NOVALUE = 0
         int forceSingleLooter;                       // 34 Force Single Looter, enum { false, true, }; Default: false
     }
+    // 30 GAMEOBJECT_TYPE_AURA_GENERATOR
 
     public static class Binder {
         int interactRadiusOverride;                  // 0 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 31 GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY
 
     public static class Generic {
         int floatingTooltip;                         // 0 floatingTooltip, enum { false, true, }; Default: false
@@ -105,6 +543,7 @@ public class GameObjectTemplate {
         int useGarrisonOwnerGuildColors;             // 8 Use Garrison Owner Guild Colors, enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 9 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 32 GAMEOBJECT_TYPE_BARBER_CHAIR
 
     public static class Trap {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -130,6 +569,7 @@ public class GameObjectTemplate {
         int checkallunits;                           // 20 Check all units (spawned traps only check players), enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 21 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 33 GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING
 
     public static class Chair {
         int chairslots;                              // 0 chairslots, int, Min value: 1, Max value: 5, Default value: 1
@@ -139,6 +579,7 @@ public class GameObjectTemplate {
         int conditionID1;                            // 4 conditionID1, References: PlayerCondition, NOVALUE = 0
         int interactRadiusOverride;                  // 5 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 34 GAMEOBJECT_TYPE_GUILD_BANK
 
     public static class SpellFocus {
         int spellFocusType;                          // 0 spellFocusType, References: SpellFocusObject, NOVALUE = 0
@@ -159,6 +600,7 @@ public class GameObjectTemplate {
         int profession2;                             // 15 Profession 2, enum { First Aid, Blacksmithing, Leatherworking, Alchemy, Herbalism, Cooking, Mining, Tailoring, Engineering, Enchanting, FISHING, SKINNING, Jewelcrafting, Inscription, Archaeology, }; Default: Blacksmithing
         int profession3;                             // 16 Profession 3, enum { First Aid, Blacksmithing, Leatherworking, Alchemy, Herbalism, Cooking, Mining, Tailoring, Engineering, Enchanting, FISHING, SKINNING, Jewelcrafting, Inscription, Archaeology, }; Default: Blacksmithing
     }
+    // 35 GAMEOBJECT_TYPE_TRAPDOOR
 
     public static class Text {
         int pageID;                                  // 0 pageID, References: PageText, NOVALUE = 0
@@ -169,6 +611,7 @@ public class GameObjectTemplate {
         int neverUsableWhileMounted;                 // 5 Never Usable While Mounted, enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 6 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 36 GAMEOBJECT_TYPE_NEW_FLAG
 
     public static class Goober {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -206,9 +649,11 @@ public class GameObjectTemplate {
         int largeAOI;                                // 32 Large AOI, enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 33 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 37 GAMEOBJECT_TYPE_NEW_FLAG_DROP
 
     public static class MiniGame {
     }
+    // 38 GAMEOBJECT_TYPE_GARRISON_BUILDING
 
     public static class Transport {
         int timeto2ndfloor;                          // 0 Time to 2nd floor (ms), int, Min value: 0, Max value: 2147483647, Default value: 0
@@ -237,6 +682,7 @@ public class GameObjectTemplate {
         int onlychargetimecheck;                     // 23 only charge time check, int, Min value: 0, Max value: 65535, Default value: 0
         int interactRadiusOverride;                  // 24 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 39 GAMEOBJECT_TYPE_GARRISON_PLOT
 
     public static class AreaDamage {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -249,6 +695,7 @@ public class GameObjectTemplate {
         int closeTextID;                             // 7 closeTextID, References: BroadcastText, NOVALUE = 0
         int interactRadiusOverride;                  // 8 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 40 GAMEOBJECT_TYPE_CLIENT_CREATURE
 
     public static class Camera {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -258,9 +705,11 @@ public class GameObjectTemplate {
         int conditionID1;                            // 4 conditionID1, References: PlayerCondition, NOVALUE = 0
         int interactRadiusOverride;                  // 5 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 41 GAMEOBJECT_TYPE_CLIENT_ITEM
 
     public static class Mapobject {
     }
+    // 42 GAMEOBJECT_TYPE_CAPTURE_POINT
 
     public static class MoTransport {
         int taxiPathID;                              // 0 taxiPathID, References: taxiPath, NOVALUE = 0
@@ -277,15 +726,17 @@ public class GameObjectTemplate {
         int interactRadiusOverride;                  // 11 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         int allowareaexplorationwhileonthistransport;// 12 Allow area exploration while on this transport, enum { false, true, }; Default: false
     }
+    // 43 GAMEOBJECT_TYPE_PHASEABLE_MO
 
     public static class DuelFlag {
         int interactRadiusOverride;                  // 0 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 44 GAMEOBJECT_TYPE_GARRISON_MONUMENT
 
     public static class FishingNode {
         int interactRadiusOverride;                  // 0 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
-
+    // 45 GAMEOBJECT_TYPE_GARRISON_SHIPMENT
 
     public static class Ritual {
         int casters;                                 // 0 casters, int, Min value: 1, Max value: 10, Default value: 1
@@ -300,14 +751,17 @@ public class GameObjectTemplate {
         int interactRadiusOverride;                  // 9 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         int allowunfriendlycrossfactionpartymemberstocollaborateonaritual;// 10 Allow unfriendly cross faction party members to collaborate on a ritual, enum { false, true, }; Default: false
     }
+    // 46 GAMEOBJECT_TYPE_GARRISON_MONUMENT_PLAQUE
 
     public static class Mailbox {
         int conditionID1;                            // 0 conditionID1, References: PlayerCondition, NOVALUE = 0
         int interactRadiusOverride;                  // 1 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 47 GAMEOBJECT_TYPE_ITEM_FORGE
 
     public static class DoNotUse {
     }
+    // 48 GAMEOBJECT_TYPE_UI_LINK
 
     public static class GuardPost {
         int creatureID;                              // 0 creatureID, References: CREATURE, NOVALUE = 0
@@ -315,6 +769,7 @@ public class GameObjectTemplate {
         int preferonlyifinlineofsight;               // 2 Prefer only if in line of sight (expensive), enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 3 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 49 GAMEOBJECT_TYPE_KEYSTONE_RECEPTACLE
 
     public static class SpellCaster {
         int spell;                                   // 0 spell, References: spell, NOVALUE = 0
@@ -327,6 +782,7 @@ public class GameObjectTemplate {
         int neverUsableWhileMounted;                 // 7 Never Usable While Mounted, enum { false, true, }; Default: false
         int interactRadiusOverride;                  // 8 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
     }
+    // 50 GAMEOBJECT_TYPE_GATHERING_NODE
 
     public static class MeetingStone {
         int unused;                                  // 0 unused, int, Min value: 0, Max value: 65535, Default value: 1
@@ -335,6 +791,7 @@ public class GameObjectTemplate {
         int interactRadiusOverride;                  // 3 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         int preventmeetingstonefromtargetinganunfriendlypartymemberoutsideofinstances;// 4 Prevent meeting stone from targeting an unfriendly party member outside of instances, enum { false, true, }; Default: false
     }
+    // 51 GAMEOBJECT_TYPE_CHALLENGE_MODE_REWARD
 
     public static class FlagStand {
         int open;                                    // 0 open, References: Lock_, NOVALUE = 0
@@ -656,519 +1113,6 @@ public class GameObjectTemplate {
     public static class SiegeableMulti {
         int multiProperties;                         // 0 Multi Properties, References: multiProperties, NOVALUE = 0
         int initialDamage;                           // 1 Initial damage, enum { NONE, raw, Ratio, }; Default: None
-    }
-
-    int entry;
-    GameObjectTypes type;
-    int displayId;
-    String name;
-    String iconName;
-    String castBarCaption;
-    String unk1;
-    float size;
-    int requiredLevel;
-
-
-    // 0 GAMEOBJECT_TYPE_DOOR
-    Door door;
-    // 1 GAMEOBJECT_TYPE_BUTTON
-
-    Button button;
-    // 2 GAMEOBJECT_TYPE_QUESTGIVER
-
-    QuestGiver questgiver;
-    // 3 GAMEOBJECT_TYPE_CHEST
-
-    Chest chest;
-    // 4 GAMEOBJECT_TYPE_BINDER
-
-    Binder binder;
-    // 5 GAMEOBJECT_TYPE_GENERIC
-
-    Generic generic;
-    // 6 GAMEOBJECT_TYPE_TRAP
-
-    Trap trap;
-    // 7 GAMEOBJECT_TYPE_CHAIR
-
-    Chair chair;
-    // 8 GAMEOBJECT_TYPE_SPELL_FOCUS
-
-    SpellFocus spellFocus;
-    // 9 GAMEOBJECT_TYPE_TEXT
-
-    Text text;
-    // 10 GAMEOBJECT_TYPE_GOOBER
-
-    Goober goober;
-    // 11 GAMEOBJECT_TYPE_TRANSPORT
-
-    Transport transport;
-    // 12 GAMEOBJECT_TYPE_AREADAMAGE
-
-    AreaDamage areaDamage;
-    // 13 GAMEOBJECT_TYPE_CAMERA
-
-    Camera camera;
-    // 14 GAMEOBJECT_TYPE_MAP_OBJECT
-
-    Mapobject mapobject;
-    // 15 GAMEOBJECT_TYPE_MAP_OBJ_TRANSPORT
-
-    MoTransport moTransport;
-    // 16 GAMEOBJECT_TYPE_DUEL_ARBITER
-
-    DuelFlag duelFlag;
-    // 17 GAMEOBJECT_TYPE_FISHINGNODE
-
-    FishingNode fishingNode;
-    // 18 GAMEOBJECT_TYPE_RITUAL
-
-    Ritual ritual;
-    // 19 GAMEOBJECT_TYPE_MAILBOX
-
-    Mailbox mailbox;
-    // 20 GAMEOBJECT_TYPE_DO_NOT_USE
-
-    DoNotUse DONOTUSE;
-    // 21 GAMEOBJECT_TYPE_GUARDPOST
-
-    GuardPost guardPost;
-    // 22 GAMEOBJECT_TYPE_SPELLCASTER
-
-    SpellCaster spellCaster;
-    // 23 GAMEOBJECT_TYPE_MEETINGSTONE
-
-    MeetingStone meetingStone;
-    // 24 GAMEOBJECT_TYPE_FLAGSTAND
-
-    FlagStand flagStand;
-    // 25 GAMEOBJECT_TYPE_FISHINGHOLE
-
-    FishingHole fishingHole;
-    // 26 GAMEOBJECT_TYPE_FLAGDROP
-
-    FlagDrop flagDrop;
-    // 27 GAMEOBJECT_TYPE_MINI_GAME
-
-    MiniGame miniGame;
-    // 28 GAMEOBJECT_TYPE_DO_NOT_USE_2
-
-    DoNotUse DONOTUSE2;
-    // 29 GAMEOBJECT_TYPE_CONTROL_ZONE
-
-    ControlZone controlZone;
-    // 30 GAMEOBJECT_TYPE_AURA_GENERATOR
-
-    AuraGenerator auraGenerator;
-    // 31 GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY
-
-    DungeonDifficulty dungeonDifficulty;
-    // 32 GAMEOBJECT_TYPE_BARBER_CHAIR
-
-    BarberChair barberChair;
-    // 33 GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING
-
-    DestructibleBuilding destructibleBuilding;
-    // 34 GAMEOBJECT_TYPE_GUILD_BANK
-
-    GuildBank guildbank;
-    // 35 GAMEOBJECT_TYPE_TRAPDOOR
-
-    TrapDoor trapdoor;
-    // 36 GAMEOBJECT_TYPE_NEW_FLAG
-
-    NewFlag newflag;
-    // 37 GAMEOBJECT_TYPE_NEW_FLAG_DROP
-
-    NewFlagDrop newflagdrop;
-    // 38 GAMEOBJECT_TYPE_GARRISON_BUILDING
-
-    GarrisonBuilding garrisonBuilding;
-    // 39 GAMEOBJECT_TYPE_GARRISON_PLOT
-
-    GarrisonPlot garrisonPlot;
-    // 40 GAMEOBJECT_TYPE_CLIENT_CREATURE
-
-    ClientCreature clientCreature;
-    // 41 GAMEOBJECT_TYPE_CLIENT_ITEM
-
-    ClientItem clientItem;
-    // 42 GAMEOBJECT_TYPE_CAPTURE_POINT
-
-    CapturePoint capturePoint;
-    // 43 GAMEOBJECT_TYPE_PHASEABLE_MO
-
-    PhaseableMO phaseableMO;
-    // 44 GAMEOBJECT_TYPE_GARRISON_MONUMENT
-
-    GarrisonMonument garrisonMonument;
-    // 45 GAMEOBJECT_TYPE_GARRISON_SHIPMENT
-
-    GarrisonShipment garrisonShipment;
-    // 46 GAMEOBJECT_TYPE_GARRISON_MONUMENT_PLAQUE
-
-    GarrisonMonumentPlaque garrisonMonumentPlaque;
-    // 47 GAMEOBJECT_TYPE_ITEM_FORGE
-
-    ItemForge itemForge;
-    // 48 GAMEOBJECT_TYPE_UI_LINK
-
-    UILink UILink;
-    // 49 GAMEOBJECT_TYPE_KEYSTONE_RECEPTACLE
-
-    KeystoneReceptacle keystoneReceptacle;
-    // 50 GAMEOBJECT_TYPE_GATHERING_NODE
-
-    GatheringNode gatheringNode;
-    // 51 GAMEOBJECT_TYPE_CHALLENGE_MODE_REWARD
-
-    ChallengeModeReward challengeModeReward;
-
-
-    String aiName;
-    int scriptId;
-    String stringId;
-
-    // helpers
-    boolean isDespawnAtAction() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.consumable != 0;
-            case TYPE_GOOBER -> goober.consumable != 0;
-            default -> false;
-        };
-    }
-
-    boolean isUsableMounted() {
-        return switch (type) {
-            case TYPE_MAILBOX -> true;
-            case TYPE_BARBER_CHAIR -> false;
-            case TYPE_QUESTGIVER -> questgiver.allowMounted != 0;
-            case TYPE_TEXT -> text.allowMounted != 0;
-            case TYPE_GOOBER -> goober.allowMounted != 0;
-            case TYPE_SPELLCASTER -> spellCaster.allowMounted != 0;
-            case TYPE_UI_LINK -> UILink.allowMounted != 0;
-            default -> false;
-        };
-    }
-
-    int getConditionID1() {
-        return switch (type) {
-            case TYPE_DOOR -> door.conditionID1;
-            case TYPE_BUTTON -> button.conditionID1;
-            case TYPE_QUESTGIVER -> questgiver.conditionID1;
-            case TYPE_CHEST -> chest.conditionID1;
-            case TYPE_GENERIC -> generic.conditionID1;
-            case TYPE_TRAP -> trap.conditionID1;
-            case TYPE_CHAIR -> chair.conditionID1;
-            case TYPE_SPELL_FOCUS -> spellFocus.conditionID1;
-            case TYPE_TEXT -> text.conditionID1;
-            case TYPE_GOOBER -> goober.conditionID1;
-            case TYPE_CAMERA -> camera.conditionID1;
-            case TYPE_RITUAL -> ritual.conditionID1;
-            case TYPE_MAILBOX -> mailbox.conditionID1;
-            case TYPE_SPELLCASTER -> spellCaster.conditionID1;
-            case TYPE_FLAGSTAND -> flagStand.conditionID1;
-            case TYPE_AURA_GENERATOR -> auraGenerator.conditionID1;
-            case TYPE_GUILD_BANK -> guildbank.conditionID1;
-            case TYPE_NEW_FLAG -> newflag.conditionID1;
-            case TYPE_ITEM_FORGE -> itemForge.conditionID1;
-            case TYPE_GATHERING_NODE -> gatheringNode.conditionID1;
-            default -> 0;
-        };
-    }
-
-    int getInteractRadiusOverride() {
-        return switch (type) {
-            case TYPE_DOOR -> door.interactRadiusOverride;
-            case TYPE_BUTTON -> button.interactRadiusOverride;
-            case TYPE_QUESTGIVER -> questgiver.interactRadiusOverride;
-            case TYPE_CHEST -> chest.interactRadiusOverride;
-            case TYPE_BINDER -> binder.interactRadiusOverride;
-            case TYPE_GENERIC -> generic.interactRadiusOverride;
-            case TYPE_TRAP -> trap.interactRadiusOverride;
-            case TYPE_CHAIR -> chair.interactRadiusOverride;
-            case TYPE_SPELL_FOCUS -> spellFocus.interactRadiusOverride;
-            case TYPE_TEXT -> text.interactRadiusOverride;
-            case TYPE_GOOBER -> goober.interactRadiusOverride;
-            case TYPE_TRANSPORT -> transport.interactRadiusOverride;
-            case TYPE_AREADAMAGE -> areaDamage.interactRadiusOverride;
-            case TYPE_CAMERA -> camera.interactRadiusOverride;
-            case TYPE_MAP_OBJ_TRANSPORT -> moTransport.interactRadiusOverride;
-            case TYPE_DUEL_ARBITER -> duelFlag.interactRadiusOverride;
-            case TYPE_FISHINGNODE -> fishingNode.interactRadiusOverride;
-            case TYPE_RITUAL -> ritual.interactRadiusOverride;
-            case TYPE_MAILBOX -> mailbox.interactRadiusOverride;
-            case TYPE_GUARDPOST -> guardPost.interactRadiusOverride;
-            case TYPE_SPELLCASTER -> spellCaster.interactRadiusOverride;
-            case TYPE_MEETINGSTONE -> meetingStone.interactRadiusOverride;
-            case TYPE_FLAGSTAND -> flagStand.interactRadiusOverride;
-            case TYPE_FISHINGHOLE -> fishingHole.interactRadiusOverride;
-            case TYPE_FLAGDROP -> flagDrop.interactRadiusOverride;
-            case TYPE_CONTROL_ZONE -> controlZone.interactRadiusOverride;
-            case TYPE_AURA_GENERATOR -> auraGenerator.interactRadiusOverride;
-            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.interactRadiusOverride;
-            case TYPE_BARBER_CHAIR -> barberChair.interactRadiusOverride;
-            case TYPE_DESTRUCTIBLE_BUILDING -> destructibleBuilding.interactRadiusOverride;
-            case TYPE_GUILD_BANK -> guildbank.interactRadiusOverride;
-            case TYPE_TRAPDOOR -> trapdoor.interactRadiusOverride;
-            case TYPE_NEW_FLAG -> newflag.interactRadiusOverride;
-            case TYPE_NEW_FLAG_DROP -> newflagdrop.interactRadiusOverride;
-            case TYPE_GARRISON_BUILDING -> garrisonBuilding.interactRadiusOverride;
-            case TYPE_GARRISON_PLOT -> garrisonPlot.interactRadiusOverride;
-            case TYPE_CAPTURE_POINT -> capturePoint.interactRadiusOverride;
-            case TYPE_PHASEABLE_MO -> phaseableMO.interactRadiusOverride;
-            case TYPE_GARRISON_MONUMENT -> garrisonMonument.interactRadiusOverride;
-            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.interactRadiusOverride;
-            case TYPE_GARRISON_MONUMENT_PLAQUE -> garrisonMonumentPlaque.interactRadiusOverride;
-            case TYPE_ITEM_FORGE -> itemForge.interactRadiusOverride;
-            case TYPE_UI_LINK -> UILink.interactRadiusOverride;
-            case TYPE_KEYSTONE_RECEPTACLE -> keystoneReceptacle.interactRadiusOverride;
-            case TYPE_GATHERING_NODE -> gatheringNode.interactRadiusOverride;
-            case TYPE_CHALLENGE_MODE_REWARD -> challengeModeReward.interactRadiusOverride;
-            default -> 0;
-        };
-    }
-
-    int getRequireLOS() {
-        return switch (type) {
-            case TYPE_BUTTON -> button.requireLOS;
-            case TYPE_QUESTGIVER -> questgiver.requireLOS;
-            case TYPE_CHEST -> chest.requireLOS;
-            case TYPE_TRAP -> trap.requireLOS;
-            case TYPE_GOOBER -> goober.requireLOS;
-            case TYPE_FLAGSTAND -> flagStand.requireLOS;
-            case TYPE_NEW_FLAG -> newflag.requireLOS;
-            case TYPE_GATHERING_NODE -> gatheringNode.requireLOS;
-            default -> 0;
-        };
-    }
-
-    int getLockId() {
-        return switch (type) {
-            case TYPE_DOOR -> door.open;
-            case TYPE_BUTTON -> button.open;
-            case TYPE_QUESTGIVER -> questgiver.open;
-            case TYPE_CHEST -> chest.open;
-            case TYPE_TRAP -> trap.open;
-            case TYPE_GOOBER -> goober.open;
-            case TYPE_AREADAMAGE -> areaDamage.open;
-            case TYPE_CAMERA -> camera.open;
-            case TYPE_FLAGSTAND -> flagStand.open;
-            case TYPE_FISHINGHOLE -> fishingHole.open;
-            case TYPE_FLAGDROP -> flagDrop.open;
-            case TYPE_NEW_FLAG -> newflag.open;
-            case TYPE_NEW_FLAG_DROP -> newflagdrop.open;
-            case TYPE_CAPTURE_POINT -> capturePoint.open;
-            case TYPE_GATHERING_NODE -> gatheringNode.open;
-            case TYPE_CHALLENGE_MODE_REWARD -> challengeModeReward.open;
-            default -> 0;
-        };
-    }
-
-    boolean getDespawnPossibility()                      // despawn at targeting of cast?
-
-    {
-        return switch (type) {
-            case TYPE_DOOR -> door.noDamageImmune != 0;
-            case TYPE_BUTTON -> button.noDamageImmune != 0;
-            case TYPE_QUESTGIVER -> questgiver.noDamageImmune != 0;
-            case TYPE_GOOBER -> goober.noDamageImmune != 0;
-            case TYPE_FLAGSTAND -> flagStand.noDamageImmune != 0;
-            case TYPE_FLAGDROP -> flagDrop.noDamageImmune != 0;
-            default -> true;
-        };
-    }
-
-    // Cannot be used/activated/looted by players under immunity effects (example: Divine Shield)
-    int getNoDamageImmune() {
-        return switch (type) {
-            case TYPE_DOOR -> door.noDamageImmune;
-            case TYPE_BUTTON -> button.noDamageImmune;
-            case TYPE_QUESTGIVER -> questgiver.noDamageImmune;
-            case TYPE_CHEST -> 1;
-            case TYPE_GOOBER -> goober.noDamageImmune;
-            case TYPE_FLAGSTAND -> flagStand.noDamageImmune;
-            case TYPE_FLAGDROP -> flagDrop.noDamageImmune;
-            default -> 0;
-        };
-    }
-
-    int getNotInCombat() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.notInCombat;
-            case TYPE_GATHERING_NODE -> gatheringNode.notInCombat;
-            default -> 0;
-        };
-    }
-
-    int getCharges()                               // despawn at uses amount
-
-    {
-        return switch (type) {
-            //case GAMEOBJECT_TYPE_TRAP:        return trap.charges;
-            case TYPE_GUARDPOST -> guardPost.charges;
-            case TYPE_SPELLCASTER -> spellCaster.charges;
-            default -> 0;
-        };
-    }
-
-    int getLinkedGameObjectEntry() {
-        return switch (type) {
-            case TYPE_BUTTON -> button.linkedTrap;
-            case TYPE_CHEST -> chest.linkedTrap;
-            case TYPE_SPELL_FOCUS -> spellFocus.linkedTrap;
-            case TYPE_GOOBER -> goober.linkedTrap;
-            case TYPE_GATHERING_NODE -> gatheringNode.linkedTrap;
-            default -> 0;
-        };
-    }
-
-    int getAutoCloseTime() {
-        return switch (type) {
-            case TYPE_DOOR -> door.autoClose;
-            case TYPE_BUTTON -> button.autoClose;
-            case TYPE_TRAP -> trap.autoClose;
-            case TYPE_GOOBER -> goober.autoClose;
-            case TYPE_TRANSPORT -> transport.autoClose;
-            case TYPE_AREADAMAGE -> areaDamage.autoClose;
-            case TYPE_TRAPDOOR -> trapdoor.autoClose;
-            default -> 0;
-        };
-    }
-
-    int getLootId() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.chestLoot;
-            case TYPE_FISHINGHOLE -> fishingHole.chestLoot;
-            case TYPE_GATHERING_NODE -> gatheringNode.chestLoot;
-            default -> 0;
-        };
-    }
-
-    int getGossipMenuId() {
-        return switch (type) {
-            case TYPE_QUESTGIVER -> questgiver.gossipID;
-            case TYPE_GOOBER -> goober.gossipID;
-            default -> 0;
-        };
-    }
-
-    int getEventScriptId() {
-        return switch (type) {
-            case TYPE_GOOBER -> goober.eventID;
-            case TYPE_CHEST -> chest.triggeredEvent;
-            case TYPE_CHAIR -> chair.triggeredEvent;
-            case TYPE_CAMERA -> camera.eventID;
-            case TYPE_GATHERING_NODE -> gatheringNode.triggeredEvent;
-            default -> 0;
-        };
-    }
-
-    int getTrivialSkillHigh() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.trivialSkillHigh;
-            case TYPE_GATHERING_NODE -> gatheringNode.trivialSkillHigh;
-            default -> 0;
-        };
-    }
-
-    int getTrivialSkillLow() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.trivialSkillLow;
-            case TYPE_GATHERING_NODE -> gatheringNode.trivialSkillLow;
-            default -> 0;
-        };
-    }
-
-    int getCooldown()                              // Cooldown preventing goober and traps to cast spell
-
-    {
-        return switch (type) {
-            case TYPE_TRAP -> trap.cooldown;
-            case TYPE_GOOBER -> goober.cooldown;
-            default -> 0;
-        };
-    }
-
-    boolean isInfiniteGameObject() {
-        return switch (type) {
-            case TYPE_DOOR -> door.infiniteAOI != 0;
-            case TYPE_FLAGSTAND -> flagStand.infiniteAOI != 0;
-            case TYPE_FLAGDROP -> flagDrop.infiniteAOI != 0;
-            case TYPE_DESTRUCTIBLE_BUILDING -> true;
-            case TYPE_TRAPDOOR -> trapdoor.infiniteAOI != 0;
-            case TYPE_NEW_FLAG -> newflag.infiniteAOI != 0;
-            case TYPE_GARRISON_BUILDING -> true;
-            case TYPE_PHASEABLE_MO -> true;
-            default -> false;
-        };
-    }
-
-    boolean isGiganticGameObject() {
-        return switch (type) {
-            case TYPE_DOOR -> door.giganticAOI != 0;
-            case TYPE_BUTTON -> button.giganticAOI != 0;
-            case TYPE_QUESTGIVER -> questgiver.giganticAOI != 0;
-            case TYPE_CHEST -> chest.giganticAOI != 0;
-            case TYPE_GENERIC -> generic.giganticAOI != 0;
-            case TYPE_TRAP -> trap.giganticAOI != 0;
-            case TYPE_SPELL_FOCUS -> spellFocus.giganticAOI != 0;
-            case TYPE_GOOBER -> goober.giganticAOI != 0;
-            case TYPE_TRANSPORT -> true;
-            case TYPE_SPELLCASTER -> spellCaster.giganticAOI != 0;
-            case TYPE_FLAGSTAND -> flagStand.giganticAOI != 0;
-            case TYPE_FLAGDROP -> flagDrop.giganticAOI != 0;
-            case TYPE_CONTROL_ZONE -> controlZone.giganticAOI != 0;
-            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.giganticAOI != 0;
-            case TYPE_TRAPDOOR -> trapdoor.giganticAOI != 0;
-            case TYPE_NEW_FLAG -> newflag.giganticAOI != 0;
-            case TYPE_GARRISON_PLOT -> true;
-            case TYPE_CAPTURE_POINT -> capturePoint.giganticAOI != 0;
-            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.giganticAOI != 0;
-            case TYPE_UI_LINK -> UILink.giganticAOI != 0;
-            case TYPE_GATHERING_NODE -> gatheringNode.giganticAOI != 0;
-            default -> false;
-        };
-    }
-
-    boolean isLargeGameObject() {
-        return switch (type) {
-            case TYPE_CHEST -> chest.largeAOI != 0;
-            case TYPE_GENERIC -> generic.largeAOI != 0;
-            case TYPE_GOOBER -> goober.largeAOI != 0;
-            case TYPE_DUNGEON_DIFFICULTY -> dungeonDifficulty.largeAOI != 0;
-            case TYPE_GARRISON_SHIPMENT -> garrisonShipment.largeAOI != 0;
-            case TYPE_ITEM_FORGE -> itemForge.largeAOI != 0;
-            case TYPE_GATHERING_NODE -> gatheringNode.largeAOI != 0;
-            default -> false;
-        };
-    }
-
-    int getServerOnly() {
-        return switch (type) {
-            case TYPE_GENERIC -> generic.serverOnly;
-            case TYPE_TRAP -> trap.serverOnly;
-            case TYPE_SPELL_FOCUS -> spellFocus.serverOnly;
-            case TYPE_AURA_GENERATOR -> auraGenerator.serverOnly;
-            default -> 0;
-        };
-    }
-
-    int getSpellFocusType() {
-        return switch (type) {
-            case TYPE_SPELL_FOCUS -> spellFocus.spellFocusType;
-            case TYPE_UI_LINK -> UILink.spellFocusType;
-            default -> 0;
-        };
-    }
-
-    int getSpellFocusRadius() {
-        return switch (type) {
-            case TYPE_SPELL_FOCUS -> spellFocus.radius;
-            case TYPE_UI_LINK -> UILink.radius;
-            default -> 0;
-        };
     }
 
 

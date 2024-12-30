@@ -1,17 +1,17 @@
 package com.github.mmo.game.networking.packet.token;
 
-import com.github.mmo.game.networking.*;
-class CommerceTokenGetMarketPrice extends ClientPacket
-{
-	public int unkInt;
-	public CommerceTokenGetMarketPrice(WorldPacket packet)
-	{
-		super(packet);
-	}
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	@Override
-	public void read()
-	{
-		unkInt = this.readUInt();
-	}
+class CommerceTokenGetMarketPrice extends ClientPacket {
+    public int unkInt;
+
+    public CommerceTokenGetMarketPrice(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        unkInt = this.readUInt();
+    }
 }

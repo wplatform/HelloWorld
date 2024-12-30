@@ -1,13 +1,11 @@
 package com.github.mmo.game.chat;
 
-final class QuotedString
-{
-	private String str;
+final class QuotedString {
+    private String str;
 
-	public boolean isEmpty()
-	{
-		return str.isEmpty();
-	}
+    public boolean isEmpty() {
+        return str.isEmpty();
+    }
 
 // C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
 //	public static implicit operator string(QuotedString quotedString)
@@ -15,67 +13,57 @@ final class QuotedString
 //			return quotedString.str;
 //		}
 
-	public ChatCommandResult tryConsume(CommandHandler handler, String args)
-	{
-		str = "";
+    public ChatCommandResult tryConsume(CommandHandler handler, String args) {
+        str = "";
 
-		if (args.isEmpty())
-		{
-			return ChatCommandResult.fromErrorMessage("");
-		}
+        if (args.isEmpty()) {
+            return ChatCommandResult.fromErrorMessage("");
+        }
 
-		if ((args.charAt(0) != '"') && (args.charAt(0) != '\''))
-		{
-			dynamic str;
-			tangible.OutObject<dynamic> tempOut_str = new tangible.OutObject<dynamic>();
+        if ((args.charAt(0) != '"') && (args.charAt(0) != '\'')) {
+            dynamic str;
+            tangible.OutObject<dynamic> tempOut_str = new tangible.OutObject<dynamic>();
 // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
-			var tempVar = CommandArgs.tryConsume(tempOut_str, String.class, handler, args);
-		str = tempOut_str.outArgValue;
-		return tempVar;
-		}
+            var tempVar = CommandArgs.tryConsume(tempOut_str, String.class, handler, args);
+            str = tempOut_str.outArgValue;
+            return tempVar;
+        }
 
-		var QUOTE = args.charAt(0);
+        var QUOTE = args.charAt(0);
 
-		for (var i = 1; i < args.length(); ++i)
-		{
-			if (args.charAt(i) == QUOTE)
-			{
+        for (var i = 1; i < args.length(); ++i) {
+            if (args.charAt(i) == QUOTE) {
 // C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-				var(remainingToken, tail) = args.Substring(i + 1).Tokenize();
+                var(remainingToken, tail) = args.Substring(i + 1).Tokenize();
 
-				if (remainingToken.isEmpty()) // if this is not empty, then we did not consume the full token
-				{
-					return new ChatCommandResult(tail);
-				}
-				else
-				{
-					return ChatCommandResult.fromErrorMessage("");
-				}
-			}
+                if (remainingToken.isEmpty()) // if this is not empty, then we did not consume the full token
+                {
+                    return new ChatCommandResult(tail);
+                } else {
+                    return ChatCommandResult.fromErrorMessage("");
+                }
+            }
 
-			if (args.charAt(i) == '\\')
-			{
-				++i;
+            if (args.charAt(i) == '\\') {
+                ++i;
 
-				if (!(i < args.length()))
-				{
-					break;
-				}
-			}
+                if (!(i < args.length())) {
+                    break;
+                }
+            }
 
-			str += args.charAt(i);
-		}
+            str += args.charAt(i);
+        }
 
-		// if we reach this, we did not find a closing quote
-		return ChatCommandResult.fromErrorMessage("");
-	}
+        // if we reach this, we did not find a closing quote
+        return ChatCommandResult.fromErrorMessage("");
+    }
 
-	public QuotedString clone()
-	{
-		QuotedString varCopy = new QuotedString();
+    public QuotedString clone() {
+        QuotedString varCopy = new QuotedString();
 
-		varCopy.str = this.str;
+        varCopy.str = this.str;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

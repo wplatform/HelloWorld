@@ -1,19 +1,17 @@
 package com.github.mmo.game.networking.packet.combat;
 
 
-public class ThreatRemove extends ServerPacket
-{
-	public ObjectGuid aboutGUID = ObjectGuid.EMPTY; // Unit to remove threat from (e.g. player, pet, guardian)
-	public ObjectGuid unitGUID = ObjectGuid.EMPTY; // Unit being attacked (e.g. creature, boss)
-	public ThreatRemove()
-	{
-		super(ServerOpcode.ThreatRemove, ConnectionType.instance);
-	}
+public class ThreatRemove extends ServerPacket {
+    public ObjectGuid aboutGUID = ObjectGuid.EMPTY; // Unit to remove threat from (e.g. player, pet, guardian)
+    public ObjectGuid unitGUID = ObjectGuid.EMPTY; // Unit being attacked (e.g. creature, boss)
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(unitGUID);
-		this.writeGuid(aboutGUID);
-	}
+    public ThreatRemove() {
+        super(ServerOpcode.ThreatRemove, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(unitGUID);
+        this.writeGuid(aboutGUID);
+    }
 }

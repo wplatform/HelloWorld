@@ -1,9 +1,9 @@
 package com.github.mmo.game.networking.packet.combat;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class PowerUpdate extends ServerPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;

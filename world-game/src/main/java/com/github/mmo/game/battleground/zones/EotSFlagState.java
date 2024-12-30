@@ -1,8 +1,7 @@
 package com.github.mmo.game.battleground.zones;
 
 
-
-import java.util.*;
+import java.util.HashMap;
 
 enum EotSFlagState {
     OnBase(0),

@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-import com.github.mmo.game.networking.ServerPacket;public class StandStateUpdate extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class StandStateUpdate extends ServerPacket {
 
     private final int animKitID;
     private final UnitStandstateType state;

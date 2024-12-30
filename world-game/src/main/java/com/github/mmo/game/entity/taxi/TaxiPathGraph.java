@@ -1,13 +1,13 @@
 package com.github.mmo.game.entity.taxi;
 
 import Framework.Algorithms.*;
-
-
-
-import game.*;
 import com.github.mmo.game.entity.player.Player;
+import game.*;
 
-import java.util.*;public class TaxiPathGraph {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class TaxiPathGraph {
     private static final ArrayList<TaxiNodesRecord> NODESBYVERTEX = new ArrayList<>();
 
     private static final HashMap<Integer, Integer> VERTICESBYNODE = new HashMap<Integer, Integer>();
@@ -25,7 +25,7 @@ import java.util.*;public class TaxiPathGraph {
             var from = CliDB.TaxiNodesStorage.get(path.FromTaxiNode);
             var to = CliDB.TaxiNodesStorage.get(path.ToTaxiNode);
 
-            if (from != null && to != null && from.flags.HasAnyFlag(TaxiNodeFlags.Alliance.getValue() | TaxiNodeFlags.Horde.getValue()) && to.flags.HasAnyFlag(TaxiNodeFlags.Alliance.getValue() | TaxiNodeFlags.Horde.getValue())) {
+            if (from != null && to != null && from.flags.hasFlag(TaxiNodeFlags.Alliance.getValue() | TaxiNodeFlags.Horde.getValue()) && to.flags.hasFlag(TaxiNodeFlags.Alliance.getValue() | TaxiNodeFlags.Horde.getValue())) {
                 addVerticeAndEdgeFromNodeInfo(from, to, path.id, edges);
             }
         }
@@ -73,7 +73,7 @@ import java.util.*;public class TaxiPathGraph {
                 var To = NODESBYVERTEX.get((int) edge.To);
                 var requireFlag = (player.getTeam() == TeamFaction.Alliance) ? TaxiNodeFlags.Alliance : TaxiNodeFlags.Horde;
 
-                if (!To.flags.HasAnyFlag(requireFlag)) {
+                if (!To.flags.hasFlag(requireFlag)) {
                     continue;
                 }
 
@@ -144,7 +144,7 @@ import java.util.*;public class TaxiPathGraph {
             }
 
             for (var i = first + 1; i < last; ++i) {
-                if (nodes[i - 1].flags.HasAnyFlag(TaxiPathNodeFlags.Teleport)) {
+                if (nodes[i - 1].flags.hasFlag(TaxiPathNodeFlags.Teleport)) {
                     continue;
                 }
 

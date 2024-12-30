@@ -1,21 +1,19 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildBankTextQueryResult extends ServerPacket
-{
-	public int tab;
-	public String text;
-	public GuildBankTextQueryResult()
-	{
-		super(ServerOpcode.GuildBankTextQueryResult);
-	}
+public class GuildBankTextQueryResult extends ServerPacket {
+    public int tab;
+    public String text;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(tab);
+    public GuildBankTextQueryResult() {
+        super(ServerOpcode.GuildBankTextQueryResult);
+    }
 
-		this.writeBits(text.getBytes().length, 14);
-		this.writeString(text);
-	}
+    @Override
+    public void write() {
+        this.writeInt32(tab);
+
+        this.writeBits(text.getBytes().length, 14);
+        this.writeString(text);
+    }
 }

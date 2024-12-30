@@ -2,84 +2,71 @@ package com.github.mmo.game.networking.packet.item;
 
 
 import com.github.mmo.dbc.defines.ItemContext;
-import com.github.mmo.game.networking.*;
-import java.util.*;
+import com.github.mmo.game.networking.WorldPacket;
+
+import java.util.ArrayList;
 
 
-public class ItemBonuses
-{
-	public ItemContext context = ItemContext.values()[0];
-	public ArrayList<Integer> bonusListIDs = new ArrayList<>();
+public class ItemBonuses {
+    public ItemContext context = ItemContext.values()[0];
+    public ArrayList<Integer> bonusListIDs = new ArrayList<>();
 
-	public final void write(WorldPacket data)
-	{
-		data.writeInt8((byte)context.getValue());
-		data.writeInt32(bonusListIDs.size());
+    public static boolean opEquals(ItemBonuses left, ItemBonuses right) {
+        if (left == right) {
+            return true;
+        }
 
-		for (var bonusID : bonusListIDs)
-		{
-			data.writeInt32(bonusID);
-		}
-	}
+        if (left == null || right == null) {
+            return false;
+        }
 
-	public final void read(WorldPacket data)
-	{
-		context = itemContext.forValue(data.readUInt8());
-		var bonusListIdSize = data.readUInt();
+        if (left.context != right.context) {
+            return false;
+        }
 
-		bonusListIDs = new ArrayList<>();
+        if (left.bonusListIDs.size() != right.bonusListIDs.size()) {
+            return false;
+        }
 
-		for (var i = 0; i < bonusListIdSize; ++i)
-		{
-			var bonusId = data.readUInt();
-			bonusListIDs.add(bonusId);
-		}
-	}
+        return left.bonusListIDs.equals(right.bonusListIDs);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return context.hashCode() ^ bonusListIDs.hashCode();
-	}
+    public static boolean opNotEquals(ItemBonuses left, ItemBonuses right) {
+        return !(ItemBonuses.opEquals(left, right));
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof ItemBonuses)
-		{
-			return ItemBonuses.opEquals((ItemBonuses)obj, this);
-		}
+    public final void write(WorldPacket data) {
+        data.writeInt8((byte) context.getValue());
+        data.writeInt32(bonusListIDs.size());
 
-		return false;
-	}
+        for (var bonusID : bonusListIDs) {
+            data.writeInt32(bonusID);
+        }
+    }
 
-	public static boolean opEquals(ItemBonuses left, ItemBonuses right)
-	{
-		if (left == right)
-		{
-			return true;
-		}
+    public final void read(WorldPacket data) {
+        context = itemContext.forValue(data.readUInt8());
+        var bonusListIdSize = data.readUInt();
 
-		if (left == null || right == null)
-		{
-			return false;
-		}
+        bonusListIDs = new ArrayList<>();
 
-		if (left.context != right.context)
-		{
-			return false;
-		}
+        for (var i = 0; i < bonusListIdSize; ++i) {
+            var bonusId = data.readUInt();
+            bonusListIDs.add(bonusId);
+        }
+    }
 
-		if (left.bonusListIDs.size() != right.bonusListIDs.size())
-		{
-			return false;
-		}
+    @Override
+    public int hashCode() {
+        return context.hashCode() ^ bonusListIDs.hashCode();
+    }
 
-		return left.bonusListIDs.equals(right.bonusListIDs);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemBonuses) {
+            return ItemBonuses.opEquals((ItemBonuses) obj, this);
+        }
 
-	public static boolean opNotEquals(ItemBonuses left, ItemBonuses right)
-	{
-		return !(ItemBonuses.opEquals(left, right));
-	}
+        return false;
+    }
 }

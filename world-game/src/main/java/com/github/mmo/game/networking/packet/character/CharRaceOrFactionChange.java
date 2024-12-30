@@ -5,7 +5,9 @@ import com.github.mmo.game.entity.ChrCustomizationChoice;
 import com.github.mmo.game.networking.ClientPacket;
 import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.collections;public class CharRaceOrFactionChange extends ClientPacket {
+import java.util.collections;
+
+public class CharRaceOrFactionChange extends ClientPacket {
     public CharraceOrFactionChangeInfo raceOrFactionChangeInfo;
 
     public CharRaceOrFactionChange(WorldPacket packet) {

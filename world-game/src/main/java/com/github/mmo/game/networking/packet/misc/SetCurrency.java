@@ -1,98 +1,86 @@
 package com.github.mmo.game.networking.packet.misc;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class SetCurrency extends ServerPacket
-{
-	public int type;
-	public int quantity;
-	public CurrencyGainflags flags = CurrencyGainFlags.values()[0];
-	public ArrayList<UiEventToast> toasts = new ArrayList<>();
-	public Integer weeklyQuantity = null;
-	public Integer trackedQuantity = null;
-	public Integer maxQuantity = null;
-	public Integer totalEarned = null;
-	public Integer quantityChange = null;
-	public CurrencyGainSource quantityGainSource = null;
-	public CurrencyDestroyReason quantityLostSource = null;
-	public Integer firstCraftOperationID = null;
-	public Long lastSpendTime = null;
-	public boolean suppressChatLog;
-	public SetCurrency()
-	{
-		super(ServerOpcode.SetCurrency, ConnectionType.instance);
-	}
+public class SetCurrency extends ServerPacket {
+    public int type;
+    public int quantity;
+    public CurrencyGainflags flags = CurrencyGainFlags.values()[0];
+    public ArrayList<UiEventToast> toasts = new ArrayList<>();
+    public Integer weeklyQuantity = null;
+    public Integer trackedQuantity = null;
+    public Integer maxQuantity = null;
+    public Integer totalEarned = null;
+    public Integer quantityChange = null;
+    public CurrencyGainSource quantityGainSource = null;
+    public CurrencyDestroyReason quantityLostSource = null;
+    public Integer firstCraftOperationID = null;
+    public Long lastSpendTime = null;
+    public boolean suppressChatLog;
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(type);
-		this.writeInt32(quantity);
-		this.writeInt32((int)flags.getValue());
-		this.writeInt32(toasts.size());
+    public SetCurrency() {
+        super(ServerOpcode.SetCurrency, ConnectionType.instance);
+    }
 
-		for (var toast : toasts)
-		{
-			toast.write(this);
-		}
+    @Override
+    public void write() {
+        this.writeInt32(type);
+        this.writeInt32(quantity);
+        this.writeInt32((int) flags.getValue());
+        this.writeInt32(toasts.size());
 
-		this.writeBit(weeklyQuantity != null);
-		this.writeBit(trackedQuantity != null);
-		this.writeBit(maxQuantity != null);
-		this.writeBit(totalEarned != null);
-		this.writeBit(suppressChatLog);
-		this.writeBit(quantityChange != null);
-		this.writeBit(quantityGainSource != null);
-		this.writeBit(quantityLostSource != null);
-		this.writeBit(firstCraftOperationID != null);
-		this.writeBit(lastSpendTime != null);
-		this.flushBits();
+        for (var toast : toasts) {
+            toast.write(this);
+        }
 
-		if (weeklyQuantity != null)
-		{
-			this.writeInt32(weeklyQuantity.intValue());
-		}
+        this.writeBit(weeklyQuantity != null);
+        this.writeBit(trackedQuantity != null);
+        this.writeBit(maxQuantity != null);
+        this.writeBit(totalEarned != null);
+        this.writeBit(suppressChatLog);
+        this.writeBit(quantityChange != null);
+        this.writeBit(quantityGainSource != null);
+        this.writeBit(quantityLostSource != null);
+        this.writeBit(firstCraftOperationID != null);
+        this.writeBit(lastSpendTime != null);
+        this.flushBits();
 
-		if (trackedQuantity != null)
-		{
-			this.writeInt32(trackedQuantity.intValue());
-		}
+        if (weeklyQuantity != null) {
+            this.writeInt32(weeklyQuantity.intValue());
+        }
 
-		if (maxQuantity != null)
-		{
-			this.writeInt32(maxQuantity.intValue());
-		}
+        if (trackedQuantity != null) {
+            this.writeInt32(trackedQuantity.intValue());
+        }
 
-		if (totalEarned != null)
-		{
-			this.writeInt32(totalEarned.intValue());
-		}
+        if (maxQuantity != null) {
+            this.writeInt32(maxQuantity.intValue());
+        }
 
-		if (quantityChange != null)
-		{
-			this.writeInt32(quantityChange.intValue());
-		}
+        if (totalEarned != null) {
+            this.writeInt32(totalEarned.intValue());
+        }
 
-		if (quantityGainSource != null)
-		{
-			this.writeInt32((int)quantityGainSource);
-		}
+        if (quantityChange != null) {
+            this.writeInt32(quantityChange.intValue());
+        }
 
-		if (quantityLostSource != null)
-		{
-			this.writeInt32((int)quantityLostSource);
-		}
+        if (quantityGainSource != null) {
+            this.writeInt32((int) quantityGainSource);
+        }
 
-		if (firstCraftOperationID != null)
-		{
-			this.writeInt32(firstCraftOperationID.intValue());
-		}
+        if (quantityLostSource != null) {
+            this.writeInt32((int) quantityLostSource);
+        }
 
-		if (lastSpendTime != null)
-		{
-			this.writeInt64(lastSpendTime.longValue());
-		}
-	}
+        if (firstCraftOperationID != null) {
+            this.writeInt32(firstCraftOperationID.intValue());
+        }
+
+        if (lastSpendTime != null) {
+            this.writeInt64(lastSpendTime.longValue());
+        }
+    }
 }

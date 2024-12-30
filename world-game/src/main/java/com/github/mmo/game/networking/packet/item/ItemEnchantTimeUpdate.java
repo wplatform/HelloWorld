@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.item;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class ItemEnchantTimeUpdate extends ServerPacket {
     public ObjectGuid ownerGuid = ObjectGuid.EMPTY;
     public ObjectGuid itemGuid = ObjectGuid.EMPTY;

@@ -1,4 +1,6 @@
-package com.github.mmo.game.entity.player;enum FavoriteAppearanceState {
+package com.github.mmo.game.entity.player;
+
+enum FavoriteAppearanceState {
     New,
     removed,
     Unchanged;

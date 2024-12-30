@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.warden;
 
 
-import com.github.mmo.game.networking.*;class WardenData extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class WardenData extends ClientPacket {
     public ByteBuffer data;
 
     public WardenData(WorldPacket packet) {

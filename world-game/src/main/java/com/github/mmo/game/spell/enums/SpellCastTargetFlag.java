@@ -1,7 +1,6 @@
 package com.github.mmo.game.spell.enums;
 
 import com.github.mmo.common.EnumFlag;
-import com.github.mmo.world.spell.enums.TriggerCastFlags;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

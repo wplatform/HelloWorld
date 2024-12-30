@@ -1,32 +1,30 @@
 package com.github.mmo.game.networking.packet.chat;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class CTextEmote extends ClientPacket
-{
-	public ObjectGuid target = ObjectGuid.EMPTY;
-	public int emoteID;
-	public int soundIndex;
-	public int[] spellVisualKitIDs;
-	public int sequenceVariation;
-	public CTextEmote(WorldPacket packet)
-	{
-		super(packet);
-	}
+public class CTextEmote extends ClientPacket {
+    public ObjectGuid target = ObjectGuid.EMPTY;
+    public int emoteID;
+    public int soundIndex;
+    public int[] spellVisualKitIDs;
+    public int sequenceVariation;
 
-	@Override
-	public void read()
-	{
-		target = this.readPackedGuid();
-		emoteID = this.readInt32();
-		soundIndex = this.readInt32();
+    public CTextEmote(WorldPacket packet) {
+        super(packet);
+    }
 
-		spellVisualKitIDs = new int[this.readUInt()];
-		sequenceVariation = this.readInt32();
+    @Override
+    public void read() {
+        target = this.readPackedGuid();
+        emoteID = this.readInt32();
+        soundIndex = this.readInt32();
 
-		for (var i = 0; i < spellVisualKitIDs.length; ++i)
-		{
-			SpellVisualKitIDs[i] = this.readUInt();
-		}
-	}
+        spellVisualKitIDs = new int[this.readUInt()];
+        sequenceVariation = this.readInt32();
+
+        for (var i = 0; i < spellVisualKitIDs.length; ++i) {
+            SpellVisualKitIDs[i] = this.readUInt();
+        }
+    }
 }

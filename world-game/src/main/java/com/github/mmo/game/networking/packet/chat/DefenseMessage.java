@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.chat;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class DefenseMessage extends ServerPacket {
 
     public int zoneID;

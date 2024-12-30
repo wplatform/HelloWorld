@@ -1,25 +1,23 @@
 package com.github.mmo.game.networking.packet.item;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class SocketGems extends ClientPacket
-{
-	public ObjectGuid itemGuid = ObjectGuid.EMPTY;
-	public ObjectGuid[] gemItem = new ObjectGuid[ItemConst.MaxGemSockets];
-	public SocketGems(WorldPacket packet)
-	{
-		super(packet);
-	}
+class SocketGems extends ClientPacket {
+    public ObjectGuid itemGuid = ObjectGuid.EMPTY;
+    public ObjectGuid[] gemItem = new ObjectGuid[ItemConst.MaxGemSockets];
 
-	@Override
-	public void read()
-	{
-		itemGuid = this.readPackedGuid();
+    public SocketGems(WorldPacket packet) {
+        super(packet);
+    }
 
-		for (var i = 0; i < ItemConst.MaxGemSockets; ++i)
-		{
-			GemItem[i] = this.readPackedGuid();
-		}
-	}
+    @Override
+    public void read() {
+        itemGuid = this.readPackedGuid();
+
+        for (var i = 0; i < ItemConst.MaxGemSockets; ++i) {
+            GemItem[i] = this.readPackedGuid();
+        }
+    }
 }

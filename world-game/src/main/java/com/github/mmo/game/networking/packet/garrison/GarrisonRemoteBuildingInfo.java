@@ -1,34 +1,30 @@
 package com.github.mmo.game.networking.packet.garrison;
 
-import com.github.mmo.game.networking.*;
-final class GarrisonRemoteBuildingInfo
-{
-	public GarrisonRemoteBuildingInfo()
-	{
-	}
+import com.github.mmo.game.networking.WorldPacket;
 
-	public GarrisonRemoteBuildingInfo(int plotInstanceId, int buildingId)
-	{
-		garrPlotInstanceID = plotInstanceId;
-		garrBuildingID = buildingId;
-	}
+final class GarrisonRemoteBuildingInfo {
+    public int garrPlotInstanceID;
+    public int garrBuildingID;
 
-	public void write(WorldPacket data)
-	{
+    public GarrisonRemoteBuildingInfo() {
+    }
+
+    public GarrisonRemoteBuildingInfo(int plotInstanceId, int buildingId) {
+        garrPlotInstanceID = plotInstanceId;
+        garrBuildingID = buildingId;
+    }
+
+    public void write(WorldPacket data) {
         data.writeInt32(garrPlotInstanceID);
         data.writeInt32(garrBuildingID);
-	}
+    }
 
-	public int garrPlotInstanceID;
-	public int garrBuildingID;
+    public GarrisonRemoteBuildingInfo clone() {
+        GarrisonRemoteBuildingInfo varCopy = new GarrisonRemoteBuildingInfo();
 
-	public GarrisonRemoteBuildingInfo clone()
-	{
-		GarrisonRemoteBuildingInfo varCopy = new GarrisonRemoteBuildingInfo();
+        varCopy.garrPlotInstanceID = this.garrPlotInstanceID;
+        varCopy.garrBuildingID = this.garrBuildingID;
 
-		varCopy.garrPlotInstanceID = this.garrPlotInstanceID;
-		varCopy.garrBuildingID = this.garrBuildingID;
-
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

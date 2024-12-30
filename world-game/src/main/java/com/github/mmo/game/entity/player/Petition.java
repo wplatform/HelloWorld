@@ -1,8 +1,9 @@
 package com.github.mmo.game.entity.player;
 
 
+import java.util.ArrayList;
 
-import java.util.*;public class Petition {
+public class Petition {
     public ObjectGuid petitionGuid = ObjectGuid.EMPTY;
     public ObjectGuid ownerGuid = ObjectGuid.EMPTY;
     public String petitionName;

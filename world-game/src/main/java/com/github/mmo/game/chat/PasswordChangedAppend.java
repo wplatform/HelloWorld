@@ -2,6 +2,7 @@ package com.github.mmo.game.chat;
 
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
+
 final class PasswordChangedAppend implements IChannelAppender {
     private final ObjectGuid guid;
 

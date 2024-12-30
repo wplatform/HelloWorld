@@ -1,8 +1,8 @@
 package com.github.mmo.game.chat.commands;
 
 
+import com.github.mmo.game.chat.CommandHandler;
 
-import com.github.mmo.game.chat.*;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 class AchievementCommand {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleAchievementAddCommand(CommandHandler handler, AchievementRecord achievementEntry) {

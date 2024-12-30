@@ -15,7 +15,7 @@ class NearestGameObjectEntryInObjectRangeCheck implements ICheck<GameObject> {
         this(obj, entry, range, true);
     }
 
-        public NearestGameObjectEntryInObjectRangeCheck(WorldObject obj, int entry, float range, boolean spawnedOnly) {
+    public NearestGameObjectEntryInObjectRangeCheck(WorldObject obj, int entry, float range, boolean spawnedOnly) {
         obj = obj;
         entry = entry;
         range = range;

@@ -1,12 +1,6 @@
 package com.github.mmo.game.entity.vehicle;
 
 import game.datastorage.*;
-import game.entities.VehicleSeatAddon;
-
-
-
-
-
 
 
 public class VehicleSeat {

@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.party;
 
 
-import com.github.mmo.game.networking.*;class SetLootMethod extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class SetLootMethod extends ClientPacket {
     public byte partyIndex;
     public ObjectGuid lootMasterGUID = ObjectGuid.EMPTY;
     public lootMethod lootMethod = Framework.Constants.lootMethod.values()[0];

@@ -2,7 +2,9 @@ package com.github.mmo.game.entity;
 
 import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.*;public class SocketedGem extends BaseUpdateData<item> {
+import com.github.mmo.game.networking.WorldPacket;
+
+public class SocketedGem extends BaseUpdateData<item> {
 
     public UpdateField<Integer> itemId = new UpdateField<Integer>(0, 1);
 

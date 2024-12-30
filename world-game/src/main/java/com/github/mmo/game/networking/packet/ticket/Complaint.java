@@ -1,93 +1,85 @@
 package com.github.mmo.game.networking.packet.ticket;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-class Complaint extends ClientPacket
-{
-	public SupportSpamType complaintType = SupportSpamType.values()[0];
-	public Complaintoffender offender = new complaintOffender();
-	public long mailID;
-	public Complaintchat chat = new complaintChat();
+class Complaint extends ClientPacket {
+    public SupportSpamType complaintType = SupportSpamType.values()[0];
+    public Complaintoffender offender = new complaintOffender();
+    public long mailID;
+    public Complaintchat chat = new complaintChat();
 
-	public long eventGuid;
-	public long inviteGuid;
-	public Complaint(WorldPacket packet)
-	{
-		super(packet);
-	}
+    public long eventGuid;
+    public long inviteGuid;
 
-	@Override
-	public void read()
-	{
-		complaintType = SupportSpamType.forValue(this.readUInt8());
-		offender.read(this);
+    public Complaint(WorldPacket packet) {
+        super(packet);
+    }
 
-		switch (complaintType)
-		{
-			case Mail:
-				mailID = this.readUInt64();
+    @Override
+    public void read() {
+        complaintType = SupportSpamType.forValue(this.readUInt8());
+        offender.read(this);
 
-				break;
-			case Chat:
-				chat.read(this);
+        switch (complaintType) {
+            case Mail:
+                mailID = this.readUInt64();
 
-				break;
-			case Calendar:
-				eventGuid = this.readUInt64();
-				inviteGuid = this.readUInt64();
+                break;
+            case Chat:
+                chat.read(this);
 
-				break;
-		}
-	}
+                break;
+            case Calendar:
+                eventGuid = this.readUInt64();
+                inviteGuid = this.readUInt64();
 
-	public final static class ComplaintOffender
-	{
-		public void read(WorldPacket data)
-		{
-			playerGuid = data.readPackedGuid();
-			realmAddress = data.readUInt();
-			timeSinceOffence = data.readUInt();
-		}
+                break;
+        }
+    }
 
-		public ObjectGuid playerGuid = ObjectGuid.EMPTY;
-		public int realmAddress;
-		public int timeSinceOffence;
+    public final static class ComplaintOffender {
+        public ObjectGuid playerGuid = ObjectGuid.EMPTY;
+        public int realmAddress;
+        public int timeSinceOffence;
 
-		public ComplaintOffender clone()
-		{
-			ComplaintOffender varCopy = new complaintOffender();
+        public void read(WorldPacket data) {
+            playerGuid = data.readPackedGuid();
+            realmAddress = data.readUInt();
+            timeSinceOffence = data.readUInt();
+        }
 
-			varCopy.playerGuid = this.playerGuid;
-			varCopy.realmAddress = this.realmAddress;
-			varCopy.timeSinceOffence = this.timeSinceOffence;
+        public ComplaintOffender clone() {
+            ComplaintOffender varCopy = new complaintOffender();
 
-			return varCopy;
-		}
-	}
+            varCopy.playerGuid = this.playerGuid;
+            varCopy.realmAddress = this.realmAddress;
+            varCopy.timeSinceOffence = this.timeSinceOffence;
 
-	public final static class ComplaintChat
-	{
-		public void read(WorldPacket data)
-		{
-			command = data.readUInt();
-			channelID = data.readUInt();
-			messageLog = data.readString(data.<Integer>readBit(12));
-		}
+            return varCopy;
+        }
+    }
 
-		public int command;
-		public int channelID;
-		public String messageLog;
+    public final static class ComplaintChat {
+        public int command;
+        public int channelID;
+        public String messageLog;
 
-		public ComplaintChat clone()
-		{
-			ComplaintChat varCopy = new complaintChat();
+        public void read(WorldPacket data) {
+            command = data.readUInt();
+            channelID = data.readUInt();
+            messageLog = data.readString(data.<Integer>readBit(12));
+        }
 
-			varCopy.command = this.command;
-			varCopy.channelID = this.channelID;
-			varCopy.messageLog = this.messageLog;
+        public ComplaintChat clone() {
+            ComplaintChat varCopy = new complaintChat();
 
-			return varCopy;
-		}
-	}
+            varCopy.command = this.command;
+            varCopy.channelID = this.channelID;
+            varCopy.messageLog = this.messageLog;
+
+            return varCopy;
+        }
+    }
 }

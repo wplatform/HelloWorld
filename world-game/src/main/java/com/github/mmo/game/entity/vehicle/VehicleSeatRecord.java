@@ -4,7 +4,7 @@ import Framework.Constants.*;
 
 
 public final class VehicleSeatRecord {
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint Id;
     public int id;
     public Vector3 attachmentOffset;
@@ -49,10 +49,10 @@ public final class VehicleSeatRecord {
     public float vehicleEnterAnimDelay;
     public float vehicleExitAnimDelay;
     public byte vehicleAbilityDisplay;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint EnterUISoundID;
     public int enterUISoundID;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint ExitUISoundID;
     public int exitUISoundID;
     public int uiSkinFileDataID;
@@ -74,11 +74,11 @@ public final class VehicleSeatRecord {
     public short cameraModeID;
 
     public boolean hasFlag(VehicleSeatFlags flag) {
-        return flags.HasAnyFlag(flag.getValue());
+        return flags.hasFlag(flag.getValue());
     }
 
     public boolean hasFlag(VehicleSeatFlagsB flag) {
-        return flagsB.HasAnyFlag(flag.getValue());
+        return flagsB.hasFlag(flag.getValue());
     }
 
     public boolean canEnterOrExit() {
@@ -86,7 +86,7 @@ public final class VehicleSeatRecord {
     }
 
     public boolean canSwitchFromSeat() {
-        return flags.HasAnyFlag(VehicleSeatFlags.CanSwitch.getValue());
+        return flags.hasFlag(VehicleSeatFlags.CanSwitch.getValue());
     }
 
     public boolean isUsableByOverride() {

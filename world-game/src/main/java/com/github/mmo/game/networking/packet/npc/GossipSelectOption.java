@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.npc;
 
-import com.github.mmo.game.networking.*;public class GossipSelectOption extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+public class GossipSelectOption extends ClientPacket {
     public ObjectGuid gossipUnit = ObjectGuid.EMPTY;
     public int gossipOptionID;
 

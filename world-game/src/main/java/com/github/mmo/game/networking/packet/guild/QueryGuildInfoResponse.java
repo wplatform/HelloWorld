@@ -4,7 +4,9 @@ package com.github.mmo.game.networking.packet.guild;
 import com.github.mmo.game.entity.ObjectGuid;
 import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.ArrayList;public class QueryGuildInfoResponse extends ServerPacket {
+import java.util.ArrayList;
+
+public class QueryGuildInfoResponse extends ServerPacket {
     public ObjectGuid guildGUID = ObjectGuid.EMPTY;
     public Guildinfo info = new guildInfo();
     public boolean hasGuildInfo;
@@ -69,6 +71,7 @@ import java.util.ArrayList;public class QueryGuildInfoResponse extends ServerPac
 
             public int rankOrder;
             public String rankName;
+
             public RankInfo() {
             }
 

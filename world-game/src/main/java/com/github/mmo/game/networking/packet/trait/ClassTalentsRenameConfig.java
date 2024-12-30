@@ -1,21 +1,20 @@
 package com.github.mmo.game.networking.packet.trait;
 
-import com.github.mmo.game.networking.*;
-class ClassTalentsRenameConfig extends ClientPacket
-{
-	public int configID;
-	public String name;
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public ClassTalentsRenameConfig(WorldPacket packet)
-	{
-		super(packet);
-	}
+class ClassTalentsRenameConfig extends ClientPacket {
+    public int configID;
+    public String name;
 
-	@Override
-	public void read()
-	{
-		configID = this.readInt32();
-		var nameLength = this.<Integer>readBit(9);
-		name = this.readString(nameLength);
-	}
+    public ClassTalentsRenameConfig(WorldPacket packet) {
+        super(packet);
+    }
+
+    @Override
+    public void read() {
+        configID = this.readInt32();
+        var nameLength = this.<Integer>readBit(9);
+        name = this.readString(nameLength);
+    }
 }

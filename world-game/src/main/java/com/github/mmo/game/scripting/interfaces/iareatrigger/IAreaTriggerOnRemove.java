@@ -1,7 +1,7 @@
 package com.github.mmo.game.scripting.interfaces.iareatrigger;
 
-import com.github.mmo.game.scripting.interfaces.*;
-public interface IAreaTriggerOnRemove extends IAreaTriggerScript
-{
-	void onRemove();
+import com.github.mmo.game.scripting.interfaces.IAreaTriggerScript;
+
+public interface IAreaTriggerOnRemove extends IAreaTriggerScript {
+    void onRemove();
 }

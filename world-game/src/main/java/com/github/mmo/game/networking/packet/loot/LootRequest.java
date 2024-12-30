@@ -1,17 +1,15 @@
 package com.github.mmo.game.networking.packet.loot;
 
-public final class LootRequest
-{
-	public objectGuid object = ObjectGuid.EMPTY;
-	public byte lootListID;
+public final class LootRequest {
+    public objectGuid object = ObjectGuid.EMPTY;
+    public byte lootListID;
 
-	public LootRequest clone()
-	{
-		LootRequest varCopy = new LootRequest();
+    public LootRequest clone() {
+        LootRequest varCopy = new LootRequest();
 
-		varCopy.object = this.object;
-		varCopy.lootListID = this.lootListID;
+        varCopy.object = this.object;
+        varCopy.lootListID = this.lootListID;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

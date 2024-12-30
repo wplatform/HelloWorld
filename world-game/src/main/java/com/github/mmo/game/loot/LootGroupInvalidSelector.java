@@ -3,43 +3,36 @@ package com.github.mmo.game.loot;
 
 import com.github.mmo.game.entity.player.Player;
 
-public final class LootGroupInvalidSelector
-{
-	public LootGroupInvalidSelector()
-	{
-	}
+public final class LootGroupInvalidSelector {
+    private final short lootMode;
+    private final Player personalLooter;
 
-	public LootGroupInvalidSelector(short lootMode, Player personalLooter)
-	{
-		lootMode = lootMode;
-		personalLooter = personalLooter;
-	}
+    public LootGroupInvalidSelector() {
+    }
 
-	public boolean check(LootStoreItem item)
-	{
-		if ((item.lootmode & lootMode) == 0)
-		{
-			return true;
-		}
+    public LootGroupInvalidSelector(short lootMode, Player personalLooter) {
+        lootMode = lootMode;
+        personalLooter = personalLooter;
+    }
 
-		if (personalLooter && !LootItem.allowedForPlayer(personalLooter, null, item.itemid, item.needs_quest, !item.needs_quest || global.getObjectMgr().getItemTemplate(item.itemid).hasFlag(ItemFlagsCustom.FollowLootRules), true, item.conditions))
-		{
-			return true;
-		}
+    public boolean check(LootStoreItem item) {
+        if ((item.lootmode & lootMode) == 0) {
+            return true;
+        }
 
-		return false;
-	}
+        if (personalLooter && !LootItem.allowedForPlayer(personalLooter, null, item.itemid, item.needs_quest, !item.needs_quest || global.getObjectMgr().getItemTemplate(item.itemid).hasFlag(ItemFlagsCustom.FollowLootRules), true, item.conditions)) {
+            return true;
+        }
 
-	private final short lootMode;
-	private final Player personalLooter;
+        return false;
+    }
 
-	public LootGroupInvalidSelector clone()
-	{
-		LootGroupInvalidSelector varCopy = new LootGroupInvalidSelector();
+    public LootGroupInvalidSelector clone() {
+        LootGroupInvalidSelector varCopy = new LootGroupInvalidSelector();
 
-		varCopy.lootMode = this.lootMode;
-		varCopy.personalLooter = this.personalLooter;
+        varCopy.lootMode = this.lootMode;
+        varCopy.personalLooter = this.personalLooter;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

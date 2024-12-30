@@ -1,7 +1,6 @@
 package com.github.mmo.game.arena;
 
 
-import com.github.mmo.game.battleground.battlegroundScore;
 import com.github.mmo.game.networking.packet.PVPMatchStatistics;
 
 class ArenaScore extends BattlegroundScore {

@@ -4,7 +4,7 @@ import com.github.mmo.game.entity.areatrigger.model.AreaTriggerActionTypes;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerActionUserTypes;
 
 public final class AreaTriggerAction {
-   
+
     public int param;
     public AreaTriggeractionTypes actionType = AreaTriggerActionTypes.values()[0];
     public AreaTriggerActionUserTypes targetType = AreaTriggerActionUserTypes.values()[0];

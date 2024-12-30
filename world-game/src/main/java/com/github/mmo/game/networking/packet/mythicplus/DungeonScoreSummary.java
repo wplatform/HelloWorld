@@ -1,8 +1,10 @@
 package com.github.mmo.game.networking.packet.mythicplus;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-import java.util.*;public class DungeonScoreSummary {
+import java.util.ArrayList;
+
+public class DungeonScoreSummary {
     public float overallScoreCurrentSeason;
     public float ladderScoreCurrentSeason;
     public ArrayList<DungeonScoreMapSummary> runs = new ArrayList<>();

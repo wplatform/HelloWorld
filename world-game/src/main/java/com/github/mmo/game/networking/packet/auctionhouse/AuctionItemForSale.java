@@ -1,7 +1,8 @@
 package com.github.mmo.game.networking.packet.auctionhouse;
 
 import com.github.mmo.game.entity.ObjectGuid;
-import com.github.mmo.game.networking.WorldPacket;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+import com.github.mmo.game.networking.WorldPacket;
+
 public final class AuctionItemForSale {
     public ObjectGuid guid = ObjectGuid.EMPTY;
 

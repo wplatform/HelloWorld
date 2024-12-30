@@ -1,7 +1,7 @@
 package com.github.mmo.game.arena;
 
 
-import com.github.mmo.game.battleground.*;
+import com.github.mmo.game.battleground.BattlegroundTemplate;
 import com.github.mmo.game.entity.player.Player;
 
 public class NagrandArena extends Arena {
@@ -71,7 +71,7 @@ public class NagrandArena extends Arena {
         result &= addObject(NagrandArenaObjectTypes.DOOR4, NagrandArenaObjects.DOOR4, 4090.064f, 2858.438f, 10.23631f, 0.4928045f, 0, 0, 0.2439165f, 0.9697962f, BattlegroundConst.RespawnImmediately);
 
         if (!result) {
-            Log.outError(LogFilter.Sql, "NagrandArena: Failed to spawn door object!");
+            Logs.SQL.error("NagrandArena: Failed to spawn door object!");
 
             return false;
         }
@@ -80,7 +80,7 @@ public class NagrandArena extends Arena {
         result &= addObject(NagrandArenaObjectTypes.BUFF2, NagrandArenaObjects.BUFF2, 4103.330078f, 2946.350098f, 13.051300f, -0.06981307f, 0, 0, 0.03489945f, -0.9993908f, 120);
 
         if (!result) {
-            Log.outError(LogFilter.Sql, "NagrandArena: Failed to spawn buff object!");
+            Logs.SQL.error("NagrandArena: Failed to spawn buff object!");
 
             return false;
         }

@@ -1,7 +1,9 @@
 package com.github.mmo.game.achievement;
 
 
-import java.util.*;public class CriteriaTree {
+import java.util.ArrayList;
+
+public class CriteriaTree {
 
     public int id;
     public CriteriaTreeRecord entry;

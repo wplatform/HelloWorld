@@ -3,9 +3,6 @@ package com.github.mmo.game.spell.auras.model;
 import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.world.entities.object.ObjectGuid;
 import com.github.mmo.world.entities.object.WorldObject;
-import com.github.mmo.world.entities.unit.unit;
-import com.github.mmo.world.spell.spellInfo;
-import lombok.data;
 
 @Data
 public

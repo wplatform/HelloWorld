@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.talent;
 
 import com.github.mmo.game.networking.ClientPacket;
-import com.github.mmo.game.networking.WorldPacket;class LearnPvpTalents extends ClientPacket {
+import com.github.mmo.game.networking.WorldPacket;
+
+class LearnPvpTalents extends ClientPacket {
     public Array<PvPTalent> talents = new Array<PvPTalent>(4);
 
     public LearnPvpTalents(WorldPacket packet) {

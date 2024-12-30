@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.battleground;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class SeasonInfo extends ServerPacket {
     public int mythicPlusDisplaySeasonID;

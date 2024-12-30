@@ -1,4 +1,4 @@
 package com.github.mmo.game.arena;
-class TigersPeak
-{
+
+class TigersPeak {
 }

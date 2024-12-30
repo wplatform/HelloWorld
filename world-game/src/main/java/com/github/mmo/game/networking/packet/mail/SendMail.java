@@ -5,19 +5,16 @@ import com.github.mmo.game.networking.WorldPacket;
 import java.util.ArrayList;
 
 
-public class SendMail extends ClientPacket
-{
-	public StructSendMail info;
+public class SendMail extends ClientPacket {
+    public StructSendMail info;
 
-	public SendMail(WorldPacket packet)
-	{
-		super(packet);
-		info = new StructSendMail();
-	}
+    public SendMail(WorldPacket packet) {
+        super(packet);
+        info = new StructSendMail();
+    }
 
-	@Override
-	public void read()
-	{
+    @Override
+    public void read() {
         info.mailbox = this.readPackedGuid();
         info.stationeryID = this.readInt32();
         info.sendMoney = this.readInt64();
@@ -33,41 +30,37 @@ public class SendMail extends ClientPacket
         info.subject = this.readString(subjectLength);
         info.body = this.readString(bodyLength);
 
-		for (var i = 0; i < count; ++i)
-		{
-			var att = new StructSendMail.MailAttachment();
+        for (var i = 0; i < count; ++i) {
+            var att = new StructSendMail.MailAttachment();
             att.attachPosition = this.readUInt8();
             att.itemGUID = this.readPackedGuid();
 
             info.attachments.add(att);
-		}
-	}
+        }
+    }
 
-	public static class StructSendMail
-	{
+    public static class StructSendMail {
         public ObjectGuid mailbox = ObjectGuid.EMPTY;
-		public int stationeryID;
-		public long sendMoney;
-		public long cod;
-		public String target;
-		public String subject;
-		public String body;
-		public ArrayList<MailAttachment> attachments = new ArrayList<>();
+        public int stationeryID;
+        public long sendMoney;
+        public long cod;
+        public String target;
+        public String subject;
+        public String body;
+        public ArrayList<MailAttachment> attachments = new ArrayList<>();
 
-		public final static class MailAttachment
-		{
-			public byte attachPosition;
+        public final static class MailAttachment {
+            public byte attachPosition;
             public ObjectGuid itemGUID = ObjectGuid.EMPTY;
 
-			public MailAttachment clone()
-			{
-				MailAttachment varCopy = new MailAttachment();
+            public MailAttachment clone() {
+                MailAttachment varCopy = new MailAttachment();
 
-				varCopy.attachPosition = this.attachPosition;
+                varCopy.attachPosition = this.attachPosition;
                 varCopy.itemGUID = this.itemGUID;
 
-				return varCopy;
-			}
-		}
-	}
+                return varCopy;
+            }
+        }
+    }
 }

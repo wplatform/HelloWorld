@@ -1,6 +1,9 @@
 package com.github.mmo.game.networking.packet.chat;
 
-import com.github.mmo.game.networking.*;class ChatRegisterAddonPrefixes extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class ChatRegisterAddonPrefixes extends ClientPacket {
     public String[] prefixes = new String[64];
 
     public ChatRegisterAddonPrefixes(WorldPacket packet) {

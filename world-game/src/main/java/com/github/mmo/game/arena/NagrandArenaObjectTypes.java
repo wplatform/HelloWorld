@@ -1,7 +1,6 @@
 package com.github.mmo.game.arena;
 
 
-
 final class NagrandArenaObjectTypes {
     public static final int DOOR1 = 0;
     public static final int DOOR2 = 1;

@@ -59,7 +59,7 @@ import java.nio.file.Path;
  * worldserver.auction.ReplicateItemsCooldown
  * worldserver.auction.SearchDelay
  * worldserver.auction.TaintedSearchDelay
-
+ * <p>
  * worldserver.guild.CharterCost
  * worldserver.guild.EventLogRecordsCount
  * worldserver.guild.ResetHour
@@ -84,14 +84,14 @@ import java.nio.file.Path;
  * worldserver.instance.UnloadDelay
  * worldserver.resetschedule.WeekDay
  * worldserver.resetschedule.Hour
- *
- *
- *
- *
- *
- *
- *
- *
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
  * worldserver.calendar.DeleteOldEventsHour
  * worldserver.skillchance.Prospecting
  * worldserver.skillchance.Milling
@@ -166,29 +166,29 @@ import java.nio.file.Path;
  * worldserver.respawn.DynamicMinimumGameObject
  * worldserver.chatstrictlinkchecking.Severity
  * worldserver.chatstrictlinkchecking.Kick
-
+ * <p>
  * worldserver.channel.RestrictedLfg
  * worldserver.chatlevelreq.Channel
  * worldserver.chatlevelreq.Whisper
  * worldserver.chatlevelreq.Emote
  * worldserver.chatlevelreq.Say
  * worldserver.chatlevelreq.Yell
- *
- *
- *
- *
- *
-
- *
- *
- *
- *
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
  * worldserver.support.Enabled
  * worldserver.support.TicketsEnabled
  * worldserver.support.BugsEnabled
  * worldserver.support.ComplaintsEnabled
  * worldserver.support.SuggestionsEnabled
-
+ * <p>
  * worldserver.skillgain.Crafting
  * worldserver.skillgain.Gathering
  * worldserver.durabilityloss.InPvP
@@ -211,23 +211,23 @@ import java.nio.file.Path;
  * worldserver.autobroadcast.On
  * worldserver.autobroadcast.Center
  * worldserver.autobroadcast.Timer
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
  * worldserver.wintergrasp.Enable
  * worldserver.wintergrasp.PlayerMax
  * worldserver.wintergrasp.PlayerMin
@@ -282,13 +282,13 @@ import java.nio.file.Path;
  * worldserver.playerstart.String
  * worldserver.xp.boost.Daymask
  * worldserver.xp.boost.Rate
- * 
- * 
- *
- * 
- * 
- * 
- * 
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
  * worldserver.levelreq.Trade
  * worldserver.levelreq.Auction
  * worldserver.levelreq.Mail
@@ -298,7 +298,7 @@ import java.nio.file.Path;
  * worldserver.calculate.gameoject.zone.area.Data
  * worldserver.nograyaggro.Above
  * worldserver.nograyaggro.Below
- * 
+ * <p>
  * worldserver.gameobject.CheckInvalidPosition
  * worldserver.loot.EnableAELoot
  * worldserver.blackmarket.Enabled
@@ -339,115 +339,115 @@ public class WorldSetting {
     public Locale dbcLocale;
     public boolean dbcEnforceItemAttributes;
 
-    public int realmID                             ;
-    public Path dataDir                             ;
-    public Path logsDir                             ;
-    public int maxPingTime                         ;
-    public int worldServerPort                     ;
-    public int instanceServerPort                  ;
-    public String bindIP                              ;
-    public int threadPool                          ;
-    public String cmakeCommand                        ;
-    public Path buildDirectory                      ;
-    public Path sourceDirectory                     ;
-    public Path mySQLExecutable                     ;
-    public Path ipLocationFile                      ;
-    public int useProcessors                       ;
-    public int processPriority                     ;
-    public int realmsStateUpdateDelay              ;
-    public boolean compression                     ;
-    public int playerLimit                         ;
-    public int maxOverSpeedPings                   ;
-    public int gridUnload                          ;
-    public int baseMapLoadAllGrids                 ;
-    public int instanceMapLoadAllGrids             ;
-    public int battlegroundMapLoadAllGrids         ;
-    public int socketTimeOutTime                   ;
-    public int socketTimeOutTimeActive             ;
-    public int sessionAddDelay                     ;
-    public int gridCleanUpDelay                    ;
-    public int minWorldUpdateTime                  ;
-    public int mapUpdateInterval                   ;
-    public int changeWeatherInterval               ;
-    public int playerSaveInterval                  ;
-    public int disconnectToleranceInterval         ;
-    public int detectPosCollision                  ;
-    public int checkGameObjectLoS                  ;
-    public int updateUptimeInterval                ;
-    public int maxCoreStuckTime                    ;
-    public int addonChannel                        ;
-    public int cleanCharacterDB                    ;
-    public int persistentCharacterCleanFlags       ;
-    public int pidFile                             ;
-    public int packetLogFile                       ;
-    public int gameType                            ;
-    public int realmZone                           ;
-    public int strictPlayerNames                   ;
-    public int strictCharterNames                  ;
-    public int strictPetNames                      ;
-    public int declinedNames                       ;
-    public int expansion                           ;
-    public int minPlayerName                       ;
-    public int minCharterName                      ;
-    public int minPetName                          ;
-    public int maxWhoListReturns                   ;
-    public int charactersPerAccount                ;
-    public int charactersPerRealm                  ;
-    public int skipCinematics                      ;
-    public int maxPlayerLevel                      ;
-    public int minDualSpecLevel                    ;
-    public int startPlayerLevel                    ;
-    public int startDeathKnightPlayerLevel         ;
-    public int startDemonHunterPlayerLevel         ;
-    public int startEvokerPlayerLevel              ;
-    public int startAlliedRacePlayerLevel          ;
-    public int startPlayerMoney                    ;
-    public int disableWaterBreath                  ;
-    public int allFlightPaths                      ;
-    public int instantFlightPaths                  ;
-    public int activateWeather                     ;
-    public int castUnstuck                         ;
-    public int instancesResetAnnounce              ;
-    public int maxPrimaryTradeSkill                ;
-    public int minPetitionSigns                    ;
-    public int maxGroupXPDistance                  ;
-    public int maxRecruitAFriendBonusDistance      ;
-    public int minQuestScaledXPRatio               ;
-    public int minCreatureScaledXPRatio            ;
-    public int minDiscoveredScaledXPRatio          ;
-    public int mailDeliveryDelay                   ;
-    public int cleanOldMailTime                    ;
-    public int offhandCheckAtSpellUnlearn          ;
-    public int clientCacheVersion                  ;
-    public int beepAtStart                         ;
-    public int flashAtStart                        ;
-    public String motd                                ;
-    public int accountInstancesPerHour             ;
-    public int birthdayTime                        ;
-    public int cacheDataQueries                    ;
-    public int allowLoggingIPAddressesInDatabase   ;
-    public int tOTPMasterSecret                    ;
-    public int talentsInspecting                   ;
-    public int threatRadius                        ;
-    public int creatureFamilyFleeAssistanceRadius  ;
-    public int creatureFamilyAssistanceRadius      ;
-    public int creatureFamilyAssistanceDelay       ;
-    public int creatureFamilyFleeDelay             ;
-    public int worldBossLevelDiff                  ;
-    public int monsterSight                        ;
-    public int chatFakeMessagePreventing           ;
-    public int partyLevelReq                       ;
-    public int preserveCustomChannels              ;
-    public int preserveCustomChannelInterval       ;
-    public int preserveCustomChannelDuration       ;
-    public int partyRaidWarnings                   ;
-    public int honorPointsAfterDuel                ;
-    public int resetDuelCooldowns                  ;
-    public int resetDuelHealthMana                 ;
-    public int noResetTalentsCost                  ;
-    public int showKickInWorld                     ;
-    public int showMuteInWorld                     ;
-    public int showBanInWorld                      ;
+    public int realmID;
+    public Path dataDir;
+    public Path logsDir;
+    public int maxPingTime;
+    public int worldServerPort;
+    public int instanceServerPort;
+    public String bindIP;
+    public int threadPool;
+    public String cmakeCommand;
+    public Path buildDirectory;
+    public Path sourceDirectory;
+    public Path mySQLExecutable;
+    public Path ipLocationFile;
+    public int useProcessors;
+    public int processPriority;
+    public int realmsStateUpdateDelay;
+    public boolean compression;
+    public int playerLimit;
+    public int maxOverSpeedPings;
+    public int gridUnload;
+    public int baseMapLoadAllGrids;
+    public int instanceMapLoadAllGrids;
+    public int battlegroundMapLoadAllGrids;
+    public int socketTimeOutTime;
+    public int socketTimeOutTimeActive;
+    public int sessionAddDelay;
+    public int gridCleanUpDelay;
+    public int minWorldUpdateTime;
+    public int mapUpdateInterval;
+    public int changeWeatherInterval;
+    public int playerSaveInterval;
+    public int disconnectToleranceInterval;
+    public int detectPosCollision;
+    public int checkGameObjectLoS;
+    public int updateUptimeInterval;
+    public int maxCoreStuckTime;
+    public int addonChannel;
+    public int cleanCharacterDB;
+    public int persistentCharacterCleanFlags;
+    public int pidFile;
+    public int packetLogFile;
+    public int gameType;
+    public int realmZone;
+    public int strictPlayerNames;
+    public int strictCharterNames;
+    public int strictPetNames;
+    public int declinedNames;
+    public int expansion;
+    public int minPlayerName;
+    public int minCharterName;
+    public int minPetName;
+    public int maxWhoListReturns;
+    public int charactersPerAccount;
+    public int charactersPerRealm;
+    public int skipCinematics;
+    public int maxPlayerLevel;
+    public int minDualSpecLevel;
+    public int startPlayerLevel;
+    public int startDeathKnightPlayerLevel;
+    public int startDemonHunterPlayerLevel;
+    public int startEvokerPlayerLevel;
+    public int startAlliedRacePlayerLevel;
+    public int startPlayerMoney;
+    public int disableWaterBreath;
+    public int allFlightPaths;
+    public int instantFlightPaths;
+    public int activateWeather;
+    public int castUnstuck;
+    public int instancesResetAnnounce;
+    public int maxPrimaryTradeSkill;
+    public int minPetitionSigns;
+    public int maxGroupXPDistance;
+    public int maxRecruitAFriendBonusDistance;
+    public int minQuestScaledXPRatio;
+    public int minCreatureScaledXPRatio;
+    public int minDiscoveredScaledXPRatio;
+    public int mailDeliveryDelay;
+    public int cleanOldMailTime;
+    public int offhandCheckAtSpellUnlearn;
+    public int clientCacheVersion;
+    public int beepAtStart;
+    public int flashAtStart;
+    public String motd;
+    public int accountInstancesPerHour;
+    public int birthdayTime;
+    public int cacheDataQueries;
+    public int allowLoggingIPAddressesInDatabase;
+    public int tOTPMasterSecret;
+    public int talentsInspecting;
+    public int threatRadius;
+    public int creatureFamilyFleeAssistanceRadius;
+    public int creatureFamilyAssistanceRadius;
+    public int creatureFamilyAssistanceDelay;
+    public int creatureFamilyFleeDelay;
+    public int worldBossLevelDiff;
+    public int monsterSight;
+    public int chatFakeMessagePreventing;
+    public int partyLevelReq;
+    public int preserveCustomChannels;
+    public int preserveCustomChannelInterval;
+    public int preserveCustomChannelDuration;
+    public int partyRaidWarnings;
+    public int honorPointsAfterDuel;
+    public int resetDuelCooldowns;
+    public int resetDuelHealthMana;
+    public int noResetTalentsCost;
+    public int showKickInWorld;
+    public int showMuteInWorld;
+    public int showBanInWorld;
     public int preventRenameCharacterOnCustomization;
 
 
@@ -468,4 +468,9 @@ public class WorldSetting {
     public AuctionHouseBotSetting auctionHouse;
     public MapSetting map;
     public BattlegroundSetting battleground;
+
+    public int getConfigMaxSkillValue() {
+        int lvl = maxPlayerLevel;
+        return lvl > 60 ? 300 + ((lvl - 60) * 75) / 10 : lvl * 5;
+    }
 }

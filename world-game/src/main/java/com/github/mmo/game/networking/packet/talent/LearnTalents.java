@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.talent;
 
 
-import com.github.mmo.game.networking.*;class LearnTalents extends ClientPacket {
+import com.github.mmo.game.networking.ClientPacket;
+import com.github.mmo.game.networking.WorldPacket;
+
+class LearnTalents extends ClientPacket {
 
     public Array<SHORT> talents = new Array<SHORT>(PlayerConst.maxTalentTiers);
 

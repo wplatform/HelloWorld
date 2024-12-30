@@ -1,7 +1,7 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
 public class GuildEventStatusChange extends ServerPacket {
     public ObjectGuid guid = ObjectGuid.EMPTY;

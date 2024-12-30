@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.lfg;
 
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.ServerPacket;
 
-import java.util.*;class LfgPlayerInfo extends ServerPacket {
+import java.util.ArrayList;
+
+class LfgPlayerInfo extends ServerPacket {
     public LFGblackList blackList = new LFGBlackList();
     public ArrayList<LfgPlayerDungeonInfo> dungeons = new ArrayList<>();
 

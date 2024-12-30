@@ -200,7 +200,6 @@ public class RegularGrid2D {
     }
 
 
-
     public static class Node {
         private final BIH tree = new BIH();
         private final ArrayList<GameObjectModel> objects = new ArrayList<>();

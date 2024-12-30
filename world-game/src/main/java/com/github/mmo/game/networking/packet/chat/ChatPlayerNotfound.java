@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.chat;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class ChatPlayerNotfound extends ServerPacket {
     private final String name;
 

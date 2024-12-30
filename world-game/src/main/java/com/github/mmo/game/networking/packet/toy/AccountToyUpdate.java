@@ -1,43 +1,40 @@
 package com.github.mmo.game.networking.packet.toy;
 
 
-import java.util.*;
 import com.github.mmo.game.networking.ServerPacket;
-public class AccountToyUpdate extends ServerPacket
-{
-	public boolean isFullUpdate = false;
-	public HashMap<Integer, toyFlags> toys = new HashMap<Integer, toyFlags>();
-	public AccountToyUpdate()
-	{
-		super(ServerOpcode.AccountToyUpdate, ConnectionType.instance);
-	}
 
-	@Override
-	public void write()
-	{
-		this.writeBit(isFullUpdate);
-		this.flushBits();
+import java.util.HashMap;
 
-		// all lists have to have the same size
-		this.writeInt32(toys.size());
-		this.writeInt32(toys.size());
-		this.writeInt32(toys.size());
+public class AccountToyUpdate extends ServerPacket {
+    public boolean isFullUpdate = false;
+    public HashMap<Integer, toyFlags> toys = new HashMap<Integer, toyFlags>();
 
-		for (var pair : toys.entrySet())
-		{
-			this.writeInt32(pair.getKey());
-		}
+    public AccountToyUpdate() {
+        super(ServerOpcode.AccountToyUpdate, ConnectionType.instance);
+    }
 
-		for (var pair : toys.entrySet())
-		{
-			this.writeBit(pair.getValue().HasAnyFlag(toyFlags.favorite));
-		}
+    @Override
+    public void write() {
+        this.writeBit(isFullUpdate);
+        this.flushBits();
 
-		for (var pair : toys.entrySet())
-		{
-			this.writeBit(pair.getValue().HasAnyFlag(toyFlags.HasFanfare));
-		}
+        // all lists have to have the same size
+        this.writeInt32(toys.size());
+        this.writeInt32(toys.size());
+        this.writeInt32(toys.size());
 
-		this.flushBits();
-	}
+        for (var pair : toys.entrySet()) {
+            this.writeInt32(pair.getKey());
+        }
+
+        for (var pair : toys.entrySet()) {
+            this.writeBit(pair.getValue().hasFlag(toyFlags.favorite));
+        }
+
+        for (var pair : toys.entrySet()) {
+            this.writeBit(pair.getValue().hasFlag(toyFlags.HasFanfare));
+        }
+
+        this.flushBits();
+    }
 }

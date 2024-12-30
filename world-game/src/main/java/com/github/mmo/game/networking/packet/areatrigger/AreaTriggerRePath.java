@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.areatrigger;
 
 
-import com.github.mmo.game.networking.*;class AreaTriggerRePath extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+class AreaTriggerRePath extends ServerPacket {
     public areaTriggerSplineInfo areaTriggerSpline;
     public areaTriggerOrbitInfo areaTriggerOrbit;
     public areaTriggerMovementScriptInfo areaTriggerMovementScript = null;

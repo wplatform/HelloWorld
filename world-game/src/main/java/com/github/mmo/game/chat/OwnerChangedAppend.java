@@ -3,35 +3,29 @@ package com.github.mmo.game.chat;
 
 import com.github.mmo.game.networking.packet.ChannelNotify;
 
-final class OwnerChangedAppend implements IChannelAppender
-{
-	public OwnerChangedAppend()
-	{
-	}
+final class OwnerChangedAppend implements IChannelAppender {
+    private final ObjectGuid guid;
 
-	public OwnerChangedAppend(ObjectGuid guid)
-	{
-		guid = guid;
-	}
+    public OwnerChangedAppend() {
+    }
 
-	public ChatNotify getNotificationType()
-	{
-		return ChatNotify.OwnerChangedNotice;
-	}
+    public OwnerChangedAppend(ObjectGuid guid) {
+        guid = guid;
+    }
 
-	public void append(ChannelNotify data)
-	{
-		data.senderGuid = guid;
-	}
+    public ChatNotify getNotificationType() {
+        return ChatNotify.OwnerChangedNotice;
+    }
 
-	private final ObjectGuid guid;
+    public void append(ChannelNotify data) {
+        data.senderGuid = guid;
+    }
 
-	public OwnerChangedAppend clone()
-	{
-		OwnerChangedAppend varCopy = new OwnerChangedAppend();
+    public OwnerChangedAppend clone() {
+        OwnerChangedAppend varCopy = new OwnerChangedAppend();
 
-		varCopy.guid = this.guid;
+        varCopy.guid = this.guid;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }

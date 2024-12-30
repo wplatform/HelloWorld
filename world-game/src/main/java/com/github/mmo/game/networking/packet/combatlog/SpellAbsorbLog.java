@@ -1,24 +1,22 @@
 package com.github.mmo.game.networking.packet.combatlog;
 
 
-class SpellAbsorbLog extends CombatLogServerPacket
-{
+class SpellAbsorbLog extends CombatLogServerPacket {
     public ObjectGuid attacker = ObjectGuid.EMPTY;
     public ObjectGuid victim = ObjectGuid.EMPTY;
     public ObjectGuid caster = ObjectGuid.EMPTY;
-	public int absorbedSpellID;
-	public int absorbSpellID;
-	public int absorbed;
-	public int originalDamage;
-	public boolean unk;
-	public SpellAbsorbLog()
-	{
-		super(ServerOpcode.SpellAbsorbLog, ConnectionType.instance);
-	}
+    public int absorbedSpellID;
+    public int absorbSpellID;
+    public int absorbed;
+    public int originalDamage;
+    public boolean unk;
 
-	@Override
-	public void write()
-	{
+    public SpellAbsorbLog() {
+        super(ServerOpcode.SpellAbsorbLog, ConnectionType.instance);
+    }
+
+    @Override
+    public void write() {
         this.writeGuid(attacker);
         this.writeGuid(victim);
         this.writeInt32(absorbedSpellID);
@@ -28,9 +26,9 @@ class SpellAbsorbLog extends CombatLogServerPacket
         this.writeInt32(originalDamage);
 
         this.writeBit(unk);
-		writeLogDataBit();
+        writeLogDataBit();
         flushBits();
 
-		writeLogData();
-	}
+        writeLogData();
+    }
 }

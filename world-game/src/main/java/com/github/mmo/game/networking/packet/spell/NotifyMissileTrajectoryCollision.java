@@ -2,6 +2,7 @@ package com.github.mmo.game.networking.packet.spell;
 
 
 import com.github.mmo.game.networking.ServerPacket;
+
 public class NotifyMissileTrajectoryCollision extends ServerPacket {
     public ObjectGuid caster = ObjectGuid.EMPTY;
     public ObjectGuid castID = ObjectGuid.EMPTY;

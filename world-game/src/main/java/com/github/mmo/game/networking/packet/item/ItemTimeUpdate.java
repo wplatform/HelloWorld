@@ -1,7 +1,9 @@
 package com.github.mmo.game.networking.packet.item;
 
 
-import com.github.mmo.game.networking.*;public class ItemTimeUpdate extends ServerPacket {
+import com.github.mmo.game.networking.ServerPacket;
+
+public class ItemTimeUpdate extends ServerPacket {
     public ObjectGuid itemGuid = ObjectGuid.EMPTY;
 
     public int durationLeft;

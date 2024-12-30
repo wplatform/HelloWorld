@@ -1,34 +1,30 @@
 package com.github.mmo.game.networking.packet.talent;
 
-import com.github.mmo.game.networking.*;
-public final class PvPTalent
-{
-	public short pvPTalentID;
-	public byte slot;
+import com.github.mmo.game.networking.WorldPacket;
 
-	public PvPTalent()
-	{
-	}
+public final class PvPTalent {
+    public short pvPTalentID;
+    public byte slot;
 
-	public PvPTalent(WorldPacket data)
-	{
-		pvPTalentID = data.readUInt16();
-		slot = data.readUInt8();
-	}
+    public PvPTalent() {
+    }
 
-	public void write(WorldPacket data)
-	{
-		data.writeInt16(pvPTalentID);
-		data.writeInt8(slot);
-	}
+    public PvPTalent(WorldPacket data) {
+        pvPTalentID = data.readUInt16();
+        slot = data.readUInt8();
+    }
 
-	public PvPTalent clone()
-	{
-		PvPTalent varCopy = new PvPTalent();
+    public void write(WorldPacket data) {
+        data.writeInt16(pvPTalentID);
+        data.writeInt8(slot);
+    }
 
-		varCopy.pvPTalentID = this.pvPTalentID;
-		varCopy.slot = this.slot;
+    public PvPTalent clone() {
+        PvPTalent varCopy = new PvPTalent();
 
-		return varCopy;
-	}
+        varCopy.pvPTalentID = this.pvPTalentID;
+        varCopy.slot = this.slot;
+
+        return varCopy;
+    }
 }

@@ -1,23 +1,21 @@
 package com.github.mmo.game.networking.packet.guild;
 
 
-public class GuildEventPlayerJoined extends ServerPacket
-{
-	public ObjectGuid UUID = ObjectGuid.EMPTY;
-	public String name;
-	public int virtualRealmAddress;
-	public GuildEventPlayerJoined()
-	{
-		super(ServerOpcode.GuildEventPlayerJoined);
-	}
+public class GuildEventPlayerJoined extends ServerPacket {
+    public ObjectGuid UUID = ObjectGuid.EMPTY;
+    public String name;
+    public int virtualRealmAddress;
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(UUID);
-		this.writeInt32(virtualRealmAddress);
+    public GuildEventPlayerJoined() {
+        super(ServerOpcode.GuildEventPlayerJoined);
+    }
 
-		this.writeBits(name.getBytes().length, 6);
-		this.writeString(name);
-	}
+    @Override
+    public void write() {
+        this.writeGuid(UUID);
+        this.writeInt32(virtualRealmAddress);
+
+        this.writeBits(name.getBytes().length, 6);
+        this.writeString(name);
+    }
 }

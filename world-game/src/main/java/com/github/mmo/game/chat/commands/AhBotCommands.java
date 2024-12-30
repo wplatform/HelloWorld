@@ -1,8 +1,8 @@
 package com.github.mmo.game.chat.commands;
 
 
+import com.github.mmo.game.chat.CommandHandler;
 
-import com.github.mmo.game.chat.*;//Holder for now.
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 class AhBotCommands {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:

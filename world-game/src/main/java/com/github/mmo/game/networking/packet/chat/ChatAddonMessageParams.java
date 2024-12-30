@@ -2,7 +2,8 @@ package com.github.mmo.game.networking.packet.chat;
 
 
 import com.github.mmo.defines.ChatMsg;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
+
 public class ChatAddonMessageParams {
     public String prefix;
     public String text;

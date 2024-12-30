@@ -3,12 +3,11 @@ package com.github.mmo.game.map;
 
 import Framework.Threading.*;
 import game.PhaseShift;
-import com.github.mmo.game.map.grid.MapDefines;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class TerrainManager  {
+public class TerrainManager {
 
     private final HashMap<Integer, TerrainInfo> terrainMaps = new HashMap<Integer, TerrainInfo>();
 

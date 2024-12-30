@@ -1,7 +1,6 @@
 package com.github.mmo.game.battleground.zones;
 
 
-
 final class SARoundScore {
 
     public int winner;

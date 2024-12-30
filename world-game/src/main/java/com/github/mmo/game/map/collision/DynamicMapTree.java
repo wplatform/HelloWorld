@@ -3,12 +3,12 @@ package com.github.mmo.game.map.collision;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.github.mmo.dbc.DbcObjectManager;
-import com.github.mmo.utils.MathUtil;
 import com.github.mmo.game.map.collision.model.Distance;
 import com.github.mmo.game.map.collision.model.GameObjectModel;
 import com.github.mmo.game.map.collision.model.LocationInfo;
 import com.github.mmo.game.map.model.AreaInfo;
 import com.github.mmo.game.phasing.PhaseShift;
+import com.github.mmo.utils.MathUtil;
 
 public class DynamicMapTree {
 
@@ -36,17 +36,17 @@ public class DynamicMapTree {
     public final boolean getObjectHitPos(Vector3 startPos, Vector3 endPos, Vector3 resultHitPos, float modifyDist, PhaseShift phaseShift) {
 
         var maxDist = (endPos.sub(startPos)).len();
-		// valid map coords should *never ever* produce float overflow, but this would produce NaNs too
+        // valid map coords should *never ever* produce float overflow, but this would produce NaNs too
 
-		// prevent NaN values which can cause BIH intersection to enter infinite loop
+        // prevent NaN values which can cause BIH intersection to enter infinite loop
         if (maxDist < 1e-10f) {
             resultHitPos.set(endPos);
 
-			return false;
-		}
+            return false;
+        }
 
         var dir = endPos.sub(startPos).scl(1.0f / maxDist); // direction with length of 1
-		Ray ray = new Ray(startPos, dir);
+        Ray ray = new Ray(startPos, dir);
 
 
         Distance distance = new Distance(maxDist);
@@ -61,16 +61,16 @@ public class DynamicMapTree {
                     resultHitPos.set(resultHitPos.add(dir.scl(modifyDist)));
                 } else {
                     resultHitPos.set(startPos);
-				}
+                }
 
             } else {
                 resultHitPos.set(resultHitPos.add(dir.scl(modifyDist)));
-			}
+            }
 
             return true;
-		}
+        }
         return false;
-	}
+    }
 
     public final boolean isInLineOfSight(Vector3 startPos, Vector3 endPos, PhaseShift phaseShift) {
         var maxDist = (endPos.sub(startPos)).len();
@@ -142,8 +142,7 @@ public class DynamicMapTree {
         return null;
     }
 
-    void update(float t_diff)
-    {
+    void update(float t_diff) {
         grid
     }
 }

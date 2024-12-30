@@ -1,191 +1,158 @@
 package com.github.mmo.game.networking.packet.item;
 
 
-import com.github.mmo.game.entity.*;
 import com.github.mmo.game.entity.SocketedGem;
 import com.github.mmo.game.entity.item.Item;
 import com.github.mmo.game.entity.item.ItemMod;
 import com.github.mmo.game.entity.item.ItemModList;
 import com.github.mmo.game.entity.player.VoidStorageItem;
 import com.github.mmo.game.loot.LootItem;
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public class ItemInstance
-{
-	public int itemID;
-	public ItemBonuses itemBonus;
-	public ItemModList modifications = new ItemModList();
+public class ItemInstance {
+    public int itemID;
+    public ItemBonuses itemBonus;
+    public ItemModList modifications = new ItemModList();
 
-	public ItemInstance()
-	{
-	}
+    public ItemInstance() {
+    }
 
-	public ItemInstance(Item item)
-	{
-		itemID = item.getEntry();
-		var bonusListIds = item.getBonusListIDs();
+    public ItemInstance(Item item) {
+        itemID = item.getEntry();
+        var bonusListIds = item.getBonusListIDs();
 
-		if (!bonusListIds.isEmpty())
-		{
-			itemBonus = new ItemBonuses();
-			itemBonus.bonusListIDs.addAll(bonusListIds);
-			itemBonus.context = item.getContext();
-		}
+        if (!bonusListIds.isEmpty()) {
+            itemBonus = new ItemBonuses();
+            itemBonus.bonusListIDs.addAll(bonusListIds);
+            itemBonus.context = item.getContext();
+        }
 
-		for (var mod : item.getItemData().modifiers.getValue().VALUES)
-		{
-			modifications.VALUES.add(new ItemMod(mod.value, ItemModifier.forValue(mod.type)));
-		}
-	}
+        for (var mod : item.getItemData().modifiers.getValue().VALUES) {
+            modifications.VALUES.add(new ItemMod(mod.value, ItemModifier.forValue(mod.type)));
+        }
+    }
 
-	public ItemInstance(LootItem lootItem)
-	{
-		itemID = lootItem.itemid;
+    public ItemInstance(LootItem lootItem) {
+        itemID = lootItem.itemid;
 
-		if (!lootItem.bonusListIDs.isEmpty() || lootItem.randomBonusListId != 0)
-		{
-			itemBonus = new ItemBonuses();
-			itemBonus.bonusListIDs = lootItem.bonusListIDs;
-			itemBonus.context = lootItem.context;
+        if (!lootItem.bonusListIDs.isEmpty() || lootItem.randomBonusListId != 0) {
+            itemBonus = new ItemBonuses();
+            itemBonus.bonusListIDs = lootItem.bonusListIDs;
+            itemBonus.context = lootItem.context;
 
-			if (lootItem.randomBonusListId != 0)
-			{
-				itemBonus.bonusListIDs.add(lootItem.randomBonusListId);
-			}
-		}
-	}
+            if (lootItem.randomBonusListId != 0) {
+                itemBonus.bonusListIDs.add(lootItem.randomBonusListId);
+            }
+        }
+    }
 
-	public ItemInstance(VoidStorageItem voidItem)
-	{
-		itemID = voidItem.getItemEntry();
+    public ItemInstance(VoidStorageItem voidItem) {
+        itemID = voidItem.getItemEntry();
 
-		if (voidItem.getFixedScalingLevel() != 0)
-		{
-			modifications.VALUES.add(new ItemMod(voidItem.getFixedScalingLevel(), ItemModifier.TimewalkerLevel));
-		}
+        if (voidItem.getFixedScalingLevel() != 0) {
+            modifications.VALUES.add(new ItemMod(voidItem.getFixedScalingLevel(), ItemModifier.TimewalkerLevel));
+        }
 
-		if (voidItem.getArtifactKnowledgeLevel() != 0)
-		{
-			modifications.VALUES.add(new ItemMod(voidItem.getArtifactKnowledgeLevel(), ItemModifier.artifactKnowledgeLevel));
-		}
+        if (voidItem.getArtifactKnowledgeLevel() != 0) {
+            modifications.VALUES.add(new ItemMod(voidItem.getArtifactKnowledgeLevel(), ItemModifier.artifactKnowledgeLevel));
+        }
 
-		if (!voidItem.getBonusListIDs().isEmpty())
-		{
-			itemBonus = new ItemBonuses();
-			itemBonus.context = voidItem.getContext();
-			itemBonus.bonusListIDs = voidItem.getBonusListIDs();
-		}
-	}
+        if (!voidItem.getBonusListIDs().isEmpty()) {
+            itemBonus = new ItemBonuses();
+            itemBonus.context = voidItem.getContext();
+            itemBonus.bonusListIDs = voidItem.getBonusListIDs();
+        }
+    }
 
-	public ItemInstance(SocketedGem gem)
-	{
-		itemID = gem.itemId;
+    public ItemInstance(SocketedGem gem) {
+        itemID = gem.itemId;
 
-		ItemBonuses bonus = new ItemBonuses();
-		bonus.context = itemContext.forValue((byte)gem.context);
+        ItemBonuses bonus = new ItemBonuses();
+        bonus.context = itemContext.forValue((byte) gem.context);
 
-		for (var bonusListId : gem.bonusListIDs)
-		{
-			if (bonusListId != 0)
-			{
-				bonus.bonusListIDs.add(bonusListId);
-			}
-		}
+        for (var bonusListId : gem.bonusListIDs) {
+            if (bonusListId != 0) {
+                bonus.bonusListIDs.add(bonusListId);
+            }
+        }
 
-		if (bonus.context != 0 || !bonus.bonusListIDs.isEmpty())
-		{
-			itemBonus = bonus;
-		}
-	}
+        if (bonus.context != 0 || !bonus.bonusListIDs.isEmpty()) {
+            itemBonus = bonus;
+        }
+    }
 
-	public final void write(WorldPacket data)
-	{
-		data.writeInt32(itemID);
+    public static boolean opEquals(ItemInstance left, ItemInstance right) {
+        if (left == right) {
+            return true;
+        }
 
-		data.writeBit(itemBonus != null);
-		data.flushBits();
+        if (left == null) {
+            return false;
+        }
 
-		modifications.write(data);
+        if (right == null) {
+            return false;
+        }
 
-		if (itemBonus != null)
-		{
-			itemBonus.write(data);
-		}
-	}
+        if (left.itemID != right.itemID) {
+            return false;
+        }
 
-	public final void read(WorldPacket data)
-	{
-		itemID = data.readUInt();
+        if (left.itemBonus != null && right.itemBonus != null && ItemBonuses.opNotEquals(left.itemBonus, right.itemBonus)) {
+            return false;
+        }
 
-		if (data.readBit())
-		{
-			itemBonus = new ItemBonuses();
-		}
+        if (left.modifications != right.modifications) {
+            return false;
+        }
 
-		data.resetBitPos();
+        return true;
+    }
 
-		modifications.read(data);
+    public static boolean opNotEquals(ItemInstance left, ItemInstance right) {
+        return !(ItemInstance.opEquals(left, right));
+    }
 
-		if (itemBonus != null)
-		{
-			itemBonus.read(data);
-		}
-	}
+    public final void write(WorldPacket data) {
+        data.writeInt32(itemID);
 
-	@Override
-	public int hashCode()
-	{
-		return (new integer(itemID)).hashCode() ^ itemBonus.hashCode() ^ modifications.hashCode();
-	}
+        data.writeBit(itemBonus != null);
+        data.flushBits();
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof ItemInstance)
-		{
-			return ItemInstance.opEquals((ItemInstance)obj, this);
-		}
+        modifications.write(data);
 
-		return false;
-	}
+        if (itemBonus != null) {
+            itemBonus.write(data);
+        }
+    }
 
-	public static boolean opEquals(ItemInstance left, ItemInstance right)
-	{
-		if (left == right)
-		{
-			return true;
-		}
+    public final void read(WorldPacket data) {
+        itemID = data.readUInt();
 
-		if (left == null)
-		{
-			return false;
-		}
+        if (data.readBit()) {
+            itemBonus = new ItemBonuses();
+        }
 
-		if (right == null)
-		{
-			return false;
-		}
+        data.resetBitPos();
 
-		if (left.itemID != right.itemID)
-		{
-			return false;
-		}
+        modifications.read(data);
 
-		if (left.itemBonus != null && right.itemBonus != null && ItemBonuses.opNotEquals(left.itemBonus, right.itemBonus))
-		{
-			return false;
-		}
+        if (itemBonus != null) {
+            itemBonus.read(data);
+        }
+    }
 
-		if (left.modifications != right.modifications)
-		{
-			return false;
-		}
+    @Override
+    public int hashCode() {
+        return (new integer(itemID)).hashCode() ^ itemBonus.hashCode() ^ modifications.hashCode();
+    }
 
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemInstance) {
+            return ItemInstance.opEquals((ItemInstance) obj, this);
+        }
 
-	public static boolean opNotEquals(ItemInstance left, ItemInstance right)
-	{
-		return !(ItemInstance.opEquals(left, right));
-	}
+        return false;
+    }
 }

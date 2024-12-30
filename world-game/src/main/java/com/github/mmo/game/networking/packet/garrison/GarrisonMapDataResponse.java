@@ -1,7 +1,10 @@
 package com.github.mmo.game.networking.packet.garrison;
 
 
-import java.util.*;import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.ServerPacket;
+
+import java.util.ArrayList;
+
 public class GarrisonMapDataResponse extends ServerPacket {
     public ArrayList<GarrisonBuildingMapData> buildings = new ArrayList<>();
 

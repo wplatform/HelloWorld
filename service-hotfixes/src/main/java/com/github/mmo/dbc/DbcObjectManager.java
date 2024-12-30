@@ -5,6 +5,7 @@ import com.github.mmo.cache.DbcEntity;
 import com.github.mmo.common.Locale;
 import com.github.mmo.common.Pair;
 import com.github.mmo.dbc.defines.BattlegroundBracketId;
+import com.github.mmo.dbc.defines.CharBaseSectionVariation;
 import com.github.mmo.dbc.defines.CurveInterpolationMode;
 import com.github.mmo.dbc.defines.ExpectedStatType;
 import com.github.mmo.dbc.domain.*;

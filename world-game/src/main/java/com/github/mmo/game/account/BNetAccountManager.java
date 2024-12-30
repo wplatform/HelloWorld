@@ -1,6 +1,6 @@
 package com.github.mmo.game.account;
 
-public final class BNetAccountManager  {
+public final class BNetAccountManager {
     private BNetAccountManager() {
     }
 

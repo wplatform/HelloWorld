@@ -1,19 +1,18 @@
 package com.github.mmo.game.networking.packet.gameobject;
+
 import com.github.mmo.game.networking.ServerPacket;
-public class GameObjectInteraction extends ServerPacket
-{
-	public ObjectGuid objectGUID = ObjectGuid.EMPTY;
-	public PlayerinteractionType interactionType = PlayerInteractionType.values()[0];
 
-	public GameObjectInteraction()
-	{
-		super(ServerOpcode.GameObjectInteraction);
-	}
+public class GameObjectInteraction extends ServerPacket {
+    public ObjectGuid objectGUID = ObjectGuid.EMPTY;
+    public PlayerinteractionType interactionType = PlayerInteractionType.values()[0];
 
-	@Override
-	public void write()
-	{
-		this.writeGuid(objectGUID);
-		this.writeInt32(interactionType.getValue());
-	}
+    public GameObjectInteraction() {
+        super(ServerOpcode.GameObjectInteraction);
+    }
+
+    @Override
+    public void write() {
+        this.writeGuid(objectGUID);
+        this.writeInt32(interactionType.getValue());
+    }
 }

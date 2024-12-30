@@ -1,79 +1,67 @@
 package com.github.mmo.game.map.grid;
-public class GridInfo
-{
-	private final PeriodicTimer visUpdate;
-	private final TimeTracker timer;
+
+public class GridInfo {
+    private final PeriodicTimer visUpdate;
+    private final TimeTracker timer;
 
 
-	private short unloadActiveLockCount; // lock from active object spawn points (prevent clone loading)
-	private boolean unloadExplicitLock; // explicit manual lock or config setting
+    private short unloadActiveLockCount; // lock from active object spawn points (prevent clone loading)
+    private boolean unloadExplicitLock; // explicit manual lock or config setting
 
-	public GridInfo()
-	{
-		timer = new timeTracker(0);
-		visUpdate = new PeriodicTimer(0, RandomUtil.IRand(0, 1000));
-		unloadActiveLockCount = 0;
-		unloadExplicitLock = false;
-	}
-
-
-	public GridInfo(long expiry)
-	{
-		this(expiry, true);
-	}
+    public GridInfo() {
+        timer = new timeTracker(0);
+        visUpdate = new PeriodicTimer(0, RandomUtil.IRand(0, 1000));
+        unloadActiveLockCount = 0;
+        unloadExplicitLock = false;
+    }
 
 
-	public GridInfo(long expiry, boolean unload)
-	{
+    public GridInfo(long expiry) {
+        this(expiry, true);
+    }
 
-		timer = new timeTracker((int)expiry);
-		visUpdate = new PeriodicTimer(0, RandomUtil.IRand(0, 1000));
-		unloadActiveLockCount = 0;
-		unloadExplicitLock = !unload;
-	}
 
-	public final TimeTracker getTimeTracker()
-	{
-		return timer;
-	}
+    public GridInfo(long expiry, boolean unload) {
 
-	public final boolean getUnloadLock()
-	{
-		return unloadActiveLockCount != 0 || unloadExplicitLock;
-	}
+        timer = new timeTracker((int) expiry);
+        visUpdate = new PeriodicTimer(0, RandomUtil.IRand(0, 1000));
+        unloadActiveLockCount = 0;
+        unloadExplicitLock = !unload;
+    }
 
-	public final void setUnloadExplicitLock(boolean on)
-	{
-		unloadExplicitLock = on;
-	}
+    public final TimeTracker getTimeTracker() {
+        return timer;
+    }
 
-	public final void incUnloadActiveLock()
-	{
-		++unloadActiveLockCount;
-	}
+    public final boolean getUnloadLock() {
+        return unloadActiveLockCount != 0 || unloadExplicitLock;
+    }
 
-	public final void decUnloadActiveLock()
-	{
-		if (unloadActiveLockCount != 0)
-		{
-			--_unloadActiveLockCount;
-		}
-	}
+    public final void setUnloadExplicitLock(boolean on) {
+        unloadExplicitLock = on;
+    }
 
-	public final void resetTimeTracker(long interval)
-	{
+    public final void incUnloadActiveLock() {
+        ++unloadActiveLockCount;
+    }
 
-		timer.reset((int)interval);
-	}
+    public final void decUnloadActiveLock() {
+        if (unloadActiveLockCount != 0) {
+            --_unloadActiveLockCount;
+        }
+    }
 
-	public final void updateTimeTracker(long diff)
-	{
+    public final void resetTimeTracker(long interval) {
 
-		timer.update((int)diff);
-	}
+        timer.reset((int) interval);
+    }
 
-	public final PeriodicTimer getRelocationTimer()
-	{
-		return visUpdate;
-	}
+    public final void updateTimeTracker(long diff) {
+
+        timer.update((int) diff);
+    }
+
+    public final PeriodicTimer getRelocationTimer() {
+        return visUpdate;
+    }
 }

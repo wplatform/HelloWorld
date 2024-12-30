@@ -1,25 +1,22 @@
 package com.github.mmo.game.networking.packet.achievement;
 
 
-import java.util.*;
+import java.util.ArrayList;
 
 
-public class AllGuildAchievements extends ServerPacket
-{
-	public ArrayList<earnedAchievement> earned = new ArrayList<>();
-	public AllGuildAchievements()
-	{
-		super(ServerOpcode.AllGuildAchievements);
-	}
+public class AllGuildAchievements extends ServerPacket {
+    public ArrayList<earnedAchievement> earned = new ArrayList<>();
 
-	@Override
-	public void write()
-	{
-		this.writeInt32(earned.size());
+    public AllGuildAchievements() {
+        super(ServerOpcode.AllGuildAchievements);
+    }
 
-		for (var earned : earned)
-		{
-			earned.write(this);
-		}
-	}
+    @Override
+    public void write() {
+        this.writeInt32(earned.size());
+
+        for (var earned : earned) {
+            earned.write(this);
+        }
+    }
 }

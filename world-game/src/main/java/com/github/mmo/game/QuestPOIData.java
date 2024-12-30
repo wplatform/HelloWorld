@@ -5,29 +5,24 @@ import com.github.mmo.game.networking.WorldPacket;
 
 import java.util.ArrayList;
 
-public class QuestPOIData
-{
-	public int questID;
-	public ArrayList<QuestPOIBlobData> blobs;
+public class QuestPOIData {
+    public int questID;
+    public ArrayList<QuestPOIBlobData> blobs;
 
-	public QuestPOIData(int questId)
-	{
-		questID = questId;
-		blobs = new ArrayList<>();
-	}
+    public QuestPOIData(int questId) {
+        questID = questId;
+        blobs = new ArrayList<>();
+    }
 
-	public final void initializeQueryData()
-	{
+    public final void initializeQueryData() {
 
-	}
+    }
 
-	public final void write(WorldPacket data)
-	{
+    public final void write(WorldPacket data) {
         data.writeInt32(questID);
         data.writeInt32(blobs.size());
 
-		for (var questPOIBlobData : blobs)
-		{
+        for (var questPOIBlobData : blobs) {
             data.writeInt32(questPOIBlobData.blobIndex);
             data.writeInt32(questPOIBlobData.objectiveIndex);
             data.writeInt32(questPOIBlobData.questObjectiveID);
@@ -42,15 +37,14 @@ public class QuestPOIData
             data.writeInt32(questPOIBlobData.spawnTrackingID);
             data.writeInt32(questPOIBlobData.points.size());
 
-			for (var questPOIBlobPoint : questPOIBlobData.points)
-			{
+            for (var questPOIBlobPoint : questPOIBlobData.points) {
                 data.writeInt16((short) questPOIBlobPoint.X);
                 data.writeInt16((short) questPOIBlobPoint.Y);
                 data.writeInt16((short) questPOIBlobPoint.Z);
-			}
+            }
 
             data.writeBit(questPOIBlobData.alwaysAllowMergingBlobs);
             data.flushBits();
-		}
-	}
+        }
+    }
 }

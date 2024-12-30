@@ -1,28 +1,25 @@
 package com.github.mmo.game.networking.packet.inspect;
 
-import com.github.mmo.game.networking.*;
+import com.github.mmo.game.networking.WorldPacket;
 
-public final class InspectGuildData
-{
+public final class InspectGuildData {
     public ObjectGuid guildGUID = ObjectGuid.EMPTY;
+    public int numGuildMembers;
+    public int achievementPoints;
 
-	public void write(WorldPacket data)
-	{
+    public void write(WorldPacket data) {
         data.writeGuid(guildGUID);
         data.writeInt32(numGuildMembers);
         data.writeInt32(achievementPoints);
-	}
-	public int numGuildMembers;
-	public int achievementPoints;
+    }
 
-	public InspectGuildData clone()
-	{
-		InspectGuildData varCopy = new InspectGuildData();
+    public InspectGuildData clone() {
+        InspectGuildData varCopy = new InspectGuildData();
 
         varCopy.guildGUID = this.guildGUID;
-		varCopy.numGuildMembers = this.numGuildMembers;
-		varCopy.achievementPoints = this.achievementPoints;
+        varCopy.numGuildMembers = this.numGuildMembers;
+        varCopy.achievementPoints = this.achievementPoints;
 
-		return varCopy;
-	}
+        return varCopy;
+    }
 }
