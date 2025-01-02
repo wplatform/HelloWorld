@@ -10,8 +10,6 @@ public interface SharedDefine {
 
     Locale DEFAULT_LOCALE = Locale.zhCN;
 
-    int MAX_CLASSES = 13;
-    int MAX_POWER = 20;
     int MAX_TALENT_TIERS = 7;
     int MAX_TALENT_COLUMNS = 3;
     int MAX_PVP_TALENT_TIERS = 6;
@@ -20,7 +18,7 @@ public interface SharedDefine {
 
     int MIN_SPECIALIZATION_LEVEL = 10;
     int MAX_SPECIALIZATIONS = 4;
-    int PET_SPEC_OVERRIDE_CLASS_INDEX = MAX_CLASSES;
+    int PET_SPEC_OVERRIDE_CLASS_INDEX = PlayerClass.values().length;
 
     int MAX_NPC_TEXT_OPTIONS = 8;
 
@@ -44,18 +42,18 @@ public interface SharedDefine {
 
     int CURRENT_EXPANSION = Expansion.LEGION.getValue();
 
-    int CLASS_MASK_ALL_PLAYABLE = (1 << (PlayerClass.CLASS_WARRIOR.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_PALADIN.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_HUNTER.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_ROGUE.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_PRIEST.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_DEATH_KNIGHT.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_SHAMAN.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_MAGE.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_WARLOCK.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_MONK.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_DRUID.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_DEMON_HUNTER.getValue() - 1));
+    int CLASS_MASK_ALL_PLAYABLE = (1 << (PlayerClass.WARRIOR.getValue() - 1))
+            | (1 << (PlayerClass.PALADIN.getValue() - 1))
+            | (1 << (PlayerClass.HUNTER.getValue() - 1))
+            | (1 << (PlayerClass.ROGUE.getValue() - 1))
+            | (1 << (PlayerClass.PRIEST.getValue() - 1))
+            | (1 << (PlayerClass.DEATH_KNIGHT.getValue() - 1))
+            | (1 << (PlayerClass.SHAMAN.getValue() - 1))
+            | (1 << (PlayerClass.MAGE.getValue() - 1))
+            | (1 << (PlayerClass.WARLOCK.getValue() - 1))
+            | (1 << (PlayerClass.MONK.getValue() - 1))
+            | (1 << (PlayerClass.DRUID.getValue() - 1))
+            | (1 << (PlayerClass.DEMON_HUNTER.getValue() - 1));
 
 
     int MAX_UNIT_CLASSES = 4;
@@ -64,9 +62,9 @@ public interface SharedDefine {
             | (1 << (UnitClass.UNIT_CLASS_ROGUE.getValue() - 1))
             | (1 << (UnitClass.UNIT_CLASS_MAGE.getValue() - 1));
 
-    int CLASS_MASK_WAND_USERS = (1 << (PlayerClass.CLASS_PRIEST.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_MAGE.getValue() - 1))
-            | (1 << (PlayerClass.CLASS_WARLOCK.getValue() - 1));
+    int CLASS_MASK_WAND_USERS = (1 << (PlayerClass.PRIEST.getValue() - 1))
+            | (1 << (PlayerClass.MAGE.getValue() - 1))
+            | (1 << (PlayerClass.WARLOCK.getValue() - 1));
 
     int PLAYER_MAX_BATTLEGROUND_QUEUES = 3;
     int MIN_REPUTATION_RANK = ReputationRank.HATED.ordinal();
@@ -146,7 +144,7 @@ public interface SharedDefine {
     int DISPEL_ALL_MASK = ((1 << DispelType.MAGIC.ordinal()) | (1 << DispelType.CURSE.ordinal()) | (1 << DispelType.DISEASE.ordinal()) | (1 << DispelType.POISON.ordinal()));
 
 
-    int MAX_GAME_OBJECT_TYPE = 52;             // sending to client this or greater value can crash client.
+    int MAX_GAME_OBJECT_TYPE = 52;             // sending to client this or greater second can crash client.
     int MAX_GAME_OBJECT_DATA = 33;             // Max number of uint32 vars in gameobject_template data field
 
 
@@ -167,18 +165,18 @@ public interface SharedDefine {
 
     static PlayerClass classByQuestSort(QuestSort questSort) {
         return switch (questSort) {
-            case WARLOCK -> PlayerClass.CLASS_WARLOCK;
-            case WARRIOR -> PlayerClass.CLASS_WARRIOR;
-            case SHAMAN -> PlayerClass.CLASS_SHAMAN;
-            case PALADIN -> PlayerClass.CLASS_PALADIN;
-            case MAGE -> PlayerClass.CLASS_MAGE;
-            case ROGUE -> PlayerClass.CLASS_ROGUE;
-            case HUNTER -> PlayerClass.CLASS_HUNTER;
-            case PRIEST -> PlayerClass.CLASS_PRIEST;
-            case DRUID -> PlayerClass.CLASS_DRUID;
-            case DEATH_KNIGHT -> PlayerClass.CLASS_DEATH_KNIGHT;
-            case DEMON_HUNTER -> PlayerClass.CLASS_DEMON_HUNTER;
-            default -> PlayerClass.CLASS_NONE;
+            case WARLOCK -> PlayerClass.WARLOCK;
+            case WARRIOR -> PlayerClass.WARRIOR;
+            case SHAMAN -> PlayerClass.SHAMAN;
+            case PALADIN -> PlayerClass.PALADIN;
+            case MAGE -> PlayerClass.MAGE;
+            case ROGUE -> PlayerClass.ROGUE;
+            case HUNTER -> PlayerClass.HUNTER;
+            case PRIEST -> PlayerClass.PRIEST;
+            case DRUID -> PlayerClass.DRUID;
+            case DEATH_KNIGHT -> PlayerClass.DEATH_KNIGHT;
+            case DEMON_HUNTER -> PlayerClass.DEMON_HUNTER;
+            default -> PlayerClass.NONE;
         };
     }
 

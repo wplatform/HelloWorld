@@ -1,6 +1,7 @@
 package com.github.mmo.game;
 
 
+import com.github.mmo.defines.SpellClickUserTypes;
 import com.github.mmo.game.entity.unit.Unit;
 
 public class SpellClickInfo {
@@ -31,19 +32,19 @@ public class SpellClickInfo {
 
         // This only applies to players
         switch (userType) {
-            case Friend:
+            case FRIEND:
                 if (!playerClicker.isFriendlyTo(summoner)) {
                     return false;
                 }
 
                 break;
-            case Raid:
+            case RAID:
                 if (!playerClicker.isInRaidWith(summoner)) {
                     return false;
                 }
 
                 break;
-            case Party:
+            case PARTY:
                 if (!playerClicker.isInPartyWith(summoner)) {
                     return false;
                 }

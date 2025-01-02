@@ -6,7 +6,7 @@ import com.github.mmo.utils.SecureUtils;
 import java.util.Arrays;
 import java.util.Objects;
 
-public final class ObjectGuid {
+public final class ObjectGuid implements Comparable<ObjectGuid>{
 
     public static final ObjectGuid EMPTY = new ObjectGuid();
     public static final ObjectGuid FROM_STRING_FAILED = new ObjectGuid();
@@ -401,4 +401,8 @@ public final class ObjectGuid {
         return Arrays.hashCode(data);
     }
 
+    @Override
+    public int compareTo(ObjectGuid o) {
+        return Arrays.compare(data, o.data);
+    }
 }

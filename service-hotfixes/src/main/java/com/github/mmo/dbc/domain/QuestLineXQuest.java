@@ -23,7 +23,7 @@ import lombok.ToString;
         @Db2Field(name = "questID", type = Db2Type.SHORT),
         @Db2Field(name = "orderIndex", type = Db2Type.BYTE)
 })
-public class QuestLineXQuest implements DbcEntity {
+public class QuestLineXQuest implements DbcEntity, Comparable<QuestLineXQuest> {
     @Id
 
     @Column("ID")
@@ -36,14 +36,18 @@ public class QuestLineXQuest implements DbcEntity {
 
 
     @Column("QuestLineID")
-    private Long questLineID;
+    private Integer questLineID;
 
 
     @Column("QuestID")
-    private Long questID;
+    private Integer questID;
 
 
     @Column("OrderIndex")
-    private Long orderIndex;
+    private Integer orderIndex;
 
+    @Override
+    public int compareTo(QuestLineXQuest o) {
+        return Integer.compare(this.orderIndex, o.orderIndex);
+    }
 }

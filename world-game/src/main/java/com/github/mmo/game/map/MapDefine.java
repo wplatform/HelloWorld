@@ -59,7 +59,7 @@ public interface MapDefine {
     float MAP_HALF_SIZE = (MAP_SIZE / 2);
 
     float MAX_HEIGHT = 100000.0f;                     // can be use for find ground height at surface
-    float INVALID_HEIGHT = -100000.0f;                // for check, must be equal to VMAP_INVALID_HEIGHT, real value for unknown height is VMAP_INVALID_HEIGHT_VALUE
+    float INVALID_HEIGHT = -100000.0f;                // for check, must be equal to VMAP_INVALID_HEIGHT, real second for unknown height is VMAP_INVALID_HEIGHT_VALUE
     float MAX_FALL_DISTANCE = 250000.0f;              // "unlimited fall" to find VMap ground if it is available, just larger than MAX_HEIGHT - INVALID_HEIGHT
     float DEFAULT_HEIGHT_SEARCH = 50.0f;              // default search distance to find height at nearby locations
 

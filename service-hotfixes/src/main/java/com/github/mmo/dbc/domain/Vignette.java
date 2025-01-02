@@ -32,7 +32,7 @@ public class Vignette implements DbcEntity {
     @Id
     
     @Column("ID")
-    private  Integer id;
+    private int id;
 
     @Id
     

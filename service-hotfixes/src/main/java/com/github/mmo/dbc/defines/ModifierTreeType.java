@@ -183,7 +183,7 @@ public enum ModifierTreeType {
     CurrencySource, /*NYI*/ // Currency source is {$Currency Source}
     PlayerIsInNotOwnGarrison, // Player is in another garrison (not their own)
     HasActiveGarrisonFollower, // Has active Garrison follower "{GarrFollower}"
-    PlayerDailyRandomValueMod_X_Equals, /*NYI*/ // Player daily random value mod {#Mod Value} equals {#Equals Value}
+    PlayerDailyRandomValueMod_X_Equals, /*NYI*/ // Player daily random second mod {#Mod Value} equals {#Equals Value}
     PlayerHasMount, // Player has Mount "{Mount}"
     GarrisonFollowerCountWithInactiveWithItemLevelEqualOrGreaterThan, // At least {#Followers} followers (including inactive) are at least item level {#Level} for follower type "{GarrFollowerType}"
     GarrisonFollowerIsOnAMission, // Garrison follower "{GarrFollower}" is on a mission

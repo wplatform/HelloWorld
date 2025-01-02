@@ -80,7 +80,7 @@ class ObjectGridLoader extends ObjectGridLoaderBase implements IGridNotifierGame
             }
         }
 
-        Log.outDebug(LogFilter.Maps, String.format("%1$s gameObjects, %2$s Creatures, %3$s AreaTrriggers and %4$s Corpses/Bones loaded for grid %5$s on map %6$s", i_gameObjects, i_creatures, i_areaTriggers, i_corpses, i_grid.getGridId(), i_map.getId()));
+        Logs.MAPS.debug(String.format("%1$s gameObjects, %2$s Creatures, %3$s AreaTrriggers and %4$s Corpses/Bones loaded for grid %5$s on map %6$s", i_gameObjects, i_creatures, i_areaTriggers, i_corpses, i_grid.getGridId(), i_map.getId()));
     }
 
 

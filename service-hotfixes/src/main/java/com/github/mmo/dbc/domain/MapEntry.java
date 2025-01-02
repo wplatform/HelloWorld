@@ -10,6 +10,7 @@ import com.github.mmo.dbc.defines.MapFlag;
 import com.github.mmo.dbc.defines.MapFlag2;
 import com.github.mmo.dbc.defines.MapTypes;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
@@ -122,21 +123,15 @@ public class MapEntry implements DbcEntity {
     private Byte timeOffset;
 
     @Id
-
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
-    @Transient
-    private EnumFlag<MapFlag> mapFlags1;
-
-    @Transient
-    private EnumFlag<MapFlag2> mapFlags2;
-
+    public byte expansion() { return expansionID; }
 
     public boolean isDungeon() {
         return (instanceType == MapTypes.MAP_INSTANCE.ordinal()
                 || instanceType == MapTypes.MAP_RAID.ordinal()
-                || instanceType == MapTypes.MAP_SCENARIO.ordinal()) && !IsGarrison();
+                || instanceType == MapTypes.MAP_SCENARIO.ordinal()) && !isGarrison();
     }
 
     public boolean isNonRaidDungeon() {
@@ -188,26 +183,26 @@ public class MapEntry implements DbcEntity {
         return new WorldLocal;
     }
 
-    public boolean IsContinent() {
+    public boolean isContinent() {
         return switch (id) {
             case 0, 1, 530, 571, 870, 1116, 1220, 1642, 1643, 2222, 2444 -> true;
             default -> false;
         };
     }
 
-    public boolean IsDynamicDifficultyMap() {
-        return GetFlags().hasFlag(MapFlag.DynamicDifficulty);
+    public boolean isDynamicDifficultyMap() {
+        return getFlags().hasFlag(MapFlag.DynamicDifficulty);
     }
 
-    public boolean IsFlexLocking() {
-        return GetFlags().hasFlag(MapFlag.FlexibleRaidLocking);
+    public boolean isFlexLocking() {
+        return getFlags().hasFlag(MapFlag.FlexibleRaidLocking);
     }
 
-    public boolean IsGarrison() {
-        return GetFlags().hasFlag(MapFlag.Garrison);
+    public boolean isGarrison() {
+        return getFlags().hasFlag(MapFlag.Garrison);
     }
 
-    public boolean IsSplitByFaction() {
+    public boolean isSplitByFaction() {
         return id == 609 || // Acherus (DeathKnight Start)
                 id == 1265 ||   // Assault on the Dark Portal (WoD Intro)
                 id == 1481 ||   // Mardum (DH Start)
@@ -215,20 +210,12 @@ public class MapEntry implements DbcEntity {
                 id == 2570;     // Forbidden Reach (Dracthyr/Evoker Start)
     }
 
-    public EnumFlag<MapFlag> GetFlags() {
-        if (this.mapFlags1 == null) {
-
-            this.mapFlags1 = EnumFlag.of(MapFlag.class, flags1);
-        }
-        return this.mapFlags1;
+    public EnumFlag<MapFlag> getFlags() {
+        return EnumFlag.of(MapFlag.class, flags1);
     }
 
-    public EnumFlag<MapFlag2> GetFlags2() {
-        if (this.mapFlags2 == null) {
-
-            this.mapFlags2 = EnumFlag.of(MapFlag2.class, flags2);
-        }
-        return this.mapFlags2;
+    public EnumFlag<MapFlag2> getFlags2() {
+        return EnumFlag.of(MapFlag2.class, flags2);
     }
 
 }

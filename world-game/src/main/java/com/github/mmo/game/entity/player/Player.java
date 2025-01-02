@@ -1,6 +1,9 @@
 package com.github.mmo.game.entity.player;
 
 
+import com.github.mmo.dbc.defines.Difficulty;
+import com.github.mmo.dbc.defines.DifficultyFlag;
+import com.github.mmo.dbc.domain.MapEntry;
 import com.github.mmo.game.*;
 import com.github.mmo.game.achievement.CriteriaManager;
 import com.github.mmo.game.achievement.PlayerAchievementMgr;
@@ -62,6 +65,7 @@ import com.github.mmo.game.scripting.interfaces.iplayer.*;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnQuestObjectiveChange;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnQuestStatusChange;
 import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
+import com.github.mmo.game.service.model.quest.QuestObjectiveType;
 import com.github.mmo.game.spell.*;
 import com.github.mmo.game.spell.enums.SpellModOp;
 import com.github.mmo.utils.MathUtil;
@@ -161,10 +165,8 @@ public class Player extends Unit implements GridObject<Player> {
     private final float[] parry_cap = {65.631440f, 65.631440f, 145.560408f, 145.560408f, 0.0f, 65.631440f, 145.560408f, 0.0f, 0.0f, 90.6425f, 0.0f, 65.631440f, 0.0f, 0.0f};
     private final float[] dodge_cap = {65.631440f, 65.631440f, 145.560408f, 145.560408f, 150.375940f, 65.631440f, 145.560408f, 150.375940f, 150.375940f, 145.560408f, 116.890707f, 145.560408f, 145.560408f, 0.0f};
     public PvpInfo pvpInfo = new PvpInfo();
-    QuestObjectiveType Type
-    int ObjectID
-    QuestObjectiveType Type
-    int ObjectID
+    QuestObjectiveType Type;
+    int ObjectID;
     private PlayerSocial social;
 
     private int weaponProficiency;
@@ -4490,13 +4492,13 @@ public class Player extends Unit implements GridObject<Player> {
 
     public final boolean teleportTo(int mapid, float x, float y, float z, float orientation, TeleportToOptions options, Integer instanceId) {
         if (!MapDefine.isValidMapCoordinatei(mapid, x, y, z, orientation)) {
-            Log.outError(LogFilter.Maps, "TeleportTo: invalid map ({0}) or invalid coordinates (X: {1}, Y: {2}, Z: {3}, O: {4}) given when teleporting player (GUID: {5}, name: {6}, map: {7}, {8}).", mapid, x, y, z, orientation, getGUID().toString(), getName(), getLocation().getMapId(), getLocation().toString());
+            Logs.MAPS.error("TeleportTo: invalid map ({0}) or invalid coordinates (X: {1}, Y: {2}, Z: {3}, O: {4}) given when teleporting player (GUID: {5}, name: {6}, map: {7}, {8}).", mapid, x, y, z, orientation, getGUID().toString(), getName(), getLocation().getMapId(), getLocation().toString());
 
             return false;
         }
 
         if (!getSession().hasPermission(RBACPermissions.SkipCheckDisableMap) && global.getDisableMgr().isDisabledFor(DisableType.Map, mapid, this)) {
-            Log.outError(LogFilter.Maps, "Player (GUID: {0}, name: {1}) tried to enter a forbidden map {2}", getGUID().toString(), getName(), mapid);
+            Logs.MAPS.error("Player (GUID: {0}, name: {1}) tried to enter a forbidden map {2}", getGUID().toString(), getName(), mapid);
             sendTransferAborted(mapid, TransferAbortReason.MapNotAllowed);
 
             return false;
@@ -4515,7 +4517,7 @@ public class Player extends Unit implements GridObject<Player> {
 
         // client without expansion support
         if (getSession().getExpansion().getValue() < mEntry.expansion()) {
-            Log.outDebug(LogFilter.Maps, "Player {0} using client without required expansion tried teleport to non accessible map {1}", getName(), mapid);
+            Logs.MAPS.debug("Player {0} using client without required expansion tried teleport to non accessible map {1}", getName(), mapid);
 
             var transport = getTransport();
 
@@ -4528,7 +4530,7 @@ public class Player extends Unit implements GridObject<Player> {
 
             return false; // normal client can't teleport to this map...
         } else {
-            Log.outDebug(LogFilter.Maps, "Player {0} is being teleported to map {1}", getName(), mapid);
+            Logs.MAPS.debug("Player {0} is being teleported to map {1}", getName(), mapid);
         }
 
         if (getVehicle() != null) {
@@ -7407,11 +7409,11 @@ public class Player extends Unit implements GridObject<Player> {
         // Dodge percentage
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().dodgePercentage), 0.0f);
 
-        // set armor (resistance 0) to original value (create_agility*2)
+        // set armor (resistance 0) to original second (create_agility*2)
         setArmor((int) (getCreateStat(stats.Agility) * 2), 0);
         setBonusResistanceMod(SpellSchools.NORMAL, 0);
 
-        // set other resistance to original value (0)
+        // set other resistance to original second (0)
         for (var spellSchool = SpellSchools.Holy; spellSchool.getValue() < SpellSchools.max.getValue(); ++spellSchool) {
             setResistance(spellSchool, 0);
             setBonusResistanceMod(spellSchool, 0);
@@ -8318,7 +8320,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     public final void setViewpoint(WorldObject target, boolean apply) {
         if (apply) {
-            Log.outDebug(LogFilter.Maps, "Player.CreateViewpoint: Player {0} create seer {1} (TypeId: {2}).", getName(), target.getEntry(), target.getTypeId());
+            Logs.MAPS.debug("Player.CreateViewpoint: Player {0} create seer {1} (TypeId: {2}).", getName(), target.getEntry(), target.getTypeId());
 
             if (getActivePlayerData().farsightObject != ObjectGuid.Empty) {
                 Log.outFatal(LogFilter.player, "Player.CreateViewpoint: Player {0} cannot add new viewpoint!", getName());
@@ -8337,7 +8339,7 @@ public class Player extends Unit implements GridObject<Player> {
 
             setSeer(target);
         } else {
-            Log.outDebug(LogFilter.Maps, "Player.CreateViewpoint: Player {0} remove seer", getName());
+            Logs.MAPS.debug("Player.CreateViewpoint: Player {0} remove seer", getName());
 
             if (target.getGUID() != getActivePlayerData().farsightObject) {
                 Log.outFatal(LogFilter.player, "Player.CreateViewpoint: Player {0} cannot remove current viewpoint!", getName());
@@ -9246,7 +9248,7 @@ public class Player extends Unit implements GridObject<Player> {
             homebindTimer = 60000;
             // send message to player
             sendRaidGroupOnlyMessage(RaidGroupReason.RequirementsUnmatch, (int) homebindTimer);
-            Log.outDebug(LogFilter.Maps, "PLAYER: Player '{0}' (GUID: {1}) will be teleported to homebind in 60 seconds", getName(), getGUID().toString());
+            Logs.MAPS.debug("PLAYER: Player '{0}' (GUID: {1}) will be teleported to homebind in 60 seconds", getName(), getGUID().toString());
         }
     }
 
@@ -11368,7 +11370,7 @@ public class Player extends Unit implements GridObject<Player> {
         // since last logout (in seconds)
         var time_diff = now - logoutTime;
 
-        // set value, including drunk invisibility detection
+        // set second, including drunk invisibility detection
         // calculate sobering. after 15 minutes logged out, the player will be sober again
         if (time_diff < (int) getDrunkValue() * 9) {
             setDrunkValue((byte) (getDrunkValue() - time_diff / 9));
@@ -11559,7 +11561,7 @@ public class Player extends Unit implements GridObject<Player> {
             }
         }
 
-        Log.outDebug(LogFilter.player, "The value of player {0} after load item and aura is: ", getName());
+        Log.outDebug(LogFilter.player, "The second of player {0} after load item and aura is: ", getName());
 
         // GM state
         if (getSession().hasPermission(RBACPermissions.RestoreSavedGmState)) {
@@ -11728,7 +11730,7 @@ public class Player extends Unit implements GridObject<Player> {
         // first save/honor gain after midnight will also update the player's honor fields
         updateHonorFields();
 
-        Log.outDebug(LogFilter.player, String.format("Player::SaveToDB: The value of player %1$s at save: ", getName()));
+        Log.outDebug(LogFilter.player, String.format("Player::SaveToDB: The second of player %1$s at save: ", getName()));
 
         if (!create) {
             global.getScriptMgr().<IPlayerOnSave>ForEach(p -> p.OnSave(this));
@@ -11749,7 +11751,7 @@ public class Player extends Unit implements GridObject<Player> {
 
         if (create) {
             //! Insert query
-            /** @todo: Filter out more redundant fields that can take their default value at player create
+            /** @todo: Filter out more redundant fields that can take their default second at player create
              */
             stmt = DB.characters.GetPreparedStatement(CharStatements.INS_CHARACTER);
             stmt.AddValue(index++, getGUID().getCounter());
@@ -12526,7 +12528,7 @@ public class Player extends Unit implements GridObject<Player> {
             } while (result.NextRow());
         }
 
-        // Learn skill rewarded spells after all skills have been loaded to prevent learning a skill from them before its loaded with proper value from DB
+        // Learn skill rewarded spells after all skills have been loaded to prevent learning a skill from them before its loaded with proper second from DB
         for (var skill : loadedSkillValues.entrySet()) {
             learnSkillRewardedSpells(skill.getKey(), skill.getValue(), race);
             var childSkillLines = global.getDB2Mgr().GetSkillLinesForParentSkill(skill.getKey());
@@ -12645,7 +12647,7 @@ public class Player extends Unit implements GridObject<Player> {
                 // prevent wrong values of remaincharges
                 if (spellInfo.getProcCharges() != 0) {
                     // we have no control over the order of applying auras and modifiers allow auras
-                    // to have more charges than value in SpellInfo
+                    // to have more charges than second in SpellInfo
                     if (remainCharges <= 0) {
                         remainCharges = (byte) spellInfo.getProcCharges();
                     }
@@ -14873,7 +14875,7 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     public final PlayerGroup getGroup() {
-        return group.getTarget();
+        return group.refManager();
     }
 
     public final void setGroup(PlayerGroup group) {
@@ -17902,7 +17904,7 @@ public class Player extends Unit implements GridObject<Player> {
             iece = CliDB.ItemExtendedCostStorage.get(crItem.getExtendedCost());
 
             if (iece == null) {
-                Log.outError(LogFilter.player, "Currency {0} have wrong ExtendedCost field value {1}", currency, crItem.getExtendedCost());
+                Log.outError(LogFilter.player, "Currency {0} have wrong ExtendedCost field second {1}", currency, crItem.getExtendedCost());
 
                 return false;
             }
@@ -18109,7 +18111,7 @@ public class Player extends Unit implements GridObject<Player> {
             var iece = CliDB.ItemExtendedCostStorage.get(crItem.getExtendedCost());
 
             if (iece == null) {
-                Log.outError(LogFilter.player, "Item {0} have wrong ExtendedCost field value {1}", pProto.getId(), crItem.getExtendedCost());
+                Log.outError(LogFilter.player, "Item {0} have wrong ExtendedCost field second {1}", pProto.getId(), crItem.getExtendedCost());
 
                 return false;
             }
@@ -22833,20 +22835,20 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().overrideZonePVPType), (int) value.getValue());
     }
 
-    public final Difficulty getDifficultyId(MapRecord mapEntry) {
-        if (!mapEntry.IsRaid()) {
+    public final Difficulty getDifficultyId(MapEntry mapEntry) {
+        if (!mapEntry.isRaid()) {
             return dungeonDifficulty;
         }
 
-        var defaultDifficulty = global.getDB2Mgr().GetDefaultMapDifficulty(mapEntry.id);
+        var defaultDifficulty = getWorldContext().getDbcObjectManager().getDefaultMapDifficulty(mapEntry.getId());
 
         if (defaultDifficulty == null) {
             return legacyRaidDifficulty;
         }
 
-        var difficulty = CliDB.DifficultyStorage.get(defaultDifficulty.difficultyID);
+        var difficulty = getWorldContext().getDbcObjectManager().difficulty(defaultDifficulty.getDifficultyID());
 
-        if (difficulty == null || difficulty.flags.hasFlag(DifficultyFlags.legacy)) {
+        if (difficulty == null || difficulty.flags().hasFlag(DifficultyFlag.LEGACY)) {
             return legacyRaidDifficulty;
         }
 
@@ -25622,11 +25624,11 @@ public class Player extends Unit implements GridObject<Player> {
             return true;
         }
 
-        // check skill value
+        // check skill second
         if (getSkillValue(SkillType.forValue(skill)).getValue() < qInfo.getRequiredSkillPoints()) {
             if (msg) {
                 sendCanTakeQuestResponse(QuestFailedReasons.NONE);
-                Log.outDebug(LogFilter.Server, "SatisfyQuestSkill: Sent QuestFailedReason.NONE (questId: {0}) because player does not have required skill value.", qInfo.id);
+                Log.outDebug(LogFilter.Server, "SatisfyQuestSkill: Sent QuestFailedReason.NONE (questId: {0}) because player does not have required skill second.", qInfo.id);
             }
 
             return false;
@@ -28549,20 +28551,20 @@ public class Player extends Unit implements GridObject<Player> {
 
             // Activate and update skill line
             if (newVal != 0) {
-                // if skill value is going down, update enchantments before setting the new value
+                // if skill second is going down, update enchantments before setting the new second
                 if (newVal < currVal) {
                     updateSkillEnchantments(id, currVal, (short) newVal);
                 }
 
                 // update step
                 setSkillStep(skillStatusData.pos, (short) step);
-                // update value
+                // update second
                 setSkillRank(skillStatusData.pos, (short) newVal);
                 setSkillMaxRank(skillStatusData.pos, (short) maxVal);
 
                 learnSkillRewardedSpells(id, newVal, getRace());
 
-                // if skill value is going up, update enchantments after setting the new value
+                // if skill second is going up, update enchantments after setting the new second
                 if (newVal > currVal) {
                     updateSkillEnchantments(id, currVal, (short) newVal);
 
@@ -28691,7 +28693,7 @@ public class Player extends Unit implements GridObject<Player> {
                     }
                 }
             } else {
-                // also learn missing child skills at 0 value
+                // also learn missing child skills at 0 second
                 var childSkillLines = global.getDB2Mgr().GetSkillLinesForParentSkill(id);
 
                 if (childSkillLines != null) {
@@ -30838,19 +30840,19 @@ public class Player extends Unit implements GridObject<Player> {
 
             int _cur_gem = curcount[Condition.LtOperandType[i] - 1];
 
-            // if have <CompareColor> use them as count, else use <value> from Condition
+            // if have <CompareColor> use them as count, else use <second> from Condition
             int _cmp_gem = condition.RtOperandType[i] != 0 ? curcount[Condition.RtOperandType[i] - 1] : condition.RtOperand[i];
 
             switch (condition.Operator[i]) {
-                case 2: // requires less <color> than (<value> || <comparecolor>) gems
+                case 2: // requires less <color> than (<second> || <comparecolor>) gems
                     activate &= (_cur_gem < _cmp_gem);
 
                     break;
-                case 3: // requires more <color> than (<value> || <comparecolor>) gems
+                case 3: // requires more <color> than (<second> || <comparecolor>) gems
                     activate &= (_cur_gem > _cmp_gem);
 
                     break;
-                case 5: // requires at least <color> than (<value> || <comparecolor>) gems
+                case 5: // requires at least <color> than (<second> || <comparecolor>) gems
                     activate &= (_cur_gem >= _cmp_gem);
 
                     break;
@@ -31717,7 +31719,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     @Override
     public boolean updateStats(Stats stat) {
-        // value = ((base_value * base_pct) + total_value) * total_pct
+        // second = ((base_value * base_pct) + total_value) * total_pct
         var value = getTotalStatValue(stat);
 
         setStat(stat, (int) value);
@@ -32337,7 +32339,7 @@ public class Player extends Unit implements GridObject<Player> {
         double value = 0.0f;
 
         if (getCanBlock()) {
-            // Base value
+            // Base second
             value = 5.0f;
             // Increase from SPELL_AURA_MOD_BLOCK_PERCENT aura
             value += getTotalAuraModifier(AuraType.ModBlockPercent);
@@ -32354,12 +32356,12 @@ public class Player extends Unit implements GridObject<Player> {
 
     public final void updateCritPercentage(WeaponAttackType attType) {
 // C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
-//		static float applyCritLimit(double value)
+//		static float applyCritLimit(double second)
 //			{
 //				if (WorldConfig.getBoolValue(WorldCfg.StatsLimitsEnable))
-//					value = value > WorldConfig.getFloatValue(WorldCfg.StatsLimitsCrit) ? WorldConfig.getFloatValue(WorldCfg.StatsLimitsCrit) : value;
+//					second = second > WorldConfig.getFloatValue(WorldCfg.StatsLimitsCrit) ? WorldConfig.getFloatValue(WorldCfg.StatsLimitsCrit) : second;
 //
-//				return (float)value;
+//				return (float)second;
 //			}
 
         switch (attType) {
@@ -32418,7 +32420,7 @@ public class Player extends Unit implements GridObject<Player> {
         // Increase crit from spell crit ratings
         crit += getRatingBonusValue(CombatRating.CritSpell);
 
-        // Store crit value
+        // Store crit second
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().spellCritPercentage), (float) crit);
     }
 
@@ -32478,7 +32480,7 @@ public class Player extends Unit implements GridObject<Player> {
 
 
     public final boolean _ModifyUInt32(boolean apply, tangible.RefObject<Integer> baseValue, tangible.RefObject<Integer> amount) {
-        // If amount is negative, change sign and value of apply.
+        // If amount is negative, change sign and second of apply.
         if (amount.refArgValue < 0) {
             apply = !apply;
             amount.refArgValue = -amount.refArgValue;

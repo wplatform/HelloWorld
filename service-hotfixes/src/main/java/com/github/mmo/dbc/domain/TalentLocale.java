@@ -18,7 +18,7 @@ public class TalentLocale {
     @Id
 
     @Column("ID")
-    private  Integer id;
+    private int id;
 
     @Id
     @Column("locale")

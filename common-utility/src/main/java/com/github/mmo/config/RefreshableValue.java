@@ -13,7 +13,7 @@ public @interface RefreshableValue {
     @AliasFor("prefix")
     String value() default "";
 
-    @AliasFor("value")
+    @AliasFor("second")
     String prefix() default "";
 
     boolean ignoreInvalidFields() default false;

@@ -48,7 +48,7 @@ public class OptionalUpdateField<T> implements IUpdateField<T> {
 // C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
 //	public static implicit operator T(OptionalUpdateField<T> updateField)
 //		{
-//			return updateField.value;
+//			return updateField.second;
 //		}
 
     public final boolean hasValue() {

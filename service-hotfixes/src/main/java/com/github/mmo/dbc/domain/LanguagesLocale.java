@@ -18,7 +18,7 @@ public class LanguagesLocale {
     @Id
 
     @Column("ID")
-    private  Integer id;
+    private int id;
 
     @Id
     @Column("locale")

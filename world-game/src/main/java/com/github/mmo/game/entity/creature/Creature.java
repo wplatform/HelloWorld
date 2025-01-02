@@ -3278,12 +3278,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
             for (var creature : creatureBounds) {
                 if (creature.isAlive()) {
-                    Log.outDebug(LogFilter.Maps, "Would have spawned {0} but {1} already exists", spawnId, creature.getGUID().toString());
+                    Logs.MAPS.debug("Would have spawned {0} but {1} already exists", spawnId, creature.getGUID().toString());
 
                     return false;
                 } else {
                     despawnList.add(creature);
-                    Log.outDebug(LogFilter.Maps, "Despawned dead instance of spawn {0} ({1})", spawnId, creature.getGUID().toString());
+                    Logs.MAPS.debug("Despawned dead instance of spawn {0} ({1})", spawnId, creature.getGUID().toString());
                 }
             }
 

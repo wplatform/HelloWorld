@@ -24,11 +24,11 @@ import lombok.ToString;
         @Db2Field(name = "pathID", type = Db2Type.SHORT),
         @Db2Field(name = "sequence", type = Db2Type.SHORT)
 })
-public class PathNode implements DbcEntity {
+public class PathNode implements DbcEntity, Comparable<PathNode> {
     @Id
 
     @Column("ID")
-    private  Integer id;
+    private int id;
 
     @Id
 
@@ -47,4 +47,8 @@ public class PathNode implements DbcEntity {
     @Column("LocationID")
     private Integer locationID;
 
+    @Override
+    public int compareTo(PathNode o) {
+        return Short.compare(this.sequence, o.sequence);
+    }
 }

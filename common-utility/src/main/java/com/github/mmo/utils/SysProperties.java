@@ -47,7 +47,7 @@ public class SysProperties {
             Utils.getProperty("portal.server.certificatesFile", "/portalserver.cert.pem");
 
     public static final String PORTAL_SERVER_PRIVATE_KEY_FILE =
-            Utils.getProperty("portal.server.privateKeyFile", "/portalserver.key.pem");
+            Utils.getProperty("portal.server.privateKeyFile", "/portalserver.first.pem");
 
     public static final String PORTAL_SERVER_RPC_TASK_HANDLER_THREAD_NAME =
             Utils.getProperty("portal.server.rpc.taskHandler.threadName", "portal-rpc-task-handler");

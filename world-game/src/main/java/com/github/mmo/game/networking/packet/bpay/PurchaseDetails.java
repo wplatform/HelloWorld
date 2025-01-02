@@ -10,6 +10,6 @@ public:
     uint64 unkLong = 0;
     uint32 unkInt = 0;
     uint32 VasPurchaseProgress = 0;
-    std::string key;
+    std::string first;
     std::string Key2;
 }; */

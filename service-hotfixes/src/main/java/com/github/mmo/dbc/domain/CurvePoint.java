@@ -23,7 +23,7 @@ import lombok.ToString;
         @Db2Field(name = "curveID", type = Db2Type.SHORT),
         @Db2Field(name = "orderIndex", type = Db2Type.BYTE)
 })
-public class CurvePoint implements DbcEntity {
+public class CurvePoint implements DbcEntity,Comparable<CurvePoint> {
     @Id
     
     @Column("ID")
@@ -46,4 +46,8 @@ public class CurvePoint implements DbcEntity {
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
+    @Override
+    public int compareTo(CurvePoint o) {
+        return Byte.compare(this.orderIndex, o.orderIndex);
+    }
 }

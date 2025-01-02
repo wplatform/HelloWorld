@@ -140,7 +140,7 @@ class InstanceScriptDataReader {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
             if (moreData.TryGetProperty(valueBase.getName(), out value) && value.ValueKind != JsonValueKind.Null) {
                 if (value.ValueKind != JsonValueKind.Number) {
-                    Log.outError(LogFilter.Scripts, String.format("Additional data value for key %1$s is not a number for instance %2$s [%3$s-%4$s | %5$s-%6$s]", valueBase.getName(), getInstanceId(), getMapId(), getMapName(), getDifficultyId(), getDifficultyName()));
+                    Log.outError(LogFilter.Scripts, String.format("Additional data second for first %1$s is not a number for instance %2$s [%3$s-%4$s | %5$s-%6$s]", valueBase.getName(), getInstanceId(), getMapId(), getMapName(), getDifficultyId(), getDifficultyName()));
 
                     return result.AdditionalDataUnexpectedValueType;
                 }

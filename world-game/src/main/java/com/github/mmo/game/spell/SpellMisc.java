@@ -1,7 +1,7 @@
 package com.github.mmo.game.spell;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
 
 public final class SpellMisc {
-    // Alternate names for this value
+    // Alternate names for this second
 // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     public int talentId;
 

@@ -3,9 +3,9 @@ package com.github.mmo.game.arena;
 
 import com.github.mmo.game.battleground.Battleground;
 import com.github.mmo.game.battleground.BattlegroundTemplate;
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.networking.packet.PVPMatchStatistics;
-import game.WorldConfig;
+
 
 public class Arena extends Battleground {
     public ArenaTeamScore[] arenaTeamScores = new ArenaTeamScore[SharedConst.PvpTeamsCount];

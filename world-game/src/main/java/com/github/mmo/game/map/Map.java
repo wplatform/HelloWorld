@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.mmo.common.Assert;
 import com.github.mmo.common.Logs;
+import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.dbc.defines.DifficultyFlag;
 import com.github.mmo.dbc.defines.SummonPropertiesFlag;
@@ -32,12 +33,10 @@ import com.github.mmo.game.entity.scene.SceneObject;
 import com.github.mmo.game.entity.totem.Totem;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.enums.UnitTypeMask;
+import com.github.mmo.game.globals.ObjectManager;
 import com.github.mmo.game.map.collision.DynamicMapTree;
 import com.github.mmo.game.map.collision.model.GameObjectModel;
-import com.github.mmo.game.map.enums.LiquidHeaderTypeFlag;
-import com.github.mmo.game.map.enums.ModelIgnoreFlags;
-import com.github.mmo.game.map.enums.SpawnObjectType;
-import com.github.mmo.game.map.enums.ZLiquidStatus;
+import com.github.mmo.game.map.enums.*;
 import com.github.mmo.game.map.grid.*;
 import com.github.mmo.game.map.interfaces.IGridNotifier;
 import com.github.mmo.game.map.model.PositionFullTerrainStatus;
@@ -115,6 +114,7 @@ public class Map {
     private int visibilityNotifyPeriod;
     private float visibleDistance;
 
+
     public Map(World world, int id, long expiry, int instanceId, Difficulty spawnMode) {
         this.world = world;
         this.mapEntry = world.getDbcObjectManager().map(id);
@@ -154,25 +154,30 @@ public class Map {
         return (mogpFlags & 0x2000) != 0;
     }
 
-    public static TransferAbortParams playerCannotEnter(int mapid, Player player) {
-        var entry = CliDB.MapStorage.get(mapid);
-
-        if (entry == null) {
-            return new TransferAbortParams(TransferAbortReason.MapNotAllowed);
+    public TransferAbortParams playerCannotEnter(int mapid, Player player) {
+        MapEntry entry;
+        if(mapEntry.getId() != mapid) {
+            entry = world.getDbcObjectManager().map(mapid);
+        } else {
+            entry = mapEntry;
         }
 
-        if (!entry.IsDungeon()) {
+        if (entry == null) {
+            return new TransferAbortParams(TransferAbortReason.MAP_NOT_ALLOWED);
+        }
+
+        if (!entry.isDungeon()) {
             return null;
         }
 
         var targetDifficulty = player.getDifficultyId(entry);
         // Get the highest available difficulty if current setting is higher than the instance allows
-        tangible.RefObject<Difficulty> tempRef_targetDifficulty = new tangible.RefObject<Difficulty>(targetDifficulty);
-        var mapDiff = global.getDB2Mgr().GetDownscaledMapDifficultyData(mapid, tempRef_targetDifficulty);
-        targetDifficulty = tempRef_targetDifficulty.refArgValue;
+
+        var mapDiff = world.getDbcObjectManager().getDownscaledMapDifficultyData(mapid, targetDifficulty);
+        targetDifficulty = mapDiff.getDifficulty();
 
         if (mapDiff == null) {
-            return new TransferAbortParams(TransferAbortReason.Difficulty);
+            return new TransferAbortParams(TransferAbortReason.DIFFICULTY);
         }
 
         //Bypass checks for GMs
@@ -184,21 +189,21 @@ public class Map {
             //Other requirements
             TransferAbortParams abortParams = new TransferAbortParams();
 
-            if (!player.satisfy(global.getObjectMgr().getAccessRequirement(mapid, targetDifficulty), mapid, abortParams, true)) {
+            if (!player.satisfy(world.getObjectManager().getAccessRequirement(mapid, targetDifficulty), mapid, abortParams, true)) {
                 return abortParams;
             }
         }
 
         var group = player.getGroup();
 
-        if (entry.IsRaid() && (int) entry.expansion() >= WorldConfig.getIntValue(WorldCfg.expansion)) // can only enter in a raid group but raids from old expansion don't need a group
+        if (entry.isRaid() && entry.getExpansionID() >= world.getWorldSettings().expansion) // can only enter in a raid group but raids from old expansion don't need a group
         {
-            if ((!group || !group.isRaidGroup()) && !WorldConfig.getBoolValue(WorldCfg.InstanceIgnoreRaid)) {
-                return new TransferAbortParams(TransferAbortReason.NeedGroup);
+            if ((group == null || !group.isRaidGroup()) && !world.getWorldSettings().instanceIgnoreRaid) {
+                return new TransferAbortParams(TransferAbortReason.NEED_GROUP);
             }
         }
 
-        if (entry.Instanceable()) {
+        if (entry.isInstanceable()) {
             //Get instance where player's group is bound & its map
             var instanceIdToCheck = global.getMapMgr().FindInstanceIdForPlayer(mapid, player);
             var boundMap = global.getMapMgr().findMap(mapid, instanceIdToCheck);
@@ -591,7 +596,7 @@ public class Map {
         var cellCoord = MapDefine.computeCellCoord(obj.getLocation().getX(), obj.getLocation().getY());
 
         if (!cellCoord.isCoordValid()) {
-            Log.outError(LogFilter.Maps, "Map.Add: Object {0} has invalid coordinates X:{1} Y:{2} grid cell [{3}:{4}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoord.getXCoord(), cellCoord.getYCoord());
+            Logs.MAPS.error("Map.Add: Object {0} has invalid coordinates X:{1} Y:{2} grid cell [{3}:{4}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoord.getXCoord(), cellCoord.getYCoord());
 
             return false; //Should delete object
         }
@@ -605,7 +610,7 @@ public class Map {
         }
 
         addToGrid(obj, cell);
-        Log.outDebug(LogFilter.Maps, "Object {0} enters grid[{1}, {2}]", obj.getGUID().toString(), cell.getGridX(), cell.getGridY());
+        Logs.MAPS.debug("Object {0} enters grid[{1}, {2}]", obj.getGUID().toString(), cell.getGridX(), cell.getGridY());
 
         obj.addToWorld();
 
@@ -633,7 +638,7 @@ public class Map {
         var cellCoord = MapDefine.computeCellCoord(obj.getLocation().getX(), obj.getLocation().getY());
 
         if (!cellCoord.isCoordValid()) {
-            Log.outError(LogFilter.Maps, "Map.Add: Object {0} has invalid coordinates X:{1} Y:{2} grid cell [{3}:{4}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoord.getXCoord(), cellCoord.getYCoord());
+            Logs.MAPS.error("Map.Add: Object {0} has invalid coordinates X:{1} Y:{2} grid cell [{3}:{4}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoord.getXCoord(), cellCoord.getYCoord());
 
             return false; //Should delete object
         }
@@ -1314,7 +1319,7 @@ public class Map {
 
         terrain.unloadMap(gx, gy);
 
-        Log.outDebug(LogFilter.Maps, "Unloading nGrid[{0}, {1}] for map {2} finished", x, y, getId());
+        Logs.MAPS.debug("Unloading nGrid[{0}, {1}] for map {2} finished", x, y, getId());
 
         return true;
     }
@@ -1324,7 +1329,7 @@ public class Map {
             for (var pl : getActivePlayers()) {
                 if (!pl.isBeingTeleportedFar()) {
                     // this is happening for bg
-                    Log.outError(LogFilter.Maps, String.format("Map.UnloadAll: player %1$s is still in map %2$s during unload, this should not happen!", pl.getName(), getId()));
+                    Logs.MAPS.error(String.format("Map.UnloadAll: player %1$s is still in map %2$s during unload, this should not happen!", pl.getName(), getId()));
                     pl.teleportTo(pl.getHomebind());
                 }
             }
@@ -1750,7 +1755,7 @@ public class Map {
         var groupData = getSpawnGroupData(groupId);
 
         if (groupData == null || groupData.getFlags().hasFlag(SpawnGroupFlags.System)) {
-            Log.outError(LogFilter.Maps, String.format("Tried to spawn non-existing (or system) spawn group %1$s. on map %2$s blocked.", groupId, getId()));
+            Logs.MAPS.error(String.format("Tried to spawn non-existing (or system) spawn group %1$s. on map %2$s blocked.", groupId, getId()));
 
             return false;
         }
@@ -1869,7 +1874,7 @@ public class Map {
         var groupData = getSpawnGroupData(groupId);
 
         if (groupData == null || groupData.getFlags().hasFlag(SpawnGroupFlags.System)) {
-            Log.outError(LogFilter.Maps, String.format("Tried to despawn non-existing (or system) spawn group %1$s on map %2$s. blocked.", groupId, getId()));
+            Logs.MAPS.error(String.format("Tried to despawn non-existing (or system) spawn group %1$s on map %2$s. blocked.", groupId, getId()));
 
             return false;
         }
@@ -1891,7 +1896,7 @@ public class Map {
         var data = getSpawnGroupData(groupId);
 
         if (data == null || data.getFlags().hasFlag(SpawnGroupFlags.System)) {
-            Log.outError(LogFilter.Maps, String.format("Tried to set non-existing (or system) spawn group %1$s to %2$s on map %3$s. blocked.", groupId, (state ? "active" : "inactive"), getId()));
+            Logs.MAPS.error(String.format("Tried to set non-existing (or system) spawn group %1$s to %2$s on map %3$s. blocked.", groupId, (state ? "active" : "inactive"), getId()));
 
             return;
         }
@@ -1914,7 +1919,7 @@ public class Map {
         var data = getSpawnGroupData(groupId);
 
         if (data == null) {
-            Log.outError(LogFilter.Maps, String.format("Tried to query state of non-existing spawn group %1$s on map %2$s.", groupId, getId()));
+            Logs.MAPS.error(String.format("Tried to query state of non-existing spawn group %1$s on map %2$s.", groupId, getId()));
 
             return false;
         }
@@ -2152,7 +2157,7 @@ public class Map {
                 getNGrid(p.getXCoord(), p.getYCoord()).decUnloadActiveLock();
             } else {
                 var p2 = MapDefine.computeGridCoord(obj.getLocation().getX(), obj.getLocation().getY());
-                Log.outDebug(LogFilter.Maps, String.format("Active object %1$s removed from grid[%2$s, %3$s] but spawn grid[%4$s, %5$s] was not loaded.", obj.getGUID(), p.getXCoord(), p.getYCoord(), p2.getXCoord(), p2.getYCoord()));
+                Logs.MAPS.debug(String.format("Active object %1$s removed from grid[%2$s, %3$s] but spawn grid[%4$s, %5$s] was not loaded.", obj.getGUID(), p.getXCoord(), p.getYCoord(), p2.getXCoord(), p2.getYCoord()));
             }
         }
     }
@@ -2173,7 +2178,7 @@ public class Map {
         var data = global.getObjectMgr().getSpawnMetadata(type, spawnId);
 
         if (data == null) {
-            Log.outError(LogFilter.Maps, String.format("Map %1$s attempt to save respawn time for nonexistant spawnid (%2$s,%3$s).", getId(), type, spawnId));
+            Logs.MAPS.error(String.format("Map %1$s attempt to save respawn time for nonexistant spawnid (%2$s,%3$s).", getId(), type, spawnId));
 
             return;
         }
@@ -2195,7 +2200,7 @@ public class Map {
 
         if (startup) {
             if (!success) {
-                Log.outError(LogFilter.Maps, String.format("Attempt to load saved respawn %1$s for (%2$s,%3$s) failed - duplicate respawn? Skipped.", respawnTime, type, spawnId));
+                Logs.MAPS.error(String.format("Attempt to load saved respawn %1$s for (%2$s,%3$s) failed - duplicate respawn? Skipped.", respawnTime, type, spawnId));
             }
         } else if (success) {
             saveRespawnInfoDB(ri, dbTrans);
@@ -2242,10 +2247,10 @@ public class Map {
                     if (data != null) {
                         saveRespawnTime(type, spawnId, data.id, respawnTime, MapDefine.computeGridCoord(data.spawnPoint.getX(), data.spawnPoint.getY()).getId(), null, true);
                     } else {
-                        Log.outError(LogFilter.Maps, String.format("Loading saved respawn time of %1$s for spawnid (%2$s,%3$s) - spawn does not exist, ignoring", respawnTime, type, spawnId));
+                        Logs.MAPS.error(String.format("Loading saved respawn time of %1$s for spawnid (%2$s,%3$s) - spawn does not exist, ignoring", respawnTime, type, spawnId));
                     }
                 } else {
-                    Log.outError(LogFilter.Maps, String.format("Loading saved respawn time of %1$s for spawnid (%2$s,%3$s) - invalid spawn type, ignoring", respawnTime, type, spawnId));
+                    Logs.MAPS.error(String.format("Loading saved respawn time of %1$s for spawnid (%2$s,%3$s) - invalid spawn type, ignoring", respawnTime, type, spawnId));
                 }
             } while (result.NextRow());
         }
@@ -2339,7 +2344,7 @@ public class Map {
             var guid = result.<Long>Read(15);
 
             if (type.getValue() >= CorpseType.max.getValue() || type == CorpseType.Bones) {
-                Log.outError(LogFilter.Maps, "Corpse (guid: {0}) have wrong corpse type ({1}), not loading.", guid, type);
+                Logs.MAPS.error("Corpse (guid: {0}) have wrong corpse type ({1}), not loading.", guid, type);
 
                 continue;
             }
@@ -3164,7 +3169,7 @@ public class Map {
 
         synchronized (lockobj) {
             if (getNGrid(p.getXCoord(), p.getYCoord()) == null) {
-                Log.outDebug(LogFilter.Maps, "Creating grid[{0}, {1}] for map {2} instance {3}", p.getXCoord(), p.getYCoord(), getId(), getInstanceIdInternal());
+                Logs.MAPS.debug("Creating grid[{0}, {1}] for map {2} instance {3}", p.getXCoord(), p.getYCoord(), getId(), getInstanceIdInternal());
 
                 var grid = new Grid(p.getXCoord() * MapDefine.MaxGrids + p.getYCoord(), p.getXCoord(), p.getYCoord(), gridExpiry, WorldConfig.getBoolValue(WorldCfg.GridUnload));
                 grid.setGridState(GridState.IDLE);
@@ -3191,7 +3196,7 @@ public class Map {
 
         // refresh grid state & timer
         if (grid.getGridState() != GridState.active) {
-            Log.outDebug(LogFilter.Maps, "Active object {0} triggers loading of grid [{1}, {2}] on map {3}", obj.getGUID(), cell.getGridX(), cell.getGridY(), getId());
+            Logs.MAPS.debug("Active object {0} triggers loading of grid [{1}, {2}] on map {3}", obj.getGUID(), cell.getGridX(), cell.getGridY(), getId());
 
             resetGridExpiry(grid, 0.1f);
             grid.setGridState(GridState.active);
@@ -3374,7 +3379,7 @@ public class Map {
 
         if (Cell.opNotEquals(xy_cell, cur_cell)) {
             //$"grid[{GetGridX()}, {GetGridY()}]cell[{GetCellX()}, {GetCellY()}]";
-            Log.outDebug(LogFilter.Maps, String.format("%1$s (%2$s) X: %3$s Y: %4$s (%5$s) is in %6$s instead of %7$s", obj.getTypeId(), obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), (moved ? "final" : "original"), cur_cell, xy_cell));
+            Logs.MAPS.debug(String.format("%1$s (%2$s) X: %3$s Y: %4$s (%5$s) is in %6$s instead of %7$s", obj.getTypeId(), obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), (moved ? "final" : "original"), cur_cell, xy_cell));
 
             return true; // not crash at error, just output error in debug mode
         }
@@ -3542,7 +3547,7 @@ public class Map {
                     // GameObject coordinates will be updated and notifiers send
                     if (!gameObjectRespawnRelocation(go, false)) {
                         // ... or unload (if respawn grid also not loaded)
-                        Log.outDebug(LogFilter.Maps, "GameObject (GUID: {0} Entry: {1}) cannot be move to unloaded respawn grid.", go.getGUID().toString(), go.getEntry());
+                        Logs.MAPS.debug("GameObject (GUID: {0} Entry: {1}) cannot be move to unloaded respawn grid.", go.getGUID().toString(), go.getEntry());
 
                         addObjectToRemoveList(go);
                     }
@@ -3580,7 +3585,7 @@ public class Map {
                     dynObj.updatePositionData();
                     dynObj.updateObjectVisibility(false);
                 } else {
-                    Log.outDebug(LogFilter.Maps, "DynamicObject (GUID: {0}) cannot be moved to unloaded grid.", dynObj.getGUID().toString());
+                    Logs.MAPS.debug("DynamicObject (GUID: {0}) cannot be moved to unloaded grid.", dynObj.getGUID().toString());
                 }
             }
         }
@@ -3615,7 +3620,7 @@ public class Map {
                     at.updateShape();
                     at.updateObjectVisibility(false);
                 } else {
-                    Log.outDebug(LogFilter.Maps, "AreaTrigger ({0}) cannot be moved to unloaded grid.", at.getGUID().toString());
+                    Logs.MAPS.debug("AreaTrigger ({0}) cannot be moved to unloaded grid.", at.getGUID().toString());
                 }
             }
         }
@@ -3639,7 +3644,7 @@ public class Map {
         if (obj.isActiveObject()) {
             ensureGridLoadedForActiveObject(new_cell, obj);
 
-            Log.outDebug(LogFilter.Maps, "Active creature (GUID: {0} Entry: {1}) moved from grid[{2}, {3}] to grid[{4}, {5}].", obj.getGUID().toString(), obj.getEntry(), old_cell.getGridX(), old_cell.getGridY(), new_cell.getGridX(), new_cell.getGridY());
+            Logs.MAPS.debug("Active creature (GUID: {0} Entry: {1}) moved from grid[{2}, {3}] to grid[{4}, {5}].", obj.getGUID().toString(), obj.getEntry(), old_cell.getGridX(), old_cell.getGridY(), new_cell.getGridX(), new_cell.getGridY());
 
             removeFromGrid(obj, old_cell);
             addToGrid(obj, new_cell);
@@ -3724,7 +3729,7 @@ public class Map {
 
     private void setGrid(Grid grid, int x, int y) {
         if (x >= MapDefine.MaxGrids || y >= MapDefine.MaxGrids) {
-            Log.outError(LogFilter.Maps, "Map.setNGrid Invalid grid coordinates found: {0}, {1}!", x, y);
+            Logs.MAPS.error("Map.setNGrid Invalid grid coordinates found: {0}, {1}!", x, y);
 
             return;
         }
@@ -3864,7 +3869,7 @@ public class Map {
 
     private boolean addRespawnInfo(RespawnInfo info) {
         if (info.getSpawnId() == 0) {
-            Log.outError(LogFilter.Maps, String.format("Attempt to insert respawn info for zero spawn id (type %1$s)", info.getObjectType()));
+            Logs.MAPS.error(String.format("Attempt to insert respawn info for zero spawn id (type %1$s)", info.getObjectType()));
 
             return false;
         }
@@ -4095,7 +4100,7 @@ public class Map {
                     var corpse = world.getCorpse(obj, obj.getGUID());
 
                     if (corpse == null) {
-                        Log.outError(LogFilter.Maps, "Tried to delete corpse/bones {0} that is not in map.", obj.GUID.toString());
+                        Logs.MAPS.error("Tried to delete corpse/bones {0} that is not in map.", obj.GUID.toString());
                     } else {
                         removeFromMap(corpse, true);
                     }
@@ -4134,7 +4139,7 @@ public class Map {
 
                     break;
                 default:
-                    Log.outError(LogFilter.Maps, "Non-grid object (TypeId: {0}) is in grid object remove list, ignored.", obj.TypeId);
+                    Logs.MAPS.error("Non-grid object (TypeId: {0}) is in grid object remove list, ignored.", obj.TypeId);
 
                     break;
             }
@@ -4551,7 +4556,7 @@ public class Map {
 
         while (!scriptSchedule.isEmpty()) {
             if (iter.key > gameTime.GetGameTime()) {
-                break; // we are a sorted dictionary, once we hit this value we can break all other are going to be greater.
+                break; // we are a sorted dictionary, once we hit this second we can break all other are going to be greater.
             }
 
             if (iter.value ==

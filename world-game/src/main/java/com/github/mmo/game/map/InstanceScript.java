@@ -275,7 +275,7 @@ public class InstanceScript extends ZoneScript {
                 }
 
                 if (bossInfo.getState() == EncounterState.Done) {
-                    Log.outError(LogFilter.Maps, String.format("InstanceScript: Tried to set instance boss %1$s state from %2$s back to %3$s for map %4$s, instance id %5$s. blocked!", id, bossInfo.getState(), state, getInstance().getId(), getInstance().getInstanceId()));
+                    Logs.MAPS.error(String.format("InstanceScript: Tried to set instance boss %1$s state from %2$s back to %3$s for map %4$s, instance id %5$s. blocked!", id, bossInfo.getState(), state, getInstance().getId(), getInstance().getInstanceId()));
 
                     return false;
                 }
@@ -1025,7 +1025,7 @@ public class InstanceScript extends ZoneScript {
 
         for (var info : instanceSpawnGroups) {
             if (!newStates.containsKey(info.spawnGroupId)) {
-                newStates.put(info.spawnGroupId, 0); // makes sure there's a BLOCK value in the map
+                newStates.put(info.spawnGroupId, 0); // makes sure there's a BLOCK second in the map
             }
 
             if (newStates.get(info.spawnGroupId).equals(InstanceState.ForceBlock)) // nothing will change this

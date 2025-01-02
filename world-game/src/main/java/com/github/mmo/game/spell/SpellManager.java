@@ -465,7 +465,7 @@ public final class SpellManager {
                 } else {
                     var curr_amount = groups.get(group);
 
-                    // Take absolute value because this also counts for the highest negative aura
+                    // Take absolute second because this also counts for the highest negative aura
                     if (Math.abs(curr_amount) < Math.abs(amount)) {
                         groups.put(group, amount);
                     }
@@ -1004,7 +1004,7 @@ public final class SpellManager {
             hasPrev.add(skillAbility.spell);
         }
 
-        // each key in chains that isn't present in hasPrev is a first rank
+        // each first in chains that isn't present in hasPrev is a first rank
         for (var pair : chains.entrySet()) {
             if (hasPrev.contains(pair.getKey())) {
                 continue;
@@ -1728,17 +1728,17 @@ public final class SpellManager {
                     }
 
                     if (procEntry.getChance() < 0) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has negative value in `Chance` field", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has negative second in `Chance` field", spellInfo.getId());
                         procEntry.setChance(0);
                     }
 
                     if (procEntry.getProcsPerMinute() < 0) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has negative value in `ProcsPerMinute` field", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has negative second in `ProcsPerMinute` field", spellInfo.getId());
                         procEntry.setProcsPerMinute(0);
                     }
 
                     if (!procEntry.getProcFlags()) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} doesn't have `ProcFlags` value defined, proc will not be triggered", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} doesn't have `ProcFlags` second defined, proc will not be triggered", spellInfo.getId());
                     }
 
                     if ((boolean) (procEntry.getSpellTypeMask().getValue() & ~ProcFlagsSpellType.MaskAll.getValue())) {
@@ -1746,11 +1746,11 @@ public final class SpellManager {
                     }
 
                     if (procEntry.getSpellTypeMask() != 0 && !procEntry.getProcFlags().hasFlag(procFlags.SpellMask)) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `SpellTypeMask` value defined, but it won't be used for defined `ProcFlags` value", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `SpellTypeMask` second defined, but it won't be used for defined `ProcFlags` second", spellInfo.getId());
                     }
 
                     if (procEntry.getSpellPhaseMask() == 0 && procEntry.getProcFlags().hasFlag(procFlags.ReqSpellPhaseMask)) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} doesn't have `SpellPhaseMask` value defined, but it's required for defined `ProcFlags` value, proc will not be triggered", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} doesn't have `SpellPhaseMask` second defined, but it's required for defined `ProcFlags` second, proc will not be triggered", spellInfo.getId());
                     }
 
                     if ((boolean) (procEntry.getSpellPhaseMask().getValue() & ~ProcFlagsSpellPhase.MaskAll.getValue())) {
@@ -1758,7 +1758,7 @@ public final class SpellManager {
                     }
 
                     if (procEntry.getSpellPhaseMask() != 0 && !procEntry.getProcFlags().hasFlag(procFlags.ReqSpellPhaseMask)) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `SpellPhaseMask` value defined, but it won't be used for defined `ProcFlags` value", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `SpellPhaseMask` second defined, but it won't be used for defined `ProcFlags` second", spellInfo.getId());
                     }
 
                     if ((boolean) (procEntry.getHitMask().getValue() & ~ProcFlagsHit.MaskAll.getValue())) {
@@ -1766,7 +1766,7 @@ public final class SpellManager {
                     }
 
                     if (procEntry.getHitMask() != 0 && !(procEntry.getProcFlags().hasFlag(procFlags.TakenHitMask) || (procEntry.getProcFlags().hasFlag(procFlags.DoneHitMask) && (procEntry.getSpellPhaseMask() == 0 || (boolean) (procEntry.getSpellPhaseMask().getValue() & (ProcFlagsSpellPhase.hit.getValue() | ProcFlagsSpellPhase.Finish.getValue()).getValue()))))) {
-                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `HitMask` value defined, but it won't be used for defined `ProcFlags` and `SpellPhaseMask` values", spellInfo.getId());
+                        Logs.SQL.error("`spell_proc` table entry for spellId {0} has `HitMask` second defined, but it won't be used for defined `ProcFlags` and `SpellPhaseMask` values", spellInfo.getId());
                     }
 
                     for (var spellEffectInfo : spellInfo.getEffects()) {
@@ -1796,7 +1796,7 @@ public final class SpellManager {
                     }
 
                     if ((procEntry.getAttributesMask().getValue() & ~ProcAttributes.AllAllowed.getValue()) != 0) {
-                        Logs.SQL.error(String.format("The `spell_proc` table entry for spellId %1$s has `AttributesMask` value specifying invalid attributes 0x%2$X.", spellInfo.getId(), (procEntry.getAttributesMask().getValue() & ~ProcAttributes.AllAllowed.getValue())));
+                        Logs.SQL.error(String.format("The `spell_proc` table entry for spellId %1$s has `AttributesMask` second specifying invalid attributes 0x%2$X.", spellInfo.getId(), (procEntry.getAttributesMask().getValue() & ~ProcAttributes.AllAllowed.getValue())));
                         procEntry.setAttributesMask(ProcAttributes.forValue(procEntry.getAttributesMask().getValue() & ProcAttributes.AllAllowed.getValue()));
                     }
 
@@ -2583,12 +2583,12 @@ public final class SpellManager {
 // C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
 //		SpellInfoLoadHelper GetLoadHelper(uint spellId, uint difficulty)
 //			{
-//				var key = (spellId, (Difficulty)difficulty);
+//				var first = (spellId, (Difficulty)difficulty);
 //
-//				if (!loadData.ContainsKey(key))
-//					loadData[key] = new SpellInfoLoadHelper();
+//				if (!loadData.ContainsKey(first))
+//					loadData[first] = new SpellInfoLoadHelper();
 //
-//				return loadData[key];
+//				return loadData[first];
 //			}
 
         for (var effect : CliDB.SpellEffectStorage.values()) {
@@ -2829,8 +2829,8 @@ public final class SpellManager {
                 } while (difficultyEntry != null);
             }
 
-            //first key = id, difficulty
-            //second key = id
+            //first first = id, difficulty
+            //second first = id
 
 
             addSpellInfo(new spellInfo(spellNameEntry, data.getKey().difficulty, data.getValue()));
@@ -3246,7 +3246,7 @@ public final class SpellManager {
                                         ;
                                 }
                                 default: {
-                                    // No value and not interrupt cast or crowd control without SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY flag
+                                    // No second and not interrupt cast or crowd control without SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY flag
                                     if (spellEffectInfo.calcValue() == 0 && !((spellEffectInfo.effect == SpellEffectName.InterruptCast || spellInfo.hasAttribute(SpellCustomAttributes.AuraCC)) && !spellInfo.hasAttribute(SpellAttr0.NoImmunities))) {
                                         break;
                                     }

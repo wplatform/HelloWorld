@@ -1,6 +1,8 @@
-package game;
+package com.github.mmo.game.text;
 
 
+import com.github.mmo.defines.ChatMsg;
+import com.github.mmo.defines.Language;
 import com.github.mmo.game.chat.MessageBuilder;
 import com.github.mmo.game.entity.creature.Creature;
 import com.github.mmo.game.entity.object.WorldObject;
@@ -8,10 +10,14 @@ import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.PlayerDistWorker;
 import com.github.mmo.game.map.grid.Cell;
+import com.github.mmo.game.text.CreatureTextEntry;
+import com.github.mmo.game.text.CreatureTextLocale;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+
+import static game.WardenActions.Log;
 
 public final class CreatureTextManager {
 

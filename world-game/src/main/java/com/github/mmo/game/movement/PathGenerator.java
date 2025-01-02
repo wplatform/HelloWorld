@@ -37,7 +37,7 @@ public class PathGenerator {
         source = owner;
         navMesh = null;
         navMeshQuery = null;
-        Log.outDebug(LogFilter.Maps, "PathGenerator:PathGenerator for {0}", source.getGUID().toString());
+        Logs.MAPS.debug("PathGenerator:PathGenerator for {0}", source.getGUID().toString());
 
         var mapId = PhasingHandler.getTerrainMapId(source.getPhaseShift(), source.getLocation().getMapId(), source.getMap().getTerrain(), source.getLocation().getX(), source.getLocation().getY());
 
@@ -67,7 +67,7 @@ public class PathGenerator {
 
         forceDestination = forceDest;
 
-        Log.outDebug(LogFilter.Maps, "PathGenerator.calculatePath() for {0} \n", source.getGUID().toString());
+        Logs.MAPS.debug("PathGenerator.calculatePath() for {0} \n", source.getGUID().toString());
 
         // make sure navMesh works - we can run on map w/o mmap
         // check if the start and end point have a .mmtile loaded (can we pass via not loaded tile on the way?)
@@ -92,7 +92,7 @@ public class PathGenerator {
 
     public final void shortenPathUntilDist(Vector3 target, float dist) {
         if (getPathType() == PathType.BLANK || pathPoints.length < 2) {
-            Log.outError(LogFilter.Maps, "PathGenerator.ReducePathLengthByDist called before path was successfully built");
+            Logs.MAPS.error("PathGenerator.ReducePathLengthByDist called before path was successfully built");
 
             return;
         }
@@ -321,7 +321,7 @@ public class PathGenerator {
         // make shortcut path and mark it as NOPATH ( with flying and swimming exception )
         // its up to caller how he will use this info
         if (startPoly == 0 || endPoly == 0) {
-            Log.outDebug(LogFilter.Maps, "++ BuildPolyPath . (startPoly == 0 || endPoly == 0)\n");
+            Logs.MAPS.debug("++ BuildPolyPath . (startPoly == 0 || endPoly == 0)\n");
             buildShortcut();
             var path = source.isTypeId(TypeId.UNIT) && source.toCreature().getCanFly();
 
@@ -360,13 +360,13 @@ public class PathGenerator {
         var endFarFromPoly = distToEndPoly > 7.0f;
 
         if (startFarFromPoly || endFarFromPoly) {
-            Log.outDebug(LogFilter.Maps, "++ BuildPolyPath . farFromPoly distToStartPoly={0:F3} distToEndPoly={1:F3}\n", distToStartPoly, distToEndPoly);
+            Logs.MAPS.debug("++ BuildPolyPath . farFromPoly distToStartPoly={0:F3} distToEndPoly={1:F3}\n", distToStartPoly, distToEndPoly);
 
             var buildShotrcut = false;
             var p = (distToStartPoly > 7.0f) ? startPos : endPos;
 
             if (source.getMap().isUnderWater(source.getPhaseShift(), p.X, p.Y, p.Z)) {
-                Log.outDebug(LogFilter.Maps, "++ BuildPolyPath :: underWater case");
+                Logs.MAPS.debug("++ BuildPolyPath :: underWater case");
                 var _sourceUnit = source.toUnit();
 
                 if (_sourceUnit != null) {
@@ -375,7 +375,7 @@ public class PathGenerator {
                     }
                 }
             } else {
-                Log.outDebug(LogFilter.Maps, "++ BuildPolyPath :: flying case");
+                Logs.MAPS.debug("++ BuildPolyPath :: flying case");
                 var _sourceUnit = source.toUnit();
 
                 if (_sourceUnit != null) {
@@ -421,7 +421,7 @@ public class PathGenerator {
         // start and end are on same polygon
         // handle this case as if they were 2 different polygons, building a line path split in some few points
         if (startPoly == endPoly && !useRaycast) {
-            Log.outDebug(LogFilter.Maps, "++ BuildPolyPath . (startPoly == endPoly)\n");
+            Logs.MAPS.debug("++ BuildPolyPath . (startPoly == endPoly)\n");
 
             _pathPolyRefs[0] = startPoly;
             polyLength = 1;
@@ -450,7 +450,7 @@ public class PathGenerator {
             for (; pathStartIndex < polyLength; ++pathStartIndex) {
                 // here to carch few bugs
                 if (_pathPolyRefs[pathStartIndex] == 0) {
-                    Log.outError(LogFilter.Maps, "Invalid poly ref in BuildPolyPath. _polyLength: {0}, pathStartIndex: {1}," + " startPos: {2}, endPos: {3}, mapid: {4}", polyLength, pathStartIndex, startPos, endPos, source.getLocation().getMapId());
+                    Logs.MAPS.error("Invalid poly ref in BuildPolyPath. _polyLength: {0}, pathStartIndex: {1}," + " startPos: {2}, endPos: {3}, mapid: {4}", polyLength, pathStartIndex, startPos, endPos, source.getLocation().getMapId());
 
                     break;
                 }
@@ -472,7 +472,7 @@ public class PathGenerator {
         }
 
         if (startPolyFound && endPolyFound) {
-            Log.outDebug(LogFilter.Maps, "BuildPolyPath : (startPolyFound && endPolyFound)\n");
+            Logs.MAPS.debug("BuildPolyPath : (startPolyFound && endPolyFound)\n");
 
             // we moved along the path and the target did not move out of our old poly-path
             // our path is a simple subpath case, we have all the data we need
@@ -481,7 +481,7 @@ public class PathGenerator {
             polyLength = pathEndIndex - pathStartIndex + 1;
             system.arraycopy(pathPolyRefs, pathStartIndex, pathPolyRefs, 0, polyLength);
         } else if (startPolyFound && !endPolyFound) {
-            Log.outDebug(LogFilter.Maps, "BuildPolyPath : (startPolyFound && !endPolyFound)\n");
+            Logs.MAPS.debug("BuildPolyPath : (startPolyFound && !endPolyFound)\n");
 
             // we are moving on the old path but target moved out
             // so we have atleast part of poly-path ready
@@ -534,7 +534,7 @@ public class PathGenerator {
             int dtResult;
 
             if (useRaycast) {
-                Log.outError(LogFilter.Maps, String.format("PathGenerator::BuildPolyPath() called with _useRaycast with a previous path for unit %1$s", source.getGUID()));
+                Logs.MAPS.error(String.format("PathGenerator::BuildPolyPath() called with _useRaycast with a previous path for unit %1$s", source.getGUID()));
                 buildShortcut();
                 pathType = PathType.NOPATH;
 
@@ -549,10 +549,10 @@ public class PathGenerator {
                 // this is probably an error state, but we'll leave it
                 // and hopefully recover on the next Update
                 // we still need to copy our preffix
-                Log.outError(LogFilter.Maps, String.format("Path Build failed\n%1$s", source.getDebugInfo()));
+                Logs.MAPS.error(String.format("Path Build failed\n%1$s", source.getDebugInfo()));
             }
 
-            Log.outDebug(LogFilter.Maps, "m_polyLength={0} prefixPolyLength={1} suffixPolyLength={2} \n", polyLength, prefixPolyLength, suffixPolyLength);
+            Logs.MAPS.debug("m_polyLength={0} prefixPolyLength={1} suffixPolyLength={2} \n", polyLength, prefixPolyLength, suffixPolyLength);
 
             for (var i = 0; i < pathPolyRefs.length - (prefixPolyLength - 1); ++i) {
                 _pathPolyRefs[(prefixPolyLength - 1) + i] = tempPolyRefs[i];
@@ -561,7 +561,7 @@ public class PathGenerator {
             // new path = prefix + suffix - overlap
             polyLength = prefixPolyLength + suffixPolyLength - 1;
         } else {
-            Log.outDebug(LogFilter.Maps, "++ BuildPolyPath . (!startPolyFound && !endPolyFound)\n");
+            Logs.MAPS.debug("++ BuildPolyPath . (!startPolyFound && !endPolyFound)\n");
 
             // either we have no path at all . first run
             // or something went really wrong . we aren't moving along the path to the target
@@ -650,7 +650,7 @@ public class PathGenerator {
 
             if (polyLength == 0 || Detour.dtStatusFailed(dtResult)) {
                 // only happens if we passed bad data to findPath(), or navmesh is messed up
-                Log.outError(LogFilter.Maps, "{0}'s Path Build failed: 0 length path", source.getGUID().toString());
+                Logs.MAPS.error("{0}'s Path Build failed: 0 length path", source.getGUID().toString());
                 buildShortcut();
                 pathType = PathType.NOPATH;
 
@@ -678,7 +678,7 @@ public class PathGenerator {
 
         if (useRaycast) {
             // _straightLine uses raycast and it currently doesn't support building a point path, only a 2-point path with start and hitpoint/end is returned
-            Log.outError(LogFilter.Maps, String.format("PathGenerator::BuildPointPath() called with _useRaycast for unit %1$s", source.getGUID()));
+            Logs.MAPS.error(String.format("PathGenerator::BuildPointPath() called with _useRaycast for unit %1$s", source.getGUID()));
             buildShortcut();
             pathType = PathType.NOPATH;
 
@@ -704,13 +704,13 @@ public class PathGenerator {
             // only happens if pass bad data to findStraightPath or navmesh is broken
             // single point paths can be generated here
             // @todo check the exact cases
-            Log.outDebug(LogFilter.Maps, "++ PathGenerator.BuildPointPath FAILED! path sized {0} returned\n", pointCount);
+            Logs.MAPS.debug("++ PathGenerator.BuildPointPath FAILED! path sized {0} returned\n", pointCount);
             buildShortcut();
             pathType = PathType.forValue(pathType.getValue() | PathType.NOPATH.getValue());
 
             return;
         } else if (pointCount == pointPathLimit) {
-            Log.outDebug(LogFilter.Maps, "++ PathGenerator.BuildPointPath FAILED! path sized {0} returned, lower than limit set to {1}\n", pointCount, pointPathLimit);
+            Logs.MAPS.debug("++ PathGenerator.BuildPointPath FAILED! path sized {0} returned, lower than limit set to {1}\n", pointCount, pointPathLimit);
             buildShortcut();
             pathType = PathType.forValue(pathType.getValue() | PathType.SHORT.getValue());
 
@@ -743,7 +743,7 @@ public class PathGenerator {
             pathType = PathType.forValue(PathType.NORMAL.getValue() | PathType.NOTUSINGPATH.getValue());
         }
 
-        Log.outDebug(LogFilter.Maps, "PathGenerator.BuildPointPath path type {0} size {1} poly-size {2}\n", pathType, pointCount, polyLength);
+        Logs.MAPS.debug("PathGenerator.BuildPointPath path type {0} size {1} poly-size {2}\n", pathType, pointCount, polyLength);
     }
 
     private int fixupCorridor(long[] path, int npath, int maxPath, long[] visited, int nvisited) {
@@ -836,7 +836,7 @@ public class PathGenerator {
         }
 
         Detour.dtVcopy(steerPos.outArgValue, 0, steerPath, (int) ns * 3);
-        steerPos.outArgValue[1] = startPos[1]; // keep Z value
+        steerPos.outArgValue[1] = startPos[1]; // keep Z second
         steerPosFlag.outArgValue = Detour.dtStraightPathFlags.forValue(steerPathFlags[ns]);
         steerPosRef.outArgValue = steerPathPolys[ns];
 
@@ -932,7 +932,7 @@ public class PathGenerator {
             tangible.RefObject<Float> tempRef_Object = new tangible.RefObject<Float>(result[1]);
             if (Detour.dtStatusFailed(navMeshQuery.getPolyHeight(polys[0], result, tempRef_Object))) {
                 result[1] = tempRef_Object.refArgValue;
-                Log.outDebug(LogFilter.Maps, String.format("Cannot find height at position X: %1$s Y: %2$s Z: %3$s for %4$s", result[2], result[0], result[1], source.getDebugInfo()));
+                Logs.MAPS.debug(String.format("Cannot find height at position X: %1$s Y: %2$s Z: %3$s for %4$s", result[2], result[0], result[1], source.getDebugInfo()));
             } else {
                 result[1] = tempRef_Object.refArgValue;
             }
@@ -1015,7 +1015,7 @@ public class PathGenerator {
     }
 
     private void buildShortcut() {
-        Log.outDebug(LogFilter.Maps, "BuildShortcut : making shortcut\n");
+        Logs.MAPS.debug("BuildShortcut : making shortcut\n");
 
         clear();
 
@@ -1140,7 +1140,7 @@ public class PathGenerator {
         tx = tempRef_tx.refArgValue;
 
         // Workaround
-        // For some reason, often the tx and ty variables wont get a valid value
+        // For some reason, often the tx and ty variables wont get a valid second
         // Use this check to prevent getting negative tile coords and crashing on getTileAt
         if (tx < 0 || ty < 0) {
             return false;

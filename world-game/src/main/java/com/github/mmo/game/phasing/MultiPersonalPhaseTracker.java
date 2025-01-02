@@ -33,7 +33,7 @@ public class MultiPersonalPhaseTracker {
                 continue;
             }
 
-            Log.outDebug(LogFilter.Maps, String.format("Loading personal phase objects (phase %1$s) in %2$s for map %3$s instance %4$s", phaseRef.getKey(), cell, map.getId(), map.getInstanceId()));
+            Logs.MAPS.debug(String.format("Loading personal phase objects (phase %1$s) in %2$s for map %3$s instance %4$s", phaseRef.getKey(), cell, map.getId(), map.getInstanceId()));
 
             loader.load(phaseRef.getKey());
 

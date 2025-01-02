@@ -58,7 +58,7 @@ public class StaticMapTree {
             return LoadResult.ReadFromFileFailed;
         }
 
-        Path tileFile = openMapTileFile(vm, mapID, tileX, tileY).key();
+        Path tileFile = openMapTileFile(vm, mapID, tileX, tileY).first();
 
 
         if (!Files.exists(tileFile)) {
@@ -194,9 +194,9 @@ public class StaticMapTree {
         var result = LoadResult.FileNotFound;
 
         var pair = openMapTileFile(vm, mapId, tileX, tileY);
-        if (Files.exists(pair.key())) {
+        if (Files.exists(pair.first())) {
             result = LoadResult.Success;
-            try (FileChannel fileChannel = FileChannel.open(pair.key(), StandardOpenOption.READ)) {
+            try (FileChannel fileChannel = FileChannel.open(pair.first(), StandardOpenOption.READ)) {
 
                 ByteBuffer buffer = ByteBuffer.allocate((int) fileChannel.size());
                 fileChannel.read(buffer);
@@ -214,7 +214,7 @@ public class StaticMapTree {
                     for (int i = 0; i < numSpawns && result == LoadResult.Success; ++i) {
                         // read model spawns
                         ModelSpawn spawn = new ModelSpawn();
-                        int usedMapId = pair.value();
+                        int usedMapId = pair.second();
                         if (ModelSpawn.readFromFile(buffer, spawn)) {
                             // acquire model instance
                             WorldModel model = vm.acquireModelInstance(spawn.name, spawn.flags);
@@ -231,7 +231,7 @@ public class StaticMapTree {
                                 if (loadCount != -1) {
                                     if (spawnIndex >= nTreeValues) {
 
-                                        Logs.MAPS.error("StaticMapTree::LoadMapTile() : invalid tree element ({}/{}) referenced in tile {}", spawnIndex, nTreeValues, pair.key());
+                                        Logs.MAPS.error("StaticMapTree::LoadMapTile() : invalid tree element ({}/{}) referenced in tile {}", spawnIndex, nTreeValues, pair.first());
 
                                         continue;
                                     }
@@ -246,12 +246,12 @@ public class StaticMapTree {
                                 // unknown parent spawn might appear in because it overlaps multiple tiles
                                 // in case the original tile is swapped but its neighbour is now (adding this spawn)
                                 // we want to not mark it as loading error and just skip that model
-                                Logs.MAPS.error("StaticMapTree::LoadMapTile() : invalid tree element (spawn {}) referenced in tile {} by map {}", spawn.id, pair.key(), usedMapId);
+                                Logs.MAPS.error("StaticMapTree::LoadMapTile() : invalid tree element (spawn {}) referenced in tile {} by map {}", spawn.id, pair.first(), usedMapId);
                                 result = LoadResult.ReadFromFileFailed;
                             }
 
                         } else {
-                            Logs.MAPS.error("StaticMapTree::LoadMapTile() : cannot read model from file (spawn index {}) referenced in tile {} by map {}", i, pair.key(), usedMapId);
+                            Logs.MAPS.error("StaticMapTree::LoadMapTile() : cannot read model from file (spawn index {}) referenced in tile {} by map {}", i, pair.first(), usedMapId);
                             result = LoadResult.ReadFromFileFailed;
                         }
                     }
@@ -280,7 +280,7 @@ public class StaticMapTree {
         } else {
             var fileResult = openMapTileFile(vm, mapId, tileX, tileY);
 
-            Path titleFile = fileResult.key();
+            Path titleFile = fileResult.first();
             if (Files.exists(titleFile)) {
                 try (FileChannel fileChannel = FileChannel.open(titleFile, StandardOpenOption.READ)) {
                     var result = true;
@@ -321,7 +321,7 @@ public class StaticMapTree {
                                     treeValues[referencedNode].setUnloaded();
                                     loadedSpawns.remove(referencedNode, -1);
                                 }
-                            } else if (mapId == fileResult.value()) {
+                            } else if (mapId == fileResult.second()) {
                                 // logic documented in StaticMapTree::LoadMapTile
                                 result = false;
                             }

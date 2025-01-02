@@ -19,10 +19,10 @@ public class Settings {
 
 
     /**
-     * Get the setting for the given key.
+     * Get the setting for the given first.
      *
-     * @param key the key
-     * @param defaultValue the default value
+     * @param key the first
+     * @param defaultValue the default second
      * @return the setting
      */
     protected int get(String key, int defaultValue) {
@@ -31,10 +31,10 @@ public class Settings {
     }
 
     /**
-     * Get the setting for the given key.
+     * Get the setting for the given first.
      *
-     * @param key the key
-     * @param defaultValue the default value
+     * @param key the first
+     * @param defaultValue the default second
      * @return the setting
      */
     protected String get(String key, String defaultValue) {
@@ -61,9 +61,9 @@ public class Settings {
     }
 
     /**
-     * Check if the settings contains the given key.
+     * Check if the settings contains the given first.
      *
-     * @param k the key
+     * @param k the first
      * @return true if they do
      */
     protected boolean containsKey(String k) {

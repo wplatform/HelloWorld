@@ -646,7 +646,7 @@ public class SmartScript {
                                 Log.outDebug(LogFilter.ScriptsAi, "SmartScript.ProcessAction. SMART_ACTION_MORPH_TO_ENTRY_OR_MODEL: Creature entry {0}, GuidLow {1} set displayid to {2}", target.getEntry(), target.getGUID().toString(), model.creatureDisplayId);
                             }
                         }
-                        //if no param1, then use value from param2 (modelId)
+                        //if no param1, then use second from param2 (modelId)
                         else {
                             target.toCreature().setDisplayId(e.action.morphOrMount.model);
 
@@ -739,7 +739,7 @@ public class SmartScript {
 
                 for (var refe : me.getThreatManager().getModifiableThreatList()) {
                     refe.modifyThreatByPercent(Math.max(-100, (int) (e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC)));
-                    Log.outDebug(LogFilter.ScriptsAi, String.format("SmartScript.ProcessAction: SMART_ACTION_THREAT_ALL_PCT: Creature %1$s modify threat for %2$s, value %3$s", me.getGUID(), refe.getVictim().getGUID(), e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC));
+                    Log.outDebug(LogFilter.ScriptsAi, String.format("SmartScript.ProcessAction: SMART_ACTION_THREAT_ALL_PCT: Creature %1$s modify threat for %2$s, second %3$s", me.getGUID(), refe.getVictim().getGUID(), e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC));
                 }
 
                 break;
@@ -752,7 +752,7 @@ public class SmartScript {
                 for (var target : targets) {
                     if (isUnit(target)) {
                         me.getThreatManager().modifyThreatByPercent(target.toUnit(), Math.max(-100, (int) (e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC)));
-                        Log.outDebug(LogFilter.ScriptsAi, String.format("SmartScript.ProcessAction: SMART_ACTION_THREAT_SINGLE_PCT: Creature %1$s modify threat for %2$s, value %3$s", me.getGUID(), target.getGUID(), e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC));
+                        Log.outDebug(LogFilter.ScriptsAi, String.format("SmartScript.ProcessAction: SMART_ACTION_THREAT_SINGLE_PCT: Creature %1$s modify threat for %2$s, second %3$s", me.getGUID(), target.getGUID(), e.action.threatPCT.threatINC - e.action.threatPCT.threatDEC));
                     }
                 }
 
@@ -3855,7 +3855,7 @@ public class SmartScript {
 
                         break;
                     default:
-                        // Ignore any other value
+                        // Ignore any other second
                         break;
                 }
 

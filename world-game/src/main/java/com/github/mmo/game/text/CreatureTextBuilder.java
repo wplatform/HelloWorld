@@ -1,6 +1,9 @@
-package game;
+package com.github.mmo.game.text;
 
 
+import com.github.mmo.defines.ChatMsg;
+import com.github.mmo.defines.Gender;
+import com.github.mmo.defines.Language;
 import com.github.mmo.game.chat.ChatPacketSender;
 import com.github.mmo.game.chat.MessageBuilder;
 import com.github.mmo.game.entity.object.WorldObject;

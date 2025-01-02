@@ -25,7 +25,7 @@ public class OPvPCapturePoint {
     // the status of the objective
     public float m_value;
 
-    // neutral value on capture bar
+    // neutral second on capture bar
     public int m_neutralValuePct;
 
     private float m_minValue;

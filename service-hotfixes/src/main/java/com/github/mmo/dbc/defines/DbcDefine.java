@@ -47,13 +47,4 @@ public interface DbcDefine {
     int WORLD_MAP_TRANSFORMS_FLAG_DUNGEON = 0x04;
 
 
-    class TaxiMask {
-        byte[] bytes = new byte[16];
-
-        TaxiMask() {
-
-        }
-    }
-
-
 }

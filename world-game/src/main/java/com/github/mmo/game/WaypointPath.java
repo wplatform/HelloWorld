@@ -7,10 +7,10 @@ public class WaypointPath {
     public ArrayList<WaypointNode> nodes = new ArrayList<>();
     public int id;
 
-    public waypointPath() {
+    public WaypointPath() {
     }
 
-    public waypointPath(int id, ArrayList<WaypointNode> nodes) {
+    public WaypointPath(int id, ArrayList<WaypointNode> nodes) {
         id = id;
         nodes = nodes;
     }

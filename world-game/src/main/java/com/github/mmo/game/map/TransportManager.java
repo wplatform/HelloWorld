@@ -264,7 +264,7 @@ public class TransportManager {
                 }
 
                 if ((phaseUseFlags.getValue() & ~PhaseUseFlagsValues.All.getValue()) != 0) {
-                    Logs.SQL.error(String.format("Table `transports` have transport (GUID: %1$s Entry: %2$s) with unknown `phaseUseFlags` set, removed unknown value.", guid, entry));
+                    Logs.SQL.error(String.format("Table `transports` have transport (GUID: %1$s Entry: %2$s) with unknown `phaseUseFlags` set, removed unknown second.", guid, entry));
                     phaseUseFlags = PhaseUseFlagsValues.forValue(phaseUseFlags.getValue() & PhaseUseFlagsValues.All.getValue());
                 }
 

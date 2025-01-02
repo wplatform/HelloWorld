@@ -22,7 +22,7 @@ import lombok.ToString;
         @Db2Field(name = "itemID", type = Db2Type.INT, signed = true),
         @Db2Field(name = "itemUpgradeID", type = Db2Type.SHORT)
 })
-public class RulesetItemUpgrade implements DbcEntity {
+public class RuleSetItemUpgrade implements DbcEntity {
     @Id
 
     @Column("ID")

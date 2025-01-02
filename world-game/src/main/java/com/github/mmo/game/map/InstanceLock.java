@@ -1,13 +1,16 @@
 package com.github.mmo.game.map;
 
 
+import Time.GameTime;
+import com.github.mmo.dbc.defines.Difficulty;
+
 import java.time.LocalDateTime;
 
 public class InstanceLock {
 
     private final int mapId;
     private final Difficulty difficultyId;
-    private final instanceLockData data = new instanceLockData();
+    private final InstanceLockData data = new InstanceLockData();
 
     private int instanceId;
     private LocalDateTime expiryTime = LocalDateTime.MIN;
@@ -16,15 +19,15 @@ public class InstanceLock {
 
 
     public InstanceLock(int mapId, Difficulty difficultyId, LocalDateTime expiryTime, int instanceId) {
-        mapId = mapId;
-        difficultyId = difficultyId;
-        instanceId = instanceId;
-        expiryTime = expiryTime;
-        extended = false;
+        this.mapId = mapId;
+        this.difficultyId = difficultyId;
+        this.instanceId = instanceId;
+        this.expiryTime = expiryTime;
+        this.extended = false;
     }
 
     public final boolean isExpired() {
-        return expiryTime.compareTo(gameTime.GetSystemTime()) < 0;
+        return expiryTime.compareTo(GameTime.getSystemTime()) < 0;
     }
 
     public final LocalDateTime getEffectiveExpiryTime() {

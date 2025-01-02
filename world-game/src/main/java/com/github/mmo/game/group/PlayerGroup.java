@@ -1,6 +1,9 @@
 package com.github.mmo.game.group;
 
 
+import com.github.mmo.common.Pair;
+import com.github.mmo.dbc.defines.Difficulty;
+import com.github.mmo.dbc.domain.MapEntry;
 import com.github.mmo.defines.RemoveMethod;
 import com.github.mmo.game.battlefield.BattleField;
 import com.github.mmo.game.battleground.Battleground;
@@ -10,20 +13,25 @@ import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.map.MapDefine;
+import com.github.mmo.game.networking.packet.party.PartyLFGInfo;
+import com.github.mmo.game.networking.packet.party.PartyUpdate;
 import com.github.mmo.game.scripting.interfaces.igroup.*;
+import com.github.mmo.reference.RefManager;
 import game.WorldSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+import static java.util.logging.Logger.global;
 
-public class PlayerGroup {
+
+public class PlayerGroup extends RefManager<PlayerGroup, Player, GroupReference> {
     private final ArrayList<MemberSlot> memberSlots = new ArrayList<>();
     private final GroupRefManager memberMgr = new GroupRefManager();
     private final ArrayList<Player> invitees = new ArrayList<>();
     private final ObjectGuid[] targetIcons = new ObjectGuid[ObjectDefine.TargetIconsCount];
-    private final HashMap<Integer, Tuple<ObjectGuid, Integer>> recentInstances = new HashMap<Integer, Tuple<ObjectGuid, Integer>>();
+    private final HashMap<Integer, Pair<ObjectGuid, Integer>> recentInstances = new HashMap<>();
     private final GroupInstanceRefManager instanceRefManager = new GroupInstanceRefManager();
     private final timeTracker leaderOfflineTimer = new timeTracker();
 
@@ -1507,8 +1515,8 @@ public class PlayerGroup {
         return GroupJoinBattlegroundResult.NONE;
     }
 
-    public final Difficulty getDifficultyID(MapRecord mapEntry) {
-        if (!mapEntry.IsRaid()) {
+    public final Difficulty getDifficultyID(MapEntry mapEntry) {
+        if (!mapEntry.isRaid()) {
             return dungeonDifficulty;
         }
 
@@ -1520,7 +1528,7 @@ public class PlayerGroup {
 
         var difficulty = CliDB.DifficultyStorage.get(defaultDifficulty.difficultyID);
 
-        if (difficulty == null || difficulty.flags.hasFlag(DifficultyFlags.legacy)) {
+        if (difficulty == null || difficulty.flags().hasFlag(DifficultyFlags.legacy)) {
             return legacyRaidDifficulty;
         }
 
@@ -1569,7 +1577,7 @@ public class PlayerGroup {
                 pp.getValues().modifyValue(pp.getUnitData()).modifyValue(pp.getUnitData().pvpFlags);
                 pp.getValues().modifyValue(pp.getUnitData()).modifyValue(pp.getUnitData().factionTemplate);
                 pp.forceUpdateFieldChange();
-                Log.outDebug(LogFilter.Server, "-- Forced group value update for '{0}'", pp.getName());
+                Log.outDebug(LogFilter.Server, "-- Forced group second update for '{0}'", pp.getName());
             }
         }
     }
@@ -1858,16 +1866,15 @@ public class PlayerGroup {
     }
 
     public final int getRecentInstanceId(int mapId) {
-        TValue value;
-        if (recentInstances.containsKey(mapId) && (value = recentInstances.get(mapId)) == value) {
-            return value.item2;
+        Pair<ObjectGuid, Integer> value = recentInstances.get(mapId);
+        if (value != null) {
+            return value.second();
         }
-
         return 0;
     }
 
     public final void setRecentInstance(int mapId, ObjectGuid instanceOwner, int instanceId) {
-        recentInstances.put(mapId, Tuple.create(instanceOwner, instanceId));
+        recentInstances.put(mapId, Pair.of(instanceOwner, instanceId));
     }
 
     private void selectNewPartyOrRaidLeader() {

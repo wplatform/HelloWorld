@@ -60,6 +60,7 @@ import com.github.mmo.game.service.model.misc.*;
 import com.github.mmo.game.service.model.player.PlayerChoice;
 import com.github.mmo.game.service.model.player.PlayerChoiceLocale;
 import com.github.mmo.game.service.model.player.PlayerInfo;
+import com.github.mmo.game.service.model.player.PlayerLevelInfo;
 import com.github.mmo.game.service.model.quest.QuestInfo;
 import com.github.mmo.game.service.model.quest.*;
 import com.github.mmo.game.service.model.reputation.RepRewardRate;
@@ -204,12 +205,12 @@ public final class ObjectManager {
     //Quest
     private final MapCache<Integer, QuestInfo> questTemplates;
     private final ArrayList<QuestInfo> questTemplatesAutoPush = new ArrayList<>();
-    private final MultiMap<Integer, Integer> goQuestRelations = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> goQuestInvolvedRelations = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> goQuestInvolvedRelationsReverse = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> creatureQuestRelations = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> creatureQuestInvolvedRelations = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> creatureQuestInvolvedRelationsReverse = new MultiMap<Integer, Integer>();
+    private final MapCache<Integer, List<Integer>> goQuestRelations;
+    private final MapCache<Integer, List<Integer>> goQuestInvolvedRelations;
+    private final MapCache<Integer, List<Integer>> goQuestInvolvedRelationsReverse;
+    private final MapCache<Integer, List<Integer>> creatureQuestRelations;
+    private final MapCache<Integer, List<Integer>> creatureQuestInvolvedRelations;
+    private final MapCache<Integer, Integer> creatureQuestInvolvedRelationsReverse;
     private final Map<Integer, List<Integer>> exclusiveQuestGroups = new HashMap<>();
     private final HashMap<Integer, QuestPOIData> questPOIStorage = new HashMap<Integer, QuestPOIData>();
     private final MultiMap<Integer, Integer> questAreaTriggerStorage = new MultiMap<Integer, Integer>();
@@ -255,7 +256,7 @@ public final class ObjectManager {
     private final HashMap<Integer, CreatureBaseStats> creatureBaseStatsStorage = new HashMap<Integer, CreatureBaseStats>();
     private final HashMap<Integer, VendorItemData> cacheVendorItemStorage = new HashMap<Integer, VendorItemData>();
     private final HashMap<Integer, Trainer> trainers = new HashMap<Integer, Trainer>();
-    private final ArrayList<Integer>[] difficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded difficulty 1 value in creatures, used in CheckCreatureTemplate
+    private final ArrayList<Integer>[] difficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded difficulty 1 second in creatures, used in CheckCreatureTemplate
     private final ArrayList<Integer>[] hasDifficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded creatures with difficulty 1 values, used in CheckCreatureTemplate
     private final MapCache<Integer, NpcText> npcTextStorage;
     //GameObject
@@ -364,8 +365,15 @@ public final class ObjectManager {
         });
         this.pointsOfInterestStorage = cacheProvider.newGenericMapCache("PointsOfInterestStorage", new TypeReference<>() {
         });
-        this.questTemplates = cacheProvider.newGenericMapCache("QuestTemplateStorage", new TypeReference<>() {
-        });
+        this.questTemplates = cacheProvider.newGenericMapCache("QuestTemplateStorage", new TypeReference<>() {});
+        this.goQuestRelations = cacheProvider.newGenericMapCache("GoQuestRelationsStorage", new TypeReference<>() {});
+        this.goQuestInvolvedRelations = cacheProvider.newGenericMapCache("GoQuestInvolvedRelationsStorage", new TypeReference<>() {});
+        this.goQuestInvolvedRelationsReverse = cacheProvider.newGenericMapCache("GoQuestInvolvedRelationsReverseStorage", new TypeReference<>() {});
+        this.creatureQuestRelations = cacheProvider.newGenericMapCache("CreatureQuestRelationsStorage", new TypeReference<>() {});
+        this.creatureQuestInvolvedRelations = cacheProvider.newGenericMapCache("CreatureQuestInvolvedRelationsStorage", new TypeReference<>() {});
+        this.creatureQuestInvolvedRelationsReverse = cacheProvider.newGenericMapCache("CreatureQuestInvolvedRelationsReverseStorage", new TypeReference<>() {});
+
+
         for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
             difficultyEntries[i] = new ArrayList<>();
             hasDifficultyEntries[i] = new ArrayList<>();
@@ -831,8 +839,8 @@ public final class ObjectManager {
             for (var pair : race.getValue().entrySet()) {
                 ClassAvailability classAvailability = new ClassAvailability();
                 classAvailability.classID = PlayerClass.values()[pair.getKey()];
-                classAvailability.activeExpansionLevel = pair.getValue().key();
-                classAvailability.accountExpansionLevel = pair.getValue().value();
+                classAvailability.activeExpansionLevel = pair.getValue().first();
+                classAvailability.accountExpansionLevel = pair.getValue().second();
                 classAvailability.minActiveExpansionLevel = minRequirementForClass[pair.getKey()];
 
                 raceClassAvailability.classes.add(classAvailability);
@@ -2595,7 +2603,7 @@ public final class ObjectManager {
                 }
 
                 if (_hasDifficultyEntries[diff2].contains(cInfo.DifficultyEntry[diff])) {
-                    Logs.SQL.error("Creature (Entry: {0}) has `difficulty_entry_{1}`={2} but creature entry {3} has itself a value in `difficulty_entry_{4}`.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff], cInfo.DifficultyEntry[diff], diff2 + 1);
+                    Logs.SQL.error("Creature (Entry: {0}) has `difficulty_entry_{1}`={2} but creature entry {3} has itself a second in `difficulty_entry_{4}`.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff], cInfo.DifficultyEntry[diff], diff2 + 1);
 
                     continue;
                 }
@@ -2734,7 +2742,7 @@ public final class ObjectManager {
         }
 
         if (cInfo.dmgSchool >= (int) SpellSchools.max.getValue()) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid spell school value ({1}) in `dmgschool`.", cInfo.entry, cInfo.dmgSchool);
+            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid spell school second ({1}) in `dmgschool`.", cInfo.entry, cInfo.dmgSchool);
             cInfo.dmgSchool = (int) SpellSchools.NORMAL.getValue();
         }
 
@@ -2747,12 +2755,12 @@ public final class ObjectManager {
         }
 
         if (cInfo.speedWalk == 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong value ({1}) in speed_walk, set to 1.", cInfo.entry, cInfo.speedWalk);
+            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in speed_walk, set to 1.", cInfo.entry, cInfo.speedWalk);
             cInfo.speedWalk = 1.0f;
         }
 
         if (cInfo.speedRun == 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong value ({1}) in speed_run, set to 1.14286.", cInfo.entry, cInfo.speedRun);
+            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in speed_run, set to 1.14286.", cInfo.entry, cInfo.speedRun);
             cInfo.speedRun = 1.14286f;
         }
 
@@ -2769,7 +2777,7 @@ public final class ObjectManager {
         checkCreatureMovement("creature_template_movement", cInfo.entry, cInfo.movement);
 
         if (cInfo.hoverHeight < 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong value ({1}) in `HoverHeight`", cInfo.entry, cInfo.hoverHeight);
+            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in `HoverHeight`", cInfo.entry, cInfo.hoverHeight);
             cInfo.hoverHeight = 1.0f;
         }
 
@@ -2838,12 +2846,12 @@ public final class ObjectManager {
         var levels = cInfo.getMinMaxLevel();
 
         if (levels[0] < 1 || levels[0] > SharedConst.StrongMaxLevel) {
-            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated minLevel %2$s is not within [1, 255], value has been set to %3$s.", cInfo.entry, cInfo.minlevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
+            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated minLevel %2$s is not within [1, 255], second has been set to %3$s.", cInfo.entry, cInfo.minlevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
             cInfo.minlevel = (short) (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? 0 : 1);
         }
 
         if (levels[1] < 1 || levels[1] > SharedConst.StrongMaxLevel) {
-            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated maxLevel %2$s is not within [1, 255], value has been set to %3$s.", cInfo.entry, cInfo.maxlevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
+            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated maxLevel %2$s is not within [1, 255], second has been set to %3$s.", cInfo.entry, cInfo.maxlevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
             cInfo.maxlevel = (short) (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? 0 : 1);
         }
 
@@ -3532,7 +3540,7 @@ public final class ObjectManager {
             }
 
             if ((boolean) (data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.All.getValue())) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown value.", guid, data.id);
+                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown second.", guid, data.id);
                 data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & PhaseUseFlagsValues.All.getValue());
             }
 
@@ -4275,7 +4283,7 @@ public final class ObjectManager {
             }
 
             if (data.spawntimesecs == 0 && gInfo.isDespawnAtAction()) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with `spawntimesecs` (0) value, but the gameobejct is marked as despawnable at action.", guid, data.id);
+                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with `spawntimesecs` (0) second, but the gameobejct is marked as despawnable at action.", guid, data.id);
             }
 
             data.animprogress = result.<Integer>Read(12);
@@ -4285,7 +4293,7 @@ public final class ObjectManager {
 
             if (gostate >= (int) GOState.max.getValue()) {
                 if (gInfo.type != GameObjectTypes.transport || gostate > GOState.TransportActive.getValue() + SharedConst.MaxTransportStopFrames) {
-                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid `state` ({2}) value, skip", guid, data.id, gostate);
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid `state` ({2}) second, skip", guid, data.id, gostate);
 
                     continue;
                 }
@@ -4308,7 +4316,7 @@ public final class ObjectManager {
             data.phaseGroup = result.<Integer>Read(19);
 
             if ((boolean) (data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.All.getValue())) {
-                Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown value.", guid, data.id);
+                Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown second.", guid, data.id);
                 data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & PhaseUseFlagsValues.All.getValue());
             }
 
@@ -4354,25 +4362,25 @@ public final class ObjectManager {
             data.scriptId = getScriptId(result.<String>Read(21));
 
             if (data.rotation.X < -1.0f || data.rotation.X > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationX ({2}) value, skip", guid, data.id, data.rotation.X);
+                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationX ({2}) second, skip", guid, data.id, data.rotation.X);
 
                 continue;
             }
 
             if (data.rotation.Y < -1.0f || data.rotation.Y > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationY ({2}) value, skip", guid, data.id, data.rotation.Y);
+                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationY ({2}) second, skip", guid, data.id, data.rotation.Y);
 
                 continue;
             }
 
             if (data.rotation.Z < -1.0f || data.rotation.Z > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationZ ({2}) value, skip", guid, data.id, data.rotation.Z);
+                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationZ ({2}) second, skip", guid, data.id, data.rotation.Z);
 
                 continue;
             }
 
             if (data.rotation.W < -1.0f || data.rotation.W > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationW ({2}) value, skip", guid, data.id, data.rotation.W);
+                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationW ({2}) second, skip", guid, data.id, data.rotation.W);
 
                 continue;
             }
@@ -5178,7 +5186,7 @@ public final class ObjectManager {
                 var pProto = getItemTemplate(ar.getItem());
 
                 if (pProto == null) {
-                    Logs.SQL.error("Key item {0} does not exist for map {1} difficulty {2}, removing key requirement.", ar.getItem(), mapid, difficulty);
+                    Logs.SQL.error("Key item {0} does not exist for map {1} difficulty {2}, removing first requirement.", ar.getItem(), mapid, difficulty);
                     ar.setItem(0);
                 }
             }
@@ -5187,7 +5195,7 @@ public final class ObjectManager {
                 var pProto = getItemTemplate(ar.getItem2());
 
                 if (pProto == null) {
-                    Logs.SQL.error("Second item {0} does not exist for map {1} difficulty {2}, removing key requirement.", ar.getItem2(), mapid, difficulty);
+                    Logs.SQL.error("Second item {0} does not exist for map {1} difficulty {2}, removing first requirement.", ar.getItem2(), mapid, difficulty);
                     ar.setItem2(0);
                 }
             }
@@ -6768,7 +6776,6 @@ public final class ObjectManager {
         Map<Integer, QuestInfo> tmp = new HashMap<>();
         try (var items = questRepository.streamAllQuestTemplate()) {
             items.forEach(questInfo -> {
-                Quest quest = new Quest(questInfo);
                 tmp.put(questInfo.id, questInfo);
                 if (questInfo.isAutoPush()) {
                     questTemplatesAutoPush.add(questInfo);
@@ -6820,7 +6827,7 @@ public final class ObjectManager {
                 }
 
                 if (type >= QuestCompleteSpellType.values().length) {
-                    Logs.SQL.error("Table `quest_reward_display_spell` invalid type value ({}) set for quest {} and spell {}. Set to 0.", type, e[0], spellId);
+                    Logs.SQL.error("Table `quest_reward_display_spell` invalid type second ({}) set for quest {} and spell {}. Set to 0.", type, e[0], spellId);
                     type = QuestCompleteSpellType.LegacyBehavior.ordinal();
                 }
                 questInfo.rewardDisplaySpell.add(new QuestRewardDisplaySpell(spellId, playerConditionId, QuestCompleteSpellType.values()[type]));
@@ -6995,7 +7002,7 @@ public final class ObjectManager {
             }
 
             if (qinfo.specialFlags.hasNotFlag(QuestSpecialFlag.DB_ALLOWED)) {
-                Logs.SQL.error("Quest {} has `SpecialFlags` = {} > max allowed value. Correct `SpecialFlags` to value <= {}", qinfo.id, qinfo.specialFlags, QuestSpecialFlag.DB_ALLOWED);
+                Logs.SQL.error("Quest {} has `SpecialFlags` = {} > max allowed second. Correct `SpecialFlags` to second <= {}", qinfo.id, qinfo.specialFlags, QuestSpecialFlag.DB_ALLOWED);
 
                 qinfo.specialFlags.removeNotFlag(QuestSpecialFlag.DB_ALLOWED);
             }
@@ -7047,7 +7054,7 @@ public final class ObjectManager {
                 }
             }
 
-            // no changes, quest not dependent from this value but can have problems at client
+            // no changes, quest not dependent from this second but can have problems at client
             // client quest log visual (sort case)
             if (qinfo.questSortID < 0) {
                 var qSort = dbcObjectManager.areaTrigger( -qinfo.questSortID);
@@ -7056,22 +7063,22 @@ public final class ObjectManager {
                     Logs.SQL.error("Quest {} has `ZoneOrSort` = {} (sort case) but quest sort with this id does not exist.", qinfo.id, qinfo.questSortID);
                 }
 
-                // no changes, quest not dependent from this value but can have problems at client (note some may be 0, we must allow this so no check)
-                //check for proper RequiredSkillId value (skill case)
+                // no changes, quest not dependent from this second but can have problems at client (note some may be 0, we must allow this so no check)
+                //check for proper RequiredSkillId second (skill case)
                 var skillid = SharedDefine.skillByQuestSort(QuestSort.valueOf(-qinfo.questSortID));
 
                 if (skillid != SkillType.NONE) {
                     if (qinfo.requiredSkillId != skillid.value) {
-                        Logs.SQL.error("Quest {} has `ZoneOrSort` = {} but `RequiredSkillId` does not have a corresponding value ({}).", qinfo.id, qinfo.questSortID, skillid);
+                        Logs.SQL.error("Quest {} has `ZoneOrSort` = {} but `RequiredSkillId` does not have a corresponding second ({}).", qinfo.id, qinfo.questSortID, skillid);
                     }
                 }
-                //override, and force proper value here?
+                //override, and force proper second here?
             }
 
             // allowableClasses, can be 0/CLASSMASK_ALL_PLAYABLE to allow any class
             if (qinfo.allowableClasses != 0) {
                 if ((qinfo.allowableClasses & SharedDefine.CLASS_MASK_ALL_PLAYABLE) == 0) {
-                    Logs.SQL.error("Quest {} does not contain any playable classes in `RequiredClasses` ({}), value set to 0 (all classes).", qinfo.id, qinfo.allowableClasses);
+                    Logs.SQL.error("Quest {} does not contain any playable classes in `RequiredClasses` ({}), second set to 0 (all classes).", qinfo.id, qinfo.allowableClasses);
                     qinfo.allowableClasses = 0;
                 }
             }
@@ -7079,7 +7086,7 @@ public final class ObjectManager {
             // allowableRaces, can be -1/RACEMASK_ALL_PLAYABLE to allow any race
             if (qinfo.allowableRaces.getRawValue() != -1) {
                 if (qinfo.allowableRaces.getRawValue() > 0 && !qinfo.allowableRaces.hasRaceMask(RaceMask.ALL_PLAYABLE)) {
-                    Logs.SQL.error("Quest {} does not contain any playable races in `RequiredRaces` ({}), value set to 0 (all races).", qinfo.id, qinfo.allowableRaces);
+                    Logs.SQL.error("Quest {} does not contain any playable races in `RequiredRaces` ({}), second set to 0 (all races).", qinfo.id, qinfo.allowableRaces);
                     qinfo.allowableRaces.setRawValue(-1);
                 }
             }
@@ -7120,12 +7127,12 @@ public final class ObjectManager {
 
             // no changes, quest can't be done for this requirement
             if (qinfo.requiredMinRepFaction == 0 && qinfo.requiredMinRepValue != 0) {
-                Logs.SQL.error("Quest {} has `RequiredMinRepValue` = {} but `RequiredMinRepFaction` is 0, value has no effect", qinfo.id, qinfo.requiredMinRepValue);
+                Logs.SQL.error("Quest {} has `RequiredMinRepValue` = {} but `RequiredMinRepFaction` is 0, second has no effect", qinfo.id, qinfo.requiredMinRepValue);
             }
 
             // warning
             if (qinfo.requiredMaxRepFaction == 0 && qinfo.requiredMaxRepValue != 0) {
-                Logs.SQL.error("Quest {} has `RequiredMaxRepValue` = {} but `RequiredMaxRepFaction` is 0, value has no effect", qinfo.id, qinfo.requiredMaxRepValue);
+                Logs.SQL.error("Quest {} has `RequiredMaxRepValue` = {} but `RequiredMaxRepFaction` is 0, second has no effect", qinfo.id, qinfo.requiredMaxRepValue);
             }
 
             // warning
@@ -7146,7 +7153,7 @@ public final class ObjectManager {
                     qinfo.sourceItemIdCount = 1; // update to 1 for allow quest work for backward compatibility with DB
                 }
             } else if (qinfo.sourceItemIdCount > 0) {
-                Logs.SQL.error("Quest {} has `SourceItemId` = 0 but `SourceItemIdCount` = {}, useless value.", qinfo.id, qinfo.sourceItemIdCount);
+                Logs.SQL.error("Quest {} has `SourceItemId` = 0 but `SourceItemIdCount` = {}, useless second.", qinfo.id, qinfo.sourceItemIdCount);
 
                 qinfo.sourceItemIdCount = 0; // no quest work changes in fact
             }
@@ -7491,7 +7498,7 @@ public final class ObjectManager {
                 }
             }
 
-            var breadcrumbForQuestId = (int) Math.abs(qinfo.breadcrumbForQuestId);
+            var breadcrumbForQuestId = Math.abs(qinfo.breadcrumbForQuestId);
 
             if (breadcrumbForQuestId != 0) {
                 if (!tmp.containsKey(breadcrumbForQuestId)) {
@@ -7577,7 +7584,7 @@ public final class ObjectManager {
 
             if (goInfo == null) {
                 Logs.SQL.error("Table `gameobject_queststarter` have data for not existed gameobject entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (goInfo.type != GameObjectTypes.questGiver) {
+            } else if (goInfo.type != GameObjectType.QUEST_GIVER) {
                 Logs.SQL.error("Table `gameobject_queststarter` have data gameobject entry ({0}) for quest {1}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER", pair.key, pair.value);
             }
         }
@@ -7591,7 +7598,7 @@ public final class ObjectManager {
 
             if (goInfo == null) {
                 Logs.SQL.error("Table `gameobject_questender` have data for not existed gameobject entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (goInfo.type != GameObjectTypes.questGiver) {
+            } else if (goInfo.type != GameObjectType.QUEST_GIVER) {
                 Logs.SQL.error("Table `gameobject_questender` have data gameobject entry ({0}) for quest {1}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER", pair.key, pair.value);
             }
         }
@@ -7827,7 +7834,7 @@ public final class ObjectManager {
     }
 
     public Quest getQuestTemplate(int questId) {
-        return questTemplates.get(questId);
+        return new Quest(questTemplates.get(questId), worldSetting, dbcObjectManager);
     }
 
     public boolean tryGetQuestTemplate(int questId, tangible.OutObject<Quest> quest) {
@@ -9967,12 +9974,12 @@ public final class ObjectManager {
 
             // Sanitizing values
             if (orientation > (float) Math.PI * 2) {
-                Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid angle offset value (%2$s). Set Value to 0.", seatID, orientation));
+                Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid angle offset second (%2$s). Set Value to 0.", seatID, orientation));
                 orientation = 0.0f;
             }
 
             if (exitParam >= (byte) VehicleExitParameters.VehicleExitParamMax.getValue()) {
-                Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid exit parameter value (%2$s). Setting to 0 (none).", seatID, exitParam));
+                Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid exit parameter second (%2$s). Setting to 0 (none).", seatID, exitParam));
 
                 continue;
             }
@@ -10635,22 +10642,22 @@ public final class ObjectManager {
 
     private void checkCreatureMovement(String table, long id, CreatureMovementData creatureMovement) {
         if (creatureMovement.ground.getValue() >= CreatureGroundMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Ground` wrong value (%2$s) for Id %3$s, setting to run.", table, creatureMovement.ground, id));
+            Logs.SQL.error(String.format("`%1$s`.`Ground` wrong second (%2$s) for Id %3$s, setting to run.", table, creatureMovement.ground, id));
             creatureMovement.ground = CreatureGroundMovementType.run;
         }
 
         if (creatureMovement.flight.getValue() >= CreatureFlightMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Flight` wrong value (%2$s) for Id %3$s, setting to NONE.", table, creatureMovement.flight, id));
+            Logs.SQL.error(String.format("`%1$s`.`Flight` wrong second (%2$s) for Id %3$s, setting to NONE.", table, creatureMovement.flight, id));
             creatureMovement.flight = CreatureFlightMovementType.NONE;
         }
 
         if (creatureMovement.chase.getValue() >= CreatureChaseMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Chase` wrong value (%2$s) for Id %3$s, setting to run.", table, creatureMovement.chase, id));
+            Logs.SQL.error(String.format("`%1$s`.`Chase` wrong second (%2$s) for Id %3$s, setting to run.", table, creatureMovement.chase, id));
             creatureMovement.chase = CreatureChaseMovementType.run;
         }
 
         if (creatureMovement.random.getValue() >= CreatureRandomMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Random` wrong value (%2$s) for Id %3$s, setting to Walk.", table, creatureMovement.random, id));
+            Logs.SQL.error(String.format("`%1$s`.`Random` wrong second (%2$s) for Id %3$s, setting to Walk.", table, creatureMovement.random, id));
             creatureMovement.random = CreatureRandomMovementType.Walk;
         }
     }
@@ -10825,7 +10832,7 @@ public final class ObjectManager {
             return;
         }
 
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) noDamageImmune field value.", goTemplate.entry, goTemplate.type, N, dataN);
+        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) noDamageImmune field second.", goTemplate.entry, goTemplate.type, N, dataN);
     }
 
     private void checkGOConsumable(GameObjectTemplate goInfo, int dataN, int N) {
@@ -10834,7 +10841,7 @@ public final class ObjectManager {
             return;
         }
 
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) consumable field value.", goInfo.entry, goInfo.type, N, dataN);
+        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) consumable field second.", goInfo.entry, goInfo.type, N, dataN);
     }
 
     private ArrayList<Difficulty> parseSpawnDifficulties(String difficultyString, String table, long spawnId, int mapId, ArrayList<Difficulty> mapDifficulties) {
@@ -10934,67 +10941,67 @@ public final class ObjectManager {
 
     private PlayerLevelInfo buildPlayerLevelInfo(Race race, PlayerClass _class, int level) {
         // base data (last known level)
-        var info = playerInfo.get(race).get(_class).getLevelInfo()[WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel) - 1];
+        var info = playerInfo.get(race).get(_class).getLevelInfo()[worldSetting.maxPlayerLevel - 1];
 
-        for (var lvl = WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel) - 1; lvl < level; ++lvl) {
+        for (var lvl = worldSetting.maxPlayerLevel - 1; lvl < level; ++lvl) {
             switch (_class) {
-                case Warrior:
+                case WARRIOR:
                     info.getStats()[0] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
                     info.getStats()[1] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
                     info.getStats()[2] += (lvl > 36 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
                     info.getStats()[3] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
 
                     break;
-                case Paladin:
+                case PALADIN:
                     info.getStats()[0] += (lvl > 3 ? 1 : 0);
                     info.getStats()[1] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
                     info.getStats()[2] += (lvl > 38 ? 1 : (lvl > 7 && (lvl % 2) == 0 ? 1 : 0));
                     info.getStats()[3] += (lvl > 6 && (lvl % 2) != 0 ? 1 : 0);
 
                     break;
-                case Hunter:
+                case DEMON_HUNTER:
                     info.getStats()[0] += (lvl > 4 ? 1 : 0);
                     info.getStats()[1] += (lvl > 4 ? 1 : 0);
                     info.getStats()[2] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
                     info.getStats()[3] += (lvl > 8 && (lvl % 2) != 0 ? 1 : 0);
 
                     break;
-                case Rogue:
+                case ROGUE:
                     info.getStats()[0] += (lvl > 5 ? 1 : 0);
                     info.getStats()[1] += (lvl > 4 ? 1 : 0);
                     info.getStats()[2] += (lvl > 16 ? 2 : (lvl > 1 ? 1 : 0));
                     info.getStats()[3] += (lvl > 8 && (lvl % 2) == 0 ? 1 : 0);
 
                     break;
-                case Priest:
+                case PRIEST:
                     info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[1] += (lvl > 5 ? 1 : 0);
                     info.getStats()[2] += (lvl > 38 ? 1 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));
                     info.getStats()[3] += (lvl > 22 ? 2 : (lvl > 1 ? 1 : 0));
 
                     break;
-                case Shaman:
+                case SHAMAN:
                     info.getStats()[0] += (lvl > 34 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
                     info.getStats()[1] += (lvl > 4 ? 1 : 0);
                     info.getStats()[2] += (lvl > 7 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[3] += (lvl > 5 ? 1 : 0);
 
                     break;
-                case Mage:
+                case MAGE:
                     info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[1] += (lvl > 5 ? 1 : 0);
                     info.getStats()[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[3] += (lvl > 24 ? 2 : (lvl > 1 ? 1 : 0));
 
                     break;
-                case Warlock:
+                case WARLOCK:
                     info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[1] += (lvl > 38 ? 2 : (lvl > 3 ? 1 : 0));
                     info.getStats()[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
                     info.getStats()[3] += (lvl > 33 ? 2 : (lvl > 2 ? 1 : 0));
 
                     break;
-                case Druid:
+                case DRUID:
                     info.getStats()[0] += (lvl > 38 ? 2 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
                     info.getStats()[1] += (lvl > 32 ? 2 : (lvl > 4 ? 1 : 0));
                     info.getStats()[2] += (lvl > 38 ? 2 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));

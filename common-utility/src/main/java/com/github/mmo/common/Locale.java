@@ -12,6 +12,7 @@ public enum Locale {
     esES,
     esMX,
     ruRU,
+    none,
     ptBR,
     itIT,
 

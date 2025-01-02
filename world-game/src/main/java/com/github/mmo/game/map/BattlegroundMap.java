@@ -22,7 +22,7 @@ public class BattlegroundMap extends Map {
     @Override
     public TransferAbortParams cannotEnter(Player player) {
         if (player.getMap() == this) {
-            Log.outError(LogFilter.Maps, "BGMap:CannotEnter - player {0} is already in map!", player.getGUID().toString());
+            Logs.MAPS.error("BGMap:CannotEnter - player {0} is already in map!", player.getGUID().toString());
             return new TransferAbortParams(TransferAbortReason.error);
         }
 

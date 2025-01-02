@@ -1,6 +1,10 @@
 package com.github.mmo.game.map;
 
 
+import com.github.mmo.common.Pair;
+import com.github.mmo.game.entity.object.ObjectGuid;
+import com.github.mmo.game.map.enums.TransferAbortReason;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,8 +16,8 @@ import java.util.HashMap;
 
 public class InstanceLockManager {
     private final object lockobject = new object();
-    private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> temporaryInstanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>(); // locks stored here before any boss gets killed
-    private final HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> instanceLocksByPlayer = new HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>>();
+    private final HashMap<ObjectGuid, HashMap<Pair<Integer, Integer>, InstanceLock>> temporaryInstanceLocksByPlayer = new HashMap<>(); // locks stored here before any boss gets killed
+    private final HashMap<ObjectGuid, HashMap<Pair<Integer, Integer>, InstanceLock>> instanceLocksByPlayer = new HashMap<>();
     private final HashMap<Integer, SharedInstanceLockData> instanceLockDataById = new HashMap<Integer, SharedInstanceLockData>();
     private boolean unloading;
 
@@ -88,7 +92,7 @@ public class InstanceLockManager {
     }
 
     public final TransferAbortReason canJoinInstanceLock(ObjectGuid playerGuid, MapDb2Entries entries, InstanceLock instanceLock) {
-        if (!entries.MapDifficulty.HasResetSchedule()) {
+        if (!entries.mapDifficulty.hasResetSchedule()) {
             return TransferAbortReason.NONE;
         }
 
@@ -98,23 +102,23 @@ public class InstanceLockManager {
             return TransferAbortReason.NONE;
         }
 
-        if (entries.Map.IsFlexLocking()) {
+        if (entries.map.isFlexLocking()) {
             // compare completed encounters - if instance has any encounters unkilled in players lock then cannot enter
             if ((playerInstanceLock.getData().getCompletedEncountersMask() & ~instanceLock.getData().getCompletedEncountersMask()) != 0) {
-                return TransferAbortReason.AlreadyCompletedEncounter;
+                return TransferAbortReason.ALREADY_COMPLETED_ENCOUNTER;
             }
 
             return TransferAbortReason.NONE;
         }
 
-        if (!entries.MapDifficulty.IsUsingEncounterLocks() && playerInstanceLock.getInstanceId() != 0 && playerInstanceLock.getInstanceId() != instanceLock.getInstanceId()) {
-            return TransferAbortReason.LockedToDifferentInstance;
+        if (!entries.mapDifficulty.isUsingEncounterLocks() && playerInstanceLock.getInstanceId() != 0 && playerInstanceLock.getInstanceId() != instanceLock.getInstanceId()) {
+            return TransferAbortReason.LOCKED_TO_DIFFERENT_INSTANCE;
         }
 
         return TransferAbortReason.NONE;
     }
 
-    public final InstanceLock findInstanceLock(HashMap<ObjectGuid, HashMap<Tuple<Integer, Integer>, InstanceLock>> locks, ObjectGuid playerGuid, MapDb2Entries entries) {
+    public final InstanceLock findInstanceLock(HashMap<ObjectGuid, HashMap<Pair<Integer, Integer>, InstanceLock>> locks, ObjectGuid playerGuid, MapDb2Entries entries) {
         var playerLocks = locks.get(playerGuid);
 
         if (playerLocks == null) {

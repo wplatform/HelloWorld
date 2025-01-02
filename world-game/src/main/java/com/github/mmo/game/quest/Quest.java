@@ -1,6 +1,7 @@
 package com.github.mmo.game.quest;
 
 
+import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.networking.packet.quest.QueryQuestInfoResponse;
@@ -10,34 +11,39 @@ import com.github.mmo.game.service.model.quest.QuestFlag;
 import com.github.mmo.game.service.model.quest.QuestFlagEx;
 import com.github.mmo.game.service.model.quest.QuestInfo;
 import com.github.mmo.game.service.model.quest.QuestSpecialFlag;
+import com.github.mmo.game.world.setting.WorldSetting;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
 
+import static java.util.logging.Logger.global;
+
+@RequiredArgsConstructor
 public class Quest {
     private final QuestInfo questInfo;
 
-    public Quest(QuestInfo questInfo) {
-        this.questInfo = questInfo;
-    }
+    private final WorldSetting worldSetting;
+    private final DbcObjectManager dbcObjectManager;
 
-    public static int XPValue(Player player, int contentTuningId, int xpDifficulty, float xpMultiplier) {
+
+    public int XPValue(Player player, int contentTuningId, int xpDifficulty, float xpMultiplier) {
         return XPValue(player, contentTuningId, xpDifficulty, xpMultiplier, -1);
     }
 
-    public static int XPValue(Player player, int contentTuningId, int xpDifficulty) {
+    public int XPValue(Player player, int contentTuningId, int xpDifficulty) {
         return XPValue(player, contentTuningId, xpDifficulty, 1.0f, -1);
     }
 
-    public static int XPValue(Player player, int contentTuningId, int xpDifficulty, float xpMultiplier, int expansion) {
+    public int XPValue(Player player, int contentTuningId, int xpDifficulty, float xpMultiplier, int expansion) {
         if (player != null) {
             var questLevel = (int) player.getQuestLevel(contentTuningId);
-            var questXp = CliDB.QuestXPStorage.get(questLevel);
+            var questXp = dbcObjectManager.questXp(questLevel);
 
             if (questXp == null || xpDifficulty >= 10) {
                 return 0;
             }
 
-            var diffFactor = (int) (2 * (questLevel - player.getLevel()) + 12);
+            var diffFactor = 2 * (questLevel - player.getLevel()) + 12;
 
             if (diffFactor < 1) {
                 diffFactor = 1;

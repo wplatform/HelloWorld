@@ -10,9 +10,9 @@ public enum NavArea {
     maxValue(11),
     MinValue(8),
 
-    AllMask(0x3F); // max allowed value
+    AllMask(0x3F); // max allowed second
     // areas 1-60 will be used for destructible areas (currently skipped in vmaps, WMO with flag 1)
-    // ground is the highest value to make recast choose ground over water when merging surfaces very close to each other (shallow water would be walkable)
+    // ground is the highest second to make recast choose ground over water when merging surfaces very close to each other (shallow water would be walkable)
 
     public static final int SIZE = Integer.SIZE;
     private static java.util.HashMap<Integer, NavArea> mappings;

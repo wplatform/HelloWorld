@@ -396,11 +396,11 @@ public class SpellHistory {
 
                 if (modOwner) {
 // C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
-//					void applySpellMod(ref Duration value)
+//					void applySpellMod(ref Duration second)
 //						{
-//							var intValue = (int)value.TotalMilliseconds;
+//							var intValue = (int)second.TotalMilliseconds;
 //							modOwner.applySpellMod(spellInfo, SpellModOp.cooldown, ref intValue, spell);
-//							value = duration.ofSeconds(intValue);
+//							second = duration.ofSeconds(intValue);
 //						}
 
                     if (cooldown >= duration.Zero) {

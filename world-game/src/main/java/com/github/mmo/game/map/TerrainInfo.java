@@ -751,7 +751,7 @@ public class TerrainInfo {
             vmapHeight = vMapManager.getHeight(terrainMapId, x, y, z, maxSearchDist);
 
         // mapHeight set for any above raw ground Z or <= INVALID_HEIGHT
-        // vmapheight set for any under Z value or <= INVALID_HEIGHT
+        // vmapheight set for any under Z second or <= INVALID_HEIGHT
         if (vmapHeight > INVALID_HEIGHT) {
             if (mapHeight > INVALID_HEIGHT) {
                 // we have mapheight and vmapheight and must select more appropriate

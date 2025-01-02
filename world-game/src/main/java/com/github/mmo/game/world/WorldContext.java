@@ -2,6 +2,7 @@ package com.github.mmo.game.world;
 
 import com.github.mmo.common.Locale;
 import com.github.mmo.dbc.DbcObjectManager;
+import com.github.mmo.game.condition.ConditionManager;
 import com.github.mmo.game.entity.areatrigger.AreaTrigger;
 import com.github.mmo.game.entity.conversation.Conversation;
 import com.github.mmo.game.entity.corpse.Corpse;
@@ -17,6 +18,8 @@ import com.github.mmo.game.entity.pet.Pet;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.entity.scene.SceneObject;
 import com.github.mmo.game.entity.unit.Unit;
+import com.github.mmo.game.globals.ObjectManager;
+import com.github.mmo.game.map.InstanceLockManager;
 import com.github.mmo.game.map.TerrainManager;
 import com.github.mmo.game.map.collision.VMapManager;
 import com.github.mmo.game.spell.SpellManager;
@@ -46,6 +49,9 @@ public interface WorldContext {
     TerrainManager getTerrainManager();
 
     VMapManager getVMapManager();
+
+
+    InstanceLockManager getInstanceLockManager();
 
 
     // these functions return objects only if in map of specified object

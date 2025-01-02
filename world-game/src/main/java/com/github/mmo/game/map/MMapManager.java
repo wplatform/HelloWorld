@@ -115,7 +115,7 @@ public class MMapManager {
                 return true;
             }
 
-            Log.outError(LogFilter.Maps, "MMAP:loadMap: Could not load {0:D4}{1:D2}{2:D2}.mmtile into navmesh", mapId, x, y);
+            Logs.MAPS.error("MMAP:loadMap: Could not load {0:D4}{1:D2}{2:D2}.mmtile into navmesh", mapId, x, y);
 
             return false;
         } catch (IOException e) {
@@ -178,7 +178,7 @@ public class MMapManager {
     public final boolean unloadMap(int mapId) {
         if (!loadedMMaps.containsKey(mapId)) {
             // file may not exist, therefore not loaded
-            Log.outDebug(LogFilter.Maps, "MMAP:unloadMap: Asked to unload not loaded navmesh map {0:D4}", mapId);
+            Logs.MAPS.debug("MMAP:unloadMap: Asked to unload not loaded navmesh map {0:D4}", mapId);
 
             return false;
         }
@@ -192,7 +192,7 @@ public class MMapManager {
 
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
             if (Detour.dtStatusFailed(mmap.navMesh.removeTile(i.value, out _))) {
-                Log.outError(LogFilter.Maps, "MMAP:unloadMap: Could not unload {0:D4}{1:D2}{2:D2}.mmtile from navmesh", mapId, x, y);
+                Logs.MAPS.error("MMAP:unloadMap: Could not unload {0:D4}{1:D2}{2:D2}.mmtile from navmesh", mapId, x, y);
             } else {
                 --loadedTiles;
                 Log.outInfo(LogFilter.Maps, "MMAP:unloadMap: Unloaded mmtile {0:D4} [{1:D2}, {2:D2}] from {3:D4}", mapId, x, y, mapId);
@@ -210,13 +210,13 @@ public class MMapManager {
         TValue mmap;
         if (!(loadedMMaps.containsKey(mapId) && (mmap = loadedMMaps.get(mapId)) == mmap)) {
             // file may not exist, therefore not loaded
-            Log.outDebug(LogFilter.Maps, "MMAP:unloadMapInstance: Asked to unload not loaded navmesh map {0}", mapId);
+            Logs.MAPS.debug("MMAP:unloadMapInstance: Asked to unload not loaded navmesh map {0}", mapId);
 
             return false;
         }
 
         if (!mmap.navMeshQueries.ContainsKey(instanceId)) {
-            Log.outDebug(LogFilter.Maps, "MMAP:unloadMapInstance: Asked to unload not loaded dtNavMeshQuery mapId {0} instanceId {1}", mapId, instanceId);
+            Logs.MAPS.debug("MMAP:unloadMapInstance: Asked to unload not loaded dtNavMeshQuery mapId {0} instanceId {1}", mapId, instanceId);
 
             return false;
         }
@@ -268,7 +268,7 @@ public class MMapManager {
         var filename = String.format(MAP_FILE_NAME_FORMAT, basePath, mapId);
 
         if (!(new file(filename)).isFile()) {
-            Log.outError(LogFilter.Maps, "Could not open mmap file {0}", filename);
+            Logs.MAPS.error("Could not open mmap file {0}", filename);
 
             return false;
         }
@@ -287,7 +287,7 @@ public class MMapManager {
             Detour.dtNavMesh mesh = new Detour.dtNavMesh();
 
             if (Detour.dtStatusFailed(mesh.init(params))) {
-                Log.outError(LogFilter.Maps, "MMAP:loadMapData: Failed to initialize dtNavMesh for mmap {0:D4} from file {1}", mapId, filename);
+                Logs.MAPS.error("MMAP:loadMapData: Failed to initialize dtNavMesh for mmap {0:D4} from file {1}", mapId, filename);
 
                 return false;
             }

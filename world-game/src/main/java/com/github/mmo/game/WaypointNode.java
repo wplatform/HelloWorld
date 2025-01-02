@@ -24,14 +24,14 @@ public class WaypointNode {
     }
 
     public WaypointNode(int id, float _x, float _y, float _z, Float orientation, int delay) {
-        id = id;
-        x = _x;
-        y = _y;
-        z = _z;
-        orientation = orientation;
-        delay = delay;
-        eventId = 0;
-        moveType = WaypointMoveType.Walk;
-        eventChance = 100;
+        this.id = id;
+        this.x = _x;
+        this.y = _y;
+        this.z = _z;
+        this.orientation = orientation;
+        this.delay = delay;
+        this.eventId = 0;
+        this.moveType = WaypointMoveType.Walk;
+        this.eventChance = 100;
     }
 }

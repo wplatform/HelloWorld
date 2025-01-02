@@ -1,10 +1,13 @@
 package com.github.mmo.game.group;
 
 
-public class GroupReference extends REFERENCE<PlayerGroup, player> {
+import com.github.mmo.game.entity.player.Player;
+import com.github.mmo.reference.Reference;
+
+public class GroupReference extends Reference<PlayerGroup, Player, GroupReference> {
     private byte iSubGroup;
 
-    public groupReference() {
+    public GroupReference() {
         iSubGroup = 0;
     }
 
@@ -17,15 +20,12 @@ public class GroupReference extends REFERENCE<PlayerGroup, player> {
     }
 
     @Override
-    public void targetObjectBuildLink() {
-        getTarget().linkMember(this);
+    protected void insert(GroupReference thisNode) {
+        refManager().linkMember(thisNode);
     }
 
-    public final GroupReference next() {
-        return (GroupReference) super.next();
-    }
-
-    protected void finalize() throws Throwable {
-        Unlink();
+    @Override
+    protected GroupReference self() {
+        return this;
     }
 }

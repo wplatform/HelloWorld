@@ -152,7 +152,7 @@ public class SmartAIManager {
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     public static void TC_SAI_IS_BOOLEAN_VALID(SmartScriptHolder e, int value, String valueName) {
         if (value > 1) {
-            Logs.SQL.error(String.format("SmartAIMgr: %1$s uses param %2$s of type Boolean with value %3$s, valid values are 0 or 1, skipped.", e, valueName, value));
+            Logs.SQL.error(String.format("SmartAIMgr: %1$s uses param %2$s of type Boolean with second %3$s, valid values are 0 or 1, skipped.", e, valueName, value));
         }
     }
 
@@ -477,7 +477,7 @@ public class SmartAIManager {
             }
 
             if (value != 0) {
-                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused event_param%2$s with value %3$s, it should be 0.", e, index + 1, value));
+                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused event_param%2$s with second %3$s, it should be 0.", e, index + 1, value));
             }
         }
 
@@ -673,7 +673,7 @@ public class SmartAIManager {
             }
 
             if (value != 0) {
-                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused action_param%2$s with value %3$s, it should be 0.", e, index + 1, value));
+                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused action_param%2$s with second %3$s, it should be 0.", e, index + 1, value));
             }
         }
 
@@ -743,7 +743,7 @@ public class SmartAIManager {
             }
 
             if (value != 0) {
-                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused target_param%2$s with value %3$s, it must be 0, skipped.", e, index + 1, value));
+                Log.outWarn(LogFilter.Sql, String.format("SmartAIMgr: %1$s has unused target_param%2$s with second %3$s, it must be 0, skipped.", e, index + 1, value));
             }
         }
 
@@ -1470,7 +1470,7 @@ public class SmartAIManager {
                     }
 
                     if (e.event.los.hostilityMode >= (int) LOSHostilityMode.End.getValue()) {
-                        Logs.SQL.error(String.format("SmartAIMgr: %1$s uses hostilityMode with invalid value %2$s (max allowed value %3$s), skipped.", e, e.event.los.hostilityMode, LOSHostilityMode.End - 1));
+                        Logs.SQL.error(String.format("SmartAIMgr: %1$s uses hostilityMode with invalid second %2$s (max allowed second %3$s), skipped.", e, e.event.los.hostilityMode, LOSHostilityMode.End - 1));
 
                         return false;
                     }
@@ -1649,7 +1649,7 @@ public class SmartAIManager {
                     }
 
                     if (e.event.friendlyHealthPct.maxHpPct > 100 || e.event.friendlyHealthPct.minHpPct > 100) {
-                        Logs.SQL.error(String.format("SmartAIMgr: %1$s has pct value above 100, skipped.", e));
+                        Logs.SQL.error(String.format("SmartAIMgr: %1$s has pct second above 100, skipped.", e));
 
                         return false;
                     }
@@ -1740,7 +1740,7 @@ public class SmartAIManager {
                     }
 
                     if (e.event.counter.value == 0) {
-                        Logs.SQL.error("SmartAIMgr: Event SMART_EVENT_COUNTER_SET using invalid value {0}, skipped.", e.event.counter.value);
+                        Logs.SQL.error("SmartAIMgr: Event SMART_EVENT_COUNTER_SET using invalid second {0}, skipped.", e.event.counter.value);
 
                         return false;
                     }
@@ -2076,7 +2076,7 @@ public class SmartAIManager {
 
                     return false;
                 } else if (e.action.incEventPhase.inc > (int) SmartPhase.max.getValue() || e.action.incEventPhase.dec > (int) SmartPhase.max.getValue()) {
-                    Log.outError(LogFilter.ScriptsAi, String.format("SmartAIMgr: %1$s attempts to increment phase by too large value, skipped.", e));
+                    Log.outError(LogFilter.ScriptsAi, String.format("SmartAIMgr: %1$s attempts to increment phase by too large second, skipped.", e));
 
                     return false;
                 }
@@ -2309,12 +2309,12 @@ public class SmartAIManager {
             }
             case SetInstData: {
                 if (e.action.setInstanceData.type > 1) {
-                    Logs.SQL.error(String.format("SmartAIMgr: %1$s uses invalid data type %2$s (value range 0-1), skipped.", e, e.action.setInstanceData.type));
+                    Logs.SQL.error(String.format("SmartAIMgr: %1$s uses invalid data type %2$s (second range 0-1), skipped.", e, e.action.setInstanceData.type));
 
                     return false;
                 } else if (e.action.setInstanceData.type == 1) {
                     if (e.action.setInstanceData.data > EncounterState.ToBeDecided.getValue()) {
-                        Logs.SQL.error(String.format("SmartAIMgr: %1$s uses invalid boss state %2$s (value range 0-5), skipped.", e, e.action.setInstanceData.data));
+                        Logs.SQL.error(String.format("SmartAIMgr: %1$s uses invalid boss state %2$s (second range 0-5), skipped.", e, e.action.setInstanceData.data));
 
                         return false;
                     }
@@ -2327,7 +2327,7 @@ public class SmartAIManager {
                 var apply = e.action.ingamePhaseId.apply;
 
                 if (apply != 0 && apply != 1) {
-                    Logs.SQL.error("SmartScript: SMART_ACTION_SET_INGAME_PHASE_ID uses invalid apply value {0} (Should be 0 or 1) for creature {1}, skipped", apply, e.entryOrGuid);
+                    Logs.SQL.error("SmartScript: SMART_ACTION_SET_INGAME_PHASE_ID uses invalid apply second {0} (Should be 0 or 1) for creature {1}, skipped", apply, e.entryOrGuid);
 
                     return false;
                 }
@@ -2345,7 +2345,7 @@ public class SmartAIManager {
                 var apply = e.action.ingamePhaseGroup.apply;
 
                 if (apply != 0 && apply != 1) {
-                    Logs.SQL.error("SmartScript: SMART_ACTION_SET_INGAME_PHASE_GROUP uses invalid apply value {0} (Should be 0 or 1) for creature {1}, skipped", apply, e.entryOrGuid);
+                    Logs.SQL.error("SmartScript: SMART_ACTION_SET_INGAME_PHASE_GROUP uses invalid apply second {0} (Should be 0 or 1) for creature {1}, skipped", apply, e.entryOrGuid);
 
                     return false;
                 }
@@ -2611,7 +2611,7 @@ public class SmartAIManager {
                 }
 
                 if (e.action.activateGameObject.gameObjectAction >= (int) GameObjectActions.max.getValue()) {
-                    Logs.SQL.error(String.format("SmartAIMgr: %1$s has gameObjectAction parameter out of range (max allowed %2$s, current value %3$s), skipped.", e, (int) GameObjectActions.max.getValue() - 1, e.action.activateGameObject.gameObjectAction));
+                    Logs.SQL.error(String.format("SmartAIMgr: %1$s has gameObjectAction parameter out of range (max allowed %2$s, current second %3$s), skipped.", e, (int) GameObjectActions.max.getValue() - 1, e.action.activateGameObject.gameObjectAction));
 
                     return false;
                 }

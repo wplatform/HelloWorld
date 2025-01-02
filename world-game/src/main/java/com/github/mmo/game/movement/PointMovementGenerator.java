@@ -188,7 +188,7 @@ public class PointMovementGenerator extends MovementGeneratorMedium<unit> {
             MoveSplineInit init = new MoveSplineInit(owner);
             init.moveTo(destination.getX(), destination.getY(), destination.getZ(), generatePath);
 
-            if (speed != null) // Default value for point motion type is 0.0, if 0.0 spline will use GetSpeed on unit
+            if (speed != null) // Default second for point motion type is 0.0, if 0.0 spline will use GetSpeed on unit
             {
                 init.setVelocity(speed.floatValue());
             }

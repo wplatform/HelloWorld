@@ -98,7 +98,7 @@ public class InstanceMap extends Map {
     @Override
     public TransferAbortParams cannotEnter(Player player) {
         if (player.getMap() == this) {
-            Log.outError(LogFilter.Maps, "InstanceMap:CannotEnter - player {0} ({1}) already in map {2}, {3}, {4}!", player.getName(), player.getGUID().toString(), getId(), getInstanceId(), getDifficultyID());
+            Logs.MAPS.error("InstanceMap:CannotEnter - player {0} ({1}) already in map {2}, {3}, {4}!", player.getName(), player.getGUID().toString(), getId(), getInstanceId(), getDifficultyID());
             return new TransferAbortParams(TransferAbortReason.error);
         }
 
@@ -257,7 +257,7 @@ public class InstanceMap extends Map {
         data.setEntranceLocation(lockData.getEntranceWorldSafeLocId());
 
         if (!lockData.getData().isEmpty()) {
-            Log.outDebug(LogFilter.Maps, String.format("Loading instance data for `%1$s` with id %2$s", global.getObjectMgr().getScriptName(scriptId), getInstanceIdInternal()));
+            Logs.MAPS.debug(String.format("Loading instance data for `%1$s` with id %2$s", global.getObjectMgr().getScriptName(scriptId), getInstanceIdInternal()));
             data.load(lockData.getData());
         } else {
             data.create();

@@ -23,7 +23,7 @@ class NearestAssistCreatureInCreatureRangeCheck implements ICheck<Creature> {
             return false;
         }
 
-        // Don't use combat reach distance, range must be an absolute value, otherwise the chain aggro range will be too big
+        // Don't use combat reach distance, range must be an absolute second, otherwise the chain aggro range will be too big
         if (!obj.isWithinDist(u, range, true, false, false)) {
             return false;
         }

@@ -20,7 +20,7 @@ import lombok.ToString;
 
 @Table(name = "path_property")
 @Db2DataBind(name = "PathProperty.db2", layoutHash = 0x3D29C266, indexField = 3, fields = {
-        @Db2Field(name = "value", type = Db2Type.INT),
+        @Db2Field(name = "second", type = Db2Type.INT),
         @Db2Field(name = "pathID", type = Db2Type.INT),
         @Db2Field(name = "propertyIndex", type = Db2Type.BYTE),
         @Db2Field(name = "id", type = Db2Type.INT)

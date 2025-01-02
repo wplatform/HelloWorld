@@ -5,75 +5,68 @@ package com.github.mmo.game.map;
 // Licensed under GPL-3.0 license. See <https://github.com/ForgedWoW/ForgedCore/blob/master/LICENSE> for full information.
 
 
+import com.github.mmo.common.Logs;
+import com.github.mmo.common.Pair;
+import com.github.mmo.dbc.defines.Difficulty;
+import com.github.mmo.dbc.domain.MapDifficulty;
 import com.github.mmo.game.entity.object.Position;
 import com.github.mmo.game.entity.object.WorldLocation;
+import com.github.mmo.game.entity.player.Player;
+import com.github.mmo.game.group.PlayerGroup;
+import com.github.mmo.game.world.World;
 
-public class MapManager extends Singleton<MapManager> {
-    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: readonly LoopSafeDoubleDictionary<uint, uint, Map> _maps = new();
-    private final LoopSafeDoubleDictionary<Integer, Integer, Map> maps = new LoopSafeDoubleDictionary<Integer, Integer, Map>();
-    private final IntervalTimer timer = new IntervalTimer();
-    private final Object mapsLock = new Object();
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class MapManager  {
+
+    private final HashMap<Pair<Integer, Integer>, Map> maps = new HashMap<>();
+
+    private final ReentrantLock mapsLock = new ReentrantLock();
     private final BitSet freeInstanceIds = new BitSet(1);
-    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint _gridCleanUpDelay;
+
     private int gridCleanUpDelay;
-    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint _nextInstanceId;
+
     private int nextInstanceId;
-    private LimitedThreadTaskManager updater;
-    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint _scheduledScripts;
     private int scheduledScripts;
 
-    private MapManager() {
-        gridCleanUpDelay = WorldConfig.getUIntValue(WorldCfg.IntervalGridclean);
+    private World world;
+
+    private MapManager(World world) {
+        this.world = world;
+        gridCleanUpDelay = world.getWorldSettings().intWorldConfig.getUIntValue(WorldCfg.IntervalGridclean);
         timer.setInterval(WorldConfig.getIntValue(WorldCfg.IntervalMapupdate));
     }
 
-    public final void initialize() {
-        var numThreads = WorldConfig.getIntValue(WorldCfg.Numthreads);
 
-        updater = new LimitedThreadTaskManager(numThreads > 0 ? numThreads : 1);
-    }
 
     public final void initializeVisibilityDistanceInfo() {
         for (var pair : maps.getValues()) {
             for (var map : pair.Values) {
-                map.InitVisibilityDistance();
+                map.initVisibilityDistance();
             }
         }
     }
 
-    /**
-     * create the instance if it's not created already
-     * the player is not actually added to the instance(only in InstanceMap::Add)
-     *
-     * @param mapId
-     * @param player
-     * @param loginInstanceId
-     * @return the right instance for the object, based on its InstanceId
-     */
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: public Map CreateMap(uint mapId, Player player)
+
     public final Map createMap(int mapId, Player player) {
-        if (!player) {
+        if (player == null) {
             return null;
         }
 
-        var entry = CliDB.mapStorage.LookupByKey(mapId);
+        var entry = world.getDbcObjectManager().map(mapId);
 
         if (entry == null) {
             return null;
         }
 
-        synchronized (mapsLock) {
-            Map map = null;
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint newInstanceId = 0;
-            int newInstanceId = 0; // instanceId of the resulting map
+        mapsLock.lock();
+        try {
+            Map map;
+            int newInstanceId = 0;
 
-            if (entry.IsBattlegroundOrArena()) {
+            if (entry.isBattlegroundOrArena()) {
                 // instantiate or find existing bg map for player
                 // the instance id is set in battlegroundid
                 newInstanceId = player.getBattlegroundId();
@@ -84,7 +77,7 @@ public class MapManager extends Singleton<MapManager> {
 
                 map = findMapI(mapId, newInstanceId);
 
-                if (!map) {
+                if (map == null) {
                     var bg = player.getBattleground();
 
                     if (bg != null) {
@@ -95,14 +88,14 @@ public class MapManager extends Singleton<MapManager> {
                         return null;
                     }
                 }
-            } else if (entry.IsDungeon()) {
+            } else if (entry.isDungeon()) {
                 var group = player.getGroup();
                 var difficulty = group != null ? group.getDifficultyID(entry) : player.getDifficultyId(entry);
-                tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
-                MapDb2Entries entries = new MapDb2Entries(entry, Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty));
-                difficulty = tempRefDifficulty.refArgValue;
+
+                MapDb2Entries entries = new MapDb2Entries(entry, world.getDbcObjectManager().getDownscaledMapDifficultyData(mapId, difficulty));
+                difficulty = entries.mapDifficulty.getDifficulty();
                 var instanceOwnerGuid = group != null ? group.getRecentInstanceOwner(mapId) : player.getGUID();
-                var instanceLock = Global.getInstanceLockMgr().findActiveInstanceLock(instanceOwnerGuid.clone(), entries.clone());
+                var instanceLock = world.getInstanceLockManager().findActiveInstanceLock(instanceOwnerGuid, entries);
 
                 if (instanceLock != null) {
                     newInstanceId = instanceLock.getInstanceId();
@@ -114,7 +107,7 @@ public class MapManager extends Singleton<MapManager> {
                 } else {
                     // Try finding instance id for normal dungeon
                     if (!entries.mapDifficulty.hasResetSchedule()) {
-                        newInstanceId = group ? group.getRecentInstanceId(mapId) : player.getRecentInstanceId(mapId);
+                        newInstanceId = group == null ? group.getRecentInstanceId(mapId) : player.getRecentInstanceId(mapId);
                     }
 
                     // If not found or instance is not a normal dungeon, generate new one
@@ -122,7 +115,7 @@ public class MapManager extends Singleton<MapManager> {
                         newInstanceId = generateInstanceId();
                     }
 
-                    instanceLock = Global.getInstanceLockMgr().createInstanceLockForNewInstance(instanceOwnerGuid.clone(), entries.clone(), newInstanceId);
+                    instanceLock = world.getInstanceLockManager().createInstanceLockForNewInstance(instanceOwnerGuid, entries, newInstanceId);
                 }
 
                 // it is possible that the save exists but the map doesn't
@@ -135,7 +128,7 @@ public class MapManager extends Singleton<MapManager> {
                     map = null;
                 }
 
-                if (!map) {
+                if (map == null) {
                     map = createInstance(mapId, newInstanceId, instanceLock, difficulty, player.getTeamId(), group);
 
                     if (group) {
@@ -144,19 +137,19 @@ public class MapManager extends Singleton<MapManager> {
                         player.setRecentInstance(mapId, newInstanceId);
                     }
                 }
-            } else if (entry.IsGarrison()) {
+            } else if (entry.isGarrison()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: newInstanceId = (uint)player.GUID.Counter;
-                newInstanceId = (int) player.getGUID().getCounter();
+                newInstanceId = (int) player.getGUID().counter();
                 map = findMapI(mapId, newInstanceId);
 
-                if (!map) {
+                if (map == null) {
                     map = createGarrison(mapId, newInstanceId, player);
                 }
             } else {
                 newInstanceId = 0;
 
-                if (entry.IsSplitByFaction()) {
+                if (entry.isSplitByFaction()) {
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: newInstanceId = (uint)player.TeamId;
                     newInstanceId = (int) player.getTeamId();
@@ -164,16 +157,18 @@ public class MapManager extends Singleton<MapManager> {
 
                 map = findMapI(mapId, newInstanceId);
 
-                if (!map) {
+                if (map == null) {
                     map = createWorldMap(mapId, newInstanceId);
                 }
             }
 
-            if (map) {
-                maps.Add(map.getId(), map.getInstanceId(), map);
+            if (map != null) {
+                maps.add(map.getId(), map.getInstanceId(), map);
             }
 
             return map;
+        }finally {
+            mapsLock.unlock();
         }
     }
 
@@ -188,31 +183,29 @@ public class MapManager extends Singleton<MapManager> {
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public uint FindInstanceIdForPlayer(uint mapId, Player player)
     public final int findInstanceIdForPlayer(int mapId, Player player) {
-        var entry = CliDB.mapStorage.LookupByKey(mapId);
+        var entry = world.getDbcObjectManager().map(mapId);
 
         if (entry == null) {
             return 0;
         }
 
-        if (entry.IsBattlegroundOrArena()) {
+        if (entry.isBattlegroundOrArena()) {
             return player.getBattlegroundId();
-        } else if (entry.IsDungeon()) {
+        } else if (entry.isDungeon()) {
             var group = player.getGroup();
             var difficulty = group != null ? group.getDifficultyID(entry) : player.getDifficultyId(entry);
-            tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
-            MapDb2Entries entries = new MapDb2Entries(entry, Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty));
-            difficulty = tempRefDifficulty.refArgValue;
+            MapDb2Entries entries = new MapDb2Entries(entry, world.getDbcObjectManager().getDownscaledMapDifficultyData(mapId, difficulty));
 
-            var instanceOwnerGuid = group ? group.getRecentInstanceOwner(mapId) : player.getGUID();
-            var instanceLock = Global.getInstanceLockMgr().findActiveInstanceLock(instanceOwnerGuid.clone(), entries.clone());
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint newInstanceId = 0;
+
+            var instanceOwnerGuid = group != null ? group.getRecentInstanceOwner(mapId) : player.getGUID();
+            var instanceLock = world.getInstanceLockManager().findActiveInstanceLock(instanceOwnerGuid, entries);
+
             int newInstanceId = 0;
 
             if (instanceLock != null) {
                 newInstanceId = instanceLock.getInstanceId();
             } else if (!entries.mapDifficulty.hasResetSchedule()) { // Try finding instance id for normal dungeon
-                newInstanceId = group ? group.getRecentInstanceId(mapId) : player.getRecentInstanceId(mapId);
+                newInstanceId = group != null ? group.getRecentInstanceId(mapId) : player.getRecentInstanceId(mapId);
             }
 
             if (newInstanceId == 0) {
@@ -227,15 +220,12 @@ public class MapManager extends Singleton<MapManager> {
             }
 
             return newInstanceId;
-        } else if (entry.IsGarrison()) {
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: return (uint)player.GUID.Counter;
-            return (int) player.getGUID().getCounter();
+        } else if (entry.isGarrison()) {
+
+            return (int) player.getGUID().counter();
         } else {
-            if (entry.IsSplitByFaction()) {
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: return (uint)player.TeamId;
-                return (int) player.getTeamId();
+            if (entry.isSplitByFaction()) {
+                return player.getTeamId();
             }
 
             return 0;
@@ -396,7 +386,7 @@ public class MapManager extends Singleton<MapManager> {
 //ORIGINAL LINE: public uint GenerateInstanceId()
     public final int generateInstanceId() {
         if (nextInstanceId == 0xFFFFFFFF) {
-            Log.outError(LogFilter.Maps, "Instance ID overflow!! Can't continue, shutting down server. ");
+            Logs.MAPS.error("Instance ID overflow!! Can't continue, shutting down server. ");
             Global.getWorldMgr().stopNow();
 
             return nextInstanceId;
@@ -551,22 +541,22 @@ public class MapManager extends Singleton<MapManager> {
 //ORIGINAL LINE: InstanceMap CreateInstance(uint mapId, uint instanceId, InstanceLock instanceLock, Difficulty difficulty, int team, PlayerGroup group)
     private InstanceMap createInstance(int mapId, int instanceId, InstanceLock instanceLock, Difficulty difficulty, int team, PlayerGroup group) {
         // make sure we have a valid map id
-        var entry = CliDB.mapStorage.LookupByKey(mapId);
+        var entry = world.getDbcObjectManager().map(mapId);
 
         if (entry == null) {
-            Log.outError(LogFilter.Maps, String.format("CreateInstance: no entry for map %1$s", mapId));
+            Logs.MAPS.error("CreateInstance: no entry for map {}", mapId);
 
             //ABORT();
             return null;
         }
 
         // some instances only have one difficulty
-        tangible.RefObject<Difficulty> tempRefDifficulty = new tangible.RefObject<Difficulty>(difficulty);
-        Global.getDB2Mgr().getDownscaledMapDifficultyData(mapId, tempRefDifficulty);
-        difficulty = tempRefDifficulty.refArgValue;
+        MapDifficulty mapDifficulty = world.getDbcObjectManager().getDownscaledMapDifficultyData(mapId, difficulty);
+        difficulty = mapDifficulty.getDifficulty();
 
-        Log.outDebug(LogFilter.Maps, String.format("MapInstanced::CreateInstance: %1$smap instance %2$s for %3$s created with difficulty %4$s", (instanceLock == null ? null : instanceLock.getInstanceId() != 0 ? "" : "new "), instanceId, mapId, difficulty));
+        Logs.MAPS.debug(String.format("MapInstanced::CreateInstance: %1$smap instance %2$s for %3$s created with difficulty %4$s", (instanceLock == null ? null : instanceLock.getInstanceId() != 0 ? "" : "new "), instanceId, mapId, difficulty));
 
+        
         var map = new InstanceMap(mapId, gridCleanUpDelay, instanceId, difficulty, team, instanceLock);
 
         map.loadRespawnTimes();
@@ -589,7 +579,7 @@ public class MapManager extends Singleton<MapManager> {
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: BattlegroundMap CreateBattleground(uint mapId, uint instanceId, Battleground bg)
     private BattlegroundMap createBattleground(int mapId, int instanceId, Battleground bg) {
-        Log.outDebug(LogFilter.Maps, String.format("MapInstanced::CreateBattleground: map bg %1$s for %2$s created.", instanceId, mapId));
+        Logs.MAPS.debug(String.format("MapInstanced::CreateBattleground: map bg {} for {} created.", instanceId, mapId));
 
         var map = new BattlegroundMap(mapId, gridCleanUpDelay, instanceId, Difficulty.None);
         map.setBG(bg);

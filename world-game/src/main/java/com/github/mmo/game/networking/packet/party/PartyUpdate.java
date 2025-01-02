@@ -1,6 +1,7 @@
 package com.github.mmo.game.networking.packet.party;
 
 
+import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.networking.ServerPacket;
 
 import java.util.ArrayList;

@@ -25,7 +25,7 @@ import lombok.ToString;
         @Db2Field(name = "orderIndex", type = Db2Type.INT, signed = true),
         @Db2Field(name = "mapDifficultyId", type = Db2Type.INT),
 })
-public class MapDifficultyXCondition implements DbcEntity {
+public class MapDifficultyXCondition implements DbcEntity, Comparable<MapDifficultyXCondition> {
     @Id
 
     @Column("ID")
@@ -50,6 +50,10 @@ public class MapDifficultyXCondition implements DbcEntity {
 
 
     @Column("MapDifficultyID")
-    private Long mapDifficultyId;
+    private Integer mapDifficultyId;
 
+    @Override
+    public int compareTo(MapDifficultyXCondition o) {
+        return Integer.compare(orderIndex, o.orderIndex);
+    }
 }

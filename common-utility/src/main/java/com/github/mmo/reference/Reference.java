@@ -22,9 +22,13 @@ public abstract class Reference<M extends RefManager<M, S, R>, S, R extends Refe
         if (toObject != null) {
             this.refMgr = toObject;
             this.source = fromObject;
-            this.refMgr.linkFirst(thisNode);
+            insert(thisNode);
             this.refMgr.onElementAdded(thisNode);
         }
+    }
+
+    protected void insert(R thisNode) {
+        this.refMgr.linkFirst(thisNode);
     }
 
     // We don't need the reference anymore. Call comes from the refFrom object

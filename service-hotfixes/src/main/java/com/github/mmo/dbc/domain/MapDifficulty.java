@@ -6,6 +6,7 @@ import com.github.mmo.common.LocalizedString;
 import com.github.mmo.dbc.db2.Db2Field;
 import com.github.mmo.dbc.db2.Db2DataBind;
 import com.github.mmo.dbc.db2.Db2Type;
+import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.dbc.defines.MapDifficultyFlag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -88,7 +89,7 @@ public class MapDifficulty implements DbcEntity {
     }
 
 
-    public int GetRaidDuration() {
+    public int getRaidDuration() {
         if (resetInterval == 1)
             return 86400;
         if (resetInterval == 2)
@@ -98,6 +99,11 @@ public class MapDifficulty implements DbcEntity {
 
     public EnumFlag<MapDifficultyFlag> flags() {
         return EnumFlag.of(MapDifficultyFlag.class, flags);
+    }
+
+
+    public Difficulty getDifficulty() {
+        return Difficulty.values()[difficultyID];
     }
 
 }

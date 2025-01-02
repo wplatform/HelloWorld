@@ -1,10 +1,12 @@
 package com.github.mmo.dbc.domain;
 
 import com.github.mmo.cache.DbcEntity;
+import com.github.mmo.common.EnumFlag;
 import com.github.mmo.common.LocalizedString;
 import com.github.mmo.dbc.db2.Db2Field;
 import com.github.mmo.dbc.db2.Db2DataBind;
 import com.github.mmo.dbc.db2.Db2Type;
+import com.github.mmo.dbc.defines.TaxiNodeFlag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -94,5 +96,22 @@ public class TaxiNode implements DbcEntity {
     
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
+
+
+    public EnumFlag<TaxiNodeFlag> flags() { return EnumFlag.of(TaxiNodeFlag.class, flags); }
+
+    public boolean isPartOfTaxiNetwork() {
+        return flags().hasFlag(TaxiNodeFlag.ShowOnAllianceMap, TaxiNodeFlag.ShowOnHordeMap)
+                // manually whitelisted nodes
+                || id == 1985   // [Hidden] Argus Ground Points Hub (Ground TP out to here, TP to Vindicaar from here)
+                || id == 1986   // [Hidden] Argus Vindicaar Ground Hub (Vindicaar TP out to here, TP to ground from here)
+                || id == 1987   // [Hidden] Argus Vindicaar No Load Hub (Vindicaar No Load transition goes through here)
+                || id == 2627   // [Hidden] 9.0 Bastion Ground Points Hub (Ground TP out to here, TP to Sanctum from here)
+                || id == 2628   // [Hidden] 9.0 Bastion Ground Hub (Sanctum TP out to here, TP to ground from here)
+                || id == 2732   // [HIDDEN] 9.2 Resonant Peaks - Teleport Network - Hidden Hub (Connects all Nodes to each other without unique paths)
+                || id == 2835   // [Hidden] 10.0 Travel Network - Destination Input
+                || id == 2843   // [Hidden] 10.0 Travel Network - Destination Output
+                ;
+    }
 
 }

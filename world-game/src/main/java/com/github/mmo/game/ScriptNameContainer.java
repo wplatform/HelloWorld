@@ -8,7 +8,7 @@ class ScriptNameContainer {
     private final HashMap<String, entry> nameToIndex = new HashMap<String, entry>();
     private final ArrayList<entry> indexToName = new ArrayList<>();
 
-    public scriptNameContainer() {
+    public ScriptNameContainer() {
         // We insert an empty placeholder here so we can use the
         // script id 0 as dummy for "no script found".
         var id = insert("", false);

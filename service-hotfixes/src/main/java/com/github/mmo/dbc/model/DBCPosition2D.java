@@ -1,9 +1,11 @@
 package com.github.mmo.dbc.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class DBCPosition2D {
-    float x;
-    float y;
+    public float x;
+    public float y;
 }

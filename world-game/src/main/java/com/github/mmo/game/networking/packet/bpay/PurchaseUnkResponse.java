@@ -7,6 +7,6 @@ public:
 
     void read() override;
 
-    std::string key;
+    std::string first;
     std::string Key2;
 }; */

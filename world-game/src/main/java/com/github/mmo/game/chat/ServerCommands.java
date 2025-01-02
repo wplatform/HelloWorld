@@ -195,7 +195,7 @@ class ServerCommands {
         tangible.OutObject<Integer> tempOut_delay = new tangible.OutObject<Integer>();
         if (tangible.TryParseHelper.tryParseInt(delayStr, tempOut_delay)) {
             delay = tempOut_delay.outArgValue;
-            //  Prevent interpret wrong arg value as 0 secs shutdown time
+            //  Prevent interpret wrong arg second as 0 secs shutdown time
             if ((delay == 0 && (delayStr.charAt(0) != '0' || delayStr.length() > 1 && delayStr.charAt(1) != '\0')) || delay < 0) {
                 return false;
             }
@@ -235,7 +235,7 @@ class ServerCommands {
             }
         }
 
-        // Override parameter "delay" with the configuration value if there are still players connected and "force" parameter was not specified
+        // Override parameter "delay" with the configuration second if there are still players connected and "force" parameter was not specified
         if (delay < WorldConfig.getIntValue(WorldCfg.ForceShutdownThreshold) && !shutdownMask.hasFlag(ShutdownMask.FORCE) && !isOnlyUser(handler.getSession())) {
             delay = WorldConfig.getIntValue(WorldCfg.ForceShutdownThreshold);
             handler.sendSysMessage(CypherStrings.ShutdownDelayed, delay);

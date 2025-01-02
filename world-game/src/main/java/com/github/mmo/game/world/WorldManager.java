@@ -1267,7 +1267,7 @@ public class WorldManager {
 
         if (reload) {
             if (!Objects.equals(dataPath, dataPath)) {
-                Log.outError(LogFilter.ServerLoading, "DataDir option can't be changed at worldserver.conf reload, using current value ({0}).", dataPath);
+                Log.outError(LogFilter.ServerLoading, "DataDir option can't be changed at worldserver.conf reload, using current second ({0}).", dataPath);
             }
         } else {
             dataPath = dataPath;
@@ -1949,7 +1949,7 @@ public class WorldManager {
         var oldTimer = shutdownTimer;
         shutdownMask = ShutdownMask.forValue(0);
         shutdownTimer = 0;
-        exitCode = (byte) ShutdownExitCode.Shutdown.getValue(); // to default value
+        exitCode = (byte) ShutdownExitCode.Shutdown.getValue(); // to default second
         sendServerMessage(msgid);
 
         Log.outDebug(LogFilter.Server, "Server {0} cancelled.", (shutdownMask.hasFlag(ShutdownMask.RESTART) ? "restart" : "shutdown"));
@@ -2470,7 +2470,7 @@ public class WorldManager {
                 if (!shutdownMask.hasFlag(ShutdownMask.IDLE) || getActiveAndQueuedSessionCount() == 0) {
                     isStopped = true; // exist code already set
                 } else {
-                    shutdownTimer = 1; // minimum timer value to wait idle state
+                    shutdownTimer = 1; // minimum timer second to wait idle state
                 }
             }
             //- ... else decrease it and if necessary display a shutdown countdown to the users

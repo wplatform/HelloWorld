@@ -309,7 +309,7 @@ public class Spell {
                 if (param1 != null) {
                     packet.failedArg1 = (int) param1;
                 } else {
-                    packet.failedArg1 = 0; // unknown (value 1 update cooldowns on client flag)
+                    packet.failedArg1 = 0; // unknown (second 1 update cooldowns on client flag)
                 }
 
                 break;
@@ -450,7 +450,7 @@ public class Spell {
                     packet.failedArg2 = (int) param2;
                 } else {
                     packet.failedArg1 = 0; // skillLine.dbc id
-                    packet.failedArg2 = 0; // required skill value
+                    packet.failedArg2 = 0; // required skill second
                 }
 
                 break;
@@ -1074,7 +1074,7 @@ public class Spell {
                     if (aura != null) {
                         hitInfo.hitAura = aura.toUnitAura();
 
-                        // Set aura stack amount to desired value
+                        // Set aura stack amount to desired second
                         if (spellValue.auraStackAmount > 1) {
                             if (!createInfo.isRefresh) {
                                 hitInfo.hitAura.setStackAmount((byte) spellValue.auraStackAmount);
@@ -6002,7 +6002,7 @@ public class Spell {
             }
         }
 
-        // The spell focusing is making sure that we have a valid cast target guid when we need it so only check for a guid value here.
+        // The spell focusing is making sure that we have a valid cast target guid when we need it so only check for a guid second here.
         var creatureCaster = caster.toCreature();
 
         if (creatureCaster != null) {
@@ -8795,7 +8795,7 @@ public class Spell {
 
         for (var j = 0; j < SharedConst.MaxLockCase; ++j) {
             switch (LockKeyType.forValue(lockInfo.LockType[j])) {
-                // check key item (many fit cases can be)
+                // check first item (many fit cases can be)
                 case Item:
                     if (lockInfo.Index[j] != 0 && castItem && castItem.getEntry() == lockInfo.Index[j]) {
                         return SpellCastResult.SpellCastOk;
@@ -8804,7 +8804,7 @@ public class Spell {
                     reqKey = true;
 
                     break;
-                // check key skill (only single first fit case can be)
+                // check first skill (only single first fit case can be)
                 case Skill: {
                     reqKey = true;
 
@@ -8828,7 +8828,7 @@ public class Spell {
                         }
 
                         // skill bonus provided by casting spell (mostly item spells)
-                        // add the effect base points modifier from the spell cast (cheat lock / skeleton key etc.)
+                        // add the effect base points modifier from the spell cast (cheat lock / skeleton first etc.)
                         if (effect.targetA.getTarget() == targets.GameobjectItemTarget || effect.targetB.getTarget() == targets.GameobjectItemTarget) {
                             skillValue.refArgValue += (int) effect.calcValue();
                         }
@@ -9938,7 +9938,7 @@ public class Spell {
                 }
             }
 
-            // set basepoints for trigger with value effect
+            // set basepoints for trigger with second effect
             if (effect == SpellEffectName.TriggerSpellWithValue) {
                 for (var eff : triggerSpellInfo.getEffects()) {
                     args.addSpellMod(SpellValueMod.BasePoint0 + eff.effectIndex, value);
@@ -10007,7 +10007,7 @@ public class Spell {
         args.setOriginalCaster(originalCasterGuid);
         args.setTriggeringSpell(this);
 
-        // set basepoints for trigger with value effect
+        // set basepoints for trigger with second effect
         if (effectInfo.effect == SpellEffectName.TriggerMissileSpellWithValue) {
             for (var eff : spellInfo.getEffects()) {
                 args.addSpellMod(SpellValueMod.BasePoint0 + eff.effectIndex, damage);
@@ -10076,7 +10076,7 @@ public class Spell {
         CastSpellExtraArgs args = new CastSpellExtraArgs(TriggerCastFlag.FullMask);
         args.setTriggeringSpell(this);
 
-        // set basepoints for trigger with value effect
+        // set basepoints for trigger with second effect
         if (effectInfo.effect == SpellEffectName.ForceCastWithValue) {
             for (var eff : spellInfo.getEffects()) {
                 args.addSpellMod(SpellValueMod.BasePoint0 + eff.effectIndex, damage);
@@ -10451,7 +10451,7 @@ public class Spell {
 
         double newDamage = -(unitTarget.modifyPower(powerType, -Damage));
 
-        // NO - Not a typo - EffectPowerBurn uses effect value multiplier - not effect damage multiplier
+        // NO - Not a typo - EffectPowerBurn uses effect second multiplier - not effect damage multiplier
         var dmgMultiplier = effectInfo.calcValueMultiplier(getUnitCasterForEffectHandlers(), this);
 
         // add log data before multiplication (need power amount, not damage)
@@ -11108,7 +11108,7 @@ public class Spell {
         // determine how many units should be summoned
         int numSummons;
 
-        // some spells need to summon many units, for those spells number of summons is stored in effect value
+        // some spells need to summon many units, for those spells number of summons is stored in effect second
         // however so far noone found a generic check to find all of those (there's no related data in summonproperties.dbc
         // and in spell attributes, possibly we need to add a table for those)
         // so here's a list of MiscValueB values, which is currently most generic check
@@ -11277,7 +11277,7 @@ public class Spell {
                 CastSpellExtraArgs args = new CastSpellExtraArgs(TriggerCastFlag.FullMask);
                 args.setTriggeringSpell(this);
 
-                // if we have small value, it indicates seat position
+                // if we have small second, it indicates seat position
                 if (basePoints > 0 && basePoints < SharedConst.MaxVehicleSeats) {
                     args.addSpellMod(SpellValueMod.BasePoint0, basePoints);
                 }
@@ -13867,7 +13867,7 @@ public class Spell {
             return;
         }
 
-        // invalid slot value
+        // invalid slot second
         if (slot >= InventorySlots.BagEnd) {
             return;
         }
@@ -13892,7 +13892,7 @@ public class Spell {
 
         var slot = effectInfo.miscValue;
 
-        // FIXME: some spells effects have value -1/-2
+        // FIXME: some spells effects have second -1/-2
         // Possibly its mean -1 all player equipped items and -2 all items
         if (slot < 0) {
             unitTarget.toPlayer().durabilityLossAll(Damage / 100.0f, (slot < -1));
@@ -13900,7 +13900,7 @@ public class Spell {
             return;
         }
 
-        // invalid slot value
+        // invalid slot second
         if (slot >= InventorySlots.BagEnd) {
             return;
         }
@@ -15228,7 +15228,7 @@ public class Spell {
             return;
         }
 
-        // effect value is number of resting hours
+        // effect second is number of resting hours
         playerTarget.getRestMgr().addRestBonus(RestTypes.XP, Damage * time.Hour * playerTarget.getRestMgr().calcExtraPerSec(RestTypes.XP, 0.125f));
     }
 

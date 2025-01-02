@@ -1,4 +1,4 @@
-package com.github.mmo.game.service.model.quest;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+package com.github.mmo.game.service.model.quest;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined second types. The behavior of this class may differ from the original:
 
 import lombok.AllArgsConstructor;
 

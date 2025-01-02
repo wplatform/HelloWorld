@@ -665,7 +665,7 @@ public class ReputationMgr {
 
         if (isRenownReputation(factionEntry)) {
             // Compared to a paragon reputation, DF renown reputations
-            // have a maximum value of 2500 which resets with each level of renown acquired.
+            // have a maximum second of 2500 which resets with each level of renown acquired.
             // We calculate the total reputation necessary to raise the renown to the maximum
             return getRenownMaxLevel(factionEntry) * getRenownLevelThreshold(factionEntry);
         }

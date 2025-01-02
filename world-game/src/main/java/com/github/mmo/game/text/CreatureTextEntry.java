@@ -1,4 +1,4 @@
-package game;
+package com.github.mmo.game.text;
 
 
 public class CreatureTextEntry {

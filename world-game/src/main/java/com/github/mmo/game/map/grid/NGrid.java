@@ -71,7 +71,7 @@ public class NGrid {
                         visitAllGrids(worker);
                         setGridState(GridState.Idle);
 
-                        Log.outDebug(LogFilter.Maps, "Grid[{0}, {1}] on map {2} moved to IDLE state", getX(), getY(), map.getId());
+                        Logs.MAPS.debug("Grid[{0}, {1}] on map {2} moved to IDLE state", getX(), getY(), map.getId());
                     } else {
                         map.resetGridExpiry(this, 0.1f);
                     }
@@ -82,7 +82,7 @@ public class NGrid {
                 map.resetGridExpiry(this);
                 setGridState(GridState.Removal);
 
-                Log.outDebug(LogFilter.Maps, "Grid[{0}, {1}] on map {2} moved to REMOVAL state", getX(), getY(), map.getId());
+                Logs.MAPS.debug("Grid[{0}, {1}] on map {2} moved to REMOVAL state", getX(), getY(), map.getId());
 
                 break;
             case Removal:
@@ -91,7 +91,7 @@ public class NGrid {
 
                     if (getGridInfoRef().getTimeTracker().getPassed()) {
                         if (!map.unloadGrid(this, false)) {
-                            Log.outDebug(LogFilter.Maps, "Grid[{0}, {1}] for map {2} differed unloading due to players or active objects nearby", getX(), getY(), map.getId());
+                            Logs.MAPS.debug("Grid[{0}, {1}] for map {2} differed unloading due to players or active objects nearby", getX(), getY(), map.getId());
 
                             map.resetGridExpiry(this);
                         }

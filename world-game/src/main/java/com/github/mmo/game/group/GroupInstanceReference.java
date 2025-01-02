@@ -5,7 +5,11 @@ import com.github.mmo.game.map.InstanceMap;
 import com.github.mmo.reference.Reference;
 
 
-public class GroupInstanceReference extends Reference<PlayerGroup, InstanceMap> {
+public class GroupInstanceReference extends Reference<PlayerGroup, InstanceMap, GroupInstanceReference> {
 
 
+    @Override
+    protected GroupInstanceReference self() {
+        return null;
+    }
 }

@@ -4,11 +4,10 @@ import com.github.mmo.cache.DbcEntityStore;
 import com.github.mmo.cache.DbcEntity;
 import com.github.mmo.common.Locale;
 import com.github.mmo.common.Pair;
-import com.github.mmo.dbc.defines.BattlegroundBracketId;
-import com.github.mmo.dbc.defines.CharBaseSectionVariation;
-import com.github.mmo.dbc.defines.CurveInterpolationMode;
-import com.github.mmo.dbc.defines.ExpectedStatType;
+import com.github.mmo.dbc.defines.*;
 import com.github.mmo.dbc.domain.*;
+import com.github.mmo.dbc.domain.ArtifactCategory;
+import com.github.mmo.dbc.domain.ChrSpecialization;
 import com.github.mmo.dbc.domain.CreatureFamily;
 import com.github.mmo.dbc.domain.CreatureType;
 import com.github.mmo.dbc.domain.Emote;
@@ -1501,6 +1500,14 @@ public interface DbcObjectManager {
         return questFactionReward().get(id);
     }
 
+    default DbcEntityStore<QuestLineXQuest> questLineXQuest() {
+        return getEntityStore(DbcObjects.QuestLineXQuest);
+    }
+
+    default QuestLineXQuest questLineXQuest(int id) {
+        return questLineXQuest().get(id);
+    }
+
     default DbcEntityStore<QuestInfo> questInfo() {
         return getEntityStore(DbcObjects.QuestInfo);
     }
@@ -1581,12 +1588,12 @@ public interface DbcObjectManager {
         return rewardPackXItem().get(id);
     }
 
-    default DbcEntityStore<RulesetItemUpgrade> rulesetItemUpgrade() {
+    default DbcEntityStore<RuleSetItemUpgrade> ruleSetItemUpgrade() {
         return getEntityStore(DbcObjects.RulesetItemUpgrade);
     }
 
-    default RulesetItemUpgrade rulesetItemUpgrade(int id) {
-        return rulesetItemUpgrade().get(id);
+    default RuleSetItemUpgrade ruleSetItemUpgrade(int id) {
+        return ruleSetItemUpgrade().get(id);
     }
 
     default DbcEntityStore<SandboxScaling> sandboxScaling() {
@@ -2238,7 +2245,7 @@ public interface DbcObjectManager {
 
     boolean hasCharacterFacialHairStyle(Byte race, Byte gender, Byte variationId);
 
-    boolean hasCharSections(byte race, byte gender, CharBaseSectionVariation variation);
+    boolean hasCharSections(Race race, Gender gender, CharBaseSectionVariation variation);
 
     CharSection getCharSection(Byte race, Byte gender, CharBaseSectionVariation variation, Byte variationIndex, Byte colorIndex);
 
@@ -2251,11 +2258,10 @@ public interface DbcObjectManager {
 
     ChrSpecialization getDefaultChrSpecializationForClass(PlayerClass playerClass);
 
-    Integer getPowerIndexByClass(Power power, Integer classId);
+    Integer getPowerIndexByClass(Power power, PlayerClass classId);
 
-    Map<Integer, List<Integer>> getRequiredCustomizationChoices(Integer chrCustomizationReqId);
 
-    String getChrRaceName(Byte race);
+    String getChrRaceName(Race race, Locale locale);
 
     Integer getRedirectedContentTuningId(Integer contentTuningId, Integer redirectFlag);
 
@@ -2263,7 +2269,7 @@ public interface DbcObjectManager {
 
     String getCreatureFamilyPetName(Integer petfamily, Locale locale);
 
-    Pair<Float, Float> getCurveXAxisRange(Integer curveId);
+    Pair<Float, Float> getCurveXAxisRange(int curveId);
 
     float getCurveValueAt(Integer curveId, float x);
 
@@ -2309,7 +2315,7 @@ public interface DbcObjectManager {
 
     List<JournalEncounter> getJournalEncounterByJournalInstanceId(Integer instanceId);
 
-    LfgDungeon getLfgDungeon(Integer mapId, DifficultyEntry difficultyEntry);
+    LfgDungeon getLfgDungeon(Integer mapId, Difficulty Difficulty);
 
     Integer getDefaultMapLight(Integer mapId);
 
@@ -2317,11 +2323,11 @@ public interface DbcObjectManager {
 
     MapDifficulty getDefaultMapDifficulty(Integer mapId);
 
-    MapDifficulty getDefaultMapDifficulty(Integer mapId, DifficultyEntry difficultyEntry);
+    MapDifficulty getDefaultMapDifficulty(Integer mapId, Difficulty difficulty);
 
-    MapDifficulty getMapDifficultyData(Integer mapId, DifficultyEntry difficultyEntry);
+    MapDifficulty getMapDifficultyData(Integer mapId, Difficulty difficulty);
 
-    MapDifficulty getDownscaledMapDifficultyData(Integer mapId, DifficultyEntry difficultyEntry);
+    MapDifficulty getDownscaledMapDifficultyData(int mapId, Difficulty difficulty);
 
     String getNameGenEntry(Byte race, Byte gender);
 
@@ -2363,9 +2369,9 @@ public interface DbcObjectManager {
 
     Integer getRewardPackIDForPvpRewardByHonorLevelAndPrestige(byte honorLevel, byte prestige);
 
-    Integer getRequiredHonorLevelForPvpTalent(PvpTalent talentInfo);
+    int getRequiredHonorLevelForPvpTalent(PvpTalent talentInfo);
 
-    List<PvpTalent> getPvpTalentsByPosition(PlayerClass class_, Integer tier, Integer column);
+    List<PvpTalent> getPvpTalentsByPosition(PlayerClass class_, int tier, int column);
 
 
     List<QuestLineXQuest> getQuestsForQuestLine(Integer questLineId);

@@ -58,7 +58,7 @@ public class SkillDiscovery {
                 // mechanic discovery
                 if (reqSpellInfo.getMechanic() != mechanics.Discovery && !reqSpellInfo.isExplicitDiscovery()) {
                     if (!reportedReqSpells.contains(absReqSkillOrSpell)) {
-                        Logs.SQL.error("Spell (ID: {0}) not have MECHANIC_DISCOVERY (28) value in Mechanic field in spell.dbc" + " and not 100%% chance random discovery ability but listed for spellId {1} (and maybe more) in `skill_discovery_template` table", absReqSkillOrSpell, spellId);
+                        Logs.SQL.error("Spell (ID: {0}) not have MECHANIC_DISCOVERY (28) second in Mechanic field in spell.dbc" + " and not 100%% chance random discovery ability but listed for spellId {1} (and maybe more) in `skill_discovery_template` table", absReqSkillOrSpell, spellId);
 
                         reportedReqSpells.add(absReqSkillOrSpell);
                     }
@@ -81,7 +81,7 @@ public class SkillDiscovery {
                     SKILLDISCOVERYSTORAGE.add(-(int) _spell_idx.skillLine, new SkillDiscoveryEntry(spellId, reqSkillValue, chance));
                 }
             } else {
-                Logs.SQL.error("Spell (ID: {0}) have negative value in `reqSpell` field in `skill_discovery_template` table", spellId);
+                Logs.SQL.error("Spell (ID: {0}) have negative second in `reqSpell` field in `skill_discovery_template` table", spellId);
 
                 continue;
             }
@@ -90,7 +90,7 @@ public class SkillDiscovery {
         } while (result.NextRow());
 
         if (ssNonDiscoverableEntries.length() != 0) {
-            Logs.SQL.error("Some items can't be successfully discovered: have in chance field value < 0.000001 in `skill_discovery_template` DB table . List:\n{0}", ssNonDiscoverableEntries.toString());
+            Logs.SQL.error("Some items can't be successfully discovered: have in chance field second < 0.000001 in `skill_discovery_template` DB table . List:\n{0}", ssNonDiscoverableEntries.toString());
         }
 
         // report about empty data for explicit discovery spells

@@ -1886,7 +1886,7 @@ public class SpellInfo {
 
         // raid instance limitation
         if (hasAttribute(SpellAttr6.NotInRaidInstances)) {
-            if (mapEntry == null || mapEntry.IsRaid()) {
+            if (mapEntry == null || mapEntry.isRaid()) {
                 return SpellCastResult.NotInRaidInstance;
             }
         }

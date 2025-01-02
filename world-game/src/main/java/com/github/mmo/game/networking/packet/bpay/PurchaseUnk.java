@@ -8,6 +8,6 @@ public:
     WorldPacket const* write() override;
 
     uint32 unkInt = 0;
-    std::string key;
+    std::string first;
     uint8 unkByte = 0;
 }; */

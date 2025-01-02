@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ProcFlagsHit {
-    PROC_HIT_NONE(0x0000000), // no value - PROC_HIT_NORMAL | PROC_HIT_CRITICAL for TAKEN proc type, PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB for DONE
+    PROC_HIT_NONE(0x0000000), // no second - PROC_HIT_NORMAL | PROC_HIT_CRITICAL for TAKEN proc type, PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB for DONE
     PROC_HIT_NORMAL(0x0000001), // non-critical hits
     PROC_HIT_CRITICAL(0x0000002),
     PROC_HIT_MISS(0x0000004),

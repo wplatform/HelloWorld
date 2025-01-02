@@ -258,7 +258,7 @@ public class KillRewarder {
 
                 if (!isBattleground) {
                     // 3.1.2. Alter group rate if group is in raid (not for Battlegrounds).
-                    var isRaid = !isPvP && CliDB.MapStorage.get(killer.getLocation().getMapId()).IsRaid() && group.isRaidGroup();
+                    var isRaid = !isPvP && CliDB.MapStorage.get(killer.getLocation().getMapId()).isRaid() && group.isRaidGroup();
                     groupRate = Formulas.XPInGroupRate(count, isRaid);
                 }
 

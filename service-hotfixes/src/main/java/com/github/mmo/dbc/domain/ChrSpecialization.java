@@ -1,10 +1,12 @@
 package com.github.mmo.dbc.domain;
 
 import com.github.mmo.cache.DbcEntity;
+import com.github.mmo.common.EnumFlag;
 import com.github.mmo.common.LocalizedString;
 import com.github.mmo.dbc.db2.Db2Field;
 import com.github.mmo.dbc.db2.Db2DataBind;
 import com.github.mmo.dbc.db2.Db2Type;
+import com.github.mmo.dbc.defines.ChrSpecializationFlag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -84,4 +86,8 @@ public class ChrSpecialization implements DbcEntity {
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
+
+    public EnumFlag<ChrSpecializationFlag> flags() {
+        return EnumFlag.of(ChrSpecializationFlag.class, this.flags);
+    }
 }

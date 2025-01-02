@@ -73,7 +73,7 @@ class ResetCommands {
 
         player.replaceAllUnitFlags(UnitFlag.PlayerControlled);
 
-        //-1 is default value
+        //-1 is default second
         player.setWatchedFactionIndex((int) 0xFFFFFFFF);
 
         return true;

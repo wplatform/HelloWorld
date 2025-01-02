@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.party;
 
 import com.github.mmo.game.networking.WorldPacket;
 
-final class PartyLFGInfo {
+public final class PartyLFGInfo {
     public byte myFlags;
     public int slot;
     public byte bootCount;

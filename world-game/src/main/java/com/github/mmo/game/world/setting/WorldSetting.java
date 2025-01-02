@@ -79,9 +79,7 @@ import java.nio.file.Path;
  * worldserver.charactercreating.DisableAlliedRaceAchievementRequirement
  * worldserver.recruitafriend.MaxLevel
  * worldserver.recruitafriend.MaxDifference
- * worldserver.instance.IgnoreLevel
- * worldserver.instance.IgnoreRaid
- * worldserver.instance.UnloadDelay
+
  * worldserver.resetschedule.WeekDay
  * worldserver.resetschedule.Hour
  * <p>
@@ -386,7 +384,7 @@ public class WorldSetting {
     public int strictCharterNames;
     public int strictPetNames;
     public int declinedNames;
-    public int expansion;
+    public byte expansion;
     public int minPlayerName;
     public int minCharterName;
     public int minPetName;
@@ -460,6 +458,11 @@ public class WorldSetting {
     public int pvpTokenMapAllowType;
     public int pvpTokenItemID;
     public int pvpTokenItemCount;
+
+
+    public boolean instanceIgnoreLevel;
+    public boolean instanceIgnoreRaid;
+    public boolean instanceUnloadDelay;
 
     public GmSetting gm;
     public QuestSetting quest;

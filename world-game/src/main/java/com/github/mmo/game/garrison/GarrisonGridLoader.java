@@ -77,7 +77,7 @@ class GarrisonGridLoader implements IGridNotifierGameObject {
             }
         }
 
-        Log.outDebug(LogFilter.Maps, "{0} GameObjects and {1} Creatures loaded for grid {2} on map {3}", i_gameObjects, i_creatures, i_grid.getGridId(), i_map.getId());
+        Logs.MAPS.debug("{0} GameObjects and {1} Creatures loaded for grid {2} on map {3}", i_gameObjects, i_creatures, i_grid.getGridId(), i_map.getId());
     }
 
 
