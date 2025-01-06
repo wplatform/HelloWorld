@@ -280,7 +280,7 @@ public class InstanceMap extends Map {
             return InstanceResetResult.CannotReset;
         }
 
-        if (getHavePlayers()) {
+        if (havePlayers()) {
             switch (method) {
                 case Manual:
                     // notify the players to leave the instance so it can be reset

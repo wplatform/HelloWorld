@@ -1174,7 +1174,7 @@ public class UnitData extends BaseUpdateData<unit> {
                 }
             }
 
-            if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.trigger)) {
+            if (cinfo.flagsExtra.hasFlag(CreatureFlagExtra.trigger)) {
                 if (receiver.isGameMaster()) {
                     displayId = cinfo.getFirstVisibleModel().creatureDisplayId;
                 }

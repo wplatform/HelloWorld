@@ -2,9 +2,9 @@ package com.github.mmo.game.service.repository;
 
 
 import com.github.mmo.game.service.mapper.RepSpilloverTemplateR;
-import com.github.mmo.game.service.model.reputation.RepRewardRate;
-import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
-import com.github.mmo.game.service.model.reputation.ReputationOnKill;
+import com.github.mmo.game.domain.reputation.RepRewardRate;
+import com.github.mmo.game.domain.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.domain.reputation.ReputationOnKill;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

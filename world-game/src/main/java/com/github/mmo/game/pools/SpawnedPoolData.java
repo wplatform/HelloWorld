@@ -3,7 +3,7 @@ package com.github.mmo.game.pools;
 
 import com.badlogic.gdx.utils.IntArray;
 import com.github.mmo.game.map.Map;
-import com.github.mmo.game.map.enums.SpawnObjectType;
+import com.github.mmo.game.domain.spawn.SpawnObjectType;
 
 import java.util.HashMap;
 

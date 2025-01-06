@@ -1,13 +1,16 @@
 package com.github.mmo.game.networking.packet.worldstate;
 
 
+import com.github.mmo.game.networking.ServerPacket;
+import com.github.mmo.game.networking.opcode.ServerOpCode;
+
 public class UpdateWorldState extends ServerPacket {
     public int value;
     public boolean hidden; // @todo: research
     public int variableID;
 
-    public updateWorldState() {
-        super(ServerOpcode.UpdateWorldState, ConnectionType.instance);
+    public UpdateWorldState() {
+        super(ServerOpCode.SMSG_UPDATE_WORLD_STATE, ConnectionType.instance);
     }
 
     @Override

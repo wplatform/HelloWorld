@@ -22,11 +22,21 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
     @SafeVarargs
     public final boolean hasFlag(T... elements) {
         for (T element : elements) {
-            if(hasFlag(element)) {
+            if(!hasFlag(element)) {
                 return false;
             }
         }
         return true;
+    }
+
+    @SafeVarargs
+    public final boolean hasAnyFlag(T... elements) {
+        for (T element : elements) {
+            if(hasFlag(element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasFlag(T element) {
@@ -67,7 +77,7 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         return this;
     }
 
-    public final EnumFlag<T> removeNotFlag(T element) {
+    public EnumFlag<T> removeNotFlag(T element) {
         this.flag &= element.getValue();
         return this;
     }

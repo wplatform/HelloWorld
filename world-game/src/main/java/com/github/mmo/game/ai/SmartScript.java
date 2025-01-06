@@ -1,7 +1,7 @@
 package com.github.mmo.game.ai;
 
 
-import com.github.mmo.game.SceneTemplate;
+import com.github.mmo.game.domain.scene.SceneTemplate;
 import com.github.mmo.game.chat.BroadcastTextBuilder;
 import com.github.mmo.game.entity.areatrigger.AreaTrigger;
 import com.github.mmo.game.entity.creature.Creature;

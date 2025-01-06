@@ -1,11 +1,13 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.model.gossip.GossipMenuItemsLocale;
-import com.github.mmo.game.service.model.gossip.GossipMenuOption;
-import com.github.mmo.game.service.model.gossip.GossipMenus;
-import com.github.mmo.game.service.model.misc.*;
-import com.github.mmo.game.service.model.misc.ClassExpansionRequirement;
+import com.github.mmo.game.domain.gossip.GossipMenuItemsLocale;
+import com.github.mmo.game.domain.gossip.GossipMenuOption;
+import com.github.mmo.game.domain.gossip.GossipMenus;
+import com.github.mmo.game.domain.misc.*;
+import com.github.mmo.game.domain.misc.ClassExpansionRequirement;
+import com.github.mmo.game.domain.scene.SceneTemplate;
+import com.github.mmo.game.domain.spawn.SpawnGroupTemplateData;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,10 @@ public interface MiscRepository {
     @Transactional(readOnly = true)
     @Query("SELECT ID, `text`, nextPageID, playerConditionID, Flags FROM page_text")
     Stream<PageText> streamAllPageText();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT ID, locale, `Text` FROM page_text_locale")
+    Stream<PageTextLocale> streamAllPageTextLocale();
 
     @Transactional(readOnly = true)
     @Query("SELECT level, basexp FROM exploration_basexp")
@@ -83,4 +89,42 @@ public interface MiscRepository {
     @Transactional(readOnly = true)
     @Query("SELECT ID, positionX, positionY, positionZ, icon, flags, importance, name, WMOGroupID FROM points_of_interest")
     Stream<PointOfInterest> streamAllPointsOfInterest();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT ID, locale, Name FROM points_of_interest_locale")
+    Stream<PointOfInterestLocale> streamAllPointsOfInterestLocale();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_titles")
+    Stream<int[]> streamAllPlayerFactionChangeTitles();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_spells")
+    Stream<int[]> streamAllPlayerFactionChangeSpells();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_reputations")
+    Stream<int[]> streamAllPlayerFactionChangeReputations();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_quests")
+    Stream<int[]> streamAllPlayerFactionChangeQuests();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_achievement")
+    Stream<int[]> streamAllPlayerFactionChangeAchievement();
+
+
+    @Transactional(readOnly = true)
+    @Query("SELECT alliance_id, horde_id FROM player_factionchange_items")
+    Stream<int[]> streamAllPlayerFactionChangeItem();
+
+    @Transactional(readOnly = true)
+    @Query("SELECT groupId, groupName, groupFlags FROM spawn_group_template")
+    Stream<SpawnGroupTemplateData> streamAllSpawnGroupTemplate();
+
+
+    @Transactional(readOnly = true)
+    @Query("SELECT groupId, groupName, groupFlags FROM spawn_group_template")
+    Stream<SceneTemplate> streamAllSceneTemplates();
 }

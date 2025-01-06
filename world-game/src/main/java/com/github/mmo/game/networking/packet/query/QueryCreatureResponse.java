@@ -1,9 +1,11 @@
 package com.github.mmo.game.networking.packet.query;
 
 
+import com.github.mmo.game.networking.ServerPacket;
+
 public class QueryCreatureResponse extends ServerPacket {
     public boolean allow;
-    public Creaturestats stats;
+    public CreatureStats stats;
     public int creatureID;
 
     public QueryCreatureResponse() {

@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.mmo.common.Assert;
 import com.github.mmo.common.Logs;
-import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.dbc.defines.DifficultyFlag;
+import com.github.mmo.dbc.defines.MapFlag2;
 import com.github.mmo.dbc.defines.SummonPropertiesFlag;
 import com.github.mmo.dbc.domain.DifficultyEntry;
 import com.github.mmo.dbc.domain.MapEntry;
@@ -33,22 +33,23 @@ import com.github.mmo.game.entity.scene.SceneObject;
 import com.github.mmo.game.entity.totem.Totem;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.entity.unit.enums.UnitTypeMask;
-import com.github.mmo.game.globals.ObjectManager;
 import com.github.mmo.game.map.collision.DynamicMapTree;
 import com.github.mmo.game.map.collision.model.GameObjectModel;
 import com.github.mmo.game.map.enums.*;
 import com.github.mmo.game.map.grid.*;
-import com.github.mmo.game.map.interfaces.IGridNotifier;
+
 import com.github.mmo.game.map.model.PositionFullTerrainStatus;
 import com.github.mmo.game.map.model.ZoneAndAreaId;
 import com.github.mmo.game.networking.WorldPacket;
 import com.github.mmo.game.networking.packet.misc.WeatherPkt;
+import com.github.mmo.game.networking.packet.worldstate.UpdateWorldState;
 import com.github.mmo.game.phasing.MultiPersonalPhaseTracker;
 import com.github.mmo.game.phasing.PhaseShift;
 import com.github.mmo.game.pools.SpawnedPoolData;
 import com.github.mmo.game.scripting.interfaces.imap.*;
 import com.github.mmo.game.scripting.interfaces.iplayer.IPlayerOnMapChanged;
 import com.github.mmo.game.scripting.interfaces.iworldstate.IWorldStateOnValueChange;
+import com.github.mmo.game.domain.spawn.*;
 import com.github.mmo.game.world.World;
 import game.PhasingHandler;
 import lombok.Getter;
@@ -205,8 +206,9 @@ public class Map {
 
         if (entry.isInstanceable()) {
             //Get instance where player's group is bound & its map
-            var instanceIdToCheck = global.getMapMgr().FindInstanceIdForPlayer(mapid, player);
-            var boundMap = global.getMapMgr().findMap(mapid, instanceIdToCheck);
+            MapManager mapManager = world.getMapManager();
+            var instanceIdToCheck = mapManager.findInstanceIdForPlayer(mapid, player);
+            var boundMap = mapManager.findMap(mapid, instanceIdToCheck);
 
             if (boundMap != null) {
                 var denyReason = boundMap.cannotEnter(player);
@@ -217,8 +219,8 @@ public class Map {
             }
 
             // players are only allowed to enter 10 instances per hour
-            if (!entry.GetFlags2().hasFlag(MapFlags2.IgnoreInstanceFarmLimit) && entry.IsDungeon() && !player.checkInstanceCount(instanceIdToCheck) && !player.isDead()) {
-                return new TransferAbortParams(TransferAbortReason.TooManyInstances);
+            if (!entry.getFlags2().hasFlag(MapFlag2.IgnoreInstanceFarmLimit) && entry.isDungeon() && !player.checkInstanceCount(instanceIdToCheck) && !player.isDead()) {
+                return new TransferAbortParams(TransferAbortReason.TOO_MANY_INSTANCES);
             }
         }
 
@@ -382,10 +384,10 @@ public class Map {
     }
 
     public final boolean isGarrison() {
-        return mapEntry != null && mapEntry.IsGarrison();
+        return mapEntry != null && mapEntry.isGarrison();
     }
 
-    public final boolean getHavePlayers() {
+    public final boolean havePlayers() {
         return !getActivePlayers().isEmpty();
     }
 
@@ -409,7 +411,7 @@ public class Map {
         return gameobjectBySpawnIdStore;
     }
 
-    public final ConcurrentMultiMap<Long, areaTrigger> getAreaTriggerBySpawnIdStore() {
+    public final ConcurrentMultiMap<Long, AreaTrigger> getAreaTriggerBySpawnIdStore() {
         return areaTriggerBySpawnIdStore;
     }
 
@@ -443,7 +445,7 @@ public class Map {
         }
 
         if (!scriptSchedule.isEmpty()) {
-            world.getVMapManager().DecreaseScheduledScriptCount((int) scriptSchedule.Sum(kvp -> kvp.value.count));
+            world.getVMapManager().decreaseScheduledScriptCount((int) scriptSchedule.Sum(kvp -> kvp.value.count));
         }
 
         world.getOutDoorPvpManager().destroyOutdoorPvPForMap(this);
@@ -476,7 +478,7 @@ public class Map {
             return;
         }
 
-        ObjectGridLoader loader = new ObjectGridLoader(grid, this, cell, gridType.Grid);
+        GridLoader loader = new GridLoader(grid, this, cell);
         loader.loadN();
     }
 
@@ -549,8 +551,9 @@ public class Map {
     public final void setWorldStateValue(int worldStateId, int value, boolean hidden) {
         var oldValue = 0;
 
-        if (!worldStateValues.TryAdd(worldStateId, 0)) {
-            oldValue = worldStateValues.get(worldStateId);
+        if (!worldStateValues.ad.TryAdd(worldStateId, 0)) {
+            int oldValue1 = worldStateValues.get(worldStateId);
+            oldValue = oldValue1;
 
             if (oldValue == value) {
                 return;
@@ -559,14 +562,14 @@ public class Map {
 
         worldStateValues.put(worldStateId, value);
 
-        var worldStateTemplate = global.getWorldStateMgr().getWorldStateTemplate(worldStateId);
+        var worldStateTemplate = world.getWorldStateManager().getWorldStateTemplate(worldStateId);
 
         if (worldStateTemplate != null) {
             global.getScriptMgr().<IWorldStateOnValueChange>RunScript(script -> script.OnValueChange(worldStateTemplate.id, oldValue, value, this), worldStateTemplate.scriptId);
         }
 
         // Broadcast update to all players on the map
-        UpdateWorldState updateWorldState = new updateWorldState();
+        UpdateWorldState updateWorldState = new UpdateWorldState();
         updateWorldState.variableID = (int) worldStateId;
         updateWorldState.value = value;
         updateWorldState.hidden = hidden;
@@ -1306,7 +1309,7 @@ public class Map {
         // After removing all objects from the map, purge empty tracked phases
         getMultiPersonalPhaseTracker().unloadGrid(nGrid);
 
-        worker = new GridVisitor(GridVisitOption.GRID_OBJECTS, GridVisitors.OBJECT_GRID_UNLOADER);
+        worker = new GridVisitor(GridVisitOption.GRID_OBJECTS, GridVisitors.OBJECT_GRID_UN_LOADER);
         nGrid.visitAllGrids(worker);
 
 
@@ -1319,18 +1322,18 @@ public class Map {
 
         terrain.unloadMap(gx, gy);
 
-        Logs.MAPS.debug("Unloading nGrid[{0}, {1}] for map {2} finished", x, y, getId());
+        Logs.MAPS.debug("Unloading nGrid[{}, {}] for map {} finished", x, y, getId());
 
         return true;
     }
 
     public void removeAllPlayers() {
-        if (getHavePlayers()) {
+        if (havePlayers()) {
             for (var pl : getActivePlayers()) {
                 if (!pl.isBeingTeleportedFar()) {
                     // this is happening for bg
-                    Logs.MAPS.error(String.format("Map.UnloadAll: player %1$s is still in map %2$s during unload, this should not happen!", pl.getName(), getId()));
-                    pl.teleportTo(pl.getHomebind());
+                    Logs.MAPS.error("Map::UnloadAll: player {} is still in map {} during unload, this should not happen!", player.getName(), getId());
+                    pl.teleportTo(pl.getHomeBind());
                 }
             }
         }
@@ -2641,7 +2644,7 @@ public class Map {
     }
 
     public String getDebugInfo() {
-        return String.format("Id: %1$s InstanceId: %2$s Difficulty: %3$s HasPlayers: %4$s", getId(), getInstanceId(), getDifficultyID(), getHavePlayers());
+        return String.format("Id: %1$s InstanceId: %2$s Difficulty: %3$s HasPlayers: %4$s", getId(), getInstanceId(), getDifficultyID(), havePlayers());
     }
 
     public final boolean canUnload(int diff) {

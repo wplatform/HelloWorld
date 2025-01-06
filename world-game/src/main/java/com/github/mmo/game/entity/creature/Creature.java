@@ -7,6 +7,7 @@ import com.github.mmo.defines.SpellSchoolMask;
 import com.github.mmo.game.ai.AISelector;
 import com.github.mmo.game.ai.CreatureAI;
 import com.github.mmo.game.ai.IUnitAI;
+import com.github.mmo.game.domain.creature.*;
 import com.github.mmo.game.entity.object.MapObject;
 import com.github.mmo.game.entity.object.ObjectGuid;
 import com.github.mmo.game.entity.object.Position;
@@ -556,7 +557,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         setHoverHeight(cInfo.hoverHeight);
 
-        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.UseOffhandAttack));
+        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagExtra.UseOffhandAttack));
 
         // checked at loading
         setDefaultMovementType(MovementGeneratorType.forValue(data != null ? data.MovementType : cInfo.movementType));
@@ -569,7 +570,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
             getSpells()[i] = getTemplate().Spells[i];
         }
 
-        getStaticFlags().modifyFlag(CreatureStaticFlags.NO_XP, isCritter() && isPet() && isTotem() && getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoXP));
+        getStaticFlags().modifyFlag(CreatureStaticFlags.NO_XP, isCritter() && isPet() && isTotem() && getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoXP));
 
         return true;
     }
@@ -615,7 +616,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         unitFlags = tempOut_UnitFlag.outArgValue;
         npcFlags = tempOut_npcFlags.outArgValue;
 
-        if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.Worldevent)) {
+        if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.Worldevent)) {
             npcFlags |= global.getGameEventMgr().getNPCFlag(this);
         }
 
@@ -637,7 +638,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         setUpdateFieldValue(getValues().modifyValue(getUnitData()).modifyValue(getUnitData().stateAnimID), global.getDB2Mgr().GetEmptyAnimStateID());
 
-        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.UseOffhandAttack));
+        setCanDualWield(cInfo.flagsExtra.hasFlag(CreatureFlagExtra.UseOffhandAttack));
 
         setBaseAttackTime(WeaponAttackType.BaseAttack, cInfo.baseAttackTime);
         setBaseAttackTime(WeaponAttackType.OffAttack, cInfo.baseAttackTime);
@@ -693,12 +694,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         initializeReactState();
 
-        if ((boolean) (cInfo.flagsExtra.getValue() & CreatureFlagsExtra.NoTaunt.getValue())) {
+        if ((boolean) (cInfo.flagsExtra.getValue() & CreatureFlagExtra.NoTaunt.getValue())) {
             applySpellImmune(0, SpellImmunity.state, AuraType.ModTaunt, true);
             applySpellImmune(0, SpellImmunity.effect, SpellEffectName.AttackMe, true);
         }
 
-        setIsCombatDisallowed(cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.CannotEnterCombat));
+        setIsCombatDisallowed(cInfo.flagsExtra.hasFlag(CreatureFlagExtra.CannotEnterCombat));
 
         loadTemplateRoot();
         initializeMovementFlags();
@@ -1085,7 +1086,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         cinfo = getTemplate(); // might be different than initially requested
 
-        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.DungeonBoss) && map.isDungeon()) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagExtra.DungeonBoss) && map.isDungeon()) {
             setRespawnDelay(0); // special value, prevents respawn for dungeon bosses unless overridden
         }
 
@@ -1119,16 +1120,16 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         lastUsedScriptID = getScriptId();
 
-        if (isSpiritHealer() || isSpiritGuide() || getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.GhostVisibility)) {
+        if (isSpiritHealer() || isSpiritGuide() || getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.GhostVisibility)) {
             getServerSideVisibility().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Ghost);
             getServerSideVisibilityDetect().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Ghost);
         }
 
-        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.IgnorePathfinding)) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagExtra.IgnorePathfinding)) {
             addUnitState(UnitState.IgnorePathfinding);
         }
 
-        if (cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.ImmunityKnockback)) {
+        if (cinfo.flagsExtra.hasFlag(CreatureFlagExtra.ImmunityKnockback)) {
             applySpellImmune(0, SpellImmunity.effect, SpellEffectName.knockBack, true);
             applySpellImmune(0, SpellImmunity.effect, SpellEffectName.KnockBackDest, true);
         }
@@ -1544,7 +1545,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                 }
             }
 
-            if (npcflag == (int) cinfo.npcflag) {
+            if (npcflag == (int) cinfo.npcFlag) {
                 npcflag = 0;
             }
 
@@ -2030,7 +2031,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                 unitFlags = tempOut_UnitFlag.outArgValue;
                 npcFlags = tempOut_npcFlags.outArgValue;
 
-                if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.Worldevent)) {
+                if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.Worldevent)) {
                     npcFlags |= global.getGameEventMgr().getNPCFlag(this);
                 }
 
@@ -2625,7 +2626,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         }
 
         // Creatures with CREATURE_FLAG_EXTRA_NO_MOVE_FLAGS_UPDATE should control MovementFlags in your own scripts
-        if (getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoMoveFlagsUpdate)) {
+        if (getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoMoveFlagsUpdate)) {
             return;
         }
 
@@ -3947,15 +3948,15 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     }
 
     public final boolean isCivilian() {
-        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.Civilian);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.Civilian);
     }
 
     public final boolean isTrigger() {
-        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.trigger);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.trigger);
     }
 
     public final boolean isGuard() {
-        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.Guard);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.Guard);
     }
 
     public final boolean getCanWalk() {
@@ -3968,12 +3969,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     }
 
     public final boolean isDungeonBoss() {
-        return (getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.DungeonBoss));
+        return (getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.DungeonBoss));
     }
 
     @Override
     public boolean isAffectedByDiminishingReturns() {
-        return super.isAffectedByDiminishingReturns() || getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.AllDiminish);
+        return super.isAffectedByDiminishingReturns() || getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.AllDiminish);
     }
 
     public final ReactStates getReactState() {
@@ -4104,7 +4105,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     }
 
     public final boolean getCanIgnoreFeignDeath() {
-        return getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.IgnoreFeighDeath);
+        return getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.IgnoreFeighDeath);
     }
 
     public final long getRespawnTime() {

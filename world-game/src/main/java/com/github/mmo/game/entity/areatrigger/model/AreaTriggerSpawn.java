@@ -1,8 +1,8 @@
 package com.github.mmo.game.entity.areatrigger.model;
 
 
-import com.github.mmo.game.map.SpawnData;
-import com.github.mmo.game.map.enums.SpawnObjectType;
+import com.github.mmo.game.domain.spawn.SpawnData;
+import com.github.mmo.game.domain.spawn.SpawnObjectType;
 
 public class AreaTriggerSpawn extends SpawnData {
     public AreaTriggerId triggerId = new AreaTriggerId();

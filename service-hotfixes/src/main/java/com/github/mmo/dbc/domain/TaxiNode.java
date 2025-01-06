@@ -101,7 +101,7 @@ public class TaxiNode implements DbcEntity {
     public EnumFlag<TaxiNodeFlag> flags() { return EnumFlag.of(TaxiNodeFlag.class, flags); }
 
     public boolean isPartOfTaxiNetwork() {
-        return flags().hasFlag(TaxiNodeFlag.ShowOnAllianceMap, TaxiNodeFlag.ShowOnHordeMap)
+        return flags().hasAnyFlag(TaxiNodeFlag.ShowOnAllianceMap, TaxiNodeFlag.ShowOnHordeMap)
                 // manually whitelisted nodes
                 || id == 1985   // [Hidden] Argus Ground Points Hub (Ground TP out to here, TP to Vindicaar from here)
                 || id == 1986   // [Hidden] Argus Vindicaar Ground Hub (Vindicaar TP out to here, TP to ground from here)

@@ -38,7 +38,7 @@ public class GridVisitors {
     };
 
 
-    public static Consumer<GridRefManager<? extends WorldObject>> OBJECT_GRID_UNLOADER = (refManager) -> {
+    public static Consumer<GridRefManager<? extends WorldObject>> OBJECT_GRID_UN_LOADER = (refManager) -> {
         Iterator<? extends WorldObject> iterator = refManager.iterator();
         while (iterator.hasNext()) {
             WorldObject o = iterator.next();

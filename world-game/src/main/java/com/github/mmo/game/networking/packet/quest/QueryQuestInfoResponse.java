@@ -3,7 +3,7 @@ package com.github.mmo.game.networking.packet.quest;
 
 import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
-import com.github.mmo.game.service.model.quest.QuestInfo;
+import com.github.mmo.game.domain.quest.QuestInfo;
 
 public class QueryQuestInfoResponse extends ServerPacket {
     public boolean allow;

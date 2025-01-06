@@ -1,6 +1,7 @@
 package com.github.mmo.game.entity.creature;
 
 
+import com.github.mmo.common.Logs;
 import com.github.mmo.game.entity.FormationInfo;
 import com.github.mmo.game.entity.FormationMgr;
 import com.github.mmo.game.entity.unit.Unit;
@@ -9,15 +10,16 @@ import java.util.HashMap;
 
 
 public class CreatureGroup {
-    private final HashMap<CREATURE, FormationInfo> members = new HashMap<CREATURE, FormationInfo>();
+    private final HashMap<Creature, FormationInfo> members = new HashMap<>();
     private final long leaderSpawnId;
     private final boolean formed;
     private Creature leader;
     private boolean engaging;
 
 
-    public creatureGroup(long leaderSpawnId) {
-        leaderSpawnId = leaderSpawnId;
+    public CreatureGroup(long leaderSpawnId) {
+        this.leaderSpawnId = leaderSpawnId;
+        this.formed = false;
     }
 
     public final Creature getLeader() {
@@ -37,11 +39,11 @@ public class CreatureGroup {
     }
 
     public final void addMember(Creature member) {
-        Log.outDebug(LogFilter.unit, "CreatureGroup.AddMember: Adding {0}.", member.getGUID().toString());
+        Logs.UNIT.debug("CreatureGroup::AddMember: Adding unit {}.", member.getGUID());
 
         //Check if it is a leader
         if (member.getSpawnId() == leaderSpawnId) {
-            Log.outDebug(LogFilter.unit, "{0} is formation leader. Adding group.", member.getGUID().toString());
+            Logs.UNIT.debug("Unit {} is formation leader. Adding group.", member.getGUID());
             leader = member;
         }
 
@@ -73,10 +75,10 @@ public class CreatureGroup {
         }
 
         if (member == leader) {
-            if (!groupAI.hasFlag(GroupAIFlags.MembersAssistLeader)) {
+            if (!groupAI.hasFlag(GroupAIFlags.MEMBERS_ASSIST_LEADER)) {
                 return;
             }
-        } else if (!groupAI.hasFlag(GroupAIFlags.LeaderAssistsMember)) {
+        } else if (!groupAI.hasFlag(GroupAIFlags.LEADER_ASSISTS_MEMBER)) {
             return;
         }
 
@@ -90,11 +92,11 @@ public class CreatureGroup {
                 continue;
             }
 
-            if (!other.isAlive) {
+            if (!other.isAlive()) {
                 continue;
             }
 
-            if (((other != leader && groupAI.hasFlag(GroupAIFlags.MembersAssistLeader)) || (other == leader && groupAI.hasFlag(GroupAIFlags.LeaderAssistsMember))) && other.isValidAttackTarget(target)) {
+            if (((other != leader && groupAI.hasFlag(GroupAIFlags.MEMBERS_ASSIST_LEADER)) || (other == leader && groupAI.hasFlag(GroupAIFlags.LEADER_ASSISTS_MEMBER))) && other.isValidAttackTarget(target)) {
                 other.engageWithTarget(target);
             }
         }

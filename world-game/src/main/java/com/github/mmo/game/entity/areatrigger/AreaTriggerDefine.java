@@ -5,8 +5,8 @@ import com.github.mmo.dbc.model.DBCPosition2D;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerActionTypes;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerActionUserTypes;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerCreatePropertiesFlag;
-import com.github.mmo.game.map.SpawnData;
-import com.github.mmo.game.map.enums.SpawnObjectType;
+import com.github.mmo.game.domain.spawn.SpawnData;
+import com.github.mmo.game.domain.spawn.SpawnObjectType;
 
 import java.util.ArrayList;
 

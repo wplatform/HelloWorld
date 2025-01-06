@@ -6,9 +6,9 @@ import com.github.mmo.game.networking.ServerPacket;
 import com.github.mmo.game.networking.opcode.ServerOpCode;
 import com.github.mmo.game.networking.packet.item.ItemBonuses;
 import com.github.mmo.game.networking.packet.item.ItemInstance;
-import com.github.mmo.game.service.model.player.PlayerChoiceResponse;
-import com.github.mmo.game.service.model.player.PlayerChoiceResponseMawPower;
-import com.github.mmo.game.service.model.player.PlayerChoiceResponseReward;
+import com.github.mmo.game.domain.player.PlayerChoiceResponse;
+import com.github.mmo.game.domain.player.PlayerChoiceResponseMawPower;
+import com.github.mmo.game.domain.player.PlayerChoiceResponseReward;
 
 import java.util.ArrayList;
 

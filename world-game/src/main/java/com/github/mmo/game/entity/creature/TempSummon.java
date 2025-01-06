@@ -9,7 +9,7 @@ import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.entity.unit.Unit;
 import com.github.mmo.game.map.VisibleChangesNotifier;
 import com.github.mmo.game.map.grid.Cell;
-import com.github.mmo.game.service.model.creature.TempSummonType;
+import com.github.mmo.game.domain.creature.TempSummonType;
 
 import java.util.ArrayList;
 import java.util.Objects;

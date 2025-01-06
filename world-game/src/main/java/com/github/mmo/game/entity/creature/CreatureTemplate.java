@@ -2,24 +2,40 @@ package com.github.mmo.game.entity.creature;
 
 
 import com.github.mmo.common.EnumFlag;
-import com.github.mmo.defines.CreatureFamily;
-import com.github.mmo.defines.CreatureType;
-import com.github.mmo.defines.CreatureTypeFlags;
-import com.github.mmo.defines.PlayerClass;
+import com.github.mmo.dbc.defines.Difficulty;
+import com.github.mmo.defines.*;
+import com.github.mmo.game.domain.creature.CreatureFlagExtra;
+import com.github.mmo.game.domain.creature.CreatureLevelScaling;
+import com.github.mmo.game.domain.creature.CreatureModel;
+import com.github.mmo.game.entity.unit.enums.NPCFlag;
 import com.github.mmo.game.entity.unit.enums.UnitFlag;
+import com.github.mmo.game.entity.unit.enums.UnitFlag2;
+import com.github.mmo.game.entity.unit.enums.UnitFlag3;
 import com.github.mmo.game.networking.packet.CreatureStats;
 import com.github.mmo.game.networking.packet.CreatureXDisplay;
 import com.github.mmo.game.networking.packet.QueryCreatureResponse;
+import com.github.mmo.game.networking.packet.query.CreatureStats;
+import com.github.mmo.game.networking.packet.query.QueryCreatureResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class CreatureTemplate {
+
+    public static final byte MAX_KILL_CREDIT = 2;
+    public static final byte MAX_CREATURE_MODELS = 4;
+    public static final byte MAX_CREATURE_NAMES = 4;
+    public static final byte MAX_CREATURE_SPELLS = 8;
+
+
+    public static  int CREATURE_REGEN_INTERVAL = 2;
+    public static  int PET_FOCUS_REGEN_INTERVAL = 4;
+    public static  int CREATURE_NOPATH_EVADE_TIME = 5;
+
     public int entry;
-    public int[] difficultyEntry = new int[SharedConst.MaxCreatureDifficulties];
-    public int[] killCredit = new int[SharedConst.MaxCreatureKillCredit];
-    public ArrayList<CreatureModel> models = new ArrayList<>();
+    public int[] killCredit = new int[MAX_KILL_CREDIT];
+    public ArrayList<CreatureModel> models = new ArrayList<>(MAX_CREATURE_MODELS);
     public String name;
     public String femaleName;
     public String subName;
@@ -27,13 +43,13 @@ public class CreatureTemplate {
     public String iconName;
     public int gossipMenuId;
     public short minlevel;
-    public HashMap<Difficulty, CreatureLevelScaling> scalingStorage = new HashMap<Difficulty, CreatureLevelScaling>();
+    public HashMap<Difficulty, CreatureLevelScaling> scalingStorage = new HashMap<>();
     public short maxlevel;
     public int healthScalingExpansion;
     public int requiredExpansion;
     public int vignetteID; // @todo Read Vignette.db2
     public int faction;
-    public long npcflag;
+    public EnumFlag<NPCFlag> npcFlag;
     public float speedWalk;
     public float speedRun;
     public float scale;
@@ -44,9 +60,9 @@ public class CreatureTemplate {
     public float baseVariance;
     public float rangeVariance;
     public int unitClass;
-    public UnitFlag unitFlags;
-    public int unitFlags2;
-    public int unitFlags3;
+    public EnumFlag<UnitFlag> unitFlags;
+    public EnumFlag<UnitFlag2> unitFlags2;
+    public EnumFlag<UnitFlag3> unitFlags3;
     public int dynamicFlags;
     public CreatureFamily family;
     public PlayerClass trainerClass;
@@ -80,7 +96,7 @@ public class CreatureTemplate {
     public boolean regenHealth;
     public long mechanicImmuneMask;
     public int spellSchoolImmuneMask;
-    public CreatureflagsExtra flagsExtra = CreatureFlagsExtra.values()[0];
+    public CreatureFlagExtra flagsExtra = CreatureFlagExtra.values()[0];
     public int scriptID;
     public String stringId;
 
@@ -130,7 +146,7 @@ public class CreatureTemplate {
             return models.get(0);
         }
 
-        var selectedItr = models.SelectRandomElementByWeight(model ->
+        var selectedItr = models.selectRandomElementByWeight(model ->
         {
             return model.probability;
         });

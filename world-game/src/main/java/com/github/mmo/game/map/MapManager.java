@@ -599,7 +599,7 @@ public class MapManager  {
     private boolean destroyMap(Map map) {
         map.removeAllPlayers();
 
-        if (map.getHavePlayers()) {
+        if (map.havePlayers()) {
             return false;
         }
 

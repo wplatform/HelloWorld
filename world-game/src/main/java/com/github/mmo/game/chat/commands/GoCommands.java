@@ -42,7 +42,7 @@ class GoCommands {
         for (var pair : global.getObjectMgr().getCreatureTemplates().entrySet()) {
             var data = pair.getValue();
 
-            if (!data.flagsExtra.hasFlag(CreatureFlagsExtra.DungeonBoss)) {
+            if (!data.flagsExtra.hasFlag(CreatureFlagExtra.DungeonBoss)) {
                 continue;
             }
 

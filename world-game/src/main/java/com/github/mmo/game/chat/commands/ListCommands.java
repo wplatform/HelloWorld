@@ -3,7 +3,7 @@ package com.github.mmo.game.chat.commands;
 
 import com.github.mmo.game.chat.PlayerIdentifier;
 import com.github.mmo.game.map.RespawnInfo;
-import com.github.mmo.game.map.SpawnData;
+import com.github.mmo.game.domain.spawn.SpawnData;
 import com.github.mmo.game.spell.SpellInfo;
 import game.PhasingHandler;
 

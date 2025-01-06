@@ -1,7 +1,7 @@
 package com.github.mmo.game.spell;
 
 
-import com.github.mmo.game.entity.creature.CreatureModel;
+import com.github.mmo.game.domain.creature.CreatureModel;
 import com.github.mmo.game.entity.item.ItemPosCount;
 import com.github.mmo.game.entity.player.model.SpellModifier;
 import com.github.mmo.game.entity.player.model.SpellModifierByClassMask;

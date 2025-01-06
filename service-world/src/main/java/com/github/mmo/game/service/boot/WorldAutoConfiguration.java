@@ -1,13 +1,12 @@
 package com.github.mmo.game.service.boot;
 
 import com.github.mmo.game.service.mapper.RowMappers;
-import com.github.mmo.game.service.model.misc.NpcText;
-import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.domain.misc.NpcText;
+import com.github.mmo.game.domain.reputation.RepSpilloverTemplate;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.QueryMappingConfiguration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.DefaultQueryMappingConfiguration;

@@ -1,7 +1,7 @@
 package com.github.mmo.game;
 
 
-import com.github.mmo.game.entity.creature.CreatureBaseStats;
+import com.github.mmo.game.domain.creature.CreatureBaseStats;
 
 public class DefaultCreatureBaseStats extends CreatureBaseStats {
     public DefaultCreatureBaseStats() {

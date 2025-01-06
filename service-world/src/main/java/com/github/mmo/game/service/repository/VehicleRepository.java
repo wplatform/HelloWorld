@@ -1,9 +1,9 @@
 package com.github.mmo.game.service.repository;
 
 
-import com.github.mmo.game.service.model.misc.RaceUnlockRequirement;
-import com.github.mmo.game.service.model.misc.SystemText;
-import com.github.mmo.game.service.model.misc.ClassExpansionRequirement;
+import com.github.mmo.game.domain.misc.RaceUnlockRequirement;
+import com.github.mmo.game.domain.misc.SystemText;
+import com.github.mmo.game.domain.misc.ClassExpansionRequirement;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

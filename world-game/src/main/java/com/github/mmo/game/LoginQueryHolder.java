@@ -1,7 +1,7 @@
 package com.github.mmo.game;
 
 
-import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
+import com.github.mmo.game.domain.player.PlayerLoginQueryLoad;
 
 public class LoginQueryHolder extends SQLQueryHolder<PlayerLoginQueryLoad> {
     private final int m_accountId;

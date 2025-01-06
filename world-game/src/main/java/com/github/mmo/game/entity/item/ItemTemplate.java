@@ -1,10 +1,12 @@
 package com.github.mmo.game.entity.item;
 
 
+import com.github.mmo.game.entity.item.enums.*;
 import com.github.mmo.game.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Locale;
 
 
 public class ItemTemplate {
@@ -372,19 +374,19 @@ public class ItemTemplate {
         return getExtendedData().display.get(locale);
     }
 
-    public final boolean hasFlag(ItemFlags flag) {
+    public final boolean hasFlag(ItemFlag flag) {
         return (getExtendedData().Flags[0] & flag.getValue()) != 0;
     }
 
-    public final boolean hasFlag(ItemFlags2 flag) {
+    public final boolean hasFlag(ItemFlag2 flag) {
         return (getExtendedData().Flags[1] & flag.getValue()) != 0;
     }
 
-    public final boolean hasFlag(ItemFlags3 flag) {
+    public final boolean hasFlag(ItemFlag3 flag) {
         return (getExtendedData().Flags[2] & flag.getValue()) != 0;
     }
 
-    public final boolean hasFlag(ItemFlags4 flag) {
+    public final boolean hasFlag(ItemFlag4 flag) {
         return (getExtendedData().Flags[3] & flag.getValue()) != 0;
     }
 

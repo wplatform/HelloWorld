@@ -53,7 +53,7 @@ import com.github.mmo.game.networking.packet.spell.PlaySpellVisualKit;
 import com.github.mmo.game.phasing.PhaseShift;
 import com.github.mmo.game.reputation.ReputationFlag;
 import com.github.mmo.game.scenario.Scenario;
-import com.github.mmo.game.service.model.creature.TempSummonType;
+import com.github.mmo.game.domain.creature.TempSummonType;
 import com.github.mmo.game.spell.*;
 import com.github.mmo.game.spell.auras.enums.AuraType;
 import com.github.mmo.game.spell.enums.SpellModOp;

@@ -1,7 +1,7 @@
 package com.github.mmo.game.entity.scene;
 
 
-import com.github.mmo.game.SceneTemplate;
+import com.github.mmo.game.domain.scene.SceneTemplate;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.networking.packet.CancelScene;
 import com.github.mmo.game.networking.packet.PlayScene;

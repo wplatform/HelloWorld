@@ -1,13 +1,15 @@
 package com.github.mmo.game;
 
 
-import com.github.mmo.game.map.SpawnData;
+import com.github.mmo.game.domain.spawn.SpawnData;
 
 import java.util.TreeSet;
 
 public class CellObjectGuids {
-    public TreeSet<Long> creatures = new TreeSet<Long>();
-    public TreeSet<Long> gameObjects = new TreeSet<Long>();
+    public TreeSet<Integer> creatures = new TreeSet<>();
+    public TreeSet<Integer> gameObjects = new TreeSet<>();
+
+
 
     public final void addSpawn(SpawnData data) {
         switch (data.getType()) {
@@ -25,11 +27,11 @@ public class CellObjectGuids {
     public final void removeSpawn(SpawnData data) {
         switch (data.getType()) {
             case CREATURE:
-                creatures.remove((Long) data.getSpawnId());
+                creatures.remove(data.getSpawnId());
 
                 break;
             case GAME_OBJECT:
-                gameObjects.remove((Long) data.getSpawnId());
+                gameObjects.remove(data.getSpawnId());
 
                 break;
         }

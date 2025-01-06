@@ -134,7 +134,7 @@ public class CreatureAI extends UnitAI {
             return;
         }
 
-        if (!map.getHavePlayers()) {
+        if (!map.havePlayers()) {
             return;
         }
 

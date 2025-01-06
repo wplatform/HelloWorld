@@ -4,7 +4,7 @@ package com.github.mmo.game.quest;
 import com.github.mmo.game.achievement.*;
 import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.quest.enums.QuestStatus;
-import com.github.mmo.game.service.model.quest.QuestObjective;
+import com.github.mmo.game.domain.quest.QuestObjective;
 
 import java.util.ArrayList;
 

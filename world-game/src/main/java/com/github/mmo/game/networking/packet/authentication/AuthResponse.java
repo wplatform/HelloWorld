@@ -2,7 +2,7 @@ package com.github.mmo.game.networking.packet.authentication;
 
 
 import com.github.mmo.game.networking.ServerPacket;
-import com.github.mmo.game.service.model.misc.RaceClassAvailability;
+import com.github.mmo.game.domain.misc.RaceClassAvailability;
 
 import java.util.ArrayList;
 

@@ -3364,7 +3364,7 @@ public class Unit extends WorldObject {
 
         // 7. CRUSHING
         // mobs can score crushing blows if they're 4 or more levels above victim
-        if (attackerLevel >= victimLevel + 4 && !isControlledByPlayer() && !(getTypeId() == TypeId.UNIT && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoCrushingBlows))) {
+        if (attackerLevel >= victimLevel + 4 && !isControlledByPlayer() && !(getTypeId() == TypeId.UNIT && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoCrushingBlows))) {
             // add 2% chance per level, min. is 15%
             tmp = (int) (attackerLevel - victimLevel * 1000 - 1500);
 
@@ -3415,8 +3415,8 @@ public class Unit extends WorldObject {
         return !sharedVision.isEmpty();
     }
 
-    public final NPCFlags getNpcFlags() {
-        return NPCFlags.forValue(getUnitData().npcFlags.get(0));
+    public final NPCFlag getNpcFlags() {
+        return NPCFlag.forValue(getUnitData().npcFlags.get(0));
     }
 
     public final NPCFlags2 getNpcFlags2() {
@@ -3424,71 +3424,71 @@ public class Unit extends WorldObject {
     }
 
     public final boolean isVendor() {
-        return hasNpcFlag(NPCFlags.vendor);
+        return hasNpcFlag(NPCFlag.vendor);
     }
 
     public final boolean isTrainer() {
-        return hasNpcFlag(NPCFlags.Trainer);
+        return hasNpcFlag(NPCFlag.Trainer);
     }
 
     public final boolean isQuestGiver() {
-        return hasNpcFlag(NPCFlags.questGiver);
+        return hasNpcFlag(NPCFlag.questGiver);
     }
 
     public final boolean isGossip() {
-        return hasNpcFlag(NPCFlags.Gossip);
+        return hasNpcFlag(NPCFlag.Gossip);
     }
 
     public final boolean isTaxi() {
-        return hasNpcFlag(NPCFlags.FlightMaster);
+        return hasNpcFlag(NPCFlag.FlightMaster);
     }
 
     public final boolean isGuildMaster() {
-        return hasNpcFlag(NPCFlags.petitioner);
+        return hasNpcFlag(NPCFlag.petitioner);
     }
 
     public final boolean isBattleMaster() {
-        return hasNpcFlag(NPCFlags.BattleMaster);
+        return hasNpcFlag(NPCFlag.BattleMaster);
     }
 
     public final boolean isBanker() {
-        return hasNpcFlag(NPCFlags.banker);
+        return hasNpcFlag(NPCFlag.banker);
     }
 
     public final boolean isInnkeeper() {
-        return hasNpcFlag(NPCFlags.Innkeeper);
+        return hasNpcFlag(NPCFlag.Innkeeper);
     }
 
     public final boolean isSpiritHealer() {
-        return hasNpcFlag(NPCFlags.SpiritHealer);
+        return hasNpcFlag(NPCFlag.SpiritHealer);
     }
 
     public final boolean isSpiritGuide() {
-        return hasNpcFlag(NPCFlags.SpiritGuide);
+        return hasNpcFlag(NPCFlag.SpiritGuide);
     }
 
     public final boolean isTabardDesigner() {
-        return hasNpcFlag(NPCFlags.TabardDesigner);
+        return hasNpcFlag(NPCFlag.TabardDesigner);
     }
 
     public final boolean isAuctioner() {
-        return hasNpcFlag(NPCFlags.auctioneer);
+        return hasNpcFlag(NPCFlag.auctioneer);
     }
 
     public final boolean isArmorer() {
-        return hasNpcFlag(NPCFlags.Repair);
+        return hasNpcFlag(NPCFlag.Repair);
     }
 
     public final boolean isWildBattlePet() {
-        return hasNpcFlag(NPCFlags.WildBattlePet);
+        return hasNpcFlag(NPCFlag.WildBattlePet);
     }
 
     public final boolean isServiceProvider() {
-        return hasNpcFlag(NPCFlags.vendor.getValue() | NPCFlags.Trainer.getValue().getValue() | NPCFlags.FlightMaster.getValue().getValue().getValue() | NPCFlags.petitioner.getValue().getValue().getValue().getValue() | NPCFlags.BattleMaster.getValue().getValue().getValue().getValue().getValue() | NPCFlags.banker.getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlags.Innkeeper.getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlags.SpiritHealer.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlags.SpiritGuide.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlags.TabardDesigner.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlags.auctioneer.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue());
+        return hasNpcFlag(NPCFlag.vendor.getValue() | NPCFlag.Trainer.getValue().getValue() | NPCFlag.FlightMaster.getValue().getValue().getValue() | NPCFlag.petitioner.getValue().getValue().getValue().getValue() | NPCFlag.BattleMaster.getValue().getValue().getValue().getValue().getValue() | NPCFlag.banker.getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlag.Innkeeper.getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlag.SpiritHealer.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlag.SpiritGuide.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlag.TabardDesigner.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue() | NPCFlag.auctioneer.getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue().getValue());
     }
 
     public final boolean isSpiritService() {
-        return hasNpcFlag(NPCFlags.SpiritHealer.getValue() | NPCFlags.SpiritGuide.getValue());
+        return hasNpcFlag(NPCFlag.SpiritHealer.getValue() | NPCFlag.SpiritGuide.getValue());
     }
 
     public final boolean isCritter() {
@@ -4794,21 +4794,21 @@ public class Unit extends WorldObject {
         }
     }
 
-    public final boolean hasNpcFlag(NPCFlags flags) {
+    public final boolean hasNpcFlag(NPCFlag flags) {
         return (getUnitData().npcFlags.get(0) & (int) flags.getValue()) != 0;
     }
 
-    public final void setNpcFlag(NPCFlags flags) {
+    public final void setNpcFlag(NPCFlag flags) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
         setUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
 
-    public final void removeNpcFlag(NPCFlags flags) {
+    public final void removeNpcFlag(NPCFlag flags) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
         removeUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
 
-    public final void replaceAllNpcFlags(NPCFlags flags) {
+    public final void replaceAllNpcFlags(NPCFlag flags) {
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
@@ -7251,7 +7251,7 @@ public class Unit extends WorldObject {
             return;
         }
 
-        if (damageInfo.getTargetState() == victimState.Parry && (!victim.isCreature() || victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoParryHasten))) {
+        if (damageInfo.getTargetState() == victimState.Parry && (!victim.isCreature() || victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoParryHasten))) {
             // Get attack timers
             float offtime = victim.getAttackTimer(WeaponAttackType.OffAttack);
             float basetime = victim.getAttackTimer(WeaponAttackType.BaseAttack);
@@ -9344,7 +9344,7 @@ public class Unit extends WorldObject {
 
         updateFlag.vehicle = false;
         setUnitTypeMask(UnitTypeMask.forValue(getUnitTypeMask().getValue() & ~getUnitTypeMask().vehicle.getValue()));
-        removeNpcFlag(NPCFlags.SpellClick.getValue() | NPCFlags.PlayerVehicle.getValue());
+        removeNpcFlag(NPCFlag.SpellClick.getValue() | NPCFlag.PlayerVehicle.getValue());
     }
 
     public final boolean setIgnoreMovementForces(boolean ignore) {
@@ -13020,7 +13020,7 @@ public class Unit extends WorldObject {
 
         switch (group) {
             case Taunt:
-                if (isTypeId(TypeId.UNIT) && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.ObeysTauntDiminishingReturns)) {
+                if (isTypeId(TypeId.UNIT) && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.ObeysTauntDiminishingReturns)) {
                     var diminish = previousLevel;
 
                     switch (diminish) {
@@ -16638,7 +16638,7 @@ public class Unit extends WorldObject {
                     break;
             }
         } else {
-            if (!toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoCrit)) {
+            if (!toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoCrit)) {
                 chance = 5.0f;
                 chance += getTotalAuraModifier(AuraType.ModWeaponCritPercent);
                 chance += getTotalAuraModifier(AuraType.ModCritPct);
@@ -16731,7 +16731,7 @@ public class Unit extends WorldObject {
                 }
             }
         } else {
-            if (!victim.isTotem() && !victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoParry)) {
+            if (!victim.isTotem() && !victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoParry)) {
                 chance = 6.0f;
                 chance += victim.getTotalAuraModifier(AuraType.ModParryPercent);
 
@@ -16775,7 +16775,7 @@ public class Unit extends WorldObject {
                 }
             }
         } else {
-            if (!victim.isTotem() && !(victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoBlock))) {
+            if (!victim.isTotem() && !(victim.toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoBlock))) {
                 chance = 3.0f;
                 chance += victim.getTotalAuraModifier(AuraType.ModBlockPercent);
 

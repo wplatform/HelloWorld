@@ -7,10 +7,7 @@ import com.github.mmo.game.entity.player.Player;
 import com.github.mmo.game.networking.packet.quest.QueryQuestInfoResponse;
 import com.github.mmo.game.networking.packet.quest.QuestRewards;
 import com.github.mmo.game.quest.enums.QuestTagType;
-import com.github.mmo.game.service.model.quest.QuestFlag;
-import com.github.mmo.game.service.model.quest.QuestFlagEx;
-import com.github.mmo.game.service.model.quest.QuestInfo;
-import com.github.mmo.game.service.model.quest.QuestSpecialFlag;
+import com.github.mmo.game.domain.quest.*;
 import com.github.mmo.game.world.setting.WorldSetting;
 import lombok.RequiredArgsConstructor;
 
@@ -252,5 +249,25 @@ public class Quest {
         return response;
     }
 
+
+    public boolean hasFlag(QuestFlag questFlag) {
+        return questInfo.flags.hasFlag(questFlag);
+    }
+
+    public boolean hasFlagEx(QuestFlagEx flag) {
+        return (questInfo.flagsEx.hasFlag(flag));
+    }
+
+    public boolean hasSpecialFlag(QuestSpecialFlag flag) {
+        return questInfo.specialFlags.hasFlag(flag);
+    }
+
+    public void setSpecialFlag(QuestSpecialFlag flag) {
+        questInfo.specialFlags.addFlag(flag);
+    }
+
+    public boolean hasQuestObjectiveType(QuestObjectiveType type) {
+        return questInfo.usedQuestObjectiveTypes.get(type.ordinal());
+    }
 
 }

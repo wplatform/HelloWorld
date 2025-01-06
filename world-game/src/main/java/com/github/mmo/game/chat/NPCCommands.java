@@ -8,7 +8,7 @@ import com.github.mmo.game.entity.gobject.transport;
 import com.github.mmo.game.entity.object.WorldObject;
 import com.github.mmo.game.loot.LootItem;
 import com.github.mmo.game.loot.NotNormalLootItem;
-import com.github.mmo.game.map.SpawnGroupTemplateData;
+import com.github.mmo.game.domain.spawn.SpawnGroupTemplateData;
 import com.github.mmo.game.movement.generator.FollowMovementGenerator;
 import game.PhasingHandler;
 import game.WorldConfig;
@@ -174,9 +174,9 @@ class NPCCommands {
 
         handler.sendSysMessage(CypherStrings.NpcinfoFlagsExtra, cInfo.flagsExtra);
 
-        for (int value : CreatureFlagsExtra.values()) {
-            if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.forValue(value))) {
-                handler.sendSysMessage("{0} (0x{1:X})", CreatureFlagsExtra.forValue(value), value);
+        for (int value : CreatureFlagExtra.values()) {
+            if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.forValue(value))) {
+                handler.sendSysMessage("{0} (0x{1:X})", CreatureFlagExtra.forValue(value), value);
             }
         }
 

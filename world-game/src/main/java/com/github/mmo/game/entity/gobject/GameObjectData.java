@@ -1,7 +1,7 @@
 package com.github.mmo.game.entity.gobject;
 
 
-import com.github.mmo.game.map.SpawnData;
+import com.github.mmo.game.domain.spawn.SpawnData;
 
 public class GameObjectData extends SpawnData {
     public Quaternion rotation;

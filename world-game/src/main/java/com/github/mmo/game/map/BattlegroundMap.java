@@ -59,7 +59,7 @@ public class BattlegroundMap extends Map {
 
     @Override
     public void removeAllPlayers() {
-        if (getHavePlayers()) {
+        if (havePlayers()) {
             for (var player : getActivePlayers()) {
                 if (!player.isBeingTeleportedFar()) {
                     player.teleportTo(player.getBattlegroundEntryPoint());

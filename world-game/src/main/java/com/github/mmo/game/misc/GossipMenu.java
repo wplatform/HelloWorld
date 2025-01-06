@@ -1,7 +1,7 @@
 package com.github.mmo.game.misc;
 
 
-import com.github.mmo.game.service.model.gossip.GossipMenuOption;
+import com.github.mmo.game.domain.gossip.GossipMenuOption;
 import game.*;
 
 import java.util.Locale;

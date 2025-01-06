@@ -11,10 +11,10 @@ public class QuestRelationResult extends ArrayList<Integer> {
 
     public QuestRelationResult(ArrayList<Integer> range, boolean onlyActive) {
         super(range);
-        onlyActive = onlyActive;
+        this.onlyActive = onlyActive;
     }
 
     public final boolean hasQuest(int questId) {
-        return this.contains(questId) && (!onlyActive || quest.isTakingQuestEnabled(questId));
+        return this.contains(questId) && (!onlyActive || Quest.isTakingQuestEnabled(questId));
     }
 }

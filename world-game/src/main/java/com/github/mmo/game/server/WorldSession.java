@@ -63,7 +63,7 @@ import com.github.mmo.game.scripting.interfaces.iitem.IItemOnUse;
 import com.github.mmo.game.scripting.interfaces.iplayer.*;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnAckAutoAccept;
 import com.github.mmo.game.scripting.interfaces.iquest.IQuestOnQuestStatusChange;
-import com.github.mmo.game.service.model.player.PlayerLoginQueryLoad;
+import com.github.mmo.game.domain.player.PlayerLoginQueryLoad;
 import com.github.mmo.game.spell.AuraRemoveMode;
 import com.github.mmo.game.spell.CastSpellExtraArgs;
 import com.github.mmo.game.spell.Spell;
@@ -10134,7 +10134,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        if (creature.getTemplate().flagsExtra.hasFlag(CreatureFlagsExtra.NoSellVendor)) {
+        if (creature.getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoSellVendor)) {
             player.sendSellError(SellResult.CantSellToThisMerchant, creature, packet.itemGUID);
 
             return;

@@ -2,6 +2,7 @@ package com.github.mmo.game;
 
 
 import com.github.mmo.game.networking.WorldPacket;
+import com.github.mmo.game.domain.quest.QuestPOIBlobData;
 
 import java.util.ArrayList;
 
@@ -38,9 +39,9 @@ public class QuestPOIData {
             data.writeInt32(questPOIBlobData.points.size());
 
             for (var questPOIBlobPoint : questPOIBlobData.points) {
-                data.writeInt16((short) questPOIBlobPoint.X);
-                data.writeInt16((short) questPOIBlobPoint.Y);
-                data.writeInt16((short) questPOIBlobPoint.Z);
+                data.writeInt16((short) questPOIBlobPoint.x);
+                data.writeInt16((short) questPOIBlobPoint.y);
+                data.writeInt16((short) questPOIBlobPoint.z);
             }
 
             data.writeBit(questPOIBlobData.alwaysAllowMergingBlobs);

@@ -1,8 +1,8 @@
 package com.github.mmo.game.service.mapper;
 
 import com.github.mmo.defines.SharedDefine;
-import com.github.mmo.game.service.model.misc.NpcText;
-import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.domain.misc.NpcText;
+import com.github.mmo.game.domain.reputation.RepSpilloverTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public interface RowMappers {
@@ -39,4 +39,5 @@ public interface RowMappers {
         }
         return npcText;
     };
+
 }

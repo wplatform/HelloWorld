@@ -1,7 +1,6 @@
 package com.github.mmo.game.globals;
 
 
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.mmo.cache.CacheProvider;
 import com.github.mmo.cache.MapCache;
@@ -11,6 +10,7 @@ import com.github.mmo.common.*;
 import com.github.mmo.dbc.DbcObjectManager;
 import com.github.mmo.dbc.defines.Difficulty;
 import com.github.mmo.dbc.defines.LevelLimit;
+import com.github.mmo.dbc.defines.TaxiNodeFlag;
 import com.github.mmo.dbc.domain.*;
 import com.github.mmo.defines.*;
 import com.github.mmo.defines.QuestSort;
@@ -19,15 +19,16 @@ import com.github.mmo.game.*;
 import com.github.mmo.game.condition.ConditionManager;
 import com.github.mmo.game.condition.ConditionSourceType;
 import com.github.mmo.game.condition.DisableManager;
+import com.github.mmo.game.domain.scene.SceneTemplate;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerCreateProperties;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerId;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerSpawn;
 import com.github.mmo.game.entity.areatrigger.model.AreaTriggerTemplate;
 import com.github.mmo.game.entity.creature.*;
-import com.github.mmo.game.entity.creatures.EquipmentInfo;
-import com.github.mmo.game.entity.creatures.Trainer;
-import com.github.mmo.game.entity.creatures.TrainerSpell;
-import com.github.mmo.game.entity.creatures.VendorItemData;
+import com.github.mmo.game.entity.creature.EquipmentInfo;
+import com.github.mmo.game.entity.creature.Trainer;
+import com.github.mmo.game.entity.creature.TrainerSpell;
+import com.github.mmo.game.entity.creature.VendorItemData;
 import com.github.mmo.game.entity.gobject.*;
 import com.github.mmo.game.entity.item.ItemTemplate;
 import com.github.mmo.game.entity.object.ObjectGuid;
@@ -36,36 +37,35 @@ import com.github.mmo.game.entity.object.enums.HighGuid;
 import com.github.mmo.game.entity.object.enums.SummonerType;
 import com.github.mmo.game.entity.object.enums.TypeId;
 import com.github.mmo.game.entity.player.AccessRequirement;
+import com.github.mmo.game.entity.unit.enums.NPCFlag;
 import com.github.mmo.game.entity.vehicle.VehicleAccessory;
 import com.github.mmo.game.entity.vehicle.VehicleSeatAddon;
 import com.github.mmo.game.entity.vehicle.VehicleTemplate;
 import com.github.mmo.game.map.*;
-import com.github.mmo.game.misc.PageTextLocale;
-import com.github.mmo.game.misc.PointOfInterestLocale;
+import com.github.mmo.game.domain.misc.PointOfInterestLocale;
 import com.github.mmo.game.movement.MotionMaster;
+import com.github.mmo.game.phasing.PhaseShift;
 import com.github.mmo.game.quest.Quest;
-import com.github.mmo.game.service.model.PlayerCreateInfoAction;
-import com.github.mmo.game.service.model.PlayerCreateInfoItem;
-import com.github.mmo.game.service.model.ScriptInfo;
-import com.github.mmo.game.service.model.creature.CreatureLocale;
-import com.github.mmo.game.service.model.creature.TempSummonData;
-import com.github.mmo.game.service.model.creature.TempSummonType;
-import com.github.mmo.game.service.model.gobject.GameObjectLocale;
-import com.github.mmo.game.service.model.gossip.GossipMenuItemsLocale;
-import com.github.mmo.game.service.model.gossip.GossipMenuOption;
-import com.github.mmo.game.service.model.gossip.GossipMenus;
-import com.github.mmo.game.service.model.gossip.GossipOptionNpc;
-import com.github.mmo.game.service.model.misc.RaceUnlockRequirement;
-import com.github.mmo.game.service.model.misc.*;
-import com.github.mmo.game.service.model.player.PlayerChoice;
-import com.github.mmo.game.service.model.player.PlayerChoiceLocale;
-import com.github.mmo.game.service.model.player.PlayerInfo;
-import com.github.mmo.game.service.model.player.PlayerLevelInfo;
-import com.github.mmo.game.service.model.quest.QuestInfo;
-import com.github.mmo.game.service.model.quest.*;
-import com.github.mmo.game.service.model.reputation.RepRewardRate;
-import com.github.mmo.game.service.model.reputation.RepSpilloverTemplate;
-import com.github.mmo.game.service.model.reputation.ReputationOnKill;
+import com.github.mmo.game.domain.PlayerCreateInfoAction;
+import com.github.mmo.game.domain.PlayerCreateInfoItem;
+import com.github.mmo.game.domain.ScriptInfo;
+import com.github.mmo.game.domain.creature.*;
+import com.github.mmo.game.domain.gobject.GameObjectLocale;
+import com.github.mmo.game.domain.gossip.GossipMenuOption;
+import com.github.mmo.game.domain.gossip.GossipMenus;
+import com.github.mmo.game.domain.gossip.GossipOptionNpc;
+import com.github.mmo.game.domain.misc.RaceUnlockRequirement;
+import com.github.mmo.game.domain.misc.*;
+import com.github.mmo.game.domain.player.PlayerChoice;
+import com.github.mmo.game.domain.player.PlayerChoiceLocale;
+import com.github.mmo.game.domain.player.PlayerInfo;
+import com.github.mmo.game.domain.player.PlayerLevelInfo;
+import com.github.mmo.game.domain.quest.QuestInfo;
+import com.github.mmo.game.domain.quest.*;
+import com.github.mmo.game.domain.reputation.RepRewardRate;
+import com.github.mmo.game.domain.reputation.RepSpilloverTemplate;
+import com.github.mmo.game.domain.reputation.ReputationOnKill;
+import com.github.mmo.game.domain.spawn.*;
 import com.github.mmo.game.service.repository.*;
 import com.github.mmo.game.spell.SpellManager;
 import com.github.mmo.game.world.setting.WorldSetting;
@@ -73,6 +73,7 @@ import com.github.mmo.game.world.setting.WorldSetting;
 import java.util.*;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static game.WardenActions.Log;
@@ -195,7 +196,6 @@ public final class ObjectManager {
     private final MapCache<Tuple<Integer, SummonerType, Short>, List<TempSummonData>> tempSummonDataStorage;
     private final MapCache<Integer, PlayerChoice> playerChoices;
     private final MapCache<Integer, PageText> pageTextStorage;
-    private final ArrayList<String> reservedNamesStorage = new ArrayList<>();
     private final HashMap<Integer, SceneTemplate> sceneTemplateStorage = new HashMap<Integer, SceneTemplate>();
     private final IntMap<JumpChargeParams> jumpChargeParams = new IntMap<>();
     private final HashMap<Integer, String> phaseNameStorage = new HashMap<Integer, String>();
@@ -210,12 +210,12 @@ public final class ObjectManager {
     private final MapCache<Integer, List<Integer>> goQuestInvolvedRelationsReverse;
     private final MapCache<Integer, List<Integer>> creatureQuestRelations;
     private final MapCache<Integer, List<Integer>> creatureQuestInvolvedRelations;
-    private final MapCache<Integer, Integer> creatureQuestInvolvedRelationsReverse;
+    private final MapCache<Integer, List<Integer>> creatureQuestInvolvedRelationsReverse;
     private final Map<Integer, List<Integer>> exclusiveQuestGroups = new HashMap<>();
-    private final HashMap<Integer, QuestPOIData> questPOIStorage = new HashMap<Integer, QuestPOIData>();
-    private final MultiMap<Integer, Integer> questAreaTriggerStorage = new MultiMap<Integer, Integer>();
+    private final MapCache<Integer, QuestPOIData> questPOIStorage;
+    private final HashMap<Integer,Set<Integer>> questAreaTriggerStorage = new HashMap<>();
     private final HashMap<Integer, QuestObjective> questObjectives = new HashMap<Integer, QuestObjective>();
-    private final HashMap<Integer, QuestGreeting>[] questGreetingStorage = new HashMap<Integer, QuestGreeting>[2];
+    private final MapCache<Integer, QuestGreeting> questGreetingStorage;
     private final HashMap<Integer, QuestGreetingLocale>[] questGreetingLocaleStorage = new HashMap<Integer, QuestGreetingLocale>[2];
     //Scripts
     private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
@@ -224,17 +224,17 @@ public final class ObjectManager {
     private final HashMap<Integer, CellObjectGuids> mapObjectGuidsStore = new HashMap<>();
     private final HashMap<Integer, CellObjectGuids> mapPersonalObjectGuidsStore = new HashMap<>();
     private final HashMap<Integer, InstanceTemplate> instanceTemplateStorage = new HashMap<>();
-    private final ArrayList<SHORT> transportMaps = new ArrayList<>();
-    private final HashMap<Integer, SpawnGroupTemplateData> spawnGroupDataStorage = new HashMap<Integer, SpawnGroupTemplateData>();
-    private final MultiMap<Integer, SpawnMetadata> spawnGroupMapStorage = new MultiMap<Integer, SpawnMetadata>();
-    private final MultiMap<Integer, Integer> spawnGroupsByMap = new MultiMap<Integer, Integer>();
-    private final MultiMap<SHORT, InstanceSpawnGroupInfo> instanceSpawnGroupStorage = new MultiMap<SHORT, InstanceSpawnGroupInfo>();
+    private final ArrayList<Short> transportMaps = new ArrayList<>();
+    private final MapCache<Integer, SpawnGroupTemplateData> spawnGroupDataStorage;
+    private final Map<Integer, List<SpawnMetadata>> spawnGroupMapStorage = new HashMap<>();
+    private final Map<Integer, List<Integer>> spawnGroupsByMap = new HashMap<>();
+    private final Map<Short, List<InstanceSpawnGroupInfo>> instanceSpawnGroupStorage = new HashMap<>();
     //Spells /Skills / Phases
     private final HashMap<Integer, PhaseInfoStruct> phaseInfoById = new HashMap<Integer, PhaseInfoStruct>();
     private final HashMap<Integer, TerrainSwapInfo> terrainSwapInfoById = new HashMap<Integer, TerrainSwapInfo>();
-    private final MultiMap<Integer, PhaseAreaInfo> phaseInfoByArea = new MultiMap<Integer, PhaseAreaInfo>();
-    private final MultiMap<Integer, TerrainSwapInfo> terrainSwapInfoByMap = new MultiMap<Integer, TerrainSwapInfo>();
-    private final MultiMap<Integer, SpellClickInfo> spellClickInfoStorage = new MultiMap<Integer, SpellClickInfo>();
+    private final Map<Integer, List<PhaseAreaInfo>> phaseInfoByArea = new HashMap<>();
+    private final Map<Integer, List<TerrainSwapInfo>> terrainSwapInfoByMap = new HashMap<>();
+    private final Map<Integer, List<SpellClickInfo>> spellClickInfoStorage = new HashMap<>();
     private final HashMap<Integer, Integer> fishingBaseForAreaStorage = new HashMap<Integer, Integer>();
     private final HashMap<Integer, SkillTiersEntry> skillTiers = new HashMap<Integer, SkillTiersEntry>();
     //Gossip
@@ -248,7 +248,7 @@ public final class ObjectManager {
     private final HashMap<Integer, CreatureSummonedData> creatureSummonedDataStorage = new HashMap<Integer, CreatureSummonedData>();
     private final HashMap<Long, CreatureData> creatureDataStorage = new HashMap<Long, CreatureData>();
     private final HashMap<Long, CreatureAddon> creatureAddonStorage = new HashMap<Long, CreatureAddon>();
-    private final MultiMap<Integer, Integer> creatureQuestItemStorage = new MultiMap<Integer, Integer>();
+    private final Map<Integer, List<Integer>> creatureQuestItemStorage = new HashMap<>();
     private final HashMap<Integer, CreatureAddon> creatureTemplateAddonStorage = new HashMap<Integer, CreatureAddon>();
     private final HashMap<Long, CreatureMovementData> creatureMovementOverrides = new HashMap<Long, CreatureMovementData>();
     private final MultiMap<Integer, Tuple<Integer, EquipmentInfo>> equipmentInfoStorage = new MultiMap<Integer, Tuple<Integer, EquipmentInfo>>();
@@ -273,24 +273,23 @@ public final class ObjectManager {
     private final HashMap<Race, HashMap<PlayerClass, PlayerInfo>> playerInfo = new HashMap<Race, HashMap<PlayerClass, PlayerInfo>>();
     //Pets
     private final HashMap<Integer, PetLevelInfo[]> petInfoStore = new HashMap<Integer, PetLevelInfo[]>();
-    private final MultiMap<Integer, String> petHalfName0 = new MultiMap<Integer, String>();
-    private final MultiMap<Integer, String> petHalfName1 = new MultiMap<Integer, String>();
+    private final HashMap<Integer, List<String>> petHalfName0 = new HashMap<>();
+    private final HashMap<Integer, List<String>> petHalfName1 = new HashMap<>();
     //Vehicles
     private final HashMap<Integer, VehicleTemplate> vehicleTemplateStore = new HashMap<Integer, VehicleTemplate>();
-    private final MultiMap<Integer, VehicleAccessory> vehicleTemplateAccessoryStore = new MultiMap<Integer, VehicleAccessory>();
-    private final MultiMap<Long, VehicleAccessory> vehicleAccessoryStore = new MultiMap<Long, VehicleAccessory>();
+    private final HashMap<Integer, List<VehicleAccessory>> vehicleTemplateAccessoryStore = new HashMap<>();
+    private final HashMap<Long, List<VehicleAccessory>> vehicleAccessoryStore = new HashMap<>();
     private final HashMap<Integer, VehicleSeatAddon> vehicleSeatAddonStore = new HashMap<Integer, VehicleSeatAddon>();
     //Locales
     private final HashMap<Integer, CreatureLocale> creatureLocaleStorage = new HashMap<Integer, CreatureLocale>();
     private final HashMap<Integer, GameObjectLocale> gameObjectLocaleStorage = new HashMap<Integer, GameObjectLocale>();
-    private final HashMap<Integer, QuestTemplateLocale> questTemplateLocaleStorage = new HashMap<Integer, QuestTemplateLocale>();
-    private final HashMap<Integer, QuestObjectivesLocale> questObjectivesLocaleStorage = new HashMap<Integer, QuestObjectivesLocale>();
-	private final HashMap<(
-        private final HashMap<Integer, QuestOfferRewardLocale> questOfferRewardLocaleStorage = new HashMap<Integer, QuestOfferRewardLocale>();,     private final HashMap<Integer, QuestRequestItemsLocale> questRequestItemsLocaleStorage = new HashMap<Integer, QuestRequestItemsLocale>();,     private final HashMap<Integer, PageTextLocale> pageTextLocaleStorage = new HashMap<Integer, PageTextLocale>();),Integer>creatureDefaultTrainers =new HashMap<(
-        private final HashMap<Integer, PointOfInterestLocale> pointOfInterestLocaleStorage = new HashMap<Integer, PointOfInterestLocale>();,     private final HashMap<Integer, PlayerChoiceLocale> playerChoiceLocales = new HashMap<Integer, PlayerChoiceLocale>();,     private final IntArray tavernAreaTriggerStorage = new IntArray();),Integer>();
+    private final HashMap<Integer, PlayerChoiceLocale> playerChoiceLocales = new HashMap<Integer, PlayerChoiceLocale>();
+
+    private final Map<Tuple<Integer, Integer, Integer>, Integer> creatureDefaultTrainers = new HashMap<>();
+    private final Set<Integer> tavernAreaTriggerStorage = new HashSet<>();
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<Integer, AreaTriggerStruct>();
     private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<Long, AccessRequirement>();
-    private final MultiMap<Long, DungeonEncounter> dungeonEncounterStorage = new MultiMap<Long, DungeonEncounter>();
+    private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
     private final HashMap<Integer, WorldSafeLocsEntry> worldSafeLocs = new HashMap<Integer, WorldSafeLocsEntry>();
     private final HashMap<HighGuid, ObjectGuidGenerator> guidGenerators = new HashMap<HighGuid, ObjectGuidGenerator>();
     private final int[] baseXPTable = new int[LevelLimit.MAX_LEVEL.value];
@@ -340,31 +339,19 @@ public final class ObjectManager {
     private ObjectManager() {
         this.stringStorage = cacheProvider.newGenericMapCache("LocalizedStringStorage", Integer.class, LocalizedString.class);
         this.gameTeleStorage = cacheProvider.newGenericMapCache("GameTeleportStorage", Integer.class, GameTele.class);
-        this.tempSummonDataStorage = cacheProvider.newGenericMapCache("TempSummonDataStorage", new TypeReference<>() {
-        });
-        this.pageTextStorage = cacheProvider.newGenericMapCache("PageTextStorage", new TypeReference<>() {
-        });
-        this.mailLevelRewardStorage = cacheProvider.newGenericMapCache("MailLevelRewardStorage", new TypeReference<>() {
-        });
-        this.repOnKillStorage = cacheProvider.newGenericMapCache("RepOnKillStorage", new TypeReference<>() {
-        });
-        this.repRewardRateStorage = cacheProvider.newGenericMapCache("RepRewardRateStorage", new TypeReference<>() {
-        });
+        this.tempSummonDataStorage = cacheProvider.newGenericMapCache("TempSummonDataStorage", new TypeReference<>() {});
+        this.pageTextStorage = cacheProvider.newGenericMapCache("PageTextStorage", new TypeReference<>() {});
+        this.mailLevelRewardStorage = cacheProvider.newGenericMapCache("MailLevelRewardStorage", new TypeReference<>() {});
+        this.repOnKillStorage = cacheProvider.newGenericMapCache("RepOnKillStorage", new TypeReference<>() {});
+        this.repRewardRateStorage = cacheProvider.newGenericMapCache("RepRewardRateStorage", new TypeReference<>() {});
 
-        this.repSpilloverTemplateStorage = cacheProvider.newGenericMapCache("RepSpilloverTemplateStorage", new TypeReference<>() {
-        });
-        this.playerChoices = cacheProvider.newGenericMapCache("PlayerChoicesStorage", new TypeReference<>() {
-        });
-        this.gossipMenusStorage = cacheProvider.newGenericMapCache("GossipMenusStorage", new TypeReference<>() {
-        });
-        this.npcTextStorage = cacheProvider.newGenericMapCache("NpcTextStorage", new TypeReference<>() {
-        });
-        this.gossipMenuItemsStorage = cacheProvider.newGenericMapCache("GossipMenuItemsStorage", new TypeReference<>() {
-        });
-        this.gossipMenuAddonStorage = cacheProvider.newGenericMapCache("GossipMenuAddonStorage", new TypeReference<>() {
-        });
-        this.pointsOfInterestStorage = cacheProvider.newGenericMapCache("PointsOfInterestStorage", new TypeReference<>() {
-        });
+        this.repSpilloverTemplateStorage = cacheProvider.newGenericMapCache("RepSpilloverTemplateStorage", new TypeReference<>() {});
+        this.playerChoices = cacheProvider.newGenericMapCache("PlayerChoicesStorage", new TypeReference<>() {});
+        this.gossipMenusStorage = cacheProvider.newGenericMapCache("GossipMenusStorage", new TypeReference<>() {});
+        this.npcTextStorage = cacheProvider.newGenericMapCache("NpcTextStorage", new TypeReference<>() {});
+        this.gossipMenuItemsStorage = cacheProvider.newGenericMapCache("GossipMenuItemsStorage", new TypeReference<>() {});
+        this.gossipMenuAddonStorage = cacheProvider.newGenericMapCache("GossipMenuAddonStorage", new TypeReference<>() {});
+        this.pointsOfInterestStorage = cacheProvider.newGenericMapCache("PointsOfInterestStorage", new TypeReference<>() {});
         this.questTemplates = cacheProvider.newGenericMapCache("QuestTemplateStorage", new TypeReference<>() {});
         this.goQuestRelations = cacheProvider.newGenericMapCache("GoQuestRelationsStorage", new TypeReference<>() {});
         this.goQuestInvolvedRelations = cacheProvider.newGenericMapCache("GoQuestInvolvedRelationsStorage", new TypeReference<>() {});
@@ -372,6 +359,9 @@ public final class ObjectManager {
         this.creatureQuestRelations = cacheProvider.newGenericMapCache("CreatureQuestRelationsStorage", new TypeReference<>() {});
         this.creatureQuestInvolvedRelations = cacheProvider.newGenericMapCache("CreatureQuestInvolvedRelationsStorage", new TypeReference<>() {});
         this.creatureQuestInvolvedRelationsReverse = cacheProvider.newGenericMapCache("CreatureQuestInvolvedRelationsReverseStorage", new TypeReference<>() {});
+        this.questPOIStorage = cacheProvider.newGenericMapCache("QuestPOIStorageStorage", new TypeReference<>(){});
+        this.questGreetingStorage = cacheProvider.newGenericMapCache("QuestGreetingStorage", new TypeReference<>(){});
+        this.spawnGroupDataStorage = cacheProvider.newGenericMapCache("SpawnGroupDataStorage", new TypeReference<>(){});
 
 
         for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
@@ -410,7 +400,7 @@ public final class ObjectManager {
             }
         }
 
-        if (!cinfo.flagsExtra.hasFlag(CreatureFlagsExtra.trigger)) {
+        if (!cinfo.flagsExtra.hasFlag(CreatureFlagExtra.trigger)) {
             var model = cinfo.getRandomValidModel();
 
             if (model != null) {
@@ -427,7 +417,7 @@ public final class ObjectManager {
     }
 
     public static void chooseCreatureFlags(CreatureTemplate cInfo, tangible.OutObject<Long> npcFlag, tangible.OutObject<Integer> unitFlags, tangible.OutObject<Integer> unitFlags2, tangible.OutObject<Integer> unitFlags3, tangible.OutObject<Integer> dynamicFlags, CreatureData data) {
-        npcFlag.outArgValue = data != null && data.npcflag != 0 ? data.Npcflag : cInfo.npcflag;
+        npcFlag.outArgValue = data != null && data.npcflag != 0 ? data.Npcflag : cInfo.npcFlag;
         UnitFlag.outArgValue = data != null && data.unitFlags != 0 ? data.UnitFlags : (int) cInfo.UnitFlag.getValue();
         UnitFlag2.outArgValue = data != null && data.unitFlags2 != 0 ? data.UnitFlags2 : cInfo.unitFlags2;
         unitFlags3.outArgValue = data != null && data.unitFlags3 != 0 ? data.UnitFlags3 : cInfo.unitFlags3;
@@ -1043,7 +1033,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
 
         pointsOfInterestStorage.clear(); // need for reload case
-
+        HashMap<Integer, PointOfInterest> tmpPointsOfInterestStorage = new HashMap<>();
         try (var items = miscRepository.streamAllPointsOfInterest()) {
             items.forEach(e -> {
                 if (!MapDefine.isValidMapCoordinate(e.positionX, e.positionY, e.positionZ)) {
@@ -1051,10 +1041,29 @@ public final class ObjectManager {
                             e.id, e.positionX, e.positionY, e.positionZ);
                     return;
                 }
-                pointsOfInterestStorage.put(e.id, e);
+                tmpPointsOfInterestStorage.put(e.id, e);
             });
         }
-        Logs.SERVER_LOADING.error(">> Loaded {} Points of Interest definitions in {} ms", pointsOfInterestStorage.size(), System.currentTimeMillis() - oldMSTime);
+        Logs.SERVER_LOADING.error(">> Loaded {} Points of Interest definitions in {} ms", tmpPointsOfInterestStorage.size(), System.currentTimeMillis() - oldMSTime);
+
+
+        oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = miscRepository.streamAllPointsOfInterestLocale()) {
+            items.forEach(e -> {
+                PointOfInterest pointOfInterest = tmpPointsOfInterestStorage.get(e.id);
+                if(pointOfInterest == null) {
+                    Logs.SQL.error("Table `points_of_interest_locale` is using non-existing points_of_interest id {}", e.id);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                pointOfInterest.name.set(locale, e.name);
+                count.getAndIncrement();
+            });
+        }
+        Logs.SERVER_LOADING.error(">> Loaded {} points_of_interest locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
+
+        pointsOfInterestStorage.putAll(tmpPointsOfInterestStorage);
 
 
     }
@@ -1095,7 +1104,7 @@ public final class ObjectManager {
             ++count;
             var safeLocId = result.<Integer>Read(0);
             var zoneId = result.<Integer>Read(1);
-            var team = TeamFaction.forValue(result.<Integer>Read(2));
+            var team = Team.forValue(result.<Integer>Read(2));
 
             var entry = getWorldSafeLoc(safeLocId);
 
@@ -1113,7 +1122,7 @@ public final class ObjectManager {
                 continue;
             }
 
-            if (team != 0 && team != TeamFaction.Horde && team != TeamFaction.Alliance) {
+            if (team != 0 && team != Team.Horde && team != Team.Alliance) {
                 Logs.SQL.error("Table `graveyard_zone` has a record for non player faction ({0}), skipped.", team);
 
                 continue;
@@ -1158,17 +1167,17 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(String.format("Loaded %1$s world locations %2$s ms", worldSafeLocs.size(), time.GetMSTimeDiffToNow(oldMSTime)));
     }
 
-    public WorldSafeLocsEntry getDefaultGraveYard(TeamFaction team) {
-        if (team == TeamFaction.Horde) {
+    public WorldSafeLocsEntry getDefaultGraveYard(Team team) {
+        if (team == Team.Horde) {
             return getWorldSafeLoc(10);
-        } else if (team == TeamFaction.Alliance) {
+        } else if (team == Team.Alliance) {
             return getWorldSafeLoc(4);
         } else {
             return null;
         }
     }
 
-    public WorldSafeLocsEntry getClosestGraveYard(WorldLocation location, TeamFaction team, WorldObject conditionObject) {
+    public WorldSafeLocsEntry getClosestGraveYard(WorldLocation location, Team team, WorldObject conditionObject) {
         var mapId = location.getMapId();
 
         // search for zone associated closest graveyard
@@ -1314,11 +1323,11 @@ public final class ObjectManager {
         return worldSafeLocs;
     }
 
-    public boolean addGraveYardLink(int id, int zoneId, TeamFaction team) {
+    public boolean addGraveYardLink(int id, int zoneId, Team team) {
         return addGraveYardLink(id, zoneId, team, true);
     }
 
-    public boolean addGraveYardLink(int id, int zoneId, TeamFaction team, boolean persist) {
+    public boolean addGraveYardLink(int id, int zoneId, Team team, boolean persist) {
         if (findGraveYardData(id, zoneId) != null) {
             return false;
         }
@@ -1344,11 +1353,11 @@ public final class ObjectManager {
         return true;
     }
 
-    public void removeGraveYardLink(int id, int zoneId, TeamFaction team) {
+    public void removeGraveYardLink(int id, int zoneId, Team team) {
         removeGraveYardLink(id, zoneId, team, false);
     }
 
-    public void removeGraveYardLink(int id, int zoneId, TeamFaction team, boolean persist) {
+    public void removeGraveYardLink(int id, int zoneId, Team team, boolean persist) {
         var range = graveYardStorage.get(zoneId);
 
         if (range.isEmpty()) {
@@ -1839,7 +1848,7 @@ public final class ObjectManager {
         creature.requiredExpansion = fields.<Integer>Read(15);
         creature.vignetteID = fields.<Integer>Read(16);
         creature.faction = fields.<Integer>Read(17);
-        creature.npcflag = fields.<Long>Read(18);
+        creature.npcFlag = fields.<Long>Read(18);
         creature.speedWalk = fields.<Float>Read(19);
         creature.speedRun = fields.<Float>Read(20);
         creature.scale = fields.<Float>Read(21);
@@ -1921,7 +1930,7 @@ public final class ObjectManager {
         creature.regenHealth = fields.<Boolean>Read(66);
         creature.mechanicImmuneMask = fields.<Long>Read(67);
         creature.spellSchoolImmuneMask = fields.<Integer>Read(68);
-        creature.flagsExtra = CreatureFlagsExtra.forValue(fields.<Integer>Read(69));
+        creature.flagsExtra = CreatureFlagExtra.forValue(fields.<Integer>Read(69));
         creature.scriptID = getScriptId(fields.<String>Read(70));
         creature.stringId = fields.<String>Read(71);
 
@@ -2637,9 +2646,9 @@ public final class ObjectManager {
                 continue;
             }
 
-            if (cInfo.npcflag != difficultyInfo.npcflag) {
+            if (cInfo.npcFlag != difficultyInfo.npcFlag) {
                 Logs.SQL.error("Creature (Entry: {0}) has different `npcflag` in difficulty {1} mode (Entry: {2}).", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff]);
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `npcflag`=`npcflag`^{0} WHERE `entry`={1};", cInfo.Npcflag ^ difficultyInfo.npcflag, cInfo.DifficultyEntry[diff]);
+                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `npcflag`=`npcflag`^{0} WHERE `entry`={1};", cInfo.Npcflag ^ difficultyInfo.npcFlag, cInfo.DifficultyEntry[diff]);
 
                 continue;
             }
@@ -2688,7 +2697,7 @@ public final class ObjectManager {
                 Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `mechanic_immune_mask`=`mechanic_immune_mask`|{0} WHERE `entry`={1};", differenceMask, cInfo.DifficultyEntry[diff]);
             }
 
-            differenceMask = (int) ((cInfo.FlagsExtra ^ difficultyInfo.flagsExtra.getValue()) & (~CreatureFlagsExtra.InstanceBind));
+            differenceMask = (int) ((cInfo.FlagsExtra ^ difficultyInfo.flagsExtra.getValue()) & (~CreatureFlagExtra.InstanceBind));
 
             if (differenceMask != 0) {
                 Logs.SQL.error("Creature (Entry: {0}, flags_extra: {1}) has different `flags_extra` in difficulty {2} mode (Entry: {3}, flags_extra: {4}).", cInfo.entry, cInfo.flagsExtra, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.flagsExtra);
@@ -2810,11 +2819,11 @@ public final class ObjectManager {
             cInfo.requiredExpansion = 0;
         }
 
-        var badFlags = (int) (cInfo.flagsExtra.getValue() & ~CreatureFlagsExtra.DBAllowed.getValue().getValue());
+        var badFlags = (int) (cInfo.flagsExtra.getValue() & ~CreatureFlagExtra.DBAllowed.getValue().getValue());
 
         if (badFlags != 0) {
             Log.outTrace(LogFilter.Sql, "Table `creature_template` lists creature (Entry: {0}) with disallowed `flags_extra` {1}, removing incorrect flag.", cInfo.entry, badFlags);
-            cInfo.flagsExtra = CreatureFlagsExtra.forValue(cInfo.flagsExtra.getValue() & CreatureFlagsExtra.DBAllowed.getValue());
+            cInfo.flagsExtra = CreatureFlagExtra.forValue(cInfo.flagsExtra.getValue() & CreatureFlagExtra.DBAllowed.getValue());
         }
 
         var disallowedUnitFlags = (int) (cInfo.UnitFlag.getValue() & ~UnitFlag.Allowed.getValue().getValue());
@@ -2857,9 +2866,9 @@ public final class ObjectManager {
 
         cInfo.ModDamage *= CREATURE._GetDamageMod(cInfo.rank);
 
-        if (cInfo.gossipMenuId != 0 && !cInfo.npcflag.hasFlag((long) NPCFlags.Gossip.getValue())) {
+        if (cInfo.gossipMenuId != 0 && !cInfo.npcFlag.hasFlag((long) NPCFlag.Gossip.getValue())) {
             Log.outInfo(LogFilter.Sql, String.format("Creature (Entry: %1$s) has assigned gossip menu %2$s, but npcflag does not include UNIT_NPC_FLAG_GOSSIP.", cInfo.entry, cInfo.gossipMenuId));
-        } else if (cInfo.gossipMenuId == 0 && cInfo.npcflag.hasFlag((long) NPCFlags.Gossip.getValue())) {
+        } else if (cInfo.gossipMenuId == 0 && cInfo.npcFlag.hasFlag((long) NPCFlag.Gossip.getValue())) {
             Log.outInfo(LogFilter.Sql, String.format("Creature (Entry: %1$s) has npcflag UNIT_NPC_FLAG_GOSSIP, but gossip menu is unassigned.", cInfo.entry));
         }
     }
@@ -3406,26 +3415,26 @@ public final class ObjectManager {
     public void loadCreatures() {
         var time = System.currentTimeMillis();
 
-        //                                         0              1   2    3           4           5           6            7        8             9              10
-        var result = DB.World.query("SELECT creature.guid, id, map, position_x, position_y, position_z, orientation, modelid, equipment_id, spawntimesecs, wander_distance, " + "currentwaypoint, curhealth, curmana, movementType, spawnDifficulties, eventEntry, poolSpawnId, creature.npcflag, creature.unit_flags, creature.unit_flags2, creature.unit_flags3, " + "creature.dynamicflags, creature.phaseUseFlags, creature.phaseid, creature.phasegroup, creature.terrainSwapMap, creature.scriptName, creature.StringId " + "FROM creature LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid LEFT OUTER JOIN pool_members ON pool_members.type = 0 AND creature.guid = pool_members.spawnId");
+        try(var items = creatureRepository.streamAllCreature()) {
+            items.forEach(data -> {
+                var cInfo = getCreatureTemplate(data.id);
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creatures. DB table `creature` is empty.");
+                if (cInfo == null) {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {}) with non existing creature entry {}, skipped.", data.spawnId, data.id);
+                    return;
+                }
 
-            return;
+                data.spawnGroupData = isTransportMap(data.mapId) ? getLegacySpawnGroup() : getDefaultSpawnGroup(); // transport spawns default to compatibility group
+
+            });
         }
 
         // Build single time for check spawnmask
-        HashMap<Integer, ArrayList<Difficulty>> spawnMasks = new HashMap<Integer, ArrayList<Difficulty>>();
+        HashMap<Integer, List<Difficulty>> spawnMasks = new HashMap<>();
 
-        for (var mapDifficultyPair : global.getDB2Mgr().GetMapDifficulties().entrySet()) {
-            for (var difficultyPair : mapDifficultyPair.getValue()) {
-                if (!spawnMasks.containsKey(mapDifficultyPair.getKey())) {
-                    spawnMasks.put(mapDifficultyPair.getKey(), new ArrayList<Difficulty>());
-                }
-
-                spawnMasks.get(mapDifficultyPair.getKey()).add(Difficulty.forValue(difficultyPair.key));
-            }
+        for (var mapDifficulty : dbcObjectManager.mapDifficulty()) {
+            spawnMasks.compute(mapDifficulty.getMapID().intValue(),
+                    Functions.addToList(Difficulty.values()[mapDifficulty.getDifficultyID()]));
         }
 
         PhaseShift phaseShift = new PhaseShift();
@@ -3436,43 +3445,9 @@ public final class ObjectManager {
             var guid = result.<Long>Read(0);
             var entry = result.<Integer>Read(1);
 
-            var cInfo = getCreatureTemplate(entry);
 
-            if (cInfo == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature WHERE id = %1$s", entry));
-                } else {
-                    Logs.SQL.error("Table `creature` has creature (GUID: {0}) with non existing creature entry {1}, skipped.", guid, entry);
-                }
 
-                continue;
-            }
 
-            CreatureData data = new creatureData();
-            data.setSpawnId(guid);
-            data.id = entry;
-            data.setMapId(result.<SHORT>Read(2));
-            data.spawnPoint = new Position(result.<Float>Read(3), result.<Float>Read(4), result.<Float>Read(5), result.<Float>Read(6));
-            data.displayid = result.<Integer>Read(7);
-            data.equipmentId = result.<Byte>Read(8);
-            data.spawntimesecs = result.<Integer>Read(9);
-            data.wanderDistance = result.<Float>Read(10);
-            data.currentwaypoint = result.<Integer>Read(11);
-            data.curhealth = result.<Integer>Read(12);
-            data.curmana = result.<Integer>Read(13);
-            data.movementType = result.<Byte>Read(14);
-            data.spawnDifficulties = parseSpawnDifficulties(result.<String>Read(15), "creature", guid, data.getMapId(), spawnMasks.get(data.getMapId()));
-            var gameEvent = result.<SHORT>Read(16);
-            data.poolId = result.<Integer>Read(17);
-            data.npcflag = result.<Long>Read(18);
-            data.unitFlags = result.<Integer>Read(19);
-            data.unitFlags2 = result.<Integer>Read(20);
-            data.unitFlags3 = result.<Integer>Read(21);
-            data.dynamicflags = result.<Integer>Read(22);
-            data.phaseUseFlags = PhaseUseFlagsValues.forValue(result.<Byte>Read(23));
-            data.phaseId = result.<Integer>Read(24);
-            data.phaseGroup = result.<Integer>Read(25);
-            data.terrainSwapMap = result.<Integer>Read(26);
 
             var scriptId = result.<String>Read(27);
 
@@ -3518,7 +3493,7 @@ public final class ObjectManager {
                 }
             }
 
-            if (cInfo.flagsExtra.hasFlag(CreatureFlagsExtra.InstanceBind)) {
+            if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.InstanceBind)) {
                 if (!mapEntry.IsDungeon()) {
                     Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `creature_template`.`flagsextra` including CREATUREFLAGEXTRAINSTANCEBIND " + "but creature are not in instance.", guid, data.id);
                 }
@@ -4206,6 +4181,7 @@ public final class ObjectManager {
     public void loadGameObjects() {
         var time = System.currentTimeMillis();
 
+
         //                                         0                1   2    3           4           5           6
         var result = DB.World.query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, " + "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnDifficulties, eventEntry, poolSpawnId, " + "phaseUseFlags, phaseid, phasegroup, terrainSwapMap, ScriptName " + "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid " + "LEFT OUTER JOIN pool_members ON pool_members.type = 1 AND gameobject.guid = pool_members.spawnId");
 
@@ -4271,7 +4247,7 @@ public final class ObjectManager {
             data.rotation.Y = result.<Float>Read(8);
             data.rotation.Z = result.<Float>Read(9);
             data.rotation.W = result.<Float>Read(10);
-            data.spawntimesecs = result.<Integer>Read(11);
+            data.spawnTimeSecs = result.<Integer>Read(11);
             data.setSpawnGroupData(isTransportMap(data.getMapId()) ? getLegacySpawnGroup() : getDefaultSpawnGroup()); // transport spawns default to compatibility group
 
             var mapEntry = CliDB.MapStorage.get(data.getMapId());
@@ -4282,7 +4258,7 @@ public final class ObjectManager {
                 continue;
             }
 
-            if (data.spawntimesecs == 0 && gInfo.isDespawnAtAction()) {
+            if (data.spawnTimeSecs == 0 && gInfo.isDespawnAtAction()) {
                 Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with `spawntimesecs` (0) second, but the gameobejct is marked as despawnable at action.", guid, data.id);
             }
 
@@ -4915,7 +4891,7 @@ public final class ObjectManager {
             return false;
         }
 
-        if (!(boolean) (((long) cInfo.npcflag | ORnpcflag) & (long) NPCFlags.vendor.getValue())) {
+        if (!(boolean) (((long) cInfo.npcFlag | ORnpcflag) & (long) NPCFlag.vendor.getValue())) {
             if (skipvendors == null || skipvendors.isEmpty()) {
                 if (player != null) {
                     player.sendSysMessage(CypherStrings.CommandVendorselection);
@@ -5284,7 +5260,7 @@ public final class ObjectManager {
                         continue;
                     }
 
-                    creatureInfo.flagsExtra = CreatureFlagsExtra.forValue(creatureInfo.flagsExtra.getValue() | CreatureFlagsExtra.DungeonBoss.getValue());
+                    creatureInfo.flagsExtra = CreatureFlagExtra.forValue(creatureInfo.flagsExtra.getValue() | CreatureFlagExtra.DungeonBoss.getValue());
 
                     for (byte diff = 0; diff < SharedConst.MaxCreatureDifficulties; ++diff) {
                         var diffEntry = creatureInfo.DifficultyEntry[diff];
@@ -5293,7 +5269,7 @@ public final class ObjectManager {
                             var diffInfo = getCreatureTemplate(diffEntry);
 
                             if (diffInfo != null) {
-                                diffInfo.flagsExtra = CreatureFlagsExtra.forValue(diffInfo.flagsExtra.getValue() | CreatureFlagsExtra.DungeonBoss.getValue());
+                                diffInfo.flagsExtra = CreatureFlagExtra.forValue(diffInfo.flagsExtra.getValue() | CreatureFlagExtra.DungeonBoss.getValue());
                             }
                         }
                     }
@@ -5333,59 +5309,47 @@ public final class ObjectManager {
     public void loadSpawnGroupTemplates() {
         var oldMSTime = System.currentTimeMillis();
 
-        //                                         0        1          2
-        var result = DB.World.query("SELECT groupId, groupName, groupFlags FROM spawn_group_template");
-
-        if (!result.isEmpty()) {
-            do {
-                var groupId = result.<Integer>Read(0);
-                SpawnGroupTemplateData group = new SpawnGroupTemplateData();
-                group.setGroupId(groupId);
-                group.setName(result.<String>Read(1));
-                group.setMapId((int) 0xFFFFFFFF);
-                var flags = SpawnGroupFlags.forValue(result.<Integer>Read(2));
-
-                if (flags.hasFlag(~SpawnGroupFlags.All)) {
-                    flags = SpawnGroupFlags.forValue(flags.getValue() & SpawnGroupFlags.All.getValue());
-                    Logs.SQL.error(String.format("Invalid spawn group flag %1$s on group ID %2$s (%3$s), reduced to valid flag %4$s.", flags, groupId, group.getName(), group.getFlags()));
+        try(var items = miscRepository.streamAllSpawnGroupTemplate()) {
+            items.forEach(e -> {
+                if (e.flags.hasNotFlag(SpawnGroupFlag.ALL))
+                {
+                    int orig = e.flags.getFlag();
+                    e.flags.removeNotFlag(SpawnGroupFlag.ALL);
+                    Logs.SQL.error("Invalid spawn group flag {} on group ID {} ({}), reduced to valid flag {}.", e.flags, e.groupId, e.name, orig);
                 }
+                if (e.flags.hasFlag(SpawnGroupFlag.SYSTEM, SpawnGroupFlag.MANUAL_SPAWN))
+                {
 
-                if (flags.hasFlag(SpawnGroupFlags.System) && flags.hasFlag(SpawnGroupFlags.ManualSpawn)) {
-                    flags = SpawnGroupFlags.forValue(flags.getValue() & ~SpawnGroupFlags.ManualSpawn.getValue());
-                    Logs.SQL.error(String.format("System spawn group %1$s (%2$s) has invalid manual spawn flag. Ignored.", groupId, group.getName()));
+                    e.flags.removeNotFlag(SpawnGroupFlag.MANUAL_SPAWN);
+                    Logs.SQL.error("System spawn group {} ({}) has invalid manual spawn flag. Ignored.", e.groupId, e.name);
                 }
-
-                group.setFlags(flags);
-
-                spawnGroupDataStorage.put(groupId, group);
-            } while (result.NextRow());
+                spawnGroupDataStorage.put(e.groupId, e);
+            });
         }
+
+
 
         if (!spawnGroupDataStorage.containsKey(0)) {
             Logs.SQL.error("Default spawn group (index 0) is missing from DB! Manually inserted.");
             SpawnGroupTemplateData data = new SpawnGroupTemplateData();
-            data.setGroupId(0);
-            data.setName("Default Group");
-            data.setMapId(0);
-            data.setFlags(SpawnGroupFlags.System);
+            data.groupId = 0;
+            data.name = "Default Group";
+            data.mapId = 0;
+            data.flags = EnumFlag.of(SpawnGroupFlag.SYSTEM);
             spawnGroupDataStorage.put(0, data);
         }
 
         if (!spawnGroupDataStorage.containsKey(1)) {
             Logs.SQL.error("Default legacy spawn group (index 1) is missing from DB! Manually inserted.");
             SpawnGroupTemplateData data = new SpawnGroupTemplateData();
-            data.setGroupId(1);
-            data.setName("Legacy Group");
-            data.setMapId(0);
-            data.setFlags(SpawnGroupFlags.forValue(SpawnGroupFlags.System.getValue() | SpawnGroupFlags.CompatibilityMode.getValue()));
+            data.groupId = 0;
+            data.name = "Legacy Group";
+            data.mapId = 0;
+            data.flags = EnumFlag.of(SpawnGroupFlag.SYSTEM , SpawnGroupFlag.COMPATIBILITY_MODE);
             spawnGroupDataStorage.put(1, data);
         }
 
-        if (!result.isEmpty()) {
-            Logs.SERVER_LOADING.info(String.format("Loaded %1$s spawn group templates in %2$s ms", spawnGroupDataStorage.size(), time.GetMSTimeDiffToNow(oldMSTime)));
-        } else {
-            Logs.SERVER_LOADING.info("Loaded 0 spawn group templates. DB table `spawn_group_template` is empty.");
-        }
+        Logs.SERVER_LOADING.info(">> Loaded {} spawn group templates in {} ms", spawnGroupDataStorage.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadSpawnGroups() {
@@ -5655,21 +5619,11 @@ public final class ObjectManager {
     }
 
     public SpawnGroupTemplateData getDefaultSpawnGroup() {
-        TValue gt;
-        if (!(spawnGroupDataStorage.containsKey(0) && (gt = spawnGroupDataStorage.get(0)) == gt)) {
-            gt = spawnGroupDataStorage.ElementAt(0).value;
-        }
-
-        return gt;
+        return spawnGroupDataStorage.get(0);
     }
 
     public SpawnGroupTemplateData getLegacySpawnGroup() {
-        TValue gt;
-        if (!(spawnGroupDataStorage.containsKey(1) && (gt = spawnGroupDataStorage.get(1)) == gt)) {
-            gt = spawnGroupDataStorage.ElementAt(1).value;
-        }
-
-        return gt;
+        return spawnGroupDataStorage.get(1);
     }
 
     public ArrayList<SpawnMetadata> getSpawnMetadataForGroup(int groupId) {
@@ -6583,181 +6537,111 @@ public final class ObjectManager {
     //Faction Change
     public void loadFactionChangeAchievements() {
         var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.World.query("SELECT alliance_id, horde_id FROM player_factionchange_achievement");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 faction change achievement pairs. DB table `player_factionchange_achievement` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeAchievement()) {
+            items.forEach(fields -> {
+                if (!dbcObjectManager.achievement().contains(fields[0])) {
+                    Logs.SQL.error("Achievement {} (alliance_id) referenced in `player_factionchange_achievement` does not exist, pair skipped!", fields[0]);
+                } else if (!dbcObjectManager.achievement().contains(fields[1])) {
+                    Logs.SQL.error("Achievement {} (horde_id) referenced in `player_factionchange_achievement` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeAchievements.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var alliance = result.<Integer>Read(0);
-            var horde = result.<Integer>Read(1);
-
-            if (!CliDB.AchievementStorage.containsKey(alliance)) {
-                Logs.SQL.error("Achievement {0} (alliance_id) referenced in `player_factionchange_achievement` does not exist, pair skipped!", alliance);
-            } else if (!CliDB.AchievementStorage.containsKey(horde)) {
-                Logs.SQL.error("Achievement {0} (horde_id) referenced in `player_factionchange_achievement` does not exist, pair skipped!", horde);
-            } else {
-                factionChangeAchievements.put(alliance, horde);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change achievement pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change achievement pairs in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadFactionChangeItems() {
         var oldMSTime = System.currentTimeMillis();
-
-        int count = 0;
-
-        for (var itemPair : itemTemplateStorage.entrySet()) {
-            if (itemPair.getValue().OtherFactionItemId == 0) {
-                continue;
-            }
-
-            if (itemPair.getValue().hasFlag(ItemFlags2.FactionHorde)) {
-                factionChangeItemsHordeToAlliance.put(itemPair.getKey(), itemPair.getValue().OtherFactionItemId);
-            }
-
-            if (itemPair.getValue().hasFlag(ItemFlags2.FactionAlliance)) {
-                factionChangeItemsAllianceToHorde.put(itemPair.getKey(), itemPair.getValue().OtherFactionItemId);
-            }
-
-            ++count;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeItem()) {
+            items.forEach(fields -> {
+                if (!dbcObjectManager.item().contains(fields[0])) {
+                    Logs.SQL.error("Item {} (alliance_id) referenced in `player_factionchange_items` does not exist, pair skipped!", fields[0]);
+                } else if (!dbcObjectManager.item().contains(fields[1])) {
+                    Logs.SQL.error("Item {} (horde_id) referenced in `player_factionchange_items` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeItemsAllianceToHorde.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change item pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change achievement pairs in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadFactionChangeQuests() {
         var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.World.query("SELECT alliance_id, horde_id FROM player_factionchange_quests");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 faction change quest pairs. DB table `player_factionchange_quests` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeQuests()) {
+            items.forEach(fields -> {
+                if (!questTemplates.containsKey(fields[0])) {
+                    Logs.SQL.error("Quest {} (alliance_id) referenced in `player_factionchange_quests` does not exist, pair skipped!", fields[0]);
+                } else if (!questTemplates.containsKey(fields[1])) {
+                    Logs.SQL.error("Quest {} (horde_id) referenced in `player_factionchange_quests` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeQuests.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var alliance = result.<Integer>Read(0);
-            var horde = result.<Integer>Read(1);
-
-            if (getQuestTemplate(alliance) == null) {
-                Logs.SQL.error("Quest {0} (alliance_id) referenced in `player_factionchange_quests` does not exist, pair skipped!", alliance);
-            } else if (getQuestTemplate(horde) == null) {
-                Logs.SQL.error("Quest {0} (horde_id) referenced in `player_factionchange_quests` does not exist, pair skipped!", horde);
-            } else {
-                factionChangeQuests.put(alliance, horde);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change quest pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change quest pairs in {} ms.", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadFactionChangeReputations() {
         var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.World.query("SELECT alliance_id, horde_id FROM player_factionchange_reputations");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 faction change reputation pairs. DB table `player_factionchange_reputations` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeReputations()) {
+            items.forEach(fields -> {
+                if (!dbcObjectManager.faction().contains(fields[0])) {
+                    Logs.SQL.error("Reputation {} (alliance_id) referenced in `player_factionchange_reputations` does not exist, pair skipped!", fields[0]);
+                } else if (!dbcObjectManager.faction().contains(fields[1])) {
+                    Logs.SQL.error("Reputation {} (horde_id) referenced in `player_factionchange_reputations` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeReputation.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change reputation pairs in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
-        int count = 0;
-
-        do {
-            var alliance = result.<Integer>Read(0);
-            var horde = result.<Integer>Read(1);
-
-            if (!CliDB.FactionStorage.containsKey(alliance)) {
-                Logs.SQL.error("Reputation {0} (alliance_id) referenced in `player_factionchange_reputations` does not exist, pair skipped!", alliance);
-            } else if (!CliDB.FactionStorage.containsKey(horde)) {
-                Logs.SQL.error("Reputation {0} (horde_id) referenced in `player_factionchange_reputations` does not exist, pair skipped!", horde);
-            } else {
-                factionChangeReputation.put(alliance, horde);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change reputation pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
     }
 
     public void loadFactionChangeSpells() {
         var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.World.query("SELECT alliance_id, horde_id FROM player_factionchange_spells");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 faction change spell pairs. DB table `player_factionchange_spells` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeSpells()) {
+            items.forEach(fields -> {
+                if (!spellManager.hasSpellInfo(fields[0], Difficulty.NONE)) {
+                    Logs.SQL.error("Spell {} (alliance_id) referenced in `player_factionchange_spells` does not exist, pair skipped!", fields[0]);
+                } else if (!spellManager.hasSpellInfo(fields[1])) {
+                    Logs.SQL.error("Spell {} (horde_id) referenced in `player_factionchange_spells` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeSpells.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var alliance = result.<Integer>Read(0);
-            var horde = result.<Integer>Read(1);
-
-            if (!global.getSpellMgr().hasSpellInfo(alliance, Difficulty.NONE)) {
-                Logs.SQL.error("Spell {0} (alliance_id) referenced in `player_factionchange_spells` does not exist, pair skipped!", alliance);
-            } else if (!global.getSpellMgr().hasSpellInfo(horde, Difficulty.NONE)) {
-                Logs.SQL.error("Spell {0} (horde_id) referenced in `player_factionchange_spells` does not exist, pair skipped!", horde);
-            } else {
-                factionChangeSpells.put(alliance, horde);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change spell pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change spell pairs in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadFactionChangeTitles() {
         var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.World.query("SELECT alliance_id, horde_id FROM player_factionchange_titles");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 faction change title pairs. DB table `player_factionchange_title` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = miscRepository.streamAllPlayerFactionChangeTitles()) {
+            items.forEach(fields -> {
+                if (!dbcObjectManager.charTitle().contains(fields[0])) {
+                    Logs.SQL.error("Title {} (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", fields[0]);
+                } else if (!dbcObjectManager.charTitle().contains(fields[1])) {
+                    Logs.SQL.error("Title {} (horde_id) referenced in `player_factionchange_title` does not exist, pair skipped!", fields[1]);
+                } else {
+                    factionChangeTitles.put(fields[0], fields[1]);
+                }
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var alliance = result.<Integer>Read(0);
-            var horde = result.<Integer>Read(1);
-
-            if (!CliDB.CharTitlesStorage.containsKey(alliance)) {
-                Logs.SQL.error("Title {0} (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", alliance);
-            } else if (!CliDB.CharTitlesStorage.containsKey(horde)) {
-                Logs.SQL.error("Title {0} (horde_id) referenced in `player_factionchange_title` does not exist, pair skipped!", horde);
-            } else {
-                factionChangeTitles.put(alliance, horde);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} faction change title pairs in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} faction change title pairs in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     //Quests
@@ -6821,7 +6705,7 @@ public final class ObjectManager {
 
                 if (playerConditionId != 0 && dbcObjectManager.playerCondition(playerConditionId) != null) {
                     if (conditionManager.hasConditionsForNotGroupedEntry(ConditionSourceType.PLAYER_CONDITION, playerConditionId)) {
-                        Logs.SQL.error("Table `quest_reward_display_spell` has serverside PlayerCondition ({}) set for quest {} and spell {} without conditions. Set to 0.", playerConditionId, fields[0].GetUInt32(), spellId);
+                        Logs.SQL.error("Table `quest_reward_display_spell` has serverside PlayerCondition ({}) set for quest {} and spell {} without conditions. Set to 0.", playerConditionId, e[0], spellId);
                         playerConditionId = 0;
                     }
                 }
@@ -6950,6 +6834,7 @@ public final class ObjectManager {
 
 
         // Load `quest_objectives`
+        Map<Integer, QuestObjective> tmpObjectives = new HashMap<>();
         try (var items = questRepository.streamAllQuestObjectives()) {
             items.forEach(e -> {
                 QuestInfo questInfo = tmp.get(e.questID);
@@ -6957,6 +6842,7 @@ public final class ObjectManager {
                     Logs.SQL.error("Table `quest_objectives` has data for quest {} but such quest does not exist", e.questID);
                     return;
                 }
+                tmpObjectives.put(e.objectID, e);
                 questInfo.objectives.add(e);
                 questInfo.usedQuestObjectiveTypes.set(e.type.ordinal(), true);
             });
@@ -6982,6 +6868,66 @@ public final class ObjectManager {
                     }
                 }
 
+            });
+        }
+
+        // Load `quest_template_locale`
+        try (var items = questRepository.streamAllQuestTemplateLocale()) {
+            items.forEach(e -> {
+                QuestInfo questInfo = tmp.get(e.id);
+                if (questInfo == null) {
+                    Logs.SQL.error("Table `quest_template_locale` has data for quest {} but such quest does not exist", e.id);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                questInfo.logTitle.set(locale, e.logTitle);
+                questInfo.logDescription.set(locale, e.logDescription);
+                questInfo.areaDescription.set(locale, e.areaDescription);
+                questInfo.questDescription.set(locale, e.questDescription);
+                questInfo.questCompletionLog.set(locale, e.questCompletionLog);
+                questInfo.portraitGiverName.set(locale, e.portraitGiverName);
+                questInfo.portraitGiverText.set(locale, e.portraitGiverText);
+                questInfo.portraitTurnInName.set(locale, e.portraitTurnInName);
+                questInfo.portraitTurnInText.set(locale, e.portraitTurnInText);
+            });
+        }
+
+        // Load `quest_offer_reward_locale`
+        try (var items = questRepository.streamAllQuestOfferRewardLocale()) {
+            items.forEach(e -> {
+                QuestInfo questInfo = tmp.get(e.id);
+                if (questInfo == null) {
+                    Logs.SQL.error("Table `quest_offer_reward_locale` has data for quest {} but such quest does not exist", e.id);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                questInfo.offerRewardText.set(locale, e.rewardText);
+            });
+        }
+
+        // Load `quest_objectives_locale`
+        try (var items = questRepository.streamAllQuestObjectivesLocale()) {
+            items.forEach(e -> {
+                QuestObjective questObjective = tmpObjectives.get(e.id);
+                if (questObjective == null) {
+                    Logs.SQL.error("Table `quest_objectives_locale` has data for quest objective {} but such quest objective does not exist", e.id);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                questObjective.description.set(locale, e.description);
+            });
+        }
+
+        // Load `quest_request_items_locale`
+        try (var items = questRepository.streamAllQuestRequestItemsLocale()) {
+            items.forEach(e -> {
+                QuestInfo questInfo = tmp.get(e.id);
+                if (questInfo == null) {
+                    Logs.SQL.error("Table `quest_request_items_locale` has data for quest {} but such quest does not exist", e.id);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                questInfo.requestItemsText.set(locale, e.completionText);
             });
         }
 
@@ -7330,10 +7276,10 @@ public final class ObjectManager {
                     }
 
                     if (qinfo.rewardChoiceItemCount[j] == 0) {
-                        Logs.SQL.error(String.format("Quest %1$s has `RewardChoiceItemId%2$s` = %3$s but `RewardChoiceItemCount%4$s` = 0, quest can't be done.", qinfo.id, j + 1, id, j + 1));
+                        Logs.SQL.error("Quest {} has `RewardChoiceItemId{}` = {} but `RewardChoiceItemCount{}` = 0.", qinfo.id, j + 1, id, j + 1);
                     }
                 } else if (qinfo.rewardChoiceItemCount[j] > 0) {
-                    Logs.SQL.error(String.format("Quest %1$s has `RewardChoiceItemId%2$s` = 0 but `RewardChoiceItemCount%3$s` = %4$s.", qinfo.id, j + 1, j + 1, qinfo.RewardChoiceItemCount[j]));
+                    Logs.SQL.error("Quest {} has `RewardChoiceItemId{}` = 0 but `RewardChoiceItemCount{}` = {}.", qinfo.id, j + 1, j + 1, qinfo.rewardChoiceItemCount[j]);
                     // no changes, quest ignore this data
                 }
             }
@@ -7425,7 +7371,7 @@ public final class ObjectManager {
 
                     // no changes, quest can't be done for this requirement
                     if (!dbcObjectManager.currencyType().contains(qinfo.rewardCurrencyId[j])) {
-                        Logs.SQL.error("Quest {} has `RewardCurrencyId{}` = {} but currency with entry {} does not exist, quest can't be done.", qinfo.id, j + 1, qinfo.rewardCurrencyId[j], qinfo.RewardCurrencyId[j]);
+                        Logs.SQL.error("Quest {} has `RewardCurrencyId{}` = {} but currency with entry {} does not exist, quest can't be done.", qinfo.id, j + 1, qinfo.rewardCurrencyId[j], qinfo.rewardCurrencyId[j]);
 
                         qinfo.rewardCurrencyCount[j] = 0; // prevent incorrect work of quest
                     }
@@ -7566,290 +7512,230 @@ public final class ObjectManager {
     }
 
     public void loadQuestStartersAndEnders() {
+        long oldMSTime = System.currentTimeMillis();
         Logs.SERVER_LOADING.info("Loading GO Start Quest data...");
-        loadGameobjectQuestStarters();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = questRepository.streamAllGameObjectQuestStarter()) {
+            items.forEach(fields -> {
+                if (!questTemplates.containsKey(fields[1])) {
+                    Logs.SQL.error("Table `gameobject_queststarter`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
+                    return;
+                }
+                GameObjectTemplate gameObjectTemplate = gameObjectTemplateStorage.get(fields[1]);
+                if (gameObjectTemplate == null) {
+                    Logs.SQL.error("Table `gameobject_queststarter` has data for nonexistent gameobject entry ({}) and existed quest {}", fields[0], fields[1]);
+                    return;
+                } else if (gameObjectTemplate.type != GameObjectType.QUEST_GIVER) {
+                    Logs.SQL.error("Table `gameobject_queststarter` has data gameobject entry ({}) for quest {}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER", fields[0], fields[1]);
+                    return;
+                }
+
+                this.goQuestRelations.compute(fields[0], Functions.addToList(fields[1]));
+                count.getAndIncrement();
+            });
+        }
+
+        Logs.SERVER_LOADING.info("Loaded {} quest relations from `gameobject_queststarter` in {} ms", count, System.currentTimeMillis() - (oldMSTime));
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
+
         Logs.SERVER_LOADING.info("Loading GO End Quest data...");
-        loadGameobjectQuestEnders();
+        try (var items = questRepository.streamAllGameObjectQuestEnder()) {
+            items.forEach(fields -> {
+                if (!questTemplates.containsKey(fields[1])) {
+                    Logs.SQL.error("Table `gameobject_questender`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
+                    return;
+                }
+                GameObjectTemplate gameObjectTemplate = gameObjectTemplateStorage.get(fields[1]);
+                if (gameObjectTemplate == null) {
+                    Logs.SQL.error("Table `gameobject_questender` has data for nonexistent gameobject entry ({}) and existed quest {}.", fields[0], fields[1]);
+                    return;
+                } else if (gameObjectTemplate.type != GameObjectType.QUEST_GIVER) {
+                    Logs.SQL.error("Table `gameobject_questender` has data gameobject entry ({}) for quest {}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER.", fields[0], fields[1]);
+                    return;
+                }
+                this.creatureQuestRelations.compute(fields[0], Functions.addToList(fields[1]));
+                count.getAndIncrement();
+            });
+        }
+
+        Logs.SERVER_LOADING.info("Loaded {} quest relations from `gameobject_questender` in {} ms", count, System.currentTimeMillis() - (oldMSTime));
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
+
         Logs.SERVER_LOADING.info("Loading Creature Start Quest data...");
-        loadCreatureQuestStarters();
+        try (var items = questRepository.streamAllCreatureQuestStarter()) {
+            items.forEach(fields -> {
+                if (!questTemplates.containsKey(fields[1])) {
+                    Logs.SQL.error("Table `creature_queststarter`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
+                    return;
+                }
+
+                CreatureTemplate creatureTemplate = creatureTemplateStorage.get(fields[1]);
+                if (creatureTemplate == null) {
+                    Logs.SQL.error("Table `creature_queststarter` has data for nonexistent creature entry ({}) and existed quest {}", fields[0], fields[1]);
+                    return;
+                } else if (!creatureTemplate.npcFlag.hasFlag(NPCFlag.QUEST_GIVER)) {
+                    Logs.SQL.error("Table `creature_queststarter` has data creature entry ({}) for quest {}, but npcflag does not include UNIT_NPC_FLAG_QUESTGIVER", fields[0], fields[1]);
+                    return;
+                }
+
+                this.creatureQuestRelations.compute(fields[0], Functions.addToList(fields[1]));
+                count.getAndIncrement();
+            });
+        }
+        Logs.SERVER_LOADING.info("Loaded {} quest relations from `creature_queststarter` in {} ms", count, System.currentTimeMillis() - (oldMSTime));
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
+
         Logs.SERVER_LOADING.info("Loading Creature End Quest data...");
-        loadCreatureQuestEnders();
-    }
+        try (var items = questRepository.streamAllCreatureQuestEnder()) {
+            items.forEach(fields -> {
+                if (!questTemplates.containsKey(fields[1])) {
+                    Logs.SQL.error("Table `gameobject_questender`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
+                    return;
+                }
+                CreatureTemplate creatureTemplate = creatureTemplateStorage.get(fields[1]);
+                if (creatureTemplate == null) {
+                    Logs.SQL.error("Table `creature_questender` has data for nonexistent creature entry ({}) and existed quest {}", fields[0], fields[1]);
+                    return;
+                } else if (!creatureTemplate.npcFlag.hasFlag(NPCFlag.QUEST_GIVER)) {
+                    Logs.SQL.error("Table `creature_questender` has data creature entry ({}) for quest {}, but npcflag does not include UNIT_NPC_FLAG_QUESTGIVER", fields[0], fields[1]);
+                    return;
+                }
 
-    public void loadGameobjectQuestStarters() {
-        loadQuestRelationsHelper(goQuestRelations, null, "gameobject_queststarter");
-
-        for (var pair : goQuestRelations.KeyValueList) {
-            var goInfo = getGameObjectTemplate(pair.key);
-
-            if (goInfo == null) {
-                Logs.SQL.error("Table `gameobject_queststarter` have data for not existed gameobject entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (goInfo.type != GameObjectType.QUEST_GIVER) {
-                Logs.SQL.error("Table `gameobject_queststarter` have data gameobject entry ({0}) for quest {1}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER", pair.key, pair.value);
-            }
+                this.creatureQuestInvolvedRelations.compute(fields[0], Functions.addToList(fields[1]));
+                this.creatureQuestInvolvedRelationsReverse.compute(fields[1], Functions.addToList(fields[0]));
+                count.getAndIncrement();
+            });
         }
-    }
+        Logs.SERVER_LOADING.info("Loaded {} quest relations from `gameobject_questender` in {} ms", count, System.currentTimeMillis() - (oldMSTime));
 
-    public void loadGameobjectQuestEnders() {
-        loadQuestRelationsHelper(goQuestInvolvedRelations, goQuestInvolvedRelationsReverse, "gameobject_questender");
-
-        for (var pair : goQuestInvolvedRelations.KeyValueList) {
-            var goInfo = getGameObjectTemplate(pair.key);
-
-            if (goInfo == null) {
-                Logs.SQL.error("Table `gameobject_questender` have data for not existed gameobject entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (goInfo.type != GameObjectType.QUEST_GIVER) {
-                Logs.SQL.error("Table `gameobject_questender` have data gameobject entry ({0}) for quest {1}, but GO is not GAMEOBJECT_TYPE_QUESTGIVER", pair.key, pair.value);
-            }
-        }
-    }
-
-    public void loadCreatureQuestStarters() {
-        loadQuestRelationsHelper(creatureQuestRelations, null, "creature_queststarter");
-
-        for (var pair : creatureQuestRelations.KeyValueList) {
-            var cInfo = getCreatureTemplate(pair.key);
-
-            if (cInfo == null) {
-                Log.outDebug(LogFilter.Sql, "Table `creature_queststarter` have data for not existed creature entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (!(boolean) (cInfo.npcflag & (int) NPCFlags.questGiver.getValue())) {
-                Log.outTrace(LogFilter.Sql, "Table `creature_queststarter` has creature entry ({0}) for quest {1}, but npcflag does not include UNIT_NPC_FLAG_QUESTGIVER", pair.key, pair.value);
-                cInfo.npcflag &= (int) NPCFlags.questGiver.getValue();
-            }
-        }
-    }
-
-    public void loadCreatureQuestEnders() {
-        loadQuestRelationsHelper(creatureQuestInvolvedRelations, creatureQuestInvolvedRelationsReverse, "creature_questender");
-
-        for (var pair : creatureQuestInvolvedRelations.KeyValueList) {
-            var cInfo = getCreatureTemplate(pair.key);
-
-            if (cInfo == null) {
-                Logs.SQL.error("Table `creature_questender` have data for not existed creature entry ({0}) and existed quest {1}", pair.key, pair.value);
-            } else if (!(boolean) (cInfo.npcflag & (int) NPCFlags.questGiver.getValue())) {
-                Log.outTrace(LogFilter.Sql, "Table `creature_questender` has creature entry ({0}) for quest {1}, but npcflag does not include UNIT_NPC_FLAG_QUESTGIVER", pair.key, pair.value);
-                cInfo.npcflag &= (int) NPCFlags.questGiver.getValue();
-            }
-        }
     }
 
     public void loadQuestPOI() {
         var oldMSTime = System.currentTimeMillis();
 
         questPOIStorage.clear(); // need for reload case
-
-        //                                         0        1          2     3               4                 5              6      7        8         9      10             11                 12                           13               14
-        var result = DB.World.query("SELECT questID, blobIndex, idx1, objectiveIndex, questObjectiveID, questObjectID, mapID, uiMapID, priority, flags, worldEffectID, playerConditionID, navigationPlayerConditionID, spawnTrackingID, AlwaysAllowMergingBlobs FROM quest_poi order by questID, Idx1");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 quest POI definitions. DB table `quest_poi` is empty.");
-
-            return;
+        HashMap<Integer, HashMap<Integer, List<QuestPOIBlobPoint>>> allPoints = new HashMap<>();
+        try (var items = questRepository.streamAllQuestPoiPoints()) {
+            items.forEach(e -> {
+                allPoints.compute(e.questId, Functions.ifAbsent(HashMap::new)).compute(e.idx1, Functions.addToList(e));
+            });
         }
 
-        HashMap<Integer, MultiMap<Integer, QuestPOIBlobPoint>> allPoints = new HashMap<Integer, MultiMap<Integer, QuestPOIBlobPoint>>();
 
-        //                                               0        1    2  3  4
-        var pointsResult = DB.World.query("SELECT questID, idx1, X, Y, Z FROM quest_poi_points ORDER BY QuestID DESC, idx1, Idx2");
-
-        if (!pointsResult.isEmpty()) {
-            do {
-                var questId = pointsResult.<Integer>Read(0);
-                var idx1 = pointsResult.<Integer>Read(1);
-                var x = pointsResult.<Integer>Read(2);
-                var y = pointsResult.<Integer>Read(3);
-                var z = pointsResult.<Integer>Read(4);
-
-                if (!allPoints.containsKey(questId)) {
-                    allPoints.put(questId, new MultiMap<Integer, QuestPOIBlobPoint>());
+        try (var items = questRepository.streamAllQuestPoi()) {
+            items.forEach(e -> {
+                if (getQuestTemplate(e.questID) == null) {
+                    Logs.SQL.error("`quest_poi` quest id ({}) Idx1 ({}) does not exist in `quest_template`", e.questID, e.idx1);
+                    return;
                 }
+                var blobs = allPoints.get(e.questID);
+                if (blobs != null) {
+                    var points = blobs.get(e.idx1);
 
-                allPoints.get(questId).add(idx1, new QuestPOIBlobPoint(x, y, z));
-            } while (pointsResult.NextRow());
-        }
+                    if (!points.isEmpty()) {
+                        if (!questPOIStorage.containsKey(e.questID)) {
+                            questPOIStorage.put(e.questID, new QuestPOIData(e.questID));
+                        }
+                        e.points = points;
+                        var poiData = questPOIStorage.get(e.questID);
+                        poiData.questID = e.questID;
 
-        do {
-            var questID = (int) result.<Integer>Read(0);
-            var blobIndex = result.<Integer>Read(1);
-            var idx1 = result.<Integer>Read(2);
-            var objectiveIndex = result.<Integer>Read(3);
-            var questObjectiveID = result.<Integer>Read(4);
-            var questObjectID = result.<Integer>Read(5);
-            var mapID = result.<Integer>Read(6);
-            var uiMapId = result.<Integer>Read(7);
-            var priority = result.<Integer>Read(8);
-            var flags = result.<Integer>Read(9);
-            var worldEffectID = result.<Integer>Read(10);
-            var playerConditionID = result.<Integer>Read(11);
-            var navigationPlayerConditionID = result.<Integer>Read(12);
-            var spawnTrackingID = result.<Integer>Read(13);
-            var alwaysAllowMergingBlobs = result.<Boolean>Read(14);
-
-            if (getQuestTemplate(questID) == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM quest_poi WHERE questID = %1$s", questID));
-                } else {
-                    Logs.SQL.error(String.format("`quest_poi` quest id (%1$s) idx1 (%2$s) does not exist in `quest_template`", questID, idx1));
-                }
-            }
-
-            var blobs = allPoints.get(questID);
-
-            if (blobs != null) {
-                var points = blobs.get(idx1);
-
-                if (!points.isEmpty()) {
-                    if (!questPOIStorage.containsKey(questID)) {
-                        questPOIStorage.put(questID, new QuestPOIData(questID));
+                        poiData.blobs.add(e);
                     }
-
-                    var poiData = questPOIStorage.get(questID);
-                    poiData.questID = questID;
-
-                    poiData.blobs.add(new QuestPOIBlobData(blobIndex, objectiveIndex, questObjectiveID, questObjectID, mapID, uiMapId, priority, flags, worldEffectID, playerConditionID, navigationPlayerConditionID, spawnTrackingID, points, alwaysAllowMergingBlobs));
-
-                    continue;
                 }
-            }
-
-            Logs.SQL.error(String.format("Table quest_poi references unknown quest points for quest %1$s POI id %2$s", questID, blobIndex));
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} quest POI definitions in {1} ms", questPOIStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} quest POI definitions in {} ms", questPOIStorage.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadQuestAreaTriggers() {
         var oldMSTime = System.currentTimeMillis();
 
         questAreaTriggerStorage.clear(); // need for reload case
+        AtomicInteger count = new AtomicInteger();
+        try (var items = questRepository.streamAllAreaTriggerInvolvedRelation()) {
+            items.forEach(fields -> {
+                AreaTrigger atEntry = dbcObjectManager.areaTrigger(fields[0]);
+                if (atEntry == null)
+                {
+                    Logs.SQL.error("Area trigger (ID:{}) does not exist in `AreaTrigger.dbc`.", fields[0]);
+                    return;
+                }
 
-        var result = DB.World.query("SELECT id, quest FROM areatrigger_involvedrelation");
+                Quest quest = getQuestTemplate(fields[1]);
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 quest trigger points. DB table `areatrigger_involvedrelation` is empty.");
+                if (quest == null)
+                {
+                    Logs.SQL.error("Table `areatrigger_involvedrelation` has record (id: {}) for not existing quest {}", fields[0], fields[1]);
+                    return;
+                }
 
-            return;
+                if (!quest.hasFlag(QuestFlag.COMPLETION_AREA_TRIGGER) && !quest.hasQuestObjectiveType(QuestObjectiveType.AREA_TRIGGER))
+                {
+                    Logs.SQL.error("Table `areatrigger_involvedrelation` has record (id: {}) for not quest {}, but quest not have flag QUEST_FLAGS_COMPLETION_AREA_TRIGGER and no objective with type QUEST_OBJECTIVE_AREATRIGGER. Trigger is obsolete, skipped.", fields[0], fields[1]);
+                    return;
+                }
+
+                questAreaTriggerStorage.compute(fields[0], Functions.addToSet(fields[1]));
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            ++count;
-
-            var trigger_ID = result.<Integer>Read(0);
-            var quest_ID = result.<Integer>Read(1);
-
-            var atEntry = CliDB.AreaTriggerStorage.get(trigger_ID);
-
-            if (atEntry == null) {
-                Logs.SQL.error("Area trigger (ID:{0}) does not exist in `AreaTrigger.dbc`.", trigger_ID);
-
-                continue;
-            }
-
-            var quest = getQuestTemplate(quest_ID);
-
-            if (quest == null) {
-                Logs.SQL.error("Table `areatrigger_involvedrelation` has record (id: {0}) for not existing quest {1}", trigger_ID, quest_ID);
-
-                continue;
-            }
-
-            if (!quest.hasSpecialFlag(QuestSpecialFlag.ExplorationOrEvent)) {
-                Logs.SQL.error("Table `areatrigger_involvedrelation` has record (id: {0}) for not quest {1}, but quest not have flag QUEST_SPECIAL_FLAGS_EXPLORATION_OR_EVENT. Trigger or quest flags must be fixed, quest modified to require objective.", trigger_ID, quest_ID);
-
-                // this will prevent quest completing without objective
-                quest.setSpecialFlag(QuestSpecialFlag.ExplorationOrEvent);
-
-                // continue; - quest modified to required objective and trigger can be allowed.
-            }
-
-            questAreaTriggerStorage.add(trigger_ID, quest_ID);
-        } while (result.NextRow());
 
         for (var pair : questObjectives.entrySet()) {
             var objective = pair.getValue();
 
             if (objective.type == QuestObjectiveType.AREA_TRIGGER) {
-                questAreaTriggerStorage.add((int) objective.objectID, objective.questID);
+                questAreaTriggerStorage.compute(objective.objectID, Functions.addToSet(objective.questID));
             }
         }
-
-        Logs.SERVER_LOADING.info("Loaded {0} quest trigger points in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info("Loaded {} quest trigger points in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadQuestGreetings() {
         var oldMSTime = System.currentTimeMillis();
 
-        for (var i = 0; i < 2; ++i) {
-            _questGreetingStorage[i] = new HashMap<Integer, QuestGreeting>();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = questRepository.streamAllQuestGreeting()) {
+            items.forEach(e -> {
+                switch (e.type) {
+                    case 0: // Creature
+                        if (getCreatureTemplate(e.id) == null) {
+                            Logs.SQL.error("Table `quest_greeting`: creature template entry {} does not exist.", e.id);
+                            return;
+                        }
+
+                        break;
+                    case 1: // GameObject
+                        if (getGameObjectTemplate(e.id) == null) {
+                            Logs.SQL.error("Table `quest_greeting`: gameobject template entry {} does not exist.", e.id);
+                            return;
+                        }
+                        break;
+                    default:
+                        return;
+                }
+                count.getAndIncrement();
+                questGreetingStorage.put((e.id << 1 | e.type), e);
+            });
         }
-
-        //                                         0   1          2                3
-        var result = DB.World.query("SELECT ID, type, greetEmoteType, greetEmoteDelay, Greeting FROM quest_greeting");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 npc texts, table is empty!");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var id = result.<Integer>Read(0);
-            var type = result.<Byte>Read(1);
-
-            switch (type) {
-                case 0: // Creature
-                    if (getCreatureTemplate(id) == null) {
-                        Logs.SQL.error("Table `quest_greeting`: creature template entry {0} does not exist.", id);
-
-                        continue;
-                    }
-
-                    break;
-                case 1: // GameObject
-                    if (getGameObjectTemplate(id) == null) {
-                        Logs.SQL.error("Table `quest_greeting`: gameobject template entry {0} does not exist.", id);
-
-                        continue;
-                    }
-
-                    break;
-                default:
-                    continue;
-            }
-
-            var greetEmoteType = result.<SHORT>Read(2);
-            var greetEmoteDelay = result.<Integer>Read(3);
-            var greeting = result.<String>Read(4);
-
-            _questGreetingStorage[type].put(id, new QuestGreeting(greetEmoteType, greetEmoteDelay, greeting));
-            count++;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s quest_greeting in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} Quest Greeting locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public Quest getQuestTemplate(int questId) {
-        return new Quest(questTemplates.get(questId), worldSetting, dbcObjectManager);
+        QuestInfo questInfo = questTemplates.get(questId);
+        if(questInfo == null) {
+            return null;
+        }
+        return new Quest(questInfo, worldSetting, dbcObjectManager);
     }
 
-    public boolean tryGetQuestTemplate(int questId, tangible.OutObject<Quest> quest) {
-        return (questTemplates.containsKey(questId) && (quest.outArgValue = questTemplates.get(questId)) == quest.outArgValue);
-    }
 
-    public HashMap<Integer, Quest> getQuestTemplates() {
-        return questTemplates;
-    }
 
-    public ArrayList<Quest> getQuestTemplatesAutoPush() {
-        return questTemplatesAutoPush;
-    }
 
-    public MultiMap<Integer, Integer> getGOQuestRelationMapHACK() {
+    public Map<Integer, List<Integer>> getGOQuestRelationMapHACK() {
         return goQuestRelations;
     }
 
@@ -7861,13 +7747,10 @@ public final class ObjectManager {
         return getQuestRelationsFrom(goQuestInvolvedRelations, entry, false);
     }
 
-    public ArrayList<Integer> getGOQuestInvolvedRelationReverseBounds(int questId) {
+    public List<Integer> getGOQuestInvolvedRelationReverseBounds(int questId) {
         return goQuestInvolvedRelationsReverse.get(questId);
     }
 
-    public MultiMap<Integer, Integer> getCreatureQuestRelationMapHACK() {
-        return creatureQuestRelations;
-    }
 
     public QuestRelationResult getCreatureQuestRelations(int entry) {
         return getQuestRelationsFrom(creatureQuestRelations, entry, true);
@@ -7877,7 +7760,7 @@ public final class ObjectManager {
         return getQuestRelationsFrom(creatureQuestInvolvedRelations, entry, false);
     }
 
-    public ArrayList<Integer> getCreatureQuestInvolvedRelationReverseBounds(int questId) {
+    public List<Integer> getCreatureQuestInvolvedRelationReverseBounds(int questId) {
         return creatureQuestInvolvedRelationsReverse.get(questId);
     }
 
@@ -7904,7 +7787,7 @@ public final class ObjectManager {
             return null;
         }
 
-        return questGreetingStorage[typeIndex].get(id);
+        return questGreetingStorage.get((id << 1) | typeIndex);
     }
 
     public QuestGreetingLocale getQuestGreetingLocale(TypeId type, int id) {
@@ -7921,7 +7804,7 @@ public final class ObjectManager {
         return questGreetingLocaleStorage[typeIndex].get(id);
     }
 
-    public ArrayList<Integer> getExclusiveQuestGroupBounds(int exclusiveGroupId) {
+    public List<Integer> getExclusiveQuestGroupBounds(int exclusiveGroupId) {
         return exclusiveQuestGroups.get(exclusiveGroupId);
     }
 
@@ -8008,9 +7891,9 @@ public final class ObjectManager {
         var ctc = getCreatureTemplates();
 
         for (var creature : ctc.values()) {
-            if (creature.npcflag.hasFlag((int) NPCFlags.SpellClick.getValue()) && !spellClickInfoStorage.ContainsKey(creature.entry)) {
+            if (creature.npcFlag.hasFlag((int) NPCFlag.SpellClick.getValue()) && !spellClickInfoStorage.ContainsKey(creature.entry)) {
                 Log.outWarn(LogFilter.Sql, "npc_spellclick_spells: Creature template {0} has UNIT_NPC_FLAG_SPELLCLICK but no data in spellclick table! Removing flag", creature.entry);
-                creature.npcflag &= ~(int) NPCFlags.SpellClick.getValue();
+                creature.npcFlag &= ~(int) NPCFlag.SpellClick.getValue();
             }
         }
 
@@ -8082,7 +7965,7 @@ public final class ObjectManager {
         return phaseInfoById.get(phaseId);
     }
 
-    public ArrayList<PhaseAreaInfo> getPhasesForArea(int areaId) {
+    public List<PhaseAreaInfo> getPhasesForArea(int areaId) {
         return phaseInfoByArea.get(areaId);
     }
 
@@ -8090,7 +7973,7 @@ public final class ObjectManager {
         return terrainSwapInfoById.get(terrainSwapId);
     }
 
-    public ArrayList<SpellClickInfo> getSpellClickInfoMapBounds(int creature_id) {
+    public List<SpellClickInfo> getSpellClickInfoMapBounds(int creature_id) {
         return spellClickInfoStorage.get(creature_id);
     }
 
@@ -8102,9 +7985,6 @@ public final class ObjectManager {
         return skillTiers.get(skillTierId);
     }
 
-    public MultiMap<Integer, TerrainSwapInfo> getTerrainSwaps() {
-        return terrainSwapInfoByMap;
-    }
 
     //Locales
     public void loadCreatureLocales() {
@@ -8176,76 +8056,8 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info("Loaded {0} gameobject_template_locale locale strings in {1} ms", gameObjectLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
     }
 
-    public void loadQuestTemplateLocale() {
-        var oldMSTime = System.currentTimeMillis();
 
-        questObjectivesLocaleStorage.clear(); // need for reload case
 
-        //                                         0     1     2           3                 4                5                 6                  7                   8                   9                  10
-        var result = DB.World.query("SELECT id, locale, logTitle, logDescription, questDescription, areaDescription, portraitGiverText, portraitGiverName, portraitTurnInText, portraitTurnInName, QuestCompletionLog" + " FROM quest_template_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!questTemplateLocaleStorage.containsKey(id)) {
-                questTemplateLocaleStorage.put(id, new QuestTemplateLocale());
-            }
-
-            var data = questTemplateLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.logTitle);
-            addLocaleString(result.<String>Read(3), locale, data.logDescription);
-            addLocaleString(result.<String>Read(4), locale, data.questDescription);
-            addLocaleString(result.<String>Read(5), locale, data.areaDescription);
-            addLocaleString(result.<String>Read(6), locale, data.portraitGiverText);
-            addLocaleString(result.<String>Read(7), locale, data.portraitGiverName);
-            addLocaleString(result.<String>Read(8), locale, data.portraitTurnInText);
-            addLocaleString(result.<String>Read(9), locale, data.portraitTurnInName);
-            addLocaleString(result.<String>Read(10), locale, data.questCompletionLog);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} Quest Tempalate locale strings in {1} ms", questTemplateLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
-
-    public void loadQuestObjectivesLocale() {
-        var oldMSTime = System.currentTimeMillis();
-
-        questObjectivesLocaleStorage.clear(); // need for reload case
-        //                                        0     1          2
-        var result = DB.World.query("SELECT id, locale, Description FROM quest_objectives_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!questObjectivesLocaleStorage.containsKey(id)) {
-                questObjectivesLocaleStorage.put(id, new QuestObjectivesLocale());
-            }
-
-            var data = questObjectivesLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.description);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} Quest Objectives locale strings in {1} ms", questObjectivesLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
 
     public void loadQuestGreetingLocales() {
         var oldMSTime = System.currentTimeMillis();
@@ -8307,135 +8119,14 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(String.format("Loaded %1$s Quest Greeting locale strings in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
     }
 
-    public void loadQuestOfferRewardLocale() {
-        var oldMSTime = System.currentTimeMillis();
-
-        questOfferRewardLocaleStorage.clear(); // need for reload case
-        //                                               0     1          2
-        var result = DB.World.query("SELECT id, locale, RewardText FROM quest_offer_reward_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!questOfferRewardLocaleStorage.containsKey(id)) {
-                questOfferRewardLocaleStorage.put(id, new QuestOfferRewardLocale());
-            }
-
-            var data = questOfferRewardLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.rewardText);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} Quest Offer Reward locale strings in {1} ms", questOfferRewardLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
-
-    public void loadQuestRequestItemsLocale() {
-        var oldMSTime = System.currentTimeMillis();
-
-        questRequestItemsLocaleStorage.clear(); // need for reload case
-        //                                               0     1          2
-        var result = DB.World.query("SELECT id, locale, CompletionText FROM quest_request_items_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!questRequestItemsLocaleStorage.containsKey(id)) {
-                questRequestItemsLocaleStorage.put(id, new QuestRequestItemsLocale());
-            }
-
-            var data = questRequestItemsLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.completionText);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} Quest Request Items locale strings in {1} ms", questRequestItemsLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
 
     public void loadGossipMenuItemsLocales() {
 
     }
 
-    public void loadPageTextLocales() {
-        var oldMSTime = System.currentTimeMillis();
 
-        pageTextLocaleStorage.clear(); // needed for reload case
 
-        //                                               0      1     2
-        var result = DB.World.query("SELECT ID, locale, `Text` FROM page_text_locale");
 
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!pageTextLocaleStorage.containsKey(id)) {
-                pageTextLocaleStorage.put(id, new PageTextLocale());
-            }
-
-            var data = pageTextLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.getText());
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} PageText locale strings in {1} ms", pageTextLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
-
-    public void loadPointOfInterestLocales() {
-        var oldMSTime = System.currentTimeMillis();
-
-        pointOfInterestLocaleStorage.clear(); // need for reload case
-
-        //                                        0      1      2
-        var result = DB.World.query("SELECT ID, locale, Name FROM points_of_interest_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!pointOfInterestLocaleStorage.containsKey(id)) {
-                pointOfInterestLocaleStorage.put(id, new PointOfInterestLocale());
-            }
-
-            var data = pointOfInterestLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.getName());
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} points_of_interest locale strings in {1} ms", pointOfInterestLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
-    }
 
     public CreatureLocale getCreatureLocale(int entry) {
         return creatureLocaleStorage.get(entry);
@@ -8445,29 +8136,7 @@ public final class ObjectManager {
         return gameObjectLocaleStorage.get(entry);
     }
 
-    public QuestTemplateLocale getQuestLocale(int entry) {
-        return questTemplateLocaleStorage.get(entry);
-    }
 
-    public QuestOfferRewardLocale getQuestOfferRewardLocale(int entry) {
-        return questOfferRewardLocaleStorage.get(entry);
-    }
-
-    public QuestRequestItemsLocale getQuestRequestItemsLocale(int entry) {
-        return questRequestItemsLocaleStorage.get(entry);
-    }
-
-    public QuestObjectivesLocale getQuestObjectivesLocale(int entry) {
-        return questObjectivesLocaleStorage.get(entry);
-    }
-
-    public GossipMenuItemsLocale getGossipMenuItemsLocale(int menuId, int optionIndex) {
-        return gossipMenuItemsLocaleStorage.get(Tuple.create(menuId, optionIndex));
-    }
-
-    public PageTextLocale getPageTextLocale(int entry) {
-        return pageTextLocaleStorage.get(entry);
-    }
 
     public PointOfInterestLocale getPointOfInterestLocale(int id) {
         return pointOfInterestLocaleStorage.get(id);
@@ -8636,7 +8305,7 @@ public final class ObjectManager {
         }
 
 
-        result.forEach(tavernAreaTriggerStorage::add);
+        tavernAreaTriggerStorage.addAll(result);
 
         Logs.SERVER_LOADING.info(">> Loaded {} tavern triggers in {} ms", result.size(), System.currentTimeMillis() - oldMSTime);
     }
@@ -8778,187 +8447,36 @@ public final class ObjectManager {
             pageTextStorage.putAll(tmp);
             Logs.SERVER_LOADING.info(">> Loaded {} page texts in {} ms", tmp.size(), System.currentTimeMillis() - oldMSTime);
         }
-
-    }
-
-    public void loadReservedPlayersNames() {
-        var oldMSTime = System.currentTimeMillis();
-
-        reservedNamesStorage.clear(); // need for reload case
-
-        var result = DB.characters.query("SELECT name FROM reserved_name");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 reserved player names. DB table `reserved_name` is empty!");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var name = result.<String>Read(0);
-
-            reservedNamesStorage.add(name.ToLower());
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} reserved player names in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-    }
-
-    //not very fast function but it is called only once a day, or on starting-up
-    public void returnOrDeleteOldMails(boolean serverUp) {
-        var oldMSTime = System.currentTimeMillis();
-
-        var curTime = gameTime.GetGameTime();
-        var lt = time.UnixTimeToDateTime(curTime).ToLocalTime();
-        Logs.MISC.info("Returning mails current time: hour: {0}, minute: {1}, second: {2} ", lt.getHour(), lt.getMinute(), lt.getSecond());
-        
-        PreparedStatement stmt;
-
-        // Delete all old mails without item and without body immediately, if starting server
-        if (!serverUp) {
-            stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_EMPTY_EXPIRED_MAIL);
-            stmt.AddValue(0, curTime);
-            DB.characters.execute(stmt);
-        }
-
-        stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_EXPIRED_MAIL);
-        stmt.AddValue(0, curTime);
-        var result = DB.characters.query(stmt);
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("No expired mails found.");
-
-            return; // any mails need to be returned or deleted
-        }
-
-        MultiMap<Long, MailItemInfo> itemsCache = new MultiMap<Long, MailItemInfo>();
-        stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_EXPIRED_MAIL_ITEMS);
-        stmt.AddValue(0, curTime);
-        var items = DB.characters.query(stmt);
-
-        if (!items.isEmpty()) {
-            MailItemInfo item = new MailItemInfo();
-
-            do {
-                item.item_guid = result.<Integer>Read(0);
-                item.item_template = result.<Integer>Read(1);
-                var mailId = result.<Long>Read(2);
-                itemsCache.add(mailId, item);
-            } while (items.NextRow());
-        }
-
-        int deletedCount = 0;
-        int returnedCount = 0;
-
-        do {
-            var receiver = result.<Long>Read(3);
-
-            if (serverUp && global.getObjAccessor().findConnectedPlayer(ObjectGuid.create(HighGuid.Player, receiver))) {
-                continue;
-            }
-
-            Mail m = new MAIL();
-            m.messageID = result.<Long>Read(0);
-            m.messageType = MailMessageType.forValue(result.<Byte>Read(1));
-            m.sender = result.<Integer>Read(2);
-            m.receiver = receiver;
-            var has_items = result.<Boolean>Read(4);
-            m.expire_time = result.<Long>Read(5);
-            m.deliver_time = 0;
-            m.COD = result.<Long>Read(6);
-            m.checkMask = MailCheckMask.forValue(result.<Byte>Read(7));
-            m.mailTemplateId = result.<SHORT>Read(8);
-
-            // Delete or return mail
-            if (has_items) {
-                // read items from cache
-                var temp = itemsCache.get(m.messageID);
-                tangible.RefObject<T> tempRef_items = new tangible.RefObject<T>(m.items);
-                tangible.RefObject<T> tempRef_temp = new tangible.RefObject<T>(temp);
-                Extensions.Swap(tempRef_items, tempRef_temp);
-                temp = tempRef_temp.refArgValue;
-                m.items = tempRef_items.refArgValue;
-
-                // if it is mail from non-player, or if it's already return mail, it shouldn't be returned, but deleted
-                if (m.messageType != MailMessageType.NORMAL || (m.checkMask.hasFlag(MailCheckMask.CodPayment.getValue() | MailCheckMask.Returned.getValue()))) {
-                    // mail open and then not returned
-                    for (var itemInfo : m.items) {
-                        item.deleteFromDB(null, itemInfo.item_guid);
-                        azeriteItem.deleteFromDB(null, itemInfo.item_guid);
-                        azeriteEmpoweredItem.deleteFromDB(null, itemInfo.item_guid);
-                    }
-
-                    stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_MAIL_ITEM_BY_ID);
-                    stmt.AddValue(0, m.messageID);
-                    DB.characters.execute(stmt);
-                } else {
-                    // Mail will be returned
-                    stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_MAIL_RETURNED);
-                    stmt.AddValue(0, m.receiver);
-                    stmt.AddValue(1, m.sender);
-                    stmt.AddValue(2, curTime + 30 * time.Day);
-                    stmt.AddValue(3, curTime);
-                    stmt.AddValue(4, (byte) MailCheckMask.Returned.getValue());
-                    stmt.AddValue(5, m.messageID);
-                    DB.characters.execute(stmt);
-
-                    for (var itemInfo : m.items) {
-                        // Update receiver in mail items for its proper delivery, and in instance_item for avoid lost item at sender delete
-                        stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_MAIL_ITEM_RECEIVER);
-                        stmt.AddValue(0, m.sender);
-                        stmt.AddValue(1, itemInfo.item_guid);
-                        DB.characters.execute(stmt);
-
-                        stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ITEM_OWNER);
-                        stmt.AddValue(0, m.sender);
-                        stmt.AddValue(1, itemInfo.item_guid);
-                        DB.characters.execute(stmt);
-                    }
-
-                    ++returnedCount;
-
-                    continue;
+        oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var item = miscRepository.streamAllPageTextLocale()) {
+            item.forEach(e -> {
+                PageText pageText = tmp.get(e.id);
+                if(pageText == null) {
+                    Logs.SQL.error("Table `page_text_locale` has non-existing `page_text` ({})", e.id);
+                    return;
                 }
-            }
+                pageText.text.set(Locale.values()[e.locale], e.text);
+                count.getAndIncrement();
+            });
+        }
 
-            stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_MAIL_BY_ID);
-            stmt.AddValue(0, m.messageID);
-            DB.characters.execute(stmt);
-            ++deletedCount;
-        } while (result.NextRow());
+        Logs.SERVER_LOADING.info(">> Loaded {} PageText locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
-        Logs.SERVER_LOADING.info("Processed {0} expired mails: {1} deleted and {2} returned in {3} ms", deletedCount + returnedCount, deletedCount, returnedCount, time.GetMSTimeDiffToNow(oldMSTime));
     }
+
+
 
     public void loadSceneTemplates() {
         var oldMSTime = System.currentTimeMillis();
         sceneTemplateStorage.clear();
 
-        var result = DB.World.query("SELECT sceneId, flags, scriptPackageID, encrypted, ScriptName FROM scene_template");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 scene templates. DB table `scene_template` is empty.");
-
-            return;
+        try (var item = miscRepository.streamAllSceneTemplates()) {
+            item.forEach(e -> {
+                sceneTemplateStorage.put(e.sceneId, e);
+            });
         }
-
-        int count = 0;
-
-        do {
-            var sceneId = result.<Integer>Read(0);
-            SceneTemplate sceneTemplate = new SceneTemplate();
-            sceneTemplate.sceneId = sceneId;
-            sceneTemplate.playbackFlags = SceneFlags.forValue(result.<Integer>Read(1));
-            sceneTemplate.scenePackageId = result.<Integer>Read(2);
-            sceneTemplate.encrypted = result.<Byte>Read(3) != 0;
-            sceneTemplate.scriptId = getScriptId(result.<String>Read(4));
-
-            sceneTemplateStorage.put(sceneId, sceneTemplate);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} scene templates in {1} ms.", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} scene templates in {} ms.", sceneTemplateStorage.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadPlayerChoices() {
@@ -9571,48 +9089,19 @@ public final class ObjectManager {
 
     public int getXPForLevel(int level) {
         if (level < playerXPperLevel.length) {
-            return _playerXPperLevel[level];
+            return playerXPperLevel[level];
         }
-
         return 0;
     }
 
-    public int getMaxLevelForExpansion(Expansion expansion) {
-        switch (expansion) {
-            case Classic:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.Classic", 30);
-            case BurningCrusade:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.BurningCrusade", 30);
-            case WrathOfTheLichKing:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.WrathOfTheLichKing", 30);
-            case Cataclysm:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.Cataclysm", 35);
-            case MistsOfPandaria:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.MistsOfPandaria", 35);
-            case WarlordsOfDraenor:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.WarlordsOfDraenor", 40);
-            case Legion:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.Legion", 45);
-            case BattleForAzeroth:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.BattleForAzeroth", 50);
-            case ShadowLands:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.ShadowLands", 60);
-            case Dragonflight:
-                return ConfigMgr.<Integer>GetDefaultValue("Character.MaxLevelFor.Dragonflight", 70);
-            default:
-                break;
-        }
 
-        return 0;
-    }
-
-    public CellObjectGuids getCellObjectGuids(int mapid, Difficulty difficulty, int cellid) {
-        var key = (mapid, difficulty);
+    public CellObjectGuids getCellObjectGuids(int mapId, Difficulty difficulty, int cellId) {
+        var key = (mapId, difficulty);
 
         TValue internDict;
         var val;
 // C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if ((mapObjectGuidsStore.containsKey(key) && (internDict = mapObjectGuidsStore.get(key)) == internDict) && internDict.TryGetValue(cellid, out val)) {
+        if ((mapObjectGuidsStore.containsKey(key) && (internDict = mapObjectGuidsStore.get(key)) == internDict) && internDict.TryGetValue(cellId, out val)) {
             return val;
         }
 
@@ -9629,39 +9118,44 @@ public final class ObjectManager {
         return pageTextStorage.get(pageEntry);
     }
 
-    public int getNearestTaxiNode(float x, float y, float z, int mapid, TeamFaction team) {
+    public int getNearestTaxiNode(float x, float y, float z, int mapId, Team team) {
         var found = false;
         float dist = 10000;
         int id = 0;
 
-        var requireFlag = (team == TeamFaction.Alliance) ? TaxiNodeFlags.Alliance : TaxiNodeFlags.Horde;
-
-        for (var node : CliDB.TaxiNodesStorage.values()) {
-            var i = node.id;
-
-            if (node.ContinentID != mapid || !node.flags.hasFlag(requireFlag)) {
-                continue;
+        Function<TaxiNode, Boolean> isVisibleForFaction = (node) -> {
+            switch (team) {
+                case HORDE:
+                    return node.flags().hasFlag(TaxiNodeFlag.ShowOnHordeMap);
+                case ALLIANCE:
+                    return node.flags().hasFlag(TaxiNodeFlag.ShowOnAllianceMap);
+                default:
+                    break;
             }
+            return false;
+        };
 
-            var field = (i - 1) / 8;
-            var submask = (byte) (1 << (int) ((i - 1) % 8));
+        for (TaxiNode node : dbcObjectManager.taxiNode()) {
+            if (node.getContinentID() != mapId || !isVisibleForFaction.apply(node) || node.flags().hasFlag(TaxiNodeFlag.IgnoreForFindNearest))
+                continue;
+
+            int field = ((node.getId() - 1) / 8);
+            int subMask = 1 << ((node.getId() - 1) % 8);
 
             // skip not taxi network nodes
-            if ((CliDB.TaxiNodesMask[field] & submask) == 0) {
+            if ((sTaxiNodesMask[field] & subMask) == 0)
                 continue;
-            }
 
-            var dist2 = (node.pos.X - x) * (node.pos.X - x) + (node.pos.Y - y) * (node.pos.Y - y) + (node.pos.Z - z) * (node.pos.Z - z);
-
+            float dist2 = (node.getPosX() - x) * (node.getPosX() - x) + (node.getPosY() - y) * (node.getPosY() - y) + (node.getPosZ() - z) * (node.getPosZ() - z);
             if (found) {
                 if (dist2 < dist) {
                     dist = dist2;
-                    id = i;
+                    id = node.getId();
                 }
             } else {
                 found = true;
                 dist = dist2;
-                id = i;
+                id = node.getId();
             }
         }
 
@@ -9691,11 +9185,11 @@ public final class ObjectManager {
         path.outArgValue = dest_i.id;
     }
 
-    public int getTaxiMountDisplayId(int id, TeamFaction team) {
+    public int getTaxiMountDisplayId(int id, Team team) {
         return getTaxiMountDisplayId(id, team, false);
     }
 
-    public int getTaxiMountDisplayId(int id, TeamFaction team, boolean allowed_alt_team) {
+    public int getTaxiMountDisplayId(int id, Team team, boolean allowed_alt_team) {
         CreatureModel mountModel = new creatureModel();
         CreatureTemplate mount_info = null;
 
@@ -9705,7 +9199,7 @@ public final class ObjectManager {
         if (node != null) {
             int mount_entry;
 
-            if (team == TeamFaction.Alliance) {
+            if (team == Team.Alliance) {
                 mount_entry = node.MountCreatureID[1];
             } else {
                 mount_entry = node.MountCreatureID[0];
@@ -9715,7 +9209,7 @@ public final class ObjectManager {
             // only one mount type for both sides
             if (mount_entry == 0 && allowed_alt_team) {
                 // Simply reverse the selection. At least one team in theory should have a valid mount ID to choose.
-                mount_entry = team == TeamFaction.Alliance ? node.MountCreatureID[0] : node.MountCreatureID[1];
+                mount_entry = team == Team.Alliance ? node.MountCreatureID[0] : node.MountCreatureID[1];
             }
 
             mount_info = getCreatureTemplate(mount_entry);
@@ -9808,9 +9302,6 @@ public final class ObjectManager {
         return tempSummonDataStorage.get(key);
     }
 
-    public boolean isReservedName(String name) {
-        return reservedNamesStorage.contains(name.toLowerCase());
-    }
 
     public JumpChargeParams getJumpChargeParams(int id) {
         return jumpChargeParams.get(id);
@@ -11014,44 +10505,8 @@ public final class ObjectManager {
         return info;
     }
 
-    private void loadQuestRelationsHelper(MultiMap<Integer, Integer> map, MultiMap<Integer, Integer> reverseMap, String table) {
-        var oldMSTime = System.currentTimeMillis();
 
-        map.clear(); // need for reload case
-
-        int count = 0;
-
-        var result = DB.World.query(String.format("SELECT id, quest FROM %1$s", table));
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 quest relations from `{0}`, table is empty.", table);
-
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var quest = result.<Integer>Read(1);
-
-            if (!questTemplates.containsKey(quest)) {
-                Logs.SQL.error("Table `{0}`: Quest {1} listed for entry {2} does not exist.", table, quest, id);
-
-                continue;
-            }
-
-            map.add(id, quest);
-
-            if (reverseMap != null) {
-                reverseMap.add(quest, id);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} quest relations from {1} in {2} ms", count, table, time.GetMSTimeDiffToNow(oldMSTime));
-    }
-
-    private QuestRelationResult getQuestRelationsFrom(MultiMap<Integer, Integer> map, int key, boolean onlyActive) {
+    private QuestRelationResult getQuestRelationsFrom(Map<Integer, List<Integer>> map, int key, boolean onlyActive) {
         return new QuestRelationResult(map.get(key), onlyActive);
     }
 

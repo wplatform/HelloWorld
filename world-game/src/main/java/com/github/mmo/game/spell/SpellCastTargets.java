@@ -284,11 +284,11 @@ public class SpellCastTargets {
     public final void write(SpellTargetData data) {
         data.flags = targetMask.getFlag();
 
-        if (targetMask.hasFlag(SpellCastTargetFlag.UNIT, SpellCastTargetFlag.CORPSE_ALLY, SpellCastTargetFlag.GAME_OBJECT, SpellCastTargetFlag.CORPSE_ENEMY, SpellCastTargetFlag.UNIT_MINIPET)) {
+        if (targetMask.hasAnyFlag(SpellCastTargetFlag.UNIT, SpellCastTargetFlag.CORPSE_ALLY, SpellCastTargetFlag.GAME_OBJECT, SpellCastTargetFlag.CORPSE_ENEMY, SpellCastTargetFlag.UNIT_MINIPET)) {
             data.unit = objectTargetGuid;
         }
 
-        if (targetMask.hasFlag(SpellCastTargetFlag.ITEM, SpellCastTargetFlag.TRADE_ITEM) && itemTarget != null) {
+        if (targetMask.hasAnyFlag(SpellCastTargetFlag.ITEM, SpellCastTargetFlag.TRADE_ITEM) && itemTarget != null) {
             data.item = itemTarget.getGUID();
         }
 
