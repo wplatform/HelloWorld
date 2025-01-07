@@ -1,2 +1,2 @@
 org.springframework.boot.env.PropertySourceLoader=\
-  com.github.mmo.config.ConfigurationSourceLoader
+  com.github.azeroth.config.ConfigurationSourceLoader

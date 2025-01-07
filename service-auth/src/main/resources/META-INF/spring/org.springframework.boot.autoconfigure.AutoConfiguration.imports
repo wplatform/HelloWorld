@@ -1,2 +1,2 @@
 # Auto Configure
-boot.com.github.mmo.service.auth.AuthAutoConfiguration
+boot.com.github.azeroth.service.auth.AuthAutoConfiguration

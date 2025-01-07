@@ -1,9 +1,9 @@
 package Movement.Generators;
 
 
-import com.github.mmo.game.entity.creature.Creature;
-import com.github.mmo.game.movement.MovementGeneratorMedium;
-import com.github.mmo.game.movement.spline.MoveSplineInit;
+import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.movement.MovementGeneratorMedium;
+import com.github.azeroth.game.movement.spline.MoveSplineInit;
 
 
 public class HomeMovementGenerator<T extends Creature> extends MovementGeneratorMedium<T> {

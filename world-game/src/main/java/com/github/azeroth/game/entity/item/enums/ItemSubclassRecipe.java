@@ -1,0 +1,16 @@
+package com.github.azeroth.game.entity.item.enums;
+
+public enum ItemSubclassRecipe {
+    BOOK,
+    LEATHER_WORKING_PATTERN,
+    TAILORING_PATTERN,
+    ENGINEERING_SCHEMATIC,
+    BLACKSMITHING,
+    COOKING_RECIPE,
+    ALCHEMY_RECIPE,
+    FIRST_AID_MANUAL,
+    ENCHANTING_FORMULA,
+    FISHING_MANUAL,
+    JEWEL_CRAFTING_RECIPE,
+    INSCRIPTION_TECHNIQUE
+}

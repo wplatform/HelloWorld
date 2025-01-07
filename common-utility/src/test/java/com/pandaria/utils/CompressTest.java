@@ -1,6 +1,6 @@
 package com.pandaria.utils;
 
-import com.github.mmo.utils.Compress;
+import com.github.azeroth.utils.Compress;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

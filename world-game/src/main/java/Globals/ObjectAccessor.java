@@ -1,16 +1,16 @@
 package Globals;
 
 
-import com.github.mmo.game.entity.areatrigger.AreaTrigger;
-import com.github.mmo.game.entity.corpse.Corpse;
-import com.github.mmo.game.entity.creature.Creature;
-import com.github.mmo.game.entity.dynamic.DynamicObject;
-import com.github.mmo.game.entity.gobject.GameObject;
-import com.github.mmo.game.entity.gobject.Transport;
-import com.github.mmo.game.entity.object.WorldObject;
-import com.github.mmo.game.entity.player.Player;
-import com.github.mmo.game.entity.scene.SceneObject;
-import com.github.mmo.game.entity.unit.Unit;
+import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
+import com.github.azeroth.game.entity.corpse.Corpse;
+import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.entity.dynamic.DynamicObject;
+import com.github.azeroth.game.entity.gobject.GameObject;
+import com.github.azeroth.game.entity.gobject.Transport;
+import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.player.Player;
+import com.github.azeroth.game.entity.scene.SceneObject;
+import com.github.azeroth.game.entity.unit.Unit;
 
 import java.util.Collection;
 import java.util.HashMap;

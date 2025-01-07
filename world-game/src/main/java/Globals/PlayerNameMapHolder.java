@@ -1,7 +1,7 @@
 package Globals;
 
 
-import com.github.mmo.game.entity.player.Player;
+import com.github.azeroth.game.entity.player.Player;
 import game.*;
 
 import java.util.HashMap;

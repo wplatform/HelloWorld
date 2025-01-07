@@ -1,6 +1,6 @@
 package Time;
 
-import com.github.mmo.common.Assert;
+import com.github.azeroth.common.Assert;
 import lombok.Data;
 
 @Data

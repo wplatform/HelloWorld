@@ -1,2 +1,2 @@
 # Auto Configure. config any type of bean wanna add to spring io container
-com.github.mmo.boot.CommonAutoConfiguration
+com.github.azeroth.boot.CommonAutoConfiguration

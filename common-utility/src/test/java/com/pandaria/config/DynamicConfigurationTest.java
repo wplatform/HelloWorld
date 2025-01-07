@@ -1,7 +1,7 @@
 package com.pandaria.config;
 
 
-import com.github.mmo.config.Configuration;
+import com.github.azeroth.config.Configuration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

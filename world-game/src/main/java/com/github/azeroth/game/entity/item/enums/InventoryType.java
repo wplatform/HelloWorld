@@ -1,0 +1,33 @@
+package com.github.azeroth.game.entity.item.enums;
+
+public enum InventoryType {
+    NON_EQUIP,
+    HEAD,
+    NECK,
+    SHOULDERS,
+    BODY,
+    CHEST,
+    WAIST,
+    LEGS,
+    FEET,
+    WRISTS,
+    HANDS,
+    FINGER,
+    TRINKET,
+    WEAPON,
+    SHIELD,
+    RANGED,
+    CLOAK,
+    TWO_HANDED_WEAPON,
+    BAG,
+    TABARD,
+    ROBE,
+    WEAPON_MAIN_HAND,
+    WEAPON_OFFHAND,
+    HOLDABLE,
+    AMMO,
+    THROWN,
+    RANGEDRIGHT,
+    QUIVER,
+    RELIC
+}

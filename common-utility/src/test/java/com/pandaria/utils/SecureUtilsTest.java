@@ -1,6 +1,6 @@
 package com.pandaria.utils;
 
-import com.github.mmo.utils.SecureUtils;
+import com.github.azeroth.utils.SecureUtils;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
