@@ -521,7 +521,7 @@ public class Vehicle implements ITransport {
         me.ApplySpellImmune(0, SpellImmunity.Effect, SpellEffectName.KnockBackDest, true);
 
         // Mechanical units & vehicles ( which are not Bosses, they have own immunities in DB ) should be also immune on healing ( exceptions in switch below )
-        if (me.isTypeId(TypeId.Unit) && me.toCreature().getTemplate().creatureType == CreatureType.Mechanical && !me.toCreature().isWorldBoss()) {
+        if (me.isTypeId(TypeId.Unit) && me.toCreature().getTemplate().type == CreatureType.Mechanical && !me.toCreature().isWorldBoss()) {
             // Heal & dispel ...
             me.ApplySpellImmune(0, SpellImmunity.Effect, SpellEffectName.Heal, true);
             me.ApplySpellImmune(0, SpellImmunity.Effect, SpellEffectName.HealPct, true);

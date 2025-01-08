@@ -373,7 +373,7 @@ public class Condition {
                 var creature = obj.toCreature();
 
                 if (creature != null) {
-                    condMeets = (int) creature.getTemplate().creatureType.ordinal() == conditionValue1;
+                    condMeets = (int) creature.getTemplate().type.ordinal() == conditionValue1;
                 }
 
                 break;

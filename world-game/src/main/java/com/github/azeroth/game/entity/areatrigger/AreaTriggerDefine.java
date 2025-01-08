@@ -2,7 +2,7 @@ package com.github.azeroth.game.entity.areatrigger;
 
 import com.github.azeroth.dbc.defines.CurveInterpolationMode;
 import com.github.azeroth.dbc.model.DBCPosition2D;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionTypes;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionType;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionUserTypes;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerCreatePropertiesFlag;
 import com.github.azeroth.game.domain.spawn.SpawnData;
@@ -28,7 +28,7 @@ public interface AreaTriggerDefine {
     public class AreaTriggerAction {
 
         public int Param;
-        public AreaTriggerActionTypes ActionType;
+        public AreaTriggerActionType ActionType;
         public AreaTriggerActionUserTypes TargetType;
     }
 

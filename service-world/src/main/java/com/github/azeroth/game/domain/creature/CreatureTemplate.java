@@ -49,7 +49,7 @@ public class CreatureTemplate {
     public float speedWalk;
     public float speedRun;
     public float scale;
-    public CreatureClassification rank;
+    public CreatureClassification classification;
     public int dmgSchool;
     public int baseAttackTime;
     public int rangeAttackTime;
@@ -62,14 +62,14 @@ public class CreatureTemplate {
     public int dynamicFlags;
     public CreatureFamily family;
     public PlayerClass trainerClass;
-    public CreatureType creatureType;
+    public CreatureType type;
     public EnumFlag<CreatureTypeFlag> typeFlags;
     public EnumFlag<CreatureTypeFlag2> typeFlags2;
     public int lootId;
     public int pickPocketId;
     public int skinLootId;
     public int[] resistance = new int[SpellSchool.values().length];
-    public int[] spells = new int[8];
+    public int[] spells = new int[MAX_CREATURE_SPELLS];
     public int vehicleId;
     public int minGold;
     public int maxGold;
@@ -90,11 +90,15 @@ public class CreatureTemplate {
     public int widgetSetID;
     public int widgetSetUnitConditionID;
     public boolean regenHealth;
+    public int creatureImmunitiesId;
     public long mechanicImmuneMask;
     public int spellSchoolImmuneMask;
     public EnumFlag<CreatureFlagExtra> flagsExtra;
+    public String script;
     public int scriptID;
     public String stringId;
+
+    public CreatureSummonedData summonedData;
 
     public int[] questItems;
 
@@ -192,7 +196,7 @@ public class CreatureTemplate {
     }
 
     public final boolean isTameable(boolean canTameExotic, CreatureDifficulty creatureDifficulty) {
-        if (creatureType != CreatureType.BEAST || family == CreatureFamily.NONE || !creatureDifficulty.typeFlag.hasFlag(CreatureTypeFlag.TAMEABLE)) {
+        if (type != CreatureType.BEAST || family == CreatureFamily.NONE || !creatureDifficulty.typeFlag.hasFlag(CreatureTypeFlag.TAMEABLE)) {
             return false;
         }
 

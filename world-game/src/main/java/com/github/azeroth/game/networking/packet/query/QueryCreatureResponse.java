@@ -31,7 +31,7 @@ public class QueryCreatureResponse extends ServerPacket {
         stats.flags[0] = template.typeFlags.getFlag();
         stats.flags[1] = template.typeFlags2.getFlag();
 
-        stats.creatureType = template.creatureType.ordinal();
+        stats.creatureType = template.type.ordinal();
         stats.creatureFamily = template.family.ordinal();
         stats.classification = template.rank.ordinal();
 

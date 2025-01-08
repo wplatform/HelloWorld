@@ -3963,7 +3963,7 @@ public class Unit extends WorldObject {
                 return creatureType.forValue(raceEntry.creatureType);
             }
         } else {
-            return toCreature().getTemplate().creatureType;
+            return toCreature().getTemplate().type;
         }
     }
 
@@ -10216,7 +10216,7 @@ public class Unit extends WorldObject {
                     if (isTypeId(TypeId.UNIT) && charmer.getClass() == playerClass.Warlock) {
                         var cinfo = toCreature().getTemplate();
 
-                        if (cinfo != null && cinfo.creatureType == creatureType.Demon) {
+                        if (cinfo != null && cinfo.type == creatureType.Demon) {
                             // to prevent client crash
                             setClass(playerClass.Mage);
 
@@ -10322,7 +10322,7 @@ public class Unit extends WorldObject {
                     if (isTypeId(TypeId.UNIT) && charmer.getClass() == playerClass.Warlock) {
                         var cinfo = toCreature().getTemplate();
 
-                        if (cinfo != null && cinfo.creatureType == creatureType.Demon) {
+                        if (cinfo != null && cinfo.type == creatureType.Demon) {
                             setClass(playerClass.forValue(cinfo.unitClass));
 
                             if (getCharmInfo() != null) {

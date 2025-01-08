@@ -1064,7 +1064,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
     private void undoActions(Unit unit) {
         if (getTemplate() != null) {
             for (var action : getTemplate().actions) {
-                if (action.actionType == AreaTriggerActionTypes.cast || action.actionType == AreaTriggerActionTypes.AddAura) {
+                if (action.actionType == AreaTriggerActionType.cast || action.actionType == AreaTriggerActionType.AddAura) {
                     unit.removeAurasDueToSpell(action.param, getCasterGuid());
                 }
             }

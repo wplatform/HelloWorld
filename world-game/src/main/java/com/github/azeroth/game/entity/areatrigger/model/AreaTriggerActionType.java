@@ -1,6 +1,6 @@
 package com.github.azeroth.game.entity.areatrigger.model;
 
-public enum AreaTriggerActionTypes {
+public enum AreaTriggerActionType {
     CAST,
     ADDAURA,
     TELEPORT,

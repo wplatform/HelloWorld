@@ -69,6 +69,7 @@ import com.github.azeroth.game.domain.spawn.*;
 import com.github.azeroth.game.service.repository.*;
 import com.github.azeroth.game.spell.SpellManager;
 import com.github.azeroth.game.world.setting.WorldSetting;
+import com.github.azeroth.utils.StringUtil;
 
 import java.util.*;
 import java.util.Map;
@@ -216,11 +217,10 @@ public final class ObjectManager {
     private final HashMap<Integer,Set<Integer>> questAreaTriggerStorage = new HashMap<>();
     private final HashMap<Integer, QuestObjective> questObjectives = new HashMap<Integer, QuestObjective>();
     private final MapCache<Integer, QuestGreeting> questGreetingStorage;
-    private final HashMap<Integer, QuestGreetingLocale>[] questGreetingLocaleStorage = new HashMap<Integer, QuestGreetingLocale>[2];
     //Scripts
     private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
-    private final MultiMap<Integer, Integer> spellScriptsStorage = new MultiMap<Integer, Integer>();
-    private final MultiMap<Integer, Integer> areaTriggerScriptStorage = new MultiMap<Integer, Integer>();
+    private final HashMap<Integer, List<Integer>> spellScriptsStorage = new HashMap<>();
+    private final HashMap<Integer, List<Integer>> areaTriggerScriptStorage = new HashMap<>();
     private final HashMap<Integer, CellObjectGuids> mapObjectGuidsStore = new HashMap<>();
     private final HashMap<Integer, CellObjectGuids> mapPersonalObjectGuidsStore = new HashMap<>();
     private final HashMap<Integer, InstanceTemplate> instanceTemplateStorage = new HashMap<>();
@@ -1582,7 +1582,7 @@ public final class ObjectManager {
             spellId = -spellId;
         }
 
-        return registerSpellScript((int) spellId, scriptName, allRanks);
+        return registerSpellScript(spellId, scriptName, allRanks);
     }
 
     public boolean registerSpellScript(int spellId, String scriptName) {
@@ -1724,7 +1724,7 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info("Validated {0} scripts in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
     }
 
-    public ArrayList<Integer> getSpellScriptsBounds(int spellId) {
+    public List<Integer> getSpellScriptsBounds(int spellId) {
         return spellScriptsStorage.get(spellId);
     }
 
@@ -1747,15 +1747,15 @@ public final class ObjectManager {
     }
 
     public int getScriptId(String name, boolean isDatabaseBound) {
-        if (tangible.StringHelper.isNullOrEmpty(name)) {
+        if (StringUtil.isEmpty(name)) {
             return 0;
         }
 
         return scriptNamesStorage.insert(name, isDatabaseBound);
     }
 
-    public ArrayList<Integer> getAreaTriggerScriptIds(int triggerid) {
-        return areaTriggerScriptStorage.get(triggerid);
+    public List<Integer> getAreaTriggerScriptIds(int triggerId) {
+        return areaTriggerScriptStorage.get(triggerId);
     }
 
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> getScriptsMapByType(ScriptsType type) {
@@ -1789,152 +1789,28 @@ public final class ObjectManager {
     //Creatures
     public void loadCreatureTemplates() {
         var time = System.currentTimeMillis();
-
-        var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_CREATURE_TEMPLATE);
-        stmt.AddValue(0, 0);
-        stmt.AddValue(1, 1);
-
-        var result = DB.World.query(stmt);
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creatures. DB table `creature_template` is empty.");
-
-            return;
+        HashMap<Integer, CreatureTemplate> templateHashMap = new HashMap<>();
+        try(var items = creatureRepository.streamCreatureTemplate(0, 1)) {
+            items.forEach(creatureTemplate -> {
+                creatureTemplate.scriptID = getScriptId(creatureTemplate.script);
+                templateHashMap.put(creatureTemplate.entry, creatureTemplate);
+            });
         }
 
-        do {
-            loadCreatureTemplate(result.GetFields());
-        } while (result.NextRow());
-
-        loadCreatureTemplateResistances();
-        loadCreatureTemplateSpells();
+        loadCreatureTemplateResistances(templateHashMap);
+        loadCreatureTemplateSpells(templateHashMap);
 
         // We load the creature models after loading but before checking
-        loadCreatureTemplateModels();
+        loadCreatureTemplateModels(templateHashMap);
 
-        loadCreatureSummonedData();
+        loadCreatureSummonedData(templateHashMap);
 
         // Checking needs to be done after loading because of the difficulty self referencing
-        for (var template : creatureTemplateStorage.values()) {
+        for (var template : templateHashMap.values()) {
             checkCreatureTemplate(template);
         }
-
-        Logs.SERVER_LOADING.info("Loaded {0} creature definitions in {1} ms", creatureTemplateStorage.size(), time.GetMSTimeDiffToNow(time));
-    }
-
-    public void loadCreatureTemplate(SQLFields fields) {
-        var entry = fields.<Integer>Read(0);
-
-        CreatureTemplate creature = new CreatureTemplate();
-        creature.entry = entry;
-
-        for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
-            creature.DifficultyEntry[i] = fields.<Integer>Read(1 + i);
-        }
-
-        for (var i = 0; i < 2; ++i) {
-            creature.KillCredit[i] = fields.<Integer>Read(4 + i);
-        }
-
-        creature.name = fields.<String>Read(6);
-        creature.femaleName = fields.<String>Read(7);
-        creature.subName = fields.<String>Read(8);
-        creature.titleAlt = fields.<String>Read(9);
-        creature.iconName = fields.<String>Read(10);
-        creature.gossipMenuId = fields.<Integer>Read(11);
-        creature.minLevel = fields.<SHORT>Read(12);
-        creature.maxLevel = fields.<SHORT>Read(13);
-        creature.healthScalingExpansion = fields.<Integer>Read(14);
-        creature.requiredExpansion = fields.<Integer>Read(15);
-        creature.vignetteID = fields.<Integer>Read(16);
-        creature.faction = fields.<Integer>Read(17);
-        creature.npcFlag = fields.<Long>Read(18);
-        creature.speedWalk = fields.<Float>Read(19);
-        creature.speedRun = fields.<Float>Read(20);
-        creature.scale = fields.<Float>Read(21);
-        creature.rank = CreatureClassification.forValue(fields.<Integer>Read(22));
-        creature.dmgSchool = fields.<Integer>Read(23);
-        creature.baseAttackTime = fields.<Integer>Read(24);
-        creature.rangeAttackTime = fields.<Integer>Read(25);
-        creature.baseVariance = fields.<Float>Read(26);
-        creature.rangeVariance = fields.<Float>Read(27);
-        creature.unitClass = fields.<Integer>Read(28);
-        creature.unitFlags = UnitFlag.forValue(fields.<Integer>Read(29));
-        creature.unitFlags2 = fields.<Integer>Read(30);
-        creature.unitFlags3 = fields.<Integer>Read(31);
-        creature.dynamicFlags = fields.<Integer>Read(32);
-        creature.family = creatureFamily.forValue(fields.<Integer>Read(33));
-        creature.trainerClass = playerClass.forValue(fields.<Byte>Read(34));
-        creature.creatureType = creatureType.forValue(fields.<Byte>Read(35));
-        creature.typeFlags = CreatureTypeFlag.forValue(fields.<Integer>Read(36));
-        creature.typeFlags2 = fields.<Integer>Read(37);
-        creature.lootId = fields.<Integer>Read(38);
-        creature.pickPocketId = fields.<Integer>Read(39);
-        creature.skinLootId = fields.<Integer>Read(40);
-
-        for (var i = SpellSchools.Holy.getValue(); i < SpellSchools.max.getValue(); ++i) {
-            creature.Resistance[i] = 0;
-        }
-
-        for (var i = 0; i < SharedConst.MaxCreatureSpells; ++i) {
-            creature.Spells[i] = 0;
-        }
-
-        creature.vehicleId = fields.<Integer>Read(41);
-        creature.minGold = fields.<Integer>Read(42);
-        creature.maxGold = fields.<Integer>Read(43);
-        creature.aiName = fields.<String>Read(44);
-        creature.movementType = fields.<Integer>Read(45);
-
-        if (!fields.IsNull(46)) {
-            creature.movement.ground = CreatureGroundMovementType.forValue(fields.<Byte>Read(46));
-        }
-
-        if (!fields.IsNull(47)) {
-            creature.movement.swim = fields.<Boolean>Read(47);
-        }
-
-        if (!fields.IsNull(48)) {
-            creature.movement.flight = CreatureFlightMovementType.forValue(fields.<Byte>Read(48));
-        }
-
-        if (!fields.IsNull(49)) {
-            creature.movement.rooted = fields.<Boolean>Read(49);
-        }
-
-        if (!fields.IsNull(50)) {
-            creature.movement.chase = CreatureChaseMovementType.forValue(fields.<Byte>Read(50));
-        }
-
-        if (!fields.IsNull(51)) {
-            creature.movement.random = CreatureRandomMovementType.forValue(fields.<Byte>Read(51));
-        }
-
-        if (!fields.IsNull(52)) {
-            creature.movement.interactionPauseTimer = fields.<Integer>Read(52);
-        }
-
-        creature.hoverHeight = fields.<Float>Read(53);
-        creature.modHealth = fields.<Float>Read(54);
-        creature.modHealthExtra = fields.<Float>Read(55);
-        creature.modMana = fields.<Float>Read(56);
-        creature.modManaExtra = fields.<Float>Read(57);
-        creature.modArmor = fields.<Float>Read(58);
-        creature.modDamage = fields.<Float>Read(59);
-        creature.modExperience = fields.<Float>Read(60);
-        creature.racialLeader = fields.<Boolean>Read(61);
-        creature.movementId = fields.<Integer>Read(62);
-        creature.creatureDifficultyID = fields.<Integer>Read(63);
-        creature.widgetSetID = fields.<Integer>Read(64);
-        creature.widgetSetUnitConditionID = fields.<Integer>Read(65);
-        creature.regenHealth = fields.<Boolean>Read(66);
-        creature.mechanicImmuneMask = fields.<Long>Read(67);
-        creature.spellSchoolImmuneMask = fields.<Integer>Read(68);
-        creature.flagsExtra = CreatureFlagExtra.forValue(fields.<Integer>Read(69));
-        creature.scriptID = getScriptId(fields.<String>Read(70));
-        creature.stringId = fields.<String>Read(71);
-
-        creatureTemplateStorage.put(entry, creature);
+        creatureTemplateStorage.putAll(templateHashMap);
+        Logs.SERVER_LOADING.info(">> Loaded {} creature definitions in {} ms", creatureTemplateStorage.size(), System.currentTimeMillis() - time);
     }
 
     public void loadCreatureTemplateAddons() {
@@ -2675,8 +2551,8 @@ public final class ObjectManager {
                 continue;
             }
 
-            if (cInfo.creatureType != difficultyInfo.creatureType) {
-                Logs.SQL.error("Creature (Entry: {0}, type: {1}) has different `type` in difficulty {2} mode (Entry: {3}, type: {4}).", cInfo.entry, cInfo.creatureType, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.creatureType);
+            if (cInfo.type != difficultyInfo.type) {
+                Logs.SQL.error("Creature (Entry: {0}, type: {1}) has different `type` in difficulty {2} mode (Entry: {3}, type: {4}).", cInfo.entry, cInfo.type, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.type);
             }
 
             if (cInfo.vehicleId == 0 && difficultyInfo.vehicleId != 0) {
@@ -2773,9 +2649,9 @@ public final class ObjectManager {
             cInfo.speedRun = 1.14286f;
         }
 
-        if (cInfo.creatureType != 0 && !CliDB.CreatureTypeStorage.containsKey((int) cInfo.creatureType.getValue())) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid creature type ({1}) in `type`.", cInfo.entry, cInfo.creatureType);
-            cInfo.creatureType = creatureType.Humanoid;
+        if (cInfo.type != 0 && !CliDB.CreatureTypeStorage.containsKey((int) cInfo.type.getValue())) {
+            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid creature type ({1}) in `type`.", cInfo.entry, cInfo.type);
+            cInfo.type = creatureType.Humanoid;
         }
 
         if (cInfo.family != 0 && !CliDB.CreatureFamilyStorage.containsKey(cInfo.family)) {
@@ -7696,7 +7572,7 @@ public final class ObjectManager {
 
     public void loadQuestGreetings() {
         var oldMSTime = System.currentTimeMillis();
-
+        HashMap<Integer, QuestGreeting> tmp = new HashMap<>();
         AtomicInteger count = new AtomicInteger();
         try (var items = questRepository.streamAllQuestGreeting()) {
             items.forEach(e -> {
@@ -7718,9 +7594,23 @@ public final class ObjectManager {
                         return;
                 }
                 count.getAndIncrement();
-                questGreetingStorage.put((e.id << 1 | e.type), e);
+                tmp.put((e.id << 1 | e.type), e);
             });
         }
+        Logs.SERVER_LOADING.info(">> Loaded {} Quest Greeting locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
+        count.set(0);
+        oldMSTime = System.currentTimeMillis();
+        try(var items = questRepository.streamAllQuestGreetingLocale()) {
+            items.forEach(e -> {
+                QuestGreeting questGreeting = tmp.get(e.id << 1 | e.type);
+                if(questGreeting == null) {
+                    Logs.SQL.error("Table `quest_greeting_locale`: quest greeting entry {} type {} does not exist.", e.id, e.type);
+                    return;
+                }
+                questGreeting.text.set(Locale.values()[e.locale], e.greeting);
+            });
+        }
+        questGreetingStorage.putAll(tmp);
         Logs.SERVER_LOADING.info(">> Loaded {} Quest Greeting locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
@@ -7790,19 +7680,6 @@ public final class ObjectManager {
         return questGreetingStorage.get((id << 1) | typeIndex);
     }
 
-    public QuestGreetingLocale getQuestGreetingLocale(TypeId type, int id) {
-        byte typeIndex;
-
-        if (type == TypeId.UNIT) {
-            typeIndex = 0;
-        } else if (type == TypeId.GAME_OBJECT) {
-            typeIndex = 1;
-        } else {
-            return null;
-        }
-
-        return questGreetingLocaleStorage[typeIndex].get(id);
-    }
 
     public List<Integer> getExclusiveQuestGroupBounds(int exclusiveGroupId) {
         return exclusiveQuestGroups.get(exclusiveGroupId);
@@ -8062,68 +7939,7 @@ public final class ObjectManager {
     public void loadQuestGreetingLocales() {
         var oldMSTime = System.currentTimeMillis();
 
-        for (var i = 0; i < 2; ++i) {
-            _questGreetingLocaleStorage[i] = new HashMap<Integer, QuestGreetingLocale>();
-        }
-
-        var result = DB.World.query("SELECT id, type, locale, Greeting FROM quest_greeting_locale");
-
-        if (result.isEmpty()) {
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var id = result.<Integer>Read(0);
-            var type = result.<Byte>Read(1);
-
-            switch (type) {
-                case 0: // Creature
-                    if (getCreatureTemplate(id) == null) {
-                        Logs.SQL.error(String.format("Table `quest_greeting_locale`: creature template entry %1$s does not exist.", id));
-
-                        continue;
-                    }
-
-                    break;
-                case 1: // GameObject
-                    if (getGameObjectTemplate(id) == null) {
-                        Logs.SQL.error(String.format("Table `quest_greeting_locale`: gameobject template entry %1$s does not exist.", id));
-
-                        continue;
-                    }
-
-                    break;
-                default:
-                    continue;
-            }
-
-            var localeName = result.<String>Read(2);
-
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!_questGreetingLocaleStorage[type].containsKey(id)) {
-                _questGreetingLocaleStorage[type].put(id, new QuestGreetingLocale());
-            }
-
-            var data = _questGreetingLocaleStorage[type].get(id);
-            addLocaleString(result.<String>Read(3), locale, data.greeting);
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s Quest Greeting locale strings in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
     }
-
-
-    public void loadGossipMenuItemsLocales() {
-
-    }
-
 
 
 
@@ -9899,196 +9715,133 @@ public final class ObjectManager {
         return false;
     }
 
-    private void loadCreatureTemplateResistances() {
+    private void loadCreatureTemplateResistances(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
-
-        //                                         0           1       2
-        var result = DB.World.query("SELECT creatureID, school, Resistance FROM creature_template_resistance");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature template resistance definitions. DB table `creature_template_resistance` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllCreatureTemplateResistance()) {
+            items.forEach(fields -> {
+                if (fields[1] == 0 || fields[1] >= SpellSchool.values().length)
+                {
+                    Logs.SQL.error("creature_template_resistance has resistance definitions for creature {} but this school {} doesn't exist", fields[0], fields[1]);
+                    return;
+                }
+                CreatureTemplate creatureTemplate = templateHashMap.get(fields[0]);
+                if (creatureTemplate == null)
+                {
+                    Logs.SQL.error("creature_template_resistance has resistance definitions for creature {} but this creature doesn't exist", fields[0]);
+                    return;
+                }
+                creatureTemplate.resistance[fields[1]] = fields[2];
+                count.incrementAndGet();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var creatureID = result.<Integer>Read(0);
-            var school = SpellSchools.forValue(result.<Byte>Read(1));
-
-            if (school == SpellSchools.NORMAL || school.getValue() >= SpellSchools.max.getValue()) {
-                Logs.SQL.error(String.format("creature_template_resistance has resistance definitions for creature %1$s but this school %2$s doesn't exist", creatureID, school));
-
-                continue;
-            }
-
-            TValue creatureTemplate;
-            if (!(creatureTemplateStorage.containsKey(creatureID) && (creatureTemplate = creatureTemplateStorage.get(creatureID)) == creatureTemplate)) {
-                Logs.SQL.error(String.format("creature_template_resistance has resistance definitions for creature %1$s but this creature doesn't exist", creatureID));
-
-                continue;
-            }
-
-            creatureTemplate.Resistance[school.getValue()] = result.<SHORT>Read(2);
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature template resistances in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} creature template resistances in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    private void loadCreatureTemplateSpells() {
+    private void loadCreatureTemplateSpells(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
-
-        //                                         0           1       2
-        var result = DB.World.query("SELECT creatureID, `Index`, Spell FROM creature_template_spell");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature template spell definitions. DB table `creature_template_spell` is empty.");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllCreatureTemplateSpell()) {
+            items.forEach(fields -> {
+                if (fields[1] >= CreatureTemplate.MAX_CREATURE_SPELLS)
+                {
+                    Logs.SQL.error("creature_template_spell has spell definitions for creature {} with a incorrect index {}", fields[0], fields[1]);
+                    return;
+                }
+                CreatureTemplate creatureTemplate = templateHashMap.get(fields[0]);
+                if (creatureTemplate == null)
+                {
+                    Logs.SQL.error("creature_template_spell has spell definitions for creature {} but this creature doesn't exist", fields[0]);
+                    return;
+                }
+                creatureTemplate.spells[fields[1]] = fields[2];
+                count.incrementAndGet();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var creatureID = result.<Integer>Read(0);
-            var index = result.<Byte>Read(1);
-
-            if (index >= SharedConst.MaxCreatureSpells) {
-                Logs.SQL.error(String.format("creature_template_spell has spell definitions for creature %1$s with a incorrect index %2$s", creatureID, index));
-
-                continue;
-            }
-
-            TValue creatureTemplate;
-            if (!(creatureTemplateStorage.containsKey(creatureID) && (creatureTemplate = creatureTemplateStorage.get(creatureID)) == creatureTemplate)) {
-                Logs.SQL.error(String.format("creature_template_spell has spell definitions for creature %1$s but this creature doesn't exist", creatureID));
-
-                continue;
-            }
-
-            creatureTemplate.Spells[index] = result.<Integer>Read(2);
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature template spells in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} creature template spells in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    private void loadCreatureTemplateModels() {
+    private void loadCreatureTemplateModels(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
-        //                                         0           1                  2             3
-        var result = DB.World.query("SELECT creatureID, creatureDisplayID, displayScale, Probability FROM creature_template_model ORDER BY Idx ASC");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature template model definitions. DB table `creature_template_model` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var creatureId = result.<Integer>Read(0);
-            var creatureDisplayId = result.<Integer>Read(1);
-            var displayScale = result.<Float>Read(2);
-            var probability = result.<Float>Read(3);
-
-            var cInfo = getCreatureTemplate(creatureId);
-
-            if (cInfo == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_template_model WHERE creatureID = %1$s", creatureId));
-                } else {
-                    Logs.SQL.debug(String.format("Creature template (Entry: %1$s) does not exist but has a record in `creature_template_model`", creatureId));
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllCreatureTemplateModel()) {
+            items.forEach(fields -> {
+                var creatureId = (Integer)fields[0];
+                var creatureDisplayId = (Integer)fields[1];
+                var displayScale = (Float)fields[2];
+                var probability = (Float) fields[3];
+                CreatureTemplate creatureTemplate = templateHashMap.get(creatureId);
+                if (creatureTemplate == null)
+                {
+                    Logs.SQL.error("Creature template (Entry: {}) does not exist but has a record in `creature_template_model`", creatureId);
+                    return;
                 }
 
-                continue;
-            }
+                CreatureDisplayInfo  displayEntry = dbcObjectManager.creatureDisplayInfo(creatureDisplayId);
+                if (displayEntry == null)
+                {
+                    Logs.SQL.error("Creature (Entry: {}) lists non-existing CreatureDisplayID id ({}), this can crash the client.", creatureId, creatureDisplayId);
+                    return;
+                }
 
-            var displayEntry = CliDB.CreatureDisplayInfoStorage.get(creatureDisplayId);
+                CreatureModelInfo modelInfo = getCreatureModelInfo(creatureDisplayId);
+                if (modelInfo == null)
+                    Logs.SQL.error("No model data exist for `CreatureDisplayID` = {} listed by creature (Entry: {}).", creatureDisplayId, creatureId);
 
-            if (displayEntry == null) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) lists non-existing CreatureDisplayID id (%2$s), this can crash the client.", creatureId, creatureDisplayId));
+                if (displayScale <= 0.0f)
+                    displayScale = 1.0f;
 
-                continue;
-            }
+                creatureTemplate.models.add(new CreatureModel(creatureDisplayId, displayScale, probability));
+                creatureTemplate.modelInfos.add(modelInfo);
 
-            var modelInfo = getCreatureModelInfo(creatureDisplayId);
+                count.incrementAndGet();
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} creature template models in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
-            if (modelInfo == null) {
-                Logs.SQL.debug(String.format("No model data exist for `CreatureDisplayID` = %1$s listed by creature (Entry: %2$s).", creatureDisplayId, creatureId));
-            }
-
-            if (displayScale <= 0.0f) {
-                displayScale = 1.0f;
-            }
-
-            cInfo.models.add(new creatureModel(creatureDisplayId, displayScale, probability));
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature template models in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
     }
 
-    private void loadCreatureSummonedData() {
+    private void loadCreatureSummonedData(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = creatureRepository.streamAllCreatureSummonedData()) {
+            items.forEach(fields -> {
 
-        //                                         0           1                            2                     3
-        var result = DB.World.query("SELECT creatureID, CreatureIDVisibleToSummoner, GroundMountDisplayID, FlyingMountDisplayID FROM creature_summoned_data");
+                CreatureTemplate creatureTemplate = templateHashMap.get(fields.creatureID);
+                if (creatureTemplate == null) {
+                    Logs.SQL.error("Table `creature_summoned_data` references non-existing creature {}, skipped", creatureId);
+                    return;
+                }
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature summoned data definitions. DB table `creature_summoned_data` is empty.");
+                if (fields.creatureIdVisibleToSummoner != null) {
+                    if (templateHashMap.get(fields.creatureIdVisibleToSummoner) == null) {
+                        Logs.SQL.error("Table `creature_summoned_data` references non-existing creature {} in CreatureIDVisibleToSummoner for creature {}, set to 0",
+                                fields.creatureIdVisibleToSummoner, fields.creatureID);
+                        fields.creatureIdVisibleToSummoner = 0;
+                    }
+                }
 
-            return;
+                if (fields.groundMountDisplayId == null) {
+                    if (!dbcObjectManager.creatureDisplayInfo().contains(fields.groundMountDisplayId)) {
+                        Logs.SQL.error("Table `creature_summoned_data` references non-existing display id {} in GroundMountDisplayID for creature {}, set to 0",
+                                fields.groundMountDisplayId, creatureId);
+                        fields.groundMountDisplayId = 0;
+                    }
+                }
+
+                if (fields.flyingMountDisplayId == null) {
+                    if (!dbcObjectManager.creatureDisplayInfo().contains(fields.flyingMountDisplayId)) {
+                        Logs.SQL.error("Table `creature_summoned_data` references non-existing display id {} in FlyingMountDisplayID for creature {}, set to 0",
+                                fields.flyingMountDisplayId, fields.creatureID);
+                        fields.flyingMountDisplayId = 0;
+                    }
+                }
+
+                creatureTemplate.summonedData = fields;
+            });
         }
 
-        do {
-            var creatureId = result.<Integer>Read(0);
-
-            if (getCreatureTemplate(creatureId) == null) {
-                Logs.SQL.debug(String.format("Table `creature_summoned_data` references non-existing creature %1$s, skipped", creatureId));
-
-                continue;
-            }
-
-            if (!creatureSummonedDataStorage.containsKey(creatureId)) {
-                creatureSummonedDataStorage.put(creatureId, new CreatureSummonedData());
-            }
-
-            var summonedData = creatureSummonedDataStorage.get(creatureId);
-
-            if (!result.IsNull(1)) {
-                summonedData.setCreatureIdVisibleToSummoner(result.<Integer>Read(1));
-
-                if (getCreatureTemplate(summonedData.getCreatureIdVisibleToSummoner().intValue()) == null) {
-                    Logs.SQL.debug(String.format("Table `creature_summoned_data` references non-existing creature %1$s in CreatureIDVisibleToSummoner for creature %2$s, set to 0", summonedData.getCreatureIdVisibleToSummoner().intValue(), creatureId));
-                    summonedData.setCreatureIdVisibleToSummoner(null);
-                }
-            }
-
-            if (!result.IsNull(2)) {
-                summonedData.setGroundMountDisplayId(result.<Integer>Read(2));
-
-                if (!CliDB.CreatureDisplayInfoStorage.containsKey(summonedData.getGroundMountDisplayId().intValue())) {
-                    Logs.SQL.debug(String.format("Table `creature_summoned_data` references non-existing display id %1$s in GroundMountDisplayID for creature %2$s, set to 0", summonedData.getGroundMountDisplayId().intValue(), creatureId));
-                    summonedData.setCreatureIdVisibleToSummoner(null);
-                }
-            }
-
-            if (!result.IsNull(3)) {
-                summonedData.setFlyingMountDisplayId(result.<Integer>Read(3));
-
-                if (!CliDB.CreatureDisplayInfoStorage.containsKey(summonedData.getFlyingMountDisplayId().intValue())) {
-                    Logs.SQL.debug(String.format("Table `creature_summoned_data` references non-existing display id %1$s in FlyingMountDisplayID for creature %2$s, set to 0", summonedData.getFlyingMountDisplayId().intValue(), creatureId));
-                    summonedData.setGroundMountDisplayId(null);
-                }
-            }
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature summoned data definitions in %2$s ms", creatureSummonedDataStorage.size(), time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} creature summoned data definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     private void checkCreatureMovement(String table, long id, CreatureMovementData creatureMovement) {

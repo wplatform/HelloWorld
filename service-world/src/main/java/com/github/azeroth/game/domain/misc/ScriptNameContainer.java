@@ -1,12 +1,12 @@
-package com.github.azeroth.game;
+package com.github.azeroth.game.domain.misc;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class ScriptNameContainer {
-    private final HashMap<String, entry> nameToIndex = new HashMap<String, entry>();
-    private final ArrayList<entry> indexToName = new ArrayList<>();
+public class ScriptNameContainer {
+    private final HashMap<String, Entry> nameToIndex = new HashMap<>();
+    private final ArrayList<Entry> indexToName = new ArrayList<>();
 
     public ScriptNameContainer() {
         // We insert an empty placeholder here so we can use the
@@ -15,14 +15,15 @@ class ScriptNameContainer {
     }
 
     public final int insert(String scriptName, boolean isScriptNameBound) {
-        Entry entry = new entry((int) nameToIndex.size(), isScriptNameBound, scriptName);
-        var result = nameToIndex.TryAdd(scriptName, entry);
+        var result = nameToIndex.compute(scriptName, (key, value)-> {
+            if(value == null) {
+                value = new Entry(nameToIndex.size(), isScriptNameBound, scriptName);
+                indexToName.add(value);
+            }
+            return value;
+        });
 
-        if (result) {
-            indexToName.add(entry);
-        }
-
-        return nameToIndex.get(scriptName).id;
+        return result.id;
     }
 
     public final int getSize() {
@@ -30,7 +31,7 @@ class ScriptNameContainer {
     }
 
     public final Entry find(int index) {
-        return index < indexToName.size() ? indexToName.get((int) index) : null;
+        return index < indexToName.size() ? indexToName.get(index) : null;
     }
 
     public final Entry find(String name) {
@@ -45,13 +46,11 @@ class ScriptNameContainer {
     public final ArrayList<String> getAllDBScriptNames() {
         ArrayList<String> scriptNames = new ArrayList<>();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
-        for (var(name, entry) : nameToIndex) {
-            if (entry.isScriptDatabaseBound) {
-                scriptNames.add(name);
+        nameToIndex.forEach((k,v) -> {
+            if (v.isScriptDatabaseBound) {
+                scriptNames.add(v.name);
             }
-        }
-
+        });
         return scriptNames;
     }
 
@@ -60,10 +59,10 @@ class ScriptNameContainer {
         public boolean isScriptDatabaseBound;
         public String name;
 
-        public entry(int id, boolean isScriptDatabaseBound, String name) {
-            id = id;
-            isScriptDatabaseBound = isScriptDatabaseBound;
-            name = name;
+        public Entry(int id, boolean isScriptDatabaseBound, String name) {
+            this.id = id;
+            this.isScriptDatabaseBound = isScriptDatabaseBound;
+            this.name = name;
         }
     }
 }

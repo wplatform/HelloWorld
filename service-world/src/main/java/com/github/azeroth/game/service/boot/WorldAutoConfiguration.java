@@ -1,5 +1,6 @@
 package com.github.azeroth.game.service.boot;
 
+import com.github.azeroth.game.domain.creature.CreatureTemplate;
 import com.github.azeroth.game.service.mapper.RowMappers;
 import com.github.azeroth.game.domain.misc.NpcText;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
@@ -47,7 +48,8 @@ public class WorldAutoConfiguration extends AbstractJdbcConfiguration {
     QueryMappingConfiguration rowMappers() {
         return new DefaultQueryMappingConfiguration()
                 .registerRowMapper(NpcText.class, RowMappers.NPC_TEXT_SET_EXTRACTOR)
-                .registerRowMapper(RepSpilloverTemplate.class, RowMappers.REP_SPILLOVER_TEMPLATE_RESULT_SET_EXTRACTOR);
+                .registerRowMapper(RepSpilloverTemplate.class, RowMappers.REP_SPILLOVER_TEMPLATE_RESULT_SET_EXTRACTOR)
+                .registerRowMapper(CreatureTemplate.class, RowMappers.CREATURE_TEMPLATE_ROW_MAPPER);
     }
 
 }

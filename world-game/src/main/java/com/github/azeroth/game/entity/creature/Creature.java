@@ -2250,7 +2250,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
     @Override
     public boolean isImmunedToSpellEffect(SpellInfo spellInfo, SpellEffectInfo spellEffectInfo, WorldObject caster, boolean requireImmunityPurgesEffectAttribute) {
-        if (getTemplate().creatureType == creatureType.Mechanical && spellEffectInfo.isEffect(SpellEffectName.Heal)) {
+        if (getTemplate().type == creatureType.Mechanical && spellEffectInfo.isEffect(SpellEffectName.Heal)) {
             return true;
         }
 

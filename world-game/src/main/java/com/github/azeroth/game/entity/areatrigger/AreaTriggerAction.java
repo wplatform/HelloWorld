@@ -1,12 +1,12 @@
 package com.github.azeroth.game.entity.areatrigger;
 
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionTypes;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionType;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerActionUserTypes;
 
 public final class AreaTriggerAction {
 
     public int param;
-    public AreaTriggeractionTypes actionType = AreaTriggerActionTypes.values()[0];
+    public AreaTriggerActionType actionType = AreaTriggerActionType.values()[0];
     public AreaTriggerActionUserTypes targetType = AreaTriggerActionUserTypes.values()[0];
 
     public AreaTriggerAction clone() {
