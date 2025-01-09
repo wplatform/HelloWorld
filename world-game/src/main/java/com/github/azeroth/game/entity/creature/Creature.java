@@ -2,7 +2,6 @@ package com.github.azeroth.game.entity.creature;
 
 
 import com.github.azeroth.dbc.DbcObjectManager;
-import com.github.azeroth.dbc.defines.LevelLimit;
 import com.github.azeroth.dbc.domain.SandboxScaling;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.ai.AISelector;
@@ -1654,7 +1653,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public final void selectLevel() {
         applyLevelScaling();
         int levelWithDelta = getUInt32Value(ObjectFields.UNIT_FIELD_SCALING_LEVEL_MAX) + getUInt32Value(ObjectFields.UNIT_FIELD_SCALING_LEVEL_DELTA);
-        int level = MathUtil.roundToInterval(levelWithDelta, 1, LevelLimit.STRONG_MAX_LEVEL.value);
+        int level = MathUtil.roundToInterval(levelWithDelta, 1, SharedDefine.STRONG_MAX_LEVEL);
         setLevel(level);
         updateLevelDependantStats();
     }
@@ -3566,7 +3565,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     private long getMaxHealthByLevel(int level) {
         var cInfo = getTemplate();
         var scaling = cInfo.getLevelScaling(getMap().getDifficultyID());
-        var baseHealth = global.getDB2Mgr().EvaluateExpectedStat(ExpectedStatType.CreatureHealth, level, cInfo.getHealthScalingExpansion(), scaling.contentTuningId, playerClass.forValue(cInfo.unitClass));
+        var baseHealth = global.getDB2Mgr().EvaluateExpectedStat(ExpectedStatType.CreatureHealth, level, cInfo.healthScalingExpansion, scaling.contentTuningId, playerClass.forValue(cInfo.unitClass));
 
         return (long) (baseHealth * cInfo.ModHealth * cInfo.modHealthExtra);
     }

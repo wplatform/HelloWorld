@@ -105,9 +105,6 @@ public class CreatureDifficulty {
     }
 
     // Helpers
-    public int getHealthScalingExpansion() {
-        return healthScalingExpansion == Expansion.LEVEL_CURRENT.getValue() ? SharedDefine.CURRENT_EXPANSION : healthScalingExpansion;
-    }
 
     public SkillType getRequiredLootSkill() {
         if ((typeFlag.getFlag() & SkillType.HERBALISM.value) != 0)

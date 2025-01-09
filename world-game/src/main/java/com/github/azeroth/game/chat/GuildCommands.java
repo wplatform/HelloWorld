@@ -24,7 +24,7 @@ class GuildCommands {
 
         var guildName = handler.extractQuotedArg(args.NextString(" "));
 
-        if (tangible.StringHelper.isNullOrEmpty(guildName)) {
+        if (StringUtil.isEmpty(guildName)) {
             return false;
         }
 

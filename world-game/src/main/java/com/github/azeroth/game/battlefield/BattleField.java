@@ -1,7 +1,6 @@
 package com.github.azeroth.game.battlefield;
 
 
-import com.github.azeroth.game.WorldSafeLocsEntry;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.WorldObject;

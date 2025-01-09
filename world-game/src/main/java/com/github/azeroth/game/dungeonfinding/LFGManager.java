@@ -558,7 +558,7 @@ public class LFGManager {
 
                     roleCheck.roles.put(pguid, 0);
 
-                    if (!tangible.StringHelper.isNullOrEmpty(debugNames)) {
+                    if (!StringUtil.isEmpty(debugNames)) {
                         debugNames += ", ";
                     }
 

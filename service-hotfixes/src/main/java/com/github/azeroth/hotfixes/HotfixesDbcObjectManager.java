@@ -14,6 +14,7 @@ import com.github.azeroth.dbc.defines.*;
 
 import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.dbc.domain.ChrSpecialization;
+import com.github.azeroth.dbc.domain.CreatureFamilyEntry;
 import com.github.azeroth.dbc.model.*;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.utils.MathUtil;
@@ -65,7 +66,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     private Map<Short, Integer> itemLevelDeltaToBonusListContainer;
     private Map<Integer, Set<ItemBonusTreeNode>> itemBonusTrees;
     private Map<Integer, ItemChildEquipment> itemChildEquipment;
-    private ItemClass[] itemClassByOldEnum = new ItemClass[PlayerClass.values().length];
+    private ItemClassEntry[] itemClassEntryByOldEnum = new ItemClassEntry[PlayerClass.values().length];
     private Set<Integer> itemsWithCurrencyCost;
     private Map<Integer, Set<ItemLimitCategoryCondition>> itemCategoryConditions;
     private Map<Short, Set<ItemLevelSelectorQuality>> itemLevelQualitySelectorQualities;
@@ -371,10 +372,10 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
             itemChildEquipment.put(e.getParentItemID(), e);
         }
 
-        for (ItemClass itemClass : itemClass()) {
-            Assert.state(itemClass.getClassID() < itemClassByOldEnum.length);
-            Assert.state(itemClassByOldEnum[itemClass.getClassID()] == null);
-            itemClassByOldEnum[itemClass.getClassID()] = itemClass;
+        for (ItemClassEntry itemClassEntry : itemClass()) {
+            Assert.state(itemClassEntry.getClassID() < itemClassEntryByOldEnum.length);
+            Assert.state(itemClassEntryByOldEnum[itemClassEntry.getClassID()] == null);
+            itemClassEntryByOldEnum[itemClassEntry.getClassID()] = itemClassEntry;
         }
 
         itemsWithCurrencyCost = new HashSet<>();
@@ -927,7 +928,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
 
     @Override
     public String getChrRaceName(Race race, Locale locale) {
-        ChrRace raceEntry = chrRace(race.ordinal());
+        ChrRace raceEntry = chrRace(race);
         if (raceEntry == null)
             return "";
 
@@ -949,8 +950,15 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     }
 
     @Override
-    public String getCreatureFamilyPetName(Integer petfamily, Locale locale) {
-        return "";
+    public String getCreatureFamilyPetName(CreatureFamily petFamily, Locale locale) {
+        if (petFamily == null)
+            return null;
+
+        CreatureFamilyEntry entry = creatureFamily(petFamily.ordinal());
+        if (entry == null)
+            return null;
+
+        return entry.getName().get(locale);
     }
 
     @Override
@@ -1141,7 +1149,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     }
 
     @Override
-    public ItemClass getItemClassByOldEnum(Integer itemClass) {
+    public ItemClassEntry getItemClassByOldEnum(Integer itemClass) {
         return null;
     }
 

@@ -261,7 +261,7 @@ class GroupCommands {
             }
 
             if (slot.flags.hasFlag(GroupMemberFlags.MainTank)) {
-                if (!tangible.StringHelper.isNullOrEmpty(flags)) {
+                if (!StringUtil.isEmpty(flags)) {
                     flags += ", ";
                 }
 
@@ -269,14 +269,14 @@ class GroupCommands {
             }
 
             if (slot.flags.hasFlag(GroupMemberFlags.MainAssist)) {
-                if (!tangible.StringHelper.isNullOrEmpty(flags)) {
+                if (!StringUtil.isEmpty(flags)) {
                     flags += ", ";
                 }
 
                 flags += "MainAssist";
             }
 
-            if (tangible.StringHelper.isNullOrEmpty(flags)) {
+            if (StringUtil.isEmpty(flags)) {
                 flags = "None";
             }
 

@@ -1,6 +1,7 @@
 package com.github.azeroth.game.entity.item;
 
 
+import com.github.azeroth.dbc.domain.ItemEffect;
 import com.github.azeroth.game.entity.item.enums.*;
 import com.github.azeroth.game.entity.player.Player;
 
@@ -54,7 +55,7 @@ public class ItemTemplate {
         maxDurability = value;
     }
 
-    public final ArrayList<ItemEffectRecord> getEffects() {
+    public final ArrayList<ItemEffect> getEffects() {
         return effects;
     }
 
@@ -158,11 +159,11 @@ public class ItemTemplate {
         return getBasicData().id;
     }
 
-    public final ItemClass getClass() {
+    public final ItemClass getItemClass() {
         return getBasicData().classID;
     }
 
-    public final int getSubClass() {
+    public final ItemSubclassConsumable getSubClass() {
         return getBasicData().SubclassID;
     }
 

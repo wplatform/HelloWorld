@@ -11997,7 +11997,7 @@ public class Spell {
             // generate new name for summon pet
             var new_name = global.getObjectMgr().generatePetName(petentry);
 
-            if (!tangible.StringHelper.isNullOrEmpty(new_name)) {
+            if (!StringUtil.isEmpty(new_name)) {
                 pet.setName(new_name);
             }
         }

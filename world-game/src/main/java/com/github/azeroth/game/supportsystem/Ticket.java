@@ -106,19 +106,19 @@ public class Ticket {
         ss.append(handler.getParsedString(CypherStrings.CommandTicketlistguid, idProtected));
         ss.append(handler.getParsedString(CypherStrings.CommandTicketlistname, getPlayerName()));
 
-        if (!tangible.StringHelper.isNullOrEmpty(closedName)) {
+        if (!StringUtil.isEmpty(closedName)) {
             ss.append(handler.getParsedString(CypherStrings.CommandTicketclosed, closedName));
         }
 
-        if (!tangible.StringHelper.isNullOrEmpty(assignedToName)) {
+        if (!StringUtil.isEmpty(assignedToName)) {
             ss.append(handler.getParsedString(CypherStrings.CommandTicketlistassignedto, assignedToName));
         }
 
-        if (!tangible.StringHelper.isNullOrEmpty(unassignedName)) {
+        if (!StringUtil.isEmpty(unassignedName)) {
             ss.append(handler.getParsedString(CypherStrings.CommandTicketlistunassigned, unassignedName));
         }
 
-        if (!tangible.StringHelper.isNullOrEmpty(deletedName)) {
+        if (!StringUtil.isEmpty(deletedName)) {
             ss.append(handler.getParsedString(CypherStrings.CommandTicketdeleted, deletedName));
         }
 

@@ -196,7 +196,7 @@ class LearnCommands {
                 var locale = handler.getSessionDbcLocale();
                 name = skillInfo.DisplayName[locale];
 
-                if (tangible.StringHelper.isNullOrEmpty(name)) {
+                if (StringUtil.isEmpty(name)) {
                     continue;
                 }
 

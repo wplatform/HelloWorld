@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,18 @@ public class RandomUtil {
         return SECURE_RANDOM.nextLong() * (endExclusive - startInclusive);
     }
 
+    public static <T> T random(List<T> collection) {
+        if(collection == null ||collection.isEmpty()) {
+            return null;
+        }
+        // If only one element, ignore the probability (even if 0)
+        if(collection.size() == 1) {
+            return collection.iterator().next();
+        }
+
+        int index = randomInt(0, collection.size());
+        return collection.get(index);
+    }
 
     public static <T> T randomByWeight(Collection<T> collection, Function<T, Float> eleWeight) {
         if(collection == null ||collection.isEmpty()) {

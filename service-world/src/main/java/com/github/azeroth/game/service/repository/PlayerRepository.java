@@ -4,7 +4,6 @@ package com.github.azeroth.game.service.repository;
 import com.github.azeroth.game.domain.player.*;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
 
@@ -48,6 +47,35 @@ public interface PlayerRepository {
     
     @Query("SELECT ChoiceId, ResponseId, TypeArtFileID, Rarity, RarityColor, SpellID, MaxStacks FROM playerchoice_response_maw_power")
     Stream<PlayerChoiceResponseMawPower> streamsAllPlayerChoiceResponseRewardMawPower();
+
+
+    @Query("SELECT race, class, map, position_x, position_y, position_z, orientation, intro_movie_id, intro_scene_id FROM playercreateinfo")
+    Stream<PlayerInfo> streamsAllPlayerCreateInfo();
+
+    @Query("SELECT race, class, itemid, amount FROM playercreateinfo_item")
+    Stream<int[]> streamsAllPlayerCreateInfoItems();
+
+    @Query("SELECT creature_entry, level, hp, mana, str, agi, sta, inte, spi, armor FROM pet_levelstats")
+    Stream<int[]> streamsAllPetLevelStats();
+
+    @Query("SELECT racemask, classmask, Spell FROM playercreateinfo_spell_custom")
+    Stream<PlayerCreateInfoSpell> streamsAllPlayerCreateInfoSpellCustom();
+
+    @Query("SELECT raceMask, classMask, spell, createMode FROM playercreateinfo_cast_spell")
+    Stream<PlayerCreateInfoSpell> streamsAllPlayerCreateInfoCastSpell();
+
+    @Query("SELECT race, class, button, action, type FROM playercreateinfo_action")
+    Stream<int[]> streamsAllPlayerCreateInfoAction();
+
+    @Query("SELECT race, str, agi, sta, inte FROM player_racestats")
+    Stream<int[]> streamsAllPlayerRaceStats();
+
+    @Query("SELECT class, level, str, agi, sta, inte FROM player_classlevelstats")
+    Stream<int[]> streamsAllPlayerClassLevelStats();
+
+    @Query("SELECT word, entry, half FROM pet_name_generation")
+    Stream<PetNameGeneration> streamsAllPetNameGeneration();
+
 
 
 

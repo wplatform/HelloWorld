@@ -5,6 +5,7 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.misc.NpcText;
+import com.github.azeroth.game.domain.player.PlayerInfo;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
 import com.github.azeroth.game.domain.unit.NPCFlag;
 import com.github.azeroth.game.domain.unit.UnitFlag;
@@ -125,6 +126,24 @@ public interface RowMappers {
         creature.stringId               = rs.getString(46);
 
         return creature;
+    };
+
+
+    RowMapper<PlayerInfo> PLAYER_INFO_ROW_MAPPER = (rs, rowNum) -> {
+        PlayerInfo playerInfo = new PlayerInfo();
+        playerInfo.race = Race.values()[rs.getByte(1)];
+        playerInfo.playClass = PlayerClass.values()[rs.getByte(2)];
+        playerInfo.mapId = rs.getInt(3);
+        playerInfo.x = rs.getFloat(4);
+        playerInfo.y = rs.getFloat(5);
+        playerInfo.z = rs.getFloat(6);
+        playerInfo.o = rs.getFloat(7);
+
+        int introMovieId = rs.getInt(8);
+        if(!rs.wasNull()) {
+            playerInfo.introMovieId = introMovieId;
+        }
+        return playerInfo;
     };
 
 }

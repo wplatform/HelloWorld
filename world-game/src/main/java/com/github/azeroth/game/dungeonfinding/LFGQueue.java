@@ -83,7 +83,7 @@ public class LFGQueue {
 
         if (!dungeons.isEmpty()) {
             for (var it : dungeons) {
-                if (!tangible.StringHelper.isNullOrEmpty(str)) {
+                if (!StringUtil.isEmpty(str)) {
                     str += ", ";
                 }
 
@@ -273,7 +273,7 @@ public class LFGQueue {
                     break;
             }
 
-            if (tangible.StringHelper.isNullOrEmpty(queueinfo.bestCompatible)) {
+            if (StringUtil.isEmpty(queueinfo.bestCompatible)) {
                 findBestCompatibleInQueue(itQueue.getKey(), itQueue.getValue());
             }
 
@@ -335,7 +335,7 @@ public class LFGQueue {
     }
 
     public final void updateBestCompatibleInQueue(ObjectGuid guid, LfgQueueData queueData, String key, HashMap<ObjectGuid, LfgRoles> roles) {
-        var storedSize = (byte) (tangible.StringHelper.isNullOrEmpty(queueData.bestCompatible) ? 0 : queueData.bestCompatible.count(p -> p == '|') + 1);
+        var storedSize = (byte) (StringUtil.isEmpty(queueData.bestCompatible) ? 0 : queueData.bestCompatible.count(p -> p == '|') + 1);
 
         var size = (byte) (key.count(p -> p == '|') + 1);
 

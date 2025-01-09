@@ -1,13 +1,8 @@
 package com.github.azeroth.game.domain.player;
+
+import com.github.azeroth.defines.SharedDefine;
+
 public class PlayerLevelInfo
 {
-	private int[] stats = new int[Framework.Constants.stats.max.getValue()];
-	public final int[] getStats()
-	{
-		return stats;
-	}
-	public final void setStats(int[] value)
-	{
-		stats = value;
-	}
+	public int[] stats = new int[SharedDefine.MAX_STATS];
 }

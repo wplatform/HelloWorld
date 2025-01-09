@@ -206,7 +206,7 @@ public class Guild {
     }
 
     public final boolean setName(String name) {
-        if (Objects.equals(m_name, name) || tangible.StringHelper.isNullOrEmpty(name) || name.length() > 24 || global.getObjectMgr().isReservedName(name) || !ObjectManager.isValidCharterName(name)) {
+        if (Objects.equals(m_name, name) || StringUtil.isEmpty(name) || name.length() > 24 || global.getObjectMgr().isReservedName(name) || !ObjectManager.isValidCharterName(name)) {
             return false;
         }
 

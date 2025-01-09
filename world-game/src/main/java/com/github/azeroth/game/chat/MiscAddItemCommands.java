@@ -24,7 +24,7 @@ class MiscAddItemCommands {
         {
             var itemName = args.NextString("]").substring(1);
 
-            if (!tangible.StringHelper.isNullOrEmpty(itemName)) {
+            if (!StringUtil.isEmpty(itemName)) {
                 var record = CliDB.ItemSparseStorage.values().FirstOrDefault(itemSparse ->
                 {
                     for (Locale i = 0; i.getValue() < locale.Total.getValue(); ++i) {
@@ -50,7 +50,7 @@ class MiscAddItemCommands {
         {
             var idStr = handler.extractKeyFromLink(args, "Hitem");
 
-            if (tangible.StringHelper.isNullOrEmpty(idStr)) {
+            if (StringUtil.isEmpty(idStr)) {
                 return false;
             }
 

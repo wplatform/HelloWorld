@@ -87,7 +87,7 @@ public class BpayGroup {
         this.flushBits();
         this.writeString(getName());
 
-        if (!tangible.StringHelper.isNullOrEmpty(getDescription())) {
+        if (!StringUtil.isEmpty(getDescription())) {
             this.write(getDescription());
         }
     }

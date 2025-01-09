@@ -9,19 +9,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RaceMask {
+public final class RaceMask {
 
 
-    public static final RaceMask ALL_PLAYABLE = new RaceMask(
+    public static final RaceMask ALL_PLAYABLE = RaceMask.of(
             RaceMask.getMaskForRace(Race.HUMAN) |
                     RaceMask.getMaskForRace(Race.ORC) |
                     RaceMask.getMaskForRace(Race.DWARF) |
-                    RaceMask.getMaskForRace(Race.NIGHTELF) |
+                    RaceMask.getMaskForRace(Race.NIGHT_ELF) |
                     RaceMask.getMaskForRace(Race.UNDEAD_PLAYER) |
                     RaceMask.getMaskForRace(Race.TAUREN) |
                     RaceMask.getMaskForRace(Race.GNOME) |
                     RaceMask.getMaskForRace(Race.TROLL) |
-                    RaceMask.getMaskForRace(Race.BLOODELF) |
+                    RaceMask.getMaskForRace(Race.BLOOD_ELF) |
                     RaceMask.getMaskForRace(Race.DRAENEI) |
                     RaceMask.getMaskForRace(Race.GOBLIN) |
                     RaceMask.getMaskForRace(Race.WORGEN) |
@@ -42,12 +42,12 @@ public class RaceMask {
                     RaceMask.getMaskForRace(Race.DRACTHYR_HORDE)
     );
 
-    public static final RaceMask NEUTRAL = new RaceMask(RaceMask.getMaskForRace(Race.PANDAREN_NEUTRAL));
+    public static final RaceMask NEUTRAL = RaceMask.of(RaceMask.getMaskForRace(Race.PANDAREN_NEUTRAL));
 
-    public static final RaceMask ALLIANCE = new RaceMask(
+    public static final RaceMask ALLIANCE = RaceMask.of(
             RaceMask.getMaskForRace(Race.HUMAN) |
                     RaceMask.getMaskForRace(Race.DWARF) |
-                    RaceMask.getMaskForRace(Race.NIGHTELF) |
+                    RaceMask.getMaskForRace(Race.NIGHT_ELF) |
                     RaceMask.getMaskForRace(Race.GNOME) |
                     RaceMask.getMaskForRace(Race.DRAENEI) |
                     RaceMask.getMaskForRace(Race.WORGEN) |
@@ -60,7 +60,7 @@ public class RaceMask {
                     RaceMask.getMaskForRace(Race.DRACTHYR_ALLIANCE)
     );
 
-    public static final RaceMask HORDE = new RaceMask(ALL_PLAYABLE.rawValue & ~(NEUTRAL.rawValue | ALLIANCE.rawValue));
+    public static final RaceMask HORDE = RaceMask.of(ALL_PLAYABLE.rawValue & ~(NEUTRAL.rawValue | ALLIANCE.rawValue));
 
 
 
@@ -74,17 +74,17 @@ public class RaceMask {
 
     private static int getRaceBit(Race race) {
         return switch (race) {
-            case HUMAN, ORC, DWARF, NIGHTELF, UNDEAD_PLAYER, TAUREN, GNOME,
-                    TROLL, GOBLIN, BLOODELF, DRAENEI, WORGEN, PANDAREN_NEUTRAL,
+            case HUMAN, ORC, DWARF, NIGHT_ELF, UNDEAD_PLAYER, TAUREN, GNOME,
+                    TROLL, GOBLIN, BLOOD_ELF, DRAENEI, WORGEN, PANDAREN_NEUTRAL,
                     PANDAREN_ALLIANCE, PANDAREN_HORDE, NIGHTBORNE, HIGHMOUNTAIN_TAUREN,
                     VOID_ELF, LIGHTFORGED_DRAENEI -> race.ordinal() - 1;
             default -> -1;
         };
     }
 
-    private static int getMaskForRace(Race race) {
+    public static long getMaskForRace(Race race) {
         int raceBit = getRaceBit(race);
-        return raceBit >= 0 && raceBit < 64 ? (1 << raceBit) : 0;
+        return raceBit >= 0 && raceBit < 64 ? (1L << raceBit) : 0;
     }
 
     public boolean isEmpty() {
@@ -102,16 +102,20 @@ public class RaceMask {
     }
 
     public boolean hasRaceMask(long mask) {
-        return (rawValue & mask) == 0;
+        return (rawValue & mask) != 0;
     }
 
     public boolean hasRaceMask(RaceMask right) {
-        return (rawValue & right.rawValue) == 0;
+        return (rawValue & right.rawValue) != 0;
     }
 
     public RaceMask not() {
         rawValue = ~rawValue;
         return this;
+    }
+
+    public static RaceMask of(long rawValue) {
+        return new RaceMask(rawValue);
     }
 
 }

@@ -1,11 +1,19 @@
 package com.github.azeroth.defines;
 
 public enum SpellCategory {
-    SPELL_CATEGORY_FOOD(11), SPELL_CATEGORY_DRINK(59);
+    FOOD(11), DRINK(59);
 
     public final int value;
 
     SpellCategory(int value) {
         this.value = value;
+    }
+
+    public static SpellCategory valueOf(int value) {
+        return switch (value) {
+            case 11 -> FOOD;
+            case 59 -> DRINK;
+            default -> throw new IllegalStateException("Unexpected value: " + value);
+        };
     }
 }

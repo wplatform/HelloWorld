@@ -1,4 +1,4 @@
-package game;
+package com.github.azeroth.game.globals;
 
 public class ProductAddon {
     private int displayInfoEntry;

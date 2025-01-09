@@ -1,6 +1,7 @@
 package com.github.azeroth.game.world.setting;
 
 import com.github.azeroth.common.Locale;
+import com.github.azeroth.defines.Expansion;
 import lombok.AllArgsConstructor;
 
 import java.nio.file.Path;
@@ -384,7 +385,7 @@ public class WorldSetting {
     public int strictCharterNames;
     public int strictPetNames;
     public int declinedNames;
-    public byte expansion;
+    public Expansion expansion;
     public int minPlayerName;
     public int minCharterName;
     public int minPetName;

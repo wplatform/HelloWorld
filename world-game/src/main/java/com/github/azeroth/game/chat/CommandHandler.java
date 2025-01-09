@@ -229,7 +229,7 @@ public class CommandHandler {
         if (args.get(1) == 'c') {
             var check = args.NextString("|");
 
-            if (tangible.StringHelper.isNullOrEmpty(check)) {
+            if (StringUtil.isEmpty(check)) {
                 return null;
             }
         } else {
@@ -238,7 +238,7 @@ public class CommandHandler {
 
         var cLinkType = args.NextString(":");
 
-        if (tangible.StringHelper.isNullOrEmpty(cLinkType)) {
+        if (StringUtil.isEmpty(cLinkType)) {
             return null;
         }
 
@@ -263,7 +263,7 @@ public class CommandHandler {
     }
 
     public final String extractQuotedArg(String str) {
-        if (tangible.StringHelper.isNullOrEmpty(str)) {
+        if (StringUtil.isEmpty(str)) {
             return null;
         }
 
@@ -298,7 +298,7 @@ public class CommandHandler {
         if (args != null && !args.isEmpty()) {
             var name = extractPlayerNameFromLink(args);
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 sendSysMessage(CypherStrings.PlayerNotFound);
                 sentErrorMessage = true;
 
@@ -316,7 +316,7 @@ public class CommandHandler {
             playerName.outArgValue = player.outArgValue != null ? player.outArgValue.getName() : "";
         }
 
-        if (player.outArgValue == null && playerGuid.outArgValue.isEmpty() && tangible.StringHelper.isNullOrEmpty(playerName.outArgValue)) {
+        if (player.outArgValue == null && playerGuid.outArgValue.isEmpty() && StringUtil.isEmpty(playerName.outArgValue)) {
             sendSysMessage(CypherStrings.PlayerNotFound);
             sentErrorMessage = true;
 
@@ -338,7 +338,7 @@ public class CommandHandler {
         var idS = extractKeyFromLink(args, guidKeys, tempOut_type);
         type = tempOut_type.outArgValue;
 
-        if (tangible.StringHelper.isNullOrEmpty(idS)) {
+        if (StringUtil.isEmpty(idS)) {
             return 0;
         }
 
@@ -417,7 +417,7 @@ public class CommandHandler {
         param1Str = tempOut_param1Str.outArgValue;
         type = tempOut_type.outArgValue;
 
-        if (tangible.StringHelper.isNullOrEmpty(idS)) {
+        if (StringUtil.isEmpty(idS)) {
             return 0;
         }
 

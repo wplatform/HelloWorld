@@ -1328,7 +1328,7 @@ public final class ConditionManager {
         return mask;
     }
 
-    public boolean isObjectMeetToConditionList(ConditionSourceInfo sourceInfo, ArrayList<Condition> conditions) {
+    public boolean isObjectMeetToConditionList(ConditionSourceInfo sourceInfo, List<Condition> conditions) {
         //     groupId, groupCheckPassed
         HashMap<Integer, Boolean> elseGroupStore = new HashMap<Integer, Boolean>();
 
@@ -1374,43 +1374,61 @@ public final class ConditionManager {
         return false;
     }
 
-    public boolean isObjectMeetToConditions(WorldObject obj, ArrayList<Condition> conditions) {
+    public boolean isObjectMeetToConditions(WorldObject obj, List<Condition> conditions) {
         ConditionSourceInfo srcInfo = new ConditionSourceInfo(obj);
 
         return isObjectMeetToConditions(srcInfo, conditions);
     }
 
-    public boolean isObjectMeetToConditions(WorldObject obj1, WorldObject obj2, ArrayList<Condition> conditions) {
+    public boolean isObjectMeetToConditions(WorldObject obj1, WorldObject obj2, List<Condition> conditions) {
         ConditionSourceInfo srcInfo = new ConditionSourceInfo(obj1, obj2);
 
         return isObjectMeetToConditions(srcInfo, conditions);
     }
 
-    public boolean isObjectMeetToConditions(ConditionSourceInfo sourceInfo, ArrayList<Condition> conditions) {
+    public boolean isObjectMeetToConditions(ConditionSourceInfo sourceInfo, List<Condition> conditions) {
         if (conditions.isEmpty()) {
             return true;
         }
-
-        Log.outDebug(LogFilter.condition, "ConditionMgr.IsObjectMeetToConditions");
-
+        Logs.CONDITION.debug("ConditionMgr::IsObjectMeetToConditions");
         return isObjectMeetToConditionList(sourceInfo, conditions);
     }
 
     public boolean canHaveSourceGroupSet(ConditionSourceType sourceType) {
-        return sourceType == ConditionSourceType.CreatureLootTemplate || sourceType == ConditionSourceType.DisenchantLootTemplate || sourceType == ConditionSourceType.FishingLootTemplate || sourceType == ConditionSourceType.GameobjectLootTemplate || sourceType == ConditionSourceType.ItemLootTemplate || sourceType == ConditionSourceType.MailLootTemplate || sourceType == ConditionSourceType.MillingLootTemplate || sourceType == ConditionSourceType.PickpocketingLootTemplate || sourceType == ConditionSourceType.ProspectingLootTemplate || sourceType == ConditionSourceType.ReferenceLootTemplate || sourceType == ConditionSourceType.SkinningLootTemplate || sourceType == ConditionSourceType.SpellLootTemplate || sourceType == ConditionSourceType.GossipMenu || sourceType == ConditionSourceType.GossipMenuOption || sourceType == ConditionSourceType.VehicleSpell || sourceType == ConditionSourceType.SpellImplicitTarget || sourceType == ConditionSourceType.SpellClickEvent || sourceType == ConditionSourceType.SmartEvent || sourceType == ConditionSourceType.NpcVendor || sourceType == ConditionSourceType.Phase || sourceType == ConditionSourceType.areaTrigger || sourceType == ConditionSourceType.TrainerSpell || sourceType == ConditionSourceType.ObjectIdVisibility;
+        return sourceType == ConditionSourceType.CREATURE_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.DISENCHANT_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.FISHING_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.GAMEOBJECT_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.ITEM_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.MAIL_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.MILLING_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.PICKPOCKETING_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.PROSPECTING_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.REFERENCE_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.SKINNING_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.SPELL_LOOT_TEMPLATE
+                || sourceType == ConditionSourceType.GOSSIP_MENU
+                || sourceType == ConditionSourceType.GOSSIP_MENU_OPTION
+                || sourceType == ConditionSourceType.VEHICLE_SPELL
+                || sourceType == ConditionSourceType.SPELL_IMPLICIT_TARGET
+                || sourceType == ConditionSourceType.SPELL_CLICK_EVENT
+                || sourceType == ConditionSourceType.SMART_EVENT
+                || sourceType == ConditionSourceType.NPC_VENDOR
+                || sourceType == ConditionSourceType.PHASE
+                || sourceType == ConditionSourceType.AREATRIGGER
+                || sourceType == ConditionSourceType.TRAINER_SPELL
+                || sourceType == ConditionSourceType.OBJECT_ID_VISIBILITY;
     }
 
     public boolean canHaveSourceIdSet(ConditionSourceType sourceType) {
-        return (sourceType == ConditionSourceType.SmartEvent);
+        return (sourceType == ConditionSourceType.SMART_EVENT);
     }
 
     public boolean isObjectMeetingNotGroupedConditions(ConditionSourceType sourceType, int entry, ConditionSourceInfo sourceInfo) {
-        if (sourceType.getValue() > ConditionSourceType.NONE.getValue() && sourceType.getValue() < ConditionSourceType.max.getValue()) {
-            var conditions = conditionStorage.get(sourceType).get(entry);
-
+        if (sourceType != ConditionSourceType.NONE) {
+            var conditions = conditionStore.get(sourceType).get(new ConditionId(0,entry,0));
             if (!conditions.isEmpty()) {
-                Log.outDebug(LogFilter.condition, "GetConditionsForNotGroupedEntry: found conditions for type {} and entry {}", sourceType, entry);
-
+                Logs.CONDITION.debug( "GetConditionsForNotGroupedEntry: found conditions for type {} and entry {}", sourceType, entry);
                 return isObjectMeetToConditions(sourceInfo, conditions);
             }
         }
@@ -1439,35 +1457,26 @@ public final class ConditionManager {
     }
 
     public boolean hasConditionsForNotGroupedEntry(ConditionSourceType sourceType, int entry) {
-        if (sourceType.getValue() > ConditionSourceType.NONE.getValue() && sourceType.getValue() < ConditionSourceType.max.getValue()) {
-            if (conditionStorage.get(sourceType).ContainsKey(entry)) {
-                return true;
-            }
+        if (sourceType != ConditionSourceType.NONE) {
+            return conditionStore.get(sourceType).containsKey(new ConditionId(0, entry, 0));
         }
 
         return false;
     }
 
     public boolean isObjectMeetingSpellClickConditions(int creatureId, int spellId, WorldObject clicker, WorldObject target) {
-        var multiMap = spellClickEventConditionStorage.get(creatureId);
-
-        if (multiMap != null) {
-            var conditions = multiMap.get(spellId);
-
-            if (!conditions.isEmpty()) {
-                Log.outDebug(LogFilter.condition, "GetConditionsForSpellClickEvent: found conditions for SpellClickEvent entry {} spell {}", creatureId, spellId);
-                ConditionSourceInfo sourceInfo = new ConditionSourceInfo(clicker, target);
-
-                return isObjectMeetToConditions(sourceInfo, conditions);
-            }
+        var conditions = conditionStore.get(ConditionSourceType.SPELL_CLICK_EVENT).get(new ConditionId(creatureId, spellId, 0));
+        if (conditions != null)
+        {
+            Logs.CONDITION.debug("IsObjectMeetingSpellClickConditions: found conditions for SpellClickEvent entry {} spell {}", creatureId, spellId);
+            ConditionSourceInfo sourceInfo = new ConditionSourceInfo(clicker, target);
+            return isObjectMeetToConditions(sourceInfo, conditions);
         }
-
         return true;
     }
 
     public ArrayList<Condition> getConditionsForSpellClickEvent(int creatureId, int spellId) {
-        var multiMap = spellClickEventConditionStorage.get(creatureId);
-
+        var conditions = conditionStore.get(ConditionSourceType.SPELL_CLICK_EVENT).get(new ConditionId(creatureId, spellId, 0));
         if (multiMap != null) {
             var conditions = multiMap.get(spellId);
 

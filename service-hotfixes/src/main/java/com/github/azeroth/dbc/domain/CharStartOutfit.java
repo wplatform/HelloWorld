@@ -128,4 +128,12 @@ public class CharStartOutfit implements DbcEntity {
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
+    public int[] getItems() {
+        return new int[]{
+                itemID1, itemID2, itemID3, itemID4, itemID5, itemID6, itemID7, itemID8, itemID9, itemID10,
+                itemID11, itemID12, itemID13, itemID14, itemID15, itemID16, itemID17, itemID18, itemID19, itemID20,
+                itemID21, itemID22, itemID23, itemID24
+        };
+    }
+
 }

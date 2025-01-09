@@ -402,7 +402,7 @@ public class Condition {
                 break;
             }
             case DAILY_QUEST_DONE: {
-                if (player) {
+                if (player != null) {
                     condMeets = player.isDailyQuestDone(conditionValue1);
                 }
 

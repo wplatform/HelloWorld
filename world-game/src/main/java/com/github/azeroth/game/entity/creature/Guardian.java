@@ -124,7 +124,7 @@ public class Guardian extends Minion {
 
 //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: SetCreateHealth((uint)(Global.DB2Mgr.EvaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.GetHealthScalingExpansion(), UnitData.ContentTuningID, (PlayerClass)cinfo.UnitClass) * cinfo.ModHealth * cinfo.ModHealthExtra * GetHealthMod(cinfo.Rank)));
-            setCreateHealth((int) (Global.getDB2Mgr().evaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.getHealthScalingExpansion(), unitData.contentTuningID, PlayerClass.forValue(cinfo.unitClass)) * cinfo.modHealth * cinfo.modHealthExtra * getHealthMod(cinfo.rank)));
+            setCreateHealth((int) (Global.getDB2Mgr().evaluateExpectedStat(ExpectedStatType.CreatureHealth, petlevel, cinfo.healthScalingExpansion, unitData.contentTuningID, PlayerClass.forValue(cinfo.unitClass)) * cinfo.modHealth * cinfo.modHealthExtra * getHealthMod(cinfo.rank)));
             setCreateMana(stats.generateMana(cinfo));
 
             setCreateStat(Stats.Strength, 22);

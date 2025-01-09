@@ -30,7 +30,7 @@ import lombok.ToString;
         @Db2Field(name = "maxScaleLevel", type = Db2Type.BYTE, signed = true),
         @Db2Field(name = "petTalentType", type = Db2Type.BYTE, signed = true)
 })
-public class CreatureFamily implements DbcEntity {
+public class CreatureFamilyEntry implements DbcEntity {
     @Id
 
     @Column("ID")

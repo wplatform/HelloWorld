@@ -20,7 +20,7 @@ class LookupCommands {
             var locale = handler.getSessionDbcLocale();
             var name = areaEntry.AreaName[locale];
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -90,7 +90,7 @@ class LookupCommands {
             var creatureLocale = global.getObjectMgr().getCreatureLocale(id);
 
             if (creatureLocale != null) {
-                if (creatureLocale.name.length > localeIndex && !tangible.StringHelper.isNullOrEmpty(creatureLocale.name.charAt(localeIndex))) {
+                if (creatureLocale.name.length > localeIndex && !StringUtil.isEmpty(creatureLocale.name.charAt(localeIndex))) {
                     var name = creatureLocale.name.charAt(localeIndex);
 
                     if (name.Like(namePart)) {
@@ -117,7 +117,7 @@ class LookupCommands {
 
             var name = template.getValue().name;
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -162,7 +162,7 @@ class LookupCommands {
 
             var descr = eventData.description;
 
-            if (tangible.StringHelper.isNullOrEmpty(descr)) {
+            if (StringUtil.isEmpty(descr)) {
                 continue;
             }
 
@@ -211,7 +211,7 @@ class LookupCommands {
             var locale = handler.getSessionDbcLocale();
             var name = factionEntry.name.charAt(locale);
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -377,7 +377,7 @@ class LookupCommands {
             var objectLocalte = global.getObjectMgr().getGameObjectLocale(template.entry);
 
             if (objectLocalte != null) {
-                if (objectLocalte.name.length > localeIndex && !tangible.StringHelper.isNullOrEmpty(objectLocalte.name.charAt(localeIndex))) {
+                if (objectLocalte.name.length > localeIndex && !StringUtil.isEmpty(objectLocalte.name.charAt(localeIndex))) {
                     var name = objectLocalte.name.charAt(localeIndex);
 
                     if (name.Like(namePart)) {
@@ -404,7 +404,7 @@ class LookupCommands {
 
             var name = template.name;
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -447,7 +447,7 @@ class LookupCommands {
             var locale = handler.getSessionDbcLocale();
             var name = skillInfo.DisplayName[locale];
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -522,7 +522,7 @@ class LookupCommands {
         for (var nodeEntry : CliDB.TaxiNodesStorage.values()) {
             var name = nodeEntry.name.charAt(locale);
 
-            if (tangible.StringHelper.isNullOrEmpty(name)) {
+            if (StringUtil.isEmpty(name)) {
                 continue;
             }
 
@@ -614,7 +614,7 @@ class LookupCommands {
                 var locale = handler.getSessionDbcLocale();
                 var name = gender == gender.Male ? titleInfo.name.charAt(locale) : titleInfo.Name1[locale];
 
-                if (tangible.StringHelper.isNullOrEmpty(name)) {
+                if (StringUtil.isEmpty(name)) {
                     continue;
                 }
 
@@ -684,7 +684,7 @@ class LookupCommands {
             for (var template : its.values()) {
                 var name = template.getName(handler.getSessionDbcLocale());
 
-                if (tangible.StringHelper.isNullOrEmpty(name)) {
+                if (StringUtil.isEmpty(name)) {
                     continue;
                 }
 
@@ -822,7 +822,7 @@ class LookupCommands {
                 var locale = handler.getSessionDbcLocale();
                 var name = mapInfo.MapName[locale];
 
-                if (tangible.StringHelper.isNullOrEmpty(name)) {
+                if (StringUtil.isEmpty(name)) {
                     continue;
                 }
 
@@ -1127,7 +1127,7 @@ class LookupCommands {
 
                 var _title = qInfo.logTitle;
 
-                if (tangible.StringHelper.isNullOrEmpty(_title)) {
+                if (StringUtil.isEmpty(_title)) {
                     continue;
                 }
 
@@ -1385,7 +1385,7 @@ class LookupCommands {
                 var locale = handler.getSessionDbcLocale();
                 var name = spellInfo.getSpellName().get(locale);
 
-                if (tangible.StringHelper.isNullOrEmpty(name)) {
+                if (StringUtil.isEmpty(name)) {
                     handler.sendSysMessage(CypherStrings.CommandNospellfound);
 
                     return true;

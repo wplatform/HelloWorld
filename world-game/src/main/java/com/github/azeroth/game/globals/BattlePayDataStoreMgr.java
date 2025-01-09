@@ -1,4 +1,4 @@
-package game;
+package com.github.azeroth.game.globals;
 
 
 import com.github.azeroth.game.networking.packet.bpay.*;

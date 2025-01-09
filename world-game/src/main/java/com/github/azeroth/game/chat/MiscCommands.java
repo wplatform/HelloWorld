@@ -325,7 +325,7 @@ class MiscCommands {
         var attacker = handler.getSession().getPlayer();
 
         // flat melee damage without resistence/etc reduction
-        if (tangible.StringHelper.isNullOrEmpty(schoolStr)) {
+        if (StringUtil.isEmpty(schoolStr)) {
             damage_ = unit.dealDamage(attacker, target, damage_, null, DamageEffectType.Direct, spellSchoolMask.NORMAL, null, false);
 
             if (target != attacker) {
@@ -353,7 +353,7 @@ class MiscCommands {
         var spellStr = args.NextString(" ");
 
         // melee damage by specific school
-        if (tangible.StringHelper.isNullOrEmpty(spellStr)) {
+        if (StringUtil.isEmpty(spellStr)) {
             DamageInfo dmgInfo = new DamageInfo(attacker, target, damage_, null, schoolmask, DamageEffectType.SpellDirect, WeaponAttackType.BaseAttack);
             unit.calcAbsorbResist(dmgInfo);
 
@@ -2222,7 +2222,7 @@ class MiscCommands {
         var location_str = "inn";
         var loc = args.NextString(" ");
 
-        if (tangible.StringHelper.isNullOrEmpty(loc)) {
+        if (StringUtil.isEmpty(loc)) {
             location_str = loc;
         }
 

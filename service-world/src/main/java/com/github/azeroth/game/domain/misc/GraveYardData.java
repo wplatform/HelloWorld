@@ -1,4 +1,4 @@
-package com.github.azeroth.game;
+package com.github.azeroth.game.domain.misc;
 
 
 public class GraveYardData {

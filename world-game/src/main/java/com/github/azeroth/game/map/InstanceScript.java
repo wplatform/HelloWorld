@@ -380,7 +380,7 @@ public class InstanceScript extends ZoneScript {
     }
 
     public final void load(String data) {
-        if (tangible.StringHelper.isNullOrEmpty(data)) {
+        if (StringUtil.isEmpty(data)) {
             outLoadInstDataFail();
 
             return;

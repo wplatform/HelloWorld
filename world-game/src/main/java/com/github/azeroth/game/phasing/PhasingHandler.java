@@ -1,4 +1,4 @@
-package game;
+package com.github.azeroth.game.phasing;
 
 
 import com.github.azeroth.dbc.defines.PhaseEntryFlags;
@@ -15,20 +15,17 @@ import com.github.azeroth.game.networking.packet.misc.PhaseShiftChange;
 import com.github.azeroth.game.networking.packet.misc.PhaseShiftDataPhase;
 import com.github.azeroth.game.networking.packet.party.PartyMemberPhase;
 import com.github.azeroth.game.networking.packet.party.PartyMemberPhaseStates;
-import com.github.azeroth.game.phasing.PhaseFlag;
-import com.github.azeroth.game.phasing.PhaseShift;
-import com.github.azeroth.game.phasing.PhaseShiftFlag;
 
 import java.util.ArrayList;
 
 
 public class PhasingHandler {
-    public static PhaseShift EMPTYPHASESHIFT = new PhaseShift();
-    public static PhaseShift ALWAYSVISIBLE;
+    public static PhaseShift EMPTY_PHASE_SHIFT = new PhaseShift();
+    public static PhaseShift ALWAYS_VISIBLE;
 
     static {
-        ALWAYSVISIBLE = new PhaseShift();
-        initDbPhaseShift(ALWAYSVISIBLE, PhaseUseFlagsValue.ALWAYS_VISIBLE, 0, 0);
+        ALWAYS_VISIBLE = new PhaseShift();
+        initDbPhaseShift(ALWAYS_VISIBLE, PhaseUseFlagsValue.ALWAYS_VISIBLE, 0, 0);
     }
 
 
@@ -394,7 +391,7 @@ public class PhasingHandler {
     }
 
     public static PhaseShift getAlwaysVisiblePhaseShift() {
-        return ALWAYSVISIBLE;
+        return ALWAYS_VISIBLE;
     }
 
 

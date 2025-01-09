@@ -1,7 +1,6 @@
 package com.github.azeroth.game.battleground.zones;
 
 
-import com.github.azeroth.game.WorldSafeLocsEntry;
 import com.github.azeroth.game.battleground.Battleground;
 import com.github.azeroth.game.battleground.BattlegroundTemplate;
 import com.github.azeroth.game.entity.ObjectGuid;

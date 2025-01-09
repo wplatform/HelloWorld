@@ -94,7 +94,7 @@ class LFGGroupScript extends ScriptObjectAutoAdd implements IGroupOnAddMember, I
             // @todo - Update internal kick cooldown of kicker
             var str_reason = "";
 
-            if (!tangible.StringHelper.isNullOrEmpty(reason)) {
+            if (!StringUtil.isEmpty(reason)) {
                 str_reason = reason;
             }
 

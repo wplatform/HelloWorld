@@ -54,4 +54,5 @@ public class WorldSafeLoc implements DbcEntity {
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
+
 }

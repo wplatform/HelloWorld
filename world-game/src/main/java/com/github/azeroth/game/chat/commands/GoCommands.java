@@ -199,7 +199,7 @@ class GoCommands {
         }
 
         var terrain = global.getTerrainMgr().loadTerrain(mapId);
-        var z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y));
+        var z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y));
 
         player.teleportTo(mapId, x, y, z, player.getLocation().getO());
 
@@ -350,7 +350,7 @@ class GoCommands {
         }
 
         var terrain = global.getTerrainMgr().loadTerrain(mapId);
-        z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y));
+        z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y));
 
         player.teleportTo(mapId, x, y, z, 0.0f);
 
@@ -395,7 +395,7 @@ class GoCommands {
             }
 
             var terrain = global.getTerrainMgr().loadTerrain(mapId);
-            z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTYPHASESHIFT, mapId, x, y));
+            z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTY_PHASE_SHIFT, mapId, x, y));
         }
 
         return doTeleport(handler, new Position(x, y, z.floatValue(), o.floatValue()), mapId);
@@ -450,7 +450,7 @@ class GoCommands {
             player.saveRecallPosition(); // save only in non-flight case
         }
 
-        var z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTYPHASESHIFT, zoneEntry.ContinentID, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTYPHASESHIFT, zoneEntry.ContinentID, x, y));
+        var z = Math.max(terrain.getStaticHeight(PhasingHandler.EMPTY_PHASE_SHIFT, zoneEntry.ContinentID, x, y, MapDefine.MAX_HEIGHT), terrain.getWaterLevel(PhasingHandler.EMPTY_PHASE_SHIFT, zoneEntry.ContinentID, x, y));
 
         player.teleportTo(zoneEntry.ContinentID, x, y, z, player.getLocation().getO());
 

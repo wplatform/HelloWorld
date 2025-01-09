@@ -8,6 +8,7 @@ import com.github.azeroth.game.domain.misc.*;
 import com.github.azeroth.game.domain.misc.ClassExpansionRequirement;
 import com.github.azeroth.game.domain.scene.SceneTemplate;
 import com.github.azeroth.game.domain.spawn.SpawnGroupTemplateData;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,6 +140,14 @@ public interface MiscRepository {
     
     @Query("SELECT TerrainSwapMap, UiMapPhaseId  FROM `terrain_worldmap`")
     Stream<int[]> streamAllTerrainWorldMap();
+
+    @Query("SELECT ID, GhostZone FROM graveyard_zone")
+    Stream<int[]> streamAllGraveyardZone();
+
+    @Modifying
+    @Query("INSERT INTO graveyard_zone (ID, GhostZone) VALUES (:id, :ghostZone)")
+    void insertGraveyardZone(int id, int ghostZone);
+
 
     
     @Query("SELECT SourceTypeOrReferenceId, SourceGroup, SourceEntry, SourceId, ElseGroup, ConditionTypeOrReference, ConditionTarget," +

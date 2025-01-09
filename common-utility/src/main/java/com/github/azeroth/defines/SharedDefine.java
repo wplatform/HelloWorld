@@ -4,9 +4,21 @@ import com.github.azeroth.common.Locale;
 
 public interface SharedDefine {
 
+    // Client expected level limitation, like as used in DBC item max levels for "until max player level"
+    // use as default max player level, must be fit max level for used client
+    // also see MAX_LEVEL and STRONG_MAX_LEVEL define
+    int DEFAULT_MAX_LEVEL = 110;
+
+    // client supported max level for player/pets/etc. Avoid overflow or client stability affected.
+    // also see GT_MAX_LEVEL define
+    int MAX_LEVEL = 110;
+
+    // Server side limitation. Base at used code requirements.
+    // also see MAX_LEVEL and GT_MAX_LEVEL define
+    int STRONG_MAX_LEVEL = 255;
+
     float GROUND_HEIGHT_TOLERANCE = 0.05f; // Extra tolerance to z position to check if it is in air or on ground.
     float Z_OFFSET_FIND_HEIGHT = 0.5f;
-
 
     Locale DEFAULT_LOCALE = Locale.zhCN;
 
@@ -40,31 +52,17 @@ public interface SharedDefine {
 
     int MAX_CHARACTERS_PER_REALM = 16;
 
-    int CURRENT_EXPANSION = Expansion.LEGION.getValue();
-
-    int CLASS_MASK_ALL_PLAYABLE = (1 << (PlayerClass.WARRIOR.getValue() - 1))
-            | (1 << (PlayerClass.PALADIN.getValue() - 1))
-            | (1 << (PlayerClass.HUNTER.getValue() - 1))
-            | (1 << (PlayerClass.ROGUE.getValue() - 1))
-            | (1 << (PlayerClass.PRIEST.getValue() - 1))
-            | (1 << (PlayerClass.DEATH_KNIGHT.getValue() - 1))
-            | (1 << (PlayerClass.SHAMAN.getValue() - 1))
-            | (1 << (PlayerClass.MAGE.getValue() - 1))
-            | (1 << (PlayerClass.WARLOCK.getValue() - 1))
-            | (1 << (PlayerClass.MONK.getValue() - 1))
-            | (1 << (PlayerClass.DRUID.getValue() - 1))
-            | (1 << (PlayerClass.DEMON_HUNTER.getValue() - 1));
 
 
     int MAX_UNIT_CLASSES = 4;
-    int CLASS_MASK_ALL_CREATURES = (1 << (UnitClass.UNIT_CLASS_WARRIOR.getValue() - 1))
-            | (1 << (UnitClass.UNIT_CLASS_PALADIN.getValue() - 1))
-            | (1 << (UnitClass.UNIT_CLASS_ROGUE.getValue() - 1))
-            | (1 << (UnitClass.UNIT_CLASS_MAGE.getValue() - 1));
+    int CLASS_MASK_ALL_CREATURES = (1 << (UnitClass.WARRIOR.getValue() - 1))
+            | (1 << (UnitClass.PALADIN.getValue() - 1))
+            | (1 << (UnitClass.ROGUE.getValue() - 1))
+            | (1 << (UnitClass.MAGE.getValue() - 1));
 
-    int CLASS_MASK_WAND_USERS = (1 << (PlayerClass.PRIEST.getValue() - 1))
-            | (1 << (PlayerClass.MAGE.getValue() - 1))
-            | (1 << (PlayerClass.WARLOCK.getValue() - 1));
+    int CLASS_MASK_WAND_USERS = (1 << (PlayerClass.PRIEST.ordinal() - 1))
+            | (1 << (PlayerClass.MAGE.ordinal() - 1))
+            | (1 << (PlayerClass.WARLOCK.ordinal() - 1));
 
     int PLAYER_MAX_BATTLEGROUND_QUEUES = 3;
     int MIN_REPUTATION_RANK = ReputationRank.HATED.ordinal();

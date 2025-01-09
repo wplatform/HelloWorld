@@ -4,6 +4,8 @@ import com.github.azeroth.cache.DbcEntity;
 import com.github.azeroth.dbc.db2.Db2Field;
 import com.github.azeroth.dbc.db2.Db2DataBind;
 import com.github.azeroth.dbc.db2.Db2Type;
+import com.github.azeroth.defines.PlayerClassMask;
+import com.github.azeroth.defines.RaceMask;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -58,5 +60,13 @@ public class SkillRaceClassInfo implements DbcEntity {
 
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
+
+    public RaceMask raceMask() {
+        return RaceMask.of(raceMask);
+    }
+
+    public PlayerClassMask classMask() {
+        return PlayerClassMask.of(classMask);
+    }
 
 }

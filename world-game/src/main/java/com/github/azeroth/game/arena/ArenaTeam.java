@@ -257,7 +257,7 @@ public class ArenaTeam {
             newMember.matchMakerRating = (short) (result.<SHORT>Read(9) > 0 ? result.<SHORT>Read(9) : 1500);
 
             // Delete member if character information is missing
-            if (tangible.StringHelper.isNullOrEmpty(newMember.name)) {
+            if (StringUtil.isEmpty(newMember.name)) {
                 Logs.SQL.error("ArenaTeam {0} has member with empty name - probably {1} doesn't exist, deleting him from memberlist!", arenaTeamId, newMember.guid.toString());
                 delMember(newMember.guid, true);
 
@@ -285,7 +285,7 @@ public class ArenaTeam {
     }
 
     public final boolean setName(String name) {
-        if (Objects.equals(teamName, name) || tangible.StringHelper.isNullOrEmpty(name) || name.length() > 24 || global.getObjectMgr().isReservedName(name) || !ObjectManager.isValidCharterName(name)) {
+        if (Objects.equals(teamName, name) || StringUtil.isEmpty(name) || name.length() > 24 || global.getObjectMgr().isReservedName(name) || !ObjectManager.isValidCharterName(name)) {
             return false;
         }
 

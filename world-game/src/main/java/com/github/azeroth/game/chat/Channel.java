@@ -503,7 +503,7 @@ public class Channel {
     }
 
     public final void say(ObjectGuid guid, String what, Language lang) {
-        if (tangible.StringHelper.isNullOrEmpty(what)) {
+        if (StringUtil.isEmpty(what)) {
             return;
         }
 

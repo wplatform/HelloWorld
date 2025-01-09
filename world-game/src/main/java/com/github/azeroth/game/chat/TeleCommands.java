@@ -217,7 +217,7 @@ class TeleCommands {
 
             handler.sendSysMessage(CypherStrings.TeleportingTo, nameLink, handler.getCypherString(CypherStrings.Offline), locationName);
 
-            player.savePositionInDB(new worldLocation(mapId, pos), global.getTerrainMgr().getZoneId(PhasingHandler.EMPTYPHASESHIFT, new worldLocation(mapId, pos)), player.getGUID(), null);
+            player.savePositionInDB(new worldLocation(mapId, pos), global.getTerrainMgr().getZoneId(PhasingHandler.EMPTY_PHASE_SHIFT, new worldLocation(mapId, pos)), player.getGUID(), null);
         }
 
         return true;

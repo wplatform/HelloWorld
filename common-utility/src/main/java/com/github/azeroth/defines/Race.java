@@ -6,13 +6,13 @@ public enum Race {
     HUMAN,  // TITLE Human
     ORC,  // TITLE Orc
     DWARF,  // TITLE Dwarf
-    NIGHTELF,  // TITLE Night Elf
+    NIGHT_ELF,  // TITLE Night Elf
     UNDEAD_PLAYER,  // TITLE Undead
     TAUREN,  // TITLE Tauren
     GNOME,  // TITLE Gnome
     TROLL,  // TITLE Troll
     GOBLIN,  // TITLE Goblin
-    BLOODELF, // TITLE Blood Elf
+    BLOOD_ELF, // TITLE Blood Elf
     DRAENEI, // TITLE Draenei
     FEL_ORC,
     NAGA,

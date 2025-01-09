@@ -8,7 +8,7 @@ import com.github.azeroth.dbc.defines.*;
 import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.dbc.domain.ArtifactCategory;
 import com.github.azeroth.dbc.domain.ChrSpecialization;
-import com.github.azeroth.dbc.domain.CreatureFamily;
+import com.github.azeroth.dbc.domain.CreatureFamilyEntry;
 import com.github.azeroth.dbc.domain.CreatureType;
 import com.github.azeroth.dbc.domain.Emote;
 import com.github.azeroth.dbc.domain.Language;
@@ -19,7 +19,7 @@ import com.github.azeroth.dbc.domain.SpellVisualKit;
 import com.github.azeroth.dbc.domain.TotemCategory;
 import com.github.azeroth.dbc.model.DBCPosition2D;
 import com.github.azeroth.dbc.model.PathDb2;
-import com.github.azeroth.service.dbc.model.*;
+
 import com.github.azeroth.defines.*;
 
 import java.util.List;
@@ -380,6 +380,10 @@ public interface DbcObjectManager {
         return chrRace().get(id);
     }
 
+    default ChrRace chrRace(Race race) {
+        return chrRace().get(race.ordinal());
+    }
+
     default DbcEntityStore<ChrSpecialization> chrSpecialization() {
         return getEntityStore(DbcObjects.ChrSpecialization);
     }
@@ -428,11 +432,11 @@ public interface DbcObjectManager {
         return creatureDisplayInfoExtra().get(id);
     }
 
-    default DbcEntityStore<CreatureFamily> creatureFamily() {
+    default DbcEntityStore<CreatureFamilyEntry> creatureFamily() {
         return getEntityStore(DbcObjects.CreatureFamily);
     }
 
-    default CreatureFamily creatureFamily(int id) {
+    default CreatureFamilyEntry creatureFamily(int id) {
         return creatureFamily().get(id);
     }
 
@@ -892,11 +896,11 @@ public interface DbcObjectManager {
         return itemChildEquipment().get(id);
     }
 
-    default DbcEntityStore<ItemClass> itemClass() {
+    default DbcEntityStore<ItemClassEntry> itemClass() {
         return getEntityStore(DbcObjects.ItemClass);
     }
 
-    default ItemClass itemClass(int id) {
+    default ItemClassEntry itemClass(int id) {
         return itemClass().get(id);
     }
 
@@ -2267,7 +2271,7 @@ public interface DbcObjectManager {
 
     boolean hasContentTuningLabel(Integer contentTuningId, Integer label);
 
-    String getCreatureFamilyPetName(Integer petfamily, Locale locale);
+    String getCreatureFamilyPetName(CreatureFamily petFamily, Locale locale);
 
     Pair<Float, Float> getCurveXAxisRange(int curveId);
 
@@ -2291,7 +2295,7 @@ public interface DbcObjectManager {
 
     ItemChildEquipment getItemChildEquipment(Integer itemId);
 
-    ItemClass getItemClassByOldEnum(Integer itemClass);
+    ItemClassEntry getItemClassByOldEnum(Integer itemClass);
 
     boolean hasItemCurrencyCost(Integer itemId);
 

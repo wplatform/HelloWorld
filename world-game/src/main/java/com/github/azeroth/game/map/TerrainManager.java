@@ -1,8 +1,11 @@
 package com.github.azeroth.game.map;
 
 
-import Framework.Threading.*;
-import game.PhaseShift;
+
+import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.phasing.PhaseShift;
+
 
 import java.util.HashMap;
 import java.util.HashSet;

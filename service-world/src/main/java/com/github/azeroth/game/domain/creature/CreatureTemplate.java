@@ -41,7 +41,7 @@ public class CreatureTemplate {
     public short minLevel;
     public HashMap<Difficulty, CreatureDifficulty> difficultyStore = new HashMap<>();
     public short maxLevel;
-    public int healthScalingExpansion;
+    public Expansion healthScalingExpansion;
     public int requiredExpansion;
     public int vignetteID; // @todo Read Vignette.db2
     public int faction;
@@ -172,11 +172,6 @@ public class CreatureTemplate {
         }
 
         return CreatureModel.DEFAULT_VISIBLE_MODEL;
-    }
-
-
-    public final int getHealthScalingExpansion() {
-        return healthScalingExpansion == Expansion.LEVEL_CURRENT.getValue() ? SharedDefine.CURRENT_EXPANSION : healthScalingExpansion;
     }
 
     public final SkillType getRequiredLootSkill() {

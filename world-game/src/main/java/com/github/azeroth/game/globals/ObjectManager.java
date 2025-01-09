@@ -9,16 +9,18 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.*;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.defines.Difficulty;
-import com.github.azeroth.dbc.defines.LevelLimit;
 import com.github.azeroth.dbc.defines.TaxiNodeFlag;
 import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.defines.QuestSort;
+import com.github.azeroth.defines.SpellCategory;
 import com.github.azeroth.game.DungeonEncounter;
 import com.github.azeroth.game.*;
 import com.github.azeroth.game.condition.ConditionManager;
+import com.github.azeroth.game.condition.ConditionSourceInfo;
 import com.github.azeroth.game.condition.ConditionSourceType;
 import com.github.azeroth.game.condition.DisableManager;
+import com.github.azeroth.game.domain.player.*;
 import com.github.azeroth.game.domain.scene.SceneTemplate;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerCreateProperties;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerId;
@@ -31,7 +33,10 @@ import com.github.azeroth.game.entity.creature.TrainerSpell;
 import com.github.azeroth.game.entity.creature.VendorItemData;
 import com.github.azeroth.game.entity.gobject.*;
 import com.github.azeroth.game.entity.item.ItemTemplate;
+import com.github.azeroth.game.entity.item.enums.ItemClass;
+import com.github.azeroth.game.entity.item.enums.ItemSubclassConsumable;
 import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.entity.object.WorldLocation;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.object.enums.HighGuid;
 import com.github.azeroth.game.entity.object.enums.SummonerType;
@@ -42,12 +47,10 @@ import com.github.azeroth.game.entity.vehicle.VehicleAccessory;
 import com.github.azeroth.game.entity.vehicle.VehicleSeatAddon;
 import com.github.azeroth.game.entity.vehicle.VehicleTemplate;
 import com.github.azeroth.game.map.*;
-import com.github.azeroth.game.domain.misc.PointOfInterestLocale;
 import com.github.azeroth.game.movement.MotionMaster;
 import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.quest.Quest;
-import com.github.azeroth.game.domain.PlayerCreateInfoAction;
-import com.github.azeroth.game.domain.PlayerCreateInfoItem;
 import com.github.azeroth.game.domain.ScriptInfo;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.gobject.GameObjectLocale;
@@ -56,19 +59,17 @@ import com.github.azeroth.game.domain.gossip.GossipMenus;
 import com.github.azeroth.game.domain.gossip.GossipOptionNpc;
 import com.github.azeroth.game.domain.misc.RaceUnlockRequirement;
 import com.github.azeroth.game.domain.misc.*;
-import com.github.azeroth.game.domain.player.PlayerChoice;
-import com.github.azeroth.game.domain.player.PlayerChoiceLocale;
-import com.github.azeroth.game.domain.player.PlayerInfo;
-import com.github.azeroth.game.domain.player.PlayerLevelInfo;
 import com.github.azeroth.game.domain.quest.QuestTemplate;
 import com.github.azeroth.game.domain.quest.*;
 import com.github.azeroth.game.domain.reputation.RepRewardRate;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
 import com.github.azeroth.game.domain.reputation.ReputationOnKill;
 import com.github.azeroth.game.domain.spawn.*;
+import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.service.repository.*;
 import com.github.azeroth.game.spell.SpellManager;
-import com.github.azeroth.game.world.setting.WorldSetting;
+import com.github.azeroth.game.world.World;
+import com.github.azeroth.utils.RandomUtil;
 import com.github.azeroth.utils.StringUtil;
 
 import java.util.*;
@@ -243,9 +244,8 @@ public final class ObjectManager {
     private final MapCache<Integer, GossipMenuAddon> gossipMenuAddonStorage;
     private final MapCache<Integer, PointOfInterest> pointsOfInterestStorage;
     //Creature
-    private final HashMap<Integer, CreatureTemplate> creatureTemplateStorage = new HashMap<Integer, CreatureTemplate>();
+    private final MapCache<Integer, CreatureTemplate> creatureTemplateStorage;
     private final HashMap<Integer, CreatureModelInfo> creatureModelStorage = new HashMap<Integer, CreatureModelInfo>();
-    private final HashMap<Integer, CreatureSummonedData> creatureSummonedDataStorage = new HashMap<Integer, CreatureSummonedData>();
     private final HashMap<Long, CreatureData> creatureDataStorage = new HashMap<Long, CreatureData>();
     private final HashMap<Long, CreatureAddon> creatureAddonStorage = new HashMap<Long, CreatureAddon>();
     private final Map<Integer, List<Integer>> creatureQuestItemStorage = new HashMap<>();
@@ -270,9 +270,9 @@ public final class ObjectManager {
     //Item
     private final HashMap<Integer, ItemTemplate> itemTemplateStorage = new HashMap<Integer, ItemTemplate>();
     //Player
-    private final HashMap<Race, HashMap<PlayerClass, PlayerInfo>> playerInfo = new HashMap<Race, HashMap<PlayerClass, PlayerInfo>>();
+    private final HashMap<Pair<Race, PlayerClass>, PlayerInfo> playerInfo = new HashMap<>();
     //Pets
-    private final HashMap<Integer, PetLevelInfo[]> petInfoStore = new HashMap<Integer, PetLevelInfo[]>();
+    private final MapCache<Integer, PetLevelInfo[]> petInfoStore;
     private final HashMap<Integer, List<String>> petHalfName0 = new HashMap<>();
     private final HashMap<Integer, List<String>> petHalfName1 = new HashMap<>();
     //Vehicles
@@ -281,7 +281,6 @@ public final class ObjectManager {
     private final HashMap<Long, List<VehicleAccessory>> vehicleAccessoryStore = new HashMap<>();
     private final HashMap<Integer, VehicleSeatAddon> vehicleSeatAddonStore = new HashMap<Integer, VehicleSeatAddon>();
     //Locales
-    private final HashMap<Integer, CreatureLocale> creatureLocaleStorage = new HashMap<Integer, CreatureLocale>();
     private final HashMap<Integer, GameObjectLocale> gameObjectLocaleStorage = new HashMap<Integer, GameObjectLocale>();
     private final HashMap<Integer, PlayerChoiceLocale> playerChoiceLocales = new HashMap<Integer, PlayerChoiceLocale>();
 
@@ -290,13 +289,12 @@ public final class ObjectManager {
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<Integer, AreaTriggerStruct>();
     private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<Long, AccessRequirement>();
     private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
-    private final HashMap<Integer, WorldSafeLocsEntry> worldSafeLocs = new HashMap<Integer, WorldSafeLocsEntry>();
     private final HashMap<HighGuid, ObjectGuidGenerator> guidGenerators = new HashMap<HighGuid, ObjectGuidGenerator>();
-    private final int[] baseXPTable = new int[LevelLimit.MAX_LEVEL.value];
+    private final int[] baseXPTable = new int[SharedDefine.MAX_LEVEL];
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> spellScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> eventScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> waypointScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
-    public MultiMap<Integer, GraveYardData> graveYardStorage = new MultiMap<Integer, GraveYardData>();
+    public HashMap<Integer, List<GraveYardData>> graveYardStorage = new HashMap<>();
     //Faction Change
     public HashMap<Integer, Integer> factionChangeAchievements = new HashMap<Integer, Integer>();
     public HashMap<Integer, Integer> factionChangeItemsAllianceToHorde = new HashMap<Integer, Integer>();
@@ -314,9 +312,9 @@ public final class ObjectManager {
     int creatureId;
     int gossipMenuId;
     int gossipOptionIndex;
-    private WorldSetting worldSetting;
+
+    private World world;
     private CacheProvider cacheProvider;
-    private MapManager mapManager;
     private DbcObjectManager dbcObjectManager;
     private MiscRepository miscRepository;
     private CreatureRepository creatureRepository;
@@ -330,7 +328,6 @@ public final class ObjectManager {
     private int auctionId;
     private long equipmentSetGuid;
     private long mailId;
-    private int hiPetNumber;
     private long creatureSpawnId;
     private long gameObjectSpawnId;
     private long voidItemId;
@@ -362,6 +359,8 @@ public final class ObjectManager {
         this.questPOIStorage = cacheProvider.newGenericMapCache("QuestPOIStorageStorage", new TypeReference<>(){});
         this.questGreetingStorage = cacheProvider.newGenericMapCache("QuestGreetingStorage", new TypeReference<>(){});
         this.spawnGroupDataStorage = cacheProvider.newGenericMapCache("SpawnGroupDataStorage", new TypeReference<>(){});
+        this.creatureTemplateStorage = cacheProvider.newGenericMapCache("CreatureTemplateStorage", new TypeReference<>(){});
+        this.petInfoStore = cacheProvider.newGenericMapCache("PetInfoStoreStorage", new TypeReference<>(){});
 
 
         for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
@@ -493,13 +492,13 @@ public final class ObjectManager {
     }
 
     public static void addLocaleString(String value, Locale locale, LocalizedString data) {
-        if (!tangible.StringHelper.isNullOrEmpty(value)) {
+        if (!StringUtil.isEmpty(value)) {
             data.set(locale.getValue(), value);
         }
     }
 
     public static void getLocaleString(LocalizedString data, Locale locale, tangible.RefObject<String> value) {
-        if (data.length > locale.getValue() && !tangible.StringHelper.isNullOrEmpty(data.get(locale.getValue()))) {
+        if (data.length > locale.getValue() && !StringUtil.isEmpty(data.get(locale.getValue()))) {
             value.refArgValue = data.get(locale.getValue());
         }
     }
@@ -709,9 +708,6 @@ public final class ObjectManager {
         return false;
     }
 
-    public HashMap<Race, HashMap<PlayerClass, PlayerInfo>> getPlayerInfos() {
-        return playerInfo;
-    }
 
     //General
     public boolean loadLocalizedStrings() {
@@ -1086,89 +1082,34 @@ public final class ObjectManager {
 
     public void loadGraveyardZones() {
         var oldMSTime = System.currentTimeMillis();
-
         graveYardStorage.clear(); // need for reload case
+        AtomicInteger count = new AtomicInteger();
+        try (var items = miscRepository.streamAllGraveyardZone()) {
+            items.forEach(fields -> {
+                count.getAndIncrement();
+                WorldLocation entry = getWorldSafeLoc(fields[0]);
+                if (entry == null) {
+                    Logs.SQL.error("Table `graveyard_zone` has a record for non-existing graveyard (WorldSafeLocsID: {}), skipped.", fields[0]);
+                    return;
+                }
 
-        //                                         0       1         2
-        var result = DB.World.query("SELECT ID, GhostZone, faction FROM graveyard_zone");
+                AreaTable areaEntry = dbcObjectManager.areaTable(fields[1]);
+                if (areaEntry == null) {
+                    Logs.SQL.error("Table `graveyard_zone` has a record for non-existing Zone (ID: {}), skipped.", fields[1]);
+                    return;
+                }
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 graveyard-zone links. DB table `graveyard_zone` is empty.");
-
-            return;
+                if (!addGraveYardLink(fields[0], fields[1], Team.TEAM_OTHER, false))
+                    Logs.SQL.error("Table `graveyard_zone` has a duplicate record for Graveyard (ID: {}) and Zone (ID: {}), skipped.", fields[0], fields[1]);
+            });
         }
-
-        int count = 0;
-
-        do {
-            ++count;
-            var safeLocId = result.<Integer>Read(0);
-            var zoneId = result.<Integer>Read(1);
-            var team = Team.forValue(result.<Integer>Read(2));
-
-            var entry = getWorldSafeLoc(safeLocId);
-
-            if (entry == null) {
-                Logs.SQL.error("Table `graveyard_zone` has a record for not existing graveyard (WorldSafeLocs.dbc id) {0}, skipped.", safeLocId);
-
-                continue;
-            }
-
-            var areaEntry = CliDB.AreaTableStorage.get(zoneId);
-
-            if (areaEntry == null) {
-                Logs.SQL.error("Table `graveyard_zone` has a record for not existing zone id ({0}), skipped.", zoneId);
-
-                continue;
-            }
-
-            if (team != 0 && team != Team.Horde && team != Team.ALLIANCE) {
-                Logs.SQL.error("Table `graveyard_zone` has a record for non player faction ({0}), skipped.", team);
-
-                continue;
-            }
-
-            if (!addGraveYardLink(safeLocId, zoneId, team, false)) {
-                Logs.SQL.error("Table `graveyard_zone` has a duplicate record for Graveyard (ID: {0}) and Zone (ID: {1}), skipped.", safeLocId, zoneId);
-            }
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} graveyard-zone links in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} graveyard-zone links in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    public void loadWorldSafeLocs() {
-        var oldMSTime = System.currentTimeMillis();
 
-        //                                         0   1      2     3     4     5
-        var result = DB.World.query("SELECT ID, mapID, LocX, LocY, LocZ, Facing FROM world_safe_locs");
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 world locations. DB table `world_safe_locs` is empty.");
-
-            return;
-        }
-
-        do {
-            var id = result.<Integer>Read(0);
-            WorldLocation loc = new worldLocation(result.<Integer>Read(1), result.<Float>Read(2), result.<Float>Read(3), result.<Float>Read(4), MathUtil.DegToRad(result.<Float>Read(5)));
-
-            if (!MapDefine.isValidMapCoordinatei(loc)) {
-                Logs.SQL.error(String.format("World location (ID: %1$s) has a invalid position MapID: %2$s %3$s, skipped", id, loc.getMapId(), loc));
-
-                continue;
-            }
-
-            WorldSafeLocsEntry worldSafeLocs = new WorldSafeLocsEntry();
-            worldSafeLocs.id = id;
-            worldSafeLocs.loc = loc;
-            worldSafeLocs.put(id, worldSafeLocs);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s world locations %2$s ms", worldSafeLocs.size(), time.GetMSTimeDiffToNow(oldMSTime)));
-    }
-
-    public WorldSafeLocsEntry getDefaultGraveYard(Team team) {
-        if (team == Team.Horde) {
+    public WorldLocation getDefaultGraveYard(Team team) {
+        if (team == Team.HORDE) {
             return getWorldSafeLoc(10);
         } else if (team == Team.ALLIANCE) {
             return getWorldSafeLoc(4);
@@ -1177,20 +1118,37 @@ public final class ObjectManager {
         }
     }
 
-    public WorldSafeLocsEntry getClosestGraveYard(WorldLocation location, Team team, WorldObject conditionObject) {
+    public WorldLocation getClosestGraveYard(WorldLocation location, Team team, WorldObject conditionObject) {
         var mapId = location.getMapId();
 
         // search for zone associated closest graveyard
-        var zoneId = global.getTerrainMgr().getZoneId(conditionObject ? conditionObject.getPhaseShift() : PhasingHandler.EMPTYPHASESHIFT, mapId, location);
+        var zoneId = world.getTerrainManager().getZoneId(conditionObject != null ? conditionObject.getPhaseShift() : PhasingHandler.EMPTY_PHASE_SHIFT, mapId, location);
 
         if (zoneId == 0) {
             if (location.getZ() > -500) {
-                Log.outError(LogFilter.Server, "ZoneId not found for map {0} coords ({1}, {2}, {3})", mapId, location.getX(), location.getY(), location.getZ());
+                Logs.MISC.error("ZoneId not found for map {} coords ({}, {}, {})", mapId, location.getX(), location.getY(), location.getZ());
 
                 return getDefaultGraveYard(team);
             }
         }
 
+        WorldLocation  graveyard = getClosestGraveyardInZone(location, team, conditionObject, zoneId);
+        AreaTable zoneEntry = Objects.requireNonNull(dbcObjectManager.areaTable(zoneId));
+        AreaTable parentEntry = dbcObjectManager.areaTable(zoneEntry.getParentAreaID());
+
+        while (graveyard == null && parentEntry != null)
+        {
+            graveyard = getClosestGraveyardInZone(location, team, conditionObject, parentEntry.getId());
+            if (graveyard == null && parentEntry.getParentAreaID() != 0)
+                parentEntry = dbcObjectManager.areaTable(parentEntry.getParentAreaID());
+            else // nothing found, cant look further, give up.
+                parentEntry = null;
+        }
+
+        return graveyard;
+    }
+
+    private WorldLocation getClosestGraveyardInZone(WorldLocation location, Team team, WorldObject conditionObject, int zoneId) {
         // Simulate std. algorithm:
         //   found some graveyard associated to (ghost_zone, ghost_map)
         //
@@ -1198,16 +1156,15 @@ public final class ObjectManager {
         //     then check faction
         //   if mapId != graveyard.mapId (ghost in instance) and search any graveyard associated
         //     then check faction
+        int mapId = location.getMapId();
         var range = graveYardStorage.get(zoneId);
-        var mapEntry = CliDB.MapStorage.get(mapId);
-
-        ConditionSourceInfo conditionSource = new ConditionSourceInfo(conditionObject);
+        var mapEntry = dbcObjectManager.map(mapId);
 
         // not need to check validity of map object; MapId _MUST_ be valid here
-        if (range.isEmpty() && !mapEntry.IsBattlegroundOrArena()) {
+        if (range.isEmpty() && !mapEntry.isBattlegroundOrArena()) {
             if (zoneId != 0) // zone == 0 can't be fixed, used by bliz for bugged zones
             {
-                Logs.SQL.error("Table `game_graveyard_zone` incomplete: Zone {0} Team {1} does not have a linked graveyard.", zoneId, team);
+                Logs.SQL.error("Table `game_graveyard_zone` incomplete: Zone {} Team {} does not have a linked graveyard.", zoneId, team);
             }
 
             return getDefaultGraveYard(team);
@@ -1216,45 +1173,46 @@ public final class ObjectManager {
         // at corpse map
         var foundNear = false;
         float distNear = 10000;
-        WorldSafeLocsEntry entryNear = null;
+        WorldLocation entryNear = null;
 
         // at entrance map for corpse map
         var foundEntr = false;
         float distEntr = 10000;
-        WorldSafeLocsEntry entryEntr = null;
+        WorldLocation entryEntr = null;
 
         // some where other
-        WorldSafeLocsEntry entryFar = null;
+        WorldLocation entryFar = null;
+
+        ConditionSourceInfo conditionSource = new ConditionSourceInfo(conditionObject);
 
         for (var data : range) {
             var entry = getWorldSafeLoc(data.safeLocId);
 
             if (entry == null) {
-                Logs.SQL.error("Table `game_graveyard_zone` has record for not existing graveyard (WorldSafeLocs.dbc id) {0}, skipped.", data.safeLocId);
+                Logs.SQL.error("Table `game_graveyard_zone` has record for not existing graveyard (WorldSafeLocs.dbc id) {}, skipped.", data.safeLocId);
 
                 continue;
             }
 
-            // skip enemy faction graveyard
-            // team == 0 case can be at call from .neargrave
-            if (data.team != 0 && team != 0 && data.team != (int) team.getValue()) {
+            if (conditionObject != null) {
+
+                if (!world.getConditionManager().isObjectMeetingNotGroupedConditions(ConditionSourceType.GRAVEYARD, data.safeLocId, conditionSource)) {
+                    continue;
+                }
+
+                if (entry.getMapId() == mapEntry.getParentMapID() && !conditionObject.getPhaseShift().hasVisibleMapId(entry.getMapId())) {
+                    continue;
+                }
+            } else if (data.team != 0) {
                 continue;
             }
 
-            if (conditionObject) {
-                if (!global.getConditionMgr().isObjectMeetingNotGroupedConditions(ConditionSourceType.Graveyard, data.safeLocId, conditionSource)) {
-                    continue;
-                }
 
-                if (entry.loc.getMapId() == mapEntry.ParentMapID && !conditionObject.getPhaseShift().hasVisibleMapId(entry.loc.getMapId())) {
-                    continue;
-                }
-            }
 
             // find now nearest graveyard at other map
-            if (mapId != entry.loc.getMapId() && entry.loc.getMapId() != mapEntry.ParentMapID) {
+            if (mapId != entry.getMapId() && entry.getMapId() != mapEntry.getParentMapID()) {
                 // if find graveyard at different map from where entrance placed (or no entrance data), use any first
-                if (mapEntry == null || mapEntry.CorpseMapID < 0 || mapEntry.CorpseMapID != entry.loc.getMapId() || (mapEntry.Corpse.X == 0 && mapEntry.Corpse.Y == 0)) {
+                if (mapEntry == null || mapEntry.getCorpseMapID() < 0 || mapEntry.getCorpseMapID() != entry.getMapId() || (mapEntry.getCorpseX() == 0 && mapEntry.getCorpseY() == 0)) {
                     // not have any corrdinates for check distance anyway
                     entryFar = entry;
 
@@ -1262,7 +1220,8 @@ public final class ObjectManager {
                 }
 
                 // at entrance map calculate distance (2D);
-                var dist2 = (entry.loc.getX() - mapEntry.Corpse.X) * (entry.loc.getX() - mapEntry.Corpse.X) + (entry.loc.getY() - mapEntry.Corpse.Y) * (entry.loc.getY() - mapEntry.Corpse.Y);
+                var dist2 = (entry.getX() - mapEntry.getCorpseX()) * (entry.getX() - mapEntry.getCorpseX())
+                        + (entry.getY() - mapEntry.getCorpseY()) * (entry.getY() - mapEntry.getCorpseY());
 
                 if (foundEntr) {
                     if (dist2 < distEntr) {
@@ -1277,7 +1236,9 @@ public final class ObjectManager {
             }
             // find now nearest graveyard at same map
             else {
-                var dist2 = (entry.loc.getX() - location.getX()) * (entry.loc.getX() - location.getX()) + (entry.loc.getY() - location.getY()) * (entry.loc.getY() - location.getY()) + (entry.loc.getZ() - location.getZ()) * (entry.loc.getZ() - location.getZ());
+                var dist2 = (entry.getX() - location.getX()) * (entry.getX() - location.getX())
+                        + (entry.getY() - location.getY()) * (entry.getY() - location.getY())
+                        + (entry.getZ() - location.getZ()) * (entry.getZ() - location.getZ());
 
                 if (foundNear) {
                     if (dist2 < distNear) {
@@ -1303,6 +1264,7 @@ public final class ObjectManager {
         return entryFar;
     }
 
+
     public GraveYardData findGraveYardData(int id, int zoneId) {
         var range = graveYardStorage.get(zoneId);
 
@@ -1315,12 +1277,12 @@ public final class ObjectManager {
         return null;
     }
 
-    public WorldSafeLocsEntry getWorldSafeLoc(int id) {
-        return worldSafeLocs.get(id);
-    }
-
-    public HashMap<Integer, WorldSafeLocsEntry> getWorldSafeLocs() {
-        return worldSafeLocs;
+    public WorldLocation getWorldSafeLoc(int id) {
+        WorldSafeLoc loc = dbcObjectManager.worldSafeLoc(id);
+        if(loc == null) {
+            return null;
+        }
+        return new WorldLocation(loc.getMapID(), loc.getLocX(), loc.getLocY(), loc.getLocZ(), loc.getFacing());
     }
 
     public boolean addGraveYardLink(int id, int zoneId, Team team) {
@@ -1335,75 +1297,19 @@ public final class ObjectManager {
         // add link to loaded data
         GraveYardData data = new GraveYardData();
         data.safeLocId = id;
-        data.team = (int) team.getValue();
+        data.team = team.value;
 
-        graveYardStorage.add(zoneId, data);
+        graveYardStorage.compute(zoneId, Functions.addToList(data));
 
         // add link to DB
         if (persist) {
-            var stmt = DB.World.GetPreparedStatement(WorldStatements.INS_GRAVEYARD_ZONE);
-
-            stmt.AddValue(0, id);
-            stmt.AddValue(1, zoneId);
-            stmt.AddValue(2, (int) team.getValue());
-
-            DB.World.execute(stmt);
+            miscRepository.insertGraveyardZone(id, zoneId);
         }
-
+        if (team != Team.TEAM_OTHER)
+        {
+            //TODO save condition
+        }
         return true;
-    }
-
-    public void removeGraveYardLink(int id, int zoneId, Team team) {
-        removeGraveYardLink(id, zoneId, team, false);
-    }
-
-    public void removeGraveYardLink(int id, int zoneId, Team team, boolean persist) {
-        var range = graveYardStorage.get(zoneId);
-
-        if (range.isEmpty()) {
-            Logs.SQL.error("Table `game_graveyard_zone` incomplete: Zone {0} Team {1} does not have a linked graveyard.", zoneId, team);
-
-            return;
-        }
-
-        var found = false;
-
-
-        for (var data : range) {
-            // skip not matching safezone id
-            if (data.safeLocId != id) {
-                continue;
-            }
-
-            // skip enemy faction graveyard at same map (normal area, city, or Battleground)
-            // team == 0 case can be at call from .neargrave
-            if (data.team != 0 && team != 0 && data.team != (int) team.getValue()) {
-                continue;
-            }
-
-            found = true;
-
-            break;
-        }
-
-        // no match, return
-        if (!found) {
-            return;
-        }
-
-        // remove from links
-        graveYardStorage.remove(zoneId);
-
-        // remove link from DB
-        if (persist) {
-            var stmt = DB.World.GetPreparedStatement(WorldStatements.DEL_GRAVEYARD_ZONE);
-
-            stmt.AddValue(0, id);
-            stmt.AddValue(1, zoneId);
-            stmt.AddValue(2, (int) team.getValue());
-
-            DB.World.execute(stmt);
-        }
     }
 
     //Scripts
@@ -1804,6 +1710,8 @@ public final class ObjectManager {
         loadCreatureTemplateModels(templateHashMap);
 
         loadCreatureSummonedData(templateHashMap);
+
+        loadCreatureLocales(templateHashMap);
 
         // Checking needs to be done after loading because of the difficulty self referencing
         for (var template : templateHashMap.values()) {
@@ -3327,7 +3235,7 @@ public final class ObjectManager {
 
             var scriptId = result.<String>Read(27);
 
-            if (tangible.StringHelper.isNullOrEmpty(scriptId)) {
+            if (StringUtil.isEmpty(scriptId)) {
                 data.scriptId = getScriptId(scriptId);
             }
 
@@ -3679,9 +3587,6 @@ public final class ObjectManager {
         return creatureModelStorage.get(modelId);
     }
 
-    public CreatureSummonedData getCreatureSummonedData(int entryId) {
-        return creatureSummonedDataStorage.get(entryId);
-    }
 
     public NpcText getNpcText(int textId) {
         return npcTextStorage.get(textId);
@@ -4897,7 +4802,7 @@ public final class ObjectManager {
 
         try (var instanceTemplates = miscRepository.streamAllInstanceTemplate()) {
             instanceTemplates.forEach(e -> {
-                if (!mapManager.isValidMap(e.map)) {
+                if (!world.getMapManager().isValidMap(e.map)) {
                     Logs.SQL.error("ObjectMgr::LoadInstanceTemplate: bad mapid {} for template!", e.map);
                     return;
                 }
@@ -4921,7 +4826,7 @@ public final class ObjectManager {
 
         try (var gameTeleports = miscRepository.streamAllGameTeleport()) {
             gameTeleports.forEach(gt -> {
-                if (!mapManager.isValidMapCoordinate(gt.mapId, gt.posX, gt.posY, gt.posZ, gt.orientation)) {
+                if (!world.getMapManager().isValidMapCoordinate(gt.mapId, gt.posX, gt.posY, gt.posZ, gt.orientation)) {
                     Logs.SQL.error("Wrong position for id {} (name: {}) in `game_tele` table, ignoring.", gt.id, gt.name);
                     return;
                 }
@@ -5541,589 +5446,377 @@ public final class ObjectManager {
 
     //Player
     public void loadPlayerInfo() {
-        var time = System.currentTimeMillis();
+        var oldMSTime = System.currentTimeMillis();
+        try(var items = playerRepository.streamsAllPlayerCreateInfo()) {
+            items.forEach(e -> {
+                ChrRace chrRace = dbcObjectManager.chrRace(e.race);
+                if (chrRace == null) {
+                    Logs.SQL.error("Wrong race {} in `playercreateinfo` table, ignoring.", e.race.ordinal());
 
-        {
-            // Load playercreate
-            //                                         0     1      2    3           4           5           6            7        8               9               10              11               12                  13              14              15
-            var result = DB.World.query("SELECT race, class, map, position_x, position_y, position_z, orientation, npe_map, npe_position_x, npe_position_y, npe_position_z, npe_orientation, npe_transport_guid, intro_movie_id, intro_scene_id, npe_intro_scene_id FROM playercreateinfo");
-
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 player create definitions. DB table `playercreateinfo` is empty.");
-
-                return;
-            }
-
-            int count = 0;
-
-            do {
-                var currentrace = result.<Integer>Read(0);
-                var currentclass = result.<Integer>Read(1);
-                var mapId = result.<Integer>Read(2);
-                var positionX = result.<Float>Read(3);
-                var positionY = result.<Float>Read(4);
-                var positionZ = result.<Float>Read(5);
-                var orientation = result.<Float>Read(6);
-
-                if (!CliDB.ChrRacesStorage.containsKey(currentrace)) {
-                    Logs.SQL.error(String.format("Wrong race %1$s in `playercreateinfo` table, ignoring.", currentrace));
-
-                    continue;
+                    return;
                 }
 
-                if (!CliDB.ChrClassesStorage.containsKey(currentclass)) {
-                    Logs.SQL.error(String.format("Wrong class %1$s in `playercreateinfo` table, ignoring.", currentclass));
+                if (!dbcObjectManager.chrClass().contains(e.playClass.ordinal())) {
+                    Logs.SQL.error("Wrong class {} in `playercreateinfo` table, ignoring.", e.playClass);
 
-                    continue;
+                    return;
                 }
 
                 // accept DB data only for valid position (and non instanceable)
-                if (!MapDefine.isValidMapCoordinatei(mapId, positionX, positionY, positionZ, orientation)) {
-                    Logs.SQL.error(String.format("Wrong home position for class %1$s race %2$s pair in `playercreateinfo` table, ignoring.", currentclass, currentrace));
+                if (!world.getMapManager().isValidMapCoordinate(e.mapId, e.x, e.y, e.z, e.o)) {
+                    Logs.SQL.error("Wrong home position for class {} race {} pair in `playercreateinfo` table, ignoring.", e.playClass, e.race);
 
-                    continue;
+                    return;
                 }
 
-                if (CliDB.MapStorage.get(mapId).Instanceable()) {
-                    Logs.SQL.error(String.format("Home position in instanceable map for class %1$s race %2$s pair in `playercreateinfo` table, ignoring.", currentclass, currentrace));
+                if (dbcObjectManager.map(e.mapId).isInstanceable()) {
+                    Logs.SQL.error("Home position in instanceable map for class {} race {} pair in `playercreateinfo` table, ignoring.", e.playClass, e.race);
 
-                    continue;
+                    return;
                 }
+                e.displayIdForMale = chrRace.getMaleDisplayId();
+                e.displayIdFemale = chrRace.getFemaleDisplayId();
 
-                if (global.getDB2Mgr().GetChrModel(race.forValue(currentrace), gender.Male) == null) {
-                    Logs.SQL.error(String.format("Missing male model for race %1$s, ignoring.", currentrace));
 
-                    continue;
+                if (e.introMovieId != null && !dbcObjectManager.movie().contains(e.introMovieId)) {
+
+                    Logs.SQL.error("Invalid intro movie id {} for class {} race {} pair in `playercreateinfo` table, ignoring.",
+                            e.introMovieId, e.playClass, e.race);
+                    e.introMovieId = null;
                 }
+                playerInfo.put(Pair.of(e.race, e.playClass), e);
+            });
 
-                if (global.getDB2Mgr().GetChrModel(race.forValue(currentrace), gender.Female) == null) {
-                    Logs.SQL.error(String.format("Missing female model for race %1$s, ignoring.", currentrace));
 
-                    continue;
-                }
+            Logs.SERVER_LOADING.info(">> Loaded {} player create definitions in {} ms", playerInfo.size(), System.currentTimeMillis() - (oldMSTime));
 
-                PlayerInfo info = new PlayerInfo();
-                info.createPosition.loc = new worldLocation(mapId, positionX, positionY, positionZ, orientation);
-
-                if (!result.IsNull(7)) {
-                    PlayerInfo.CreatePositionModel createPosition = new PlayerInfo.createPositionModel();
-
-                    createPosition.loc = new worldLocation(result.<Integer>Read(7), result.<Float>Read(8), result.<Float>Read(9), result.<Float>Read(10), result.<Float>Read(11));
-
-                    if (!result.IsNull(12)) {
-                        createPosition.transportGuid = result.<Long>Read(12);
-                    }
-
-                    info.createPositionNpe = createPosition;
-
-                    if (!CliDB.MapStorage.containsKey(info.createPositionNpe.getValue().loc.mapId)) {
-                        Logs.SQL.error(String.format("Invalid NPE map id %1$s for class %2$s race %3$s pair in `playercreateinfo` table, ignoring.", info.createPositionNpe.getValue().loc.mapId, currentclass, currentrace));
-                        info.createPositionNpe = null;
-                    }
-
-                    if (info.createPositionNpe != null && info.createPositionNpe.getValue().transportGuid.HasValue && global.getTransportMgr().getTransportSpawn(info.createPositionNpe.getValue().transportGuid.value) == null) {
-                        Logs.SQL.error(String.format("Invalid NPE transport spawn id %1$s for class %2$s race %3$s pair in `playercreateinfo` table, ignoring.", info.createPositionNpe.getValue().transportGuid.value, currentclass, currentrace));
-                        info.createPositionNpe = null; // remove entire NPE data - assume user put transport offsets into npe_position fields
-                    }
-                }
-
-                if (!result.IsNull(13)) {
-                    var introMovieId = result.<Integer>Read(13);
-
-                    if (CliDB.MovieStorage.containsKey(introMovieId)) {
-                        info.setIntroMovieId(introMovieId);
-                    } else {
-                        Logs.SQL.debug(String.format("Invalid intro movie id %1$s for class %2$s race %3$s pair in `playercreateinfo` table, ignoring.", introMovieId, currentclass, currentrace));
-                    }
-                }
-
-                if (!result.IsNull(14)) {
-                    var introSceneId = result.<Integer>Read(14);
-
-                    if (getSceneTemplate(introSceneId) != null) {
-                        info.setIntroSceneId(introSceneId);
-                    } else {
-                        Logs.SQL.debug(String.format("Invalid intro scene id %1$s for class %2$s race %3$s pair in `playercreateinfo` table, ignoring.", introSceneId, currentclass, currentrace));
-                    }
-                }
-
-                if (!result.IsNull(15)) {
-                    var introSceneId = result.<Integer>Read(15);
-
-                    if (getSceneTemplate(introSceneId) != null) {
-                        info.setIntroSceneIdNpe(introSceneId);
-                    } else {
-                        Logs.SQL.debug(String.format("Invalid NPE intro scene id %1$s for class %2$s race %3$s pair in `playercreateinfo` table, ignoring.", introSceneId, currentclass, currentrace));
-                    }
-                }
-
-                playerInfo.put(race.forValue(currentrace), playerClass.forValue(currentclass), info);
-
-                ++count;
-            } while (result.NextRow());
-
-            Logs.SERVER_LOADING.info("Loaded {0} player create definitions in {1} ms", count, time.GetMSTimeDiffToNow(time));
         }
 
-        time = System.currentTimeMillis();
+
+        oldMSTime = System.currentTimeMillis();
         // Load playercreate items
         Logs.SERVER_LOADING.info("Loading Player Create Items data...");
 
-        {
-            MultiMap<Integer, ItemTemplate> itemsByCharacterLoadout = new MultiMap<Integer, ItemTemplate>();
+        for (var chrOutFitItem : dbcObjectManager.charStartOutfit()) {
+            List<ItemTemplate> items = Arrays.stream(chrOutFitItem.getItems())
+                    .filter(itemId -> itemId != 0)
+                    .mapToObj(this::getItemTemplate)
+                    .filter(Objects::nonNull)
+                    .toList();
 
-            for (var characterLoadoutItem : CliDB.CharacterLoadoutItemStorage.values()) {
-                var itemTemplate = getItemTemplate(characterLoadoutItem.itemID);
+            Gender gender = Gender.valueOf(chrOutFitItem.getSexID());
+            Race race = Race.values()[chrOutFitItem.getRaceID()];
+            PlayerClass playerClass = PlayerClass.values()[chrOutFitItem.getClassID()];
+            PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
 
-                if (itemTemplate != null) {
-                    itemsByCharacterLoadout.add(characterLoadoutItem.CharacterLoadoutID, itemTemplate);
-                }
+            if (items.isEmpty() || info == null) {
+                continue;
             }
 
-            for (var characterLoadout : CliDB.CharacterLoadoutStorage.values()) {
-                if (!characterLoadout.IsForNewCharacter()) {
-                    continue;
-                }
-
-                var items = itemsByCharacterLoadout.get(characterLoadout.id);
-
-                if (items.isEmpty()) {
-                    continue;
-                }
-
-                for (var raceIndex = race.Human; raceIndex.getValue() < race.max.getValue(); ++raceIndex) {
-                    if (!characterLoadout.raceMask.hasFlag(SharedConst.GetMaskForRace(raceIndex))) {
-                        continue;
+            for (ItemTemplate itemTemplate : items) {
+                // BuyCount by default
+                int count = itemTemplate.getBuyCount();
+                // special amount for food/drink
+                if (itemTemplate.getItemClass() == ItemClass.CONSUMABLE
+                        && itemTemplate.getSubClass() == ItemSubclassConsumable.FOOD_DRINK) {
+                    if (!itemTemplate.getEffects().isEmpty()) {
+                        Short spellCategoryID = itemTemplate.getEffects().getFirst().getSpellCategoryID();
+                        count = switch (SpellCategory.valueOf(spellCategoryID)) {
+                            case FOOD -> playerClass == PlayerClass.DEATH_KNIGHT ? 10 : 4;
+                            case DRINK -> 2;
+                        };
                     }
-
-                    var playerInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                    if (playerInfo.TryGetValue(raceIndex, playerClass.forValue(characterLoadout.ChrClassID), out playerInfo)) {
-                        playerInfo.itemContext = itemContext.forValue(characterLoadout.itemContext);
-
-                        for (var itemTemplate : items) {
-                            // BuyCount by default
-                            var count = itemTemplate.getBuyCount();
-
-                            // special amount for food/drink
-                            if (itemTemplate.getClass() == itemClass.Consumable && itemTemplate.getSubClass() == ItemSubClassConsumable.FoodDrink.getValue()) {
-                                if (!itemTemplate.getEffects().isEmpty()) {
-                                    switch (SpellCategories.forValue(itemTemplate.getEffects().get(0).SpellCategoryID)) {
-                                        case Food: // food
-                                            count = characterLoadout.ChrClassID == playerClass.Deathknight.getValue() ? 10 : 4;
-
-                                            break;
-                                        case Drink: // drink
-                                            count = 2;
-
-                                            break;
-                                    }
-                                }
-
-                                if (itemTemplate.getMaxStackSize() < count) {
-                                    count = itemTemplate.getMaxStackSize();
-                                }
-                            }
-
-                            playerInfo.items.add(new PlayerCreateInfoItem(itemTemplate.getId(), count));
-                        }
-                    }
+                    if (itemTemplate.getMaxStackSize() < count)
+                        count = itemTemplate.getMaxStackSize();
+                }
+                switch (gender) {
+                    case MALE -> info.itemsForMale.add(new PlayerCreateInfoItem(itemTemplate.getId(), count));
+                    case FEMALE -> info.itemsForFemale.add(new PlayerCreateInfoItem(itemTemplate.getId(), count));
                 }
             }
         }
 
         Logs.SERVER_LOADING.info("Loading Player Create Items Override data...");
+        AtomicInteger count = new AtomicInteger();
+        try(var items = playerRepository.streamsAllPlayerCreateInfoItems()) {
+            items.forEach(fields -> {
+                if (fields[0] >= Race.values().length) {
+                    Logs.SQL.error("Wrong race {} in `playercreateinfo_item` table, ignoring.", fields[0]);
+                    return;
+                }
 
-        {
-            //                                         0     1      2       3
-            var result = DB.World.query("SELECT race, class, itemid, amount FROM playercreateinfo_item");
+                if (fields[1] >= PlayerClass.values().length) {
+                    Logs.SQL.error("Wrong class {} in `playercreateinfo_item` table, ignoring.", fields[1]);
+                    return;
+                }
 
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 custom player create items. DB table `playercreateinfo_item` is empty.");
-            } else {
-                int count = 0;
+                Race race = Race.values()[fields[0]];
+                PlayerClass playerClass = PlayerClass.values()[fields[1]];
 
-                do {
-                    var currentrace = result.<Integer>Read(0);
+                if (getItemTemplate(fields[2]) == null) {
+                    Logs.SQL.error("Item id {} (race {} class {}) in `playercreateinfo_item` table but it does not exist, ignoring.", fields[2], race, playerClass);
+                    return;
+                }
 
-                    if (currentrace >= race.max.getValue()) {
-                        Logs.SQL.error("Wrong race {0} in `playercreateinfo_item` table, ignoring.", currentrace);
+                if (fields[3] < 1)
+                {
+                    Logs.SQL.error("Item id {} (class {} race {}) have amount == 0 in `playercreateinfo_item` table, ignoring.", fields[2], race, playerClass);
+                    return;
+                }
 
-                        continue;
-                    }
-
-                    var currentclass = result.<Integer>Read(1);
-
-                    if (currentclass >= playerClass.max.getValue()) {
-                        Logs.SQL.error("Wrong class {0} in `playercreateinfo_item` table, ignoring.", currentclass);
-
-                        continue;
-                    }
-
-                    var itemid = result.<Integer>Read(2);
-
-                    if (getItemTemplate(itemid).getId() == 0) {
-                        Logs.SQL.error("Item id {0} (race {1} class {2}) in `playercreateinfo_item` table but not listed in `itemtemplate`, ignoring.", itemid, currentrace, currentclass);
-
-                        continue;
-                    }
-
-                    var amount = result.<Integer>Read(3);
-
-                    if (amount == 0) {
-                        Logs.SQL.error("Item id {0} (class {1} race {2}) have amount == 0 in `playercreateinfo_item` table, ignoring.", itemid, currentrace, currentclass);
-
-                        continue;
-                    }
-
-                    if (currentrace == 0 || currentclass == 0) {
-                        var minrace = currentrace != 0 ? currentrace : 1;
-                        var maxrace = currentrace != 0 ? currentrace + 1 : race.max.getValue();
-                        var minclass = currentclass != 0 ? currentclass : 1;
-                        var maxclass = currentclass != 0 ? currentclass + 1 : playerClass.max.getValue();
-
-                        for (var r = minrace; r < maxrace; ++r) {
-                            for (var c = minclass; c < maxclass; ++c) {
-                                playerCreateInfoAddItemHelper(r, c, itemid, amount);
-                            }
+                if (race == Race.NONE || playerClass == PlayerClass.NONE) {
+                    Set<Race> racesNeedAdd = race == Race.NONE ? EnumSet.allOf(Race.class) : Set.of(race);
+                    Set<PlayerClass> playerClassNeedAdd = playerClass == PlayerClass.NONE ? EnumSet.allOf(PlayerClass.class) : Set.of(playerClass);
+                    for (Race aRace : racesNeedAdd) {
+                        for (PlayerClass aClass : playerClassNeedAdd) {
+                            playerCreateInfoAddItemHelper(aRace, aClass, fields[2], fields[3]);
                         }
-                    } else {
-                        playerCreateInfoAddItemHelper(currentrace, currentclass, itemid, amount);
                     }
+                } else {
+                    playerCreateInfoAddItemHelper(race, playerClass, fields[2], fields[3]);
+                }
+                count.getAndIncrement();
+            });
 
-                    ++count;
-                } while (result.NextRow());
-
-                Logs.SERVER_LOADING.info("Loaded {0} custom player create items in {1} ms", count, time.GetMSTimeDiffToNow(time));
-            }
         }
+
+        Logs.SERVER_LOADING.info(">> Loaded {} custom player create items in {} ms", count, System.currentTimeMillis() - oldMSTime);
+
 
         // Load playercreate skills
         Logs.SERVER_LOADING.info("Loading Player Create Skill data...");
 
-        {
-            var oldMSTime = System.currentTimeMillis();
-
-            for (var rcInfo : CliDB.SkillRaceClassInfoStorage.values()) {
-                if (rcInfo.Availability == 1) {
-                    for (var raceIndex = race.Human; raceIndex.getValue() < race.max.getValue(); ++raceIndex) {
-                        if (rcInfo.raceMask == -1 || (boolean) (SharedConst.GetMaskForRace(raceIndex) & rcInfo.raceMask)) {
-                            for (var classIndex = playerClass.Warrior; classIndex.getValue() < playerClass.max.getValue(); ++classIndex) {
-                                if (rcInfo.ClassMask == -1 || (boolean) ((1 << (classIndex.getValue() - 1)) & rcInfo.ClassMask)) {
-                                    var info;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                                    if (playerInfo.TryGetValue(raceIndex, classIndex, out info)) {
-                                        info.skills.add(rcInfo);
-                                    }
-                                }
-                            }
-                        }
+        oldMSTime = System.currentTimeMillis();
+        for (var rcInfo : dbcObjectManager.skillRaceClassInfo()) {
+            if(rcInfo.getAvailability() != 1) {
+                continue;
+            }
+            for (Race race : Race.values()) {
+                for (PlayerClass playerClass : PlayerClass.values()) {
+                    if (race == Race.NONE || playerClass == PlayerClass.NONE) {
+                        continue;
                     }
+                    if (!rcInfo.raceMask().hasRace(race) || !rcInfo.classMask().hasPlayerClass(playerClass)) {
+                        continue;
+                    }
+                    PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
+                    info.skills.add(rcInfo);
                 }
             }
-
-            Logs.SERVER_LOADING.info("Loaded player create skills in {0} ms", time.GetMSTimeDiffToNow(oldMSTime));
         }
 
+        Logs.SERVER_LOADING.info(">> Loaded player create skills in {} ms", System.currentTimeMillis() - oldMSTime);
+
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
         // Load playercreate custom spells
         Logs.SERVER_LOADING.info("Loading Player Create Custom Spell data...");
 
-        {
-            var oldMSTime = System.currentTimeMillis();
+        try (var items = playerRepository.streamsAllPlayerCreateInfoSpellCustom()) {
+            items.forEach(fields -> {
+                RaceMask raceMask = fields.raceMask();
+                PlayerClassMask playerClassMask = fields.classMask();
+                if (!raceMask.isEmpty() && !RaceMask.ALL_PLAYABLE.hasRaceMask(raceMask)) {
+                    Logs.SQL.error("Wrong race mask {} in `playercreateinfo_spell_custom` table, ignoring.", raceMask.getRawValue());
+                    return;
+                }
 
-            var result = DB.World.query("SELECT racemask, classmask, Spell FROM playercreateinfo_spell_custom");
-
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 player create custom spells. DB table `playercreateinfo_spell_custom` is empty.");
-            } else {
-                int count = 0;
-
-                do {
-                    var raceMask = result.<Long>Read(0);
-                    var classMask = result.<Integer>Read(1);
-                    var spellId = result.<Integer>Read(2);
-
-                    if (raceMask != 0 && !(boolean) (raceMask & SharedConst.RaceMaskAllPlayable)) {
-                        Logs.SQL.error("Wrong race mask {0} in `playercreateinfo_spell_custom` table, ignoring.", raceMask);
-
-                        continue;
-                    }
-
-                    if (classMask != 0 && !(boolean) (classMask & playerClass.ClassMaskAllPlayable.getValue())) {
-                        Logs.SQL.error("Wrong class mask {0} in `playercreateinfo_spell_custom` table, ignoring.", classMask);
-
-                        continue;
-                    }
-
-                    for (var raceIndex = race.Human; raceIndex.getValue() < race.max.getValue(); ++raceIndex) {
-                        if (raceMask == 0 || (boolean) ((long) SharedConst.GetMaskForRace(raceIndex) & raceMask)) {
-                            for (var classIndex = playerClass.Warrior; classIndex.getValue() < playerClass.max.getValue(); ++classIndex) {
-                                if (classMask == 0 || (boolean) ((1 << (classIndex.getValue() - 1)) & classMask)) {
-                                    var playerInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                                    if (playerInfo.TryGetValue(raceIndex, classIndex, out playerInfo)) {
-                                        playerInfo.customSpells.add(spellId);
-                                        ++count;
-                                    }
-                                }
-                            }
+                if (!playerClassMask.isEmpty() && !PlayerClassMask.ALL_PLAYABLE.hasPlayerClassMask(playerClassMask)) {
+                    Logs.SQL.error("Wrong class mask {} in `playercreateinfo_spell_custom` table, ignoring.", playerClassMask);
+                    return;
+                }
+                for (Race race : Race.values()) {
+                    for (PlayerClass playerClass : PlayerClass.values()) {
+                        if (race == Race.NONE || playerClass == PlayerClass.NONE) {
+                            continue;
                         }
+                        if ((!raceMask.isEmpty() && !raceMask.hasRace(race))
+                                || (!playerClassMask.isEmpty() && !playerClassMask.hasPlayerClass(playerClass))) {
+                            continue;
+                        }
+                        PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
+                        info.customSpells.add(fields.spell);
                     }
-                } while (result.NextRow());
-
-                Logs.SERVER_LOADING.info("Loaded {0} custom player create spells in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-            }
+                }
+                count.getAndIncrement();
+            });
         }
+
+        Logs.SERVER_LOADING.info(">> Loaded {} custom player create spells in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
         // Load playercreate cast spell
         Logs.SERVER_LOADING.info("Loading Player Create Cast Spell data...");
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
 
-        {
-            var oldMSTime = System.currentTimeMillis();
+        try (var items = playerRepository.streamsAllPlayerCreateInfoCastSpell()) {
+            items.forEach(fields -> {
+                RaceMask raceMask = fields.raceMask();
+                PlayerClassMask playerClassMask = fields.classMask();
+                if (!raceMask.isEmpty() && !RaceMask.ALL_PLAYABLE.hasRaceMask(raceMask)) {
+                    Logs.SQL.error("Wrong race mask {} in `playercreateinfo_cast_spell` table, ignoring.", raceMask.getRawValue());
+                    return;
+                }
 
-            var result = DB.World.query("SELECT raceMask, classMask, spell, createMode FROM playercreateinfo_cast_spell");
-
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 player create cast spells. DB table `playercreateinfo_cast_spell` is empty.");
-            } else {
-                int count = 0;
-
-                do {
-                    var raceMask = result.<Long>Read(0);
-                    var classMask = result.<Integer>Read(1);
-                    var spellId = result.<Integer>Read(2);
-                    var playerCreateMode = result.<Byte>Read(3);
-
-                    if (raceMask != 0 && (raceMask & SharedConst.RaceMaskAllPlayable) == 0) {
-                        Logs.SQL.error(String.format("Wrong race mask %1$s in `playercreateinfo_cast_spell` table, ignoring.", raceMask));
-
-                        continue;
-                    }
-
-                    if (classMask != 0 && !classMask.hasFlag((int) playerClass.ClassMaskAllPlayable.getValue())) {
-                        Logs.SQL.error(String.format("Wrong class mask %1$s in `playercreateinfo_cast_spell` table, ignoring.", classMask));
-
-                        continue;
-                    }
-
-                    if (playerCreateMode < 0 || playerCreateMode >= (byte) PlayerCreateMode.max.getValue()) {
-                        Logs.SQL.error(String.format("Uses invalid createMode %1$s in `playercreateinfo_cast_spell` table, ignoring.", playerCreateMode));
-
-                        continue;
-                    }
-
-                    for (var raceIndex = race.Human; raceIndex.getValue() < race.max.getValue(); ++raceIndex) {
-                        if (raceMask == 0 || (boolean) ((long) SharedConst.GetMaskForRace(raceIndex) & raceMask)) {
-                            for (var classIndex = playerClass.Warrior; classIndex.getValue() < playerClass.max.getValue(); ++classIndex) {
-                                if (classMask == 0 || (boolean) ((1 << (classIndex.getValue() - 1)) & classMask)) {
-                                    var info;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                                    if (playerInfo.TryGetValue(raceIndex, classIndex, out info)) {
-                                        info.CastSpells[playerCreateMode].add(spellId);
-                                        ++count;
-                                    }
-                                }
-                            }
+                if (!playerClassMask.isEmpty() && !PlayerClassMask.ALL_PLAYABLE.hasPlayerClassMask(playerClassMask)) {
+                    Logs.SQL.error("Wrong class mask {} in `playercreateinfo_cast_spell` table, ignoring.", playerClassMask);
+                    return;
+                }
+                for (Race race : Race.values()) {
+                    for (PlayerClass playerClass : PlayerClass.values()) {
+                        if (race == Race.NONE || playerClass == PlayerClass.NONE) {
+                            continue;
                         }
+                        if ((!raceMask.isEmpty() && !raceMask.hasRace(race))
+                                || (!playerClassMask.isEmpty() && !playerClassMask.hasPlayerClass(playerClass))) {
+                            continue;
+                        }
+                        PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
+                        info.castSpells.add(fields.spell);
                     }
-                } while (result.NextRow());
-
-                Logs.SERVER_LOADING.info("Loaded {0} player create cast spells in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-            }
+                }
+                count.getAndIncrement();
+            });
         }
+        Logs.SERVER_LOADING.info(">> Loaded {} custom player create spells in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
         // Load playercreate actions
-        time = System.currentTimeMillis();
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
         Logs.SERVER_LOADING.info("Loading Player Create Action data...");
 
-        {
-            //                                         0     1      2       3       4
-            var result = DB.World.query("SELECT race, class, button, action, type FROM playercreateinfo_action");
+        try (var items = playerRepository.streamsAllPlayerCreateInfoAction()) {
+            items.forEach(fields -> {
+                if (fields[0] >= Race.values().length) {
+                    Logs.SQL.error("Wrong race {} in `playercreateinfo_action` table, ignoring.", fields[0]);
+                    return;
+                }
 
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 player create actions. DB table `playercreateinfo_action` is empty.");
-            } else {
-                int count = 0;
+                if (fields[1] >= PlayerClass.values().length) {
+                    Logs.SQL.error("Wrong class {} in `playercreateinfo_action` table, ignoring.", fields[1]);
+                    return;
+                }
 
-                do {
-                    var currentrace = race.forValue(result.<Integer>Read(0));
-
-                    if (currentrace.getValue() >= race.max.getValue()) {
-                        Logs.SQL.error("Wrong race {0} in `playercreateinfo_action` table, ignoring.", currentrace);
-
-                        continue;
-                    }
-
-                    var currentclass = playerClass.forValue(result.<Integer>Read(1));
-
-                    if (currentclass.getValue() >= playerClass.max.getValue()) {
-                        Logs.SQL.error("Wrong class {0} in `playercreateinfo_action` table, ignoring.", currentclass);
-
-                        continue;
-                    }
-
-                    var info;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                    if (playerInfo.TryGetValue(currentrace, currentclass, out info)) {
-                        info.actions.add(new PlayerCreateInfoAction(result.<Byte>Read(2), result.<Integer>Read(3), result.<Byte>Read(4)));
-                    }
-
-                    ++count;
-                } while (result.NextRow());
-
-                Logs.SERVER_LOADING.info("Loaded {0} player create actions in {1} ms", count, time.GetMSTimeDiffToNow(time));
-            }
+                Race race = Race.values()[fields[0]];
+                PlayerClass playerClass = PlayerClass.values()[fields[1]];
+                PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
+                info.actions.add(new PlayerCreateInfoAction((byte) fields[2], (byte) fields[3], fields[4]));
+                count.getAndIncrement();
+            });
         }
 
-        time = System.currentTimeMillis();
+        Logs.SERVER_LOADING.info(">> Loaded {} player create actions in {} ms", count, System.currentTimeMillis() - oldMSTime);
+
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
         // Loading levels data (class/race dependent)
         Logs.SERVER_LOADING.info("Loading Player Create Level Stats data...");
 
-        {
-            var raceStatModifiers = new short[Race.max.getValue()][];
-
-            for (var i = 0; i < race.max.getValue(); ++i) {
-                raceStatModifiers[i] = new short[Stats.max.getValue()];
-            }
-
-            //                                         0     1    2    3    4
-            var result = DB.World.query("SELECT race, str, agi, sta, inte FROM player_racestats");
-
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 level stats definitions. DB table `player_racestats` is empty.");
-                global.getWorldMgr().stopNow();
-
-                return;
-            }
-
-            do {
-                var currentrace = race.forValue(result.<Integer>Read(0));
-
-                if (currentrace.getValue() >= race.max.getValue()) {
-                    Logs.SQL.error(String.format("Wrong race %1$s in `player_racestats` table, ignoring.", currentrace));
-
-                    continue;
+        int[][] raceStatModifiers = new int[Race.values().length][SharedDefine.MAX_STATS];
+        try (var items = playerRepository.streamsAllPlayerRaceStats()) {
+            items.forEach(fields -> {
+                if (fields[0] >= Race.values().length) {
+                    Logs.SQL.error("Wrong race {} in `player_racestats` table, ignoring.", fields[0]);
+                    return;
                 }
 
-                for (var i = 0; i < stats.max.getValue(); ++i) {
-                    raceStatModifiers[currentrace.getValue()][i] = result.<SHORT>Read(i + 1);
-                }
-            } while (result.NextRow());
-
-            //                               0      1      2    3    4    5
-            result = DB.World.query("SELECT class, level, str, agi, sta, inte FROM player_classlevelstats");
-
-            if (result.isEmpty()) {
-                Logs.SERVER_LOADING.info("Loaded 0 level stats definitions. DB table `player_classlevelstats` is empty.");
-                global.getWorldMgr().stopNow();
-
-                return;
-            }
-
-            int count = 0;
-
-            do {
-                var currentclass = playerClass.forValue(result.<Byte>Read(0));
-
-                if (currentclass.getValue() >= playerClass.max.getValue()) {
-                    Logs.SQL.error("Wrong class {0} in `player_classlevelstats` table, ignoring.", currentclass);
-
-                    continue;
-                }
-
-                var currentlevel = result.<Integer>Read(1);
-
-                if (currentlevel > WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-                    if (currentlevel > 255) // hardcoded level maximum
-                    {
-                        Logs.SQL.error(String.format("Wrong (> 255) level %1$s in `player_classlevelstats` table, ignoring.", currentlevel));
-                    } else {
-                        Log.outWarn(LogFilter.Sql, String.format("Unused (> MaxPlayerLevel in worldserver.conf) level %1$s in `player_levelstats` table, ignoring.", currentlevel));
-                    }
-
-                    continue;
-                }
-
-                for (var race = 0; race < raceStatModifiers.length; ++race) {
-                    var playerInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                    if (!playerInfo.TryGetValue(race.forValue(race), currentclass, out playerInfo)) {
-                        continue;
-                    }
-
-                    for (var i = 0; i < stats.max.getValue(); i++) {
-                        playerInfo.LevelInfo[currentlevel - 1].Stats[i] = (short) (result.<SHORT>Read(i + 2) + raceStatModifiers[race][i]);
-                    }
-                }
-
-                ++count;
-            } while (result.NextRow());
-
-            // Fill gaps and check integrity
-            for (Race race = 0; race.getValue() < race.max.getValue(); ++race) {
-                // skip non existed races
-                if (!CliDB.ChrRacesStorage.containsKey(race)) {
-                    continue;
-                }
-
-                for (PlayerClass _class = 0; _class.getValue() < playerClass.max.getValue(); ++_class) {
-                    // skip non existed classes
-                    if (CliDB.ChrClassesStorage.get(_class) == null) {
-                        continue;
-                    }
-
-                    var playerInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                    if (!playerInfo.TryGetValue(race, _class, out playerInfo)) {
-                        continue;
-                    }
-
-                    if (ConfigMgr.GetDefaultValue("character.EnforceRaceAndClassExpations", true)) {
-                        // skip expansion races if not playing with expansion
-                        if (WorldConfig.getIntValue(WorldCfg.expansion) < expansion.BurningCrusade.getValue() && (race == race.BLOODELF || race == race.Draenei)) {
-                            continue;
-                        }
-
-                        // skip expansion classes if not playing with expansion
-                        if (WorldConfig.getIntValue(WorldCfg.expansion) < expansion.WrathOfTheLichKing.getValue() && _class == playerClass.Deathknight) {
-                            continue;
-                        }
-
-                        if (WorldConfig.getIntValue(WorldCfg.expansion) < expansion.MistsOfPandaria.getValue() && (race == race.PandarenNeutral || race == race.PandarenHorde || race == race.PandarenAlliance)) {
-                            continue;
-                        }
-
-                        if (WorldConfig.getIntValue(WorldCfg.expansion) < expansion.Legion.getValue() && _class == playerClass.DemonHunter) {
-                            continue;
-                        }
-
-                        if (WorldConfig.getIntValue(WorldCfg.expansion) < expansion.Dragonflight.getValue() && _class == playerClass.Evoker) {
-                            continue;
-                        }
-                    }
-
-                    // fatal error if no level 1 data
-                    if (playerInfo.LevelInfo[0].Stats[0] == 0) {
-                        Logs.SQL.error("Race {0} Class {1} Level 1 does not have stats data!", race, _class);
-                        system.exit(1);
-
-                        return;
-                    }
-
-                    // fill level gaps
-                    for (var level = 1; level < WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel); ++level) {
-                        if (playerInfo.LevelInfo[level].Stats[0] == 0) {
-                            Logs.SQL.error("Race {0} Class {1} Level {2} does not have stats data. Using stats data of level {3}.", race, _class, level + 1, level);
-                            playerInfo.LevelInfo[level] = playerInfo.LevelInfo[level - 1];
-                        }
-                    }
-                }
-            }
-
-            Logs.SERVER_LOADING.info("Loaded {0} level stats definitions in {1} ms", count, time.GetMSTimeDiffToNow(time));
+                Race race = Race.values()[fields[0]];
+                System.arraycopy(fields, 1, raceStatModifiers[race.ordinal()], 0, SharedDefine.MAX_STATS);
+                count.getAndIncrement();
+            });
         }
 
-        time = System.currentTimeMillis();
+        Logs.SERVER_LOADING.info(">> Loaded {} player create race stats in {} ms", count, System.currentTimeMillis() - oldMSTime);
+        oldMSTime = System.currentTimeMillis();
+        count.set(0);
+        try (var items = playerRepository.streamsAllPlayerClassLevelStats()) {
+            items.forEach(fields -> {
+                if (fields[0] >= PlayerClass.values().length) {
+                    Logs.SQL.error("Wrong class {} in `playercreateinfo_action` table, ignoring.", fields[0]);
+                    return;
+                }
+
+                int level = fields[1];
+                if (level > world.getWorldSettings().maxPlayerLevel) {
+                    if (level > SharedDefine.STRONG_MAX_LEVEL)        // hardcoded level maximum
+                        Logs.SQL.error("Wrong (> {}) level {} in `player_classlevelstats` table, ignoring.", SharedDefine.STRONG_MAX_LEVEL, level);
+                    else
+                        Logs.SQL.error("Unused (> MaxPlayerLevel in worldserver.conf) level {} in `player_classlevelstats` table, ignoring.", level);
+
+                    return;
+                }
+
+                PlayerClass playerClass = PlayerClass.values()[fields[0]];
+
+                for (int race = 1; race < raceStatModifiers.length; race++) {
+                    PlayerInfo info = playerInfo.get(Pair.of(Race.values()[race], playerClass));
+                    if (info == null) {
+                        continue;
+                    }
+                    if (info.levelInfo == null) {
+                        info.levelInfo = new PlayerLevelInfo[world.getWorldSettings().maxPlayerLevel];
+                    }
+                    PlayerLevelInfo levelInfo = info.levelInfo[level - 1];
+                    for (int i = 0; i < SharedDefine.MAX_STATS; ++i) {
+                        levelInfo.stats[i] = fields[i + 2] + raceStatModifiers[race][i];
+                    }
+                }
+                count.getAndIncrement();
+            });
+        }
+
+        for (Race race : Race.values()) {
+            for (PlayerClass playerClass : PlayerClass.values()) {
+                if (race == Race.NONE || playerClass == PlayerClass.NONE) {
+                    continue;
+                }
+                PlayerInfo info = playerInfo.get(Pair.of(race, playerClass));
+                if(info == null) {
+                    continue;
+                }
+
+                // skip expansion races if not playing with expansion
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.BURNING_CRUSADE.ordinal() && (race == Race.BLOOD_ELF || race == Race.DRAENEI))
+                    continue;
+
+                // skip expansion classes if not playing with expansion
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.WRATH_OF_THE_LICH_KING.ordinal() && playerClass == PlayerClass.DEATH_KNIGHT)
+                    continue;
+
+                // skip expansion races if not playing with expansion
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.CATACLYSM.ordinal() && (race == Race.GOBLIN || race == Race.WORGEN))
+                    continue;
+
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.MISTS_OF_PANDARIA.ordinal() && (race == Race.PANDAREN_NEUTRAL || race == Race.PANDAREN_HORDE || race == Race.PANDAREN_ALLIANCE))
+                    continue;
+
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.LEGION.ordinal() && playerClass == PlayerClass.DEMON_HUNTER)
+                    continue;
+
+
+                // fatal error if no level 1 data
+                if (info.levelInfo == null || info.levelInfo[0].stats[0] == 0)
+                {
+                    Logs.SQL.error("Race {} Class {} Level 1 does not have stats data!", race, playerClass);
+                    throw new IllegalStateException(StringUtil.format("Race {} Class {} Level 1 does not have stats data!", race, playerClass));
+                }
+
+                // fill level gaps
+                for (int level = 1; level < world.getWorldSettings().maxPlayerLevel; ++level)
+                {
+                    if (info.levelInfo[level].stats[0] == 0)
+                    {
+                        Logs.SQL.error("Race {} Class {} Level {} does not have stats data. Using stats data of level {}.", race, playerClass, level + 1, level);
+                        info.levelInfo[level] = info.levelInfo[level - 1];
+                    }
+                }
+            }
+        }
+
+        Logs.SERVER_LOADING.error(">> Loaded {} level stats definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
+
+
+        oldMSTime = System.currentTimeMillis();
         // Loading xp per level data
         Logs.SERVER_LOADING.info("Loading Player Create XP data...");
 
@@ -6217,15 +5910,10 @@ public final class ObjectManager {
     }
 
     public PlayerLevelInfo getPlayerLevelInfo(Race race, PlayerClass _class, int level) {
-        if (level < 1 || race.getValue() >= race.max.getValue() || _class.getValue() >= playerClass.max.getValue()) {
-            return null;
-        }
-
-        var pInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if (!playerInfo.TryGetValue(race, _class, out pInfo)) {
-            return null;
-        }
+        Objects.requireNonNull(race);
+        Objects.requireNonNull(_class);
+        HashMap<PlayerClass, PlayerInfo> playerClassPlayerInfoHashMap = playerInfo.get(race);
+        PlayerInfo playerInfo = playerClassPlayerInfoHashMap.get(_class);
 
         if (level <= WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
             return pInfo.LevelInfo[level - 1];
@@ -6237,136 +5925,89 @@ public final class ObjectManager {
     //Pets
     public void loadPetLevelInfo() {
         var oldMSTime = System.currentTimeMillis();
+        int maxPlayerLevel = world.getWorldSettings().maxPlayerLevel;
+        AtomicInteger count = new AtomicInteger();
+        HashMap<Integer, PetLevelInfo[]> tmp = new HashMap<>();
+        try(var items = playerRepository.streamsAllPetLevelStats()) {
+            items.forEach(fields -> {
+                if (getCreatureTemplate(fields[0]) == null) {
+                    Logs.SQL.error("Wrong creature id {} in `pet_levelstats` table, ignoring.", fields[0]);
+                    return;
+                }
+                int currentLevel = fields[1];
 
-        //                                         0               1      2   3     4    5    6    7     8    9
-        var result = DB.World.query("SELECT creature_entry, level, hp, mana, str, agi, sta, inte, spi, armor FROM pet_levelstats");
+                if (currentLevel > maxPlayerLevel) {
+                    if (currentLevel > SharedDefine.STRONG_MAX_LEVEL)        // hardcoded level maximum
+                        Logs.SQL.error("Wrong (> {}) level {} in `pet_levelstats` table, ignoring.", SharedDefine.STRONG_MAX_LEVEL, currentLevel);
+                    else {
+                        Logs.MISC.error("Unused (> MaxPlayerLevel in worldserver.conf) level {} in `pet_levelstats` table, ignoring.", currentLevel);
+                        count.incrementAndGet();                                // make result loading percent "expected" correct in case disabled detail mode for example.
+                    }
+                    return;
+                } else if (currentLevel < 1) {
+                    Logs.SQL.error("Wrong (<1) level {} in `pet_levelstats` table, ignoring.", currentLevel);
+                    return;
+                }
+                var pInfoMapEntry = tmp.compute(fields[0], Functions.ifAbsent(()-> new PetLevelInfo[maxPlayerLevel]));
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 level pet stats definitions. DB table `pet_levelstats` is empty.");
+                PetLevelInfo pLevelInfo = new PetLevelInfo();
+                pLevelInfo.health = fields[2];
+                pLevelInfo.mana = fields[3];
+                pLevelInfo.armor = fields[9];
 
-            return;
+                System.arraycopy(fields, 4, pLevelInfo.stats, 0, SharedDefine.MAX_STATS);
+
+                pInfoMapEntry[currentLevel - 1] = pLevelInfo;
+                count.getAndIncrement();
+            });
         }
 
-        int count = 0;
-
-        do {
-            var creatureid = result.<Integer>Read(0);
-
-            if (getCreatureTemplate(creatureid) == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM pet_levelstats WHERE creature_entry = %1$s", creatureid));
-                } else {
-                    Logs.SQL.error("Wrong creature id {0} in `pet_levelstats` table, ignoring.", creatureid);
-                }
-
-                continue;
-            }
-
-            var currentlevel = result.<Integer>Read(1);
-
-            if (currentlevel > WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-                if (currentlevel > SharedConst.StrongMaxLevel) // hardcoded level maximum
-                {
-                    Logs.SQL.error("Wrong (> {0}) level {1} in `pet_levelstats` table, ignoring.", SharedConst.StrongMaxLevel, currentlevel);
-                } else {
-                    Log.outWarn(LogFilter.Server, "Unused (> MaxPlayerLevel in worldserver.conf) level {0} in `pet_levelstats` table, ignoring.", currentlevel);
-                    ++count; // make result loading percent "expected" correct in case disabled detail mode for example.
-                }
-
-                continue;
-            } else if (currentlevel < 1) {
-                Logs.SQL.error("Wrong (<1) level {0} in `pet_levelstats` table, ignoring.", currentlevel);
-
-                continue;
-            }
-
-            var pInfoMapEntry = petInfoStore.get(creatureid);
-
-            if (pInfoMapEntry == null) {
-                pInfoMapEntry = new PetLevelInfo[WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)];
-            }
-
-            PetLevelInfo pLevelInfo = new PetLevelInfo();
-            pLevelInfo.health = result.<Integer>Read(2);
-            pLevelInfo.mana = result.<Integer>Read(3);
-            pLevelInfo.armor = result.<Integer>Read(9);
-
-            for (var i = 0; i < stats.max.getValue(); i++) {
-                pLevelInfo.stats[i] = result.<Integer>Read(i + 4);
-            }
-
-            pInfoMapEntry[currentlevel - 1] = pLevelInfo;
-
-            ++count;
-        } while (result.NextRow());
 
         // Fill gaps and check integrity
-        for (var map : petInfoStore.entrySet()) {
+        for (var map : tmp.entrySet()) {
             var pInfo = map.getValue();
 
             // fatal error if no level 1 data
             if (pInfo == null || pInfo[0].health == 0) {
-                Logs.SQL.error("Creature {0} does not have pet stats data for Level 1!", map.getKey());
-                global.getWorldMgr().stopNow();
+                Logs.SQL.error("Creature {} does not have pet stats data for Level 1!", map.getKey());
+                throw new IllegalArgumentException("Creature " + map.getKey() + " does not have pet stats data for Level 1!");
             }
 
             // fill level gaps
-            for (byte level = 1; level < WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel); ++level) {
+            for (byte level = 1; level < maxPlayerLevel; ++level) {
                 if (pInfo[level].health == 0) {
-                    Logs.SQL.error("Creature {0} has no data for Level {1} pet stats data, using data of Level {2}.", map.getKey(), level + 1, level);
+                    Logs.SQL.error("Creature {} has no data for Level {} pet stats data, using data of Level {}.", map.getKey(), level + 1, level);
                     pInfo[level] = pInfo[level - 1];
                 }
             }
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} level pet stats definitions in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        petInfoStore.putAll(tmp);
+
+        Logs.SERVER_LOADING.info(">> Loaded {} level pet stats definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadPetNames() {
         var oldMSTime = System.currentTimeMillis();
-        //                                          0     1      2
-        var result = DB.World.query("SELECT word, entry, half FROM pet_name_generation");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 pet name parts. DB table `pet_name_generation` is empty!");
-
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = playerRepository.streamsAllPetNameGeneration()) {
+            items.forEach(field->{
+                if (field.half != 0) {
+                    petHalfName1.compute(field.entry, Functions.addToList(field.word));
+                } else {
+                    petHalfName0.compute(field.entry, Functions.addToList(field.word));
+                }
+                count.getAndIncrement();
+            });
         }
-
-        int count = 0;
-
-        do {
-            var word = result.<String>Read(0);
-            var entry = result.<Integer>Read(1);
-            var half = result.<Boolean>Read(2);
-
-            if (half) {
-                petHalfName1.add(entry, word);
-            } else {
-                petHalfName0.add(entry, word);
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} pet name parts in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} pet name parts in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    public void loadPetNumber() {
-        var oldMSTime = System.currentTimeMillis();
-
-        var result = DB.characters.query("SELECT MAX(id) FROM character_pet");
-
-        if (!result.isEmpty()) {
-            hiPetNumber = result.<Integer>Read(0) + 1;
-        }
-
-        Logs.SERVER_LOADING.info("Loaded the max pet number: {0} in {1} ms", _hiPetNumber - 1, time.GetMSTimeDiffToNow(oldMSTime));
-    }
 
     public PetLevelInfo getPetLevelInfo(int creatureid, int level) {
-        if (level > WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-            level = WorldConfig.getUIntValue(WorldCfg.MaxPlayerLevel);
+        int maxPlayerLevel = world.getWorldSettings().maxPlayerLevel;
+        if (level > maxPlayerLevel) {
+            level = maxPlayerLevel;
         }
 
         var petinfo = petInfoStore.get(creatureid);
@@ -6389,25 +6030,16 @@ public final class ObjectManager {
                 return "";
             }
 
-            var petname = global.getDB2Mgr().GetCreatureFamilyPetName(cinfo.family, global.getWorldMgr().getDefaultDbcLocale());
+            var petName = dbcObjectManager.getCreatureFamilyPetName(cinfo.family, world.getWorldSettings().dbcLocale);
 
-            if (!tangible.StringHelper.isNullOrEmpty(petname)) {
-                return petname;
+            if (!StringUtil.isEmpty(petName)) {
+                return petName;
             } else {
-                return cinfo.name;
+                return cinfo.name.get(world.getWorldSettings().dbcLocale);
             }
         }
+        return RandomUtil.random(list0) + RandomUtil.random(list1);
 
-        return list0.charAt(RandomUtil.IRand(0, list0.Count - 1)) + list1.charAt(RandomUtil.IRand(0, list1.Count - 1));
-    }
-
-    public int generatePetNumber() {
-        if (hiPetNumber >= 0xFFFFFFFE) {
-            Log.outError(LogFilter.misc, "_hiPetNumber Id overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow(ShutdownExitCode.error);
-        }
-
-        return hiPetNumber++;
     }
 
     //Faction Change
@@ -6899,7 +6531,7 @@ public final class ObjectManager {
 
             // allowableClasses, can be 0/CLASSMASK_ALL_PLAYABLE to allow any class
             if (qinfo.allowableClasses != 0) {
-                if ((qinfo.allowableClasses & SharedDefine.CLASS_MASK_ALL_PLAYABLE) == 0) {
+                if (!PlayerClassMask.ALL_PLAYABLE.hasPlayerClassMask(qinfo.allowableClasses)) {
                     Logs.SQL.error("Quest {} does not contain any playable classes in `RequiredClasses` ({}), second set to 0 (all classes).", qinfo.id, qinfo.allowableClasses);
                     qinfo.allowableClasses = 0;
                 }
@@ -6921,8 +6553,8 @@ public final class ObjectManager {
             }
 
             if (qinfo.requiredSkillPoints != 0) {
-                if (qinfo.requiredSkillPoints > worldSetting.getConfigMaxSkillValue()) {
-                    Logs.SQL.error("Quest {} has `RequiredSkillPoints` = {} but max possible skill is {}, quest can't be done.", qinfo.id, qinfo.requiredSkillPoints, worldSetting.getConfigMaxSkillValue());
+                if (qinfo.requiredSkillPoints > world.getWorldSettings().getConfigMaxSkillValue()) {
+                    Logs.SQL.error("Quest {} has `RequiredSkillPoints` = {} but max possible skill is {}, quest can't be done.", qinfo.id, qinfo.requiredSkillPoints, world.getWorldSettings().getConfigMaxSkillValue());
                 }
             }
             // no changes, quest can't be done for this requirement
@@ -7285,8 +6917,8 @@ public final class ObjectManager {
             }
 
             if (qinfo.rewardSkillPoints != 0) {
-                if (qinfo.rewardSkillPoints > worldSetting.getConfigMaxSkillValue()) {
-                    Logs.SQL.error("Quest {} has `RewardSkillPoints` = {} but max possible skill is {}, quest can't be done.", qinfo.id, qinfo.rewardSkillPoints, worldSetting.getConfigMaxSkillValue());
+                if (qinfo.rewardSkillPoints > world.getWorldSettings().getConfigMaxSkillValue()) {
+                    Logs.SQL.error("Quest {} has `RewardSkillPoints` = {} but max possible skill is {}, quest can't be done.", qinfo.id, qinfo.rewardSkillPoints, world.getWorldSettings().getConfigMaxSkillValue());
                 }
 
                 // no changes, quest can't be done for this requirement
@@ -7619,7 +7251,7 @@ public final class ObjectManager {
         if(questTemplate == null) {
             return null;
         }
-        return new Quest(questTemplate, worldSetting, dbcObjectManager);
+        return new Quest(questTemplate, world.getWorldSettings(), dbcObjectManager);
     }
 
 
@@ -7662,7 +7294,7 @@ public final class ObjectManager {
         return questObjectives.get(questObjectiveId);
     }
 
-    public ArrayList<Integer> getQuestsForAreaTrigger(int triggerId) {
+    public Set<Integer> getQuestsForAreaTrigger(int triggerId) {
         return questAreaTriggerStorage.get(triggerId);
     }
 
@@ -7687,13 +7319,13 @@ public final class ObjectManager {
 
     //Spells /Skills / Phases
     public void loadPhases() {
-        for (var phase : CliDB.PhaseStorage.values()) {
-            phaseInfoById.put(phase.id, new PhaseInfoStruct(phase.id));
+        for (var phase : dbcObjectManager.phase()) {
+            phaseInfoById.put(phase.getId(), new PhaseInfoStruct(phase.getId()));
         }
 
-        for (var map : CliDB.MapStorage.values()) {
-            if (map.ParentMapID != -1) {
-                terrainSwapInfoById.put(map.id, new TerrainSwapInfo(map.id));
+        for (var map : dbcObjectManager.map()) {
+            if (map.getParentMapID() != -1) {
+                terrainSwapInfoById.put(map.getId(), new TerrainSwapInfo(map.getId()));
             }
         }
 
@@ -7864,39 +7496,26 @@ public final class ObjectManager {
 
 
     //Locales
-    public void loadCreatureLocales() {
+    public void loadCreatureLocales(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
-
-        creatureLocaleStorage.clear(); // need for reload case
-
-        //                                         0      1       2     3        4      5
-        var result = DB.World.query("SELECT entry, locale, name, nameAlt, title, TitleAlt FROM creature_template_locale");
-
-        if (result.isEmpty()) {
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllCreatureTemplateLocale()) {
+            items.forEach(e -> {
+                CreatureTemplate creatureTemplate = templateHashMap.get(e.entry);
+                if (creatureTemplate == null)
+                {
+                    Logs.SQL.error("Creature template (Entry: {}) does not exist but has a record in `creature_template_locale`", e.entry);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                creatureTemplate.name.set(locale, e.name);
+                creatureTemplate.femaleName.set(locale, e.nameAlt);
+                creatureTemplate.subName.set(locale, e.title);
+                creatureTemplate.titleAlt.set(locale, e.titleAlt);
+                count.getAndIncrement();
+            });
         }
-
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!creatureLocaleStorage.containsKey(id)) {
-                creatureLocaleStorage.put(id, new CreatureLocale());
-            }
-
-            var data = creatureLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.name);
-            addLocaleString(result.<String>Read(3), locale, data.nameAlt);
-            addLocaleString(result.<String>Read(4), locale, data.title);
-            addLocaleString(result.<String>Read(5), locale, data.titleAlt);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} creature locale strings in {1} ms", creatureLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} creature locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadGameObjectLocales() {
@@ -7943,20 +7562,12 @@ public final class ObjectManager {
 
 
 
-
-    public CreatureLocale getCreatureLocale(int entry) {
-        return creatureLocaleStorage.get(entry);
-    }
-
     public GameObjectLocale getGameObjectLocale(int entry) {
         return gameObjectLocaleStorage.get(entry);
     }
 
 
 
-    public PointOfInterestLocale getPointOfInterestLocale(int id) {
-        return pointOfInterestLocaleStorage.get(id);
-    }
 
     //General
     public void loadReputationRewardRate() {
@@ -8134,8 +7745,8 @@ public final class ObjectManager {
         Map<Byte, List<MailLevelReward>> tmp = new HashMap<>();
         try (var mailLevelRewards = miscRepository.streamsAllMailLevelReward()) {
             mailLevelRewards.forEach(e -> {
-                if (e.level > LevelLimit.MAX_LEVEL.value) {
-                    Logs.SQL.error("Table `mail_level_reward` has data for level {} that more supported by client ({}), ignoring.", e.level, LevelLimit.MAX_LEVEL.value);
+                if (e.level > SharedDefine.MAX_LEVEL) {
+                    Logs.SQL.error("Table `mail_level_reward` has data for level {} that more supported by client ({}), ignoring.", e.level, SharedDefine.MAX_LEVEL);
                     return;
                 }
 
@@ -9294,7 +8905,7 @@ public final class ObjectManager {
 
         var tableName = getScriptsTableNameByType(type);
 
-        if (tangible.StringHelper.isNullOrEmpty(tableName)) {
+        if (StringUtil.isEmpty(tableName)) {
             return;
         }
 
@@ -10125,91 +9736,96 @@ public final class ObjectManager {
 
     }
 
-    private void playerCreateInfoAddItemHelper(int race, int class_, int itemId, int count) {
-        var playerInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if (!playerInfo.TryGetValue(race.forValue(race), playerClass.forValue(class_), out playerInfo)) {
+    private void playerCreateInfoAddItemHelper(Race race, PlayerClass class_, int itemId, int count) {
+        if(race == Race.NONE || class_ == PlayerClass.NONE) {
+            return;
+        }
+        PlayerInfo info = playerInfo.get(Pair.of(race, class_));
+        if (info == null) {
             return;
         }
 
         if (count > 0) {
-            playerInfo.items.add(new PlayerCreateInfoItem(itemId, (int) count));
+            info.items.add(new PlayerCreateInfoItem(itemId, count));
         } else {
             if (count < -1) {
-                Logs.SQL.error("Invalid count {0} specified on item {1} be removed from original player create info (use -1)!", count, itemId);
+                Logs.SQL.error("Invalid count {} specified on item {} be removed from original player create info (use -1)!", count, itemId);
             }
-
-            playerInfo.items.RemoveAll(item -> item.itemId == itemId);
+            boolean removedF = info.itemsForFemale.removeIf(item -> item.itemId == itemId);
+            boolean removedM = info.itemsForMale.removeIf(item -> item.itemId == itemId);
+            if(!removedF && !removedM) {
+                Logs.SQL.error("Item {} specified to be removed from original create info not found in db2!", itemId);
+            }
         }
     }
 
     private PlayerLevelInfo buildPlayerLevelInfo(Race race, PlayerClass _class, int level) {
         // base data (last known level)
-        var info = playerInfo.get(race).get(_class).getLevelInfo()[worldSetting.maxPlayerLevel - 1];
+        var info = playerInfo.get(Pair.of(race, _class)).levelInfo[world.getWorldSettings().maxPlayerLevel - 1];
 
-        for (var lvl = worldSetting.maxPlayerLevel - 1; lvl < level; ++lvl) {
+        for (var lvl = world.getWorldSettings().maxPlayerLevel - 1; lvl < level; ++lvl) {
             switch (_class) {
                 case WARRIOR:
-                    info.getStats()[0] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
-                    info.getStats()[1] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
-                    info.getStats()[2] += (lvl > 36 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[0] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[1] += (lvl > 23 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[2] += (lvl > 36 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
+                    info.stats[3] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
 
                     break;
                 case PALADIN:
-                    info.getStats()[0] += (lvl > 3 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
-                    info.getStats()[2] += (lvl > 38 ? 1 : (lvl > 7 && (lvl % 2) == 0 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 6 && (lvl % 2) != 0 ? 1 : 0);
+                    info.stats[0] += (lvl > 3 ? 1 : 0);
+                    info.stats[1] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[2] += (lvl > 38 ? 1 : (lvl > 7 && (lvl % 2) == 0 ? 1 : 0));
+                    info.stats[3] += (lvl > 6 && (lvl % 2) != 0 ? 1 : 0);
 
                     break;
                 case DEMON_HUNTER:
-                    info.getStats()[0] += (lvl > 4 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 4 ? 1 : 0);
-                    info.getStats()[2] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 8 && (lvl % 2) != 0 ? 1 : 0);
+                    info.stats[0] += (lvl > 4 ? 1 : 0);
+                    info.stats[1] += (lvl > 4 ? 1 : 0);
+                    info.stats[2] += (lvl > 33 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[3] += (lvl > 8 && (lvl % 2) != 0 ? 1 : 0);
 
                     break;
                 case ROGUE:
-                    info.getStats()[0] += (lvl > 5 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 4 ? 1 : 0);
-                    info.getStats()[2] += (lvl > 16 ? 2 : (lvl > 1 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 8 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[0] += (lvl > 5 ? 1 : 0);
+                    info.stats[1] += (lvl > 4 ? 1 : 0);
+                    info.stats[2] += (lvl > 16 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[3] += (lvl > 8 && (lvl % 2) == 0 ? 1 : 0);
 
                     break;
                 case PRIEST:
-                    info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 5 ? 1 : 0);
-                    info.getStats()[2] += (lvl > 38 ? 1 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 22 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[1] += (lvl > 5 ? 1 : 0);
+                    info.stats[2] += (lvl > 38 ? 1 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));
+                    info.stats[3] += (lvl > 22 ? 2 : (lvl > 1 ? 1 : 0));
 
                     break;
                 case SHAMAN:
-                    info.getStats()[0] += (lvl > 34 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
-                    info.getStats()[1] += (lvl > 4 ? 1 : 0);
-                    info.getStats()[2] += (lvl > 7 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[3] += (lvl > 5 ? 1 : 0);
+                    info.stats[0] += (lvl > 34 ? 1 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
+                    info.stats[1] += (lvl > 4 ? 1 : 0);
+                    info.stats[2] += (lvl > 7 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[3] += (lvl > 5 ? 1 : 0);
 
                     break;
                 case MAGE:
-                    info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 5 ? 1 : 0);
-                    info.getStats()[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[3] += (lvl > 24 ? 2 : (lvl > 1 ? 1 : 0));
+                    info.stats[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[1] += (lvl > 5 ? 1 : 0);
+                    info.stats[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[3] += (lvl > 24 ? 2 : (lvl > 1 ? 1 : 0));
 
                     break;
                 case WARLOCK:
-                    info.getStats()[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[1] += (lvl > 38 ? 2 : (lvl > 3 ? 1 : 0));
-                    info.getStats()[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
-                    info.getStats()[3] += (lvl > 33 ? 2 : (lvl > 2 ? 1 : 0));
+                    info.stats[0] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[1] += (lvl > 38 ? 2 : (lvl > 3 ? 1 : 0));
+                    info.stats[2] += (lvl > 9 && (lvl % 2) == 0 ? 1 : 0);
+                    info.stats[3] += (lvl > 33 ? 2 : (lvl > 2 ? 1 : 0));
 
                     break;
                 case DRUID:
-                    info.getStats()[0] += (lvl > 38 ? 2 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
-                    info.getStats()[1] += (lvl > 32 ? 2 : (lvl > 4 ? 1 : 0));
-                    info.getStats()[2] += (lvl > 38 ? 2 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));
-                    info.getStats()[3] += (lvl > 38 ? 3 : (lvl > 4 ? 1 : 0));
+                    info.stats[0] += (lvl > 38 ? 2 : (lvl > 6 && (lvl % 2) != 0 ? 1 : 0));
+                    info.stats[1] += (lvl > 32 ? 2 : (lvl > 4 ? 1 : 0));
+                    info.stats[2] += (lvl > 38 ? 2 : (lvl > 8 && (lvl % 2) != 0 ? 1 : 0));
+                    info.stats[3] += (lvl > 38 ? 3 : (lvl > 4 ? 1 : 0));
 
                     break;
             }

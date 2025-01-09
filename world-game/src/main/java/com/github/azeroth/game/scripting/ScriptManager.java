@@ -343,7 +343,7 @@ public class ScriptManager {
 
                         for (var baseT : basetypes) {
                             TValue scriptActivator;
-                            if (!tangible.StringHelper.isNullOrEmpty(baseT.getSimpleName()) && (activators.containsKey(baseT.getSimpleName()) && (scriptActivator = activators.get(baseT.getSimpleName())) == scriptActivator)) {
+                            if (!StringUtil.isEmpty(baseT.getSimpleName()) && (activators.containsKey(baseT.getSimpleName()) && (scriptActivator = activators.get(baseT.getSimpleName())) == scriptActivator)) {
                                 activatedObj = scriptActivator.activate(type, name, attribute);
 
                                 if (activatedObj != null) {
@@ -355,7 +355,7 @@ public class ScriptManager {
                         if (activatedObj == null) {
                             for (var intFace : typeIfaces) {
                                 TValue scriptActivator;
-                                if (!tangible.StringHelper.isNullOrEmpty(intFace.name) && (activators.containsKey(intFace.name) && (scriptActivator = activators.get(intFace.name)) == scriptActivator)) {
+                                if (!StringUtil.isEmpty(intFace.name) && (activators.containsKey(intFace.name) && (scriptActivator = activators.get(intFace.name)) == scriptActivator)) {
                                     activatedObj = scriptActivator.activate(type, name, attribute);
 
                                     if (activatedObj != null) {

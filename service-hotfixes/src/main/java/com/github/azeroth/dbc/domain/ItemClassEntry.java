@@ -25,7 +25,7 @@ import lombok.ToString;
         @Db2Field(name = "classID", type = Db2Type.BYTE, signed = true),
         @Db2Field(name = "flags", type = Db2Type.BYTE)
 })
-public class ItemClass implements DbcEntity {
+public class ItemClassEntry implements DbcEntity {
     @Id
 
     @Column("ID")

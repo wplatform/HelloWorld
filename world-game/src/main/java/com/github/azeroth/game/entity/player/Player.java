@@ -584,7 +584,7 @@ public class Player extends Unit implements GridObject<Player> {
                 return 0;
             }
 
-            zone = global.getTerrainMgr().getZoneId(PhasingHandler.EMPTYPHASESHIFT, map, posx, posy, posz);
+            zone = global.getTerrainMgr().getZoneId(PhasingHandler.EMPTY_PHASE_SHIFT, map, posx, posy, posz);
 
             if (zone > 0) {
                 stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ZONE);
@@ -1159,7 +1159,7 @@ public class Player extends Unit implements GridObject<Player> {
         loc.outArgValue.setZ(result.<Float>Read(2));
         loc.outArgValue.setO(result.<Float>Read(3));
         loc.outArgValue.setMapId(result.<SHORT>Read(4));
-        inFlight.outArgValue = !tangible.StringHelper.isNullOrEmpty(result.<String>Read(5));
+        inFlight.outArgValue = !StringUtil.isEmpty(result.<String>Read(5));
 
         return true;
     }
@@ -12732,7 +12732,7 @@ public class Player extends Unit implements GridObject<Player> {
 
             if (!createPosition.transportGuid.HasValue) {
                 homeBind.WorldRelocate(createPosition.loc);
-                homebindAreaId = global.getTerrainMgr().getAreaId(PhasingHandler.EMPTYPHASESHIFT, homeBind);
+                homebindAreaId = global.getTerrainMgr().getAreaId(PhasingHandler.EMPTY_PHASE_SHIFT, homeBind);
 
                 saveHomebindToDb();
                 ok = true;
@@ -12747,7 +12747,7 @@ public class Player extends Unit implements GridObject<Player> {
             }
 
             homeBind.WorldRelocate(loc.loc);
-            homebindAreaId = global.getTerrainMgr().getAreaId(PhasingHandler.EMPTYPHASESHIFT, loc.loc);
+            homebindAreaId = global.getTerrainMgr().getAreaId(PhasingHandler.EMPTY_PHASE_SHIFT, loc.loc);
 
             saveHomebindToDb();
         }
@@ -23133,7 +23133,7 @@ public class Player extends Unit implements GridObject<Player> {
                 }
 
                 if (report) {
-                    if (missingQuest != 0 && ar != null && !tangible.StringHelper.isNullOrEmpty(ar.getQuestFailedText())) {
+                    if (missingQuest != 0 && ar != null && !StringUtil.isEmpty(ar.getQuestFailedText())) {
                         sendSysMessage("{0}", ar.getQuestFailedText());
                     } else if (!mapDiff.message.get(global.getWorldMgr().getDefaultDbcLocale()).isEmpty() && mapDiff.message.get(global.getWorldMgr().getDefaultDbcLocale()).charAt(0) != '\0' || failedMapDifficultyXCondition != 0) // if (missingAchievement) covered by this case
                     {

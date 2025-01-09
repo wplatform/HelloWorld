@@ -136,7 +136,7 @@ public class EnumCharactersResult extends ServerPacket {
                 flags = CharacterFlags.forValue(flags.getValue() | CharacterFlags.LockedByBilling.getValue());
             }
 
-            if (WorldConfig.getBoolValue(WorldCfg.DeclinedNamesUsed) && !tangible.StringHelper.isNullOrEmpty(fields.<String>Read(23))) {
+            if (WorldConfig.getBoolValue(WorldCfg.DeclinedNamesUsed) && !StringUtil.isEmpty(fields.<String>Read(23))) {
                 flags = CharacterFlags.forValue(flags.getValue() | CharacterFlags.Declined.getValue());
             }
 

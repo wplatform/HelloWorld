@@ -449,7 +449,7 @@ class ListCommands {
                 var edata = data.toSpawnData();
 
                 if (edata != null) {
-                    respawnZoneId = map.getZoneId(PhasingHandler.EMPTYPHASESHIFT, edata.spawnPoint);
+                    respawnZoneId = map.getZoneId(PhasingHandler.EMPTY_PHASE_SHIFT, edata.spawnPoint);
 
                     if (range != null) {
                         if (!player.getLocation().isInDist(edata.spawnPoint, range.intValue())) {

@@ -99,7 +99,7 @@ public class BugTicket extends Ticket {
         if (detailed) {
             ss.append(handler.getParsedString(CypherStrings.CommandTicketlistmessage, note));
 
-            if (!tangible.StringHelper.isNullOrEmpty(commentProtected)) {
+            if (!StringUtil.isEmpty(commentProtected)) {
                 ss.append(handler.getParsedString(CypherStrings.CommandTicketlistcomment, commentProtected));
             }
         }

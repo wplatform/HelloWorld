@@ -34,6 +34,11 @@ public class WorldLocation extends Position {
         this.mapId = mapId;
     }
 
+    public WorldLocation(int mapId, float x, float y, float z) {
+        super(x, y, z);
+        this.mapId = mapId;
+    }
+
     public WorldLocation(int mapId, float x, float y, float z, float o) {
         super(x, y, z, o);
         this.mapId = mapId;

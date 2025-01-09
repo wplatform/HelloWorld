@@ -1,14 +1,8 @@
 package game;
 
 
-import Bgs.Protocol.GameUtilities.V1.*;
-import Framework.Serialization.*;
-import Framework.Web.*;
-import Framework.realm.*;
-import Google.Protobuf.*;
 import com.github.azeroth.game.DisableType;
 import com.github.azeroth.game.LoginQueryHolder;
-import com.github.azeroth.game.WorldSafeLocsEntry;
 import com.github.azeroth.game.account.RBACData;
 import com.github.azeroth.game.ai.PetAI;
 import com.github.azeroth.game.arena.ArenaTeam;
@@ -4414,7 +4408,7 @@ public class WorldSession implements Closeable {
 
     // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private void handleLeaveChannel(LeaveChannel packet) {
-        if (tangible.StringHelper.isNullOrEmpty(packet.channelName) && packet.zoneChannelID == 0) {
+        if (StringUtil.isEmpty(packet.channelName) && packet.zoneChannelID == 0) {
             return;
         }
 
@@ -6783,7 +6777,7 @@ public class WorldSession implements Closeable {
                 }
 
                 // Title conversion
-                if (!tangible.StringHelper.isNullOrEmpty(knownTitlesStr)) {
+                if (!StringUtil.isEmpty(knownTitlesStr)) {
                     ArrayList<Integer> knownTitles = new ArrayList<>();
 
                     var tokens = new LocalizedString();
@@ -7404,7 +7398,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        if (tangible.StringHelper.isNullOrEmpty(msg)) {
+        if (StringUtil.isEmpty(msg)) {
             return;
         }
 
@@ -7655,7 +7649,7 @@ public class WorldSession implements Closeable {
     private void handleChatAddon(ChatMsg type, String prefix, String text, boolean isLogged, String target, ObjectGuid channelGuid) {
         var sender = getPlayer();
 
-        if (tangible.StringHelper.isNullOrEmpty(prefix) || prefix.length() > 16) {
+        if (StringUtil.isEmpty(prefix) || prefix.length() > 16) {
             return;
         }
 
@@ -7762,14 +7756,14 @@ public class WorldSession implements Closeable {
 
         if (sender.isAFK()) // Already AFK
         {
-            if (tangible.StringHelper.isNullOrEmpty(packet.text)) {
+            if (StringUtil.isEmpty(packet.text)) {
                 sender.toggleAFK(); // Remove AFK
             } else {
                 sender.setAutoReplyMsg(packet.text); // Update message
             }
         } else // New AFK mode
         {
-            sender.setAutoReplyMsg(tangible.StringHelper.isNullOrEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerAfkDefault) : packet.text);
+            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerAfkDefault) : packet.text);
 
             if (sender.isDND()) {
                 sender.toggleDND();
@@ -7803,14 +7797,14 @@ public class WorldSession implements Closeable {
 
         if (sender.isDND()) // Already DND
         {
-            if (tangible.StringHelper.isNullOrEmpty(packet.text)) {
+            if (StringUtil.isEmpty(packet.text)) {
                 sender.toggleDND(); // Remove DND
             } else {
                 sender.setAutoReplyMsg(packet.text); // Update message
             }
         } else // New DND mode
         {
-            sender.setAutoReplyMsg(tangible.StringHelper.isNullOrEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerDndDefault) : packet.text);
+            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerDndDefault) : packet.text);
 
             if (sender.isAFK()) {
                 sender.toggleAFK();
@@ -9377,7 +9371,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        if (!tangible.StringHelper.isNullOrEmpty(packet.name) && !tangible.StringHelper.isNullOrEmpty(packet.icon)) {
+        if (!StringUtil.isEmpty(packet.name) && !StringUtil.isEmpty(packet.icon)) {
             if (getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank)) {
                 var guild = getPlayer().getGuild();
 
@@ -11955,7 +11949,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        if (tangible.StringHelper.isNullOrEmpty(sendMail.info.target)) {
+        if (StringUtil.isEmpty(sendMail.info.target)) {
             return;
         }
 
@@ -12501,7 +12495,7 @@ public class WorldSession implements Closeable {
 
         var m = player.getMail(createTextItem.mailID);
 
-        if (m == null || (tangible.StringHelper.isNullOrEmpty(m.body) && m.mailTemplateId == 0) || m.state == MailState.Deleted || m.deliver_time > gameTime.GetGameTime()) {
+        if (m == null || (StringUtil.isEmpty(m.body) && m.mailTemplateId == 0) || m.state == MailState.Deleted || m.deliver_time > gameTime.GetGameTime()) {
             player.sendMailResult(createTextItem.mailID, MailResponseType.MadePermanent, MailResponseResult.InternalError);
 
             return;
@@ -14622,7 +14616,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        if (!tangible.StringHelper.isNullOrEmpty(packet.promotionCode)) {
+        if (!StringUtil.isEmpty(packet.promotionCode)) {
             if (unit != null) {
                 if (!unit.getAI().onGossipSelectCode(player, packet.gossipID, gossipMenuItem.getOrderIndex(), packet.promotionCode)) {
                     getPlayer().onGossipSelect(unit, packet.gossipOptionID, packet.gossipID);
@@ -17656,7 +17650,7 @@ public class WorldSession implements Closeable {
                 var show = false;
 
                 for (var i = 0; i < request.words.size(); ++i) {
-                    if (!tangible.StringHelper.isNullOrEmpty(request.words.get(i))) {
+                    if (!StringUtil.isEmpty(request.words.get(i))) {
                         if (wTargetName.equals(request.words.get(i)) || wTargetGuildName.equals(request.words.get(i)) || aname.equals(request.words.get(i))) {
                             show = true;
 
@@ -17735,19 +17729,19 @@ public class WorldSession implements Closeable {
 
         var acc = result.<String>Read(0);
 
-        if (tangible.StringHelper.isNullOrEmpty(acc)) {
+        if (StringUtil.isEmpty(acc)) {
             acc = "Unknown";
         }
 
         var email = result.<String>Read(1);
 
-        if (tangible.StringHelper.isNullOrEmpty(email)) {
+        if (StringUtil.isEmpty(email)) {
             email = "Unknown";
         }
 
         var lastip = result.<String>Read(2);
 
-        if (tangible.StringHelper.isNullOrEmpty(lastip)) {
+        if (StringUtil.isEmpty(lastip)) {
             lastip = "Unknown";
         }
 
@@ -21444,7 +21438,7 @@ public class WorldSession implements Closeable {
     public final void sendNotification(String str, object... args) {
         var message = String.format(str, args);
 
-        if (!tangible.StringHelper.isNullOrEmpty(message)) {
+        if (!StringUtil.isEmpty(message)) {
             sendPacket(new PrintNotification(message));
         }
     }

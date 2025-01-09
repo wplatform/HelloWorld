@@ -487,7 +487,7 @@ class ModifyCommand {
 
         var factionTxt = handler.extractKeyFromLink(args, "Hfaction");
 
-        if (tangible.StringHelper.isNullOrEmpty(factionTxt)) {
+        if (StringUtil.isEmpty(factionTxt)) {
             return false;
         }
 
@@ -535,7 +535,7 @@ class ModifyCommand {
             for (; i != ReputationMgr.REPUTATIONRANKTHRESHOLDS.length - 1; ++i, ++r) {
                 var rank = handler.getCypherString(ReputationMgr.ReputationRankStrIndex[r]);
 
-                if (tangible.StringHelper.isNullOrEmpty(rank)) {
+                if (StringUtil.isEmpty(rank)) {
                     continue;
                 }
 
@@ -553,7 +553,7 @@ class ModifyCommand {
 
                 var deltaTxt = args.NextString(" ");
 
-                if (!tangible.StringHelper.isNullOrEmpty(deltaTxt)) {
+                if (!StringUtil.isEmpty(deltaTxt)) {
                     var toNextRank = 0;
                     var nextThresholdIndex = i;
                     ++nextThresholdIndex;

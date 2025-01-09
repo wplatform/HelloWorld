@@ -68,7 +68,7 @@ class ServerCommands {
         if (!args.isEmpty()) {
             var paramStr = args.NextString(" ");
 
-            if (tangible.StringHelper.isNullOrEmpty(paramStr)) {
+            if (StringUtil.isEmpty(paramStr)) {
                 return false;
             }
 

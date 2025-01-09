@@ -1,15 +1,24 @@
 package com.github.azeroth.defines;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+import java.util.NoSuchElementException;
+
+@Getter
+@RequiredArgsConstructor
 public enum Gender {
-    GENDER_UNKNOWN(-1), GENDER_MALE(0), GENDER_FEMALE(1), GENDER_NONE(2);
+    MALE(0), FEMALE(1), NONE(2);
 
     public final int value;
 
-    public int getValue() {
-        return value;
+    public static Gender valueOf(int value) {
+        return switch (value) {
+            case 0 -> MALE;
+            case 1 -> FEMALE;
+            case 2 -> NONE;
+            default -> throw new NoSuchElementException("No such element for value " + value);
+        };
     }
 }

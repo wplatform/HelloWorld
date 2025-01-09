@@ -1,10 +1,7 @@
 package com.github.azeroth.game.service.repository;
 
 
-import com.github.azeroth.game.domain.creature.CreatureData;
-import com.github.azeroth.game.domain.creature.CreatureSummonedData;
-import com.github.azeroth.game.domain.creature.CreatureTemplate;
-import com.github.azeroth.game.domain.creature.TempSummonData;
+import com.github.azeroth.game.domain.creature.*;
 import org.springframework.data.jdbc.repository.query.Query;
 
 import java.util.stream.Stream;
@@ -38,6 +35,8 @@ public interface CreatureRepository {
 
     @Query(value = "SELECT creatureID, CreatureIDVisibleToSummoner, GroundMountDisplayID, FlyingMountDisplayID FROM creature_summoned_data")
     Stream<CreatureSummonedData> streamAllCreatureSummonedData();
+    @Query(value = "SELECT entry, locale, name, nameAlt, title, TitleAlt FROM creature_template_locale")
+    Stream<CreatureLocale> streamAllCreatureTemplateLocale();
 
     
     @Query(value = """
