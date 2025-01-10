@@ -2,11 +2,13 @@ package com.github.azeroth.game.domain.player;
 
 
 import com.github.azeroth.common.LocalizedString;
+import lombok.AllArgsConstructor;
 
 import java.util.HashMap;
 
-
+@AllArgsConstructor
 public class PlayerChoiceLocale {
-    public LocalizedString question = new LocalizedString();
-    public HashMap<Integer, PlayerChoiceResponseLocale> responses = new HashMap<Integer, PlayerChoiceResponseLocale>();
+    public int choiceId;
+    public int locale;
+    public String question;
 }

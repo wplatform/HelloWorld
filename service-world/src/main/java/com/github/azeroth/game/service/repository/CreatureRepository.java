@@ -53,4 +53,6 @@ public interface CreatureRepository {
     
     @Query("SELECT summonerId, summonerType, groupId, entry, position_x, position_y, position_z, orientation, summonType, summonTime FROM creature_summon_groups")
     Stream<TempSummonData> streamsAllTempSummon();
+    @Query("SELECT npc_entry, spell_id, cast_flags, user_type FROM npc_spellclick_spells")
+    Stream<int[]> streamAllNpcSpellClickSpells();
 }

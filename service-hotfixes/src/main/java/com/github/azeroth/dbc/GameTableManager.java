@@ -3,6 +3,7 @@ package com.github.azeroth.dbc;
 import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.dbc.gtable.GameTable;
 import com.github.azeroth.defines.Expansion;
+import com.github.azeroth.defines.PlayerClass;
 
 public interface GameTableManager {
     default GameTable<GtArmorMitigationByLvl> armorMitigationByLvl() {
@@ -83,6 +84,26 @@ public interface GameTableManager {
 
     default GameTable<GtXp> xp() {
         return table(GameTables.Xp);
+    }
+
+    default float getBaseMPValueForClass(int row, PlayerClass class_) {
+        GtBaseMP baseMP = baseMP().getRow(row);
+        return switch (class_) {
+            case WARRIOR -> baseMP.warrior;
+            case PALADIN -> baseMP.paladin;
+            case HUNTER -> baseMP.hunter;
+            case ROGUE -> baseMP.rogue;
+            case PRIEST -> baseMP.priest;
+            case DEATH_KNIGHT -> baseMP.deathKnight;
+            case SHAMAN -> baseMP.shaman;
+            case MAGE -> baseMP.mage;
+            case WARLOCK -> baseMP.warlock;
+            case MONK -> baseMP.monk;
+            case DRUID -> baseMP.druid;
+            case DEMON_HUNTER -> baseMP.demonHunter;
+            case NONE -> 0.0f;
+        };
+
     }
 
 

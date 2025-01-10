@@ -73,11 +73,17 @@ public interface PlayerRepository {
     @Query("SELECT class, level, str, agi, sta, inte FROM player_classlevelstats")
     Stream<int[]> streamsAllPlayerClassLevelStats();
 
+    @Query("SELECT level, Experience FROM player_xp_for_level")
+    Stream<int[]> streamsAllPlayerXoForLevel();
+
     @Query("SELECT word, entry, half FROM pet_name_generation")
     Stream<PetNameGeneration> streamsAllPetNameGeneration();
 
+    @Query("SELECT choiceId, locale, Question FROM playerchoice_locale")
+    Stream<PlayerChoiceLocale> streamsAllPlayerChoiceLocale();
 
-
+    @Query("SELECT choiceID, responseID, locale, answer, header, subHeader, buttonTooltip, description, Confirmation FROM playerchoice_response_locale")
+    Stream<PlayerChoiceResponseLocale> streamsAllPlayerChoiceResponseLocale();
 
 
 }

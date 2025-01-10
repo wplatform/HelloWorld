@@ -1,15 +1,17 @@
 package com.github.azeroth.game;
 
 
-import com.github.azeroth.defines.SpellClickUserTypes;
+import com.github.azeroth.defines.SpellClickUserType;
 import com.github.azeroth.game.entity.unit.Unit;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class SpellClickInfo {
 
     public int spellId;
 
     public byte castFlags;
-    public SpellClickUserTypes userType = SpellClickUserTypes.values()[0];
+    public SpellClickUserType userType;
 
     // helpers
     public final boolean isFitToRequirements(Unit clicker, Unit clickee) {

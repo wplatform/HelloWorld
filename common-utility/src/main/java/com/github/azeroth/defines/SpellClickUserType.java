@@ -1,10 +1,9 @@
 package com.github.azeroth.defines;
 
 // Custom values
-public enum SpellClickUserTypes {
+public enum SpellClickUserType {
     ANY,
     FRIEND,
     RAID,
-    PARTY,
-    MAX
+    PARTY
 }

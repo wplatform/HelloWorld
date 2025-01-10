@@ -1,6 +1,8 @@
 package com.github.azeroth.game.domain.player;
 
 
+import com.github.azeroth.common.LocalizedString;
+
 import java.util.ArrayList;
 
 public class PlayerChoice {
@@ -9,7 +11,7 @@ public class PlayerChoice {
     public int soundKitId;
     public int closeSoundKitId;
     public long duration;
-    public String question;
+    public LocalizedString question = new LocalizedString();
     public String pendingChoiceText;
     public ArrayList<PlayerChoiceResponse> responses = new ArrayList<>();
     public boolean hideWarboardHeader;

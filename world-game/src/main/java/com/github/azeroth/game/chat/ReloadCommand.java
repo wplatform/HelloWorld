@@ -509,7 +509,6 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
     private static boolean handleReloadSpellClickSpellsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `npc_spellclick_spells` Table!");
         global.getObjectMgr().loadNPCSpellClickSpells();

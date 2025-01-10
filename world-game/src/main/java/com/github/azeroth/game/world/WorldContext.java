@@ -2,6 +2,7 @@ package com.github.azeroth.game.world;
 
 import com.github.azeroth.common.Locale;
 import com.github.azeroth.dbc.DbcObjectManager;
+import com.github.azeroth.dbc.GameTableManager;
 import com.github.azeroth.game.condition.ConditionManager;
 import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
 import com.github.azeroth.game.entity.conversation.Conversation;
@@ -24,8 +25,6 @@ import com.github.azeroth.game.map.TerrainManager;
 import com.github.azeroth.game.map.collision.VMapManager;
 import com.github.azeroth.game.spell.SpellManager;
 import com.github.azeroth.game.world.setting.WorldSetting;
-import game.ConditionManager;
-import game.ObjectManager;
 
 import java.util.Iterator;
 
@@ -38,6 +37,7 @@ public interface WorldContext {
     int getSetting(String name, int defaultValue);
 
 
+    GameTableManager getGameTableManager();
     DbcObjectManager getDbcObjectManager();
 
     ObjectManager getObjectManager();

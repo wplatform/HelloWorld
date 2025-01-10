@@ -154,4 +154,14 @@ public interface MiscRepository {
             "ConditionValue1, ConditionValue2, ConditionValue3, ConditionStringValue1," +
             "NegativeCondition, ErrorType, ErrorTextId, ScriptName FROM conditions")
     Stream<int[]> streamAllConditions();
+
+
+    @Query("SELECT entry, skill FROM skill_fishing_base_level")
+    Stream<int[]> streamAllSkillFishingBaseLevel();
+
+    @Query("SELECT ID, Value1, Value2, Value3, Value4, Value5, Value6, Value7, Value8, Value9, Value10, Value11, Value12, Value13, Value14, Value15, Value16 FROM skill_tiers")
+    Stream<int[]> streamAllSkillTiers();
+
+    @Query("SELECT `ID`, `Name` FROM `phase_name`")
+    Stream<Object[]> streamAllPhaseName();
 }

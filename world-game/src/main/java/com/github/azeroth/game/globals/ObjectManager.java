@@ -11,6 +11,7 @@ import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.TaxiNodeFlag;
 import com.github.azeroth.dbc.domain.*;
+import com.github.azeroth.dbc.gtable.GameTable;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.defines.QuestSort;
 import com.github.azeroth.defines.SpellCategory;
@@ -67,6 +68,7 @@ import com.github.azeroth.game.domain.reputation.ReputationOnKill;
 import com.github.azeroth.game.domain.spawn.*;
 import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.service.repository.*;
+import com.github.azeroth.game.spell.SpellInfo;
 import com.github.azeroth.game.spell.SpellManager;
 import com.github.azeroth.game.world.World;
 import com.github.azeroth.utils.RandomUtil;
@@ -200,7 +202,7 @@ public final class ObjectManager {
     private final MapCache<Integer, PageText> pageTextStorage;
     private final HashMap<Integer, SceneTemplate> sceneTemplateStorage = new HashMap<Integer, SceneTemplate>();
     private final IntMap<JumpChargeParams> jumpChargeParams = new IntMap<>();
-    private final HashMap<Integer, String> phaseNameStorage = new HashMap<Integer, String>();
+    private final MapCache<Integer, String> phaseNameStorage;
     private final EnumMap<Race, RaceUnlockRequirement> raceUnlockRequirementStorage = new EnumMap<>(Race.class);
     private final ArrayList<RaceClassAvailability> classExpansionRequirementStorage = new ArrayList<>();
     private final HashMap<Integer, String> realmNameStorage = new HashMap<>(2);
@@ -236,7 +238,7 @@ public final class ObjectManager {
     private final Map<Integer, List<PhaseAreaInfo>> phaseInfoByArea = new HashMap<>();
     private final Map<Integer, List<TerrainSwapInfo>> terrainSwapInfoByMap = new HashMap<>();
     private final Map<Integer, List<SpellClickInfo>> spellClickInfoStorage = new HashMap<>();
-    private final HashMap<Integer, Integer> fishingBaseForAreaStorage = new HashMap<Integer, Integer>();
+    private final HashMap<Integer, Integer> fishingBaseForArea = new HashMap<Integer, Integer>();
     private final HashMap<Integer, SkillTiersEntry> skillTiers = new HashMap<Integer, SkillTiersEntry>();
     //Gossip
     private final MapCache<Integer, List<GossipMenus>> gossipMenusStorage;
@@ -282,7 +284,6 @@ public final class ObjectManager {
     private final HashMap<Integer, VehicleSeatAddon> vehicleSeatAddonStore = new HashMap<Integer, VehicleSeatAddon>();
     //Locales
     private final HashMap<Integer, GameObjectLocale> gameObjectLocaleStorage = new HashMap<Integer, GameObjectLocale>();
-    private final HashMap<Integer, PlayerChoiceLocale> playerChoiceLocales = new HashMap<Integer, PlayerChoiceLocale>();
 
     private final Map<Tuple<Integer, Integer, Integer>, Integer> creatureDefaultTrainers = new HashMap<>();
     private final Set<Integer> tavernAreaTriggerStorage = new HashSet<>();
@@ -360,7 +361,8 @@ public final class ObjectManager {
         this.questGreetingStorage = cacheProvider.newGenericMapCache("QuestGreetingStorage", new TypeReference<>(){});
         this.spawnGroupDataStorage = cacheProvider.newGenericMapCache("SpawnGroupDataStorage", new TypeReference<>(){});
         this.creatureTemplateStorage = cacheProvider.newGenericMapCache("CreatureTemplateStorage", new TypeReference<>(){});
-        this.petInfoStore = cacheProvider.newGenericMapCache("PetInfoStoreStorage", new TypeReference<>(){});
+        this.petInfoStore = cacheProvider.newGenericMapCache("PetInfoStorage", new TypeReference<>(){});
+        this.phaseNameStorage = cacheProvider.newGenericMapCache("PhaseNameStorage", new TypeReference<>(){});
 
 
         for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
@@ -391,15 +393,15 @@ public final class ObjectManager {
 
     public static CreatureModel chooseDisplayId(CreatureTemplate cinfo, CreatureData data) {
         // Load creature model (display id)
-        if (data != null && data.displayid != 0) {
-            var model = cinfo.getModelWithDisplayId(data.displayid);
+        if (data != null && data.displayId != 0) {
+            var model = cinfo.getModelWithDisplayId(data.displayId);
 
             if (model != null) {
                 return model;
             }
         }
 
-        if (!cinfo.flagsExtra.hasFlag(CreatureFlagExtra.trigger)) {
+        if (!cinfo.flagsExtra.hasFlag(CreatureFlagExtra.TRIGGER)) {
             var model = cinfo.getRandomValidModel();
 
             if (model != null) {
@@ -410,305 +412,6 @@ public final class ObjectManager {
         // Triggers by default receive the invisible model
         return cinfo.getFirstInvisibleModel();
     }
-
-    public static void chooseCreatureFlags(CreatureTemplate cInfo, tangible.OutObject<Long> npcFlag, tangible.OutObject<Integer> unitFlags, tangible.OutObject<Integer> unitFlags2, tangible.OutObject<Integer> unitFlags3, tangible.OutObject<Integer> dynamicFlags) {
-        chooseCreatureFlags(cInfo, npcFlag, unitFlags, unitFlags2, unitFlags3, dynamicFlags, null);
-    }
-
-    public static void chooseCreatureFlags(CreatureTemplate cInfo, tangible.OutObject<Long> npcFlag, tangible.OutObject<Integer> unitFlags, tangible.OutObject<Integer> unitFlags2, tangible.OutObject<Integer> unitFlags3, tangible.OutObject<Integer> dynamicFlags, CreatureData data) {
-        npcFlag.outArgValue = data != null && data.npcflag != 0 ? data.Npcflag : cInfo.npcFlag;
-        UnitFlag.outArgValue = data != null && data.unitFlags != 0 ? data.UnitFlags : (int) cInfo.UnitFlag.getValue();
-        UnitFlag2.outArgValue = data != null && data.unitFlags2 != 0 ? data.UnitFlags2 : cInfo.unitFlags2;
-        unitFlags3.outArgValue = data != null && data.unitFlags3 != 0 ? data.UnitFlags3 : cInfo.unitFlags3;
-        dynamicFlags.outArgValue = data != null && data.dynamicflags != 0 ? data.Dynamicflags : cInfo.dynamicFlags;
-    }
-
-    public static ResponseCodes checkPlayerName(String name, Locale locale) {
-        return checkPlayerName(name, locale, false);
-    }
-
-    public static ResponseCodes checkPlayerName(String name, Locale locale, boolean create) {
-        if (name.length() > 12) {
-            return ResponseCodes.CharNameTooLong;
-        }
-
-        var minName = WorldConfig.getUIntValue(WorldCfg.MinPlayerName);
-
-        if (name.length() < minName) {
-            return ResponseCodes.CharNameTooShort;
-        }
-
-        var strictMask = WorldConfig.getUIntValue(WorldCfg.StrictPlayerNames);
-
-        if (!isValidString(name, strictMask, false, create)) {
-            return ResponseCodes.CharNameMixedLanguages;
-        }
-
-        name = name.toLowerCase();
-
-        for (var i = 2; i < name.length(); ++i) {
-            if (name.charAt(i) == name.charAt(i - 1) && name.charAt(i) == name.charAt(i - 2)) {
-                return ResponseCodes.CharNameThreeConsecutive;
-            }
-        }
-
-        return global.getDB2Mgr().ValidateName(name, locale);
-    }
-
-    public static PetNameInvalidReason checkPetName(String name) {
-        if (name.length() > 12) {
-            return PetNameInvalidReason.TOO_LONG;
-        }
-
-        var minName = WorldConfig.getUIntValue(WorldCfg.MinPetName);
-
-        if (name.length() < minName) {
-            return PetNameInvalidReason.TOO_SHORT;
-        }
-
-        var strictMask = WorldConfig.getUIntValue(WorldCfg.StrictPetNames);
-
-        if (!isValidString(name, strictMask, false)) {
-            return PetNameInvalidReason.MIXED_LANGUAGES;
-        }
-
-        return PetNameInvalidReason.SUCCESS;
-    }
-
-    public static boolean isValidCharterName(String name) {
-        if (name.length() > 24) {
-            return false;
-        }
-
-        var minName = WorldConfig.getUIntValue(WorldCfg.MinCharterName);
-
-        if (name.length() < minName) {
-            return false;
-        }
-
-        var strictMask = WorldConfig.getUIntValue(WorldCfg.StrictCharterNames);
-
-        return isValidString(name, strictMask, true);
-    }
-
-    public static void addLocaleString(String value, Locale locale, LocalizedString data) {
-        if (!StringUtil.isEmpty(value)) {
-            data.set(locale.getValue(), value);
-        }
-    }
-
-    public static void getLocaleString(LocalizedString data, Locale locale, tangible.RefObject<String> value) {
-        if (data.length > locale.getValue() && !StringUtil.isEmpty(data.get(locale.getValue()))) {
-            value.refArgValue = data.get(locale.getValue());
-        }
-    }
-
-    private static LanguageType getRealmLanguageType(boolean create) {
-        switch (RealmZones.forValue(WorldConfig.getIntValue(WorldCfg.RealmZone))) {
-            case Unknown: // any language
-            case Development:
-            case TestServer:
-            case QaServer:
-                return LanguageType.Any;
-            case UnitedStates: // extended-Latin
-            case Oceanic:
-            case LatinAmerica:
-            case English:
-            case German:
-            case French:
-            case Spanish:
-                return LanguageType.ExtendenLatin;
-            case Korea: // East-Asian
-            case Taiwan:
-            case China:
-                return LanguageType.EastAsia;
-            case Russian: // Cyrillic
-                return LanguageType.Cyrillic;
-            default:
-                return create ? LanguageType.BasicLatin : LanguageType.Any; // basic-Latin at create, any at login
-        }
-    }
-
-    private static boolean isValidString(String str, int strictMask, boolean numericOrSpace) {
-        return isValidString(str, strictMask, numericOrSpace, false);
-    }
-
-    private static boolean isValidString(String str, int strictMask, boolean numericOrSpace, boolean create) {
-        if (strictMask == 0) // any language, ignore realm
-        {
-            if (isCultureString(LanguageType.BasicLatin, str, numericOrSpace)) {
-                return true;
-            }
-
-            if (isCultureString(LanguageType.ExtendenLatin, str, numericOrSpace)) {
-                return true;
-            }
-
-            if (isCultureString(LanguageType.Cyrillic, str, numericOrSpace)) {
-                return true;
-            }
-
-            if (isCultureString(LanguageType.EastAsia, str, numericOrSpace)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        if ((boolean) (strictMask & 0x2)) // realm zone specific
-        {
-            var lt = getRealmLanguageType(create);
-
-            if (lt.hasFlag(LanguageType.ExtendenLatin)) {
-                if (isCultureString(LanguageType.BasicLatin, str, numericOrSpace)) {
-                    return true;
-                }
-
-                if (isCultureString(LanguageType.ExtendenLatin, str, numericOrSpace)) {
-                    return true;
-                }
-            }
-
-            if (lt.hasFlag(LanguageType.Cyrillic)) {
-                if (isCultureString(LanguageType.Cyrillic, str, numericOrSpace)) {
-                    return true;
-                }
-            }
-
-            if (lt.hasFlag(LanguageType.EastAsia)) {
-                if (isCultureString(LanguageType.EastAsia, str, numericOrSpace)) {
-                    return true;
-                }
-            }
-        }
-
-        if ((boolean) (strictMask & 0x1)) // basic Latin
-        {
-            if (isCultureString(LanguageType.BasicLatin, str, numericOrSpace)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean isCultureString(LanguageType culture, String str, boolean numericOrSpace) {
-        for (var wchar : str) {
-            if (numericOrSpace && (Character.IsNumber(wchar) || Character.isWhitespace(wchar))) {
-                return true;
-            }
-
-            switch (culture) {
-                case BasicLatin:
-                    if (wchar >= 'a' && wchar <= 'z') // LATIN SMALL LETTER A - LATIN SMALL LETTER Z
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 'A' && wchar <= 'Z') // LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
-                    {
-                        return true;
-                    }
-
-                    return false;
-                case ExtendenLatin:
-                    if (wchar >= 0x00C0 && wchar <= 0x00D6) // LATIN CAPITAL LETTER A WITH GRAVE - LATIN CAPITAL LETTER O WITH DIAERESIS
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x00D8 && wchar <= 0x00DE) // LATIN CAPITAL LETTER O WITH STROKE - LATIN CAPITAL LETTER THORN
-                    {
-                        return true;
-                    }
-
-                    if (wchar == 0x00DF) // LATIN SMALL LETTER SHARP S
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x00E0 && wchar <= 0x00F6) // LATIN SMALL LETTER A WITH GRAVE - LATIN SMALL LETTER O WITH DIAERESIS
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x00F8 && wchar <= 0x00FE) // LATIN SMALL LETTER O WITH STROKE - LATIN SMALL LETTER THORN
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x0100 && wchar <= 0x012F) // LATIN CAPITAL LETTER A WITH MACRON - LATIN SMALL LETTER I WITH OGONEK
-                    {
-                        return true;
-                    }
-
-                    if (wchar == 0x1E9E) // LATIN CAPITAL LETTER SHARP S
-                    {
-                        return true;
-                    }
-
-                    return false;
-                case Cyrillic:
-                    if (wchar >= 0x0410 && wchar <= 0x044F) // CYRILLIC CAPITAL LETTER A - CYRILLIC SMALL LETTER YA
-                    {
-                        return true;
-                    }
-
-                    if (wchar == 0x0401 || wchar == 0x0451) // CYRILLIC CAPITAL LETTER IO, CYRILLIC SMALL LETTER IO
-                    {
-                        return true;
-                    }
-
-                    return false;
-                case EastAsia:
-                    if (wchar >= 0x1100 && wchar <= 0x11F9) // Hangul Jamo
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x3041 && wchar <= 0x30FF) // Hiragana + Katakana
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x3131 && wchar <= 0x318E) // Hangul Compatibility Jamo
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x31F0 && wchar <= 0x31FF) // Katakana Phonetic Ext.
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x3400 && wchar <= 0x4DB5) // CJK Ideographs Ext. A
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0x4E00 && wchar <= 0x9FC3) // Unified CJK Ideographs
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0xAC00 && wchar <= 0xD7A3) // Hangul Syllables
-                    {
-                        return true;
-                    }
-
-                    if (wchar >= 0xFF01 && wchar <= 0xFFEE) // Halfwidth forms
-                    {
-                        return true;
-                    }
-
-                    return false;
-            }
-        }
-
-        return false;
-    }
-
-
     //General
     public boolean loadLocalizedStrings() {
         var time = System.currentTimeMillis();
@@ -758,7 +461,7 @@ public final class ObjectManager {
                     return;
                 }
 
-                if (e.expansion >= Expansion.MAX_EXPANSIONS.getValue()) {
+                if (e.expansion >= Expansion.MAX_EXPANSION) {
                     Logs.SQL.error("Race {} defined in `race_unlock_requirement` has incorrect expansion {}, skipped.", e.raceId, e.expansion);
                     return;
                 }
@@ -799,13 +502,13 @@ public final class ObjectManager {
                     return;
                 }
 
-                if (e.activeExpansionLevel >= Expansion.MAX_EXPANSIONS.getValue()) {
+                if (e.activeExpansionLevel >= Expansion.MAX_EXPANSION) {
                     Logs.SQL.error("Class {} Race {} defined in `class_expansion_requirement` has incorrect ActiveExpansionLevel {}, skipped.",
                             e.classID, e.raceID, e.activeExpansionLevel);
                     return;
                 }
 
-                if (e.accountExpansionLevel >= Expansion.MAX_ACCOUNT_EXPANSIONS.getValue()) {
+                if (e.accountExpansionLevel >= Expansion.MAX_ACCOUNT_EXPANSION) {
                     Logs.SQL.error("Class {} Race {} defined in `class_expansion_requirement` has incorrect AccountExpansionLevel {}, skipped.",
                             e.classID, e.raceID, e.accountExpansionLevel);
                     return;
@@ -886,9 +589,6 @@ public final class ObjectManager {
         return playerChoices.get(choiceId);
     }
 
-    public PlayerChoiceLocale getPlayerChoiceLocale(int choiceID) {
-        return playerChoiceLocales.get(choiceID);
-    }
 
     //Gossip
     public void loadGossipMenu() {
@@ -3442,9 +3142,6 @@ public final class ObjectManager {
         return creatureDefaultTrainers.get((creatureId, gossipMenuId, gossipOptionIndex));
     }
 
-    public HashMap<Integer, CreatureTemplate> getCreatureTemplates() {
-        return creatureTemplateStorage;
-    }
 
     public HashMap<Long, CreatureData> getAllCreatureData() {
         return creatureDataStorage;
@@ -5817,106 +5514,78 @@ public final class ObjectManager {
 
 
         oldMSTime = System.currentTimeMillis();
+        count.set(0);
         // Loading xp per level data
         Logs.SERVER_LOADING.info("Loading Player Create XP data...");
 
         {
-            playerXPperLevel = new int[CliDB.XpGameTable.GetTableRowCount() + 1];
+            GameTable<GtXp> xp = world.getGameTableManager().xp();
 
-            //                                          0      1
-            var result = DB.World.query("SELECT level, Experience FROM player_xp_for_level");
-
+            playerXPperLevel = new int[xp.rowCount()];
             // load the DBC's levels at first...
-            for (int level = 1; level < CliDB.XpGameTable.GetTableRowCount(); ++level) {
-                _playerXPperLevel[level] = (int) CliDB.XpGameTable.GetRow(level).Total;
+            for (int level = 1; level < xp.rowCount(); ++level) {
+                playerXPperLevel[level] = (int) xp.getRow(level).total;
             }
 
-            int count = 0;
-
-            // ...overwrite if needed (custom values)
-            if (!result.isEmpty()) {
-                do {
-                    int currentlevel = result.<Byte>Read(0);
-                    var currentxp = result.<Integer>Read(1);
-
-                    if (currentlevel >= WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-                        if (currentlevel > SharedConst.StrongMaxLevel) // hardcoded level maximum
-                        {
-                            Logs.SQL.error("Wrong (> {0}) level {1} in `player_xp_for_level` table, ignoring.", 255, currentlevel);
-                        } else {
-                            Log.outWarn(LogFilter.Sql, "Unused (> MaxPlayerLevel in worldserver.conf) level {0} in `player_xp_for_levels` table, ignoring.", currentlevel);
-                            ++count; // make result loading percent "expected" correct in case disabled detail mode for example.
+            try (var items = playerRepository.streamsAllPlayerXoForLevel()) {
+                items.forEach(fields -> {
+                    if (fields[0] >= world.getWorldSettings().maxPlayerLevel) {
+                        // hardcoded level maximum
+                        if (fields[0] > SharedDefine.STRONG_MAX_LEVEL)
+                            Logs.SQL.error("Wrong (> {}) level {} in `player_xp_for_level` table, ignoring.", SharedDefine.STRONG_MAX_LEVEL, fields[0]);
+                        else {
+                            Logs.MISC.error("Unused (> MaxPlayerLevel in worldserver.conf) level {} in `player_xp_for_level` table, ignoring.", fields[0]);
+                            // make result loading percent "expected" correct in case disabled detail mode for example.
+                            count.getAndIncrement();
                         }
-
-                        continue;
+                        return;
                     }
-
                     //PlayerXPperLevel
-                    _playerXPperLevel[currentlevel] = currentxp;
-                    ++count;
-                } while (result.NextRow());
+                    playerXPperLevel[fields[0]] = fields[1];
+                    count.getAndIncrement();
+                });
+            }
 
-                // fill level gaps
-                for (var level = 1; level < WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel); ++level) {
-                    if (_playerXPperLevel[level] == 0) {
-                        Logs.SQL.error("Level {0} does not have XP for level data. Using data of level [{1}] + 12000.", level + 1, level);
-                        _playerXPperLevel[level] = _playerXPperLevel[level - 1] + 12000;
-                    }
+            // fill level gaps - only accounting levels > MAX_LEVEL
+            for (int level = 1; level < world.getWorldSettings().maxPlayerLevel; ++level)
+            {
+                if (playerXPperLevel[level] == 0)
+                {
+                    Logs.SQL.error("Level {} does not have XP for level data. Using data of level [{}] + 12000.", level + 1, level);
+                    playerXPperLevel[level] = playerXPperLevel[level - 1] + 12000;
                 }
             }
-
-            Logs.SERVER_LOADING.info("Loaded {0} xp for level definition(s) from database in {1} ms", count, time.GetMSTimeDiffToNow(time));
+            Logs.SERVER_LOADING.info(">> Loaded {} xp for level definition(s) from database in {} ms", count, System.currentTimeMillis() - oldMSTime);
         }
     }
 
     public PlayerInfo getPlayerInfo(Race raceId, PlayerClass classId) {
-        if (raceId.getValue() >= race.max.getValue()) {
-            return null;
-        }
-
-        if (classId.getValue() >= playerClass.max.getValue()) {
-            return null;
-        }
-
-        var info;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if (!playerInfo.TryGetValue(raceId, classId, out info)) {
-            return null;
-        }
-
-        return info;
+        return playerInfo.get(Pair.of(raceId, classId));
     }
 
-    public void getPlayerClassLevelInfo(PlayerClass _class, int level, tangible.OutObject<Integer> baseMana) {
-        baseMana.outArgValue = 0;
+    public int getPlayerClassLevelInfo(PlayerClass _class, int level) {
+        if (level < 1 || _class == null)
+            throw new IllegalArgumentException();
 
-        if (level < 1 || _class.getValue() >= playerClass.max.getValue()) {
-            return;
-        }
+        if (level > world.getWorldSettings().maxPlayerLevel)
+            level = world.getWorldSettings().maxPlayerLevel;
 
-        if (level > WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-            level = (byte) WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel);
-        }
-
-        var mp = CliDB.BaseMPGameTable.GetRow(level);
-
+        GtBaseMP mp = world.getGameTableManager().baseMP().getRow(level);
         if (mp == null) {
-            Logs.SQL.error("Tried to get non-existant Class-Level combination data for base mp. Class {0} Level {1}", _class, level);
-
-            return;
+            throw new NullPointerException(StringUtil.format("Tried to get non-existant Class-Level combination data for base hp/mp. Class {} Level {}", _class, level));
         }
-
-        baseMana.outArgValue = (int) CliDB.GetGameTableColumnForClass(mp, _class);
+        return (int)world.getGameTableManager().getBaseMPValueForClass(level, _class);
     }
 
     public PlayerLevelInfo getPlayerLevelInfo(Race race, PlayerClass _class, int level) {
         Objects.requireNonNull(race);
         Objects.requireNonNull(_class);
-        HashMap<PlayerClass, PlayerInfo> playerClassPlayerInfoHashMap = playerInfo.get(race);
-        PlayerInfo playerInfo = playerClassPlayerInfoHashMap.get(_class);
 
-        if (level <= WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-            return pInfo.LevelInfo[level - 1];
+        PlayerInfo info = playerInfo.get(Pair.of(race, _class));
+
+
+        if (level <= world.getWorldSettings().maxPlayerLevel) {
+            return info.levelInfo[level - 1];
         } else {
             return buildPlayerLevelInfo(race, _class, level);
         }
@@ -6004,13 +5673,13 @@ public final class ObjectManager {
     }
 
 
-    public PetLevelInfo getPetLevelInfo(int creatureid, int level) {
+    public PetLevelInfo getPetLevelInfo(int creatureId, int level) {
         int maxPlayerLevel = world.getWorldSettings().maxPlayerLevel;
         if (level > maxPlayerLevel) {
             level = maxPlayerLevel;
         }
 
-        var petinfo = petInfoStore.get(creatureid);
+        var petinfo = petInfoStore.get(creatureId);
 
         if (petinfo == null) {
             return null;
@@ -7340,107 +7009,74 @@ public final class ObjectManager {
     }
 
     public void unloadPhaseConditions() {
-        for (var pair : phaseInfoByArea.KeyValueList) {
-            pair.value.conditions.clear();
-        }
+
+        phaseInfoByArea.forEach((k,v) -> v.forEach(value -> value.conditions.clear()));
     }
 
     public void loadNPCSpellClickSpells() {
         var oldMSTime = System.currentTimeMillis();
 
         spellClickInfoStorage.clear();
-        //                                           0          1         2            3
-        var result = DB.World.query("SELECT npc_entry, spell_id, cast_flags, user_type FROM npc_spellclick_spells");
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllNpcSpellClickSpells()) {
+            items.forEach(fields -> {
+                CreatureTemplate cInfo = getCreatureTemplate(fields[0]);
+                if (cInfo == null)
+                {
+                    Logs.SQL.error("Table npc_spellclick_spells references unknown creature_template {}. Skipping entry.", fields[0]);
+                    return;
+                }
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 spellclick spells. DB table `npc_spellclick_spells` is empty.");
+                SpellInfo spellinfo = spellManager.getSpellInfo(fields[1], Difficulty.NONE);
+                if (spellinfo == null)
+                {
+                    Logs.SQL.error("Table npc_spellclick_spells creature: {} references unknown spellid {}. Skipping entry.", fields[0], fields[1]);
+                    return;
+                }
 
-            return;
+                if (fields[3] > SpellClickUserType.values().length)
+                    Logs.SQL.error("Table npc_spellclick_spells creature: {} references unknown user type {}. Skipping entry.", fields[0], fields[3]);
+
+                spellClickInfoStorage.compute(fields[1], Functions.addToList(new SpellClickInfo(fields[1], (byte) fields[2], SpellClickUserType.values()[fields[3]])));
+                count.getAndIncrement();
+            });
         }
 
-        int count = 0;
-
-        do {
-            var npc_entry = result.<Integer>Read(0);
-            var cInfo = getCreatureTemplate(npc_entry);
-
-            if (cInfo == null) {
-                Logs.SQL.error("Table npc_spellclick_spells references unknown creature_template {0}. Skipping entry.", npc_entry);
-
-                continue;
-            }
-
-            var spellid = result.<Integer>Read(1);
-            var spellinfo = global.getSpellMgr().getSpellInfo(spellid, Difficulty.NONE);
-
-            if (spellinfo == null) {
-                Logs.SQL.error("Table npc_spellclick_spells creature: {0} references unknown spellid {1}. Skipping entry.", npc_entry, spellid);
-
-                continue;
-            }
-
-            var userType = SpellClickUserTypes.forValue(result.<Byte>Read(3));
-
-            if (userType.getValue() >= SpellClickUserTypes.max.getValue()) {
-                Logs.SQL.error("Table npc_spellclick_spells creature: {0} references unknown user type {1}. Skipping entry.", npc_entry, userType);
-            }
-
-            var castFlags = result.<Byte>Read(2);
-            SpellClickInfo info = new SpellClickInfo();
-            info.spellId = spellid;
-            info.castFlags = castFlags;
-            info.userType = userType;
-            spellClickInfoStorage.add(npc_entry, info);
-
-            ++count;
-        } while (result.NextRow());
 
         // all spellclick data loaded, now we check if there are creatures with NPC_FLAG_SPELLCLICK but with no data
         // NOTE: It *CAN* be the other way around: no spellclick flag but with spellclick data, in case of creature-only vehicle accessories
-        var ctc = getCreatureTemplates();
+        var ctc = creatureTemplateStorage.values();
 
-        for (var creature : ctc.values()) {
-            if (creature.npcFlag.hasFlag((int) NPCFlag.SpellClick.getValue()) && !spellClickInfoStorage.ContainsKey(creature.entry)) {
-                Log.outWarn(LogFilter.Sql, "npc_spellclick_spells: Creature template {0} has UNIT_NPC_FLAG_SPELLCLICK but no data in spellclick table! Removing flag", creature.entry);
-                creature.npcFlag &= ~(int) NPCFlag.SpellClick.getValue();
+        for (var kv : creatureTemplateStorage.entrySet()) {
+            var creature = kv.getValue();
+            if (creature.npcFlag.hasFlag(NPCFlag.SPELL_CLICK) && !spellClickInfoStorage.containsKey(kv.getKey())) {
+                Logs.SQL.error("npc_spellclick_spells: Creature template {} has UNIT_NPC_FLAG_SPELLCLICK but no data in spellclick table! Removing flag", kv.getKey());
+                creature.npcFlag.removeFlag(NPCFlag.SPELL_CLICK);
+                creatureTemplateStorage.put(kv.getKey(), creature);
             }
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} spellclick definitions in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} spellclick definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadFishingBaseSkillLevel() {
         var oldMSTime = System.currentTimeMillis();
 
-        fishingBaseForAreaStorage.clear(); // for reload case
+        fishingBaseForArea.clear(); // for reload case
 
-        var result = DB.World.query("SELECT entry, skill FROM skill_fishing_base_level");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 areas for fishing base skill level. DB table `skill_fishing_base_level` is empty.");
-
-            return;
+        try(var items = miscRepository.streamAllSkillFishingBaseLevel()) {
+            items.forEach(fields -> {
+                var fArea = dbcObjectManager.areaTable(fields[0]);
+                if (fArea == null)
+                {
+                    Logs.SQL.error("AreaId {} defined in `skill_fishing_base_level` does not exist", fields[0]);
+                    return;
+                }
+                fishingBaseForArea.put(fields[0], fields[1]);
+            });
         }
 
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-            var skill = result.<Integer>Read(1);
-
-            var fArea = CliDB.AreaTableStorage.get(entry);
-
-            if (fArea == null) {
-                Logs.SQL.error("AreaId {0} defined in `skill_fishing_base_level` does not exist", entry);
-
-                continue;
-            }
-
-            fishingBaseForAreaStorage.put(entry, skill);
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} areas for fishing base skill level in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} areas for fishing base skill level in {} ms", fishingBaseForArea.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadSkillTiers() {
@@ -7448,26 +7084,14 @@ public final class ObjectManager {
 
         skillTiers.clear();
 
-        var result = DB.World.query("SELECT ID, value1, value2, Value3, Value4, Value5, Value6, Value7, Value8, Value9, Value10, " + " Value11, Value12, Value13, Value14, Value15, Value16 FROM skill_tiers");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 skill max values. DB table `skill_tiers` is empty.");
-
-            return;
+        try(var items = miscRepository.streamAllSkillTiers()) {
+            items.forEach(fields -> {
+                SkillTiersEntry tier = skillTiers.get(fields[0]);
+                System.arraycopy(fields, 1, tier.value, 0, SkillTiersEntry.MAX_SKILL_STEP);
+            });
         }
 
-        do {
-            var id = result.<Integer>Read(0);
-            SkillTiersEntry tier = new SkillTiersEntry();
-
-            for (var i = 0; i < SkillConst.MaxSkillStep; ++i) {
-                tier.Value[i] = result.<Integer>Read(1 + i);
-            }
-
-            skillTiers.put(id, tier);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} skill max values in {1} ms", skillTiers.size(), time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} skill max values in {} ms", skillTiers.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public PhaseInfoStruct getPhaseInfo(int phaseId) {
@@ -7487,7 +7111,7 @@ public final class ObjectManager {
     }
 
     public int getFishingBaseSkillLevel(int entry) {
-        return fishingBaseForAreaStorage.get(entry);
+        return fishingBaseForArea.get(entry);
     }
 
     public SkillTiersEntry getSkillTier(int skillTierId) {
@@ -8126,101 +7750,57 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
 
         // need for reload case
-        playerChoiceLocales.clear();
-
-        //                                               0         1       2
-        var result = DB.World.query("SELECT choiceId, locale, Question FROM playerchoice_locale");
-
-        if (!result.isEmpty()) {
-            do {
-                var choiceId = result.<Integer>Read(0);
-                var localeName = result.<String>Read(1);
-                var locale = localeName.<locale>ToEnum();
-
-                if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                    continue;
+        AtomicInteger count = new AtomicInteger();
+        try (var items = playerRepository.streamsAllPlayerChoiceLocale()) {
+            items.forEach(e->{
+                PlayerChoice playerChoice = getPlayerChoice(e.choiceId);
+                if (playerChoice == null) {
+                    Logs.SQL.error("Table `playerchoice_locale` references non-existing ChoiceId: {} for locale {}, skipped", e.choiceId, e.locale);
+                    return;
                 }
-
-                if (getPlayerChoice(choiceId) == null) {
-                    Logs.SQL.error(String.format("Table `playerchoice_locale` references non-existing ChoiceId: %1$s for locale %2$s, skipped", choiceId, localeName));
-
-                    continue;
+                if (e.locale > Locale.values().length) {
+                    Logs.SQL.error("Table `playerchoice_locale` has worry locale {}, skipped", e.locale);
+                    return;
                 }
-
-                if (!playerChoiceLocales.containsKey(choiceId)) {
-                    playerChoiceLocales.put(choiceId, new PlayerChoiceLocale());
-                }
-
-                var data = playerChoiceLocales.get(choiceId);
-                addLocaleString(result.<String>Read(2), locale, data.question);
-            } while (result.NextRow());
-
-            Logs.SERVER_LOADING.info(String.format("Loaded %1$s Player Choice locale strings in %2$s ms", playerChoiceLocales.size(), time.GetMSTimeDiffToNow(oldMSTime)));
+                playerChoice.question.set(Locale.values()[e.locale], e.question);
+                playerChoices.put(e.choiceId, playerChoice);
+                count.getAndIncrement();
+            });
         }
+        Logs.SERVER_LOADING.error(">> Loaded {} Player Choice locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
         oldMSTime = System.currentTimeMillis();
-
-        //                               0         1           2       3       4       5          6               7            8
-        result = DB.World.query("SELECT choiceID, responseID, locale, answer, header, subHeader, buttonTooltip, description, Confirmation FROM playerchoice_response_locale");
-
-        if (!result.isEmpty()) {
-            int count = 0;
-
-            do {
-                var choiceId = result.<Integer>Read(0);
-                var responseId = result.<Integer>Read(1);
-                var localeName = result.<String>Read(2);
-                var locale = localeName.<locale>ToEnum();
-
-                if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                    continue;
+        count.set(0);
+        try (var items = playerRepository.streamsAllPlayerChoiceResponseLocale()) {
+            items.forEach(e -> {
+                PlayerChoice playerChoice = getPlayerChoice(e.choiceId);
+                if (playerChoice == null) {
+                    Logs.SQL.error("Table `playerchoice_response_locale` references non-existing ChoiceId: {} for locale {}, skipped", e.choiceId, e.locale);
+                    return;
+                }
+                if (e.locale > Locale.values().length) {
+                    Logs.SQL.error("Table `playerchoice_response_locale` has worry locale {}, skipped", e.locale);
+                    return;
+                }
+                PlayerChoiceResponse response = playerChoice.getResponse(e.responseId);
+                if (response == null) {
+                    Logs.SQL.error("Table `playerchoice_response_locale` references non-existing ResponseId: {} for locale {}, skipped", e.responseId, e.locale);
+                    return;
                 }
 
-                var playerChoiceLocale = playerChoiceLocales.get(choiceId);
-
-                if (playerChoiceLocale == null) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM playerchoice_response_locale WHERE choiceID = %1$s AND responseID = %2$s AND locale = \"%3$s\"", choiceId, responseId, localeName));
-                    } else {
-                        Logs.SQL.error(String.format("Table `playerchoice_locale` references non-existing ChoiceId: %1$s for ResponseId %2$s locale %3$s, skipped", choiceId, responseId, localeName));
-                    }
-
-                    continue;
-                }
-
-                var playerChoice = getPlayerChoice(choiceId);
-
-                if (playerChoice.getResponse(responseId) == null) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM playerchoice_response_locale WHERE choiceID = %1$s AND responseID = %2$s AND locale = \"%3$s\"", choiceId, responseId, localeName));
-                    } else {
-                        Logs.SQL.error(String.format("Table `playerchoice_locale` references non-existing ResponseId: %1$s for ChoiceId %2$s locale %3$s, skipped", responseId, choiceId, localeName));
-                    }
-
-                    continue;
-                }
-
-                var data;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-                if (playerChoiceLocale.responses.TryGetValue(responseId, out data)) {
-                    addLocaleString(result.<String>Read(3), locale, data.answer);
-                    addLocaleString(result.<String>Read(4), locale, data.header);
-                    addLocaleString(result.<String>Read(5), locale, data.subHeader);
-                    addLocaleString(result.<String>Read(6), locale, data.buttonTooltip);
-                    addLocaleString(result.<String>Read(7), locale, data.description);
-                    addLocaleString(result.<String>Read(8), locale, data.confirmation);
-                    count++;
-                } else {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM playerchoice_response_locale WHERE choiceID = %1$s AND responseID = %2$s AND locale = \"%3$s\"", choiceId, responseId, localeName));
-                    } else {
-                        Logs.SQL.error(String.format("Table `playerchoice_locale` references non-existing locale for ResponseId: %1$s for ChoiceId %2$s locale %3$s, skipped", responseId, choiceId, localeName));
-                    }
-                }
-            } while (result.NextRow());
-
-            Logs.SERVER_LOADING.info(String.format("Loaded %1$s Player Choice Response locale strings in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+                Locale locale = Locale.values()[e.locale];
+                response.answer.set(locale, e.answer);
+                response.buttonTooltip.set(locale, e.buttonTooltip);
+                response.confirmation.set(locale, e.confirmation);
+                response.header.set(locale, e.header);
+                response.description.set(locale, e.description);
+                response.subHeader.set(locale, e.subHeader);
+                playerChoices.put(e.choiceId, playerChoice);
+                count.getAndIncrement();
+            });
         }
+        Logs.SERVER_LOADING.info(">> Loaded {} Player Choice Response locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
+
     }
 
 
@@ -8284,28 +7864,12 @@ public final class ObjectManager {
     public void loadPhaseNames() {
         var oldMSTime = System.currentTimeMillis();
         phaseNameStorage.clear();
-
-        //                                          0     1
-        var result = DB.World.query("SELECT `ID`, `Name` FROM `phase_name`");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 phase names. DB table `phase_name` is empty.");
-
-            return;
+        try(var items = miscRepository.streamAllPhaseName()) {
+            items.forEach(fields -> {
+                phaseNameStorage.put((Integer) fields[0], fields[1].toString());
+            });
         }
-
-        int count = 0;
-
-        do {
-            var phaseId = result.<Integer>Read(0);
-            var name = result.<String>Read(1);
-
-            phaseNameStorage.put(phaseId, name);
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s phase names in %2$s ms.", count, time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(String.format("Loaded %1$s phase names in %2$s ms.", phaseNameStorage.size(), System.currentTimeMillis() - oldMSTime));
     }
 
     public MailLevelReward getMailLevelReward(int level, long raceMask) {
@@ -8336,139 +7900,6 @@ public final class ObjectManager {
         return repOnKillStorage.get(id);
     }
 
-    public void setHighestGuids() {
-        var result = DB.characters.query("SELECT MAX(guid) FROM character");
-
-        if (!result.isEmpty()) {
-            getGuidSequenceGenerator(HighGuid.Player).set(result.<Long>Read(0) + 1);
-        }
-
-        result = DB.characters.query("SELECT MAX(guid) FROM item_instance");
-
-        if (!result.isEmpty()) {
-            getGuidSequenceGenerator(HighGuid.Item).set(result.<Long>Read(0) + 1);
-        }
-
-        // Cleanup other tables from not existed guids ( >= hiItemGuid)
-        DB.characters.execute("DELETE FROM character_inventory WHERE item >= {0}", getGuidSequenceGenerator(HighGuid.Item).getNextAfterMaxUsed()); // One-time query
-        DB.characters.execute("DELETE FROM mail_items WHERE item_guid >= {0}", getGuidSequenceGenerator(HighGuid.Item).getNextAfterMaxUsed()); // One-time query
-
-        DB.characters.execute("DELETE a, ab, ai FROM auctionhouse a LEFT JOIN auction_bidders ab ON ab.auctionId = a.id LEFT JOIN auction_items ai ON ai.auctionId = a.id WHERE ai.itemGuid >= '{0}'", getGuidSequenceGenerator(HighGuid.Item).getNextAfterMaxUsed()); // One-time query
-
-        DB.characters.execute("DELETE FROM guild_bank_item WHERE item_guid >= {0}", getGuidSequenceGenerator(HighGuid.Item).getNextAfterMaxUsed()); // One-time query
-
-        result = DB.World.query("SELECT MAX(guid) FROM transports");
-
-        if (!result.isEmpty()) {
-            getGuidSequenceGenerator(HighGuid.Transport).set(result.<Long>Read(0) + 1);
-        }
-
-        result = DB.characters.query("SELECT MAX(id) FROM auctionhouse");
-
-        if (!result.isEmpty()) {
-            auctionId = result.<Integer>Read(0) + 1;
-        }
-
-        result = DB.characters.query("SELECT MAX(id) FROM mail");
-
-        if (!result.isEmpty()) {
-            mailId = result.<Long>Read(0) + 1;
-        }
-
-        result = DB.characters.query("SELECT MAX(arenateamid) FROM arena_team");
-
-        if (!result.isEmpty()) {
-            global.getArenaTeamMgr().setNextArenaTeamId(result.<Integer>Read(0) + 1);
-        }
-
-        result = DB.characters.query("SELECT MAX(maxguid) FROM ((SELECT MAX(setguid) AS maxguid FROM character_equipmentsets) UNION (SELECT MAX(setguid) AS maxguid FROM character_transmog_outfits)) allsets");
-
-        if (!result.isEmpty()) {
-            equipmentSetGuid = result.<Long>Read(0) + 1;
-        }
-
-        result = DB.characters.query("SELECT MAX(guildId) FROM guild");
-
-        if (!result.isEmpty()) {
-            global.getGuildMgr().setNextGuildId(result.<Integer>Read(0) + 1);
-        }
-
-        result = DB.characters.query("SELECT MAX(itemId) from character_void_storage");
-
-        if (!result.isEmpty()) {
-            voidItemId = result.<Long>Read(0) + 1;
-        }
-
-        result = DB.World.query("SELECT MAX(guid) FROM creature");
-
-        if (!result.isEmpty()) {
-            creatureSpawnId = result.<Long>Read(0) + 1;
-        }
-
-        result = DB.World.query("SELECT MAX(guid) FROM gameobject");
-
-        if (!result.isEmpty()) {
-            gameObjectSpawnId = result.<Long>Read(0) + 1;
-        }
-    }
-
-    public int generateAuctionID() {
-        if (auctionId >= 0xFFFFFFFE) {
-            Log.outError(LogFilter.Server, "Auctions ids overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow();
-        }
-
-        return auctionId++;
-    }
-
-    public long generateEquipmentSetGuid() {
-        if (equipmentSetGuid >= 0xFFFFFFFFFFFFFFFEL) {
-            Log.outError(LogFilter.Server, "EquipmentSet guid overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow();
-        }
-
-        return equipmentSetGuid++;
-    }
-
-    public long generateMailID() {
-        if (mailId >= 0xFFFFFFFFFFFFFFFEL) {
-            Log.outError(LogFilter.Server, "Mail ids overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow();
-        }
-
-        return mailId++;
-    }
-
-    public long generateVoidStorageItemId() {
-        if (voidItemId >= 0xFFFFFFFFFFFFFFFEL) {
-            Log.outError(LogFilter.misc, "_voidItemId overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow(ShutdownExitCode.error);
-        }
-
-        return voidItemId++;
-    }
-
-    public long generateCreatureSpawnId() {
-        if (creatureSpawnId >= 0xFFFFFFFFFFFFFFFEL) {
-            Log.outFatal(LogFilter.Server, "Creature spawn id overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow();
-        }
-
-        return creatureSpawnId++;
-    }
-
-    public long generateGameObjectSpawnId() {
-        if (gameObjectSpawnId >= 0xFFFFFFFFFFFFFFFEL) {
-            Log.outFatal(LogFilter.Server, "GameObject spawn id overflow!! Can't continue, shutting down server. ");
-            global.getWorldMgr().stopNow();
-        }
-
-        return gameObjectSpawnId++;
-    }
-
-    public ObjectGuidGenerator getGenerator(HighGuid high) {
-        return getGuidSequenceGenerator(high);
-    }
 
     public int getBaseXP(int level) {
         return level > 0 && level < baseXPTable.length ? baseXPTable[level] : 0;

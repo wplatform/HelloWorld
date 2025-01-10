@@ -17,4 +17,7 @@ public enum Expansion {
     private final int value;
     private final int level;
 
+    public static final int MAX_EXPANSION = Expansion.values().length;
+    public static final int MAX_ACCOUNT_EXPANSION = MAX_EXPANSION + 1;
+
 }
