@@ -5776,7 +5776,7 @@ public final class ObjectManager {
                 }
 
                 // skip expansion races if not playing with expansion
-                if (world.getWorldSettings().expansion.ordinal() < Expansion.BURNING_CRUSADE.ordinal() && (race == Race.BLOOD_ELF || race == Race.DRAENEI))
+                if (world.getWorldSettings().expansion.ordinal() < Expansion.THE_BURNING_CRUSADE.ordinal() && (race == Race.BLOOD_ELF || race == Race.DRAENEI))
                     continue;
 
                 // skip expansion classes if not playing with expansion

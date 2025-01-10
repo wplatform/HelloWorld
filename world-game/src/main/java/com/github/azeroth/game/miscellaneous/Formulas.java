@@ -247,7 +247,7 @@ public class Formulas {
         if (level < 60) {
             return Expansion.CLASSIC;
         } else if (level < 70) {
-            return Expansion.BURNING_CRUSADE;
+            return Expansion.THE_BURNING_CRUSADE;
         } else if (level < 80) {
             return Expansion.WRATH_OF_THE_LICH_KING;
         } else if (level < 85) {

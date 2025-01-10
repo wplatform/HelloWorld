@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Expansion {
     CLASSIC(0, 60),
-    BURNING_CRUSADE(1, 70),
+    THE_BURNING_CRUSADE(1, 70),
     WRATH_OF_THE_LICH_KING(2, 80),
     CATACLYSM(3, 85),
     MISTS_OF_PANDARIA(4, 90),
