@@ -61,7 +61,7 @@ public class UpdateTime {
             maxUpdateTimeOfCurrentTable = 0;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to the C# index operator:
+
         if (_updateTimeDataTable[ ^ 1] !=0)
         {
             averageUpdateTime = (int) (_totalUpdateTime / updateTimeDataTable.length);

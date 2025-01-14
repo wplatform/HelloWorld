@@ -18,7 +18,7 @@ public class AuctionsBucketData {
     public AuctionHouseFilterMask qualityMask = AuctionHouseFilterMask.values()[0];
     public int[] qualityCounts = new int[ItemQuality.max.getValue()];
     public long minPrice; // for sort
-// C# TO JAVA CONVERTER TASK: Tuple fields are not converted by C# to Java Converter:
+
     public (
         public byte requiredLevel = 0; // for usable search,     public byte sortLevel = 0;)[]itemModifiedAppearanceId =new(
         public byte minBattlePetLevel = 0;,     public byte maxBattlePetLevel = 0;)[4]; // for uncollected search
@@ -97,7 +97,7 @@ int count
                 case Buyout:
                     return (long) (left.MinPrice - right.minPrice);
                 case Name:
-// C# TO JAVA CONVERTER TASK: The following System.String compare method is not converted:
+
                     return left.FullName[_locale.getValue()].CompareTo(right.FullName[_locale.getValue()]);
                 case Level:
                     return left.SortLevel - right.sortLevel;

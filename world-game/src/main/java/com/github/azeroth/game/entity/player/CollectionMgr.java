@@ -573,7 +573,7 @@ public class CollectionMgr {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: Methods returning tuples are not converted by C# to Java Converter:
+
 //	public (bool PermAppearance, bool TempAppearance) hasItemAppearance(uint itemModifiedAppearanceId)
 //		{
 //			if (itemModifiedAppearanceId < appearances.count && appearances.Get((int)itemModifiedAppearanceId))
@@ -990,7 +990,7 @@ public class CollectionMgr {
                 continue;
             }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             var(hasAppearance, isTemporary) = hasItemAppearance(transmogSetItem.itemModifiedAppearanceID);
 
             knownPieces[transmogSlot] = (hasAppearance && !isTemporary) ? 1 : 0;

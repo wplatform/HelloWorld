@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 class GameObjectCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectActivateCommand(CommandHandler handler, long guidLow) {
         var obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
         if (!obj) {
-            handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+            handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
             return false;
         }
@@ -32,7 +32,7 @@ class GameObjectCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectDeleteCommand(CommandHandler handler, long spawnId) {
         var obj = handler.getObjectFromPlayerMapByDbGuid(spawnId);
 
@@ -44,7 +44,7 @@ class GameObjectCommands {
                 var owner = global.getObjAccessor().GetUnit(player, ownerGuid);
 
                 if (!owner || !ownerGuid.isPlayer()) {
-                    handler.sendSysMessage(CypherStrings.CommandDelobjrefercreature, ownerGuid.toString(), obj.getGUID().toString());
+                    handler.sendSysMessage(SysMessage.CommandDelobjrefercreature, ownerGuid.toString(), obj.getGUID().toString());
 
                     return false;
                 }
@@ -54,17 +54,17 @@ class GameObjectCommands {
         }
 
         if (gameObject.deleteFromDB(spawnId)) {
-            handler.sendSysMessage(CypherStrings.CommandDelobjmessage, spawnId);
+            handler.sendSysMessage(SysMessage.CommandDelobjmessage, spawnId);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandObjnotfound, obj.getGUID().toString());
+        handler.sendSysMessage(SysMessage.CommandObjnotfound, obj.getGUID().toString());
 
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectDespawnGroup(CommandHandler handler, String[] opts) {
         if (opts == null || opts.isEmpty()) {
             return false;
@@ -90,7 +90,7 @@ class GameObjectCommands {
         tangible.OutObject<Integer> tempOut_n = new tangible.OutObject<Integer>();
         if (!player.getMap().spawnGroupDespawn(groupId, deleteRespawnTimes, tempOut_n)) {
             n = tempOut_n.outArgValue;
-            handler.sendSysMessage(CypherStrings.SpawngroupBadgroup, groupId);
+            handler.sendSysMessage(SysMessage.SpawngroupBadgroup, groupId);
 
             return false;
         } else {
@@ -102,8 +102,8 @@ class GameObjectCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleGameObjectInfoCommand(CommandHandler handler, String isGuid, long data) {
         GameObject thisGO = null;
         GameObjectData spawnData = null;
@@ -116,7 +116,7 @@ class GameObjectCommands {
             spawnData = global.getObjectMgr().getGameObjectData(spawnId);
 
             if (spawnData == null) {
-                handler.sendSysMessage(CypherStrings.CommandObjnotfound, spawnId);
+                handler.sendSysMessage(SysMessage.CommandObjnotfound, spawnId);
 
                 return false;
             }
@@ -130,7 +130,7 @@ class GameObjectCommands {
         var gameObjectInfo = global.getObjectMgr().getGameObjectTemplate(entry);
 
         if (gameObjectInfo == null) {
-            handler.sendSysMessage(CypherStrings.GameobjectNotExist, entry);
+            handler.sendSysMessage(SysMessage.GameobjectNotExist, entry);
 
             return false;
         }
@@ -146,12 +146,12 @@ class GameObjectCommands {
 
         // If we have a real object, send some info about it
         if (thisGO != null) {
-            handler.sendSysMessage(CypherStrings.SpawninfoGuidinfo, thisGO.getGUID().toString());
-            handler.sendSysMessage(CypherStrings.SpawninfoCompatibilityMode, thisGO.getRespawnCompatibilityMode());
+            handler.sendSysMessage(SysMessage.SpawninfoGuidinfo, thisGO.getGUID().toString());
+            handler.sendSysMessage(SysMessage.SpawninfoCompatibilityMode, thisGO.getRespawnCompatibilityMode());
 
             if (thisGO.getGameObjectData() != null && thisGO.getGameObjectData().getSpawnGroupData().getGroupId() != 0) {
                 var groupData = thisGO.toGameObject().getGameObjectData().getSpawnGroupData();
-                handler.sendSysMessage(CypherStrings.SpawninfoGroupId, groupData.getName(), groupData.getGroupId(), groupData.getFlags(), thisGO.getMap().isSpawnGroupActive(groupData.getGroupId()));
+                handler.sendSysMessage(SysMessage.SpawninfoGroupId, groupData.getName(), groupData.getGroupId(), groupData.getFlags(), thisGO.getMap().isSpawnGroupActive(groupData.getGroupId()));
             }
 
             var goOverride = global.getObjectMgr().getGameObjectOverride(spawnId);
@@ -161,7 +161,7 @@ class GameObjectCommands {
             }
 
             if (goOverride != null) {
-                handler.sendSysMessage(CypherStrings.GoinfoAddon, goOverride.faction, goOverride.flags);
+                handler.sendSysMessage(SysMessage.GoinfoAddon, goOverride.faction, goOverride.flags);
             }
         }
 
@@ -169,41 +169,41 @@ class GameObjectCommands {
             var yaw;
             var pitch;
             var roll;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             spawnData.rotation.toEulerAnglesZYX(out yaw, out pitch, out roll);
-            handler.sendSysMessage(CypherStrings.SpawninfoSpawnidLocation, spawnData.getSpawnId(), spawnData.spawnPoint.getX(), spawnData.spawnPoint.getY(), spawnData.spawnPoint.getZ());
-            handler.sendSysMessage(CypherStrings.SpawninfoRotation, yaw, pitch, roll);
+            handler.sendSysMessage(SysMessage.SpawninfoSpawnidLocation, spawnData.getSpawnId(), spawnData.spawnPoint.getX(), spawnData.spawnPoint.getY(), spawnData.spawnPoint.getZ());
+            handler.sendSysMessage(SysMessage.SpawninfoRotation, yaw, pitch, roll);
         }
 
-        handler.sendSysMessage(CypherStrings.GoinfoEntry, entry);
-        handler.sendSysMessage(CypherStrings.GoinfoType, type);
-        handler.sendSysMessage(CypherStrings.GoinfoLootid, lootId);
-        handler.sendSysMessage(CypherStrings.GoinfoDisplayid, displayId);
-        handler.sendSysMessage(CypherStrings.GoinfoName, name);
-        handler.sendSysMessage(CypherStrings.GoinfoSize, gameObjectInfo.size);
+        handler.sendSysMessage(SysMessage.GoinfoEntry, entry);
+        handler.sendSysMessage(SysMessage.GoinfoType, type);
+        handler.sendSysMessage(SysMessage.GoinfoLootid, lootId);
+        handler.sendSysMessage(SysMessage.GoinfoDisplayid, displayId);
+        handler.sendSysMessage(SysMessage.GoinfoName, name);
+        handler.sendSysMessage(SysMessage.GoinfoSize, gameObjectInfo.size);
 
-        handler.sendSysMessage(CypherStrings.ObjectinfoAiInfo, gameObjectInfo.AIName, global.getObjectMgr().getScriptName(gameObjectInfo.scriptId));
+        handler.sendSysMessage(SysMessage.ObjectinfoAiInfo, gameObjectInfo.AIName, global.getObjectMgr().getScriptName(gameObjectInfo.scriptId));
         var ai = thisGO != null ? thisGO.getAI() : null;
 
         if (ai != null) {
-            handler.sendSysMessage(CypherStrings.ObjectinfoAiType, "ai");
+            handler.sendSysMessage(SysMessage.ObjectinfoAiType, "ai");
         }
 
         var modelInfo = CliDB.GameObjectDisplayInfoStorage.get(displayId);
 
         if (modelInfo != null) {
-            handler.sendSysMessage(CypherStrings.GoinfoModel, modelInfo.GeoBoxMax.X, modelInfo.GeoBoxMax.Y, modelInfo.GeoBoxMax.Z, modelInfo.GeoBoxMin.X, modelInfo.GeoBoxMin.Y, modelInfo.GeoBoxMin.Z);
+            handler.sendSysMessage(SysMessage.GoinfoModel, modelInfo.GeoBoxMax.X, modelInfo.GeoBoxMax.Y, modelInfo.GeoBoxMax.Z, modelInfo.GeoBoxMin.X, modelInfo.GeoBoxMin.Y, modelInfo.GeoBoxMin.Z);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectMoveCommand(CommandHandler handler, long guidLow, float[] xyz) {
         var obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
         if (!obj) {
-            handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+            handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
             return false;
         }
@@ -214,7 +214,7 @@ class GameObjectCommands {
             pos = new Position(xyz[0], xyz[1], xyz[2]);
 
             if (!MapDefine.isValidMapCoordinatei(obj.getLocation().getMapId(), pos)) {
-                handler.sendSysMessage(CypherStrings.InvalidTargetCoord, pos.getX(), pos.getY(), obj.getLocation().getMapId());
+                handler.sendSysMessage(SysMessage.InvalidTargetCoord, pos.getX(), pos.getY(), obj.getLocation().getMapId());
 
                 return false;
             }
@@ -244,12 +244,12 @@ class GameObjectCommands {
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandMoveobjmessage, obj.getSpawnId(), obj.getTemplate().name, obj.getGUID().toString());
+        handler.sendSysMessage(SysMessage.CommandMoveobjmessage, obj.getSpawnId(), obj.getTemplate().name, obj.getGUID().toString());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectNearCommand(CommandHandler handler, Float dist) {
         var distance = (dist == null ? 10f : dist.floatValue());
         int count = 0;
@@ -282,18 +282,18 @@ class GameObjectCommands {
                     continue;
                 }
 
-                handler.sendSysMessage(CypherStrings.GoListChat, guid, entry, guid, gameObjectInfo.name, x, y, z, mapId, "", "");
+                handler.sendSysMessage(SysMessage.GoListChat, guid, entry, guid, gameObjectInfo.name, x, y, z, mapId, "", "");
 
                 ++count;
             } while (result.NextRow());
         }
 
-        handler.sendSysMessage(CypherStrings.CommandNearobjmessage, distance, count);
+        handler.sendSysMessage(SysMessage.CommandNearobjmessage, distance, count);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectSpawnGroup(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -327,12 +327,12 @@ class GameObjectCommands {
         ArrayList<WorldObject> creatureList = new ArrayList<>();
 
         if (!player.getMap().spawnGroupSpawn(groupId, ignoreRespawn, force, creatureList)) {
-            handler.sendSysMessage(CypherStrings.SpawngroupBadgroup, groupId);
+            handler.sendSysMessage(SysMessage.SpawngroupBadgroup, groupId);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.SpawngroupSpawncount, creatureList.size());
+        handler.sendSysMessage(SysMessage.SpawngroupSpawncount, creatureList.size());
 
         for (var obj : creatureList) {
             handler.sendSysMessage(String.format("%1$s (%2$s)", obj.getName(), obj.getGUID()));
@@ -341,7 +341,7 @@ class GameObjectCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectTargetCommand(CommandHandler handler, String objectIdStr) {
         var player = handler.getSession().getPlayer();
         SQLResult result;
@@ -381,7 +381,7 @@ class GameObjectCommands {
         }
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CommandTargetobjnotfound);
+            handler.sendSysMessage(SysMessage.CommandTargetobjnotfound);
 
             return true;
         }
@@ -411,7 +411,7 @@ class GameObjectCommands {
         } while (result.NextRow() && !found);
 
         if (!found) {
-            handler.sendSysMessage(CypherStrings.GameobjectNotExist, id);
+            handler.sendSysMessage(SysMessage.GameobjectNotExist, id);
 
             return false;
         }
@@ -419,14 +419,14 @@ class GameObjectCommands {
         var objectInfo = global.getObjectMgr().getGameObjectTemplate(id);
 
         if (objectInfo == null) {
-            handler.sendSysMessage(CypherStrings.GameobjectNotExist, id);
+            handler.sendSysMessage(SysMessage.GameobjectNotExist, id);
 
             return false;
         }
 
         var target = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
-        handler.sendSysMessage(CypherStrings.GameobjectDetail, guidLow, objectInfo.name, guidLow, id, x, y, z, mapId, o, phaseId, phaseGroup);
+        handler.sendSysMessage(SysMessage.GameobjectDetail, guidLow, objectInfo.name, guidLow, id, x, y, z, mapId, o, phaseId, phaseGroup);
 
         if (target) {
             var curRespawnDelay = (int) (target.getRespawnTimeEx() - gameTime.GetGameTime());
@@ -438,18 +438,18 @@ class GameObjectCommands {
             var curRespawnDelayStr = time.secsToTimeString((int) curRespawnDelay, TimeFormat.ShortText, false);
             var defRespawnDelayStr = time.secsToTimeString(target.getRespawnDelay(), TimeFormat.ShortText, false);
 
-            handler.sendSysMessage(CypherStrings.CommandRawpawntimes, defRespawnDelayStr, curRespawnDelayStr);
+            handler.sendSysMessage(SysMessage.CommandRawpawntimes, defRespawnDelayStr, curRespawnDelayStr);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGameObjectTurnCommand(CommandHandler handler, long guidLow, Float oz, Float oy, Float ox) {
         var obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
         if (!obj) {
-            handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+            handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
             return false;
         }
@@ -476,14 +476,14 @@ class GameObjectCommands {
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandTurnobjmessage, obj.getSpawnId(), obj.getTemplate().name, obj.getGUID().toString(), obj.getLocation().getO());
+        handler.sendSysMessage(SysMessage.CommandTurnobjmessage, obj.getSpawnId(), obj.getTemplate().name, obj.getGUID().toString(), obj.getLocation().getO());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class AddCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGameObjectAddCommand(CommandHandler handler, int objectId, Integer spawnTimeSecs) {
             if (objectId == 0) {
                 return false;
@@ -492,7 +492,7 @@ class GameObjectCommands {
             var objectInfo = global.getObjectMgr().getGameObjectTemplate(objectId);
 
             if (objectInfo == null) {
-                handler.sendSysMessage(CypherStrings.GameobjectNotExist, objectId);
+                handler.sendSysMessage(SysMessage.GameobjectNotExist, objectId);
 
                 return false;
             }
@@ -500,7 +500,7 @@ class GameObjectCommands {
             if (objectInfo.displayId != 0 && !CliDB.GameObjectDisplayInfoStorage.containsKey(objectInfo.displayId)) {
                 // report to DB errors log as in loading case
                 Logs.SQL.error("Gameobject (Entry {0} GoType: {1}) have invalid displayId ({2}), not spawned.", objectId, objectInfo.type, objectInfo.displayId);
-                handler.sendSysMessage(CypherStrings.GameobjectHaveInvalidData, objectId);
+                handler.sendSysMessage(SysMessage.GameobjectHaveInvalidData, objectId);
 
                 return false;
             }
@@ -534,12 +534,12 @@ class GameObjectCommands {
 
             // TODO: is it really necessary to add both the real and DB table guid here ?
             global.getObjectMgr().addGameObjectToGrid(global.getObjectMgr().getGameObjectData(spawnId));
-            handler.sendSysMessage(CypherStrings.GameobjectAdd, objectId, objectInfo.name, spawnId, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+            handler.sendSysMessage(SysMessage.GameobjectAdd, objectId, objectInfo.name, spawnId, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGameObjectAddTempCommand(CommandHandler handler, int objectId, Long spawntime) {
             var player = handler.getPlayer();
             var spawntm = duration.FromSeconds((spawntime == null ? 300 : spawntime.longValue()));
@@ -547,7 +547,7 @@ class GameObjectCommands {
             var rotation = Quaternion.CreateFromRotationMatrix(Extensions.fromEulerAnglesZYX(player.getLocation().getO(), 0.0f, 0.0f));
 
             if (global.getObjectMgr().getGameObjectTemplate(objectId) == null) {
-                handler.sendSysMessage(CypherStrings.GameobjectNotExist, objectId);
+                handler.sendSysMessage(SysMessage.GameobjectNotExist, objectId);
 
                 return false;
             }
@@ -558,9 +558,9 @@ class GameObjectCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class SetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGameObjectSetPhaseCommand(CommandHandler handler, long guidLow, int phaseId) {
             if (guidLow == 0) {
                 return false;
@@ -569,13 +569,13 @@ class GameObjectCommands {
             var obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
             if (!obj) {
-                handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+                handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
                 return false;
             }
 
             if (phaseId == 0) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -586,7 +586,7 @@ class GameObjectCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGameObjectSetStateCommand(CommandHandler handler, long guidLow, int objectType, Integer objectState) {
             if (guidLow == 0) {
                 return false;
@@ -595,7 +595,7 @@ class GameObjectCommands {
             var obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
             if (!obj) {
-                handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+                handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
                 return false;
             }
@@ -636,7 +636,7 @@ class GameObjectCommands {
 
                     break;
                 case 5:
-// C# TO JAVA CONVERTER TASK: Comparisons involving nullable type instances are not converted to null-value logic:
+
                     if (objectState < 0 || objectState > (int) GameObjectDestructibleState.Rebuilding.getValue()) {
                         return false;
                     }

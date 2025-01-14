@@ -13,7 +13,7 @@ public class RemoteAccessHandler extends CommandHandler {
 
     @Override
     public String getNameLink() {
-        return getCypherString(CypherStrings.ConsoleCommand);
+        return getSysMessage(SysMessage.ConsoleCommand);
     }
 
     @Override

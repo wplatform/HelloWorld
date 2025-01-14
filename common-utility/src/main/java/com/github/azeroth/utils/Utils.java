@@ -315,4 +315,9 @@ public class Utils {
         return true;
 
     }
+
+
+    public static boolean isArrayEmpty(int[] array) {
+        return array == null || array.length < 1;
+    }
 }

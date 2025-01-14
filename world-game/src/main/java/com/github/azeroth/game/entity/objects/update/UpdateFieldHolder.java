@@ -20,7 +20,7 @@ public class UpdateFieldHolder {
         updateData.clearChangesMask();
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+    
     public final <T, U> void clearChangesMask(BaseUpdateData<T> updateData, tangible.RefObject<UpdateField<U>> updateField) {
         changesMask.reset(updateData.getBit());
 

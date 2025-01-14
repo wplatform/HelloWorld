@@ -42,6 +42,7 @@ import com.github.azeroth.game.movement.model.MovementForces;
 import com.github.azeroth.game.movement.spline.MoveSpline;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
 import com.github.azeroth.game.networking.WorldPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
 import com.github.azeroth.game.networking.packet.movement.MoveSetSpeed;
 import com.github.azeroth.game.networking.packet.movement.MoveSplineSetSpeed;
 import com.github.azeroth.game.networking.packet.movement.MoveUpdateSpeed;
@@ -67,7 +68,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.github.azeroth.game.entity.object.update.ObjectFields.*;
-import static com.github.azeroth.game.entity.unit.UnitDefine.*;
+import static com.github.azeroth.game.domain.unit.UnitDefine.*;
 
 
 public class Unit extends WorldObject {
@@ -989,7 +990,7 @@ public class Unit extends WorldObject {
 
                     if (spell != null) {
                         if (spell.getState() == SpellState.Preparing) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //							bool isCastInterrupted()
 //								{
 //									if (damageTaken == 0)
@@ -1006,7 +1007,7 @@ public class Unit extends WorldObject {
 
                             ;
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //							bool isCastDelayed()
 //								{
 //									if (damageTaken == 0)
@@ -1959,7 +1960,7 @@ public class Unit extends WorldObject {
 
     public final void setCombatReach(float combatReach) {
         if (combatReach > 0.1f) {
-            combatReach = SharedConst.DefaultPlayerCombatReach;
+            combatReach = ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH;
         }
 
         setUpdateFieldValue(getValues().modifyValue(getUnitData()).modifyValue(getUnitData().combatReach), combatReach);
@@ -3386,7 +3387,7 @@ public class Unit extends WorldObject {
         switch (att) {
             case BaseAttack:
             case OffAttack:
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                 setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().attackRoundBaseTime, att.getValue()), (int) (_baseAttackSpeed[att.getValue()] * getModAttackSpeedPct()[att.getValue()]));
 
                 break;
@@ -3932,7 +3933,7 @@ public class Unit extends WorldObject {
 
         if (minfo != null) {
             setBoundingRadius((isPet() ? 1.0f : minfo.boundingRadius) * getObjectScale());
-            setCombatReach((isPet() ? SharedConst.DefaultPlayerCombatReach : minfo.combatReach) * getObjectScale());
+            setCombatReach((isPet() ? ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH : minfo.combatReach) * getObjectScale());
         }
 
         super.setObjectScale(value);
@@ -4046,7 +4047,7 @@ public class Unit extends WorldObject {
     }
 
     public final void setChannelSpellId(int value) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().channelData).getValue().spellID, value);
     }
 
@@ -4177,7 +4178,7 @@ public class Unit extends WorldObject {
 
         if (lastExtraAttackSpell != 0) {
             while (!extraAttacksTargets.isEmpty()) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 var(targetGuid, count) = extraAttacksTargets.FirstOrDefault();
                 extraAttacksTargets.remove(targetGuid);
 
@@ -4191,7 +4192,7 @@ public class Unit extends WorldObject {
             lastExtraAttackSpell = 0;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool spellPausesCombatTimer(CurrentSpellTypes type)
 //			{
 //				return getCurrentSpell(type) != null && getCurrentSpell(type).spellInfo.hasAttribute(SpellAttr6.DelayCombatTimerDuringCast);
@@ -4803,17 +4804,17 @@ public class Unit extends WorldObject {
     }
 
     public final void setNpcFlag(NPCFlag flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
 
     public final void removeNpcFlag(NPCFlag flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         removeUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
 
     public final void replaceAllNpcFlags(NPCFlag flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 0), (int) flags.getValue());
     }
 
@@ -4822,17 +4823,17 @@ public class Unit extends WorldObject {
     }
 
     public final void setNpcFlag2(NPCFlags2 flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 1), (int) flags.getValue());
     }
 
     public final void removeNpcFlag2(NPCFlags2 flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         removeUpdateFieldFlagValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 1), (int) flags.getValue());
     }
 
     public final void replaceAllNpcFlags2(NPCFlags2 flags) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().npcFlags, 1), (int) flags.getValue());
     }
 
@@ -4904,7 +4905,7 @@ public class Unit extends WorldObject {
     }
 
     public final Unit selectNearbyTarget(Unit exclude, float dist) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool AddUnit(Unit u)
 //			{
 //				if (victim == u)
@@ -6855,7 +6856,7 @@ public class Unit extends WorldObject {
             case BaseAttack -> UnitMod.DamageMainHand.getValue();
             case OffAttack -> UnitMod.DamageOffHand.getValue();
             case RangedAttack -> UnitMod.DamageRanged.getValue();
-// C# TO JAVA CONVERTER TASK: Throw expressions are not converted by C# to Java Converter:
+
             default -> throw new UnsupportedOperationException();
         };
 
@@ -6878,7 +6879,7 @@ public class Unit extends WorldObject {
     }
 
     public final void updateDamagePctDoneMods(WeaponAttackType attackType) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		(UnitMods unitMod, double factor) = switch(attackType)
 //			{
 //				case WeaponAttackType.BaseAttack -> (UnitMods.DamageMainHand, 1.0f);
@@ -7934,7 +7935,7 @@ public class Unit extends WorldObject {
 
         if (playerMover != null) {
             // Send notification to self
-            MoveSetSpeed selfpacket = new MoveSetSpeed(MOVE_TYPE_TO_OPCODE[index][1]);
+            MoveSetSpeed selfpacket = new MoveSetSpeed(ServerOpCode.MOVE_TYPE_TO_OPCODE[index][1]);
             selfpacket.moverGUID = getGUID();
             selfpacket.sequenceIndex = getMovementCounter();
             setMovementCounter(getMovementCounter() + 1);
@@ -7942,12 +7943,12 @@ public class Unit extends WorldObject {
             playerMover.sendPacket(selfpacket);
 
             // Send notification to other players
-            MoveUpdateSpeed packet = new MoveUpdateSpeed(MOVE_TYPE_TO_OPCODE[index][2]);
+            MoveUpdateSpeed packet = new MoveUpdateSpeed(ServerOpCode.MOVE_TYPE_TO_OPCODE[index][2]);
             packet.status = getMovementInfo();
             packet.speed = getSpeed(moveType);
             playerMover.sendMessageToSet(packet, false);
         } else {
-            MoveSplineSetSpeed packet = new MoveSplineSetSpeed(MOVE_TYPE_TO_OPCODE[index][0]);
+            MoveSplineSetSpeed packet = new MoveSplineSetSpeed(ServerOpCode.MOVE_TYPE_TO_OPCODE[index][0]);
             packet.moverGUID = getGUID();
             packet.speed = getSpeed(moveType);
             sendMessageToSet(packet, true);
@@ -11821,7 +11822,7 @@ public class Unit extends WorldObject {
     }
 
     public SpellInfo getCastSpellInfo(SpellInfo spellInfo) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		SpellInfo findMatchingAuraEffectIn(AuraType type)
 //			{
 //				foreach (var auraEffect in getAuraEffectsByType(type))
@@ -12139,7 +12140,7 @@ public class Unit extends WorldObject {
             return false;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool hasImmunity(MultiMap<uint, uint> container, uint key)
 //			{
 //				var range = container.get(key);
@@ -12265,7 +12266,7 @@ public class Unit extends WorldObject {
             return false;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool hasImmunity(MultiMap<uint, uint> container, uint key)
 //			{
 //				var range = container.get(key);
@@ -12912,7 +12913,7 @@ public class Unit extends WorldObject {
 
         // don't remove vehicle auras, passengers aren't supposed to drop off the vehicle
         // don't remove clone caster on evade (to be verified)
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool evadeAuraCheck(Aura aura)
 //			{
 //				if (aura.hasEffectType(AuraType.ControlVehicle))
@@ -12927,7 +12928,7 @@ public class Unit extends WorldObject {
 //				return true;
 //			}
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool evadeAuraApplicationCheck(AuraApplication aurApp)
 //			{
 //				return evadeAuraCheck(aurApp.base);
@@ -13394,7 +13395,7 @@ public class Unit extends WorldObject {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> boolean hasAura(T spellId) {
         return getAuraApplication(new integer(spellId)).Any();
     }
@@ -14056,7 +14057,7 @@ public class Unit extends WorldObject {
         appliedAuras.query().hasSpellId(spellId).execute(this::RemoveAura);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> void removeAura(T spellId) {
         removeAura((int) spellId);
     }
@@ -14065,7 +14066,7 @@ public class Unit extends WorldObject {
         removeAura(spellId, caster, AuraRemoveMode.Default);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> void removeAura(T spellId, ObjectGuid caster, AuraRemoveMode removeMode) {
         removeAura((int) spellId, caster, removeMode);
     }
@@ -14557,14 +14558,14 @@ public class Unit extends WorldObject {
         return 0;
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> boolean tryGetAura(T spellId, tangible.OutObject<aura> aura) {
         aura.outArgValue = getAura(spellId);
 
         return aura.outArgValue != null;
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> Aura getAura(T spellId) {
         return getAura((int) spellId);
     }
@@ -14573,7 +14574,7 @@ public class Unit extends WorldObject {
         return getAura(spellId, casterGUID, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> Aura getAura(T spellId, ObjectGuid casterGUID, ObjectGuid itemCasterGUID) {
         return getAura((int) spellId, casterGUID, itemCasterGUID);
     }
@@ -15186,7 +15187,7 @@ public class Unit extends WorldObject {
     private void getProcAurasTriggeredOnEvent(ArrayList<Tuple<HashSet<Integer>, AuraApplication>> aurasTriggeringProc, ArrayList<AuraApplication> procAuras, ProcEventInfo eventInfo) {
         var now = gameTime.Now();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void processAuraApplication(AuraApplication aurApp)
 //			{
 //				var procEffectMask = aurApp.base.getProcEffectMask(aurApp, eventInfo, now);
@@ -15282,7 +15283,7 @@ public class Unit extends WorldObject {
             setCantProc(true);
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(procEffectMask, aurApp) : aurasTriggeringProc) {
             if (aurApp.removeMode != 0) {
                 continue;
@@ -15889,7 +15890,7 @@ public class Unit extends WorldObject {
     }
 
     public final void setStat(Stats stat, int val) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().stats, stat.getValue()), val);
     }
 
@@ -15950,12 +15951,12 @@ public class Unit extends WorldObject {
     }
 
     public final void setResistance(SpellSchool school, int val) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().resistances, school.getValue()), val);
     }
 
     public final void setBonusResistanceMod(SpellSchool school, int val) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().bonusResistanceMods, school.getValue()), val);
     }
 
@@ -16138,7 +16139,7 @@ public class Unit extends WorldObject {
         }
 
         var cur_power = getPower(powerType);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().maxPower, (int) powerIndex), (int) val);
 
         // group update
@@ -16207,7 +16208,7 @@ public class Unit extends WorldObject {
             player = tempOut_player.outArgValue;
         }
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().power, (int) powerIndex), val);
 
         if (isInWorld() && withPowerUpdate) {
@@ -16426,7 +16427,7 @@ public class Unit extends WorldObject {
     }
 
     public final void applyModManaCostModifier(SpellSchool school, int mod, boolean apply) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         applyModUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().manaCostModifier, school.getValue()), mod, apply);
     }
 
@@ -16546,9 +16547,9 @@ public class Unit extends WorldObject {
     }
 
     private void updateStatBuffModForClient(Stats stat) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().statPosBuff, stat.getValue()), (int) _floatStatPosBuff[stat.getValue()]);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().statNegBuff, stat.getValue()), (int) _floatStatNegBuff[stat.getValue()]);
     }
 

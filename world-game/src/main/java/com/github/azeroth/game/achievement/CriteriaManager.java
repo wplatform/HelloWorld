@@ -370,7 +370,7 @@ public class CriteriaManager {
         return criteriaDataMap.get(criteria.id);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     private <T> T getEntry(HashMap<Integer, T> map, CriteriaTreeRecord tree) {
         var cur = tree;
         var obj = map.get(tree.id);

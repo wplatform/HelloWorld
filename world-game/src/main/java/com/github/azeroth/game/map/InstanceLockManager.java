@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 
-// C# TO JAVA CONVERTER TASK: C# to Java Converter could not confirm whether this is a namespace alias or a type alias:
+
 //using InstanceLockKey = Tuple<uint, uint>;
 
 public class InstanceLockManager {

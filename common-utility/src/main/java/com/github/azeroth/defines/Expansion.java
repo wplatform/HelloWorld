@@ -19,5 +19,6 @@ public enum Expansion {
 
     public static final int MAX_EXPANSION = Expansion.values().length;
     public static final int MAX_ACCOUNT_EXPANSION = MAX_EXPANSION + 1;
+    public static final Expansion CURRENT = LEGION;
 
 }

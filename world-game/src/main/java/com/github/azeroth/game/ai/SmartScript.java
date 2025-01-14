@@ -146,7 +146,7 @@ public class SmartScript {
 
         --_nestedEventsCounter;
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void process(SmartEvents e, Unit unit, uint var0, uint var1, bool bvar, SpellInfo spell, GameObject gob, string varString)
 //			{
 //				foreach (var Event in events)

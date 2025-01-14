@@ -8,9 +8,9 @@ import com.github.azeroth.game.spell.SkillDiscovery;
 import com.github.azeroth.game.spell.SkillExtraItems;
 import com.github.azeroth.game.spell.SkillPerfectItems;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ReloadCommand {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAccessRequirementCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Access Requirement definitions...");
         global.getObjectMgr().loadAccessRequirements();
@@ -19,7 +19,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAchievementRewardCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Achievement Reward data...");
         global.getAchievementMgr().loadRewards();
@@ -28,7 +28,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadQuestAreaTriggersCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Quest Area Triggers...");
         global.getObjectMgr().loadQuestAreaTriggers();
@@ -37,7 +37,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAreaTriggerTavernCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Tavern Area Triggers...");
         global.getObjectMgr().loadTavernAreaTriggers();
@@ -46,7 +46,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAreaTriggerTeleportCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading AreaTrigger teleport definitions...");
         global.getObjectMgr().loadAreaTriggerTeleports();
@@ -55,7 +55,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAreaTriggerTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading areatrigger_template table...");
         global.getAreaTriggerDataStorage().LoadAreaTriggerTemplates();
@@ -64,7 +64,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAuctionsCommand(CommandHandler handler) {
         // Reload dynamic data tables from the database
         Log.outInfo(LogFilter.Server, "Re-Loading auctions...");
@@ -74,7 +74,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAutobroadcastCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Autobroadcasts...");
         global.getWorldMgr().loadAutobroadcasts();
@@ -83,7 +83,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadBattlegroundTemplate(CommandHandler handler) {
         Log.outInfo(LogFilter.misc, "Re-Loading Battleground templates...");
         global.getBattlegroundMgr().loadBattlegroundTemplates();
@@ -92,7 +92,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCharacterTemplate(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Character templates...");
         global.getCharacterTemplateDataStorage().LoadCharacterTemplates();
@@ -101,7 +101,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadConditions(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading conditions...");
         global.getConditionMgr().loadConditions(true);
@@ -110,7 +110,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadConfigCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading config settings...");
         global.getWorldMgr().loadConfigSettings(true);
@@ -120,7 +120,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadConversationTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading conversation_* tables...");
         global.getConversationDataStorage().LoadConversationTemplates();
@@ -129,7 +129,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLinkedRespawnCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading Linked Respawns... (`creature_linked_respawn`)");
         global.getObjectMgr().loadLinkedRespawn();
@@ -138,7 +138,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesCreatureCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`creature_loot_template`)");
         LootManager.loadLootTemplates_Creature();
@@ -149,7 +149,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureMovementOverrideCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Creature movement overrides...");
         global.getObjectMgr().loadCreatureMovementOverrides();
@@ -158,7 +158,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadOnKillReputationCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading creature award reputation definitions...");
         global.getObjectMgr().loadReputationOnKill();
@@ -167,7 +167,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureQuestEnderCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading Quests Relations... (`creature_questender`)");
         global.getObjectMgr().loadCreatureQuestEnders();
@@ -176,7 +176,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureQuestStarterCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading Quests Relations... (`creature_queststarter`)");
         global.getObjectMgr().loadCreatureQuestStarters();
@@ -185,7 +185,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureSummonGroupsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading creature summon groups...");
         global.getObjectMgr().loadTempSummons();
@@ -194,7 +194,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureTemplateCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -209,7 +209,7 @@ class ReloadCommand {
             var result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CommandCreaturetemplateNotfound, entry);
+                handler.sendSysMessage(SysMessage.CommandCreaturetemplateNotfound, entry);
 
                 continue;
             }
@@ -217,7 +217,7 @@ class ReloadCommand {
             var cInfo = global.getObjectMgr().getCreatureTemplate(entry);
 
             if (cInfo == null) {
-                handler.sendSysMessage(CypherStrings.CommandCreaturestorageNotfound, entry);
+                handler.sendSysMessage(SysMessage.CommandCreaturestorageNotfound, entry);
 
                 continue;
             }
@@ -234,7 +234,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureText(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Creature Texts...");
         global.getCreatureTextMgr().loadCreatureTexts();
@@ -243,16 +243,16 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCypherStringCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading trinity_string Table!");
-        global.getObjectMgr().loadCypherStrings();
+        global.getObjectMgr().loadSysMessage();
         handler.sendGlobalGMSysMessage("DB table `trinity_string` reloaded.");
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCriteriaDataCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Additional Criteria data...");
         global.getCriteriaMgr().loadCriteriaData();
@@ -261,7 +261,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadDisablesCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading disables table...");
         global.getDisableMgr().loadDisables();
@@ -272,7 +272,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesDisenchantCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`disenchant_loot_template`)");
         LootManager.loadLootTemplates_Disenchant();
@@ -283,7 +283,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadEventScriptsCommand(CommandHandler handler, StringArguments args) {
         if (global.getMapMgr().IsScriptScheduled()) {
             handler.sendSysMessage("DB scripts used currently, please attempt reload later.");
@@ -304,7 +304,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesFishingCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`fishing_loot_template`)");
         LootManager.loadLootTemplates_Fishing();
@@ -315,7 +315,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGameGraveyardZoneCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Graveyard-zone links...");
 
@@ -326,7 +326,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGameTeleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Game Tele coordinates...");
 
@@ -337,7 +337,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesGameobjectCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`gameobject_loot_template`)");
         LootManager.loadLootTemplates_Gameobject();
@@ -348,7 +348,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGOQuestEnderCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading Quests Relations... (`gameobject_questender`)");
         global.getObjectMgr().loadGameobjectQuestEnders();
@@ -357,7 +357,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGOQuestStarterCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading Quests Relations... (`gameobject_queststarter`)");
         global.getObjectMgr().loadGameobjectQuestStarters();
@@ -366,7 +366,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGossipMenuCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `gossip_menu` Table!");
         global.getObjectMgr().loadGossipMenu();
@@ -376,7 +376,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGossipMenuOptionCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `gossip_menu_option` Table!");
         global.getObjectMgr().loadGossipMenuItems();
@@ -386,7 +386,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadItemRandomBonusListTemplatesCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Random item bonus list definitions...");
         ItemEnchantmentManager.loadItemRandomBonusListTemplates();
@@ -395,7 +395,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesItemCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`item_loot_template`)");
         LootManager.loadLootTemplates_Item();
@@ -406,7 +406,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLfgRewardsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading lfg dungeon rewards...");
         global.getLFGMgr().loadRewards();
@@ -415,7 +415,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadAchievementRewardLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Achievement Reward Data locale...");
         global.getAchievementMgr().loadRewardLocales();
@@ -424,7 +424,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureTemplateLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Creature Template locale...");
         global.getObjectMgr().loadCreatureLocales();
@@ -433,7 +433,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadCreatureTextLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Creature Texts locale...");
         global.getCreatureTextMgr().loadCreatureTextLocales();
@@ -442,7 +442,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGameobjectTemplateLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Gameobject Template locale... ");
         global.getObjectMgr().loadGameObjectLocales();
@@ -451,7 +451,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadGossipMenuOptionLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Gossip Menu Option locale... ");
         global.getObjectMgr().loadGossipMenuItemsLocales();
@@ -460,7 +460,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadPageTextLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Page Text locale... ");
         global.getObjectMgr().loadPageTextLocales();
@@ -469,7 +469,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadPointsOfInterestLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Points Of Interest locale... ");
         global.getObjectMgr().loadPointOfInterestLocales();
@@ -478,7 +478,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadMailLevelRewardCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Player level dependent mail rewards...");
         global.getObjectMgr().loadMailLevelRewards();
@@ -487,7 +487,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesMailCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`mail_loot_template`)");
         LootManager.loadLootTemplates_Mail();
@@ -498,7 +498,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesMillingCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`milling_loot_template`)");
         LootManager.loadLootTemplates_Milling();
@@ -517,7 +517,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadNpcVendorCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `npc_vendor` Table!");
         global.getObjectMgr().loadVendors();
@@ -526,7 +526,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadPageTextsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Page text...");
         global.getObjectMgr().loadPageTexts();
@@ -535,7 +535,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesPickpocketingCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`pickpocketing_loot_template`)");
         LootManager.loadLootTemplates_Pickpocketing();
@@ -546,7 +546,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadPointsOfInterestCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `points_of_interest` Table!");
         global.getObjectMgr().loadPointsOfInterest();
@@ -555,7 +555,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesProspectingCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`prospecting_loot_template`)");
         LootManager.loadLootTemplates_Prospecting();
@@ -566,7 +566,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadQuestGreetingCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Quest greeting ... ");
         global.getObjectMgr().loadQuestGreetings();
@@ -575,7 +575,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadQuestTemplateLocaleCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Quest locale... ");
         global.getObjectMgr().loadQuestTemplateLocale();
@@ -592,7 +592,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadQuestPOICommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Quest POI ...");
         global.getObjectMgr().loadQuestPOI();
@@ -602,7 +602,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadQuestTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Quest templates...");
         global.getObjectMgr().loadQuests();
@@ -617,7 +617,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadRBACCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading RBAC tables...");
         global.getAccountMgr().loadRBAC();
@@ -627,7 +627,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesReferenceCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`reference_loot_template`)");
         LootManager.loadLootTemplates_Reference();
@@ -637,7 +637,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadReputationRewardRateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `reputation_reward_rate` Table!");
         global.getObjectMgr().loadReputationRewardRate();
@@ -646,7 +646,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadReputationSpilloverTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading `reputation_spillover_template` Table!");
         global.getObjectMgr().loadReputationSpilloverTemplate();
@@ -655,7 +655,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadReservedNameCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Loading ReservedNames... (`reserved_name`)");
         global.getObjectMgr().loadReservedPlayersNames();
@@ -664,7 +664,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSceneTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.misc, "Reloading scene_template table...");
         global.getObjectMgr().loadSceneTemplates();
@@ -673,7 +673,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSkillDiscoveryTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Skill Discovery Table...");
         SkillDiscovery.loadSkillDiscoveryTable();
@@ -691,7 +691,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSkillExtraItemTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Skill Extra Item Table...");
         SkillExtraItems.loadSkillExtraItemTable();
@@ -700,7 +700,7 @@ class ReloadCommand {
         return handleReloadSkillPerfectItemTemplateCommand(handler);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSkillFishingBaseLevelCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Skill Fishing base level requirements...");
         global.getObjectMgr().loadFishingBaseSkillLevel();
@@ -709,7 +709,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesSkinningCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`skinning_loot_template`)");
         LootManager.loadLootTemplates_Skinning();
@@ -720,7 +720,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSmartScripts(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Smart Scripts...");
         global.getSmartAIMgr().loadFromDB();
@@ -729,7 +729,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellAreaCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading SpellArea data...");
         global.getSpellMgr().loadSpellAreas();
@@ -738,7 +738,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellGroupsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell groups...");
         global.getSpellMgr().loadSpellGroups();
@@ -747,7 +747,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellGroupStackRulesCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell Group Stack Rules...");
         global.getSpellMgr().loadSpellGroupStackRules();
@@ -756,7 +756,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellLearnSpellCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell Learn spells...");
         global.getSpellMgr().loadSpellLearnSpells();
@@ -765,7 +765,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellLinkedSpellCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell Linked spells...");
         global.getSpellMgr().loadSpellLinked();
@@ -774,7 +774,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadLootTemplatesSpellCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables... (`spell_loot_template`)");
         LootManager.loadLootTemplates_Spell();
@@ -785,7 +785,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellPetAurasCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell pet auras...");
         global.getSpellMgr().loadSpellPetAuras();
@@ -794,7 +794,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellProcsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell Proc conditions and data...");
         global.getSpellMgr().loadSpellProcs();
@@ -803,7 +803,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellRequiredCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell Required data... ");
         global.getSpellMgr().loadSpellRequired();
@@ -812,7 +812,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellScriptsCommand(CommandHandler handler, StringArguments args) {
         if (global.getMapMgr().IsScriptScheduled()) {
             handler.sendSysMessage("DB scripts used currently, please attempt reload later.");
@@ -833,7 +833,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellScriptNamesCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.misc, "Reloading spell_script_names table...");
         global.getObjectMgr().loadSpellScriptNames();
@@ -844,7 +844,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellTargetPositionCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Spell target coordinates...");
         global.getSpellMgr().loadSpellTargetPositions();
@@ -853,7 +853,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSpellThreatsCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Aggro Spells Definitions...");
         global.getSpellMgr().loadSpellThreats();
@@ -862,7 +862,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadSupportSystemCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Re-Loading Support System Tables...");
         global.getSupportMgr().loadBugTickets();
@@ -873,7 +873,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadTrainerCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.misc, "Re-Loading `trainer` Table!");
         global.getObjectMgr().loadTrainers();
@@ -886,7 +886,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadVehicleAccessoryCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading vehicle_accessory table...");
         global.getObjectMgr().loadVehicleAccessories();
@@ -895,7 +895,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadVehicleTemplateCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading vehicle_template table...");
         global.getObjectMgr().loadVehicleTemplate();
@@ -904,7 +904,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadVehicleTemplateAccessoryCommand(CommandHandler handler) {
         Log.outInfo(LogFilter.Server, "Reloading vehicle_template_accessory table...");
         global.getObjectMgr().loadVehicleTemplateAccessories();
@@ -913,7 +913,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadWpCommand(CommandHandler handler, StringArguments args) {
         if (args != null) {
             Log.outInfo(LogFilter.Server, "Re-Loading Waypoints data from 'waypoints_data'");
@@ -928,7 +928,7 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleReloadWpScriptsCommand(CommandHandler handler, StringArguments args) {
         if (global.getMapMgr().IsScriptScheduled()) {
             handler.sendSysMessage("DB scripts used currently, please attempt reload later.");
@@ -949,9 +949,9 @@ class ReloadCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AllCommand {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllCommand(CommandHandler handler) {
             handleReloadSkillFishingBaseLevelCommand(handler);
 
@@ -984,7 +984,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllAchievementCommand(CommandHandler handler) {
             handleReloadCriteriaDataCommand(handler);
             handleReloadAchievementRewardCommand(handler);
@@ -992,7 +992,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllAreaCommand(CommandHandler handler) {
             handleReloadAreaTriggerTeleportCommand(handler);
             handleReloadAreaTriggerTavernCommand(handler);
@@ -1001,7 +1001,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllGossipsCommand(CommandHandler handler) {
             handleReloadGossipMenuCommand(handler);
             handleReloadGossipMenuOptionCommand(handler);
@@ -1010,7 +1010,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllItemCommand(CommandHandler handler) {
             handleReloadPageTextsCommand(handler);
             handleReloadItemRandomBonusListTemplatesCommand(handler);
@@ -1018,7 +1018,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllLocalesCommand(CommandHandler handler) {
             handleReloadAchievementRewardLocaleCommand(handler);
             handleReloadCreatureTemplateLocaleCommand(handler);
@@ -1032,7 +1032,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllLootCommand(CommandHandler handler) {
             Log.outInfo(LogFilter.Server, "Re-Loading Loot Tables...");
             LootManager.loadLootTables();
@@ -1042,7 +1042,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllNpcCommand(CommandHandler handler) {
             handleReloadTrainerCommand(handler);
             handleReloadNpcVendorCommand(handler);
@@ -1052,7 +1052,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllQuestCommand(CommandHandler handler) {
             handleReloadQuestAreaTriggersCommand(handler);
             handleReloadQuestGreetingCommand(handler);
@@ -1066,7 +1066,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllScriptsCommand(CommandHandler handler) {
             if (global.getMapMgr().IsScriptScheduled()) {
                 handler.sendSysMessage("DB scripts used currently, please attempt reload later.");
@@ -1084,7 +1084,7 @@ class ReloadCommand {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleReloadAllSpellCommand(CommandHandler handler) {
             handleReloadSkillDiscoveryTemplateCommand(handler);
             handleReloadSkillExtraItemTemplateCommand(handler);

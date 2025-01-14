@@ -10,7 +10,7 @@ class ItemAdditionalLoadInfo {
     public AzeriteEmpoweredData azeriteEmpoweredItem;
 
     public static void init(HashMap<Long, ItemAdditionalLoadInfo> loadInfo, SQLResult artifactResult, SQLResult azeriteItemResult, SQLResult azeriteItemMilestonePowersResult, SQLResult azeriteItemUnlockedEssencesResult, SQLResult azeriteEmpoweredItemResult) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		ItemAdditionalLoadInfo GetOrCreateLoadInfo(ulong guid)
 //			{
 //				if (!loadInfo.ContainsKey(guid))

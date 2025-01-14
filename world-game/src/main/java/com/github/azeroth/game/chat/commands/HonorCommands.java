@@ -3,14 +3,14 @@ package com.github.azeroth.game.chat.commands;
 
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class HonorCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleHonorUpdateCommand(CommandHandler handler) {
         var target = handler.getSelectedPlayer();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -25,14 +25,14 @@ class HonorCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class HonorAddCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleHonorAddCommand(CommandHandler handler, int amount) {
             var target = handler.getSelectedPlayer();
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                handler.sendSysMessage(SysMessage.PlayerNotFound);
 
                 return false;
             }
@@ -47,12 +47,12 @@ class HonorCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleHonorAddKillCommand(CommandHandler handler) {
             var target = handler.getSelectedUnit();
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                handler.sendSysMessage(SysMessage.PlayerNotFound);
 
                 return false;
             }

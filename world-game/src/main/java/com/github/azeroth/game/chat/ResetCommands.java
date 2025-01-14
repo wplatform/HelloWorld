@@ -8,9 +8,9 @@ import com.github.azeroth.game.scripting.interfaces.iplayer.IPlayerOnLevelChange
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ResetCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetAchievementsCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -29,7 +29,7 @@ class ResetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetHonorCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -79,7 +79,7 @@ class ResetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetLevelCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -122,7 +122,7 @@ class ResetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetSpellsCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -136,10 +136,10 @@ class ResetCommands {
             var target = player.getConnectedPlayer();
             target.resetSpells();
 
-            target.sendSysMessage(CypherStrings.ResetSpells);
+            target.sendSysMessage(SysMessage.ResetSpells);
 
             if (handler.getSession() == null || handler.getSession().getPlayer() != target) {
-                handler.sendSysMessage(CypherStrings.ResetSpellsOnline, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.ResetSpellsOnline, handler.getNameLink(target));
             }
         } else {
             var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ADD_AT_LOGIN_FLAG);
@@ -147,13 +147,13 @@ class ResetCommands {
             stmt.AddValue(1, player.getGUID().getCounter());
             DB.characters.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.ResetSpellsOffline, player.getName());
+            handler.sendSysMessage(SysMessage.ResetSpellsOffline, player.getName());
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetStatsCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -177,7 +177,7 @@ class ResetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetTalentsCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -192,10 +192,10 @@ class ResetCommands {
             target.resetTalents(true);
             target.resetTalentSpecialization();
             target.sendTalentsInfoData();
-            target.sendSysMessage(CypherStrings.ResetTalents);
+            target.sendSysMessage(SysMessage.ResetTalents);
 
             if (handler.getSession() == null || handler.getSession().getPlayer() != target) {
-                handler.sendSysMessage(CypherStrings.ResetTalentsOnline, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.ResetTalentsOnline, handler.getNameLink(target));
             }
 
 			/* TODO: 6.x remove/update pet talents
@@ -212,37 +212,37 @@ class ResetCommands {
             DB.characters.execute(stmt);
 
             var nameLink = handler.playerLink(player.getName());
-            handler.sendSysMessage(CypherStrings.ResetTalentsOffline, nameLink);
+            handler.sendSysMessage(SysMessage.ResetTalentsOffline, nameLink);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.NoCharSelected);
+        handler.sendSysMessage(SysMessage.NoCharSelected);
 
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleResetAllCommand(CommandHandler handler, String subCommand) {
         AtLoginFlags atLogin;
 
         // Command specially created as single command to prevent using short case names
         if (Objects.equals(subCommand, "spells")) {
             atLogin = AtLoginFlags.ResetSpells;
-            global.getWorldMgr().sendWorldText(CypherStrings.ResetallSpells);
+            global.getWorldMgr().sendWorldText(SysMessage.ResetallSpells);
 
             if (handler.getSession() == null) {
-                handler.sendSysMessage(CypherStrings.ResetallSpells);
+                handler.sendSysMessage(SysMessage.ResetallSpells);
             }
         } else if (Objects.equals(subCommand, "talents")) {
             atLogin = AtLoginFlags.forValue(AtLoginFlags.ResetTalents.getValue() | AtLoginFlags.ResetPetTalents.getValue());
-            global.getWorldMgr().sendWorldText(CypherStrings.ResetallTalents);
+            global.getWorldMgr().sendWorldText(SysMessage.ResetallTalents);
 
             if (handler.getSession() == null) {
-                handler.sendSysMessage(CypherStrings.ResetallTalents);
+                handler.sendSysMessage(SysMessage.ResetallTalents);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.ResetallUnknownCase, subCommand);
+            handler.sendSysMessage(SysMessage.ResetallUnknownCase, subCommand);
 
             return false;
         }

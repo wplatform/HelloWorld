@@ -1,6 +1,6 @@
 package com.github.azeroth.game.entity;
 
-// C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
 public class UpdateField<T> implements IUpdateField<T> {
     private T value;
     private int blockBit;
@@ -44,7 +44,7 @@ public class UpdateField<T> implements IUpdateField<T> {
         setValue(value);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator T(UpdateField<T> updateField)
 //		{
 //			return updateField.value;

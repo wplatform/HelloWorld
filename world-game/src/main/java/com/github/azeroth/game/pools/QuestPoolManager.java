@@ -245,7 +245,7 @@ public class QuestPoolManager {
     // the storage structure ends up making this kind of inefficient
     // we don't use it in practice (only in debug commands), so that's fine
     public final QuestPool findQuestPool(int poolId) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool lambda(QuestPool p)
 //			{
 //				return p.poolId == poolId;

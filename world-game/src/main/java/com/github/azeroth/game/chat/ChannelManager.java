@@ -76,7 +76,7 @@ public class ChannelManager {
             ++count;
         } while (result.NextRow());
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(name, team) : toDelete) {
             var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_CHANNEL);
             stmt.AddValue(0, name);

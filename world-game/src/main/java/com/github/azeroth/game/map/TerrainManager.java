@@ -4,6 +4,7 @@ package com.github.azeroth.game.map;
 
 import com.github.azeroth.game.entity.object.Position;
 import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.map.model.ZoneAndAreaId;
 import com.github.azeroth.game.phasing.PhaseShift;
 
 
@@ -85,7 +86,7 @@ public class TerrainManager {
 
     public final void update(int diff) {
         // global garbage collection
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(mapId, terrain) : terrainMaps) {
             threadTaskManager.Schedule(() ->
             {
@@ -141,24 +142,24 @@ public class TerrainManager {
     }
 
 
-    public final void getZoneAndAreaId(PhaseShift phaseShift, tangible.OutObject<Integer> zoneid, tangible.OutObject<Integer> areaid, int mapid, Position pos) {
-        getZoneAndAreaId(phaseShift, zoneid, areaid, mapid, pos.getX(), pos.getY(), pos.getZ());
+    public final ZoneAndAreaId getZoneAndAreaId(PhaseShift phaseShift, int mapId, Position pos) {
+        return getZoneAndAreaId(phaseShift, mapId, pos.getX(), pos.getY(), pos.getZ());
     }
 
 
-    public final void getZoneAndAreaId(PhaseShift phaseShift, tangible.OutObject<Integer> zoneid, tangible.OutObject<Integer> areaid, WorldLocation loc) {
-        getZoneAndAreaId(phaseShift, zoneid, areaid, loc.getMapId(), loc);
+    public final ZoneAndAreaId getZoneAndAreaId(PhaseShift phaseShift, WorldLocation loc) {
+        return getZoneAndAreaId(phaseShift, loc.getMapId(), loc);
     }
 
 
-    public final void getZoneAndAreaId(PhaseShift phaseShift, tangible.OutObject<Integer> zoneid, tangible.OutObject<Integer> areaid, int mapid, float x, float y, float z) {
-        zoneid.outArgValue = areaid.outArgValue = 0;
+    public final ZoneAndAreaId getZoneAndAreaId(PhaseShift phaseShift, int mapId, float x, float y, float z) {
 
-        var terrain = loadTerrain(mapid);
+        var terrain = loadTerrain(mapId);
 
         if (terrain != null) {
-            terrain.getZoneAndAreaId(phaseShift, mapid, zoneid, areaid, x, y, z);
+            return terrain.getZoneAndAreaId(phaseShift, mapId, x, y, z, null);
         }
+        return null;
     }
 
 

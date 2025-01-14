@@ -1021,7 +1021,7 @@ public class AuraEffect {
         return effectInfo.isAreaAuraEffect();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public final void handleAuraModSpellPowerPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if ((mode.getValue() & (AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()).getValue()) == 0) {
             return;
@@ -1037,7 +1037,7 @@ public class AuraEffect {
         target.updateSpellDamageAndHealingBonus();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public final void handleModNextSpell(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if ((mode.getValue() & AuraEffectHandleModes.Real.getValue()) == 0) {
             return;
@@ -1266,17 +1266,17 @@ public class AuraEffect {
     }
 
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region AuraEffect Handlers
 
     /**************************************/
     /***       VISIBILITY & PHASES      ***/
     /**************************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUnused(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModInvisibilityDetect(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -1302,7 +1302,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModInvisibility(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountSendForClientMask)) {
             return;
@@ -1370,7 +1370,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModStealthDetect(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -1396,7 +1396,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModStealth(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountSendForClientMask)) {
             return;
@@ -1441,7 +1441,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModStealthLevel(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -1462,7 +1462,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleDetectAmore(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -1499,7 +1499,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleSpiritOfRedemption(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -1527,7 +1527,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraGhost(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -1554,7 +1554,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePhase(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -1569,7 +1569,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePhaseGroup(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -1584,7 +1584,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePhaseAlwaysVisible(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -1606,7 +1606,7 @@ public class AuraEffect {
     /**********************/
     /***   UNIT MODEL   ***/
     /**********************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModShapeshift(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.RealOrReapplyMask)) {
             return;
@@ -1765,7 +1765,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraTransform(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2005,7 +2005,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModScale(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountSendForClientMask)) {
             return;
@@ -2014,7 +2014,7 @@ public class AuraEffect {
         aurApp.getTarget().recalculateObjectScale();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraCloneCaster(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2042,7 +2042,7 @@ public class AuraEffect {
     /************************/
     /***      FIGHT       ***/
     /************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleFeignDeath(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2117,7 +2117,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModUnattackable(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2151,7 +2151,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModDisarm(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2258,7 +2258,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModSilence(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2296,7 +2296,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModPacify(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2316,7 +2316,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModPacifyAndSilence(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2345,7 +2345,7 @@ public class AuraEffect {
         handleAuraModSilence(aurApp, mode, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModNoActions(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2381,7 +2381,7 @@ public class AuraEffect {
     /****************************/
     /***      TRACKING        ***/
     /****************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraTrackCreatures(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2400,7 +2400,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraTrackStealthed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2426,7 +2426,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModStalked(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2450,7 +2450,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraUntrackable(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2477,7 +2477,7 @@ public class AuraEffect {
     /****************************/
     /***  SKILLS & TALENTS    ***/
     /****************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModSkill(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.skill.getValue()))) {
             return;
@@ -2499,7 +2499,7 @@ public class AuraEffect {
         target.modifySkillBonus(prot, (int) (apply ? points : -points), getAuraType() == AuraType.ModSkillTalent);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraAllowTalentSwapping(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2521,7 +2521,7 @@ public class AuraEffect {
     /****************************/
     /***       MOVEMENT       ***/
     /****************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraMounted(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountSendForClientMask)) {
             return;
@@ -2624,7 +2624,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraAllowFlight(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2648,7 +2648,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraWaterWalk(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2666,7 +2666,7 @@ public class AuraEffect {
         target.setWaterWalking(apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraFeatherFall(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2689,7 +2689,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraHover(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2707,7 +2707,7 @@ public class AuraEffect {
         target.setHover(apply); //! Sets movementflags
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleWaterBreathing(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2721,7 +2721,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleForceMoveForward(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2741,7 +2741,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraCanTurnWhileFalling(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2759,7 +2759,7 @@ public class AuraEffect {
         target.setCanTurnWhileFalling(apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleIgnoreMovementForces(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2777,7 +2777,7 @@ public class AuraEffect {
         target.setIgnoreMovementForces(apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleDisableInertia(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -2798,7 +2798,7 @@ public class AuraEffect {
     /****************************/
     /***        THREAT        ***/
     /****************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModThreat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -2807,7 +2807,7 @@ public class AuraEffect {
         aurApp.getTarget().getThreatManager().updateMySpellSchoolModifiers();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModTotalThreat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -2826,7 +2826,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModTaunt(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2841,7 +2841,7 @@ public class AuraEffect {
         target.getThreatManager().tauntUpdate();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModDetaunt(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2860,7 +2860,7 @@ public class AuraEffect {
     /*****************************/
     /***        CONTROL        ***/
     /*****************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModConfuse(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2875,7 +2875,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModFear(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2886,7 +2886,7 @@ public class AuraEffect {
         target.setControlled(apply, UnitState.Fleeing);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModStun(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2901,7 +2901,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRoot(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2912,7 +2912,7 @@ public class AuraEffect {
         target.setControlled(apply, UnitState.Root);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePreventFleeing(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2930,7 +2930,7 @@ public class AuraEffect {
         target.setControlled(false, UnitState.Fleeing);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRootAndDisableGravity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2952,7 +2952,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModStunAndDisableGravity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -2981,7 +2981,7 @@ public class AuraEffect {
     /***************************/
     /***        CHARM        ***/
     /***************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModPossess(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3005,7 +3005,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModPossessPet(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3048,7 +3048,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModCharm(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3065,7 +3065,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleCharmConvert(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3086,7 +3086,7 @@ public class AuraEffect {
      * Such auras are applied from a caster(=player) to a vehicle.
      * This has been verified using spell #49256
      */
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraControlVehicle(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -3140,7 +3140,7 @@ public class AuraEffect {
     /*********************************************************/
     /***                  MODIFY SPEED                     ***/
     /*********************************************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModIncreaseSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -3151,12 +3151,12 @@ public class AuraEffect {
         target.updateSpeed(UnitMoveType.run);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseMountedSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         handleAuraModIncreaseSpeed(aurApp, mode, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseFlightSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountSendForClientMask)) {
             return;
@@ -3196,7 +3196,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseSwimSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -3207,7 +3207,7 @@ public class AuraEffect {
         target.updateSpeed(UnitMoveType.swim);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModDecreaseSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -3223,7 +3223,7 @@ public class AuraEffect {
         target.updateSpeed(UnitMoveType.FlightBack);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModUseNormalSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3236,7 +3236,7 @@ public class AuraEffect {
         target.updateSpeed(UnitMoveType.flight);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModMinimumSpeedRate(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3247,7 +3247,7 @@ public class AuraEffect {
         target.updateSpeed(UnitMoveType.run);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModMovementForceMagnitude(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -3259,7 +3259,7 @@ public class AuraEffect {
     /*********************************************************/
     /***                     IMMUNITY                      ***/
     /*********************************************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModMechanicImmunityMask(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3269,7 +3269,7 @@ public class AuraEffect {
         spellInfo.applyAllSpellImmunitiesTo(target, getSpellEffectInfo(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModMechanicImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3279,7 +3279,7 @@ public class AuraEffect {
         spellInfo.applyAllSpellImmunitiesTo(target, getSpellEffectInfo(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModEffectImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3305,7 +3305,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModStateImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3315,7 +3315,7 @@ public class AuraEffect {
         spellInfo.applyAllSpellImmunitiesTo(target, getSpellEffectInfo(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModSchoolImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3370,7 +3370,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModDmgImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3392,7 +3392,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModDispelImmunity(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -3409,7 +3409,7 @@ public class AuraEffect {
     /********************************/
     /***        RESISTANCE        ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModResistance(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3424,7 +3424,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModBaseResistancePCT(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3457,7 +3457,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModResistancePercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3478,7 +3478,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModBaseResistance(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3501,7 +3501,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModTargetResistance(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3529,7 +3529,7 @@ public class AuraEffect {
     /********************************/
     /***           STAT           ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3568,7 +3568,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModPercentStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3607,7 +3607,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModSpellDamagePercentFromStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3625,7 +3625,7 @@ public class AuraEffect {
         target.toPlayer().updateSpellDamageAndHealingBonus();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModSpellHealingPercentFromStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3641,7 +3641,7 @@ public class AuraEffect {
         target.toPlayer().updateSpellDamageAndHealingBonus();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModHealingDone(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3658,7 +3658,7 @@ public class AuraEffect {
         target.toPlayer().updateSpellDamageAndHealingBonus();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModHealingDonePct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3671,7 +3671,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModTotalPercentStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3722,7 +3722,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModExpertise(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3739,7 +3739,7 @@ public class AuraEffect {
     }
 
     // Increase armor by <AuraEffect.basePoints> % of your <primary stat>
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModArmorPctFromStat(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3755,7 +3755,7 @@ public class AuraEffect {
         player.updateArmor();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModBonusArmor(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3764,7 +3764,7 @@ public class AuraEffect {
         aurApp.getTarget().handleStatFlatModifier(UnitMods.armor, UnitModifierFlatType.base, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModBonusArmorPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3773,7 +3773,7 @@ public class AuraEffect {
         aurApp.getTarget().updateArmor();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModStatBonusPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3800,7 +3800,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleOverrideSpellPowerByAttackPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3816,7 +3816,7 @@ public class AuraEffect {
         target.updateSpellDamageAndHealingBonus();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleOverrideAttackPowerBySpellPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3833,7 +3833,7 @@ public class AuraEffect {
         target.updateAttackPowerAndDamage(true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModVersatilityByPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3848,7 +3848,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModMaxPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3865,7 +3865,7 @@ public class AuraEffect {
     /********************************/
     /***      HEAL & ENERGIZE     ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModPowerRegen(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3886,12 +3886,12 @@ public class AuraEffect {
         // other powers are not immediate effects - implemented in player.Regenerate, CREATURE.Regenerate
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModPowerRegenPCT(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         handleModPowerRegen(aurApp, mode, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModManaRegenPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -3906,7 +3906,7 @@ public class AuraEffect {
         target.toPlayer().updateManaRegen();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseHealth(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3945,7 +3945,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseEnergy(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -3958,7 +3958,7 @@ public class AuraEffect {
         target.handleStatFlatModifier(unitMod, UnitModifierFlatType.Total, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseEnergyPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4003,7 +4003,7 @@ public class AuraEffect {
         change = (oldPower + change) - target.getPower(powerType);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseHealthPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4027,7 +4027,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraIncreaseBaseHealthPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4043,7 +4043,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModIncreaseBaseManaPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4059,7 +4059,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModManaCostPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4068,7 +4068,7 @@ public class AuraEffect {
         aurApp.getTarget().applyModManaCostMultiplier(getAmountAsFloat() / 100.0f, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModPowerDisplay(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.RealOrReapplyMask)) {
             return;
@@ -4085,7 +4085,7 @@ public class AuraEffect {
         aurApp.getTarget().updateDisplayPower();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModOverridePowerDisplay(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -4111,7 +4111,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModMaxPowerPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4161,7 +4161,7 @@ public class AuraEffect {
         target.modifyPower(powerType, change);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleTriggerSpellOnHealthPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real) || !apply) {
             return;
@@ -4194,7 +4194,7 @@ public class AuraEffect {
     /********************************/
     /***          FIGHT           ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModParryPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4209,7 +4209,7 @@ public class AuraEffect {
         target.toPlayer().updateParryPercentage();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModDodgePercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4224,7 +4224,7 @@ public class AuraEffect {
         target.toPlayer().updateDodgePercentage();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModBlockPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4239,7 +4239,7 @@ public class AuraEffect {
         target.toPlayer().updateBlockPercentage();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRegenInterrupt(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4254,7 +4254,7 @@ public class AuraEffect {
         target.toPlayer().updateManaRegen();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModWeaponCritPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4269,7 +4269,7 @@ public class AuraEffect {
         target.updateAllWeaponDependentCritAuras();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModSpellHitChance(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4284,7 +4284,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModSpellCritChance(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4299,7 +4299,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModCritPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4322,7 +4322,7 @@ public class AuraEffect {
     /********************************/
     /***         ATTACK SPEED     ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModCastingSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4370,7 +4370,7 @@ public class AuraEffect {
         target.applyCastTimePercentMod(getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModMeleeRangedSpeedPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4384,7 +4384,7 @@ public class AuraEffect {
         target.applyAttackTimePercentMod(WeaponAttackType.RangedAttack, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModCombatSpeedPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4410,7 +4410,7 @@ public class AuraEffect {
         target.applyAttackTimePercentMod(WeaponAttackType.RangedAttack, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModAttackSpeed(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4422,7 +4422,7 @@ public class AuraEffect {
         target.updateDamagePhysical(WeaponAttackType.BaseAttack);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModMeleeSpeedPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4445,7 +4445,7 @@ public class AuraEffect {
         target.applyAttackTimePercentMod(WeaponAttackType.OffAttack, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRangedHaste(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4460,7 +4460,7 @@ public class AuraEffect {
     /********************************/
     /***       COMBAT RATING      ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModRating(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4479,7 +4479,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModRatingPct(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue())) {
             return;
@@ -4502,7 +4502,7 @@ public class AuraEffect {
     /********************************/
     /***        ATTACK POWER      ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraModAttackPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4513,7 +4513,7 @@ public class AuraEffect {
         target.handleStatFlatModifier(UnitMods.attackPower, UnitModifierFlatType.Total, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRangedAttackPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4528,7 +4528,7 @@ public class AuraEffect {
         target.handleStatFlatModifier(UnitMods.AttackPowerRanged, UnitModifierFlatType.Total, getAmount(), apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModAttackPowerPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4545,7 +4545,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModRangedAttackPowerPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4569,7 +4569,7 @@ public class AuraEffect {
     /********************************/
     /***        DAMAGE BONUS      ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModDamageDone(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4604,7 +4604,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModDamagePercentDone(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4630,7 +4630,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModOffhandDamagePercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4654,7 +4654,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleShieldBlockValuePercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Stat.getValue()))) {
             return;
@@ -4677,7 +4677,7 @@ public class AuraEffect {
     /********************************/
     /***        POWER COST        ***/
     /********************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleModPowerCost(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -4697,7 +4697,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleArenaPreparation(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -4719,7 +4719,7 @@ public class AuraEffect {
         target.modifyAuraState(AuraStateType.ArenaPreparation, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleNoReagentUseAura(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -4748,7 +4748,7 @@ public class AuraEffect {
     /*********************************************************/
     /***                    OTHERS                         ***/
     /*********************************************************/
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuraDummy(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag((AuraEffectHandleModes.ChangeAmountMask.getValue() | AuraEffectHandleModes.Reapply.getValue()))) {
             return;
@@ -5065,7 +5065,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleChannelDeathItem(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5130,7 +5130,7 @@ public class AuraEffect {
         plCaster.sendNewItem(newitem, count, true, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleBindSight(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5147,7 +5147,7 @@ public class AuraEffect {
         caster.toPlayer().setViewpoint(target, apply);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleForceReaction(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -5173,7 +5173,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraEmpathy(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5197,7 +5197,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModFaction(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5220,7 +5220,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleLearnSpell(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5239,7 +5239,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleComprehendLanguage(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -5258,7 +5258,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModAlternativeDefaultLanguage(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.SendForClientMask)) {
             return;
@@ -5277,7 +5277,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraLinked(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         var target = aurApp.getTarget();
 
@@ -5319,7 +5319,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleTriggerSpellOnPowerPercent(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real) || !apply) {
             return;
@@ -5351,7 +5351,7 @@ public class AuraEffect {
         target.castSpell(target, triggerSpell, new CastSpellExtraArgs(this));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleTriggerSpellOnPowerAmount(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real) || !apply) {
             return;
@@ -5383,7 +5383,7 @@ public class AuraEffect {
         target.castSpell(target, triggerSpell, new CastSpellExtraArgs(this));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleTriggerSpellOnExpire(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real) || apply || aurApp.getRemoveMode() != AuraRemoveMode.Expire) {
             return;
@@ -5398,7 +5398,7 @@ public class AuraEffect {
         caster.castSpell(aurApp.getTarget(), getSpellEffectInfo().triggerSpell, new CastSpellExtraArgs(this));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraOpenStable(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5417,7 +5417,7 @@ public class AuraEffect {
         // client auto close stable dialog at !apply aura
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraModFakeInebriation(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.ChangeAmountMask)) {
             return;
@@ -5460,7 +5460,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraOverrideSpells(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5503,7 +5503,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraSetVehicle(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5534,7 +5534,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePreventResurrection(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -5553,7 +5553,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleMastery(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6257,7 +6257,7 @@ public class AuraEffect {
         target.sendSpellNonMeleeDamageLog(damageInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraForceWeather(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6276,7 +6276,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleEnableAltPower(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6296,7 +6296,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModSpellCategoryCooldown(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6309,7 +6309,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleShowConfirmationPrompt(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6328,7 +6328,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleOverridePetSpecs(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6359,7 +6359,7 @@ public class AuraEffect {
         pet.SetSpecialization(global.getDB2Mgr().GetChrSpecializationByIndex(apply ? playerClass.Max : 0, currSpec.orderIndex).id);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAllowUsingGameobjectsWhileMounted(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6378,7 +6378,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handlePlayScene(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6397,7 +6397,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleCreateAreaTrigger(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6416,7 +6416,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleAuraPvpTalents(AuraApplication auraApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6433,7 +6433,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleLinkedSummon(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6492,7 +6492,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleSetFFAPvP(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6507,7 +6507,7 @@ public class AuraEffect {
         target.updatePvPState(true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleModOverrideZonePVPType(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6531,7 +6531,7 @@ public class AuraEffect {
         target.updatePvPState();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleBattlegroundPlayerPosition(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6575,7 +6575,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleStoreTeleportReturnPoint(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6594,7 +6594,7 @@ public class AuraEffect {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleMountRestrictions(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6603,7 +6603,7 @@ public class AuraEffect {
         aurApp.getTarget().updateMountCapability();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleCosmeticMounted(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6624,7 +6624,7 @@ public class AuraEffect {
         playerTarget.sendMovementSetCollisionHeight(playerTarget.getCollisionHeight(), UpdateCollisionHeightReason.FORCE);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleSuppressItemPassiveEffectBySpellLabel(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6634,7 +6634,7 @@ public class AuraEffect {
         aurApp.getTarget().getAuraQuery().hasLabel(new integer(getMiscValue())).forEachResult(aura -> aura.applyForTargets());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void handleForceBreathBar(AuraApplication aurApp, AuraEffectHandleModes mode, boolean apply) {
         if (!mode.hasFlag(AuraEffectHandleModes.Real)) {
             return;
@@ -6649,6 +6649,6 @@ public class AuraEffect {
         playerTarget.updatePositionData();
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

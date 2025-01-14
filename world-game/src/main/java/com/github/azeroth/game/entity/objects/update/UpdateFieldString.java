@@ -19,7 +19,7 @@ public class UpdateFieldString implements IUpdateField<String> {
         value = value;
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator string(UpdateFieldString updateField)
 //		{
 //			return updateField.value;

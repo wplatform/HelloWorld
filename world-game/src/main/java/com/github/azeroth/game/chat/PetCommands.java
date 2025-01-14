@@ -1,15 +1,15 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class PetCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePetCreateCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
         var creatureTarget = handler.getSelectedCreature();
 
         if (!creatureTarget || creatureTarget.isPet() || creatureTarget.isTypeId(TypeId.PLAYER)) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -53,12 +53,12 @@ class PetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePetLearnCommand(CommandHandler handler, int spellId) {
         var pet = getSelectedPlayerPetOrOwn(handler);
 
         if (!pet) {
-            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+            handler.sendSysMessage(SysMessage.SelectPlayerOrPet);
 
             return false;
         }
@@ -78,7 +78,7 @@ class PetCommands {
         var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
 
         if (spellInfo == null || !global.getSpellMgr().isSpellValid(spellInfo)) {
-            handler.sendSysMessage(CypherStrings.CommandSpellBroken, spellId);
+            handler.sendSysMessage(SysMessage.CommandSpellBroken, spellId);
 
             return false;
         }
@@ -90,12 +90,12 @@ class PetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePetUnlearnCommand(CommandHandler handler, int spellId) {
         var pet = getSelectedPlayerPetOrOwn(handler);
 
         if (!pet) {
-            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+            handler.sendSysMessage(SysMessage.SelectPlayerOrPet);
 
             return false;
         }
@@ -109,13 +109,13 @@ class PetCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePetLevelCommand(CommandHandler handler, int level) {
         var pet = getSelectedPlayerPetOrOwn(handler);
         var owner = pet ? pet.getOwningPlayer() : null;
 
         if (!pet || !owner) {
-            handler.sendSysMessage(CypherStrings.SelectPlayerOrPet);
+            handler.sendSysMessage(SysMessage.SelectPlayerOrPet);
 
             return false;
         }
@@ -125,7 +125,7 @@ class PetCommands {
         }
 
         if (level == 0 || level < -SharedConst.StrongMaxLevel || level > SharedConst.StrongMaxLevel) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }

@@ -181,7 +181,7 @@ public class CommandHandler {
         }
 
         // Send error message for GMs
-        sendSysMessage(CypherStrings.CmdInvalid, text);
+        sendSysMessage(SysMessage.CmdInvalid, text);
 
         return true;
     }
@@ -257,7 +257,7 @@ public class CommandHandler {
         }
 
         args.NextString(" ");
-        sendSysMessage(CypherStrings.WrongLinkType);
+        sendSysMessage(SysMessage.WrongLinkType);
 
         return null;
     }
@@ -299,7 +299,7 @@ public class CommandHandler {
             var name = extractPlayerNameFromLink(args);
 
             if (StringUtil.isEmpty(name)) {
-                sendSysMessage(CypherStrings.PlayerNotFound);
+                sendSysMessage(SysMessage.PlayerNotFound);
                 sentErrorMessage = true;
 
                 return false;
@@ -317,7 +317,7 @@ public class CommandHandler {
         }
 
         if (player.outArgValue == null && playerGuid.outArgValue.isEmpty() && StringUtil.isEmpty(playerName.outArgValue)) {
-            sendSysMessage(CypherStrings.PlayerNotFound);
+            sendSysMessage(SysMessage.PlayerNotFound);
             sentErrorMessage = true;
 
             return false;
@@ -536,7 +536,7 @@ public class CommandHandler {
         }
 
         if (target_session == null && target_account == 0) {
-            sendSysMessage(CypherStrings.PlayerNotFound);
+            sendSysMessage(SysMessage.PlayerNotFound);
             sentErrorMessage = true;
 
             return true;
@@ -572,7 +572,7 @@ public class CommandHandler {
         }
 
         if (session.getSecurity().getValue() < target_ac_sec.getValue() || (strong && session.getSecurity().getValue() <= target_ac_sec.getValue())) {
-            sendSysMessage(CypherStrings.YoursSecurityIsLow);
+            sendSysMessage(SysMessage.YoursSecurityIsLow);
             sentErrorMessage = true;
 
             return true;
@@ -581,20 +581,20 @@ public class CommandHandler {
         return false;
     }
 
-    public final String getCypherString(CypherStrings str) {
-        return global.getObjectMgr().getCypherString(str);
+    public final String getSysMessage(SysMessage str) {
+        return global.getObjectMgr().getSysMessage(str);
     }
 
-    public final String getParsedString(CypherStrings cypherString, object... args) {
-        return String.format(global.getObjectMgr().getCypherString(cypherString), args);
+    public final String getParsedString(SysMessage cypherString, object... args) {
+        return String.format(global.getObjectMgr().getSysMessage(cypherString), args);
     }
 
     public final void sendSysMessage(String str, object... args) {
         sendSysMessage(String.format(str, args));
     }
 
-    public final void sendSysMessage(CypherStrings cypherString, object... args) {
-        sendSysMessage(String.format(global.getObjectMgr().getCypherString(cypherString), args));
+    public final void sendSysMessage(SysMessage cypherString, object... args) {
+        sendSysMessage(String.format(global.getObjectMgr().getSysMessage(cypherString), args));
     }
 
 
@@ -619,7 +619,7 @@ public class CommandHandler {
         }
     }
 
-    public final void sendNotification(CypherStrings str, object... args) {
+    public final void sendNotification(SysMessage str, object... args) {
         session.sendNotification(str, args);
     }
 
@@ -651,7 +651,7 @@ public class CommandHandler {
             tangible.RefObject<String> tempRef_name = new tangible.RefObject<String>(name);
             if (!ObjectManager.normalizePlayerName(tempRef_name)) {
                 name = tempRef_name.refArgValue;
-                sendSysMessage(CypherStrings.PlayerNotFound);
+                sendSysMessage(SysMessage.PlayerNotFound);
 
                 return false;
             } else {

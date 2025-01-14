@@ -389,12 +389,12 @@ public class BattlegroundManager {
 
     public final void toggleTesting() {
         m_Testing = !m_Testing;
-        global.getWorldMgr().sendWorldText(m_Testing ? CypherStrings.DebugBgOn : CypherStrings.DebugBgOff);
+        global.getWorldMgr().sendWorldText(m_Testing ? SysMessage.DebugBgOn : SysMessage.DebugBgOff);
     }
 
     public final void toggleArenaTesting() {
         m_ArenaTesting = !m_ArenaTesting;
-        global.getWorldMgr().sendWorldText(m_ArenaTesting ? CypherStrings.DebugArenaOn : CypherStrings.DebugArenaOff);
+        global.getWorldMgr().sendWorldText(m_ArenaTesting ? SysMessage.DebugArenaOn : SysMessage.DebugArenaOff);
     }
 
     public final void resetHolidays() {

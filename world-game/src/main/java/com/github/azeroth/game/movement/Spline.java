@@ -110,7 +110,7 @@ public class Spline {
 
     public final void initLengths() {
         var i = index_lo;
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
         dynamic length = null;
         tangible.RefObject<T[]> tempRef_lengths = new tangible.RefObject<T[]>(lengths);
         Array.Resize(tempRef_lengths, index_hi + 1);
@@ -168,7 +168,7 @@ public class Spline {
         result.outArgValue = vertice[0] * weights.X + vertice[1] * weights.Y + vertice[2] * weights.Z + vertice[3] * weights.W;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Evaluate
 
     public final void evaluate_Percent(int idx, float u, tangible.OutObject<Vector3> c) {
@@ -198,21 +198,21 @@ public class Spline {
 
     private void evaluateCatmullRom(int index, float t, tangible.OutObject<Vector3> result) {
         Span<Vector3> span = points;
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         C_Evaluate(span[(index - 1)..],t, s_catmullRomCoeffs, result);
     }
 
     private void evaluateBezier3(int index, float t, tangible.OutObject<Vector3> result) {
         index *= (int) 3;
         Span<Vector3> span = points;
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         C_Evaluate(span[index..],t, s_Bezier3Coeffs, result);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Init
 
     public final void initSplineCustom(SplineRawInitializer initializer) {
@@ -329,10 +329,10 @@ public class Spline {
         index_hi = t - 1;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region EvaluateDerivative
 
     public final void evaluate_Derivative(int idx, float u, tangible.OutObject<Vector3> hermite) {
@@ -362,21 +362,21 @@ public class Spline {
 
     private void evaluateDerivativeCatmullRom(int index, float t, tangible.OutObject<Vector3> result) {
         Span<Vector3> span = points;
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         C_Evaluate_Derivative(span[(index - 1)..],t, s_catmullRomCoeffs, result);
     }
 
     private void evaluateDerivativeBezier3(int index, float t, tangible.OutObject<Vector3> result) {
         index *= (int) 3;
         Span<Vector3> span = points;
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         C_Evaluate_Derivative(span[index..],t, s_Bezier3Coeffs, result);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region SegLength
 
     public final float segLength(int i) {
@@ -442,6 +442,6 @@ public class Spline {
         return (float) length;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

@@ -257,7 +257,7 @@ public class PoolManager {
 
                 // Now check for circular reference
                 // All pool_ids are in pool_template
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 for (var(id, poolData) : poolTemplate) {
                     ArrayList<Integer> checkedPools = new ArrayList<>();
                     var poolItr = poolSearchMap.get(id);
@@ -304,7 +304,7 @@ public class PoolManager {
             }
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(poolId, templateData) : poolTemplate) {
             if (isEmpty(poolId)) {
                 Logs.SQL.error(String.format("Pool Id %1$s is empty (has no creatures and no gameobects and either no child pools or child pools are all empty. The pool will not be spawned", poolId));

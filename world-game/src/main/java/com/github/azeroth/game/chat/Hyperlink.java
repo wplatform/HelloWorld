@@ -2,7 +2,7 @@ package com.github.azeroth.game.chat;
 
 
 class Hyperlink {
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     public static ChatCommandResult tryParse(tangible.OutObject<dynamic> value, Class type, CommandHandler handler, String arg) {
         value.outArgValue = null;
 
@@ -13,7 +13,7 @@ class Hyperlink {
             return null;
         }
 
-        var errorResult = ChatCommandResult.fromErrorMessage(handler.getCypherString(CypherStrings.CmdparserLinkdataInvalid));
+        var errorResult = ChatCommandResult.fromErrorMessage(handler.getSysMessage(SysMessage.CmdparserLinkdataInvalid));
 
         // store value
         switch (type.GetTypeCode(type)) {
@@ -55,7 +55,7 @@ class Hyperlink {
         }
 
         // finally, skip any potential delimiters
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(token, next) = info.tail.Tokenize();
 
         if (token.isEmpty()) // empty token = first character is delimiter, skip past it

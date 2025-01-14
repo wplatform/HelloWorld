@@ -253,14 +253,14 @@ public class WorldStateManager {
 
         TValue valuesTemplate;
         if (worldStatesByMap.containsKey((int) map.getId()) && (valuesTemplate = worldStatesByMap.get((int) map.getId())) == valuesTemplate) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(key, value) : valuesTemplate) {
                 initialValues.put(key, value);
             }
         }
 
         if (worldStatesByMap.containsKey(ANYMAP) && (valuesTemplate = worldStatesByMap.get(ANYMAP)) == valuesTemplate) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(key, value) : valuesTemplate) {
                 initialValues.put(key, value);
             }
@@ -270,12 +270,12 @@ public class WorldStateManager {
     }
 
     public final void fillInitialWorldStates(InitWorldStates initWorldStates, Map map, int playerAreaId) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(worldStateId, value) : realmWorldStateValues) {
             initWorldStates.addState(worldStateId, value);
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(worldStateId, value) : map.getWorldStateValues()) {
             var worldStateTemplate = getWorldStateTemplate(worldStateId);
 

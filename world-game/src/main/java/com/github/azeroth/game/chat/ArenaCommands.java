@@ -3,12 +3,12 @@ package com.github.azeroth.game.chat;
 
 import com.github.azeroth.game.arena.ArenaTeam;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ArenaCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaCreateCommand(CommandHandler handler, PlayerIdentifier captain, String name, ArenaTypes type) {
         if (global.getArenaTeamMgr().getArenaTeamByName(name) != null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNameExists, name);
+            handler.sendSysMessage(SysMessage.ArenaErrorNameExists, name);
 
             return false;
         }
@@ -22,7 +22,7 @@ class ArenaCommands {
         }
 
         if (global.getCharacterCacheStorage().getCharacterArenaTeamIdByGuid(captain.getGUID(), (byte) type.getValue()) != 0) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorSize, captain.getName());
+            handler.sendSysMessage(SysMessage.ArenaErrorSize, captain.getName());
 
             return false;
         }
@@ -30,29 +30,29 @@ class ArenaCommands {
         ArenaTeam arena = new ArenaTeam();
 
         if (!arena.create(captain.getGUID(), (byte) type.getValue(), name, (int) 4293102085, (byte) 101, (int) 4293253939, (byte) 4, (int) 4284049911)) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         global.getArenaTeamMgr().addArenaTeam(arena);
-        handler.sendSysMessage(CypherStrings.ArenaCreate, arena.getName(), arena.getId(), arena.getArenaType(), arena.getCaptain());
+        handler.sendSysMessage(SysMessage.ArenaCreate, arena.getName(), arena.getId(), arena.getArenaType(), arena.getCaptain());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaDisbandCommand(CommandHandler handler, int teamId) {
         var arena = global.getArenaTeamMgr().getArenaTeamById(teamId);
 
         if (arena == null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNotFound, teamId);
+            handler.sendSysMessage(SysMessage.ArenaErrorNotFound, teamId);
 
             return false;
         }
 
         if (arena.isFighting()) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorCombat);
+            handler.sendSysMessage(SysMessage.ArenaErrorCombat);
 
             return false;
         }
@@ -60,56 +60,56 @@ class ArenaCommands {
         var name = arena.getName();
         arena.disband();
 
-        handler.sendSysMessage(CypherStrings.ArenaDisband, name, teamId);
+        handler.sendSysMessage(SysMessage.ArenaDisband, name, teamId);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaRenameCommand(CommandHandler handler, String oldName, String newName) {
         var arena = global.getArenaTeamMgr().getArenaTeamByName(oldName);
 
         if (arena == null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNameNotFound, oldName);
+            handler.sendSysMessage(SysMessage.ArenaErrorNameNotFound, oldName);
 
             return false;
         }
 
         if (global.getArenaTeamMgr().getArenaTeamByName(newName) != null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNameExists, oldName);
+            handler.sendSysMessage(SysMessage.ArenaErrorNameExists, oldName);
 
             return false;
         }
 
         if (arena.isFighting()) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorCombat);
+            handler.sendSysMessage(SysMessage.ArenaErrorCombat);
 
             return false;
         }
 
         if (!arena.setName(newName)) {
-            handler.sendSysMessage(CypherStrings.ArenaRename, arena.getId(), oldName, newName);
+            handler.sendSysMessage(SysMessage.ArenaRename, arena.getId(), oldName, newName);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.BadValue);
+        handler.sendSysMessage(SysMessage.BadValue);
 
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaCaptainCommand(CommandHandler handler, int teamId, PlayerIdentifier target) {
         var arena = global.getArenaTeamMgr().getArenaTeamById(teamId);
 
         if (arena == null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNotFound, teamId);
+            handler.sendSysMessage(SysMessage.ArenaErrorNotFound, teamId);
 
             return false;
         }
 
         if (arena.isFighting()) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorCombat);
+            handler.sendSysMessage(SysMessage.ArenaErrorCombat);
 
             return false;
         }
@@ -123,13 +123,13 @@ class ArenaCommands {
         }
 
         if (!arena.isMember(target.getGUID())) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNotMember, target.getName(), arena.getName());
+            handler.sendSysMessage(SysMessage.ArenaErrorNotMember, target.getName(), arena.getName());
 
             return false;
         }
 
         if (com.github.azeroth.game.entity.Objects.equals(arena.getCaptain(), target.getGUID())) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorCaptain, target.getName(), arena.getName());
+            handler.sendSysMessage(SysMessage.ArenaErrorCaptain, target.getName(), arena.getName());
 
             return false;
         }
@@ -144,31 +144,31 @@ class ArenaCommands {
         }
 
         arena.setCaptain(target.getGUID());
-        handler.sendSysMessage(CypherStrings.ArenaCaptain, arena.getName(), arena.getId(), oldCaptainName, target.getName());
+        handler.sendSysMessage(SysMessage.ArenaCaptain, arena.getName(), arena.getId(), oldCaptainName, target.getName());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaInfoCommand(CommandHandler handler, int teamId) {
         var arena = global.getArenaTeamMgr().getArenaTeamById(teamId);
 
         if (arena == null) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNotFound, teamId);
+            handler.sendSysMessage(SysMessage.ArenaErrorNotFound, teamId);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.ArenaInfoHeader, arena.getName(), arena.getId(), arena.getRating(), arena.getArenaType(), arena.getArenaType());
+        handler.sendSysMessage(SysMessage.ArenaInfoHeader, arena.getName(), arena.getId(), arena.getRating(), arena.getArenaType(), arena.getArenaType());
 
         for (var member : arena.getMembers()) {
-            handler.sendSysMessage(CypherStrings.ArenaInfoMembers, member.name, member.guid, member.personalRating, (com.github.azeroth.game.entity.Objects.equals(arena.getCaptain(), member.guid) ? "- Captain" : ""));
+            handler.sendSysMessage(SysMessage.ArenaInfoMembers, member.name, member.guid, member.personalRating, (com.github.azeroth.game.entity.Objects.equals(arena.getCaptain(), member.guid) ? "- Captain" : ""));
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleArenaLookupCommand(CommandHandler handler, String needle) {
         if (needle.isEmpty()) {
             return false;
@@ -176,11 +176,11 @@ class ArenaCommands {
 
         var found = false;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, team) : global.getArenaTeamMgr().getArenaTeamMap()) {
             if (team.getName().Equals(needle, StringComparison.OrdinalIgnoreCase)) {
                 if (handler.getSession() != null) {
-                    handler.sendSysMessage(CypherStrings.ArenaLookup, team.getName(), team.getId(), team.getArenaType(), team.getArenaType());
+                    handler.sendSysMessage(SysMessage.ArenaLookup, team.getName(), team.getId(), team.getArenaType(), team.getArenaType());
                     found = true;
 
                     continue;
@@ -189,7 +189,7 @@ class ArenaCommands {
         }
 
         if (!found) {
-            handler.sendSysMessage(CypherStrings.ArenaErrorNameNotFound, needle);
+            handler.sendSysMessage(SysMessage.ArenaErrorNameNotFound, needle);
         }
 
         return true;

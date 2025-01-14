@@ -26,7 +26,7 @@ class PlayerPersonalPhasesTracker {
         var phaseShift = owner.getPhaseShift();
 
         // Loop over all our tracked phases. If any don't exist - delete them
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(phaseId, spawns) : spawns) {
             if (!spawns.durationRemaining.HasValue && !phaseShift.hasPhase(phaseId)) {
                 spawns.durationRemaining = PersonalPhaseSpawns.DELETE_TIME_DEFAULT;

@@ -1,11 +1,11 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ChannelCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class ChannelSetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleChannelSetOwnership(CommandHandler handler, String channelName, boolean grantOwnership) {
             int channelId = 0;
 
@@ -45,7 +45,7 @@ class ChannelCommands {
                 stmt.AddValue(0, 1);
                 stmt.AddValue(1, channelName);
                 DB.characters.execute(stmt);
-                handler.sendSysMessage(CypherStrings.ChannelEnableOwnership, channelName);
+                handler.sendSysMessage(SysMessage.ChannelEnableOwnership, channelName);
             } else {
                 if (channel != null) {
                     channel.setOwnership(false);
@@ -55,7 +55,7 @@ class ChannelCommands {
                 stmt.AddValue(0, 0);
                 stmt.AddValue(1, channelName);
                 DB.characters.execute(stmt);
-                handler.sendSysMessage(CypherStrings.ChannelDisableOwnership, channelName);
+                handler.sendSysMessage(SysMessage.ChannelDisableOwnership, channelName);
             }
 
             return true;

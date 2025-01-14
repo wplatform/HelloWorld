@@ -1,10 +1,10 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class PdumpCommand {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handlePDumpCopyCommand(CommandHandler handler, PlayerIdentifier player, AccountIdentifier account, String characterName, Long characterGUID) {
 		/*
 			std::string name;
@@ -49,8 +49,8 @@ class PdumpCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handlePDumpLoadCommand(CommandHandler handler, String fileName, AccountIdentifier account, String characterName, Long characterGuid) {
 		/*
 			if (!AccountMgr.normalizeString(accountName))
@@ -147,7 +147,7 @@ class PdumpCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handlePDumpWriteCommand(CommandHandler handler, String fileName, String playerName) {
 		/*
 			switch (PlayerDumpWriter().WriteDump(fileName, player.getGUID().GetCounter()))

@@ -5,7 +5,7 @@ import com.github.azeroth.game.networking.packet.PrintNotification;
 import game.ServerMessageType;
 
 class MessageCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNameAnnounceCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
@@ -18,12 +18,12 @@ class MessageCommands {
             name = session.getPlayer().getName();
         }
 
-        global.getWorldMgr().sendWorldText(CypherStrings.AnnounceColor, name, message);
+        global.getWorldMgr().sendWorldText(SysMessage.AnnounceColor, name, message);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMNameAnnounceCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
@@ -36,40 +36,40 @@ class MessageCommands {
             name = session.getPlayer().getName();
         }
 
-        global.getWorldMgr().sendGMText(CypherStrings.AnnounceColor, name, message);
+        global.getWorldMgr().sendGMText(SysMessage.AnnounceColor, name, message);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleAnnounceCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
         }
 
-        global.getWorldMgr().sendServerMessage(ServerMessageType.String, handler.getParsedString(CypherStrings.Systemmessage, message));
+        global.getWorldMgr().sendServerMessage(ServerMessageType.String, handler.getParsedString(SysMessage.Systemmessage, message));
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMAnnounceCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
         }
 
-        global.getWorldMgr().sendGMText(CypherStrings.GmBroadcast, message);
+        global.getWorldMgr().sendGMText(SysMessage.GmBroadcast, message);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNotifyCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
         }
 
-        var str = handler.getCypherString(CypherStrings.GlobalNotify);
+        var str = handler.getSysMessage(SysMessage.GlobalNotify);
         str += message;
 
         global.getWorldMgr().sendGlobalMessage(new PrintNotification(str));
@@ -77,13 +77,13 @@ class MessageCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMNotifyCommand(CommandHandler handler, Tail message) {
         if (message.isEmpty()) {
             return false;
         }
 
-        var str = handler.getCypherString(CypherStrings.GmNotify);
+        var str = handler.getSysMessage(SysMessage.GmNotify);
         str += message;
 
         global.getWorldMgr().sendGlobalGMMessage(new PrintNotification(str));
@@ -91,18 +91,18 @@ class MessageCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleWhispersCommand(CommandHandler handler, Boolean operationArg, String playerNameArg) {
         if (operationArg == null) {
-            handler.sendSysMessage(CypherStrings.CommandWhisperaccepting, handler.getSession().getPlayer().isAcceptWhispers() ? handler.getCypherString(CypherStrings.on) : handler.getCypherString(CypherStrings.Off));
+            handler.sendSysMessage(SysMessage.CommandWhisperaccepting, handler.getSession().getPlayer().isAcceptWhispers() ? handler.getSysMessage(SysMessage.on) : handler.getSysMessage(SysMessage.Off));
 
             return true;
         }
 
         if (operationArg != null) {
             handler.getSession().getPlayer().setAcceptWhispers(true);
-            handler.sendSysMessage(CypherStrings.CommandWhisperon);
+            handler.sendSysMessage(SysMessage.CommandWhisperon);
 
             return true;
         } else {
@@ -110,7 +110,7 @@ class MessageCommands {
             handler.getSession().getPlayer().clearWhisperWhiteList();
 
             handler.getSession().getPlayer().setAcceptWhispers(false);
-            handler.sendSysMessage(CypherStrings.CommandWhisperoff);
+            handler.sendSysMessage(SysMessage.CommandWhisperoff);
 
             return true;
         }
@@ -137,7 +137,7 @@ class MessageCommands {
 				}
 			}
 		}
-		handler.sendSysMessage(CypherStrings.UseBol);
+		handler.sendSysMessage(SysMessage.UseBol);
 		return false;*/
     }
 }

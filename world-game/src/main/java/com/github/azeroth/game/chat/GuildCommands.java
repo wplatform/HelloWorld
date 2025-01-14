@@ -5,9 +5,9 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.guild.guild;
 import game.ObjectManager;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class GuildCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildCreateCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -29,19 +29,19 @@ class GuildCommands {
         }
 
         if (target.getGuildId() != 0) {
-            handler.sendSysMessage(CypherStrings.PlayerInGuild);
+            handler.sendSysMessage(SysMessage.PlayerInGuild);
 
             return false;
         }
 
         if (global.getGuildMgr().getGuildByName(guildName)) {
-            handler.sendSysMessage(CypherStrings.GuildRenameAlreadyExists);
+            handler.sendSysMessage(SysMessage.GuildRenameAlreadyExists);
 
             return false;
         }
 
         if (global.getObjectMgr().isReservedName(guildName) || !ObjectManager.isValidCharterName(guildName)) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -49,7 +49,7 @@ class GuildCommands {
         Guild guild = new guild();
 
         if (!guild.create(target, guildName)) {
-            handler.sendSysMessage(CypherStrings.GuildNotCreated);
+            handler.sendSysMessage(SysMessage.GuildNotCreated);
 
             return false;
         }
@@ -59,7 +59,7 @@ class GuildCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildDeleteCommand(CommandHandler handler, QuotedString guildName) {
         if (guildName.isEmpty()) {
             return false;
@@ -76,7 +76,7 @@ class GuildCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildInviteCommand(CommandHandler handler, PlayerIdentifier targetIdentifier, QuotedString guildName) {
         if (targetIdentifier == null) {
             targetIdentifier = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -101,7 +101,7 @@ class GuildCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildUninviteCommand(CommandHandler handler, PlayerIdentifier targetIdentifier, QuotedString guildName) {
         if (targetIdentifier == null) {
             targetIdentifier = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -128,7 +128,7 @@ class GuildCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildRankCommand(CommandHandler handler, PlayerIdentifier player, byte rank) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -153,16 +153,16 @@ class GuildCommands {
         return targetGuild.changeMemberRank(null, player.getGUID(), GuildRankId.forValue(rank));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildRenameCommand(CommandHandler handler, QuotedString oldGuildName, QuotedString newGuildName) {
         if (oldGuildName.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         if (newGuildName.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.InsertGuildName);
+            handler.sendSysMessage(SysMessage.InsertGuildName);
 
             return false;
         }
@@ -170,29 +170,29 @@ class GuildCommands {
         var guild = global.getGuildMgr().getGuildByName(oldGuildName);
 
         if (!guild) {
-            handler.sendSysMessage(CypherStrings.CommandCouldnotfind, oldGuildName);
+            handler.sendSysMessage(SysMessage.CommandCouldnotfind, oldGuildName);
 
             return false;
         }
 
         if (global.getGuildMgr().getGuildByName(newGuildName)) {
-            handler.sendSysMessage(CypherStrings.GuildRenameAlreadyExists, newGuildName);
+            handler.sendSysMessage(SysMessage.GuildRenameAlreadyExists, newGuildName);
 
             return false;
         }
 
         if (!guild.setName(newGuildName)) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.GuildRenameDone, oldGuildName, newGuildName);
+        handler.sendSysMessage(SysMessage.GuildRenameDone, oldGuildName, newGuildName);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGuildInfoCommand(CommandHandler handler, StringArguments args) {
         Guild guild = null;
         var target = handler.getSelectedPlayerOrSelf();
@@ -212,13 +212,13 @@ class GuildCommands {
         }
 
         // Display Guild Information
-        handler.sendSysMessage(CypherStrings.GuildInfoName, guild.getName(), guild.getId()); // Guild id + Name
+        handler.sendSysMessage(SysMessage.GuildInfoName, guild.getName(), guild.getId()); // Guild id + Name
 
         String guildMasterName;
         tangible.OutObject<String> tempOut_guildMasterName = new tangible.OutObject<String>();
         if (global.getCharacterCacheStorage().getCharacterNameByGuid(guild.getLeaderGUID(), tempOut_guildMasterName)) {
             guildMasterName = tempOut_guildMasterName.outArgValue;
-            handler.sendSysMessage(CypherStrings.GuildInfoGuildMaster, guildMasterName, guild.getLeaderGUID().toString()); // Guild Master
+            handler.sendSysMessage(SysMessage.GuildInfoGuildMaster, guildMasterName, guild.getLeaderGUID().toString()); // Guild Master
         } else {
             guildMasterName = tempOut_guildMasterName.outArgValue;
         }
@@ -226,12 +226,12 @@ class GuildCommands {
         // Format creation date
 
         var createdDateTime = time.UnixTimeToDateTime(guild.getCreatedDate());
-        handler.sendSysMessage(CypherStrings.GuildInfoCreationDate, createdDateTime.ToLongDateString()); // Creation Date
-        handler.sendSysMessage(CypherStrings.GuildInfoMemberCount, guild.getMembersCount()); // Number of Members
-        handler.sendSysMessage(CypherStrings.GuildInfoBankGold, guild.getBankMoney() / 100 / 100); // Bank gold (in gold coins)
-        handler.sendSysMessage(CypherStrings.GuildInfoLevel, guild.getLevel()); // Level
-        handler.sendSysMessage(CypherStrings.GuildInfoMotd, guild.getMOTD()); // Message of the Day
-        handler.sendSysMessage(CypherStrings.GuildInfoExtraInfo, guild.getInfo()); // Extra Information
+        handler.sendSysMessage(SysMessage.GuildInfoCreationDate, createdDateTime.ToLongDateString()); // Creation Date
+        handler.sendSysMessage(SysMessage.GuildInfoMemberCount, guild.getMembersCount()); // Number of Members
+        handler.sendSysMessage(SysMessage.GuildInfoBankGold, guild.getBankMoney() / 100 / 100); // Bank gold (in gold coins)
+        handler.sendSysMessage(SysMessage.GuildInfoLevel, guild.getLevel()); // Level
+        handler.sendSysMessage(SysMessage.GuildInfoMotd, guild.getMOTD()); // Message of the Day
+        handler.sendSysMessage(SysMessage.GuildInfoExtraInfo, guild.getInfo()); // Extra Information
 
         return true;
     }

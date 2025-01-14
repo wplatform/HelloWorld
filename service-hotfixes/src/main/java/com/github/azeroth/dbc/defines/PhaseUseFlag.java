@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public
 // PhaseUseFlags fields in different db2s
-enum PhaseUseFlagsValue implements EnumFlag.FlagValue {
+enum PhaseUseFlag implements EnumFlag.FlagValue {
     NONE(0x0),
     ALWAYS_VISIBLE(0x1),
     INVERSE(0x2),

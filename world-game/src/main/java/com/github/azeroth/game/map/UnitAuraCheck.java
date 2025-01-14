@@ -22,7 +22,7 @@ public class UnitAuraCheck<T extends WorldObject> implements ICheck<T> {
         return obj.toUnit() && obj.toUnit().hasAura(spellId, casterGUID) == present;
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator Predicate<T>(UnitAuraCheck<T> unit)
 //		{
 //			return unit.Invoke;

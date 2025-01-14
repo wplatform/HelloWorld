@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class GameEventManager {
     private final HashMap<Integer, GameEventQuestToEventConditionNum> mQuestToEventConditions = new HashMap<Integer, GameEventQuestToEventConditionNum>();
-    private final ArrayList<SHORT> m_ActiveEvents = new ArrayList<>();
+    private final ArrayList<Short> m_ActiveEvents = new ArrayList<>();
     public ArrayList<Long>[] mGameEventCreatureGuids;
     public ArrayList<Long>[] mGameEventGameobjectGuids;
 long guid
@@ -1203,7 +1203,7 @@ long npcflag
 
         if (announce == 1) // || (announce == 2 && WorldConfigEventAnnounce))
         {
-            global.getWorldMgr().sendWorldText(CypherStrings.Eventmessage, mGameEvent[event_id].description);
+            global.getWorldMgr().sendWorldText(SysMessage.Eventmessage, mGameEvent[event_id].description);
         }
 
         Log.outInfo(LogFilter.Gameevent, "GameEvent {0} \"{1}\" started.", event_id, mGameEvent[event_id].description);
@@ -1236,7 +1236,7 @@ long npcflag
         MultiMap<Integer, Long> creaturesByMap = new MultiMap<Integer, Long>();
 
         // go through the creatures whose npcflags are changed in the event
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(guid, npcflag) : mGameEventNPCFlags[event_id]) {
             // get the creature data from the low guid to get the entry, to be able to find out the whole guid
             var data = global.getObjectMgr().getCreatureData(guid);

@@ -311,7 +311,7 @@ public class CriteriaHandler {
                 case LearnTradeskillSkillLine: {
                     int spellCount = 0;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                     for (var(spellId, _) : referencePlayer.getSpellMap()) {
                         var bounds = global.getSpellMgr().getSkillLineAbilityMapBounds(spellId);
 
@@ -3330,7 +3330,7 @@ public class CriteriaHandler {
                 break;
             case PlayerHasTransmog: // 200
             {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 var(PermAppearance, TempAppearance) = referencePlayer.session.CollectionMgr.hasItemAppearance(reqValue);
 
                 if (!PermAppearance || TempAppearance) {

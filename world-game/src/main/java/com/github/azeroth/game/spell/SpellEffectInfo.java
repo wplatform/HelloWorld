@@ -333,7 +333,7 @@ public class SpellEffectInfo {
     private final SpellInfo spellInfo;
     private final ImmunityInfo immunityInfo;
     public int effectIndex;
-    public SpellEffectName effect = SpellEffectName.SPELL_EFFECT_NONE;
+    public SpellEffectName effect = SpellEffectName.NONE;
     public AuraType applyAuraName = AuraType.values()[0];
 
     public int applyAuraPeriod;
@@ -373,25 +373,25 @@ public class SpellEffectInfo {
             effectIndex = effect.getEffectIndex();
             effect = SpellEffectName.forValue(effect.effect);
             applyAuraName = AuraType.forValue(effect.EffectAura);
-            applyAuraPeriod = effect.EffectAuraPeriod;
-            basePoints = effect.effectBasePoints;
-            realPointsPerLevel = effect.EffectRealPointsPerLevel;
-            pointsPerResource = effect.EffectPointsPerResource;
-            amplitude = effect.EffectAmplitude;
-            chainAmplitude = effect.EffectChainAmplitude;
-            bonusCoefficient = effect.EffectBonusCoefficient;
-            miscValue = effect.EffectMiscValue[0];
-            miscValueB = effect.EffectMiscValue[1];
+            applyAuraPeriod = effect.getEffectAuraPeriod();
+            basePoints = effect.getEffectBasePoints();
+            realPointsPerLevel = effect.getEffectRealPointsPerLevel();
+            pointsPerResource = effect.getEffectPointsPerResource();
+            amplitude = effect.getEffectAmplitude();
+            chainAmplitude = effect.getEffectChainAmplitude();
+            bonusCoefficient = effect.getEffectBonusCoefficient();
+            miscValue = effect.getEffectMiscValue1();
+            miscValueB = effect.getEffectMiscValue2();
             mechanic = mechanics.forValue(effect.EffectMechanic);
-            positionFacing = effect.EffectPosFacing;
+            positionFacing = effect.getEffectPosFacing();
             targetA = new spellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[0]));
             targetB = new spellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[1]));
             radiusEntry = CliDB.SpellRadiusStorage.get(effect.EffectRadiusIndex[0]);
             maxRadiusEntry = CliDB.SpellRadiusStorage.get(effect.EffectRadiusIndex[1]);
-            chainTargets = effect.EffectChainTargets;
-            itemType = effect.EffectItemType;
-            triggerSpell = effect.EffectTriggerSpell;
-            spellClassMask = effect.EffectSpellClassMask;
+            chainTargets = effect.getEffectChainTargets();
+            itemType = effect.getEffectItemType();
+            triggerSpell = effect.getEffectTriggerSpell();
+            spellClassMask = effect.getEffectSpellClassMask;
             bonusCoefficientFromAp = effect.BonusCoefficientFromAP;
             scaling.class = effect.ScalingClass;
             scaling.coefficient = effect.coefficient;
@@ -483,7 +483,7 @@ public class SpellEffectInfo {
     }
 
     public final float calcValue(WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         return calcValue(out _, CASTER, bp, target, castItemId, itemLevel);
     }
 

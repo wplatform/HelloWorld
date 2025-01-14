@@ -368,7 +368,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
             return false;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, loot) : personalLoot) {
             if (!loot.isLooted()) {
                 return false;
@@ -652,7 +652,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                 getZoneScript().onGameObjectCreate(this);
             }
 
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
 
             if (spawnId != 0) {
@@ -708,7 +708,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                 }
 
                 tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
                 getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
                 _ = tempOut__.outArgValue;
             } catch (RuntimeException ex) {
@@ -741,7 +741,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
         }
 
         if (perPlayerState != null) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(guid, playerState) : perPlayerState.ToList()) {
                 if (playerState.validUntil > gameTime.GetSystemTime()) {
                     continue;
@@ -1052,7 +1052,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                             getLoot().update();
                         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                         for (var(_, loot) : personalLoot) {
                             loot.update();
                         }
@@ -2156,7 +2156,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                 // find nearest slot
                 var found_free_slot = false;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 for (var(slot, sittingUnit) : chairListSlots.ToList()) {
                     // the distance between this slot and the center of the go - imagine a 1D space
                     var relativeDistance = (info.size * slot) - (info.size * (info.chair.chairslots - 1) / 2.0f);

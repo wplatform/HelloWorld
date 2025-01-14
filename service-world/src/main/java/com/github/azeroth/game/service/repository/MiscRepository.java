@@ -11,7 +11,6 @@ import com.github.azeroth.game.domain.spawn.SpawnGroupTemplateData;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ public interface MiscRepository {
 
     
     @Query("SELECT entry, content_default, content_loc1, content_loc2, content_loc3, content_loc4, content_loc5, content_loc6, content_loc7, content_loc8 FROM trinity_string")
-    Stream<SystemText> queryAllTrinityString();
+    Stream<SystemText> streamAllMessageText();
 
     
     @Query("SELECT raceID, expansion, achievementId FROM `race_unlock_requirement`")
@@ -147,8 +146,6 @@ public interface MiscRepository {
     @Modifying
     @Query("INSERT INTO graveyard_zone (ID, GhostZone) VALUES (:id, :ghostZone)")
     void insertGraveyardZone(int id, int ghostZone);
-
-
     
     @Query("SELECT SourceTypeOrReferenceId, SourceGroup, SourceEntry, SourceId, ElseGroup, ConditionTypeOrReference, ConditionTarget," +
             "ConditionValue1, ConditionValue2, ConditionValue3, ConditionStringValue1," +
@@ -158,6 +155,7 @@ public interface MiscRepository {
 
     @Query("SELECT entry, skill FROM skill_fishing_base_level")
     Stream<int[]> streamAllSkillFishingBaseLevel();
+
 
     @Query("SELECT ID, Value1, Value2, Value3, Value4, Value5, Value6, Value7, Value8, Value9, Value10, Value11, Value12, Value13, Value14, Value15, Value16 FROM skill_tiers")
     Stream<int[]> streamAllSkillTiers();

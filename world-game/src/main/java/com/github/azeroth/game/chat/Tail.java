@@ -7,7 +7,7 @@ final class Tail {
         return str.isEmpty();
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator string(Tail tail)
 //		{
 //			return tail.str;

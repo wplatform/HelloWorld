@@ -6,7 +6,7 @@ class WardenModuleTransfer {
     public short dataSize;
     public byte[] data = new byte[500];
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator byte[](WardenModuleTransfer transfer)
 //		{
 //			var buffer = new byteBuffer();

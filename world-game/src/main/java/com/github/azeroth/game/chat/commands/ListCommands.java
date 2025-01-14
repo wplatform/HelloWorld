@@ -10,12 +10,12 @@ import game.PhasingHandler;
 import java.util.ArrayList;
 
 class ListCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListCreatureCommand(CommandHandler handler, int creatureId, Integer countArg) {
         var cInfo = global.getObjectMgr().getCreatureTemplate(creatureId);
 
         if (cInfo == null) {
-            handler.sendSysMessage(CypherStrings.CommandInvalidcreatureid, creatureId);
+            handler.sendSysMessage(SysMessage.CommandInvalidcreatureid, creatureId);
 
             return false;
         }
@@ -62,7 +62,7 @@ class ListCommands {
                     var creBounds = thisMap.getCreatureBySpawnIdStore().get(guid);
 
                     for (var creature : creBounds) {
-                        handler.sendSysMessage(CypherStrings.CreatureListChat, guid, guid, cInfo.name, x, y, z, mapId, creature.getGUID().toString(), creature.isAlive() ? "*" : " ");
+                        handler.sendSysMessage(SysMessage.CreatureListChat, guid, guid, cInfo.name, x, y, z, mapId, creature.getGUID().toString(), creature.isAlive() ? "*" : " ");
                     }
 
                     liveFound = !creBounds.isEmpty();
@@ -70,20 +70,20 @@ class ListCommands {
 
                 if (!liveFound) {
                     if (handler.getSession()) {
-                        handler.sendSysMessage(CypherStrings.CreatureListChat, guid, guid, cInfo.name, x, y, z, mapId, "", "");
+                        handler.sendSysMessage(SysMessage.CreatureListChat, guid, guid, cInfo.name, x, y, z, mapId, "", "");
                     } else {
-                        handler.sendSysMessage(CypherStrings.CreatureListConsole, guid, cInfo.name, x, y, z, mapId, "", "");
+                        handler.sendSysMessage(SysMessage.CreatureListConsole, guid, cInfo.name, x, y, z, mapId, "", "");
                     }
                 }
             } while (result.NextRow());
         }
 
-        handler.sendSysMessage(CypherStrings.CommandListcreaturemessage, creatureId, creatureCount);
+        handler.sendSysMessage(SysMessage.CommandListcreaturemessage, creatureId, creatureCount);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListItemCommand(CommandHandler handler, int itemId, Integer countArg) {
         var count = (countArg == null ? 10 : countArg.intValue());
 
@@ -130,7 +130,7 @@ class ListCommands {
                     itemPos = "";
                 }
 
-                handler.sendSysMessage(CypherStrings.ItemlistSlot, itemGuid.toString(), ownerName, ownerGuid.toString(), ownerAccountId, itemPos);
+                handler.sendSysMessage(SysMessage.ItemlistSlot, itemGuid.toString(), ownerName, ownerGuid.toString(), ownerAccountId, itemPos);
 
                 count--;
             } while (result.NextRow());
@@ -168,7 +168,7 @@ class ListCommands {
 
                 var itemPos = "[in mail]";
 
-                handler.sendSysMessage(CypherStrings.ItemlistMail, itemGuid, itemSenderName, itemSender, itemSenderAccountId, itemReceiverName, itemReceiver, itemReceiverAccount, itemPos);
+                handler.sendSysMessage(SysMessage.ItemlistMail, itemGuid, itemSenderName, itemSender, itemSenderAccountId, itemReceiverName, itemReceiver, itemReceiverAccount, itemPos);
 
                 count--;
             } while (result.NextRow());
@@ -203,7 +203,7 @@ class ListCommands {
 
                 var itemPos = "[in auction]";
 
-                handler.sendSysMessage(CypherStrings.ItemlistAuction, itemGuid.toString(), ownerName, owner.toString(), ownerAccountId, itemPos);
+                handler.sendSysMessage(SysMessage.ItemlistAuction, itemGuid.toString(), ownerName, owner.toString(), ownerAccountId, itemPos);
             } while (result.NextRow());
         }
 
@@ -231,24 +231,24 @@ class ListCommands {
 
                 var itemPos = "[in guild bank]";
 
-                handler.sendSysMessage(CypherStrings.ItemlistGuild, itemGuid.toString(), guildName, guildGuid.toString(), itemPos);
+                handler.sendSysMessage(SysMessage.ItemlistGuild, itemGuid.toString(), guildName, guildGuid.toString(), itemPos);
 
                 count--;
             } while (result.NextRow());
         }
 
         if (inventoryCount + mailCount + auctionCount + guildCount == 0) {
-            handler.sendSysMessage(CypherStrings.CommandNoitemfound);
+            handler.sendSysMessage(SysMessage.CommandNoitemfound);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandListitemmessage, itemId, inventoryCount + mailCount + auctionCount + guildCount, inventoryCount, mailCount, auctionCount, guildCount);
+        handler.sendSysMessage(SysMessage.CommandListitemmessage, itemId, inventoryCount + mailCount + auctionCount + guildCount, inventoryCount, mailCount, auctionCount, guildCount);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListMailCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -266,8 +266,8 @@ class ListCommands {
             var countMail = result.<Integer>Read(0);
 
             var nameLink = handler.playerLink(player.getName());
-            handler.sendSysMessage(CypherStrings.ListMailHeader, countMail, nameLink, player.getGUID().toString());
-            handler.sendSysMessage(CypherStrings.AccountListBar);
+            handler.sendSysMessage(SysMessage.ListMailHeader, countMail, nameLink, player.getGUID().toString());
+            handler.sendSysMessage(SysMessage.AccountListBar);
 
             stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_MAIL_LIST_INFO);
             stmt.AddValue(0, player.getGUID().getCounter());
@@ -290,9 +290,9 @@ class ListCommands {
                     var copp = (int) (money % MoneyConstants.gold) % MoneyConstants.Silver;
                     var receiverStr = handler.playerLink(receiver);
                     var senderStr = handler.playerLink(sender);
-                    handler.sendSysMessage(CypherStrings.ListMailInfo1, messageId, subject, gold, silv, copp);
-                    handler.sendSysMessage(CypherStrings.ListMailInfo2, senderStr, senderId, receiverStr, receiverId);
-                    handler.sendSysMessage(CypherStrings.ListMailInfo3, time.UnixTimeToDateTime(deliverTime).ToLongDateString(), time.UnixTimeToDateTime(expireTime).ToLongDateString());
+                    handler.sendSysMessage(SysMessage.ListMailInfo1, messageId, subject, gold, silv, copp);
+                    handler.sendSysMessage(SysMessage.ListMailInfo2, senderStr, senderId, receiverStr, receiverId);
+                    handler.sendSysMessage(SysMessage.ListMailInfo3, time.UnixTimeToDateTime(deliverTime).ToLongDateString(), time.UnixTimeToDateTime(expireTime).ToLongDateString());
 
                     if (hasItem == 1) {
                         var result2 = DB.characters.query("SELECT item_guid FROM mail_items WHERE mail_id = '{0}'", messageId);
@@ -318,9 +318,9 @@ class ListCommands {
                                         if (handler.getSession() != null) {
                                             var color = ItemConst.ItemQualityColors[itemTemplate.getQuality().getValue()];
                                             var itemStr = String.format("|c%1$s|Hitem:%2$s:0:0:0:0:0:0:0:%3$s:0:0:0:0:0|h[%4$s]|h|r", color, item_entry, handler.getSession().getPlayer().getLevel(), itemTemplate.getName(handler.getSessionDbcLocale()));
-                                            handler.sendSysMessage(CypherStrings.ListMailInfoItem, itemStr, item_entry, item_guid, item_count);
+                                            handler.sendSysMessage(SysMessage.ListMailInfoItem, itemStr, item_entry, item_guid, item_count);
                                         } else {
-                                            handler.sendSysMessage(CypherStrings.ListMailInfoItem, itemTemplate.getName(handler.getSessionDbcLocale()), item_entry, item_guid, item_count);
+                                            handler.sendSysMessage(SysMessage.ListMailInfoItem, itemTemplate.getName(handler.getSessionDbcLocale()), item_entry, item_guid, item_count);
                                         }
                                     } while (result3.NextRow());
                                 }
@@ -328,26 +328,26 @@ class ListCommands {
                         }
                     }
 
-                    handler.sendSysMessage(CypherStrings.AccountListBar);
+                    handler.sendSysMessage(SysMessage.AccountListBar);
                 } while (result1.NextRow());
             } else {
-                handler.sendSysMessage(CypherStrings.ListMailNotFound);
+                handler.sendSysMessage(SysMessage.ListMailNotFound);
             }
 
             return true;
         } else {
-            handler.sendSysMessage(CypherStrings.ListMailNotFound);
+            handler.sendSysMessage(SysMessage.ListMailNotFound);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListObjectCommand(CommandHandler handler, int gameObjectId, Integer countArg) {
         var gInfo = global.getObjectMgr().getGameObjectTemplate(gameObjectId);
 
         if (gInfo == null) {
-            handler.sendSysMessage(CypherStrings.CommandListobjinvalidid, gameObjectId);
+            handler.sendSysMessage(SysMessage.CommandListobjinvalidid, gameObjectId);
 
             return false;
         }
@@ -395,7 +395,7 @@ class ListCommands {
                     var goBounds = thisMap.getGameObjectBySpawnIdStore().get(guid);
 
                     for (var go : goBounds) {
-                        handler.sendSysMessage(CypherStrings.GoListChat, guid, entry, guid, gInfo.name, x, y, z, mapId, go.getGUID().toString(), go.isSpawned() ? "*" : " ");
+                        handler.sendSysMessage(SysMessage.GoListChat, guid, entry, guid, gInfo.name, x, y, z, mapId, go.getGUID().toString(), go.isSpawned() ? "*" : " ");
                     }
 
                     liveFound = !goBounds.isEmpty();
@@ -403,38 +403,38 @@ class ListCommands {
 
                 if (!liveFound) {
                     if (handler.getSession()) {
-                        handler.sendSysMessage(CypherStrings.GoListChat, guid, entry, guid, gInfo.name, x, y, z, mapId, "", "");
+                        handler.sendSysMessage(SysMessage.GoListChat, guid, entry, guid, gInfo.name, x, y, z, mapId, "", "");
                     } else {
-                        handler.sendSysMessage(CypherStrings.GoListConsole, guid, gInfo.name, x, y, z, mapId, "", "");
+                        handler.sendSysMessage(SysMessage.GoListConsole, guid, gInfo.name, x, y, z, mapId, "", "");
                     }
                 }
             } while (result.NextRow());
         }
 
-        handler.sendSysMessage(CypherStrings.CommandListobjmessage, gameObjectId, objectCount);
+        handler.sendSysMessage(SysMessage.CommandListobjmessage, gameObjectId, objectCount);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListRespawnsCommand(CommandHandler handler, Integer range) {
         var player = handler.getSession().getPlayer();
         var map = player.getMap();
 
         var locale = handler.getSession().getSessionDbcLocale();
-        var stringOverdue = global.getObjectMgr().getCypherString(CypherStrings.ListRespawnsOverdue, locale);
+        var stringOverdue = global.getObjectMgr().getSysMessage(SysMessage.ListRespawnsOverdue, locale);
 
         var zoneId = player.getZone();
         var zoneName = getZoneName(zoneId, locale);
 
         for (SpawnObjectType type = 0; type.getValue() < SpawnObjectType.NumSpawnTypes.getValue(); type++) {
             if (range != null) {
-                handler.sendSysMessage(CypherStrings.ListRespawnsRange, type, range.intValue());
+                handler.sendSysMessage(SysMessage.ListRespawnsRange, type, range.intValue());
             } else {
-                handler.sendSysMessage(CypherStrings.ListRespawnsZone, type, zoneName, zoneId);
+                handler.sendSysMessage(SysMessage.ListRespawnsZone, type, zoneName, zoneId);
             }
 
-            handler.sendSysMessage(CypherStrings.ListRespawnsListheader);
+            handler.sendSysMessage(SysMessage.ListRespawnsListheader);
             ArrayList<RespawnInfo> respawns = new ArrayList<>();
             map.getRespawnInfo(respawns, SpawnObjectTypeMask.forValue(1 << type.getValue()));
 
@@ -466,8 +466,8 @@ class ListCommands {
                 var gridX = ri.getGridId() % MapDefine.MaxGrids;
 
                 var respawnTime = ri.getRespawnTime() > gameTime.GetGameTime() ? time.secsToTimeString((long) (ri.getRespawnTime() - gameTime.GetGameTime()), TimeFormat.ShortText, false) : stringOverdue;
-// C# TO JAVA CONVERTER TASK: The '2:2' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '3:2' format specifier is not converted to Java:
+
+
                 handler.sendSysMessage(String.format("%1$s | %2$s | [{2:2},{3:2}] | %5$s (%6$s) | %7$s%8$s", ri.getSpawnId(), ri.getEntry(), gridX, gridY, getZoneName(respawnZoneId, locale), respawnZoneId, respawnTime, (map.isSpawnGroupActive(data.getSpawnGroupData().getGroupId()) ? "" : " (inactive)")));
             }
         }
@@ -475,7 +475,7 @@ class ListCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListScenesCommand(CommandHandler handler) {
         var target = handler.getSelectedPlayer();
 
@@ -484,23 +484,23 @@ class ListCommands {
         }
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
 
         var instanceByPackageMap = target.getSceneMgr().getSceneTemplateByInstanceMap();
 
-        handler.sendSysMessage(CypherStrings.DebugSceneObjectList, target.getSceneMgr().getActiveSceneCount());
+        handler.sendSysMessage(SysMessage.DebugSceneObjectList, target.getSceneMgr().getActiveSceneCount());
 
         for (var instanceByPackage : instanceByPackageMap.entrySet()) {
-            handler.sendSysMessage(CypherStrings.DebugSceneObjectDetail, instanceByPackage.getValue().scenePackageId, instanceByPackage.getKey());
+            handler.sendSysMessage(SysMessage.DebugSceneObjectDetail, instanceByPackage.getValue().scenePackageId, instanceByPackage.getKey());
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListSpawnPointsCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
         var map = player.getMap();
@@ -522,9 +522,9 @@ class ListCommands {
             }
 
             if (showAll || data.spawnPoint.isInDist2D(player.getLocation(), 5000.0f)) {
-// C# TO JAVA CONVERTER TASK: The '4:3' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '5:3' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '6:3' format specifier is not converted to Java:
+
+
+
                 handler.sendSysMessage(String.format("Type: %1$s | SpawnId: %2$s | Entry: %3$s (%4$s) | X: {4:3} | Y: {5:3} | Z: {6:3}", data.getType(), data.getSpawnId(), data.id, cTemp.name, data.spawnPoint.getX(), data.spawnPoint.getY(), data.spawnPoint.getZ()));
             }
         }
@@ -543,9 +543,9 @@ class ListCommands {
             }
 
             if (showAll || data.spawnPoint.isInDist2D(player.getLocation(), 5000.0f)) {
-// C# TO JAVA CONVERTER TASK: The '4:3' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '5:3' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '6:3' format specifier is not converted to Java:
+
+
+
                 handler.sendSysMessage(String.format("Type: %1$s | SpawnId: %2$s | Entry: %3$s (%4$s) | X: {4:3} | Y: {5:3} | Z: {6:3}", data.getType(), data.getSpawnId(), data.id, goTemp.name, data.spawnPoint.getX(), data.spawnPoint.getY(), data.spawnPoint.getZ()));
             }
         }
@@ -560,19 +560,19 @@ class ListCommands {
         return zoneEntry != null ? zoneEntry.AreaName[locale] : "<unknown zone>";
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class ListAuraCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleListAllAurasCommand(CommandHandler handler) {
             return listAurasCommand(handler, null, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleListAurasByIdCommand(CommandHandler handler, int spellId) {
             return listAurasCommand(handler, spellId, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleListAurasByNameCommand(CommandHandler handler, Tail namePart) {
             return listAurasCommand(handler, null, namePart);
         }
@@ -582,16 +582,16 @@ class ListCommands {
             var unit = handler.getSelectedUnit();
 
             if (!unit) {
-                handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+                handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
                 return false;
             }
 
-            var talentStr = handler.getCypherString(CypherStrings.Talent);
-            var passiveStr = handler.getCypherString(CypherStrings.Passive);
+            var talentStr = handler.getSysMessage(SysMessage.Talent);
+            var passiveStr = handler.getSysMessage(SysMessage.Passive);
 
             var auras = unit.getAppliedAuras();
-            handler.sendSysMessage(CypherStrings.CommandTargetListauras, unit.getAppliedAurasCount());
+            handler.sendSysMessage(SysMessage.CommandTargetListauras, unit.getAppliedAurasCount());
 
             for (var aurApp : auras) {
                 var aura = aurApp.base;
@@ -604,7 +604,7 @@ class ListCommands {
 
                 var ss_name = "|cffffffff|Hspell:" + aura.id + "|h[" + name + "]|h|r";
 
-                handler.sendSysMessage(CypherStrings.CommandTargetAuradetail, aura.id, (handler.getSession() != null ? ss_name : name), aurApp.effectMask.ToMask(), aura.charges, aura.stackAmount, aurApp.slot, aura.duration, aura.maxDuration, (aura.IsPassive ? passiveStr : ""), (talent ? talentStr : ""), aura.casterGuid.IsPlayer ? "player" : "creature", aura.casterGuid.toString());
+                handler.sendSysMessage(SysMessage.CommandTargetAuradetail, aura.id, (handler.getSession() != null ? ss_name : name), aurApp.effectMask.ToMask(), aura.charges, aura.stackAmount, aurApp.slot, aura.duration, aura.maxDuration, (aura.IsPassive ? passiveStr : ""), (talent ? talentStr : ""), aura.casterGuid.IsPlayer ? "player" : "creature", aura.casterGuid.toString());
             }
 
             for (AuraType auraType = 0; AuraType.getValue() < AuraType.Total.getValue(); ++auraType) {
@@ -623,10 +623,10 @@ class ListCommands {
 
                     if (!sizeLogged) {
                         sizeLogged = true;
-                        handler.sendSysMessage(CypherStrings.CommandTargetListauratype, auraList.size(), auraType);
+                        handler.sendSysMessage(SysMessage.CommandTargetListauratype, auraList.size(), auraType);
                     }
 
-                    handler.sendSysMessage(CypherStrings.CommandTargetAurasimple, effect.getId(), effect.getEffIndex(), effect.getAmount());
+                    handler.sendSysMessage(SysMessage.CommandTargetAurasimple, effect.getId(), effect.getEffIndex(), effect.getAmount());
                 }
             }
 

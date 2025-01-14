@@ -6,10 +6,10 @@ import com.github.azeroth.game.chat.CommandHandler;
 import java.time.LocalDateTime;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class BanListCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleBanListAccountCommand(CommandHandler handler, String filter) {
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.DelExpiredIpBans);
         DB.Login.execute(stmt);
@@ -26,7 +26,7 @@ class BanListCommands {
         }
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.BanlistNoaccount);
+            handler.sendSysMessage(SysMessage.BanlistNoaccount);
 
             return true;
         }
@@ -34,7 +34,7 @@ class BanListCommands {
         return handleBanListHelper(result, handler);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleBanListCharacterCommand(CommandHandler handler, String filter) {
         if (filter.isEmpty()) {
             return false;
@@ -45,12 +45,12 @@ class BanListCommands {
         var result = DB.characters.query(stmt);
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.BanlistNocharacter);
+            handler.sendSysMessage(SysMessage.BanlistNocharacter);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.BanlistMatchingcharacter);
+        handler.sendSysMessage(SysMessage.BanlistMatchingcharacter);
 
         // Chat short output
         if (handler.getSession()) {
@@ -66,9 +66,9 @@ class BanListCommands {
         }
         // Console wide output
         else {
-            handler.sendSysMessage(CypherStrings.BanlistCharacters);
+            handler.sendSysMessage(SysMessage.BanlistCharacters);
             handler.sendSysMessage(" =============================================================================== ");
-            handler.sendSysMessage(CypherStrings.BanlistCharactersHeader);
+            handler.sendSysMessage(SysMessage.BanlistCharactersHeader);
 
             do {
                 handler.sendSysMessage("-------------------------------------------------------------------------------");
@@ -104,8 +104,8 @@ class BanListCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleBanListIPCommand(CommandHandler handler, String filter) {
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.DelExpiredIpBans);
         DB.Login.execute(stmt);
@@ -122,12 +122,12 @@ class BanListCommands {
         }
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.BanlistNoip);
+            handler.sendSysMessage(SysMessage.BanlistNoip);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.BanlistMatchingip);
+        handler.sendSysMessage(SysMessage.BanlistMatchingip);
 
         // Chat short output
         if (handler.getSession()) {
@@ -137,9 +137,9 @@ class BanListCommands {
         }
         // Console wide output
         else {
-            handler.sendSysMessage(CypherStrings.BanlistIps);
+            handler.sendSysMessage(SysMessage.BanlistIps);
             handler.sendSysMessage(" ===============================================================================");
-            handler.sendSysMessage(CypherStrings.BanlistIpsHeader);
+            handler.sendSysMessage(SysMessage.BanlistIpsHeader);
 
             do {
                 handler.sendSysMessage("-------------------------------------------------------------------------------");
@@ -167,7 +167,7 @@ class BanListCommands {
     }
 
     private static boolean handleBanListHelper(SQLResult result, CommandHandler handler) {
-        handler.sendSysMessage(CypherStrings.BanlistMatchingaccount);
+        handler.sendSysMessage(SysMessage.BanlistMatchingaccount);
 
         // Chat short output
         if (handler.getSession()) {
@@ -183,9 +183,9 @@ class BanListCommands {
         }
         // Console wide output
         else {
-            handler.sendSysMessage(CypherStrings.BanlistAccounts);
+            handler.sendSysMessage(SysMessage.BanlistAccounts);
             handler.sendSysMessage(" ===============================================================================");
-            handler.sendSysMessage(CypherStrings.BanlistAccountsHeader);
+            handler.sendSysMessage(SysMessage.BanlistAccountsHeader);
 
             do {
                 handler.sendSysMessage("-------------------------------------------------------------------------------");

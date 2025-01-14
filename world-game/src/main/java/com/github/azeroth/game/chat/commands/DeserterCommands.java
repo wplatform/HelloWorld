@@ -3,13 +3,13 @@ package com.github.azeroth.game.chat.commands;
 
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class DeserterCommands {
     private static boolean handleDeserterAdd(CommandHandler handler, int time, boolean isInstance) {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -17,7 +17,7 @@ class DeserterCommands {
         var aura = player.addAura(isInstance ? spells.LFGDundeonDeserter : spells.BGDeserter, player);
 
         if (aura == null) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -31,7 +31,7 @@ class DeserterCommands {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -41,27 +41,27 @@ class DeserterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class DeserterInstanceCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleDeserterInstanceAdd(CommandHandler handler, int time) {
             return handleDeserterAdd(handler, time, true);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleDeserterInstanceRemove(CommandHandler handler) {
             return handleDeserterRemove(handler, true);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class DeserterBGCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleDeserterBGAdd(CommandHandler handler, int time) {
             return handleDeserterAdd(handler, time, false);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleDeserterBGRemove(CommandHandler handler) {
             return handleDeserterRemove(handler, false);
         }

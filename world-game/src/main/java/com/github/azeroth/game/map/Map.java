@@ -707,14 +707,14 @@ public class Map {
     }
 
     public void update(int diff) {
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_dynamicTree Update").StartMark();
 //#endif
 
         dynamicTree.update(diff);
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_dynamicTree Update").StopMark();
 //#endif
@@ -739,13 +739,13 @@ public class Map {
             _respawnCheckTimer -= diff;
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_respawnCheckTimer & MapSessionFilter Update").StartMark();
 //#endif
         threadManager.Wait();
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_respawnCheckTimer & MapSessionFilter Update").StopMark();
 //#endif
@@ -754,7 +754,7 @@ public class Map {
 
         var update = new UpdaterNotifier(diff, gridType.All);
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("Load UpdaterNotifier").StartMark();
 //#endif
@@ -845,7 +845,7 @@ public class Map {
             threadManager.Schedule(() -> visitNearbyCellsOf(obj, update));
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("Load UpdaterNotifier").StopMark();
 
@@ -856,16 +856,16 @@ public class Map {
 //#endif
         threadManager.Wait();
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("VisitNearbyCellsOf Update").StopMark();
 //#endif
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("update.ExecuteUpdate").StartMark();
 //#endif
         update.executeUpdate();
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("update.ExecuteUpdate").StopMark();
 //#endif
@@ -879,12 +879,12 @@ public class Map {
             processTransportaionQueue.Schedule(() -> transport.update(diff));
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_transports Update").StartMark();
 //#endif
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_transports Update").StopMark();
         metricFactory.Meter("SendObjectUpdates Update").StartMark();
@@ -913,7 +913,7 @@ public class Map {
         // update phase shift objects
         getMultiPersonalPhaseTracker().update(this, diff);
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("SendObjectUpdates Update").StopMark();
         metricFactory.Meter("MoveAll Update").StartMark();
@@ -922,31 +922,31 @@ public class Map {
         moveAllGameObjectsInMoveList();
         moveAllAreaTriggersInMoveList();
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("MoveAll Update").StopMark();
 //#endif
 
         if (!getActivePlayers().isEmpty() || !activeNonPlayers.isEmpty()) {
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
             metricFactory.Meter("ProcessRelocationNotifies Update").StartMark();
 //#endif
             processRelocationQueue.Post(diff);
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
             metricFactory.Meter("ProcessRelocationNotifies Update").StopMark();
 //#endif
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("OnMapUpdate Update").StartMark();
 //#endif
         onMapUpdate(this, diff);
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("OnMapUpdate Update").StopMark();
 //#endif
@@ -1972,7 +1972,7 @@ public class Map {
     }
 
     public void delayedUpdate(int diff) {
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_farSpellCallbacks").StartMark();
 //#endif
@@ -1984,7 +1984,7 @@ public class Map {
         }
         callback = tempOut_callback.outArgValue;
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("_farSpellCallbacks").StopMark();
         metricFactory.Meter("RemoveAllObjectsInRemoveList").StartMark();
@@ -1992,7 +1992,7 @@ public class Map {
 
         removeAllObjectsInRemoveList();
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("RemoveAllObjectsInRemoveList").StopMark();
         metricFactory.Meter("grid?.Update").StartMark();
@@ -2008,7 +2008,7 @@ public class Map {
             }
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 //#if DEBUGMETRIC
         metricFactory.Meter("grid?.Update").StopMark();
 //#endif
@@ -2930,7 +2930,7 @@ public class Map {
         return summonCreature(entry, pos, properties, 0, null, 0, 0, null, null);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(Map map)
 //		{
 //			return map != null;
@@ -3755,7 +3755,7 @@ public class Map {
 
         for (var iter : update_players.entrySet()) {
             var packet;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             iter.getValue().buildPacket(out packet);
             iter.getKey().sendPacket(packet);
         }
@@ -4212,7 +4212,7 @@ public class Map {
         markedCells.set((int) pCellId, true);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Script Updates
 
     private void setTimer(int t) {
@@ -4251,10 +4251,10 @@ public class Map {
         return guidGenerators.get(high);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Scripts
 
     // Put scripts in the execution queue
@@ -5219,6 +5219,6 @@ public class Map {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

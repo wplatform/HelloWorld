@@ -12,9 +12,9 @@ import game.PhasingHandler;
 import java.util.ArrayList;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class MMapsCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMmapPathCommand(CommandHandler handler, StringArguments args) {
         if (global.getMMapMgr().getNavMesh(handler.getPlayer().getLocation().getMapId()) == null) {
             handler.sendSysMessage("NavMesh not loaded for current map.");
@@ -81,7 +81,7 @@ class MMapsCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMmapLocCommand(CommandHandler handler) {
         handler.sendSysMessage("mmap tileloc:");
 
@@ -162,7 +162,7 @@ class MMapsCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMmapLoadedTilesCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
         var terrainMapId = PhasingHandler.getTerrainMapId(player.getPhaseShift(), player.getLocation().getMapId(), player.getMap().getTerrain(), player.getLocation().getX(), player.getLocation().getY());
@@ -190,7 +190,7 @@ class MMapsCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMmapStatsCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
         var terrainMapId = PhasingHandler.getTerrainMapId(player.getPhaseShift(), player.getLocation().getMapId(), player.getMap().getTerrain(), player.getLocation().getX(), player.getLocation().getY());
@@ -237,7 +237,7 @@ class MMapsCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMmapTestArea(CommandHandler handler) {
         var radius = 40.0f;
         WorldObject obj = handler.getPlayer();

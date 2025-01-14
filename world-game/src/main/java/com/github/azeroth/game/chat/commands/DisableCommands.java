@@ -4,9 +4,9 @@ package com.github.azeroth.game.chat.commands;
 import com.github.azeroth.game.DisableType;
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class DisableCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DisableAddCommands {
         private static boolean handleAddDisables(int entry, int flags, String disableComment, CommandHandler handler, DisableType disableType) {
             if (entry == 0) {
@@ -20,7 +20,7 @@ class DisableCommands {
             switch (disableType) {
                 case Spell: {
                     if (!global.getSpellMgr().hasSpellInfo(entry, Difficulty.NONE)) {
-                        handler.sendSysMessage(CypherStrings.CommandNospellfound);
+                        handler.sendSysMessage(SysMessage.CommandNospellfound);
 
                         return false;
                     }
@@ -29,7 +29,7 @@ class DisableCommands {
                 }
                 case Quest: {
                     if (global.getObjectMgr().getQuestTemplate(entry) == null) {
-                        handler.sendSysMessage(CypherStrings.CommandNoquestfound, entry);
+                        handler.sendSysMessage(SysMessage.CommandNoquestfound, entry);
 
                         return false;
                     }
@@ -38,7 +38,7 @@ class DisableCommands {
                 }
                 case Map: {
                     if (!CliDB.MapStorage.containsKey(entry)) {
-                        handler.sendSysMessage(CypherStrings.CommandNomapfound);
+                        handler.sendSysMessage(SysMessage.CommandNomapfound);
 
                         return false;
                     }
@@ -47,7 +47,7 @@ class DisableCommands {
                 }
                 case Battleground: {
                     if (!CliDB.BattlemasterListStorage.containsKey(entry)) {
-                        handler.sendSysMessage(CypherStrings.CommandNoBattlegroundFound);
+                        handler.sendSysMessage(SysMessage.CommandNoBattlegroundFound);
 
                         return false;
                     }
@@ -56,7 +56,7 @@ class DisableCommands {
                 }
                 case Criteria: {
                     if (global.getCriteriaMgr().getCriteria(entry) == null) {
-                        handler.sendSysMessage(CypherStrings.CommandNoAchievementCriteriaFound);
+                        handler.sendSysMessage(SysMessage.CommandNoAchievementCriteriaFound);
 
                         return false;
                     }
@@ -65,7 +65,7 @@ class DisableCommands {
                 }
                 case OutdoorPVP: {
                     if (entry > OutdoorPvPTypes.max.getValue()) {
-                        handler.sendSysMessage(CypherStrings.CommandNoOutdoorPvpForund);
+                        handler.sendSysMessage(SysMessage.CommandNoOutdoorPvpForund);
 
                         return false;
                     }
@@ -74,7 +74,7 @@ class DisableCommands {
                 }
                 case VMAP: {
                     if (!CliDB.MapStorage.containsKey(entry)) {
-                        handler.sendSysMessage(CypherStrings.CommandNomapfound);
+                        handler.sendSysMessage(SysMessage.CommandNomapfound);
 
                         return false;
                     }
@@ -83,7 +83,7 @@ class DisableCommands {
                 }
                 case MMAP: {
                     if (!CliDB.MapStorage.containsKey(entry)) {
-                        handler.sendSysMessage(CypherStrings.CommandNomapfound);
+                        handler.sendSysMessage(SysMessage.CommandNomapfound);
 
                         return false;
                     }
@@ -117,48 +117,48 @@ class DisableCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableSpellCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.spell);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableQuestCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.Quest);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableMapCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.Map);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableBattlegroundCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.Battleground);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableCriteriaCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.criteria);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableOutdoorPvPCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.OutdoorPVP);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableVmapCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.VMAP);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAddDisableMMapCommand(CommandHandler handler, int entry, int flags, String disableComment) {
             return handleAddDisables(entry, flags, disableComment, handler, DisableType.MMAP);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DisableRemoveCommands {
         private static boolean handleRemoveDisables(int entry, CommandHandler handler, DisableType disableType) {
             if (entry == 0) {
@@ -186,42 +186,42 @@ class DisableCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableSpellCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.spell);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableQuestCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.Quest);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableMapCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.Map);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableBattlegroundCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.Battleground);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableCriteriaCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.criteria);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableOutdoorPvPCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.OutdoorPVP);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableVmapCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.VMAP);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRemoveDisableMMapCommand(CommandHandler handler, int entry) {
             return handleRemoveDisables(entry, handler, DisableType.MMAP);
         }

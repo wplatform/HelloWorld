@@ -248,7 +248,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
     public void addToWorld() {
         // Register the AreaTrigger for guid lookup and for caster
         if (!isInWorld()) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
 
             if (spawnId != 0) {
@@ -283,7 +283,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
             }
 
             tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
             _ = tempOut__.outArgValue;
         }
@@ -606,17 +606,17 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
 
         if (getCreateProperties().ExtraScale.structured.X != 0 || getCreateProperties().ExtraScale.structured.Y != 0) {
             Vector2 point = new Vector2(getCreateProperties().ExtraScale.structured.X, getCreateProperties().ExtraScale.structured.Y);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref extraScaleCurve.modifyValue(extraScaleCurve.points, 0), point);
         }
 
         if (getCreateProperties().ExtraScale.structured.Z != 0 || getCreateProperties().ExtraScale.structured.W != 0) {
             Vector2 point = new Vector2(getCreateProperties().ExtraScale.structured.Z, getCreateProperties().ExtraScale.structured.W);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref extraScaleCurve.modifyValue(extraScaleCurve.points, 1), point);
         }
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //		unsafe
 //			{
 //				if (CreateProperties.ExtraScale.raw.Data[5] != 0)
@@ -808,7 +808,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
         Position boxCenter = getLocation();
         float extentsX, extentsY, extentsZ;
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //		unsafe
 //			{
 //				extentsX = shape.BoxDatas.Extents[0];
@@ -856,7 +856,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
         Position boxCenter = getLocation();
         float extentsX, extentsY;
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //		unsafe
 //			{
 //				extentsX = shape.BoxDatas.Extents[0];
@@ -890,7 +890,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
 
             if (player) {
                 if (player.isDebugAreaTriggers()) {
-                    player.sendSysMessage(CypherStrings.DebugAreatriggerEntered, getEntry());
+                    player.sendSysMessage(SysMessage.DebugAreatriggerEntered, getEntry());
                 }
 
                 player.updateQuestObjectiveProgress(QuestObjectiveType.AreaTriggerEnter, (int) getEntry(), 1);
@@ -908,7 +908,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
 
                 if (player) {
                     if (player.isDebugAreaTriggers()) {
-                        player.sendSysMessage(CypherStrings.DebugAreatriggerLeft, getEntry());
+                        player.sendSysMessage(SysMessage.DebugAreatriggerLeft, getEntry());
                     }
 
                     player.updateQuestObjectiveProgress(QuestObjectiveType.AreaTriggerExit, (int) getEntry(), 1);
@@ -1265,7 +1265,7 @@ public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>,
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void debugVisualizePosition() {
         var caster = getCaster();
 

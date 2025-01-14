@@ -325,7 +325,7 @@ public class AuraApplication {
             flags = flags.getValue() | positiveFound.getValue() ? AuraFlags.Positive : AuraFlags.NEGATIVE;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool effectNeedsAmount(KeyValuePair<int, AuraEffect> effect)
 //			{
 //				return EffectsToApply.contains(effect.value.effIndex) && aura.effectTypeNeedsSendingAmount(effect.value.auraType);

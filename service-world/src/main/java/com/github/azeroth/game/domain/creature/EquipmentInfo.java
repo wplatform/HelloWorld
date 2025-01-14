@@ -1,7 +1,7 @@
-package com.github.azeroth.game.entity.creature;
+package com.github.azeroth.game.domain.creature;
 
 
-import com.github.azeroth.game.entity.unit.UnitDefine;
+import com.github.azeroth.game.domain.unit.UnitDefine;
 
 public class EquipmentInfo {
     private EquipmentItem[] items = new EquipmentItem[UnitDefine.MAX_EQUIPMENT_ITEMS];

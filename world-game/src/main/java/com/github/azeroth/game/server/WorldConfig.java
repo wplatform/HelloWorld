@@ -29,7 +29,7 @@ public class WorldConfig extends ConfigMgr {
         VALUES.put(WorldCfg.EnableSinfoLogin, GetDefaultValue("Server.LoginInfo", 0));
 
         // Read all rates from the config file
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		static void SetRegenRate(WorldCfg rate, string configKey)
 //			{
 //				Values[rate] = GetDefaultValue(configKey, 1.0f);

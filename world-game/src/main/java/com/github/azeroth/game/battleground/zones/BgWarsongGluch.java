@@ -884,7 +884,7 @@ class BgWarsongGluch extends Battleground {
     }
 
     private void updateFlagState(Team team, WSGFlagState value) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		int transformValueToOtherTeamControlWorldState(WSGFlagState value)
 //			{
 //				switch (value)

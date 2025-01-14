@@ -270,24 +270,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         return true;
     }
 
-    public float _GetDamageMod(CreatureClassification rank) {
-        WorldSetting worldSettings = getWorldContext().getWorldSettings();
-        switch (rank) // define rates for each elite rank
-        {
-            case Normal:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureNormalDamage);
-            case Elite:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
-            case RareElite:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareeliteDamage);
-            case WorldBoss:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteWorldbossDamage);
-            case Rare:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteRareDamage);
-            default:
-                return WorldConfig.getFloatValue(WorldCfg.RateCreatureEliteEliteDamage);
-        }
-    }
+
 
     @Override
     public CreatureAI getAI() {
@@ -299,7 +282,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     public void addToWorld() {
         // Register the creature for guid lookup
         if (!isInWorld()) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
 
             if (getSpawnId() != 0) {
@@ -339,7 +322,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                 }
 
                 tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
                 getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
                 _ = tempOut__.outArgValue;
             } catch (RuntimeException ex) {
@@ -808,7 +791,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
                     getLoot().update();
                 }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 for (var(playerOwner, loot) : getPersonalLoot()) {
                     if (loot != null) {
                         loot.update();
@@ -1334,7 +1317,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
             var vehicle = getVehicleKit1();
 
             if (vehicle != null) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 for (var(_, seat) : vehicle.Seats) {
                     var passenger = global.getObjAccessor().GetUnit(this, seat.passenger.guid);
 
@@ -2687,7 +2670,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         var decayRate = _ignoreCorpseDecayRatio ? 1.0f : WorldConfig.getFloatValue(WorldCfg.RateCorpseDecayLooted);
 
         // corpse skinnable, but without skinning flag, and then skinned, corpse will despawn next update
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool isFullySkinned()
 //			{
 //				if (loot != null && loot.loot_type == LootType.SKINNING && loot.isLooted())
@@ -3069,7 +3052,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
         if (minfo != null) {
             setBoundingRadius((isPet() ? 1.0f : minfo.boundingRadius) * getObjectScale());
-            setCombatReach((isPet() ? SharedConst.DefaultPlayerCombatReach : minfo.combatReach) * getObjectScale());
+            setCombatReach((isPet() ? ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH : minfo.combatReach) * getObjectScale());
         }
     }
 
@@ -3807,7 +3790,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
             return false;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, loot) : getPersonalLoot()) {
             if (loot != null && !loot.isLooted()) {
                 return false;
@@ -4149,7 +4132,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
         transportHomePosition.relocate(value);
     }
 
-// C# TO JAVA CONVERTER TASK: Methods returning tuples are not converted by C# to Java Converter:
+
 //	public (uint nodeId, uint pathId) CurrentWaypointInfo
 //		{
 //			get

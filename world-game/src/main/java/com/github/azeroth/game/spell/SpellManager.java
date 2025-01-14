@@ -539,7 +539,7 @@ public final class SpellManager {
     public SpellProcEntry getSpellProcEntry(SpellInfo spellInfo) {
         TValue diffdict;
         var procEntry;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if ((spellProcMap.containsKey(spellInfo.getId()) && (diffdict = spellProcMap.get(spellInfo.getId())) == diffdict) && diffdict.TryGetValue(spellInfo.getDifficulty(), out procEntry)) {
             return procEntry;
         }
@@ -646,19 +646,19 @@ public final class SpellManager {
         return getSpellInfo(spellId, Difficulty.DIFFICULTY_NONE);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+    
     public <T extends Enum> SpellInfo getSpellInfo(T spellId, Difficulty difficulty) {
         return getSpellInfo((int) spellId, difficulty);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+    
     public <T extends Enum> boolean tryGetSpellInfo(T spellId, tangible.OutObject<spellInfo> spellInfo) {
         spellInfo.outArgValue = getSpellInfo(spellId);
 
         return spellInfo.outArgValue != null;
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+    
     public <T extends Enum> boolean tryGetSpellInfo(T spellId, Difficulty difficulty, tangible.OutObject<spellInfo> spellInfo) {
         spellInfo.outArgValue = getSpellInfo(spellId, difficulty);
 
@@ -684,7 +684,7 @@ public final class SpellManager {
     public SpellInfo getSpellInfo(int spellId, Difficulty difficulty) {
         TValue diffDict;
         var spellInfo;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if ((spellInfoMap.containsKey(spellId) && (diffDict = spellInfoMap.get(spellId)) == diffDict) && diffDict.TryGetValue(difficulty, out spellInfo)) {
             return spellInfo;
         }
@@ -1143,7 +1143,7 @@ public final class SpellManager {
         Log.outInfo(LogFilter.ServerLoading, "Loaded {0} spell required records in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Loads
 
     public void loadSpellLearnSkills() {
@@ -2580,7 +2580,7 @@ public final class SpellManager {
             }
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		SpellInfoLoadHelper GetLoadHelper(uint spellId, uint difficulty)
 //			{
 //				var first = (spellId, (Difficulty)difficulty);
@@ -3241,7 +3241,7 @@ public final class SpellManager {
                                         break;
                                     }
 
-// C# TO JAVA CONVERTER TASK: There is no 'goto' in Java:
+
 									goto default
                                         ;
                                 }
@@ -3331,7 +3331,7 @@ public final class SpellManager {
                 spellInfo.initializeExplicitTargetMask();
 
                 if (spellInfo.speed > 0.0f) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //					bool visualNeedsAmmo(SpellXSpellVisualRecord spellXspellVisual)
 //						{
 //							var spellVisual = CliDB.SpellVisualStorage.get(spellXspellVisual.spellVisualID);
@@ -4833,6 +4833,6 @@ public final class SpellManager {
         void invoke(Spell spell);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

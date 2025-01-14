@@ -4,12 +4,12 @@ package com.github.azeroth.game.chat;
 import com.github.azeroth.game.spell.AuraCreateInfo;
 
 class SpellCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleCooldownCommand(CommandHandler handler, Integer spellIdArg) {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -26,30 +26,30 @@ class SpellCommands {
         if (spellIdArg == null) {
             target.getSpellHistory().resetAllCooldowns();
             target.getSpellHistory().resetAllCharges();
-            handler.sendSysMessage(CypherStrings.RemoveallCooldown, nameLink);
+            handler.sendSysMessage(SysMessage.RemoveallCooldown, nameLink);
         } else {
             var spellInfo = global.getSpellMgr().getSpellInfo(spellIdArg.intValue(), target.getMap().getDifficultyID());
 
             if (spellInfo == null) {
-                handler.sendSysMessage(CypherStrings.UnknownSpell, owner == handler.getSession().getPlayer() ? handler.getCypherString(CypherStrings.You) : nameLink);
+                handler.sendSysMessage(SysMessage.UnknownSpell, owner == handler.getSession().getPlayer() ? handler.getSysMessage(SysMessage.You) : nameLink);
 
                 return false;
             }
 
             target.getSpellHistory().resetCooldown(spellInfo.id, true);
             target.getSpellHistory().resetCharges(spellInfo.chargeCategoryId);
-            handler.sendSysMessage(CypherStrings.RemoveallCooldown, spellInfo.id, owner == handler.getSession().getPlayer() ? handler.getCypherString(CypherStrings.You) : nameLink);
+            handler.sendSysMessage(SysMessage.RemoveallCooldown, spellInfo.id, owner == handler.getSession().getPlayer() ? handler.getSysMessage(SysMessage.You) : nameLink);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAuraCommand(CommandHandler handler, int spellId) {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -69,7 +69,7 @@ class SpellCommands {
         return true;
     }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 
     private static boolean handleUnAuraCommand(CommandHandler handler) {
         return handleUnAuraCommand(handler, 0);
@@ -79,7 +79,7 @@ class SpellCommands {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -101,12 +101,12 @@ class SpellCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleSetSkillCommand(CommandHandler handler, int skillId, int level, Integer maxSkillArg) {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -114,7 +114,7 @@ class SpellCommands {
         var skillLine = CliDB.SkillLineStorage.get(skillId);
 
         if (skillLine == null) {
-            handler.sendSysMessage(CypherStrings.InvalidSkillId, skillId);
+            handler.sendSysMessage(SysMessage.InvalidSkillId, skillId);
 
             return false;
         }
@@ -133,7 +133,7 @@ class SpellCommands {
         // add the skill to the player's book with step 1 (which is the first rank, in most cases something
         // like 'Apprentice <skill>'.
         target.setSkill(SkillType.forValue(skillId), (int) (targetHasSkill ? target.getSkillStep(SkillType.forValue(skillId)) : 1), level, max);
-        handler.sendSysMessage(CypherStrings.SetSkill, skillId, skillLine.DisplayName[handler.getSessionDbcLocale()], handler.getNameLink(target), level, max);
+        handler.sendSysMessage(SysMessage.SetSkill, skillId, skillLine.DisplayName[handler.getSessionDbcLocale()], handler.getNameLink(target), level, max);
 
         return true;
     }

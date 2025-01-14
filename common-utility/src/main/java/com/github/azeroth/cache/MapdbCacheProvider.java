@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 public class MapdbCacheProvider implements CacheProvider, InitializingBean, DisposableBean {
 
@@ -34,6 +35,7 @@ public class MapdbCacheProvider implements CacheProvider, InitializingBean, Disp
     @Override
     public <K, V> MapCache<K, V> newGenericMapCache(String cacheName, TypeReference<K, V> typeReference) {
         MVMap<byte[], byte[]> mvMap = mvStore.openMap(cacheName);
+
         return new GenericMapCache<>(mvMap, typeReference);
     }
 

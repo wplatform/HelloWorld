@@ -4,9 +4,9 @@ package com.github.azeroth.game.chat.commands;
 import com.github.azeroth.defines.Power;
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class CheatCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleCasttimeCheatCommand(CommandHandler handler, Boolean enableArg) {
         var enable = !handler.getSession().getPlayer().getCommandStatus(PlayerCommandStates.Casttime);
 
@@ -25,7 +25,7 @@ class CheatCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleCoolDownCheatCommand(CommandHandler handler, Boolean enableArg) {
         var enable = !handler.getSession().getPlayer().getCommandStatus(PlayerCommandStates.cooldown);
 
@@ -44,27 +44,27 @@ class CheatCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleExploreCheatCommand(CommandHandler handler, boolean reveal) {
         var chr = handler.getSelectedPlayer();
 
         if (!chr) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
 
         if (reveal) {
-            handler.sendSysMessage(CypherStrings.YouSetExploreAll, handler.getNameLink(chr));
+            handler.sendSysMessage(SysMessage.YouSetExploreAll, handler.getNameLink(chr));
 
             if (handler.needReportToTarget(chr)) {
-                chr.sendSysMessage(CypherStrings.YoursExploreSetAll, handler.getNameLink());
+                chr.sendSysMessage(SysMessage.YoursExploreSetAll, handler.getNameLink());
             }
         } else {
-            handler.sendSysMessage(CypherStrings.YouSetExploreNothing, handler.getNameLink(chr));
+            handler.sendSysMessage(SysMessage.YouSetExploreNothing, handler.getNameLink(chr));
 
             if (handler.needReportToTarget(chr)) {
-                chr.sendSysMessage(CypherStrings.YoursExploreSetNothing, handler.getNameLink());
+                chr.sendSysMessage(SysMessage.YoursExploreSetNothing, handler.getNameLink());
             }
         }
 
@@ -79,7 +79,7 @@ class CheatCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGodModeCheatCommand(CommandHandler handler, Boolean enableArg) {
         var enable = !handler.getSession().getPlayer().getCommandStatus(PlayerCommandStates.God);
 
@@ -98,7 +98,7 @@ class CheatCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handlePowerCheatCommand(CommandHandler handler, Boolean enableArg) {
         var enable = !handler.getSession().getPlayer().getCommandStatus(PlayerCommandStates.power);
 
@@ -124,25 +124,25 @@ class CheatCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleCheatStatusCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
 
         var enabled = "ON";
         var disabled = "OFF";
 
-        handler.sendSysMessage(CypherStrings.CommandCheatStatus);
-        handler.sendSysMessage(CypherStrings.CommandCheatGod, player.getCommandStatus(PlayerCommandStates.God) ? enabled : disabled);
-        handler.sendSysMessage(CypherStrings.CommandCheatCd, player.getCommandStatus(PlayerCommandStates.cooldown) ? enabled : disabled);
-        handler.sendSysMessage(CypherStrings.CommandCheatCt, player.getCommandStatus(PlayerCommandStates.Casttime) ? enabled : disabled);
-        handler.sendSysMessage(CypherStrings.CommandCheatPower, player.getCommandStatus(PlayerCommandStates.power) ? enabled : disabled);
-        handler.sendSysMessage(CypherStrings.CommandCheatWw, player.getCommandStatus(PlayerCommandStates.Waterwalk) ? enabled : disabled);
-        handler.sendSysMessage(CypherStrings.CommandCheatTaxinodes, player.isTaxiCheater() ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatStatus);
+        handler.sendSysMessage(SysMessage.CommandCheatGod, player.getCommandStatus(PlayerCommandStates.God) ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatCd, player.getCommandStatus(PlayerCommandStates.cooldown) ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatCt, player.getCommandStatus(PlayerCommandStates.Casttime) ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatPower, player.getCommandStatus(PlayerCommandStates.power) ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatWw, player.getCommandStatus(PlayerCommandStates.Waterwalk) ? enabled : disabled);
+        handler.sendSysMessage(SysMessage.CommandCheatTaxinodes, player.isTaxiCheater() ? enabled : disabled);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleTaxiCheatCommand(CommandHandler handler, Boolean enableArg) {
         var chr = handler.getSelectedPlayer();
 
@@ -161,24 +161,24 @@ class CheatCommands {
 
         if (enable) {
             chr.setTaxiCheater(true);
-            handler.sendSysMessage(CypherStrings.YouGiveTaxis, handler.getNameLink(chr));
+            handler.sendSysMessage(SysMessage.YouGiveTaxis, handler.getNameLink(chr));
 
             if (handler.needReportToTarget(chr)) {
-                chr.sendSysMessage(CypherStrings.YoursTaxisAdded, handler.getNameLink());
+                chr.sendSysMessage(SysMessage.YoursTaxisAdded, handler.getNameLink());
             }
         } else {
             chr.setTaxiCheater(false);
-            handler.sendSysMessage(CypherStrings.YouRemoveTaxis, handler.getNameLink(chr));
+            handler.sendSysMessage(SysMessage.YouRemoveTaxis, handler.getNameLink(chr));
 
             if (handler.needReportToTarget(chr)) {
-                chr.sendSysMessage(CypherStrings.YoursTaxisRemoved, handler.getNameLink());
+                chr.sendSysMessage(SysMessage.YoursTaxisRemoved, handler.getNameLink());
             }
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleWaterWalkCheatCommand(CommandHandler handler, Boolean enableArg) {
         var enable = !handler.getSession().getPlayer().getCommandStatus(PlayerCommandStates.Waterwalk);
 

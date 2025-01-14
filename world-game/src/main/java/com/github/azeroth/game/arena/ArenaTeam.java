@@ -476,7 +476,7 @@ public class ArenaTeam {
         // Update team's rank, start with rank 1 and increase until no team with more rating was found
         stats.rank = 1;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, team) : global.getArenaTeamMgr().getArenaTeamMap()) {
             if (team.getArenaType() == type && team.getStats().rating > stats.rating) {
                 ++stats.rank;

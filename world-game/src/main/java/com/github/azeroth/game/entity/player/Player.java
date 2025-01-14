@@ -24,6 +24,7 @@ import com.github.azeroth.game.domain.creature.CreatureTemplate;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.gobject.Transport;
 import com.github.azeroth.game.entity.item.*;
+import com.github.azeroth.game.entity.item.enums.BuyResult;
 import com.github.azeroth.game.entity.object.GenericObject;
 import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldLocation;
@@ -56,6 +57,7 @@ import com.github.azeroth.game.misc.PlayerMenu;
 import com.github.azeroth.game.movement.model.MovementInfo;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.opcode.ServerOpCode;
+import com.github.azeroth.game.networking.packet.item.BuyFailed;
 import com.github.azeroth.game.networking.packet.quest.DisplayPlayerChoice;
 import com.github.azeroth.game.networking.packet.spell.SetSpellModifier;
 import com.github.azeroth.game.networking.packet.spell.SpellModifierInfo;
@@ -2316,7 +2318,7 @@ public class Player extends Unit implements GridObject<Player> {
         super.setObjectScale(value);
 
         setBoundingRadius(value * SharedConst.DefaultPlayerBoundingRadius);
-        setCombatReach(value * SharedConst.DefaultPlayerCombatReach);
+        setCombatReach(value * ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH);
 
         if (isInWorld()) {
             sendMovementSetCollisionHeight(getCollisionHeight(), UpdateCollisionHeightReason.scale);
@@ -3678,7 +3680,7 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     public final void setInvSlot(int slot, ObjectGuid guid) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().invSlots, (int) slot), guid);
     }
 
@@ -4986,7 +4988,7 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     public final void summonIfPossible(boolean agree) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void broadcastSummonResponse(bool accepted)
 //			{
 //				var group = group;
@@ -6349,7 +6351,7 @@ public class Player extends Unit implements GridObject<Player> {
         removePet(pet, mode, false);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Sends / Updates
 
     public final void removePet(Pet pet, PetSaveMode mode, boolean returnreagent) {
@@ -6945,7 +6947,7 @@ public class Player extends Unit implements GridObject<Player> {
         }
 
         // appropriate npc type
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool hasNpcFlags()
 //			{
 //				if (npcFlags == 0 && npcFlags2 == 0)
@@ -7028,10 +7030,10 @@ public class Player extends Unit implements GridObject<Player> {
         return go;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Chat
 
     public final void sendInitialPacketsBeforeAddToMap() {
@@ -7354,7 +7356,7 @@ public class Player extends Unit implements GridObject<Player> {
 
         //reset rating fields values
         for (var index = 0; index < CombatRating.max.getValue(); ++index) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().combatRatings, index), 0);
         }
 
@@ -7363,13 +7365,13 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modPeriodicHealingDonePercent), 1.0f);
 
         for (byte i = 0; i < SpellSchools.max.getValue(); ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, i), 0);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePos, i), 0);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePercent, i), 1.0f);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modHealingDonePercent, i), 1.0f);
         }
 
@@ -7388,9 +7390,9 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(getValues().modifyValue(getUnitData()).modifyValue(getUnitData().maxRangedDamage), 0.0f);
 
         for (var i = 0; i < 3; ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().weaponDmgMultipliers, i), 1.0f);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().weaponAtkSpeedMultipliers, i), 1.0f);
         }
 
@@ -7429,7 +7431,7 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modTargetPhysicalResistance), 0);
 
         for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().manaCostModifier, i), 0);
         }
 
@@ -7585,7 +7587,7 @@ public class Player extends Unit implements GridObject<Player> {
         return extraFlags.hasFlag(PlayerExtraFlags.GrantedLevelsFromRaf);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
     //public sbyte getCovenant()
@@ -7740,7 +7742,7 @@ public class Player extends Unit implements GridObject<Player> {
             case BaseAttack -> UnitMods.DamageMainHand.getValue();
             case OffAttack -> UnitMods.DamageOffHand.getValue();
             case RangedAttack -> UnitMods.DamageRanged.getValue();
-// C# TO JAVA CONVERTER TASK: Throw expressions are not converted by C# to Java Converter:
+
             default -> throw new UnsupportedOperationException();
         };
 
@@ -8488,7 +8490,7 @@ public class Player extends Unit implements GridObject<Player> {
             offItem.deleteFromInventoryDB(trans); // deletes item from character's inventory
             offItem.saveToDB(trans); // recursive and not have transaction guard into self, item not in inventory and can be save standalone
 
-            var subject = global.getObjectMgr().getCypherString(CypherStrings.NotEquippedItem);
+            var subject = global.getObjectMgr().getSysMessage(SysMessage.NotEquippedItem);
             (new MailDraft(subject, "There were problems with equipping one or several items")).addItem(offItem).sendMailTo(trans, this, new MailSender(this, MailStationery.gm), MailCheckMask.Copied);
 
             DB.characters.CommitTransaction(trans);
@@ -10349,7 +10351,7 @@ public class Player extends Unit implements GridObject<Player> {
     private void sendCurrencies() {
         SetupCurrency packet = new SetupCurrency();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(id, currency) : currencyStorage) {
             var currencyRecord = CliDB.CurrencyTypesStorage.get(id);
 
@@ -10426,13 +10428,13 @@ public class Player extends Unit implements GridObject<Player> {
 
 
     public final void addExploredZones(int pos, long mask) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().exploredZones, (int) pos), mask);
     }
 
 
     public final void removeExploredZones(int pos, long mask) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         removeUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().exploredZones, (int) pos), mask);
     }
 
@@ -10475,7 +10477,7 @@ public class Player extends Unit implements GridObject<Player> {
         var currFields = getActivePlayerData().exploredZones.get(offset);
 
         if (!(boolean) (currFields & val)) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().exploredZones, (int) offset), val);
 
             updateCriteria(CriteriaType.RevealWorldMapOverlay, getArea());
@@ -10523,13 +10525,13 @@ public class Player extends Unit implements GridObject<Player> {
         sendPacket(new ExplorationExperience(experience, area));
     }
 
-    public final void sendSysMessage(CypherStrings str, object... args) {
+    public final void sendSysMessage(SysMessage str, Object... args) {
         sendSysMessage((int) str.getValue(), args);
     }
 
 
-    public final void sendSysMessage(int str, object... args) {
-        var input = global.getObjectMgr().getCypherString(str);
+    public final void sendSysMessage(int str, Object... args) {
+        var input = global.getObjectMgr().getSysMessage(str);
         var pattern = """
                 %(\\d+(\\.\\d+)?)?(d|f|s|u)""";
 
@@ -10542,15 +10544,15 @@ public class Player extends Unit implements GridObject<Player> {
         sendSysMessage(result, args);
     }
 
-    public final void sendSysMessage(String str, object... args) {
+    public final void sendSysMessage(String str, Object... args) {
         (new commandHandler(session)).sendSysMessage(String.format(str, args));
     }
 
 
     public final void sendBuyError(BuyResult msg, Creature creature, int item) {
         BuyFailed packet = new BuyFailed();
-        packet.vendorGUID = creature ? creature.getGUID() : ObjectGuid.Empty;
-        packet.muid = item;
+        packet.vendorGUID = creature != null ? creature.getGUID() : ObjectGuid.EMPTY;
+        packet.muId = item;
         packet.reason = msg;
         sendPacket(packet);
     }
@@ -10704,14 +10706,14 @@ public class Player extends Unit implements GridObject<Player> {
 
         if (!isAcceptWhispers() && !isGameMaster() && !target.isGameMaster()) {
             setAcceptWhispers(true);
-            sendSysMessage(CypherStrings.CommandWhisperon);
+            sendSysMessage(SysMessage.CommandWhisperon);
         }
 
         // announce afk or dnd message
         if (target.isAFK()) {
-            sendSysMessage(CypherStrings.PlayerAfk, target.getName(), target.getAutoReplyMsg());
+            sendSysMessage(SysMessage.PlayerAfk, target.getName(), target.getAutoReplyMsg());
         } else if (target.isDND()) {
-            sendSysMessage(CypherStrings.PlayerDnd, target.getName(), target.getAutoReplyMsg());
+            sendSysMessage(SysMessage.PlayerDnd, target.getName(), target.getAutoReplyMsg());
         }
     }
 
@@ -11037,7 +11039,7 @@ public class Player extends Unit implements GridObject<Player> {
         LocalizedString exploredZonesStrings = new LocalizedString();
 
         for (var i = 0; i < exploredZonesStrings.length && i / 2 < com.github.azeroth.game.entity.activePlayerData.EXPLOREDZONESSIZE; ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().exploredZones, i / 2), (long) ((Long.parseLong(exploredZonesStrings.get(i))) << (32 * (i % 2))));
         }
 
@@ -11549,7 +11551,7 @@ public class Player extends Unit implements GridObject<Player> {
         }
 
         for (; loadedPowers < powerType.MaxPerClass.getValue(); ++loadedPowers) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().power, loadedPowers), 0);
         }
 
@@ -11749,7 +11751,7 @@ public class Player extends Unit implements GridObject<Player> {
         stmt.AddValue(0, getGUID().getCounter());
         characterTransaction.append(stmt);
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		static float finiteAlways(float f)
 //			{
 //				return float.IsFinite(f) ? f : 0.0f;
@@ -12306,7 +12308,7 @@ public class Player extends Unit implements GridObject<Player> {
 
             // Send problematic items by mail
             while (!problematicItems.isEmpty()) {
-                var subject = global.getObjectMgr().getCypherString(CypherStrings.NotEquippedItem);
+                var subject = global.getObjectMgr().getSysMessage(SysMessage.NotEquippedItem);
                 MailDraft draft = new MailDraft(subject, "There were problems with equipping item(s).");
 
                 for (var i = 0; !problematicItems.isEmpty() && i < SharedConst.MaxMailItems; ++i) {
@@ -12513,7 +12515,7 @@ public class Player extends Unit implements GridObject<Player> {
 
                         if (skillLine.ParentSkillLineID != 0 && skillLine.ParentTierIndex != 0) {
                             if (professionSlot != -1) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                                 setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().professionSkillLine, professionSlot), skill);
                             } else {
                                 loadedProfessionsWithoutSlot.add(skill);
@@ -12558,7 +12560,7 @@ public class Player extends Unit implements GridObject<Player> {
             var emptyProfessionSlot = findEmptyProfessionSlotFor(skill);
 
             if (emptyProfessionSlot != -1) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                 setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().professionSkillLine, emptyProfessionSlot), skill);
                 skillStatus.get(skill).state = SkillState.changed;
             }
@@ -12713,7 +12715,7 @@ public class Player extends Unit implements GridObject<Player> {
             }
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void saveHomebindToDb()
 //			{
 //				var stmt = DB.character.GetPreparedStatement(CharStatements.INS_PLAYER_HOMEBIND);
@@ -13205,7 +13207,7 @@ public class Player extends Unit implements GridObject<Player> {
             } while (configsResult.NextRow());
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool hasConfigForSpec(int specId)
 //			{
 //				return activePlayerData.traitConfigs.FindIndexIf(traitConfig =>
@@ -13215,7 +13217,7 @@ public class Player extends Unit implements GridObject<Player> {
 //				) >= 0;
 //			}
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		int findFreeLocalIdentifier(int specId)
 //			{
 //				var index = 1;
@@ -13835,7 +13837,7 @@ public class Player extends Unit implements GridObject<Player> {
     private void _SaveSpells(SQLTransaction trans) {
         PreparedStatement stmt;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(id, spell) : spells.ToList()) {
             if (spell.state == PlayerSpellState.removed || spell.state == PlayerSpellState.changed) {
                 stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_CHAR_SPELL_BY_SPELL);
@@ -13952,7 +13954,7 @@ public class Player extends Unit implements GridObject<Player> {
     private void _SaveCurrency(SQLTransaction trans) {
         PreparedStatement stmt;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(id, currency) : currencyStorage) {
             var entry = CliDB.CurrencyTypesStorage.get(id);
 
@@ -14215,9 +14217,9 @@ public class Player extends Unit implements GridObject<Player> {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(eventId, dictionary) : seasonalquests) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(questId, completedTime) : dictionary) {
                 stmt = DB.characters.GetPreparedStatement(CharStatements.INS_CHARACTER_QUESTSTATUS_SEASONAL);
                 stmt.AddValue(0, getGUID().getCounter());
@@ -14292,7 +14294,7 @@ public class Player extends Unit implements GridObject<Player> {
     private void _SaveTraits(SQLTransaction trans) {
         PreparedStatement stmt = null;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(traitConfigId, state) : traitConfigStates) {
             switch (state) {
                 case PlayerSpellState.Changed:
@@ -15609,7 +15611,7 @@ public class Player extends Unit implements GridObject<Player> {
 
         // Handling a free repair case - just repair every item without taking cost.
         if (!takeCost) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(item, _) : itemRepairCostStore) {
                 durabilityRepair(item.pos, false, 0.0f);
             }
@@ -15639,7 +15641,7 @@ public class Player extends Unit implements GridObject<Player> {
             // We must calculate total repair cost and take money once to avoid spam in the guild bank log and reduce number of transactions in the database
             long totalCost = 0;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(item, cost) : itemRepairCostStore) {
                 var newTotalCost = totalCost + cost;
 
@@ -15660,7 +15662,7 @@ public class Player extends Unit implements GridObject<Player> {
 
             long totalCost = 0;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, cost) : itemRepairCostStore) {
                 totalCost += cost;
             }
@@ -15672,7 +15674,7 @@ public class Player extends Unit implements GridObject<Player> {
             modifyMoney(-(int) totalCost);
 
             // Payment for repair has already been taken, so just repair every item without taking cost.
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(item, cost) : itemRepairCostStore) {
                 durabilityRepair(item.pos, false, 0.0f);
             }
@@ -18286,13 +18288,13 @@ public class Player extends Unit implements GridObject<Player> {
 
 
     public final void setBuybackPrice(int slot, int price) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().buybackPrice, (int) slot), price);
     }
 
 
     public final void setBuybackTimestamp(int slot, long timestamp) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().buybackTimestamp, (int) slot), timestamp);
     }
 
@@ -20276,7 +20278,7 @@ public class Player extends Unit implements GridObject<Player> {
 
                 var sendItemsBatch = (int arg1, int arg2) ->
                 {
-                    MailDraft draft = new MailDraft(global.getObjectMgr().getCypherString(CypherStrings.NotEquippedItem), "There were problems with equipping item(s).");
+                    MailDraft draft = new MailDraft(global.getObjectMgr().getSysMessage(SysMessage.NotEquippedItem), "There were problems with equipping item(s).");
 
                     for (var j = 0; j < batchSize; ++j) {
                         draft.addItem(unstorableItems.get(batchNumber * SharedConst.MaxMailItems + j));
@@ -23143,9 +23145,9 @@ public class Player extends Unit implements GridObject<Player> {
                             abortParams.setMapDifficultyXConditionId(failedMapDifficultyXCondition);
                         }
                     } else if (missingItem != 0) {
-                        getSession().sendNotification(global.getObjectMgr().getCypherString(CypherStrings.LevelMinrequiredAndItem), levelMin, global.getObjectMgr().getItemTemplate(missingItem).getName());
+                        getSession().sendNotification(global.getObjectMgr().getSysMessage(SysMessage.LevelMinrequiredAndItem), levelMin, global.getObjectMgr().getItemTemplate(missingItem).getName());
                     } else if (levelMin != 0) {
-                        getSession().sendNotification(global.getObjectMgr().getCypherString(CypherStrings.LevelMinrequired), levelMin);
+                        getSession().sendNotification(global.getObjectMgr().getSysMessage(SysMessage.LevelMinrequired), levelMin);
                     }
                 }
 
@@ -23232,7 +23234,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     // Reset all solo instances and optionally send a message on success for each
     public final void resetInstances(InstanceResetMethod method) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(mapId, instanceId) : recentInstances.ToList()) {
             var map = global.getMapMgr().findMap(mapId, instanceId);
             var forgetInstance = false;
@@ -23427,7 +23429,7 @@ public class Player extends Unit implements GridObject<Player> {
             return false;
         }
 
-        sendSysMessage(CypherStrings.InstanceLoginGamemasterException);
+        sendSysMessage(SysMessage.InstanceLoginGamemasterException);
 
         return true;
     }
@@ -24427,7 +24429,7 @@ public class Player extends Unit implements GridObject<Player> {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(questId, completedTime) : eventList.ToList()) {
             if (completedTime < eventStartTime) {
                 var questBit = global.getDB2Mgr().GetQuestUniqueBitFlag(questId);
@@ -26357,7 +26359,7 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(questLogField.modifyValue(questLogField.objectiveFlags), 0);
 
         for (var i = 0; i < SharedConst.MaxQuestCounts; ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref questLogField.modifyValue(questLogField.objectiveProgress, i), (short) 0);
         }
     }
@@ -26368,7 +26370,7 @@ public class Player extends Unit implements GridObject<Player> {
         }
 
         var questLog = getValues().modifyValue(getPlayerData()).modifyValue(getPlayerData().questLog, slot);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref questLog.modifyValue(questLog.objectiveProgress, counter), count);
     }
 
@@ -27471,10 +27473,10 @@ public class Player extends Unit implements GridObject<Player> {
         var flag = 1 << ((questBit - 1) % com.github.azeroth.game.entity.activePlayerData.QUESTCOMPLETEDBITSPERBLOCK);
 
         if (completed) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().questCompleted, (int) fieldOffset), flag);
         } else {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             removeUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().questCompleted, (int) fieldOffset), flag);
         }
     }
@@ -28533,7 +28535,7 @@ public class Player extends Unit implements GridObject<Player> {
         var skillStatusData = skillStatus.get(id);
         SkillInfo skillInfoField = getActivePlayerData().skill;
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void refreshSkillBonusAuras()
 //			{
 //				// Temporary bonuses
@@ -28592,7 +28594,7 @@ public class Player extends Unit implements GridObject<Player> {
                         var freeProfessionSlot = findEmptyProfessionSlotFor(id);
 
                         if (freeProfessionSlot != -1) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().professionSkillLine, freeProfessionSlot), id);
                         }
 
@@ -28631,7 +28633,7 @@ public class Player extends Unit implements GridObject<Player> {
                     }
 
                     // Clear profession lines
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                     setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().professionSkillLine, professionSlot), 0);
                 }
 
@@ -28713,7 +28715,7 @@ public class Player extends Unit implements GridObject<Player> {
                 var freeProfessionSlot = findEmptyProfessionSlotFor(id);
 
                 if (freeProfessionSlot != -1) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                     setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().professionSkillLine, freeProfessionSlot), id);
                 }
             }
@@ -29408,7 +29410,7 @@ public class Player extends Unit implements GridObject<Player> {
         learnSpell(spellId, dependent, 0, false, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> void learnSpell(T spellId, boolean dependent, int fromSkill, boolean suppressMessaging, Integer traitDefinitionId) {
         learnSpell((int) spellId, dependent, fromSkill, suppressMessaging, traitDefinitionId);
     }
@@ -29486,7 +29488,7 @@ public class Player extends Unit implements GridObject<Player> {
         removeSpell(spellId, false, true, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+
     public final <T extends Enum> void removeSpell(T spellId, boolean disabled, boolean learnLowRank, boolean suppressMessaging) {
         removeSpell((int) spellId, disabled, learnLowRank, suppressMessaging);
     }
@@ -30172,9 +30174,9 @@ public class Player extends Unit implements GridObject<Player> {
         }
 
         // set a base regen timer equal to 10 sec
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenFlatModifier, (int) runeIndex), 0.0f);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenInterruptedFlatModifier, (int) runeIndex), 0.0f);
     }
 
@@ -30192,9 +30194,9 @@ public class Player extends Unit implements GridObject<Player> {
         var runeEntry = global.getDB2Mgr().GetPowerTypeEntry(powerType.runes);
 
         var cooldown = getRuneBaseCooldown();
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenFlatModifier, (int) runeIndex), (float) (1 * time.InMilliseconds) / cooldown - runeEntry.RegenPeace);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenInterruptedFlatModifier, (int) runeIndex), (float) (1 * time.InMilliseconds) / cooldown - runeEntry.RegenCombat);
     }
 
@@ -30221,7 +30223,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     public final void setNoRegentCostMask(FlagArray128 mask) {
         for (byte i = 0; i < 4; ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().noReagentCostMask, i), mask.get(i));
         }
     }
@@ -30485,49 +30487,49 @@ public class Player extends Unit implements GridObject<Player> {
 
     public final void setSkillLineId(int pos, short skillLineId) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillLineID, (int) pos), skillLineId);
     }
 
 
     public final void setSkillStep(int pos, short step) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillStep, (int) pos), step);
     }
 
 
     public final void setSkillRank(int pos, short rank) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillRank, (int) pos), rank);
     }
 
 
     public final void setSkillStartingRank(int pos, short starting) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillStartingRank, (int) pos), starting);
     }
 
 
     public final void setSkillMaxRank(int pos, short max) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillMaxRank, (int) pos), max);
     }
 
 
     public final void setSkillTempBonus(int pos, short bonus) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillTempBonus, (int) pos), bonus);
     }
 
 
     public final void setSkillPermBonus(int pos, short bonus) {
         SkillInfo skillInfo = getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().skill);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref skillInfo.modifyValue(skillInfo.skillPermBonus, (int) pos), bonus);
     }
 
@@ -31798,22 +31800,22 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     public final void applyModDamageDonePos(SpellSchools school, int mod, boolean apply) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         applyModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePos, school.getValue()), mod, apply);
     }
 
     public final void applyModDamageDoneNeg(SpellSchools school, int mod, boolean apply) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         applyModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, school.getValue()), mod, apply);
     }
 
     public final void applyModDamageDonePercent(SpellSchools school, float pct, boolean apply) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         applyPercentModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePercent, school.getValue()), pct, apply);
     }
 
     public final void setModDamageDonePercent(SpellSchools school, float pct) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePercent, school.getValue()), pct);
     }
 
@@ -31916,9 +31918,9 @@ public class Player extends Unit implements GridObject<Player> {
         // Apply PCT bonus from SPELL_AURA_MOD_MANA_REGEN_PCT
         base_regen *= getTotalAuraMultiplierByMiscValue(AuraType.ModManaRegenPct, powerType.mana.getValue());
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenFlatModifier, (int) manaIndex), (float) base_regen);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().powerRegenInterruptedFlatModifier, (int) manaIndex), (float) base_regen);
     }
 
@@ -31931,7 +31933,7 @@ public class Player extends Unit implements GridObject<Player> {
         var modDamageAuras = getAuraEffectsByType(AuraType.ModDamageDone);
 
         for (var i = SpellSchools.Holy.getValue(); i < SpellSchools.max.getValue(); ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, i), (int) modDamageAuras.Aggregate(0f, (negativeMod, aurEff) ->
             {
                 if (aurEff.amount < 0 && (boolean) (aurEff.miscValue & (1 << i))) {
@@ -31941,7 +31943,7 @@ public class Player extends Unit implements GridObject<Player> {
                 return negativeMod;
             }));
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldStatValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePos, i), (int) (spellBaseDamageBonusDone(spellSchoolMask.forValue(1 << i)) - getActivePlayerData().modDamageDoneNeg.get(i)));
         }
 
@@ -32113,7 +32115,7 @@ public class Player extends Unit implements GridObject<Player> {
         }
 
         var oldRating = getActivePlayerData().combatRatings.get(cr.getValue());
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().combatRatings, cr.getValue()), (int) amount);
 
         var affectStats = canModifyStats();
@@ -32295,7 +32297,7 @@ public class Player extends Unit implements GridObject<Player> {
         var val = (float) value;
 
         for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldStatValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modHealingDonePercent, i), val);
         }
     }
@@ -32361,7 +32363,7 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     public final void updateCritPercentage(WeaponAttackType attType) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		static float applyCritLimit(double second)
 //			{
 //				if (WorldConfig.getBoolValue(WorldCfg.StatsLimitsEnable))
@@ -32566,7 +32568,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     private void updateArmorPenetration(int amount) {
         // Store Rating Value
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().combatRatings, CombatRating.ArmorPenetration.getValue()), (int) amount);
     }
 
@@ -33542,7 +33544,7 @@ public class Player extends Unit implements GridObject<Player> {
     public final void createTraitConfig(TraitConfigPacket traitConfig) {
         var configId = TraitMgr.generateNewTraitConfigId();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool hasConfigId(int id)
 //			{
 //				return activePlayerData.traitConfigs.FindIndexIf(config => config.ID == id) >= 0;
@@ -33727,7 +33729,7 @@ public class Player extends Unit implements GridObject<Player> {
             removeUpdateFieldFlagValue(traitConfig.modifyValue(traitConfig.combatConfigFlags), TraitCombatConfigFlags.SharedActionBars.getValue());
 
             // trigger a save with traitConfigId
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, button) : actionButtons) {
                 if (button.UState != ActionButtonUpdateState.Deleted) {
                     button.UState = ActionButtonUpdateState.New;
@@ -33986,7 +33988,7 @@ public class Player extends Unit implements GridObject<Player> {
                 TraitMgr.fillSpentCurrenciesMap(costEntry, currencies);
             }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(traitCurrencyId, amount) : currencies) {
                 var traitCurrency = CliDB.TraitCurrencyStorage.get(traitCurrencyId);
 
@@ -34046,7 +34048,7 @@ public class Player extends Unit implements GridObject<Player> {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java does not allow delegate parameter default values:
+
     @FunctionalInterface
     private interface EquipmentSlotDelegate {
         void invoke(byte equipmentSlot, boolean checkDuplicateGuid);

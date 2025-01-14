@@ -847,7 +847,7 @@ public class AuctionHouseObject {
                 tangible.OutObject<String> tempOut_ownerName = new tangible.OutObject<String>();
                 if (!global.getCharacterCacheStorage().getCharacterNameByGuid(auction.owner, tempOut_ownerName)) {
                     ownerName = tempOut_ownerName.outArgValue;
-                    ownerName = global.getObjectMgr().getCypherString(CypherStrings.unknown);
+                    ownerName = global.getObjectMgr().getSysMessage(SysMessage.unknown);
                 } else {
                     ownerName = tempOut_ownerName.outArgValue;
                 }
@@ -951,7 +951,7 @@ public class AuctionHouseObject {
             tangible.OutObject<String> tempOut_bidderName = new tangible.OutObject<String>();
             if (logGmTrade && !global.getCharacterCacheStorage().getCharacterNameByGuid(auction.bidder, tempOut_bidderName)) {
                 bidderName = tempOut_bidderName.outArgValue;
-                bidderName = global.getObjectMgr().getCypherString(CypherStrings.unknown);
+                bidderName = global.getObjectMgr().getSysMessage(SysMessage.unknown);
             } else {
                 bidderName = tempOut_bidderName.outArgValue;
             }
@@ -962,7 +962,7 @@ public class AuctionHouseObject {
             tangible.OutObject<String> tempOut_ownerName = new tangible.OutObject<String>();
             if (!global.getCharacterCacheStorage().getCharacterNameByGuid(auction.owner, tempOut_ownerName)) {
                 ownerName = tempOut_ownerName.outArgValue;
-                ownerName = global.getObjectMgr().getCypherString(CypherStrings.unknown);
+                ownerName = global.getObjectMgr().getSysMessage(SysMessage.unknown);
             } else {
                 ownerName = tempOut_ownerName.outArgValue;
             }

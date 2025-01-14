@@ -17,7 +17,7 @@ import game.*;
 import java.util.Objects;
 
 class DebugCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugAnimCommand(CommandHandler handler, Emote emote) {
         var unit = handler.getSelectedUnit();
 
@@ -30,36 +30,36 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugAreaTriggersCommand(CommandHandler handler) {
         var player = handler.getPlayer();
 
         if (!player.isDebugAreaTriggers()) {
-            handler.sendSysMessage(CypherStrings.DebugAreatriggerOn);
+            handler.sendSysMessage(SysMessage.DebugAreatriggerOn);
             player.setDebugAreaTriggers(true);
         } else {
-            handler.sendSysMessage(CypherStrings.DebugAreatriggerOff);
+            handler.sendSysMessage(SysMessage.DebugAreatriggerOff);
             player.setDebugAreaTriggers(false);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugArenaCommand(CommandHandler handler) {
         global.getBattlegroundMgr().toggleArenaTesting();
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugBattlegroundCommand(CommandHandler handler) {
         global.getBattlegroundMgr().toggleTesting();
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugBoundaryCommand(CommandHandler handler, String fill, int durationArg) {
         var player = handler.getPlayer();
 
@@ -89,7 +89,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugCombatListCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
@@ -112,12 +112,12 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugConversationCommand(CommandHandler handler, int conversationEntry) {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -125,14 +125,14 @@ class DebugCommands {
         return conversation.CreateConversation(conversationEntry, target, target.getLocation(), target.getGUID()) != null;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugDummyCommand(CommandHandler handler) {
         handler.sendSysMessage("This command does nothing right now. Edit your local core (DebugCommands.cs) to make it do whatever you need for testing.");
 
         return true;
     }
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 
     private static boolean handleDebugEnterVehicleCommand(CommandHandler handler, int entry) {
         return handleDebugEnterVehicleCommand(handler, entry, -1);
@@ -165,7 +165,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugGetItemStateCommand(CommandHandler handler, String itemState) {
         var state = ItemUpdateState.Unchanged;
         var listQueue = false;
@@ -457,7 +457,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugGuidLimitsCommand(CommandHandler handler, int mapId) {
         if (mapId != 0) {
             global.getMapMgr().DoForAllMapsWithMapId(mapId, map -> handleDebugGuidLimitsMap(handler, map));
@@ -471,8 +471,8 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleDebugInstanceSpawns(CommandHandler handler, Object optArg) {
         var player = handler.getPlayer();
 
@@ -592,7 +592,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugItemExpireCommand(CommandHandler handler, long guid) {
         var item = handler.getPlayer().getItemByGuid(ObjectGuid.create(HighGuid.Item, guid));
 
@@ -607,7 +607,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugLoadCellsCommand(CommandHandler handler, Integer mapId, Integer tileX, Integer tileY) {
         if (mapId != null) {
             global.getMapMgr().DoForAllMapsWithMapId(mapId.intValue(), map -> handleDebugLoadCellsCommandHelper(handler, map, tileX, tileY));
@@ -656,7 +656,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugGetLootRecipientCommand(CommandHandler handler) {
         var target = handler.getSelectedCreature();
 
@@ -674,7 +674,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugLoSCommand(CommandHandler handler) {
         var unit = handler.getSelectedUnit();
 
@@ -691,7 +691,7 @@ class DebugCommands {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugMoveflagsCommand(CommandHandler handler, Integer moveFlags, Integer moveFlagsExtra) {
         var target = handler.getSelectedUnit();
 
@@ -701,7 +701,7 @@ class DebugCommands {
 
         if (moveFlags == null) {
             //! Display case
-            handler.sendSysMessage(CypherStrings.MoveflagsGet, target.getUnitMovementFlags(), target.getUnitMovementFlags2());
+            handler.sendSysMessage(SysMessage.MoveflagsGet, target.getUnitMovementFlags(), target.getUnitMovementFlags2());
         } else {
             // @fixme: port master's HandleDebugMoveflagsCommand; flags need different handling
 
@@ -719,13 +719,13 @@ class DebugCommands {
                 target.sendMessageToSet(moveUpdate, true);
             }
 
-            handler.sendSysMessage(CypherStrings.MoveflagsSet, target.getUnitMovementFlags(), target.getUnitMovementFlags2());
+            handler.sendSysMessage(SysMessage.MoveflagsSet, target.getUnitMovementFlags(), target.getUnitMovementFlags2());
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugNearGraveyard(CommandHandler handler, String linked) {
         var player = handler.getPlayer();
         WorldSafeLocsEntry nearestLoc = null;
@@ -765,17 +765,17 @@ class DebugCommands {
         }
 
         if (nearestLoc != null) {
-            handler.sendSysMessage(CypherStrings.CommandNearGraveyard, nearestLoc.id, nearestLoc.loc.getX(), nearestLoc.loc.getY(), nearestLoc.loc.getZ());
+            handler.sendSysMessage(SysMessage.CommandNearGraveyard, nearestLoc.id, nearestLoc.loc.getX(), nearestLoc.loc.getY(), nearestLoc.loc.getZ());
         } else {
-            handler.sendSysMessage(CypherStrings.CommandNearGraveyardNotfound);
+            handler.sendSysMessage(SysMessage.CommandNearGraveyardNotfound);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugObjectCountCommand(CommandHandler handler, Integer mapId) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void HandleDebugObjectCountMap(Map map)
 //			{
 //				handler.sendSysMessage(string.format("Map Id: {0} Name: '{1}' Instance Id: {2} Creatures: {3} GameObjects: {4} SetActive Objects: {5}", map.id, map.MapName, map.instanceId, map.ObjectsStore.OfType<Creature>().count(), map.ObjectsStore.OfType<GameObject>().count(), map.ActiveNonPlayersCount));
@@ -808,12 +808,12 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugPhaseCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -829,7 +829,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugWarModeBalanceCommand(CommandHandler handler, String command, Integer rewardValue) {
         // USAGE: .debug pvp fb <alliance|horde|neutral|off> [pct]
         // neutral     Sets faction balance off.
@@ -854,7 +854,7 @@ class DebugCommands {
 
                 break;
             default:
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
         }
@@ -862,7 +862,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugQuestResetCommand(CommandHandler handler, String arg) {
         boolean daily = false, weekly = false, monthly = false;
 
@@ -898,7 +898,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugRaidResetCommand(CommandHandler handler, int mapId, int difficulty) {
         var mEntry = CliDB.MapStorage.get(mapId);
 
@@ -929,12 +929,12 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugSetAuraStateCommand(CommandHandler handler, AuraStateType state, boolean apply) {
         var unit = handler.getSelectedUnit();
 
         if (!unit) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -953,7 +953,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugSpawnVehicleCommand(CommandHandler handler, int entry, int id) {
         var pos = new Position();
         pos.setO(handler.getPlayer().getLocation().getO());
@@ -988,7 +988,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugThreatListCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
@@ -1051,12 +1051,12 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugThreatInfoCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
         if (target == null) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -1069,19 +1069,19 @@ class DebugCommands {
             // _singleSchoolModifiers
             var mods = mgr.singleSchoolModifiers;
             handler.sendSysMessage(" - Single-school threat modifiers:");
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Physical: {0:0.##}", mods[SpellSchools.NORMAL.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Holy    : {0:0.##}", mods[SpellSchools.Holy.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Fire    : {0:0.##}", mods[SpellSchools.Fire.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Nature  : {0:0.##}", mods[SpellSchools.Nature.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Frost   : {0:0.##}", mods[SpellSchools.Frost.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Shadow  : {0:0.##}", mods[SpellSchools.Shadow.getValue()] * 100.0f));
-// C# TO JAVA CONVERTER TASK: The '0:0.##' format specifier is not converted to Java:
+
             handler.sendSysMessage(String.format(" |-- Arcane  : {0:0.##}", mods[SpellSchools.Arcane.getValue()] * 100.0f));
         }
 
@@ -1091,7 +1091,7 @@ class DebugCommands {
             handler.sendSysMessage(String.format("- Multi-school threat modifiers (%1$s entries):", mods.size()));
 
             for (var pair : mods.entrySet()) {
-// C# TO JAVA CONVERTER TASK: The '1:0.XX' format specifier is not converted to Java:
+
                 handler.sendSysMessage(String.format(" |-- Mask %1$X: {1:0.XX}", pair.getKey(), pair.getValue()));
             }
         }
@@ -1138,7 +1138,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugTransportCommand(CommandHandler handler, String operation) {
         var transport = handler.getPlayer().<transport>GetTransport();
 
@@ -1166,7 +1166,7 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugWardenForce(CommandHandler handler, short[] checkIds) {
 		/*if (checkIds.isEmpty())
 			return false;
@@ -1183,21 +1183,21 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugUpdateWorldStateCommand(CommandHandler handler, int variable, int value) {
         handler.getPlayer().sendUpdateWorldState(variable, value);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleWPGPSCommand(CommandHandler handler) {
         var player = handler.getPlayer();
 
-// C# TO JAVA CONVERTER TASK: The '0:3F' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '1:3F' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '2:5F' format specifier is not converted to Java:
-// C# TO JAVA CONVERTER TASK: The '3:5F' format specifier is not converted to Java:
+
+
+
+
         Log.outInfo(LogFilter.SqlDev, String.format("(@PATH, XX, {0:3F}, {1:3F}, {2:5F}, {3:5F}, 0, 0, 0, 100, 0)", player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getO()));
 
         handler.sendSysMessage("Waypoint SQL written to SQL Developer log");
@@ -1205,12 +1205,12 @@ class DebugCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleDebugWSExpressionCommand(CommandHandler handler, int expressionId) {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (target == null) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -1234,27 +1234,27 @@ class DebugCommands {
         handler.sendSysMessage(String.format("Map Id: %1$s Name: '%2$s' Instance Id: %3$s Highest Guid Creature: %4$s GameObject: %5$s", map.getId(), map.getMapName(), map.getInstanceId(), map.generateLowGuid(HighGuid.Creature), map.getMaxLowGuid(HighGuid.GameObject)));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DebugAsanCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugMemoryLeak(CommandHandler handler) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugOutOfBounds(CommandHandler handler) {
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DebugPlayCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugPlayCinematicCommand(CommandHandler handler, int cinematicId) {
             var cineSeq = CliDB.CinematicSequencesStorage.get(cinematicId);
 
             if (cineSeq == null) {
-                handler.sendSysMessage(CypherStrings.CinematicNotExist, cinematicId);
+                handler.sendSysMessage(SysMessage.CinematicNotExist, cinematicId);
 
                 return false;
             }
@@ -1279,10 +1279,10 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugPlayMovieCommand(CommandHandler handler, int movieId) {
             if (!CliDB.MovieStorage.containsKey(movieId)) {
-                handler.sendSysMessage(CypherStrings.MovieNotExist, movieId);
+                handler.sendSysMessage(SysMessage.MovieNotExist, movieId);
 
                 return false;
             }
@@ -1292,10 +1292,10 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugPlayMusicCommand(CommandHandler handler, int musicId) {
             if (!CliDB.SoundKitStorage.containsKey(musicId)) {
-                handler.sendSysMessage(CypherStrings.SoundNotExist, musicId);
+                handler.sendSysMessage(SysMessage.SoundNotExist, musicId);
 
                 return false;
             }
@@ -1304,15 +1304,15 @@ class DebugCommands {
 
             player.playDirectMusic(musicId, player);
 
-            handler.sendSysMessage(CypherStrings.YouHearSound, musicId);
+            handler.sendSysMessage(SysMessage.YouHearSound, musicId);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugPlaySoundCommand(CommandHandler handler, int soundId, int broadcastTextId) {
             if (!CliDB.SoundKitStorage.containsKey(soundId)) {
-                handler.sendSysMessage(CypherStrings.SoundNotExist, soundId);
+                handler.sendSysMessage(SysMessage.SoundNotExist, soundId);
 
                 return false;
             }
@@ -1322,7 +1322,7 @@ class DebugCommands {
             var unit = handler.getSelectedUnit();
 
             if (!unit) {
-                handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+                handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
                 return false;
             }
@@ -1333,15 +1333,15 @@ class DebugCommands {
                 unit.playDirectSound(soundId, player, broadcastTextId);
             }
 
-            handler.sendSysMessage(CypherStrings.YouHearSound, soundId);
+            handler.sendSysMessage(SysMessage.YouHearSound, soundId);
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DebugPvpCommands {
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 
         private static boolean handleDebugWarModeFactionBalanceCommand(CommandHandler handler, String command) {
             return handleDebugWarModeFactionBalanceCommand(handler, command, 0);
@@ -1355,7 +1355,7 @@ class DebugCommands {
             // off         Reset the faction balance and use the calculated value of it
             switch (command.toLowerCase()) {
                 default: // workaround for Variant of only ExactSequences not being supported
-                    handler.sendSysMessage(CypherStrings.BadValue);
+                    handler.sendSysMessage(SysMessage.BadValue);
 
                     return false;
                 case "alliance":
@@ -1380,16 +1380,16 @@ class DebugCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DebugSendCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendBuyErrorCommand(CommandHandler handler, BuyResult error) {
             handler.getPlayer().sendBuyError(error, null, 0);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendChannelNotifyCommand(CommandHandler handler, ChatNotify type) {
             ChannelNotify packet = new ChannelNotify();
             packet.type = type;
@@ -1399,7 +1399,7 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendChatMsgCommand(CommandHandler handler, ChatMsg type) {
             ChatPkt data = new ChatPkt();
             data.initialize(type, language.Universal, handler.getPlayer(), handler.getPlayer(), "testtest", 0, "chan");
@@ -1408,14 +1408,14 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendEquipErrorCommand(CommandHandler handler, InventoryResult error) {
             handler.getPlayer().sendEquipError(error);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendLargePacketCommand(CommandHandler handler) {
             StringBuilder ss = new StringBuilder();
 
@@ -1428,14 +1428,14 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendOpcodeCommand(CommandHandler handler) {
-            handler.sendSysMessage(CypherStrings.CmdInvalid);
+            handler.sendSysMessage(SysMessage.CmdInvalid);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendPlayerChoiceCommand(CommandHandler handler, int choiceId) {
             var player = handler.getPlayer();
             player.sendPlayerChoice(player.getGUID(), choiceId);
@@ -1443,28 +1443,28 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendQuestPartyMsgCommand(CommandHandler handler, QuestPushReason msg) {
             handler.getPlayer().sendPushToPartyResponse(handler.getPlayer(), msg);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendQuestInvalidMsgCommand(CommandHandler handler, QuestFailedReasons msg) {
             handler.getPlayer().sendCanTakeQuestResponse(msg);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendSellErrorCommand(CommandHandler handler, SellResult error) {
             handler.getPlayer().sendSellError(error, null, ObjectGuid.Empty);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendSetPhaseShiftCommand(CommandHandler handler, int phaseId, int visibleMapId, int uiMapPhaseId) {
             PhaseShift phaseShift = new PhaseShift();
 
@@ -1485,7 +1485,7 @@ class DebugCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugSendSpellFailCommand(CommandHandler handler, SpellCastResult result, Integer failArg1, Integer failArg2) {
             CastFailed castFailed = new CastFailed();
             castFailed.castID = ObjectGuid.Empty;
@@ -1499,9 +1499,9 @@ class DebugCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class DebugWardenCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleDebugWardenForce(CommandHandler handler, short[] checkIds) {
 			/*if (checkIds.isEmpty())
 				return false;

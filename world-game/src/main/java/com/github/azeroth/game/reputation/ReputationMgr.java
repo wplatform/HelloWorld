@@ -15,7 +15,7 @@ import java.util.TreeMap;
 public class ReputationMgr {
     public static final int[] REPUTATIONRANKTHRESHOLDS = {-42000, -6000, -3000, 0, 3000, 9000, 21000, 42000};
 
-    public static final CypherStrings[] REPUTATIONRANKSTRINDEX = {CypherStrings.RepHated, CypherStrings.RepHostile, CypherStrings.RepUnfriendly, CypherStrings.RepNeutral, CypherStrings.RepFriendly, CypherStrings.RepHonored, CypherStrings.RepRevered, CypherStrings.RepExalted};
+    public static final SysMessage[] REPUTATIONRANKSTRINDEX = {SysMessage.RepHated, SysMessage.RepHostile, SysMessage.RepUnfriendly, SysMessage.RepNeutral, SysMessage.RepFriendly, SysMessage.RepHonored, SysMessage.RepRevered, SysMessage.RepExalted};
 
 
     private final Player player;

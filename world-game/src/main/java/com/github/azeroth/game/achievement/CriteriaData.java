@@ -8,64 +8,64 @@ import com.github.azeroth.game.map.InstanceMap;
 import com.github.azeroth.game.scripting.interfaces.iachievement.IAchievementCriteriaOnCheck;
 
 public class CriteriaData {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public CriteriaDataType dataType = CriteriaDataType.values()[0];
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public creatureStruct creature = new creatureStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public classRaceStruct classRace = new classRaceStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public healthStruct health = new healthStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public auraStruct aura = new auraStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public valueStruct value = new valueStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public levelStruct level = new levelStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public genderStruct gender = new genderStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public mapPlayersStruct mapPlayers = new mapPlayersStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public teamStruct teamId = new teamStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public drunkStruct drunk = new drunkStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public holidayStruct holiday = new holidayStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public bgLossTeamScoreStruct battlegroundScore = new bgLossTeamScoreStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public equippedItemStruct equippedItem = new equippedItemStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public mapIdStruct mapId = new mapIdStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public knownTitleStruct knownTitle = new knownTitleStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public gameEventStruct gameEvent = new gameEventStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public itemQualityStruct itemQuality = new itemQualityStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public rawStruct raw = new rawStruct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int scriptId;
 
     public CriteriaData() {
@@ -521,7 +521,7 @@ public class CriteriaData {
         return false;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Structs
 
     // criteria_data_TYPE_NONE              = 0 (no data)
@@ -798,6 +798,6 @@ public class CriteriaData {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

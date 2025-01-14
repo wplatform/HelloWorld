@@ -1,7 +1,7 @@
 package com.github.azeroth.game.entity.player;
 
 final class QuestObjectiveStatusData {
-// C# TO JAVA CONVERTER TASK: Tuple fields are not converted by C# to Java Converter:
+
     public (
     public Questobjective objective;
     status)questStatusPair;

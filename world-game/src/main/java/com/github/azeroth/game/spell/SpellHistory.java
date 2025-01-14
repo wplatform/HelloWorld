@@ -395,7 +395,7 @@ public class SpellHistory {
                 var modOwner = owner.getSpellModOwner();
 
                 if (modOwner) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //					void applySpellMod(ref Duration second)
 //						{
 //							var intValue = (int)second.TotalMilliseconds;
@@ -550,7 +550,7 @@ public class SpellHistory {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+    
     public final <T extends Enum> void addCooldown(T spellId, int itemId, Duration cooldownDuration) {
         addCooldown((int) spellId, itemId, cooldownDuration);
     }
@@ -599,7 +599,7 @@ public class SpellHistory {
         modifyCooldown(spellId, cooldownMod, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'struct' constraint has no equivalent in Java:
+    
     public final <T extends Enum> void modifyCooldown(T spellId, Duration cooldownMod, boolean withoutCategoryCooldown) {
         modifyCooldown((int) spellId, cooldownMod, withoutCategoryCooldown);
     }

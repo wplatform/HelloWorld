@@ -99,7 +99,7 @@ public class MoveSplineInit {
         }
 
         // limit the speed in the same way the client does
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		float speedLimit()
 //			{
 //				if (args.flags.hasFlag(SplineFlag.UnlimitedSpeed))

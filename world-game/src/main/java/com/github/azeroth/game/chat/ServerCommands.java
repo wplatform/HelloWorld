@@ -4,29 +4,29 @@ package com.github.azeroth.game.chat;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ServerCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerCorpsesCommand(CommandHandler handler) {
         global.getWorldMgr().removeOldCorpses();
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerDebugCommand(CommandHandler handler) {
         return false; //todo fix me
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerExitCommand(CommandHandler handler) {
-        handler.sendSysMessage(CypherStrings.CommandExit);
+        handler.sendSysMessage(SysMessage.CommandExit);
         global.getWorldMgr().stopNow(ShutdownExitCode.Shutdown);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerInfoCommand(CommandHandler handler) {
         var playersNum = global.getWorldMgr().getPlayerCount();
         var maxPlayersNum = global.getWorldMgr().getMaxPlayerCount();
@@ -37,20 +37,20 @@ class ServerCommands {
         var uptime = time.secsToTimeString(gameTime.GetUptime(), 0, false);
         var updateTime = global.getWorldMgr().getWorldUpdateTime().getLastUpdateTime();
 
-        handler.sendSysMessage(CypherStrings.ConnectedPlayers, playersNum, maxPlayersNum);
-        handler.sendSysMessage(CypherStrings.ConnectedUsers, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
-        handler.sendSysMessage(CypherStrings.Uptime, uptime);
-        handler.sendSysMessage(CypherStrings.UpdateDiff, updateTime);
+        handler.sendSysMessage(SysMessage.ConnectedPlayers, playersNum, maxPlayersNum);
+        handler.sendSysMessage(SysMessage.ConnectedUsers, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
+        handler.sendSysMessage(SysMessage.Uptime, uptime);
+        handler.sendSysMessage(SysMessage.UpdateDiff, updateTime);
 
         // Can't use global.WorldMgr.ShutdownMsg here in case of console command
         if (global.getWorldMgr().isShuttingDown()) {
-            handler.sendSysMessage(CypherStrings.ShutdownTimeleft, time.secsToTimeString(global.getWorldMgr().getShutDownTimeLeft(), 0, false));
+            handler.sendSysMessage(SysMessage.ShutdownTimeleft, time.secsToTimeString(global.getWorldMgr().getShutDownTimeLeft(), 0, false));
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerMotdCommand(CommandHandler handler) {
         var motd = "";
 
@@ -58,12 +58,12 @@ class ServerCommands {
             motd += line;
         }
 
-        handler.sendSysMessage(CypherStrings.MotdCurrent, motd);
+        handler.sendSysMessage(SysMessage.MotdCurrent, motd);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleServerPLimitCommand(CommandHandler handler, StringArguments args) {
         if (!args.isEmpty()) {
             var paramStr = args.NextString(" ");
@@ -238,7 +238,7 @@ class ServerCommands {
         // Override parameter "delay" with the configuration second if there are still players connected and "force" parameter was not specified
         if (delay < WorldConfig.getIntValue(WorldCfg.ForceShutdownThreshold) && !shutdownMask.hasFlag(ShutdownMask.FORCE) && !isOnlyUser(handler.getSession())) {
             delay = WorldConfig.getIntValue(WorldCfg.ForceShutdownThreshold);
-            handler.sendSysMessage(CypherStrings.ShutdownDelayed, delay);
+            handler.sendSysMessage(SysMessage.ShutdownDelayed, delay);
         }
 
         global.getWorldMgr().shutdownServ((int) delay, shutdownMask, ShutdownExitCode.forValue(exitCode), reason);
@@ -246,95 +246,95 @@ class ServerCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class IdleRestartCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerIdleRestartCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, ShutdownMask.RESTART.getValue() | ShutdownMask.IDLE.getValue(), ShutdownExitCode.RESTART);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerShutDownCancelCommand(CommandHandler handler) {
             var timer = global.getWorldMgr().shutdownCancel();
 
             if (timer != 0) {
-                handler.sendSysMessage(CypherStrings.ShutdownCancelled, timer);
+                handler.sendSysMessage(SysMessage.ShutdownCancelled, timer);
             }
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class IdleshutdownCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerIdleShutDownCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, ShutdownMask.IDLE, ShutdownExitCode.Shutdown);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerShutDownCancelCommand(CommandHandler handler) {
             var timer = global.getWorldMgr().shutdownCancel();
 
             if (timer != 0) {
-                handler.sendSysMessage(CypherStrings.ShutdownCancelled, timer);
+                handler.sendSysMessage(SysMessage.ShutdownCancelled, timer);
             }
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class RestartCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerRestartCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, ShutdownMask.RESTART, ShutdownExitCode.RESTART);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerShutDownCancelCommand(CommandHandler handler) {
             var timer = global.getWorldMgr().shutdownCancel();
 
             if (timer != 0) {
-                handler.sendSysMessage(CypherStrings.ShutdownCancelled, timer);
+                handler.sendSysMessage(SysMessage.ShutdownCancelled, timer);
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerForceRestartCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, ShutdownMask.FORCE.getValue() | ShutdownMask.RESTART.getValue(), ShutdownExitCode.RESTART);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class ShutdownCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerShutDownCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, 0, ShutdownExitCode.Shutdown);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerShutDownCancelCommand(CommandHandler handler) {
             var timer = global.getWorldMgr().shutdownCancel();
 
             if (timer != 0) {
-                handler.sendSysMessage(CypherStrings.ShutdownCancelled, timer);
+                handler.sendSysMessage(SysMessage.ShutdownCancelled, timer);
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerForceShutDownCommand(CommandHandler handler, StringArguments args) {
             return shutdownServer(args, handler, ShutdownMask.FORCE, ShutdownExitCode.Shutdown);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class SetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerSetDiffTimeCommand(CommandHandler handler, StringArguments args) {
             if (args.isEmpty()) {
                 return false;
@@ -361,7 +361,7 @@ class ServerCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerSetLogLevelCommand(CommandHandler handler, String type, String name, int level) {
             if (name.isEmpty() || level < 0 || (!Objects.equals(type, "a") && !Objects.equals(type, "l"))) {
                 return false;
@@ -370,31 +370,31 @@ class ServerCommands {
             return Log.SetLogLevel(name, level, Objects.equals(type, "l"));
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerSetMotdCommand(CommandHandler handler, StringArguments args) {
             global.getWorldMgr().setMotd(args.NextString(""));
-            handler.sendSysMessage(CypherStrings.MotdNew, args.getString());
+            handler.sendSysMessage(SysMessage.MotdNew, args.getString());
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleServerSetClosedCommand(CommandHandler handler, StringArguments args) {
             var arg1 = args.NextString(" ");
 
             if (arg1.equalsIgnoreCase("on")) {
-                handler.sendSysMessage(CypherStrings.WorldClosed);
+                handler.sendSysMessage(SysMessage.WorldClosed);
                 global.getWorldMgr().setClosed(true);
 
                 return true;
             } else if (arg1.equalsIgnoreCase("off")) {
-                handler.sendSysMessage(CypherStrings.WorldOpened);
+                handler.sendSysMessage(SysMessage.WorldOpened);
                 global.getWorldMgr().setClosed(false);
 
                 return true;
             }
 
-            handler.sendSysMessage(CypherStrings.UseBol);
+            handler.sendSysMessage(SysMessage.UseBol);
 
             return false;
         }

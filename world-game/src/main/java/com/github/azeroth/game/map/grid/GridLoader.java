@@ -2,7 +2,7 @@ package com.github.azeroth.game.map.grid;
 
 
 import com.github.azeroth.common.Logs;
-import com.github.azeroth.game.CellObjectGuids;
+import com.github.azeroth.game.domain.creature.CellSpawnData;
 import com.github.azeroth.game.globals.ObjectManager;
 import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.map.MapDefine;
@@ -33,16 +33,16 @@ public class GridLoader {
     void loadGameObject()
     {
         Coordinate cellCoord = cell.getCellCoordinate();
-        CellObjectGuids cellObjectGuids = objectManager.getCellObjectGuids(map.getId(), map.getDifficultyID(), cellCoord.getId());
+        CellSpawnData cellSpawnData = objectManager.getCellObjectGuids(map.getId(), map.getDifficultyID(), cellCoord.getId());
 
-        if (CellObjectGuids const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
+        if (CellSpawnData const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
         LoadHelper(cell_guids->gameobjects, cellCoord, m, i_gameObjects, i_map);
     }
 
     void loadCreature()
     {
         CellCoord cellCoord = i_cell.GetCellCoord();
-        if (CellObjectGuids const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
+        if (CellSpawnData const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
         LoadHelper(cell_guids->creatures, cellCoord, m, i_creatures, i_map);
     }
 

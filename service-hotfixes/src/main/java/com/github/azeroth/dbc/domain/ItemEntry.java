@@ -28,7 +28,7 @@ import lombok.ToString;
         @Db2Field(name = "sheatheType", type = Db2Type.BYTE),
         @Db2Field(name = "itemGroupSoundsID", type = Db2Type.BYTE)
 })
-public class Item implements DbcEntity {
+public class ItemEntry implements DbcEntity {
     @Id
     
     @Column("ID")

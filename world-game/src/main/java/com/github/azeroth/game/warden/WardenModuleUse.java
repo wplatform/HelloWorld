@@ -7,7 +7,7 @@ class WardenModuleUse {
     public byte[] moduleKey = new byte[16];
     public int size;
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator byte[](WardenModuleUse use)
 //		{
 //			var buffer = new byteBuffer();

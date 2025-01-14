@@ -5,36 +5,36 @@ import com.github.azeroth.game.account.RBACData;
 import com.github.azeroth.game.chat.AccountIdentifier;
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class RbacComands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleRBACListPermissionsCommand(CommandHandler handler, Integer permId) {
         if (permId == null) {
             var permissions = global.getAccountMgr().getRBACPermissionList();
-            handler.sendSysMessage(CypherStrings.RbacListPermissionsHeader);
+            handler.sendSysMessage(SysMessage.RbacListPermissionsHeader);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, permission) : permissions) {
-                handler.sendSysMessage(CypherStrings.RbacListElement, permission.id, permission.name);
+                handler.sendSysMessage(SysMessage.RbacListElement, permission.id, permission.name);
             }
         } else {
             var permission = global.getAccountMgr().getRBACPermission(permId.intValue());
 
             if (permission == null) {
-                handler.sendSysMessage(CypherStrings.RbacWrongParameterId, permId.intValue());
+                handler.sendSysMessage(SysMessage.RbacWrongParameterId, permId.intValue());
 
                 return false;
             }
 
-            handler.sendSysMessage(CypherStrings.RbacListPermissionsHeader);
-            handler.sendSysMessage(CypherStrings.RbacListElement, permission.getId(), permission.getName());
-            handler.sendSysMessage(CypherStrings.RbacListPermsLinkedHeader);
+            handler.sendSysMessage(SysMessage.RbacListPermissionsHeader);
+            handler.sendSysMessage(SysMessage.RbacListElement, permission.getId(), permission.getName());
+            handler.sendSysMessage(SysMessage.RbacListPermsLinkedHeader);
 
             for (var linkedPerm : permission.getLinkedPermissions()) {
                 var rbacPermission = global.getAccountMgr().getRBACPermission(linkedPerm);
 
                 if (rbacPermission != null) {
-                    handler.sendSysMessage(CypherStrings.RbacListElement, rbacPermission.getId(), rbacPermission.getName());
+                    handler.sendSysMessage(SysMessage.RbacListElement, rbacPermission.getId(), rbacPermission.getName());
                 }
             }
         }
@@ -59,9 +59,9 @@ class RbacComands {
         return tempVar2;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class RbacAccountCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRBACPermDenyCommand(CommandHandler handler, AccountIdentifier account, int permId, Integer realmId) {
             if (account == null) {
                 account = AccountIdentifier.fromTarget(handler);
@@ -86,19 +86,19 @@ class RbacComands {
 
             switch (result) {
                 case CantAddAlreadyAdded:
-                    handler.sendSysMessage(CypherStrings.RbacPermDeniedInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermDeniedInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case InGrantedList:
-                    handler.sendSysMessage(CypherStrings.RbacPermDeniedInGrantedList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermDeniedInGrantedList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case OK:
-                    handler.sendSysMessage(CypherStrings.RbacPermDenied, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermDenied, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case IdDoesNotExists:
-                    handler.sendSysMessage(CypherStrings.RbacWrongParameterId, permId);
+                    handler.sendSysMessage(SysMessage.RbacWrongParameterId, permId);
 
                     break;
                 default:
@@ -108,7 +108,7 @@ class RbacComands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRBACPermGrantCommand(CommandHandler handler, AccountIdentifier account, int permId, Integer realmId) {
             if (account == null) {
                 account = AccountIdentifier.fromTarget(handler);
@@ -133,19 +133,19 @@ class RbacComands {
 
             switch (result) {
                 case CantAddAlreadyAdded:
-                    handler.sendSysMessage(CypherStrings.RbacPermGrantedInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermGrantedInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case InDeniedList:
-                    handler.sendSysMessage(CypherStrings.RbacPermGrantedInDeniedList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermGrantedInDeniedList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case OK:
-                    handler.sendSysMessage(CypherStrings.RbacPermGranted, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermGranted, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case IdDoesNotExists:
-                    handler.sendSysMessage(CypherStrings.RbacWrongParameterId, permId);
+                    handler.sendSysMessage(SysMessage.RbacWrongParameterId, permId);
 
                     break;
                 default:
@@ -155,7 +155,7 @@ class RbacComands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRBACPermListCommand(CommandHandler handler, AccountIdentifier account) {
             if (account == null) {
                 account = AccountIdentifier.fromTarget(handler);
@@ -167,46 +167,46 @@ class RbacComands {
 
             var data = getRBACData(account);
 
-            handler.sendSysMessage(CypherStrings.RbacListHeaderGranted, data.rbac.getId(), data.rbac.getName());
+            handler.sendSysMessage(SysMessage.RbacListHeaderGranted, data.rbac.getId(), data.rbac.getName());
             var granted = data.rbac.getGrantedPermissions();
 
             if (granted.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.RbacListEmpty);
+                handler.sendSysMessage(SysMessage.RbacListEmpty);
             } else {
                 for (var id : granted) {
                     var permission = global.getAccountMgr().getRBACPermission(id);
-                    handler.sendSysMessage(CypherStrings.RbacListElement, permission.getId(), permission.getName());
+                    handler.sendSysMessage(SysMessage.RbacListElement, permission.getId(), permission.getName());
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.RbacListHeaderDenied, data.rbac.getId(), data.rbac.getName());
+            handler.sendSysMessage(SysMessage.RbacListHeaderDenied, data.rbac.getId(), data.rbac.getName());
             var denied = data.rbac.getDeniedPermissions();
 
             if (denied.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.RbacListEmpty);
+                handler.sendSysMessage(SysMessage.RbacListEmpty);
             } else {
                 for (var id : denied) {
                     var permission = global.getAccountMgr().getRBACPermission(id);
-                    handler.sendSysMessage(CypherStrings.RbacListElement, permission.getId(), permission.getName());
+                    handler.sendSysMessage(SysMessage.RbacListElement, permission.getId(), permission.getName());
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.RbacListHeaderBySecLevel, data.rbac.getId(), data.rbac.getName(), data.rbac.getSecurityLevel());
+            handler.sendSysMessage(SysMessage.RbacListHeaderBySecLevel, data.rbac.getId(), data.rbac.getName(), data.rbac.getSecurityLevel());
             var defaultPermissions = global.getAccountMgr().getRBACDefaultPermissions(data.rbac.getSecurityLevel());
 
             if (defaultPermissions.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.RbacListEmpty);
+                handler.sendSysMessage(SysMessage.RbacListEmpty);
             } else {
                 for (var id : defaultPermissions) {
                     var permission = global.getAccountMgr().getRBACPermission(id);
-                    handler.sendSysMessage(CypherStrings.RbacListElement, permission.getId(), permission.getName());
+                    handler.sendSysMessage(SysMessage.RbacListElement, permission.getId(), permission.getName());
                 }
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleRBACPermRevokeCommand(CommandHandler handler, AccountIdentifier account, int permId, Integer realmId) {
             if (account == null) {
                 account = AccountIdentifier.fromTarget(handler);
@@ -231,15 +231,15 @@ class RbacComands {
 
             switch (result) {
                 case CantRevokeNotInList:
-                    handler.sendSysMessage(CypherStrings.RbacPermRevokedNotInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermRevokedNotInList, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case OK:
-                    handler.sendSysMessage(CypherStrings.RbacPermRevoked, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
+                    handler.sendSysMessage(SysMessage.RbacPermRevoked, permId, permission.getName(), realmId.intValue(), data.rbac.getId(), data.rbac.getName());
 
                     break;
                 case IdDoesNotExists:
-                    handler.sendSysMessage(CypherStrings.RbacWrongParameterId, permId);
+                    handler.sendSysMessage(SysMessage.RbacWrongParameterId, permId);
 
                     break;
                 default:

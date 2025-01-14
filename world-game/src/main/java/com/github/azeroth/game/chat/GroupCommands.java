@@ -6,9 +6,9 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.group.PlayerGroup;
 import game.PhasingHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class GroupCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupDisbandCommand(CommandHandler handler, String name) {
         Player player;
         tangible.OutObject<Player> tempOut_player = new tangible.OutObject<Player>();
@@ -27,7 +27,7 @@ class GroupCommands {
         }
 
         if (!group) {
-            handler.sendSysMessage(CypherStrings.GroupNotInGroup, player.getName());
+            handler.sendSysMessage(SysMessage.GroupNotInGroup, player.getName());
 
             return false;
         }
@@ -37,7 +37,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupJoinCommand(CommandHandler handler, String playerNameGroup, String playerName) {
         Player playerSource;
         tangible.OutObject<Player> tempOut_playerSource = new tangible.OutObject<Player>();
@@ -56,7 +56,7 @@ class GroupCommands {
         }
 
         if (!groupSource) {
-            handler.sendSysMessage(CypherStrings.GroupNotInGroup, playerSource.getName());
+            handler.sendSysMessage(SysMessage.GroupNotInGroup, playerSource.getName());
 
             return false;
         }
@@ -78,25 +78,25 @@ class GroupCommands {
         }
 
         if (groupTarget || playerTarget.getGroup() == groupSource) {
-            handler.sendSysMessage(CypherStrings.GroupAlreadyInGroup, playerTarget.getName());
+            handler.sendSysMessage(SysMessage.GroupAlreadyInGroup, playerTarget.getName());
 
             return false;
         }
 
         if (groupSource.isFull()) {
-            handler.sendSysMessage(CypherStrings.GroupFull);
+            handler.sendSysMessage(SysMessage.GroupFull);
 
             return false;
         }
 
         groupSource.addMember(playerTarget);
         groupSource.broadcastGroupUpdate();
-        handler.sendSysMessage(CypherStrings.GroupPlayerJoined, playerTarget.getName(), playerSource.getName());
+        handler.sendSysMessage(SysMessage.GroupPlayerJoined, playerTarget.getName(), playerSource.getName());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupLeaderCommand(CommandHandler handler, String name) {
         Player player;
         tangible.OutObject<Player> tempOut_player = new tangible.OutObject<Player>();
@@ -116,7 +116,7 @@ class GroupCommands {
         }
 
         if (!group) {
-            handler.sendSysMessage(CypherStrings.GroupNotInGroup, player.getName());
+            handler.sendSysMessage(SysMessage.GroupNotInGroup, player.getName());
 
             return false;
         }
@@ -129,7 +129,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupLevelCommand(CommandHandler handler, PlayerIdentifier player, short level) {
         if (level < 1) {
             return false;
@@ -169,10 +169,10 @@ class GroupCommands {
 
                 if (handler.needReportToTarget(target)) {
                     if (oldlevel < level) {
-                        target.sendSysMessage(CypherStrings.YoursLevelUp, handler.getNameLink(), level);
+                        target.sendSysMessage(SysMessage.YoursLevelUp, handler.getNameLink(), level);
                     } else // if (oldlevel > newlevel)
                     {
-                        target.sendSysMessage(CypherStrings.YoursLevelDown, handler.getNameLink(), level);
+                        target.sendSysMessage(SysMessage.YoursLevelDown, handler.getNameLink(), level);
                     }
                 }
             }
@@ -181,7 +181,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupListCommand(CommandHandler handler, StringArguments args) {
         // Get ALL the variables!
         Player playerTarget;
@@ -239,7 +239,7 @@ class GroupCommands {
 
         // If both fails, players simply has no party. Return false.
         if (!groupTarget) {
-            handler.sendSysMessage(CypherStrings.GroupNotInGroup, nameTarget);
+            handler.sendSysMessage(SysMessage.GroupNotInGroup, nameTarget);
 
             return false;
         }
@@ -248,7 +248,7 @@ class GroupCommands {
         var members = groupTarget.getMemberSlots();
 
         // To avoid a cluster fuck, namely trying multiple queries to simply get a group member count...
-        handler.sendSysMessage(CypherStrings.GroupType, (groupTarget.isRaidGroup() ? "raid" : "party"), members.size());
+        handler.sendSysMessage(SysMessage.GroupType, (groupTarget.isRaidGroup() ? "raid" : "party"), members.size());
         // ... we simply move the group type and member count print after retrieving the slots and simply output it's size.
 
         // While rather dirty codestyle-wise, it saves space (if only a little). For each member, we look several informations up.
@@ -305,14 +305,14 @@ class GroupCommands {
             }
 
             // Now we can print those informations for every single member of each group!
-            handler.sendSysMessage(CypherStrings.GroupPlayerNameGuid, slot.name, onlineState, zoneName, phases, slot.guid.toString(), flags, LFGQueue.getRolesString(slot.roles));
+            handler.sendSysMessage(SysMessage.GroupPlayerNameGuid, slot.name, onlineState, zoneName, phases, slot.guid.toString(), flags, LFGQueue.getRolesString(slot.roles));
         }
 
         // And finish after every iterator is done.
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupRemoveCommand(CommandHandler handler, String name) {
         Player player;
         tangible.OutObject<Player> tempOut_player = new tangible.OutObject<Player>();
@@ -332,7 +332,7 @@ class GroupCommands {
         }
 
         if (!group) {
-            handler.sendSysMessage(CypherStrings.GroupNotInGroup, player.getName());
+            handler.sendSysMessage(SysMessage.GroupNotInGroup, player.getName());
 
             return false;
         }
@@ -342,7 +342,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupRepairCommand(CommandHandler handler, PlayerIdentifier playerTarget) {
         if (playerTarget == null) {
             playerTarget = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -369,7 +369,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupReviveCommand(CommandHandler handler, PlayerIdentifier playerTarget) {
         if (playerTarget == null) {
             playerTarget = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -398,7 +398,7 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGroupSummonCommand(CommandHandler handler, PlayerIdentifier playerTarget) {
         if (playerTarget == null) {
             playerTarget = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -420,7 +420,7 @@ class GroupCommands {
         var nameLink = handler.getNameLink(target);
 
         if (!group) {
-            handler.sendSysMessage(CypherStrings.NotInGroup, nameLink);
+            handler.sendSysMessage(SysMessage.NotInGroup, nameLink);
 
             return false;
         }
@@ -437,7 +437,7 @@ class GroupCommands {
             var groupLeader = global.getObjAccessor().getPlayer(gmMap, group.getLeaderGUID());
 
             if (!groupLeader || (groupLeader.getLocation().getMapId() != gmMap.getId()) || (groupLeader.getInstanceId() != gmMap.getInstanceId())) {
-                handler.sendSysMessage(CypherStrings.PartialGroupSummon);
+                handler.sendSysMessage(SysMessage.PartialGroupSummon);
                 onlyLocalSummon = true;
             }
         }
@@ -457,7 +457,7 @@ class GroupCommands {
             var plNameLink = handler.getNameLink(player);
 
             if (player.isBeingTeleported()) {
-                handler.sendSysMessage(CypherStrings.IsTeleported, plNameLink);
+                handler.sendSysMessage(SysMessage.IsTeleported, plNameLink);
 
                 continue;
             }
@@ -468,16 +468,16 @@ class GroupCommands {
                 if ((onlyLocalSummon || (playerMap.getInstanceable() && playerMap.getId() == gmMap.getId())) && ((playerMap.getId() != gmMap.getId()) || (playerMap.getInstanceId() != gmMap.getInstanceId()))) // so we need to be in the same map and instance of the map, otherwise skip
                 {
                     // cannot summon from instance to instance
-                    handler.sendSysMessage(CypherStrings.CannotSummonInstInst, plNameLink);
+                    handler.sendSysMessage(SysMessage.CannotSummonInstInst, plNameLink);
 
                     continue;
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.Summoning, plNameLink, "");
+            handler.sendSysMessage(SysMessage.Summoning, plNameLink, "");
 
             if (handler.needReportToTarget(player)) {
-                player.sendSysMessage(CypherStrings.summonedBy, handler.getNameLink());
+                player.sendSysMessage(SysMessage.summonedBy, handler.getNameLink());
             }
 
             // stop flight if need
@@ -497,24 +497,24 @@ class GroupCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class GroupSetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGroupSetAssistantCommand(CommandHandler handler, String name) {
             return groupFlagCommand(name, handler, GroupMemberFlags.Assistant);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGroupSetLeaderCommand(CommandHandler handler, String name) {
             return handleGroupLeaderCommand(handler, name);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGroupSetMainAssistCommand(CommandHandler handler, String name) {
             return groupFlagCommand(name, handler, GroupMemberFlags.MainAssist);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleGroupSetMainTankCommand(CommandHandler handler, String name) {
             return groupFlagCommand(name, handler, GroupMemberFlags.MainTank);
         }
@@ -538,29 +538,29 @@ class GroupCommands {
             }
 
             if (!group) {
-                handler.sendSysMessage(CypherStrings.NotInGroup, player.getName());
+                handler.sendSysMessage(SysMessage.NotInGroup, player.getName());
 
                 return false;
             }
 
             if (!group.isRaidGroup()) {
-                handler.sendSysMessage(CypherStrings.GroupNotInRaidGroup, player.getName());
+                handler.sendSysMessage(SysMessage.GroupNotInRaidGroup, player.getName());
 
                 return false;
             }
 
             if (flag == GroupMemberFlags.Assistant && group.isLeader(guid)) {
-                handler.sendSysMessage(CypherStrings.LeaderCannotBeAssistant, player.getName());
+                handler.sendSysMessage(SysMessage.LeaderCannotBeAssistant, player.getName());
 
                 return false;
             }
 
             if (group.getMemberFlags(guid).hasFlag(flag)) {
                 group.setGroupMemberFlag(guid, false, flag);
-                handler.sendSysMessage(CypherStrings.GroupRoleChanged, player.getName(), "no longer", flag);
+                handler.sendSysMessage(SysMessage.GroupRoleChanged, player.getName(), "no longer", flag);
             } else {
                 group.setGroupMemberFlag(guid, true, flag);
-                handler.sendSysMessage(CypherStrings.GroupRoleChanged, player.getName(), "now", flag);
+                handler.sendSysMessage(SysMessage.GroupRoleChanged, player.getName(), "now", flag);
             }
 
             return true;

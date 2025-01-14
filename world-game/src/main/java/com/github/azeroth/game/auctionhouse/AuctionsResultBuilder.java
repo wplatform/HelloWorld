@@ -38,7 +38,7 @@ class AuctionsResultBuilder<T> {
     public final Span<T> getResultRange() {
         Span<T> h = items.toArray((T[]) new Object[0]);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         return h[(int) offset..];
     }
 

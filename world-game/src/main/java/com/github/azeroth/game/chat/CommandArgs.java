@@ -2,7 +2,7 @@ package com.github.azeroth.game.chat;
 
 
 class CommandArgs {
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     public static ChatCommandResult consumeFromOffset(dynamic[] tuple, int offset, ParameterInfo[] parameterInfos, CommandHandler handler, String args) {
         if (offset < tuple.length) {
             return tryConsumeTo(tuple, offset, parameterInfos, handler, args);
@@ -14,7 +14,7 @@ class CommandArgs {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     public static ChatCommandResult tryConsume(tangible.OutObject<dynamic> val, Class type, CommandHandler handler, String args) {
         val.outArgValue = null;
 
@@ -28,7 +28,7 @@ class CommandArgs {
             type = type.GetEnumUnderlyingType();
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(token, tail) = args.Tokenize();
 
         switch (type.GetTypeCode(type)) {
@@ -44,7 +44,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -61,7 +61,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue2.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -78,7 +78,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue3.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -95,7 +95,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue4.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -112,7 +112,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue5.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -129,7 +129,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue6.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -146,7 +146,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue7.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -163,7 +163,7 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue8.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -180,11 +180,11 @@ class CommandArgs {
                     val.outArgValue = tempValue;
                 } else {
                     tempValue = tempOut_tempValue9.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 if (!Float.IsFinite(val.outArgValue)) {
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                 }
 
                 return new ChatCommandResult(tail);
@@ -215,7 +215,7 @@ class CommandArgs {
                     } else if ((token.equals("0")) || token.Equals("n", StringComparison.OrdinalIgnoreCase) || token.Equals("off", StringComparison.OrdinalIgnoreCase) || token.Equals("no", StringComparison.OrdinalIgnoreCase)) {
                         val.outArgValue = false;
                     } else {
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserStringValueInvalid, token, type.GetTypeCode(type)));
                     }
                 }
 
@@ -242,7 +242,7 @@ class CommandArgs {
                     case "AchievementRecord": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal, Integer.class, handler, args);
                         tempVal = tempOut_tempVal.outArgValue;
 
@@ -250,12 +250,12 @@ class CommandArgs {
                             return result;
                         }
 
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserAchievementNoExist, tempVal));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserAchievementNoExist, tempVal));
                     }
                     case "CurrencyTypesRecord": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal2 = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal2, Integer.class, handler, args);
                         tempVal = tempOut_tempVal2.outArgValue;
 
@@ -263,12 +263,12 @@ class CommandArgs {
                             return result;
                         }
 
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserCurrencyNoExist, tempVal));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserCurrencyNoExist, tempVal));
                     }
                     case "GameTele": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal3 = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal3, Integer.class, handler, args);
                         tempVal = tempOut_tempVal3.outArgValue;
 
@@ -283,15 +283,15 @@ class CommandArgs {
                         }
 
                         if (tempVal instanceof Integer) {
-                            return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserGameTeleIdNoExist, tempVal));
+                            return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserGameTeleIdNoExist, tempVal));
                         } else {
-                            return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserGameTeleNoExist, tempVal));
+                            return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserGameTeleNoExist, tempVal));
                         }
                     }
                     case "ItemTemplate": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal5 = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal5, Integer.class, handler, args);
                         tempVal = tempOut_tempVal5.outArgValue;
 
@@ -299,12 +299,12 @@ class CommandArgs {
                             return result;
                         }
 
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserItemNoExist, tempVal));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserItemNoExist, tempVal));
                     }
                     case "SpellInfo": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal6 = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal6, Integer.class, handler, args);
                         tempVal = tempOut_tempVal6.outArgValue;
 
@@ -312,12 +312,12 @@ class CommandArgs {
                             return result;
                         }
 
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserSpellNoExist, tempVal));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserSpellNoExist, tempVal));
                     }
                     case "Quest": {
                         dynamic tempVal;
                         tangible.OutObject<dynamic> tempOut_tempVal7 = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
                         var result = tryConsume(tempOut_tempVal7, Integer.class, handler, args);
                         tempVal = tempOut_tempVal7.outArgValue;
 
@@ -325,7 +325,7 @@ class CommandArgs {
                             return result;
                         }
 
-                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserQuestNoExist, tempVal));
+                        return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserQuestNoExist, tempVal));
                     }
                 }
 
@@ -336,18 +336,18 @@ class CommandArgs {
         return null;
     }
 
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     public static ChatCommandResult tryConsumeVariant(tangible.OutObject<dynamic> val, Class[] types, CommandHandler handler, String args) {
         var result = tryAtIndex(val, types, 0, handler, args);
 
         if (result.getHasErrorMessage() && (result.getErrorMessage().indexOf('\n') != -1)) {
-            return ChatCommandResult.fromErrorMessage(String.format("%1$s %2$s", handler.getCypherString(CypherStrings.CmdparserEither), result.getErrorMessage()));
+            return ChatCommandResult.fromErrorMessage(String.format("%1$s %2$s", handler.getSysMessage(SysMessage.CmdparserEither), result.getErrorMessage()));
         }
 
         return result;
     }
 
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     private static ChatCommandResult tryConsumeTo(dynamic[] tuple, int offset, ParameterInfo[] parameterInfos, CommandHandler handler, String args) {
         var optionalArgAttribute = parameterInfos[offset].<OptionalArgAttribute>GetCustomAttribute(true);
 
@@ -377,7 +377,7 @@ class CommandArgs {
             }
 
             if (result1.getHasErrorMessage() && result2.getHasErrorMessage()) {
-                return ChatCommandResult.fromErrorMessage(String.format("%1$s \"%2$s\"\n%3$s \"%4$s\"", handler.getCypherString(CypherStrings.CmdparserEither), result2.getErrorMessage(), handler.getCypherString(CypherStrings.CmdparserOr), result1.getErrorMessage()));
+                return ChatCommandResult.fromErrorMessage(String.format("%1$s \"%2$s\"\n%3$s \"%4$s\"", handler.getSysMessage(SysMessage.CmdparserEither), result2.getErrorMessage(), handler.getSysMessage(SysMessage.CmdparserOr), result1.getErrorMessage()));
             } else if (result1.getHasErrorMessage()) {
                 return result1;
             } else {
@@ -408,7 +408,7 @@ class CommandArgs {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
     private static ChatCommandResult tryAtIndex(tangible.OutObject<dynamic> val, Class[] types, int index, CommandHandler handler, String args) {
         val.outArgValue = null;
 
@@ -429,9 +429,9 @@ class CommandArgs {
                 }
 
                 if (nestedResult.getErrorMessage().startsWith("\"")) {
-                    return ChatCommandResult.fromErrorMessage(String.format("\"%1$s\"\n%2$s %3$s", thisResult.getErrorMessage(), handler.getCypherString(CypherStrings.CmdparserOr), nestedResult.getErrorMessage()));
+                    return ChatCommandResult.fromErrorMessage(String.format("\"%1$s\"\n%2$s %3$s", thisResult.getErrorMessage(), handler.getSysMessage(SysMessage.CmdparserOr), nestedResult.getErrorMessage()));
                 } else {
-                    return ChatCommandResult.fromErrorMessage(String.format("\"%1$s\"\n%2$s \"%3$s\"", thisResult.getErrorMessage(), handler.getCypherString(CypherStrings.CmdparserOr), nestedResult.getErrorMessage()));
+                    return ChatCommandResult.fromErrorMessage(String.format("\"%1$s\"\n%2$s \"%3$s\"", thisResult.getErrorMessage(), handler.getSysMessage(SysMessage.CmdparserOr), nestedResult.getErrorMessage()));
                 }
             }
         } else {

@@ -182,7 +182,7 @@ public class MoveSpline {
                 computeParabolicElevation(time_point, tempRef_Z);
                 c.Z = tempRef_Z.refArgValue;
             } else if (splineflags.hasFlag(SplineFlag.Falling)) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                 computeFallElevation(time_point, ref c.Z);
             }
 
@@ -275,7 +275,7 @@ public class MoveSpline {
         splineflags.setUnsetFlag(SplineFlag.Done);
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Fields
 
     public final void updateState(int difftime) {
@@ -523,6 +523,6 @@ public class MoveSpline {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

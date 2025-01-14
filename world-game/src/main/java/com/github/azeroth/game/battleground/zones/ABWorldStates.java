@@ -1,7 +1,7 @@
 package com.github.azeroth.game.battleground.zones;
 
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 ///#region Consts
 
 final class ABWorldStates {

@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class SendCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleSendMailCommand(CommandHandler handler, PlayerIdentifier playerIdentifier, QuotedString subject, QuotedString text) {
         // format: name "subject text" "mail text"
         if (playerIdentifier == null) {
@@ -39,12 +39,12 @@ class SendCommands {
         DB.characters.CommitTransaction(trans);
 
         var nameLink = handler.playerLink(playerIdentifier.getName());
-        handler.sendSysMessage(CypherStrings.MailSent, nameLink);
+        handler.sendSysMessage(SysMessage.MailSent, nameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleSendItemsCommand(CommandHandler handler, PlayerIdentifier playerIdentifier, QuotedString subject, QuotedString text, String itemsStr) {
         // format: name "subject text" "mail text" item1[:count1] item2[:count2] ... item12[:count12]
         if (playerIdentifier == null) {
@@ -80,7 +80,7 @@ class SendCommands {
             var itemProto = global.getObjectMgr().getItemTemplate(itemId);
 
             if (itemProto == null) {
-                handler.sendSysMessage(CypherStrings.CommandItemidinvalid, itemId);
+                handler.sendSysMessage(SysMessage.CommandItemidinvalid, itemId);
 
                 return false;
             }
@@ -95,7 +95,7 @@ class SendCommands {
             }
 
             if (itemCount < 1 || (itemProto.getMaxCount() > 0 && itemCount > itemProto.getMaxCount())) {
-                handler.sendSysMessage(CypherStrings.CommandInvalidItemCount, itemCount, itemId);
+                handler.sendSysMessage(SysMessage.CommandInvalidItemCount, itemCount, itemId);
 
                 return false;
             }
@@ -108,7 +108,7 @@ class SendCommands {
             items.add(new KeyValuePair<Integer, Integer>(itemId, itemCount));
 
             if (items.size() > SharedConst.MaxMailItems) {
-                handler.sendSysMessage(CypherStrings.CommandMailItemsLimit, SharedConst.MaxMailItems);
+                handler.sendSysMessage(SysMessage.CommandMailItemsLimit, SharedConst.MaxMailItems);
 
                 return false;
             }
@@ -135,12 +135,12 @@ class SendCommands {
         DB.characters.CommitTransaction(trans);
 
         var nameLink = handler.playerLink(playerIdentifier.getName());
-        handler.sendSysMessage(CypherStrings.MailSent, nameLink);
+        handler.sendSysMessage(SysMessage.MailSent, nameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleSendMoneyCommand(CommandHandler handler, PlayerIdentifier playerIdentifier, QuotedString subject, QuotedString text, long money) {
         // format: name "subject text" "mail text" money
         if (playerIdentifier == null) {
@@ -169,12 +169,12 @@ class SendCommands {
         DB.characters.CommitTransaction(trans);
 
         var nameLink = handler.playerLink(playerIdentifier.getName());
-        handler.sendSysMessage(CypherStrings.MailSent, nameLink);
+        handler.sendSysMessage(SysMessage.MailSent, nameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleSendMessageCommand(CommandHandler handler, PlayerIdentifier playerIdentifier, QuotedString msgStr) {
         // - Find the player
         if (playerIdentifier == null) {
@@ -191,7 +191,7 @@ class SendCommands {
 
         // Check that he is not logging out.
         if (playerIdentifier.getConnectedPlayer().getSession().isLogingOut()) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -203,7 +203,7 @@ class SendCommands {
 
         // Confirmation message
         var nameLink = handler.getNameLink(playerIdentifier.getConnectedPlayer());
-        handler.sendSysMessage(CypherStrings.Sendmessage, nameLink, msgStr);
+        handler.sendSysMessage(SysMessage.Sendmessage, nameLink, msgStr);
 
         return true;
     }

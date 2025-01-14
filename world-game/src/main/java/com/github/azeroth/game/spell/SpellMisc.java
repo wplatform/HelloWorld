@@ -1,14 +1,14 @@
-package com.github.azeroth.game.spell;// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+package com.github.azeroth.game.spell;
 
 public final class SpellMisc {
     // Alternate names for this second
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public int talentId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int spellId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int specializationId;
 
     // SPELL_EFFECT_SET_FOLLOWER_QUALITY
@@ -16,24 +16,24 @@ public final class SpellMisc {
     // SPELL_EFFECT_INCREASE_FOLLOWER_EXPERIENCE
     // SPELL_EFFECT_RANDOMIZE_FOLLOWER_ABILITIES
     // SPELL_EFFECT_LEARN_FOLLOWER_ABILITY
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public int followerId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int followerAbilityId; // only SPELL_EFFECT_LEARN_FOLLOWER_ABILITY
 
     // SPELL_EFFECT_FINISH_GARRISON_MISSION
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public int garrMissionId;
 
     // SPELL_EFFECT_UPGRADE_HEIRLOOM
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public int itemId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int data0;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int data1;
 
 

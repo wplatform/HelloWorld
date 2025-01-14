@@ -733,7 +733,7 @@ public class PathGenerator {
             // we may want to keep partial subpath
             if (dist3DSqr(getActualEndPosition(), getEndPosition()) < 0.3f * dist3DSqr(getStartPosition(), getEndPosition())) {
                 setActualEndPosition(getEndPosition());
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to the C# index operator:
+
                 _pathPoints[ ^ 1] =getEndPosition();
             } else {
                 setActualEndPosition(getEndPosition());
@@ -820,7 +820,7 @@ public class PathGenerator {
             Span<Float> span = steerPath;
 
             // Stop at Off-Mesh link or when point is further than slop away.
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
             if ((steerPathFlags[ns].hasFlag((byte) Detour.dtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION.getValue()) || !inRangeYZX(span[(new integer(ns * 3))..].
             ToArray(), startPos, minTargetDist, 1000.0f)))
             {

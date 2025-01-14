@@ -6,20 +6,20 @@ import com.github.azeroth.game.chat.PlayerIdentifier;
 import com.github.azeroth.game.chat.Tail;
 import com.github.azeroth.game.entity.player.Player;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class LearnCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleLearnCommand(CommandHandler handler, int spellId, String allRanksStr) {
         var targetPlayer = handler.getSelectedPlayerOrSelf();
 
         if (!targetPlayer) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
 
         if (!global.getSpellMgr().isSpellValid(spellId, handler.getSession().getPlayer())) {
-            handler.sendSysMessage(CypherStrings.CommandSpellBroken, spellId);
+            handler.sendSysMessage(SysMessage.CommandSpellBroken, spellId);
 
             return false;
         }
@@ -28,9 +28,9 @@ class LearnCommands {
 
         if (!allRanks && targetPlayer.hasSpell(spellId)) {
             if (targetPlayer == handler.getPlayer()) {
-                handler.sendSysMessage(CypherStrings.YouKnownSpell);
+                handler.sendSysMessage(SysMessage.YouKnownSpell);
             } else {
-                handler.sendSysMessage(CypherStrings.TargetKnownSpell, handler.getNameLink(targetPlayer));
+                handler.sendSysMessage(SysMessage.TargetKnownSpell, handler.getNameLink(targetPlayer));
             }
 
             return false;
@@ -47,12 +47,12 @@ class LearnCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleUnLearnCommand(CommandHandler handler, int spellId, String allRanksStr) {
         var target = handler.getSelectedPlayer();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -66,15 +66,15 @@ class LearnCommands {
         if (target.hasSpell(spellId)) {
             target.removeSpell(spellId, false, !allRanks);
         } else {
-            handler.sendSysMessage(CypherStrings.ForgetSpell);
+            handler.sendSysMessage(SysMessage.ForgetSpell);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class LearnAllCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllGMCommand(CommandHandler handler) {
             for (var skillSpell : global.getSpellMgr().getSkillLineAbilityMapBounds((int) SkillType.internal.getValue())) {
                 var spellInfo = global.getSpellMgr().getSpellInfo(skillSpell.spell, Difficulty.NONE);
@@ -86,12 +86,12 @@ class LearnCommands {
                 handler.getSession().getPlayer().learnSpell(skillSpell.spell, false);
             }
 
-            handler.sendSysMessage(CypherStrings.LearningGmSkills);
+            handler.sendSysMessage(SysMessage.LearningGmSkills);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnDebugSpellsCommand(CommandHandler handler) {
             var player = handler.getPlayer();
             player.learnSpell(63364, false); // 63364 - Saronite Barrier (reduces damage taken by 99%)
@@ -105,7 +105,7 @@ class LearnCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllCraftsCommand(CommandHandler handler, PlayerIdentifier player) {
             if (player == null) {
                 player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -117,7 +117,7 @@ class LearnCommands {
 
             var target = player.getConnectedPlayer();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, skillInfo) : CliDB.SkillLineStorage) {
                 if ((skillInfo.categoryID == SkillCategory.profession || skillInfo.categoryID == SkillCategory.Secondary) && skillInfo.CanLink != 0) // only prof. with recipes have
                 {
@@ -125,12 +125,12 @@ class LearnCommands {
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.CommandLearnAllCraft);
+            handler.sendSysMessage(SysMessage.CommandLearnAllCraft);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllDefaultCommand(CommandHandler handler, PlayerIdentifier player) {
             if (player == null) {
                 player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -145,12 +145,12 @@ class LearnCommands {
             target.learnCustomSpells();
             target.learnQuestRewardedSpells();
 
-            handler.sendSysMessage(CypherStrings.CommandLearnAllDefaultAndQuest, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.CommandLearnAllDefaultAndQuest, handler.getNameLink(target));
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllLangCommand(CommandHandler handler) {
             global.getLanguageMgr().forEachLanguage((_, languageDesc) ->
             {
@@ -161,12 +161,12 @@ class LearnCommands {
                 return true;
             });
 
-            handler.sendSysMessage(CypherStrings.CommandLearnAllLang);
+            handler.sendSysMessage(SysMessage.CommandLearnAllLang);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllRecipesCommand(CommandHandler handler, Tail namePart) {
             //  Learns all recipes of specified profession and sets skill to max
             //  Example: .learn all_recipes enchanting
@@ -174,7 +174,7 @@ class LearnCommands {
             var target = handler.getSelectedPlayer();
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                handler.sendSysMessage(SysMessage.PlayerNotFound);
 
                 return false;
             }
@@ -186,7 +186,7 @@ class LearnCommands {
             var name = "";
             int skillId = 0;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, skillInfo) : CliDB.SkillLineStorage) {
                 if ((skillInfo.categoryID != SkillCategory.profession && skillInfo.categoryID != SkillCategory.Secondary) || skillInfo.CanLink == 0) // only prof with recipes have set
                 {
@@ -231,17 +231,17 @@ class LearnCommands {
 
             var maxLevel = target.getPureMaxSkillValue(SkillType.forValue(skillId));
             target.setSkill(skillId, target.getSkillStep(SkillType.forValue(skillId)), maxLevel, maxLevel);
-            handler.sendSysMessage(CypherStrings.CommandLearnAllRecipes, name);
+            handler.sendSysMessage(SysMessage.CommandLearnAllRecipes, name);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllTalentsCommand(CommandHandler handler) {
             var player = handler.getSession().getPlayer();
             var playerClass = (int) player.getClass().getValue();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, talentInfo) : CliDB.TalentStorage) {
                 if (playerClass != talentInfo.classID) {
                     continue;
@@ -264,12 +264,12 @@ class LearnCommands {
 
             player.sendTalentsInfoData();
 
-            handler.sendSysMessage(CypherStrings.CommandLearnClassTalents);
+            handler.sendSysMessage(SysMessage.CommandLearnClassTalents);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnAllPetTalentsCommand(CommandHandler handler) {
             return true;
         }
@@ -310,13 +310,13 @@ class LearnCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class LearnAllMyCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnMyQuestsCommand(CommandHandler handler) {
             var player = handler.getPlayer();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, quest) : global.getObjectMgr().getQuestTemplates()) {
                 if (quest.allowableClasses != 0 && player.satisfyQuestClass(quest, false)) {
                     player.learnQuestRewardedSpells(quest);
@@ -326,7 +326,7 @@ class LearnCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleLearnMySpellsCommand(CommandHandler handler) {
             var classEntry = CliDB.ChrClassesStorage.get(handler.getPlayer().getClass());
 
@@ -336,7 +336,7 @@ class LearnCommands {
 
             int family = classEntry.SpellClassSet;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, entry) : CliDB.SkillLineAbilityStorage) {
                 var spellInfo = global.getSpellMgr().getSpellInfo(entry.spell, Difficulty.NONE);
 
@@ -367,7 +367,7 @@ class LearnCommands {
                 handler.getSession().getPlayer().learnSpell(spellInfo.id, false);
             }
 
-            handler.sendSysMessage(CypherStrings.CommandLearnClassSpells);
+            handler.sendSysMessage(SysMessage.CommandLearnClassSpells);
 
             return true;
         }

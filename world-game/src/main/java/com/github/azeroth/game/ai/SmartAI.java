@@ -116,7 +116,7 @@ public class SmartAI extends CreatureAI {
             me.pauseMovement(delay, MovementSlot.Default, forced);
 
             if (me.getMotionMaster().getCurrentMovementGeneratorType() == MovementGeneratorType.Waypoint) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 var(nodeId, pathId) = me.CurrentWaypointInfo;
                 getScript().processEventsFor(SmartEvents.WaypointPaused, null, nodeId, pathId);
             }
@@ -169,7 +169,7 @@ public class SmartAI extends CreatureAI {
 
     public final void stopPath(int despawnTime, int quest, boolean fail) {
         if (!hasEscortState(SmartEscortState.Escorting)) {
-// C# TO JAVA CONVERTER TASK: Tuple variables are not converted by C# to Java Converter:
+
             ( int nodeId, int pathId)waypointInfo = new ();
 
             if (me.getMotionMaster().getCurrentMovementGeneratorType() == MovementGeneratorType.Waypoint) {

@@ -9,9 +9,9 @@ import java.util.Arrays;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class WPCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleWpAddCommand(CommandHandler handler, Integer optionalPathId) {
         int point = 0;
         var target = handler.getSelectedCreature();
@@ -68,8 +68,8 @@ class WPCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleWpEventCommand(CommandHandler handler, String subCommand, int id, String arg, String arg2) {
         PreparedStatement stmt;
 
@@ -322,7 +322,7 @@ class WPCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleWpLoadCommand(CommandHandler handler, Integer optionalPathId) {
         var target = handler.getSelectedCreature();
 
@@ -334,7 +334,7 @@ class WPCommands {
         var pathId = optionalPathId.intValue();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -383,8 +383,8 @@ class WPCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleWpModifyCommand(CommandHandler handler, String subCommand, String arg) {
         // first arg: add del text emote spell waittime move
         if (subCommand.isEmpty()) {
@@ -417,7 +417,7 @@ class WPCommands {
         var result = DB.World.query(stmt);
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.WaypointNotfoundsearch, target.getGUID().toString());
+            handler.sendSysMessage(SysMessage.WaypointNotfoundsearch, target.getGUID().toString());
             // Select waypoint number from database
             // Since we compare float values, we have to deal with
             // some difficulties.
@@ -435,7 +435,7 @@ class WPCommands {
             result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.WaypointNotfounddbproblem, target.getGUID().toString());
+                handler.sendSysMessage(SysMessage.WaypointNotfounddbproblem, target.getGUID().toString());
 
                 return true;
             }
@@ -451,7 +451,7 @@ class WPCommands {
 
         // Check for argument
         if (!Objects.equals(subCommand, "del") && !Objects.equals(subCommand, "move")) {
-            handler.sendSysMessage(CypherStrings.WaypointArgumentreq, subCommand);
+            handler.sendSysMessage(SysMessage.WaypointArgumentreq, subCommand);
 
             return false;
         }
@@ -470,11 +470,11 @@ class WPCommands {
                 stmt.AddValue(1, point);
                 DB.World.execute(stmt);
 
-                handler.sendSysMessage(CypherStrings.WaypointRemoved);
+                handler.sendSysMessage(SysMessage.WaypointRemoved);
 
                 return true;
             } else {
-                handler.sendSysMessage(CypherStrings.WaypointNotremoved);
+                handler.sendSysMessage(SysMessage.WaypointNotremoved);
 
                 return false;
             }
@@ -490,7 +490,7 @@ class WPCommands {
             // Move the visual spawnpoint
             // Respawn the owner of the waypoints
             if (!CREATURE.deleteFromDB(target.getSpawnId())) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointVpNotcreated, 1);
 
                 return false;
             }
@@ -499,7 +499,7 @@ class WPCommands {
             var creature = CREATURE.createCreature(1, map, chr.getLocation());
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointVpNotcreated, 1);
 
                 return false;
             }
@@ -518,7 +518,7 @@ class WPCommands {
             creature = CREATURE.createCreatureFromDB(dbGuid, map, true, true);
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointVpNotcreated, 1);
 
                 return false;
             }
@@ -532,7 +532,7 @@ class WPCommands {
             stmt.AddValue(5, point);
             DB.World.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.WaypointChanged);
+            handler.sendSysMessage(SysMessage.WaypointChanged);
 
             return true;
         } // move
@@ -545,12 +545,12 @@ class WPCommands {
             DB.World.execute("UPDATE waypoint_data SET {0}='{1}' WHERE id='{2}' AND point='{3}'", subCommand, arg, pathid, point); // Query can't be a prepared statement
         }
 
-        handler.sendSysMessage(CypherStrings.WaypointChangedNo, subCommand);
+        handler.sendSysMessage(SysMessage.WaypointChangedNo, subCommand);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleWpReloadCommand(CommandHandler handler, int pathId) {
         if (pathId == 0) {
             return false;
@@ -562,7 +562,7 @@ class WPCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleWpShowCommand(CommandHandler handler, String subCommand, Integer optionalPathId) {
         // first arg: on, off, first, last
         if (subCommand.isEmpty()) {
@@ -579,7 +579,7 @@ class WPCommands {
             // . Player must have selected a creature
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -590,7 +590,7 @@ class WPCommands {
             // Warn if player also selected a creature
             // . Creature selection is ignored <-
             if (target) {
-                handler.sendSysMessage(CypherStrings.WaypointCreatselected);
+                handler.sendSysMessage(SysMessage.WaypointCreatselected);
             }
 
             pathId = optionalPathId.intValue();
@@ -600,7 +600,7 @@ class WPCommands {
         if (Objects.equals(subCommand, "info")) {
             // Check if the user did specify a visual waypoint
             if (!target || target.getEntry() != 1) {
-                handler.sendSysMessage(CypherStrings.WaypointVpSelect);
+                handler.sendSysMessage(SysMessage.WaypointVpSelect);
 
                 return false;
             }
@@ -610,7 +610,7 @@ class WPCommands {
             var result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.WaypointNotfounddbproblem, target.getSpawnId());
+                handler.sendSysMessage(SysMessage.WaypointNotfounddbproblem, target.getSpawnId());
 
                 return true;
             }
@@ -660,15 +660,15 @@ class WPCommands {
                     var wpguid = result2.<Long>Read(0);
 
                     if (!CREATURE.deleteFromDB(wpguid)) {
-                        handler.sendSysMessage(CypherStrings.WaypointNotremoved, wpguid);
+                        handler.sendSysMessage(SysMessage.WaypointNotremoved, wpguid);
                         hasError = true;
                     }
                 } while (result2.NextRow());
 
                 if (hasError) {
-                    handler.sendSysMessage(CypherStrings.WaypointToofar1);
-                    handler.sendSysMessage(CypherStrings.WaypointToofar2);
-                    handler.sendSysMessage(CypherStrings.WaypointToofar3);
+                    handler.sendSysMessage(SysMessage.WaypointToofar1);
+                    handler.sendSysMessage(SysMessage.WaypointToofar2);
+                    handler.sendSysMessage(SysMessage.WaypointToofar3);
                 }
             }
 
@@ -687,7 +687,7 @@ class WPCommands {
                 var creature = CREATURE.createCreature(id, map, new Position(x, y, z, o));
 
                 if (!creature) {
-                    handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, id);
+                    handler.sendSysMessage(SysMessage.WaypointVpNotcreated, id);
 
                     return false;
                 }
@@ -706,7 +706,7 @@ class WPCommands {
                 creature = CREATURE.createCreatureFromDB(dbGuid, map, true, true);
 
                 if (!creature) {
-                    handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, id);
+                    handler.sendSysMessage(SysMessage.WaypointVpNotcreated, id);
 
                     return false;
                 }
@@ -738,7 +738,7 @@ class WPCommands {
             var result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.WaypointNotfound, pathId);
+                handler.sendSysMessage(SysMessage.WaypointNotfound, pathId);
 
                 return false;
             }
@@ -754,7 +754,7 @@ class WPCommands {
             var creature = CREATURE.createCreature(1, map, new Position(x, y, z, 0));
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointVpNotcreated, 1);
 
                 return false;
             }
@@ -772,7 +772,7 @@ class WPCommands {
             creature = CREATURE.createCreatureFromDB(dbGuid, map, true, true);
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointVpNotcreated, 1);
 
                 return false;
             }
@@ -793,7 +793,7 @@ class WPCommands {
             var result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.WaypointNotfoundlast, pathId);
+                handler.sendSysMessage(SysMessage.WaypointNotfoundlast, pathId);
 
                 return false;
             }
@@ -810,7 +810,7 @@ class WPCommands {
             var creature = CREATURE.createCreature(1, map, pos);
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointNotcreated, 1);
 
                 return false;
             }
@@ -828,7 +828,7 @@ class WPCommands {
             creature = CREATURE.createCreatureFromDB(dbGuid, map, true, true);
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.WaypointNotcreated, 1);
+                handler.sendSysMessage(SysMessage.WaypointNotcreated, 1);
 
                 return false;
             }
@@ -847,7 +847,7 @@ class WPCommands {
             var result = DB.World.query(stmt);
 
             if (result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.WaypointVpNotfound);
+                handler.sendSysMessage(SysMessage.WaypointVpNotfound);
 
                 return false;
             }
@@ -858,7 +858,7 @@ class WPCommands {
                 var lowguid = result.<Long>Read(0);
 
                 if (!CREATURE.deleteFromDB(lowguid)) {
-                    handler.sendSysMessage(CypherStrings.WaypointNotremoved, lowguid);
+                    handler.sendSysMessage(SysMessage.WaypointNotremoved, lowguid);
                     hasError = true;
                 }
             } while (result.NextRow());
@@ -870,12 +870,12 @@ class WPCommands {
             //DB.World.PExecute("UPDATE creature_movement SET wpguid = '0' WHERE wpguid <> '0'");
 
             if (hasError) {
-                handler.sendSysMessage(CypherStrings.WaypointToofar1);
-                handler.sendSysMessage(CypherStrings.WaypointToofar2);
-                handler.sendSysMessage(CypherStrings.WaypointToofar3);
+                handler.sendSysMessage(SysMessage.WaypointToofar1);
+                handler.sendSysMessage(SysMessage.WaypointToofar2);
+                handler.sendSysMessage(SysMessage.WaypointToofar3);
             }
 
-            handler.sendSysMessage(CypherStrings.WaypointVpAllremoved);
+            handler.sendSysMessage(SysMessage.WaypointVpAllremoved);
 
             return true;
         }
@@ -885,7 +885,7 @@ class WPCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleWpUnLoadCommand(CommandHandler handler) {
         var target = handler.getSelectedCreature();
 

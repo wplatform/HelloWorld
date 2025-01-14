@@ -7,7 +7,7 @@ import com.github.azeroth.game.entity.player.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 //using LootStoreItemList = list<LootStoreItem>;
-// C# TO JAVA CONVERTER TASK: C# to Java Converter could not confirm whether this is a namespace alias or a type alias:
+
 //using LootTemplateMap = Dictionary<uint, LootTemplate>;
 
 public class LootManager extends LootStorage {
@@ -53,7 +53,7 @@ public class LootManager extends LootStorage {
 
         HashMap<ObjectGuid, loot> personalLoot = new HashMap<ObjectGuid, loot>();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(looter, loot) : tempLoot) {
             loot.fillNotNormalLootFor(looter);
 
@@ -183,7 +183,7 @@ public class LootManager extends LootStorage {
         var count = GAMEOBJECT.loadAndCollectLootIds(tempOut_lootIdSet);
         lootIdSet = tempOut_lootIdSet.outArgValue;
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void checkLootId(uint lootId, uint gameObjectId)
 //			{
 //				if (!lootIdSet.contains(lootId))
@@ -195,7 +195,7 @@ public class LootManager extends LootStorage {
         // remove real entries and check existence loot
         var gotc = global.getObjectMgr().getGameObjectTemplates();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(gameObjectId, gameObjectTemplate) : gotc) {
             var lootid = gameObjectTemplate.getLootId();
 

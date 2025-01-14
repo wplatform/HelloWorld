@@ -1,330 +1,330 @@
 package com.github.azeroth.game.ai;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public final class SmartAction {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public SmartActions type = SmartActions.values()[0];
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public talk talk = new talk();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public simpleTalk simpleTalk = new simpleTalk();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public faction faction = new faction();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public morphOrMount morphOrMount = new morphOrMount();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public sound sound = new sound();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public emote emote = new emote();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public quest quest = new quest();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public questOffer questOffer = new questOffer();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public react react = new react();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randomEmote randomEmote = new randomEmote();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public cast cast = new cast();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public crossCast crossCast = new crossCast();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public summonCreature summonCreature = new summonCreature();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public threatPCT threatPCT = new threatPCT();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public threat threat = new threat();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public castCreatureOrGO castCreatureOrGO = new castCreatureOrGO();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public autoAttack autoAttack = new autoAttack();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public combatMove combatMove = new combatMove();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setEventPhase setEventPhase = new setEventPhase();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public incEventPhase incEventPhase = new incEventPhase();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public castedCreatureOrGO castedCreatureOrGO = new castedCreatureOrGO();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public removeAura removeAura = new removeAura();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public follow follow = new follow();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randomPhase randomPhase = new randomPhase();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randomPhaseRange randomPhaseRange = new randomPhaseRange();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public killedMonster killedMonster = new killedMonster();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setInstanceData setInstanceData = new setInstanceData();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setInstanceData64 setInstanceData64 = new setInstanceData64();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public updateTemplate updateTemplate = new updateTemplate();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public callHelp callHelp = new callHelp();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setSheath setSheath = new setSheath();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public forceDespawn forceDespawn = new forceDespawn();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public invincHP invincHP = new invincHP();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public ingamePhaseId ingamePhaseId = new ingamePhaseId();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public ingamePhaseGroup ingamePhaseGroup = new ingamePhaseGroup();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setData setData = new setData();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public moveRandom moveRandom = new moveRandom();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public visibility visibility = new visibility();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public summonGO summonGO = new summonGO();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public active active = new active();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public taxi taxi = new taxi();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public wpStart wpStart = new wpStart();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public wpPause wpPause = new wpPause();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public wpStop wpStop = new wpStop();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public item item = new item();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setRun setRun = new setRun();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setDisableGravity setDisableGravity = new setDisableGravity();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public teleport teleport = new teleport();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setCounter setCounter = new setCounter();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public storeTargets storeTargets = new storeTargets();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public timeEvent timeEvent = new timeEvent();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public movie movie = new movie();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public equip equip = new equip();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public flag flag = new flag();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setunitByte setunitByte = new setunitByte();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public delunitByte delunitByte = new delunitByte();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public timedActionList timedActionList = new timedActionList();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randTimedActionList randTimedActionList = new randTimedActionList();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randRangeTimedActionList randRangeTimedActionList = new randRangeTimedActionList();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public interruptSpellCasting interruptSpellCasting = new interruptSpellCasting();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public jump jump = new jump();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public fleeAssist fleeAssist = new fleeAssist();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public enableTempGO enableTempGO = new enableTempGO();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public moveToPos moveToPos = new moveToPos();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public sendGossipMenu sendGossipMenu = new sendGossipMenu();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setGoLootState setGoLootState = new setGoLootState();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public sendTargetToTarget sendTargetToTarget = new sendTargetToTarget();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setRangedMovement setRangedMovement = new setRangedMovement();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setHealthRegen setHealthRegen = new setHealthRegen();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setRoot setRoot = new setRoot();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public goState goState = new goState();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public creatureGroup creatureGroup = new creatureGroup();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public power power = new power();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public gameEventStop gameEventStop = new gameEventStop();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public gameEventStart gameEventStart = new gameEventStart();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public closestWaypointFromList closestWaypointFromList = new closestWaypointFromList();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public moveOffset moveOffset = new moveOffset();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randomSound randomSound = new randomSound();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public corpseDelay corpseDelay = new corpseDelay();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public disableEvade disableEvade = new disableEvade();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public groupSpawn groupSpawn = new groupSpawn();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public AuraType auraType = AuraType.values()[0];
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public loadEquipment loadEquipment = new loadEquipment();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public randomTimedEvent randomTimedEvent = new randomTimedEvent();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public pauseMovement pauseMovement = new pauseMovement();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public respawnData respawnData = new respawnData();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public animKit animKit = new animKit();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public scene scene = new scene();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public cinematic cinematic = new cinematic();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public movementSpeed movementSpeed = new movementSpeed();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public spellVisualKit spellVisualKit = new spellVisualKit();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public overrideLight overrideLight = new overrideLight();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public overrideWeather overrideWeather = new overrideWeather();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setHover setHover = new setHover();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public evade evade = new evade();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setHealthPct setHealthPct = new setHealthPct();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public conversation conversation = new conversation();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setImmunePC setImmunePC = new setImmunePC();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setImmuneNPC setImmuneNPC = new setImmuneNPC();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public setUninteractible setUninteractible = new setUninteractible();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public activateGameObject activateGameObject = new activateGameObject();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public addToStoredTargets addToStoredTargets = new addToStoredTargets();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public becomePersonalClone becomePersonalClone = new becomePersonalClone();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public triggerGameEvent triggerGameEvent = new triggerGameEvent();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public doAction doAction = new doAction();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public raw raw = new raw();
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Stucts
 
     public SmartAction clone() {
@@ -1949,7 +1949,7 @@ public final class SmartAction {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
     public final static class Raw {

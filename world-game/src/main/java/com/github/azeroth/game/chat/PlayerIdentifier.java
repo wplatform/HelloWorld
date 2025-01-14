@@ -72,7 +72,7 @@ class PlayerIdentifier {
     public final ChatCommandResult tryConsume(CommandHandler handler, String args) {
         dynamic tempVal;
         tangible.OutObject<dynamic> tempOut_tempVal = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
         var next = CommandArgs.tryConsume(tempOut_tempVal, Long.class, handler, args);
         tempVal = tempOut_tempVal.outArgValue;
 
@@ -95,7 +95,7 @@ class PlayerIdentifier {
                 tangible.OutObject<String> tempOut__name = new tangible.OutObject<String>();
                 if (!global.getCharacterCacheStorage().getCharacterNameByGuid(guid, tempOut__name)) {
                     name = tempOut__name.outArgValue;
-                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserCharGuidNoExist, guid.toString()));
+                    return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserCharGuidNoExist, guid.toString()));
                 } else {
                     name = tempOut__name.outArgValue;
                 }
@@ -108,7 +108,7 @@ class PlayerIdentifier {
             tangible.RefObject<String> tempRef__name = new tangible.RefObject<String>(name);
             if (!ObjectManager.normalizePlayerName(tempRef__name)) {
                 name = tempRef__name.refArgValue;
-                return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserCharNameInvalid, name));
+                return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserCharNameInvalid, name));
             } else {
                 name = tempRef__name.refArgValue;
             }
@@ -116,7 +116,7 @@ class PlayerIdentifier {
             if ((player = global.getObjAccessor().FindPlayerByName(name)) != null) {
                 guid = player.getGUID();
             } else if ((guid = global.getCharacterCacheStorage().getCharacterGuidByName(name)).IsEmpty) {
-                return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserCharNameNoExist, name));
+                return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserCharNameNoExist, name));
             }
 
             return next;

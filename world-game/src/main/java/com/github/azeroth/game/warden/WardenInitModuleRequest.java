@@ -29,7 +29,7 @@ class WardenInitModuleRequest {
     public int function3;
     public byte function3_set;
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator byte[](WardenInitModuleRequest request)
 //		{
 //			var buffer = new byteBuffer();

@@ -295,7 +295,7 @@ public class Bag extends Item {
     }
 
     private void setSlot(int slot, ObjectGuid guid) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(m_containerData).modifyValue(m_containerData.slots, slot), guid);
     }
 

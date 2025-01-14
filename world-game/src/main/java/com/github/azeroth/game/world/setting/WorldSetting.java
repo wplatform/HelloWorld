@@ -143,10 +143,7 @@ import java.nio.file.Path;
  * worldserver.corpse.decay.Rare
  * worldserver.corpse.decay.Trivial
  * worldserver.corpse.decay.MinusMob
- * worldserver.creature.PickPocketRefillDelay
- * worldserver.creature.MovingStopTimeForPlayer
- * worldserver.creature.RegenHPCannotReachTargetInRaid
- * worldserver.creature.CheckInvalidPosition
+
  * worldserver.listenrange.Say
  * worldserver.listenrange.TextEmote
  * worldserver.listenrange.Yell
@@ -293,8 +290,7 @@ import java.nio.file.Path;
  * worldserver.levelreq.Mail
  * worldserver.playerdump.DisallowPaths
  * worldserver.playerdump.DisallowOverwrite
- * worldserver.calculate.creature.zone.area.Data
- * worldserver.calculate.gameoject.zone.area.Data
+
  * worldserver.nograyaggro.Above
  * worldserver.nograyaggro.Below
  * <p>
@@ -464,6 +460,15 @@ public class WorldSetting {
     public boolean instanceIgnoreLevel;
     public boolean instanceIgnoreRaid;
     public boolean instanceUnloadDelay;
+
+
+    public int creaturePickPocketRefillDelay;
+    public int creatureMovingStopTimeForPlayer;
+    public int creatureRegenHPCannotReachTargetInRaid;
+    public boolean creatureCheckInvalidPosition;
+
+    public boolean calculateCreatureZoneAreaData;
+    public boolean calculateGameObjectZoneAreaData;
 
     public GmSetting gm;
     public QuestSetting quest;

@@ -475,7 +475,7 @@ public class UnitAI implements IUnitAI {
                 if (spellInfo != null) {
                     DefaultTargetSelector targetSelectorInner = new DefaultTargetSelector(getMe(), spellInfo.getMaxRange(false), false, true, 0);
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //					bool targetSelector(Unit candidate)
 //						{
 //							if (!candidate.IsPlayer)
@@ -513,7 +513,7 @@ public class UnitAI implements IUnitAI {
 
                     DefaultTargetSelector targetSelectorInner = new DefaultTargetSelector(getMe(), range, false, true, -(int) spellId);
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //					bool targetSelector(Unit candidate)
 //						{
 //							if (!candidate.IsPlayer)

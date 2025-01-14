@@ -21,7 +21,7 @@ import java.util.Objects;
 
 class MiscCommands {
     // Teleport to Player
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAppearCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -43,7 +43,7 @@ class MiscCommands {
         var player = handler.getSession().getPlayer();
 
         if (target == player || Objects.equals(targetGuid, player.getGUID())) {
-            handler.sendSysMessage(CypherStrings.CantTeleportSelf);
+            handler.sendSysMessage(SysMessage.CantTeleportSelf);
 
             return false;
         }
@@ -61,7 +61,7 @@ class MiscCommands {
             if (map.isBattlegroundOrArena()) {
                 // only allow if gm mode is on
                 if (!player.isGameMaster()) {
-                    handler.sendSysMessage(CypherStrings.CannotGoToBgGm, chrNameLink);
+                    handler.sendSysMessage(SysMessage.CannotGoToBgGm, chrNameLink);
 
                     return false;
                 }
@@ -85,14 +85,14 @@ class MiscCommands {
                 if (player.getGroup()) {
                     // we are in group, we can go only if we are in the player group
                     if (player.getGroup() != target.getGroup()) {
-                        handler.sendSysMessage(CypherStrings.CannotGoToInstParty, chrNameLink);
+                        handler.sendSysMessage(SysMessage.CannotGoToInstParty, chrNameLink);
 
                         return false;
                     }
                 } else {
                     // we are not in group, let's verify our GM mode
                     if (!player.isGameMaster()) {
-                        handler.sendSysMessage(CypherStrings.CannotGoToInstGm, chrNameLink);
+                        handler.sendSysMessage(SysMessage.CannotGoToInstGm, chrNameLink);
 
                         return false;
                     }
@@ -106,7 +106,7 @@ class MiscCommands {
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.AppearingAt, chrNameLink);
+            handler.sendSysMessage(SysMessage.AppearingAt, chrNameLink);
 
             // stop flight if need
             if (player.isInFlight()) {
@@ -130,7 +130,7 @@ class MiscCommands {
 
             var nameLink = handler.playerLink(targetName);
 
-            handler.sendSysMessage(CypherStrings.AppearingAt, nameLink);
+            handler.sendSysMessage(SysMessage.AppearingAt, nameLink);
 
             // to point where player stay (if loaded)
             WorldLocation loc;
@@ -159,14 +159,14 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBankCommand(CommandHandler handler) {
         handler.getSession().sendShowBank(handler.getSession().getPlayer().getGUID());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBindSightCommand(CommandHandler handler) {
         var unit = handler.getSelectedUnit();
 
@@ -179,7 +179,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCombatStopCommand(CommandHandler handler, StringArguments args) {
         Player target = null;
 
@@ -187,7 +187,7 @@ class MiscCommands {
             target = global.getObjAccessor().FindPlayerByName(args.NextString(" "));
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                handler.sendSysMessage(SysMessage.PlayerNotFound);
 
                 return false;
             }
@@ -213,12 +213,12 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleComeToMeCommand(CommandHandler handler) {
         var caster = handler.getSelectedCreature();
 
         if (!caster) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -229,14 +229,14 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCommandsCommand(CommandHandler handler) {
         ChatCommandNode.sendCommandHelpFor(handler, "");
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleDamageCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -248,7 +248,7 @@ class MiscCommands {
             var guidLow = args.NextUInt64(" ");
 
             if (guidLow == 0) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -256,7 +256,7 @@ class MiscCommands {
             var damage = args.NextInt32(" ");
 
             if (damage == 0) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -267,19 +267,19 @@ class MiscCommands {
                 var go = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
                 if (!go) {
-                    handler.sendSysMessage(CypherStrings.CommandObjnotfound, guidLow);
+                    handler.sendSysMessage(SysMessage.CommandObjnotfound, guidLow);
 
                     return false;
                 }
 
                 if (!go.isDestructibleBuilding()) {
-                    handler.sendSysMessage(CypherStrings.InvalidGameobjectType);
+                    handler.sendSysMessage(SysMessage.InvalidGameobjectType);
 
                     return false;
                 }
 
                 go.modifyHealth(-damage, player);
-                handler.sendSysMessage(CypherStrings.GameobjectDamaged, go.getName(), guidLow, -damage, go.getGoValue().building.health);
+                handler.sendSysMessage(SysMessage.GameobjectDamaged, go.getName(), guidLow, -damage, go.getGoValue().building.health);
             }
 
             return true;
@@ -288,7 +288,7 @@ class MiscCommands {
         var target = handler.getSelectedUnit();
 
         if (!target || handler.getSession().getPlayer().getTarget().isEmpty()) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -403,33 +403,33 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleDevCommand(CommandHandler handler, Boolean enableArg) {
         var player = handler.getSession().getPlayer();
 
         if (enableArg == null) {
-            handler.getSession().sendNotification(player.isDeveloper() ? CypherStrings.DevOn : CypherStrings.DevOff);
+            handler.getSession().sendNotification(player.isDeveloper() ? SysMessage.DevOn : SysMessage.DevOff);
 
             return true;
         }
 
         if (enableArg.booleanValue()) {
             player.setDeveloper(true);
-            handler.getSession().sendNotification(CypherStrings.DevOn);
+            handler.getSession().sendNotification(SysMessage.DevOn);
         } else {
             player.setDeveloper(false);
-            handler.getSession().sendNotification(CypherStrings.DevOff);
+            handler.getSession().sendNotification(SysMessage.DevOff);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleDieCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
         if (!target && handler.getPlayer().getTarget().isEmpty()) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -449,19 +449,19 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleDismountCommand(CommandHandler handler) {
         var player = handler.getSelectedPlayerOrSelf();
 
         // If player is not mounted, so go out :)
         if (!player.isMounted()) {
-            handler.sendSysMessage(CypherStrings.CharNonMounted);
+            handler.sendSysMessage(SysMessage.CharNonMounted);
 
             return false;
         }
 
         if (player.isInFlight()) {
-            handler.sendSysMessage(CypherStrings.CharInFlight);
+            handler.sendSysMessage(SysMessage.CharInFlight);
 
             return false;
         }
@@ -472,7 +472,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGetDistanceCommand(CommandHandler handler, StringArguments args) {
         WorldObject obj;
 
@@ -491,7 +491,7 @@ class MiscCommands {
                     obj = global.getObjAccessor().findPlayer(ObjectGuid.create(HighGuid.Player, guidLow));
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                        handler.sendSysMessage(SysMessage.PlayerNotFound);
                     }
 
                     break;
@@ -500,7 +500,7 @@ class MiscCommands {
                     obj = handler.getCreatureFromPlayerMapByDbGuid(guidLow);
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.CommandNocreaturefound);
+                        handler.sendSysMessage(SysMessage.CommandNocreaturefound);
                     }
 
                     break;
@@ -509,7 +509,7 @@ class MiscCommands {
                     obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.CommandNogameobjectfound);
+                        handler.sendSysMessage(SysMessage.CommandNogameobjectfound);
                     }
 
                     break;
@@ -525,18 +525,18 @@ class MiscCommands {
             obj = handler.getSelectedUnit();
 
             if (!obj) {
-                handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+                handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
                 return false;
             }
         }
 
-        handler.sendSysMessage(CypherStrings.distance, handler.getSession().getPlayer().getDistance(obj), handler.getSession().getPlayer().getDistance2d(obj), handler.getSession().getPlayer().getLocation().getExactDist(obj.getLocation()), handler.getSession().getPlayer().getLocation().getExactdist2D(obj.getLocation()));
+        handler.sendSysMessage(SysMessage.distance, handler.getSession().getPlayer().getDistance(obj), handler.getSession().getPlayer().getDistance2d(obj), handler.getSession().getPlayer().getLocation().getExactDist(obj.getLocation()), handler.getSession().getPlayer().getLocation().getExactdist2D(obj.getLocation()));
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleFreezeCommand(CommandHandler handler, StringArguments args) {
         var player = handler.getSelectedPlayer(); // Selected player, if any. Might be null.
         var freezeDuration = 0; // Freeze duration (in seconds)
@@ -603,12 +603,12 @@ class MiscCommands {
         if (canApplyFreeze) {
             if (!player) // can be null if some previous selection failed
             {
-                handler.sendSysMessage(CypherStrings.CommandFreezeWrong);
+                handler.sendSysMessage(SysMessage.CommandFreezeWrong);
 
                 return true;
             } else if (player == handler.getSession().getPlayer()) {
                 // Can't freeze himself
-                handler.sendSysMessage(CypherStrings.CommandFreezeError);
+                handler.sendSysMessage(SysMessage.CommandFreezeError);
 
                 return true;
             } else // Apply the effect
@@ -623,7 +623,7 @@ class MiscCommands {
                         freeze.setDuration(freezeDuration * time.InMilliseconds);
                     }
 
-                    handler.sendSysMessage(CypherStrings.CommandFreeze, player.getName());
+                    handler.sendSysMessage(SysMessage.CommandFreeze, player.getName());
                     // save player
                     player.saveToDB();
 
@@ -635,7 +635,7 @@ class MiscCommands {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGPSCommand(CommandHandler handler, StringArguments args) {
         WorldObject obj;
 
@@ -654,7 +654,7 @@ class MiscCommands {
                     obj = global.getObjAccessor().findPlayer(ObjectGuid.create(HighGuid.Player, guidLow));
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.PlayerNotFound);
+                        handler.sendSysMessage(SysMessage.PlayerNotFound);
                     }
 
                     break;
@@ -663,7 +663,7 @@ class MiscCommands {
                     obj = handler.getCreatureFromPlayerMapByDbGuid(guidLow);
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.CommandNocreaturefound);
+                        handler.sendSysMessage(SysMessage.CommandNocreaturefound);
                     }
 
                     break;
@@ -672,7 +672,7 @@ class MiscCommands {
                     obj = handler.getObjectFromPlayerMapByDbGuid(guidLow);
 
                     if (!obj) {
-                        handler.sendSysMessage(CypherStrings.CommandNogameobjectfound);
+                        handler.sendSysMessage(SysMessage.CommandNogameobjectfound);
                     }
 
                     break;
@@ -688,7 +688,7 @@ class MiscCommands {
             obj = handler.getSelectedUnit();
 
             if (!obj) {
-                handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+                handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
                 return false;
             }
@@ -735,32 +735,32 @@ class MiscCommands {
 
         if (haveVMap) {
             if (obj.isOutdoors()) {
-                handler.sendSysMessage(CypherStrings.GpsPositionOutdoors);
+                handler.sendSysMessage(SysMessage.GpsPositionOutdoors);
             } else {
-                handler.sendSysMessage(CypherStrings.GpsPositionIndoors);
+                handler.sendSysMessage(SysMessage.GpsPositionIndoors);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.GpsNoVmap);
+            handler.sendSysMessage(SysMessage.GpsNoVmap);
         }
 
-        var unknown = handler.getCypherString(CypherStrings.unknown);
+        var unknown = handler.getSysMessage(SysMessage.unknown);
 
-        handler.sendSysMessage(CypherStrings.MapPosition, mapId, (mapEntry != null ? mapEntry.MapName[handler.getSessionDbcLocale()] : unknown), zoneId, (zoneEntry != null ? zoneEntry.AreaName[handler.getSessionDbcLocale()] : unknown), areaId, (areaEntry != null ? areaEntry.AreaName[handler.getSessionDbcLocale()] : unknown), obj.getLocation().getX(), obj.getLocation().getY(), obj.getLocation().getZ(), obj.getLocation().getO());
+        handler.sendSysMessage(SysMessage.MapPosition, mapId, (mapEntry != null ? mapEntry.MapName[handler.getSessionDbcLocale()] : unknown), zoneId, (zoneEntry != null ? zoneEntry.AreaName[handler.getSessionDbcLocale()] : unknown), areaId, (areaEntry != null ? areaEntry.AreaName[handler.getSessionDbcLocale()] : unknown), obj.getLocation().getX(), obj.getLocation().getY(), obj.getLocation().getZ(), obj.getLocation().getO());
 
         var transport = obj.<transport>GetTransport();
 
         if (transport) {
-            handler.sendSysMessage(CypherStrings.TransportPosition, transport.getTemplate().moTransport.spawnMap, obj.getTransOffsetX(), obj.getTransOffsetY(), obj.getTransOffsetZ(), obj.getTransOffsetO(), transport.getEntry(), transport.getName());
+            handler.sendSysMessage(SysMessage.TransportPosition, transport.getTemplate().moTransport.spawnMap, obj.getTransOffsetX(), obj.getTransOffsetY(), obj.getTransOffsetZ(), obj.getTransOffsetO(), transport.getEntry(), transport.getName());
         }
 
-        handler.sendSysMessage(CypherStrings.GridPosition, cell.getGridX(), cell.getGridY(), cell.getCellX(), cell.getCellY(), obj.getInstanceId(), zoneX, zoneY, groundZ, floorZ, map.getMinHeight(obj.getPhaseShift(), obj.getLocation().getX(), obj.getLocation().getY()), haveMap, haveVMap, haveMMap);
+        handler.sendSysMessage(SysMessage.GridPosition, cell.getGridX(), cell.getGridY(), cell.getCellX(), cell.getCellY(), obj.getInstanceId(), zoneX, zoneY, groundZ, floorZ, map.getMinHeight(obj.getPhaseShift(), obj.getLocation().getX(), obj.getLocation().getY()), haveMap, haveVMap, haveMMap);
 
         var liquidStatus;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         var status = map.getLiquidStatus(obj.getPhaseShift(), obj.getLocation().getX(), obj.getLocation().getY(), obj.getLocation().getZ(), LiquidHeaderTypeFlags.AllLiquids, out liquidStatus);
 
         if (liquidStatus != null) {
-            handler.sendSysMessage(CypherStrings.liquidStatus, liquidStatus.level, liquidStatus.depth_level, liquidStatus.entry, liquidStatus.type_flags, status);
+            handler.sendSysMessage(SysMessage.liquidStatus, liquidStatus.level, liquidStatus.depth_level, liquidStatus.entry, liquidStatus.type_flags, status);
         }
 
         PhasingHandler.printToChat(handler, obj);
@@ -768,22 +768,22 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGUIDCommand(CommandHandler handler) {
         var guid = handler.getSession().getPlayer().getTarget();
 
         if (guid.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.NoSelection);
+            handler.sendSysMessage(SysMessage.NoSelection);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.ObjectGuid, guid.toString(), guid.getHigh());
+        handler.sendSysMessage(SysMessage.ObjectGuid, guid.toString(), guid.getHigh());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleHelpCommand(CommandHandler handler, Tail cmd) {
         ChatCommandNode.sendCommandHelpFor(handler, cmd);
 
@@ -794,12 +794,12 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleHideAreaCommand(CommandHandler handler, int areaId) {
         var playerTarget = handler.getSelectedPlayer();
 
         if (!playerTarget) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -807,13 +807,13 @@ class MiscCommands {
         var area = CliDB.AreaTableStorage.get(areaId);
 
         if (area == null) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         if (area.AreaBit < 0) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -821,7 +821,7 @@ class MiscCommands {
         var offset = (int) (area.AreaBit / activePlayerData.EXPLOREDZONESBITS);
 
         if (offset >= PlayerConst.EXPLOREDZONESSIZE) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -829,13 +829,13 @@ class MiscCommands {
         var val = 1 << (area.AreaBit % activePlayerData.EXPLOREDZONESBITS);
         playerTarget.removeExploredZones(offset, val);
 
-        handler.sendSysMessage(CypherStrings.UnexploreArea);
+        handler.sendSysMessage(SysMessage.UnexploreArea);
 
         return true;
     }
 
     // move item to other slot
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleItemMoveCommand(CommandHandler handler, byte srcSlot, byte dstSlot) {
         if (srcSlot == dstSlot) {
             return true;
@@ -858,7 +858,7 @@ class MiscCommands {
     }
 
     // kick player
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleKickPlayerCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -877,7 +877,7 @@ class MiscCommands {
         }
 
         if (handler.getSession() != null && target == handler.getSession().getPlayer()) {
-            handler.sendSysMessage(CypherStrings.CommandKickself);
+            handler.sendSysMessage(SysMessage.CommandKickself);
 
             return false;
         }
@@ -895,9 +895,9 @@ class MiscCommands {
         }
 
         if (WorldConfig.getBoolValue(WorldCfg.ShowKickInWorld)) {
-            global.getWorldMgr().sendWorldText(CypherStrings.CommandKickmessageWorld, (handler.getSession() != null ? handler.getSession().getPlayerName() : "Server"), playerName, kickReasonStr);
+            global.getWorldMgr().sendWorldText(SysMessage.CommandKickmessageWorld, (handler.getSession() != null ? handler.getSession().getPlayerName() : "Server"), playerName, kickReasonStr);
         } else {
-            handler.sendSysMessage(CypherStrings.CommandKickmessage, playerName);
+            handler.sendSysMessage(SysMessage.CommandKickmessage, playerName);
         }
 
         target.getSession().kickPlayer("HandleKickPlayerCommand GM Command");
@@ -905,8 +905,8 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleLinkGraveCommand(CommandHandler handler, int graveyardId, String teamArg) {
         Team team;
 
@@ -923,7 +923,7 @@ class MiscCommands {
         var graveyard = global.getObjectMgr().getWorldSafeLoc(graveyardId);
 
         if (graveyard == null) {
-            handler.sendSysMessage(CypherStrings.CommandGraveyardnoexist, graveyardId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardnoexist, graveyardId);
 
             return false;
         }
@@ -935,34 +935,34 @@ class MiscCommands {
         var areaEntry = CliDB.AreaTableStorage.get(zoneId);
 
         if (areaEntry == null || areaEntry.ParentAreaID != 0) {
-            handler.sendSysMessage(CypherStrings.CommandGraveyardwrongzone, graveyardId, zoneId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardwrongzone, graveyardId, zoneId);
 
             return false;
         }
 
         if (global.getObjectMgr().addGraveYardLink(graveyardId, zoneId, team)) {
-            handler.sendSysMessage(CypherStrings.CommandGraveyardlinked, graveyardId, zoneId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardlinked, graveyardId, zoneId);
         } else {
-            handler.sendSysMessage(CypherStrings.CommandGraveyardalrlinked, graveyardId, zoneId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardalrlinked, graveyardId, zoneId);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleListFreezeCommand(CommandHandler handler) {
         // Get names from DB
         var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_CHARACTER_AURA_FROZEN);
         var result = DB.characters.query(stmt);
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CommandNoFrozenPlayers);
+            handler.sendSysMessage(SysMessage.CommandNoFrozenPlayers);
 
             return true;
         }
 
         // Header of the names
-        handler.sendSysMessage(CypherStrings.CommandListFreeze);
+        handler.sendSysMessage(SysMessage.CommandListFreeze);
 
         // Output of the results
         do {
@@ -979,17 +979,17 @@ class MiscCommands {
             // Notify the freeze duration
             if (remaintime == -1) // Permanent duration
             {
-                handler.sendSysMessage(CypherStrings.CommandPermaFrozenPlayer, player);
+                handler.sendSysMessage(SysMessage.CommandPermaFrozenPlayer, player);
             } else {
                 // show time left (seconds)
-                handler.sendSysMessage(CypherStrings.CommandTempFrozenPlayer, player, remaintime / time.InMilliseconds);
+                handler.sendSysMessage(SysMessage.CommandTempFrozenPlayer, player, remaintime / time.InMilliseconds);
             }
         } while (result.NextRow());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleMailBoxCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
 
@@ -998,17 +998,17 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleMovegensCommand(CommandHandler handler) {
         var unit = handler.getSelectedUnit();
 
         if (!unit) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.MovegensList, (unit.isTypeId(TypeId.PLAYER) ? "Player" : "Creature"), unit.getGUID().toString());
+        handler.sendSysMessage(SysMessage.MovegensList, (unit.isTypeId(TypeId.PLAYER) ? "Player" : "Creature"), unit.getGUID().toString());
 
         if (unit.getMotionMaster().isEmpty()) {
             handler.sendSysMessage("Empty");
@@ -1032,71 +1032,71 @@ class MiscCommands {
         for (var info : list) {
             switch (info.type) {
                 case Idle:
-                    handler.sendSysMessage(CypherStrings.MovegensIdle);
+                    handler.sendSysMessage(SysMessage.MovegensIdle);
 
                     break;
                 case Random:
-                    handler.sendSysMessage(CypherStrings.MovegensRandom);
+                    handler.sendSysMessage(SysMessage.MovegensRandom);
 
                     break;
                 case Waypoint:
-                    handler.sendSysMessage(CypherStrings.MovegensWaypoint);
+                    handler.sendSysMessage(SysMessage.MovegensWaypoint);
 
                     break;
                 case Confused:
-                    handler.sendSysMessage(CypherStrings.MovegensConfused);
+                    handler.sendSysMessage(SysMessage.MovegensConfused);
 
                     break;
                 case Chase:
                     if (info.targetGUID.isEmpty()) {
-                        handler.sendSysMessage(CypherStrings.MovegensChaseNull);
+                        handler.sendSysMessage(SysMessage.MovegensChaseNull);
                     } else if (info.targetGUID.isPlayer()) {
-                        handler.sendSysMessage(CypherStrings.MovegensChasePlayer, info.targetName, info.targetGUID.toString());
+                        handler.sendSysMessage(SysMessage.MovegensChasePlayer, info.targetName, info.targetGUID.toString());
                     } else {
-                        handler.sendSysMessage(CypherStrings.MovegensChaseCreature, info.targetName, info.targetGUID.toString());
+                        handler.sendSysMessage(SysMessage.MovegensChaseCreature, info.targetName, info.targetGUID.toString());
                     }
 
                     break;
                 case Follow:
                     if (info.targetGUID.isEmpty()) {
-                        handler.sendSysMessage(CypherStrings.MovegensFollowNull);
+                        handler.sendSysMessage(SysMessage.MovegensFollowNull);
                     } else if (info.targetGUID.isPlayer()) {
-                        handler.sendSysMessage(CypherStrings.MovegensFollowPlayer, info.targetName, info.targetGUID.toString());
+                        handler.sendSysMessage(SysMessage.MovegensFollowPlayer, info.targetName, info.targetGUID.toString());
                     } else {
-                        handler.sendSysMessage(CypherStrings.MovegensFollowCreature, info.targetName, info.targetGUID.toString());
+                        handler.sendSysMessage(SysMessage.MovegensFollowCreature, info.targetName, info.targetGUID.toString());
                     }
 
                     break;
                 case Home:
                     if (unit.isTypeId(TypeId.UNIT)) {
-                        handler.sendSysMessage(CypherStrings.MovegensHomeCreature, x, y, z);
+                        handler.sendSysMessage(SysMessage.MovegensHomeCreature, x, y, z);
                     } else {
-                        handler.sendSysMessage(CypherStrings.MovegensHomePlayer);
+                        handler.sendSysMessage(SysMessage.MovegensHomePlayer);
                     }
 
                     break;
                 case Flight:
-                    handler.sendSysMessage(CypherStrings.MovegensFlight);
+                    handler.sendSysMessage(SysMessage.MovegensFlight);
 
                     break;
                 case Point:
-                    handler.sendSysMessage(CypherStrings.MovegensPoint, x, y, z);
+                    handler.sendSysMessage(SysMessage.MovegensPoint, x, y, z);
 
                     break;
                 case Fleeing:
-                    handler.sendSysMessage(CypherStrings.MovegensFear);
+                    handler.sendSysMessage(SysMessage.MovegensFear);
 
                     break;
                 case Distract:
-                    handler.sendSysMessage(CypherStrings.MovegensDistract);
+                    handler.sendSysMessage(SysMessage.MovegensDistract);
 
                     break;
                 case Effect:
-                    handler.sendSysMessage(CypherStrings.MovegensEffect);
+                    handler.sendSysMessage(SysMessage.MovegensEffect);
 
                     break;
                 default:
-                    handler.sendSysMessage(CypherStrings.MovegensUnknown, info.type);
+                    handler.sendSysMessage(SysMessage.MovegensUnknown, info.type);
 
                     break;
             }
@@ -1106,12 +1106,12 @@ class MiscCommands {
     }
 
     // mute player for the specified duration
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMuteCommand(CommandHandler handler, PlayerIdentifier player, int muteTime, Tail muteReason) {
         String muteReasonStr = muteReason;
 
         if (muteReason.isEmpty()) {
-            muteReasonStr = handler.getCypherString(CypherStrings.NoReason);
+            muteReasonStr = handler.getSysMessage(SysMessage.NoReason);
         }
 
         if (player == null) {
@@ -1119,7 +1119,7 @@ class MiscCommands {
         }
 
         if (player == null) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -1148,7 +1148,7 @@ class MiscCommands {
         if (gmPlayer != null) {
             muteBy = gmPlayer.getName();
         } else {
-            muteBy = handler.getCypherString(CypherStrings.Console);
+            muteBy = handler.getSysMessage(SysMessage.Console);
         }
 
         if (target) {
@@ -1175,26 +1175,26 @@ class MiscCommands {
         var nameLink = handler.playerLink(player.getName());
 
         if (WorldConfig.getBoolValue(WorldCfg.ShowMuteInWorld)) {
-            global.getWorldMgr().sendWorldText(CypherStrings.CommandMutemessageWorld, muteBy, nameLink, muteTime, muteReasonStr);
+            global.getWorldMgr().sendWorldText(SysMessage.CommandMutemessageWorld, muteBy, nameLink, muteTime, muteReasonStr);
         }
 
         if (target) {
-            target.sendSysMessage(CypherStrings.YourChatDisabled, muteTime, muteBy, muteReasonStr);
-            handler.sendSysMessage(CypherStrings.YouDisableChat, nameLink, muteTime, muteReasonStr);
+            target.sendSysMessage(SysMessage.YourChatDisabled, muteTime, muteBy, muteReasonStr);
+            handler.sendSysMessage(SysMessage.YouDisableChat, nameLink, muteTime, muteReasonStr);
         } else {
-            handler.sendSysMessage(CypherStrings.CommandDisableChatDelayed, nameLink, muteTime, muteReasonStr);
+            handler.sendSysMessage(SysMessage.CommandDisableChatDelayed, nameLink, muteTime, muteReasonStr);
         }
 
         return true;
     }
 
     // mutehistory command
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleMuteHistoryCommand(CommandHandler handler, String accountName) {
         var accountId = global.getAccountMgr().getId(accountName);
 
         if (accountId == 0) {
-            handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+            handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
             return false;
         }
@@ -1205,12 +1205,12 @@ class MiscCommands {
         var result = DB.Login.query(stmt);
 
         if (result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CommandMutehistoryEmpty, accountName);
+            handler.sendSysMessage(SysMessage.CommandMutehistoryEmpty, accountName);
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandMutehistory, accountName);
+        handler.sendSysMessage(SysMessage.CommandMutehistory, accountName);
 
         do {
             // we have to manually set the string for mutedate
@@ -1219,14 +1219,14 @@ class MiscCommands {
             // set it to string
             var buffer = time.UnixTimeToDateTime(sqlTime).ToShortTimeString();
 
-            handler.sendSysMessage(CypherStrings.CommandMutehistoryOutput, buffer, result.<Integer>Read(1), result.<String>Read(2), result.<String>Read(3));
+            handler.sendSysMessage(SysMessage.CommandMutehistoryOutput, buffer, result.<Integer>Read(1), result.<String>Read(2), result.<String>Read(3));
         } while (result.NextRow());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleNearGraveCommand(CommandHandler handler, String teamArg) {
         Team team;
 
@@ -1251,44 +1251,44 @@ class MiscCommands {
             var data = global.getObjectMgr().findGraveYardData(graveyardId, zoneId);
 
             if (data == null) {
-                handler.sendSysMessage(CypherStrings.CommandGraveyarderror, graveyardId);
+                handler.sendSysMessage(SysMessage.CommandGraveyarderror, graveyardId);
 
                 return false;
             }
 
             team = Team.forValue(data.team);
 
-            var team_name = handler.getCypherString(CypherStrings.CommandGraveyardNoteam);
+            var team_name = handler.getSysMessage(SysMessage.CommandGraveyardNoteam);
 
             if (team == 0) {
-                team_name = handler.getCypherString(CypherStrings.CommandGraveyardAny);
+                team_name = handler.getSysMessage(SysMessage.CommandGraveyardAny);
             } else if (team == Team.Horde) {
-                team_name = handler.getCypherString(CypherStrings.CommandGraveyardHorde);
+                team_name = handler.getSysMessage(SysMessage.CommandGraveyardHorde);
             } else if (team == Team.ALLIANCE) {
-                team_name = handler.getCypherString(CypherStrings.CommandGraveyardAlliance);
+                team_name = handler.getSysMessage(SysMessage.CommandGraveyardAlliance);
             }
 
-            handler.sendSysMessage(CypherStrings.CommandGraveyardnearest, graveyardId, team_name, zoneId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardnearest, graveyardId, team_name, zoneId);
         } else {
             var team_name = "";
 
             if (team == Team.Horde) {
-                team_name = handler.getCypherString(CypherStrings.CommandGraveyardHorde);
+                team_name = handler.getSysMessage(SysMessage.CommandGraveyardHorde);
             } else if (team == Team.ALLIANCE) {
-                team_name = handler.getCypherString(CypherStrings.CommandGraveyardAlliance);
+                team_name = handler.getSysMessage(SysMessage.CommandGraveyardAlliance);
             }
 
             if (team == 0) {
-                handler.sendSysMessage(CypherStrings.CommandZonenograveyards, zoneId);
+                handler.sendSysMessage(SysMessage.CommandZonenograveyards, zoneId);
             } else {
-                handler.sendSysMessage(CypherStrings.CommandZonenografaction, zoneId, team_name);
+                handler.sendSysMessage(SysMessage.CommandZonenografaction, zoneId, team_name);
             }
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePInfoCommand(CommandHandler handler, StringArguments args) {
         // Define ALL the player variables!
         Player target;
@@ -1357,29 +1357,29 @@ class MiscCommands {
          */
 
         // Account data print variables
-        var userName = handler.getCypherString(CypherStrings.error);
+        var userName = handler.getSysMessage(SysMessage.error);
         int accId;
         var lowguid = targetGuid.getCounter();
-        var eMail = handler.getCypherString(CypherStrings.error);
-        var regMail = handler.getCypherString(CypherStrings.error);
+        var eMail = handler.getSysMessage(SysMessage.error);
+        var regMail = handler.getSysMessage(SysMessage.error);
         int security = 0;
-        var lastIp = handler.getCypherString(CypherStrings.error);
+        var lastIp = handler.getSysMessage(SysMessage.error);
         byte locked = 0;
-        var lastLogin = handler.getCypherString(CypherStrings.error);
+        var lastLogin = handler.getSysMessage(SysMessage.error);
         int failedLogins = 0;
         int latency = 0;
-        var OS = handler.getCypherString(CypherStrings.unknown);
+        var OS = handler.getSysMessage(SysMessage.unknown);
 
         // Mute data print variables
         long muteTime = -1;
-        var muteReason = handler.getCypherString(CypherStrings.NoReason);
-        var muteBy = handler.getCypherString(CypherStrings.unknown);
+        var muteReason = handler.getSysMessage(SysMessage.NoReason);
+        var muteBy = handler.getSysMessage(SysMessage.unknown);
 
         // Ban data print variables
         long banTime = -1;
-        var banType = handler.getCypherString(CypherStrings.unknown);
-        var banReason = handler.getCypherString(CypherStrings.NoReason);
-        var bannedBy = handler.getCypherString(CypherStrings.unknown);
+        var banType = handler.getSysMessage(SysMessage.unknown);
+        var banReason = handler.getSysMessage(SysMessage.NoReason);
+        var bannedBy = handler.getSysMessage(SysMessage.unknown);
 
         // Character data print variables
         Race raceid;
@@ -1425,7 +1425,7 @@ class MiscCommands {
             muteTime = target.getSession().muteTime;
             mapId = target.getLocation().getMapId();
             areaId = target.getArea();
-            alive = target.isAlive() ? handler.getCypherString(CypherStrings.Yes) : handler.getCypherString(CypherStrings.No);
+            alive = target.isAlive() ? handler.getSysMessage(SysMessage.Yes) : handler.getSysMessage(SysMessage.No);
             gender = target.getNativeGender();
         }
         // get additional information from DB
@@ -1457,9 +1457,9 @@ class MiscCommands {
             var playerFlags = playerFlags.forValue(result.<Integer>Read(10));
 
             if (health == 0 || playerFlags.hasFlag(playerFlags.Ghost)) {
-                alive = handler.getCypherString(CypherStrings.No);
+                alive = handler.getSysMessage(SysMessage.No);
             } else {
-                alive = handler.getCypherString(CypherStrings.Yes);
+                alive = handler.getSysMessage(SysMessage.Yes);
             }
         }
 
@@ -1480,10 +1480,10 @@ class MiscCommands {
                 lastIp = result0.<String>Read(4);
                 lastLogin = result0.<String>Read(5);
             } else {
-                eMail = handler.getCypherString(CypherStrings.Unauthorized);
-                regMail = handler.getCypherString(CypherStrings.Unauthorized);
-                lastIp = handler.getCypherString(CypherStrings.Unauthorized);
-                lastLogin = handler.getCypherString(CypherStrings.Unauthorized);
+                eMail = handler.getSysMessage(SysMessage.Unauthorized);
+                regMail = handler.getSysMessage(SysMessage.Unauthorized);
+                lastIp = handler.getSysMessage(SysMessage.Unauthorized);
+                lastLogin = handler.getSysMessage(SysMessage.Unauthorized);
             }
 
             muteTime = (long) result0.<Long>Read(6);
@@ -1503,12 +1503,12 @@ class MiscCommands {
         var result2 = DB.Login.query(stmt2);
 
         if (result2.isEmpty()) {
-            banType = handler.getCypherString(CypherStrings.Character);
+            banType = handler.getSysMessage(SysMessage.Character);
             stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_PINFO_BANS);
             stmt.AddValue(0, lowguid);
             result2 = DB.characters.query(stmt);
         } else {
-            banType = handler.getCypherString(CypherStrings.Account);
+            banType = handler.getSysMessage(SysMessage.Account);
         }
 
         if (!result2.isEmpty()) {
@@ -1547,50 +1547,50 @@ class MiscCommands {
 
         // Initiate output
         // Output I. LANG_PINFO_PLAYER
-        handler.sendSysMessage(CypherStrings.PinfoPlayer, target ? "" : handler.getCypherString(CypherStrings.Offline), nameLink, targetGuid.toString());
+        handler.sendSysMessage(SysMessage.PinfoPlayer, target ? "" : handler.getSysMessage(SysMessage.Offline), nameLink, targetGuid.toString());
 
         // Output II. LANG_PINFO_GM_ACTIVE if character is gamemaster
         if (target && target.isGameMaster()) {
-            handler.sendSysMessage(CypherStrings.PinfoGmActive);
+            handler.sendSysMessage(SysMessage.PinfoGmActive);
         }
 
         // Output III. LANG_PINFO_BANNED if ban exists and is applied
         if (banTime >= 0) {
-            handler.sendSysMessage(CypherStrings.PinfoBanned, banType, banReason, banTime > 0 ? time.secsToTimeString((long) (banTime - gameTime.GetGameTime()), TimeFormat.ShortText, false) : handler.getCypherString(CypherStrings.Permanently), bannedBy);
+            handler.sendSysMessage(SysMessage.PinfoBanned, banType, banReason, banTime > 0 ? time.secsToTimeString((long) (banTime - gameTime.GetGameTime()), TimeFormat.ShortText, false) : handler.getSysMessage(SysMessage.Permanently), bannedBy);
         }
 
         // Output IV. LANG_PINFO_MUTED if mute is applied
         if (muteTime > 0) {
-            handler.sendSysMessage(CypherStrings.PinfoMuted, muteReason, time.secsToTimeString((long) (muteTime - gameTime.GetGameTime()), TimeFormat.ShortText, false), muteBy);
+            handler.sendSysMessage(SysMessage.PinfoMuted, muteReason, time.secsToTimeString((long) (muteTime - gameTime.GetGameTime()), TimeFormat.ShortText, false), muteBy);
         }
 
         // Output V. LANG_PINFO_ACC_ACCOUNT
-        handler.sendSysMessage(CypherStrings.PinfoAccAccount, userName, accId, security);
+        handler.sendSysMessage(SysMessage.PinfoAccAccount, userName, accId, security);
 
         // Output VI. LANG_PINFO_ACC_LASTLOGIN
-        handler.sendSysMessage(CypherStrings.PinfoAccLastlogin, lastLogin, failedLogins);
+        handler.sendSysMessage(SysMessage.PinfoAccLastlogin, lastLogin, failedLogins);
 
         // Output VII. LANG_PINFO_ACC_OS
-        handler.sendSysMessage(CypherStrings.PinfoAccOs, OS, latency);
+        handler.sendSysMessage(SysMessage.PinfoAccOs, OS, latency);
 
         // Output VIII. LANG_PINFO_ACC_REGMAILS
-        handler.sendSysMessage(CypherStrings.PinfoAccRegmails, regMail, eMail);
+        handler.sendSysMessage(SysMessage.PinfoAccRegmails, regMail, eMail);
 
         // Output IX. LANG_PINFO_ACC_IP
-        handler.sendSysMessage(CypherStrings.PinfoAccIp, lastIp, locked != 0 ? handler.getCypherString(CypherStrings.Yes) : handler.getCypherString(CypherStrings.No));
+        handler.sendSysMessage(SysMessage.PinfoAccIp, lastIp, locked != 0 ? handler.getSysMessage(SysMessage.Yes) : handler.getSysMessage(SysMessage.No));
 
         // Output X. LANG_PINFO_CHR_LEVEL
         if (level != WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel)) {
-            handler.sendSysMessage(CypherStrings.PinfoChrLevelLow, level, xp, xptotal, (xptotal - xp));
+            handler.sendSysMessage(SysMessage.PinfoChrLevelLow, level, xp, xptotal, (xptotal - xp));
         } else {
-            handler.sendSysMessage(CypherStrings.PinfoChrLevelHigh, level);
+            handler.sendSysMessage(SysMessage.PinfoChrLevelHigh, level);
         }
 
         // Output XI. LANG_PINFO_CHR_RACE
-        handler.sendSysMessage(CypherStrings.PinfoChrRace, (gender == 0 ? handler.getCypherString(CypherStrings.CharacterGenderMale) : handler.getCypherString(CypherStrings.CharacterGenderFemale)), global.getDB2Mgr().GetChrRaceName(raceid, locale), global.getDB2Mgr().GetClassName(classid, locale));
+        handler.sendSysMessage(SysMessage.PinfoChrRace, (gender == 0 ? handler.getSysMessage(SysMessage.CharacterGenderMale) : handler.getSysMessage(SysMessage.CharacterGenderFemale)), global.getDB2Mgr().GetChrRaceName(raceid, locale), global.getDB2Mgr().GetClassName(classid, locale));
 
         // Output XII. LANG_PINFO_CHR_ALIVE
-        handler.sendSysMessage(CypherStrings.PinfoChrAlive, alive);
+        handler.sendSysMessage(SysMessage.PinfoChrAlive, alive);
 
         // Output XIII. phases
         if (target) {
@@ -1601,7 +1601,7 @@ class MiscCommands {
         var gold = money / MoneyConstants.gold;
         var silv = (money % MoneyConstants.gold) / MoneyConstants.Silver;
         var copp = (money % MoneyConstants.gold) % MoneyConstants.Silver;
-        handler.sendSysMessage(CypherStrings.PinfoChrMoney, gold, silv, copp);
+        handler.sendSysMessage(SysMessage.PinfoChrMoney, gold, silv, copp);
 
         // Position data
         var map = CliDB.MapStorage.get(mapId);
@@ -1619,31 +1619,31 @@ class MiscCommands {
         }
 
         if (zoneName == null) {
-            zoneName = handler.getCypherString(CypherStrings.unknown);
+            zoneName = handler.getSysMessage(SysMessage.unknown);
         }
 
         if (areaName != null) {
-            handler.sendSysMessage(CypherStrings.PinfoChrMapWithArea, map.MapName[locale], zoneName, areaName);
+            handler.sendSysMessage(SysMessage.PinfoChrMapWithArea, map.MapName[locale], zoneName, areaName);
         } else {
-            handler.sendSysMessage(CypherStrings.PinfoChrMap, map.MapName[locale], zoneName);
+            handler.sendSysMessage(SysMessage.PinfoChrMap, map.MapName[locale], zoneName);
         }
 
         // Output XVII. - XVIX. if they are not empty
         if (!guildName.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.PinfoChrGuild, guildName, guildId);
-            handler.sendSysMessage(CypherStrings.PinfoChrGuildRank, guildRank, guildRankId);
+            handler.sendSysMessage(SysMessage.PinfoChrGuild, guildName, guildId);
+            handler.sendSysMessage(SysMessage.PinfoChrGuildRank, guildRank, guildRankId);
 
             if (!note.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.PinfoChrGuildNote, note);
+                handler.sendSysMessage(SysMessage.PinfoChrGuildNote, note);
             }
 
             if (!officeNote.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.PinfoChrGuildOnote, officeNote);
+                handler.sendSysMessage(SysMessage.PinfoChrGuildOnote, officeNote);
             }
         }
 
         // Output XX. LANG_PINFO_CHR_PLAYEDTIME
-        handler.sendSysMessage(CypherStrings.PinfoChrPlayedtime, (time.secsToTimeString(totalPlayerTime, TimeFormat.ShortText, true)));
+        handler.sendSysMessage(SysMessage.PinfoChrPlayedtime, (time.secsToTimeString(totalPlayerTime, TimeFormat.ShortText, true)));
 
         // Mail Data - an own query, because it may or may not be useful.
         // SQL: "SELECT SUM(CASE WHEN (checked & 1) THEN 1 ELSE 0 END) AS 'readmail', COUNT(*) AS 'totalmail' FROM mail WHERE `receiver` = ?"
@@ -1657,29 +1657,29 @@ class MiscCommands {
 
             // Output XXI. LANG_INFO_CHR_MAILS if at least one mail is given
             if (totalmail >= 1) {
-                handler.sendSysMessage(CypherStrings.PinfoChrMails, readmail, totalmail);
+                handler.sendSysMessage(SysMessage.PinfoChrMails, readmail, totalmail);
             }
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePlayAllCommand(CommandHandler handler, int soundId, Integer broadcastTextId) {
         if (!CliDB.SoundKitStorage.containsKey(soundId)) {
-            handler.sendSysMessage(CypherStrings.SoundNotExist, soundId);
+            handler.sendSysMessage(SysMessage.SoundNotExist, soundId);
 
             return false;
         }
 
         global.getWorldMgr().sendGlobalMessage(new playSound(handler.getSession().getPlayer().getGUID(), soundId, (broadcastTextId == null ? 0 : broadcastTextId.intValue())));
 
-        handler.sendSysMessage(CypherStrings.CommandPlayedToAll, soundId);
+        handler.sendSysMessage(SysMessage.CommandPlayedToAll, soundId);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePossessCommand(CommandHandler handler) {
         var unit = handler.getSelectedUnit();
 
@@ -1692,7 +1692,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handlePvPstatsCommand(CommandHandler handler) {
         if (WorldConfig.getBoolValue(WorldCfg.BattlegroundStoreStatisticsEnable)) {
             var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_PVPSTATS_FACTIONS_OVERALL);
@@ -1707,19 +1707,19 @@ class MiscCommands {
 
                 var alliance_victories = result.<Integer>Read(1);
 
-                handler.sendSysMessage(CypherStrings.Pvpstats, alliance_victories, horde_victories);
+                handler.sendSysMessage(SysMessage.Pvpstats, alliance_victories, horde_victories);
             } else {
                 return false;
             }
         } else {
-            handler.sendSysMessage(CypherStrings.PvpstatsDisabled);
+            handler.sendSysMessage(SysMessage.PvpstatsDisabled);
         }
 
         return true;
     }
 
     // Teleport player to last position
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleRecallCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -1736,7 +1736,7 @@ class MiscCommands {
         }
 
         if (target.isBeingTeleported()) {
-            handler.sendSysMessage(CypherStrings.IsTeleported, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.IsTeleported, handler.getNameLink(target));
 
             return false;
         }
@@ -1749,7 +1749,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleRepairitemsCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -1768,16 +1768,16 @@ class MiscCommands {
         // Repair items
         target.durabilityRepairAll(false, 0, false);
 
-        handler.sendSysMessage(CypherStrings.YouRepairItems, handler.getNameLink(target));
+        handler.sendSysMessage(SysMessage.YouRepairItems, handler.getNameLink(target));
 
         if (handler.needReportToTarget(target)) {
-            target.sendSysMessage(CypherStrings.YourItemsRepaired, handler.getNameLink());
+            target.sendSysMessage(SysMessage.YourItemsRepaired, handler.getNameLink());
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleRespawnCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
 
@@ -1786,7 +1786,7 @@ class MiscCommands {
 
         if (target) {
             if (target.isPet) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1819,7 +1819,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleReviveCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -1846,15 +1846,15 @@ class MiscCommands {
     }
 
     // Save all players in the world
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleSaveAllCommand(CommandHandler handler) {
         global.getObjAccessor().SaveAllPlayers();
-        handler.sendSysMessage(CypherStrings.PlayersSaved);
+        handler.sendSysMessage(SysMessage.PlayersSaved);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleSaveCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
 
@@ -1868,7 +1868,7 @@ class MiscCommands {
                 player.saveToDB();
             }
 
-            handler.sendSysMessage(CypherStrings.PlayerSaved);
+            handler.sendSysMessage(SysMessage.PlayerSaved);
 
             return true;
         }
@@ -1883,12 +1883,12 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleShowAreaCommand(CommandHandler handler, int areaId) {
         var playerTarget = handler.getSelectedPlayer();
 
         if (!playerTarget) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -1896,13 +1896,13 @@ class MiscCommands {
         var area = CliDB.AreaTableStorage.get(areaId);
 
         if (area == null) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         if (area.AreaBit < 0) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -1910,7 +1910,7 @@ class MiscCommands {
         var offset = (int) (area.AreaBit / activePlayerData.EXPLOREDZONESBITS);
 
         if (offset >= PlayerConst.EXPLOREDZONESSIZE) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -1918,13 +1918,13 @@ class MiscCommands {
         var val = 1 << (area.AreaBit % activePlayerData.EXPLOREDZONESBITS);
         playerTarget.addExploredZones(offset, val);
 
-        handler.sendSysMessage(CypherStrings.ExploreArea);
+        handler.sendSysMessage(SysMessage.ExploreArea);
 
         return true;
     }
 
     // Summon Player
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleSummonCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -1946,7 +1946,7 @@ class MiscCommands {
         var player = handler.getSession().getPlayer();
 
         if (target == player || Objects.equals(targetGuid, player.getGUID())) {
-            handler.sendSysMessage(CypherStrings.CantTeleportSelf);
+            handler.sendSysMessage(SysMessage.CantTeleportSelf);
 
             return false;
         }
@@ -1960,7 +1960,7 @@ class MiscCommands {
             }
 
             if (target.isBeingTeleported()) {
-                handler.sendSysMessage(CypherStrings.IsTeleported, nameLink);
+                handler.sendSysMessage(SysMessage.IsTeleported, nameLink);
 
                 return false;
             }
@@ -1970,7 +1970,7 @@ class MiscCommands {
             if (map.isBattlegroundOrArena()) {
                 // only allow if gm mode is on
                 if (!player.isGameMaster()) {
-                    handler.sendSysMessage(CypherStrings.CannotGoToBgGm, nameLink);
+                    handler.sendSysMessage(SysMessage.CannotGoToBgGm, nameLink);
 
                     return false;
                 }
@@ -2000,7 +2000,7 @@ class MiscCommands {
                 // check if far teleport is allowed
                 if (targetGroupLeader == null || (targetGroupLeader.getLocation().getMapId() != map.getId()) || (targetGroupLeader.getInstanceId() != map.getInstanceId())) {
                     if ((targetMap.getId() != map.getId()) || (targetMap.getInstanceId() != map.getInstanceId())) {
-                        handler.sendSysMessage(CypherStrings.CannotSummonToInst);
+                        handler.sendSysMessage(SysMessage.CannotSummonToInst);
 
                         return false;
                     }
@@ -2008,16 +2008,16 @@ class MiscCommands {
 
                 // check if we're already in a different instance of the same map
                 if ((targetMap.getId() == map.getId()) && (targetMap.getInstanceId() != map.getInstanceId())) {
-                    handler.sendSysMessage(CypherStrings.CannotSummonInstInst, nameLink);
+                    handler.sendSysMessage(SysMessage.CannotSummonInstInst, nameLink);
 
                     return false;
                 }
             }
 
-            handler.sendSysMessage(CypherStrings.Summoning, nameLink, "");
+            handler.sendSysMessage(SysMessage.Summoning, nameLink, "");
 
             if (handler.needReportToTarget(target)) {
-                target.sendSysMessage(CypherStrings.summonedBy, handler.playerLink(player.getName()));
+                target.sendSysMessage(SysMessage.summonedBy, handler.playerLink(player.getName()));
             }
 
             // stop flight if need
@@ -2042,7 +2042,7 @@ class MiscCommands {
 
             var nameLink = handler.playerLink(targetName);
 
-            handler.sendSysMessage(CypherStrings.Summoning, nameLink, handler.getCypherString(CypherStrings.Offline));
+            handler.sendSysMessage(SysMessage.Summoning, nameLink, handler.getSysMessage(SysMessage.Offline));
 
             // in point where GM stay
             player.savePositionInDB(new worldLocation(player.getLocation().getMapId(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getO()), player.getZone(), targetGuid);
@@ -2051,7 +2051,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleUnbindSightCommand(CommandHandler handler) {
         var player = handler.getSession().getPlayer();
 
@@ -2064,8 +2064,8 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleUnFreezeCommand(CommandHandler handler, String targetNameArg) {
         var name = "";
         Player player;
@@ -2086,7 +2086,7 @@ class MiscCommands {
         }
 
         if (player) {
-            handler.sendSysMessage(CypherStrings.CommandUnfreeze, name);
+            handler.sendSysMessage(SysMessage.CommandUnfreeze, name);
 
             // Remove Freeze spell (allowing movement and spells)
             // Player flags + Neutral faction removal is now
@@ -2098,7 +2098,7 @@ class MiscCommands {
                 var guid = global.getCharacterCacheStorage().getCharacterGuidByName(name);
 
                 if (guid.isEmpty()) {
-                    handler.sendSysMessage(CypherStrings.CommandFreezeWrong);
+                    handler.sendSysMessage(SysMessage.CommandFreezeWrong);
 
                     return true;
                 }
@@ -2108,11 +2108,11 @@ class MiscCommands {
                 stmt.AddValue(0, guid.getCounter());
                 DB.characters.execute(stmt);
 
-                handler.sendSysMessage(CypherStrings.CommandUnfreeze, name);
+                handler.sendSysMessage(SysMessage.CommandUnfreeze, name);
 
                 return true;
             } else {
-                handler.sendSysMessage(CypherStrings.CommandFreezeWrong);
+                handler.sendSysMessage(SysMessage.CommandFreezeWrong);
 
                 return true;
             }
@@ -2122,7 +2122,7 @@ class MiscCommands {
     }
 
     // unmute player
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleUnmuteCommand(CommandHandler handler, StringArguments args) {
         Player target;
         tangible.OutObject<Player> tempOut_target = new tangible.OutObject<Player>();
@@ -2159,7 +2159,7 @@ class MiscCommands {
 
         if (target) {
             if (target.getSession().getCanSpeak()) {
-                handler.sendSysMessage(CypherStrings.ChatAlreadyEnabled);
+                handler.sendSysMessage(SysMessage.ChatAlreadyEnabled);
 
                 return false;
             }
@@ -2175,17 +2175,17 @@ class MiscCommands {
         DB.Login.execute(stmt);
 
         if (target) {
-            target.sendSysMessage(CypherStrings.YourChatEnabled);
+            target.sendSysMessage(SysMessage.YourChatEnabled);
         }
 
         var nameLink = handler.playerLink(targetName);
 
-        handler.sendSysMessage(CypherStrings.YouEnableChat, nameLink);
+        handler.sendSysMessage(SysMessage.YouEnableChat, nameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleUnPossessCommand(CommandHandler handler) {
         var unit = handler.getSelectedUnit();
 
@@ -2198,7 +2198,7 @@ class MiscCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleUnstuckCommand(CommandHandler handler, StringArguments args) {
         int SPELL_UNSTUCK_ID = 7355;
         int SPELL_UNSTUCK_VISUAL = 2683;
@@ -2286,11 +2286,11 @@ class MiscCommands {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleChangeWeather(CommandHandler handler, int type, float intensity) {
         // Weather is OFF
         if (!WorldConfig.getBoolValue(WorldCfg.Weather)) {
-            handler.sendSysMessage(CypherStrings.WeatherDisabled);
+            handler.sendSysMessage(SysMessage.WeatherDisabled);
 
             return false;
         }
@@ -2301,7 +2301,7 @@ class MiscCommands {
         var weather = player.getMap().getOrGenerateZoneDefaultWeather(zoneid);
 
         if (weather == null) {
-            handler.sendSysMessage(CypherStrings.NoWeather);
+            handler.sendSysMessage(SysMessage.NoWeather);
 
             return false;
         }

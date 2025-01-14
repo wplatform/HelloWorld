@@ -3,219 +3,219 @@ package com.github.azeroth.game.entity.gobject;
 
 import com.github.azeroth.defines.GameObjectType;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public class GameObjectTemplate {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int entry;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public GameObjectType type;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int displayId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public String name;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public String iconName;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public String castBarCaption;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public String unk1;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public float size;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int contentTuningId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public String AIName;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public int scriptId;
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public door door = new door();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public button button = new button();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public questgiver questGiver = new questgiver();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public chest chest = new chest();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public binder binder = new binder();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public generic generic = new generic();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public trap trap = new trap();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public chair chair = new chair();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public spellFocus spellFocus = new spellFocus();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public text text = new text();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public goober goober = new goober();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public transport transport = new transport();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public areadamage areaDamage = new areadamage();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public camera camera = new camera();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public moTransport moTransport = new moTransport();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public duelflag duelFlag = new duelflag();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public fishingnode fishingNode = new fishingnode();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public ritual ritual = new ritual();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public mailbox mailBox = new mailbox();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public guardpost guardPost = new guardpost();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public spellcaster spellCaster = new spellcaster();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public meetingstone meetingStone = new meetingstone();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public flagstand flagStand = new flagstand();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public fishinghole fishingHole = new fishinghole();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public flagdrop flagDrop = new flagdrop();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public controlzone controlZone = new controlzone();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public auraGenerator auraGenerator = new auraGenerator();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public dungeonDifficulty dungeonDifficulty = new dungeonDifficulty();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public barberChair barberChair = new barberChair();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public destructiblebuilding destructibleBuilding = new destructiblebuilding();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public guildbank guildBank = new guildbank();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public trapDoor trapDoor = new trapDoor();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public newflag newFlag = new newflag();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public newflagdrop newFlagDrop = new newflagdrop();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrisonbuilding garrisonBuilding = new garrisonbuilding();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrisonplot garrisonPlot = new garrisonplot();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public clientcreature clientCreature = new clientcreature();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public clientitem clientItem = new clientitem();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public capturepoint capturePoint = new capturepoint();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public phaseablemo phaseableMO = new phaseablemo();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrisonmonument garrisonMonument = new garrisonmonument();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrisonshipment garrisonShipment = new garrisonshipment();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrisonmonumentplaque garrisonMonumentPlaque = new garrisonmonumentplaque();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public itemforge itemForge = new itemforge();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public uilink UILink = new uilink();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public keystonereceptacle keystoneReceptacle = new keystonereceptacle();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public gatheringnode gatheringNode = new gatheringnode();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public challengemodereward challengeModeReward = new challengemodereward();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public multi multi = new multi();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public siegeableMulti siegeableMulti = new siegeableMulti();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public siegeableMO siegeableMO = new siegeableMO();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public pvpReward pvpReward = new pvpReward();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public playerchoicechest playerChoiceChest = new playerchoicechest();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public legendaryforge legendaryForge = new legendaryforge();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public garrtalenttree garrTalentTree = new garrtalenttree();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public weeklyrewardchest weeklyRewardChest = new weeklyrewardchest();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public clientmodel clientModel = new clientmodel();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public craftingTable craftingTable = new craftingTable();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public raw raw = new raw();
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public QueryGameObjectResponse queryData;
 
     // helpers
@@ -717,7 +717,7 @@ public class GameObjectTemplate {
             stats.questItems.add(item);
         }
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //		unsafe
 //			{
 //				for (var i = 0; i < SharedConst.MaxGOData; i++)
@@ -729,10 +729,10 @@ public class GameObjectTemplate {
         queryData.stats = stats;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region TypeStructs
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //	public unsafe struct raw
 //		{
 //			public fixed int data[SharedConst.MaxGOData];
@@ -2394,6 +2394,6 @@ public class GameObjectTemplate {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

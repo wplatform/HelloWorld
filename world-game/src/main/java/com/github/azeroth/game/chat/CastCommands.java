@@ -4,13 +4,13 @@ package com.github.azeroth.game.chat;
 import com.github.azeroth.game.spell.CastSpellExtraArgs;
 
 class CastCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastCommand(CommandHandler handler, int spellId, String triggeredStr) {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -30,13 +30,13 @@ class CastCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastBackCommand(CommandHandler handler, int spellId, String triggeredStr) {
         var caster = handler.getSelectedCreature();
 
         if (!caster) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -56,8 +56,8 @@ class CastCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastDistCommand(CommandHandler handler, int spellId, float dist, String triggeredStr) {
         if (checkSpellExistsAndIsValid(handler, spellId)) {
             return false;
@@ -77,13 +77,13 @@ class CastCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastSelfCommand(CommandHandler handler, int spellId, String triggeredStr) {
         var target = handler.getSelectedUnit();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -103,19 +103,19 @@ class CastCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastTargetCommad(CommandHandler handler, int spellId, String triggeredStr) {
         var caster = handler.getSelectedCreature();
 
         if (!caster) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
 
         if (!caster.getVictim()) {
-            handler.sendSysMessage(CypherStrings.SelectedTargetNotHaveVictim);
+            handler.sendSysMessage(SysMessage.SelectedTargetNotHaveVictim);
 
             return false;
         }
@@ -135,13 +135,13 @@ class CastCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCastDestCommand(CommandHandler handler, int spellId, float x, float y, float z, String triggeredStr) {
         var caster = handler.getSelectedUnit();
 
         if (!caster) {
-            handler.sendSysMessage(CypherStrings.SelectCharOrCreature);
+            handler.sendSysMessage(SysMessage.SelectCharOrCreature);
 
             return false;
         }
@@ -179,13 +179,13 @@ class CastCommands {
         var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
 
         if (spellInfo == null) {
-            handler.sendSysMessage(CypherStrings.CommandNospellfound);
+            handler.sendSysMessage(SysMessage.CommandNospellfound);
 
             return false;
         }
 
         if (!global.getSpellMgr().isSpellValid(spellInfo, handler.getPlayer())) {
-            handler.sendSysMessage(CypherStrings.CommandSpellBroken, spellInfo.getId());
+            handler.sendSysMessage(SysMessage.CommandSpellBroken, spellInfo.getId());
 
             return false;
         }

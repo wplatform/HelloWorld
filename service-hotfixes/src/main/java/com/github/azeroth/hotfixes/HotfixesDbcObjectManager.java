@@ -838,12 +838,12 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
 
     @Override
     public String getBroadcastTextValue(BroadcastText broadcastText) {
-        return getBroadcastTextValue(broadcastText, dbcLocale, Gender.GENDER_MALE, false);
+        return getBroadcastTextValue(broadcastText, dbcLocale, Gender.MALE, false);
     }
 
     @Override
     public String getBroadcastTextValue(BroadcastText broadcastText, Locale locale, Gender gender, boolean forceGender) {
-        if ((gender == Gender.GENDER_FEMALE || gender == Gender.GENDER_NONE) && (forceGender || !StringUtils.hasText(broadcastText.getText1().get(DEFAULT_LOCALE)))) {
+        if ((gender == Gender.FEMALE || gender == Gender.NONE) && (forceGender || !StringUtils.hasText(broadcastText.getText1().get(DEFAULT_LOCALE)))) {
             if (!StringUtils.hasText(broadcastText.getText1().get(locale)))
                 return broadcastText.getText1().get(locale);
             return broadcastText.getText1().get(DEFAULT_LOCALE);
@@ -954,7 +954,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
         if (petFamily == null)
             return null;
 
-        CreatureFamilyEntry entry = creatureFamily(petFamily.ordinal());
+        CreatureFamilyEntry entry = creatureFamily(petFamily);
         if (entry == null)
             return null;
 
@@ -1169,13 +1169,21 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     }
 
     @Override
-    public ItemModifiedAppearance getItemModifiedAppearance(Integer itemId, Integer appearanceModId) {
+    public ItemModifiedAppearance getItemModifiedAppearance(int itemId, short appearanceModId) {
+        var result = itemModifiedAppearancesByItem.get(itemId | (appearanceModId << 24));
+        if (result != null)
+            return result;
+        // Fall back to unmodified appearance
+        if (appearanceModId != 0) {
+            return itemModifiedAppearancesByItem.get(itemId);
+        }
+
         return null;
     }
 
     @Override
-    public ItemModifiedAppearance getDefaultItemModifiedAppearance(Integer itemId) {
-        return null;
+    public ItemModifiedAppearance getDefaultItemModifiedAppearance(int itemId) {
+        return itemModifiedAppearancesByItem.get(itemId);
     }
 
     @Override
@@ -1498,6 +1506,11 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
         return List.of();
     }
 
+    @Override
+    public boolean getUiMapPosition(float x, float y, float z, Integer mapId, Integer areaId, Integer wmoDoodadPlacementId, Integer wmoGroupId, UiMapSystem system, boolean local) {
+        return false;
+    }
+
     public int determinaAlternateMapPosition(int mapId, float x, float y, float z, DBCPosition2D newPos /*= nullptr*/)
     {
         WorldMapTransform transformation = null;
@@ -1592,7 +1605,10 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
         return Set.of();
     }
 
-
+    @Override
+    public List<ItemBonus> getItemBonusList(int bonusList) {
+        return itemBonusLists.get((short)bonusList);
+    }
 
 
 }

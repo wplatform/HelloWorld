@@ -1,7 +1,7 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public class CommandAttribute extends Attribute {
     /**
      * Command's name.
@@ -10,7 +10,7 @@ public class CommandAttribute extends Attribute {
     /**
      * Help String for command.
      */
-    private CypherStrings help = CypherStrings.values()[0];
+    private SysMessage help = SysMessage.values()[0];
     /**
      * Allow Console?
      */
@@ -34,11 +34,11 @@ public class CommandAttribute extends Attribute {
         setAllowConsole(allowConsole);
     }
 
-    public CommandAttribute(String command, CypherStrings help, RBACPermissions rbac) {
+    public CommandAttribute(String command, SysMessage help, RBACPermissions rbac) {
         this(command, help, rbac, false);
     }
 
-    public CommandAttribute(String command, CypherStrings help, RBACPermissions rbac, boolean allowConsole) {
+    public CommandAttribute(String command, SysMessage help, RBACPermissions rbac, boolean allowConsole) {
         setName(command.toLowerCase());
         setHelp(help);
         setRBAC(rbac);
@@ -53,11 +53,11 @@ public class CommandAttribute extends Attribute {
         name = value;
     }
 
-    public final CypherStrings getHelp() {
+    public final SysMessage getHelp() {
         return help;
     }
 
-    public final void setHelp(CypherStrings value) {
+    public final void setHelp(SysMessage value) {
         help = value;
     }
 

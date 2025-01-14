@@ -2,7 +2,7 @@ package com.github.azeroth.game.chat;
 
 
 class BattleFieldCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBattlefieldEnable(CommandHandler handler, int battleId) {
         var bf = global.getBattleFieldMgr().getBattlefieldByBattleId(handler.getPlayer().getMap(), battleId);
 
@@ -27,7 +27,7 @@ class BattleFieldCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBattlefieldStart(CommandHandler handler, int battleId) {
         var bf = global.getBattleFieldMgr().getBattlefieldByBattleId(handler.getPlayer().getMap(), battleId);
 
@@ -44,7 +44,7 @@ class BattleFieldCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBattlefieldEnd(CommandHandler handler, int battleId) {
         var bf = global.getBattleFieldMgr().getBattlefieldByBattleId(handler.getPlayer().getMap(), battleId);
 
@@ -61,7 +61,7 @@ class BattleFieldCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBattlefieldSwitch(CommandHandler handler, int battleId) {
         var bf = global.getBattleFieldMgr().getBattlefieldByBattleId(handler.getPlayer().getMap(), battleId);
 
@@ -78,7 +78,7 @@ class BattleFieldCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleBattlefieldTimer(CommandHandler handler, int battleId, int time) {
         var bf = global.getBattleFieldMgr().getBattlefieldByBattleId(handler.getPlayer().getMap(), battleId);
 

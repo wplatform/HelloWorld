@@ -2,6 +2,7 @@ package com.github.azeroth.game.service.mapper;
 
 import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.common.Locale;
+import com.github.azeroth.common.Logs;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.misc.NpcText;
@@ -71,12 +72,25 @@ public interface RowMappers {
         creature.speedRun              = rs.getFloat(14);
         creature.scale                  = rs.getFloat(15);
         creature.classification         = CreatureClassification.values()[rs.getByte(16)];
-        creature.dmgSchool              = rs.getInt(17);
+        int dmgSchool = rs.getInt(17);
+        if(dmgSchool > -1 && dmgSchool < SpellSchool.values().length) {
+            creature.dmgSchool              = SpellSchool.values()[dmgSchool];
+        }else {
+            Logs.SQL.error("Creature (Entry: {}) has invalid unit_class ({}) in creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", creature.entry, creature.unitClass);
+            creature.unitClass = UnitClass.WARRIOR;
+        }
+
         creature.baseAttackTime         = rs.getInt(18);
         creature.rangeAttackTime        = rs.getInt(19);
         creature.baseVariance           = rs.getFloat(20);
         creature.rangeVariance          = rs.getFloat(21);
-        creature.unitClass             = rs.getInt(22);
+        int unitClass = rs.getInt(22);
+        if(dmgSchool > 0 && dmgSchool < SpellSchool.values().length) {
+            creature.unitClass              = UnitClass.values()[unitClass];
+        } else {
+            Logs.SQL.error("Creature (Entry: {}) has invalid spell school value ({}) in `dmgschool`.", creature.entry, unitClass);
+            creature.dmgSchool = SpellSchool.NORMAL;
+        }
         creature.unitFlags             = EnumFlag.of(UnitFlag.class, rs.getInt(23));
         creature.unitFlags2            = EnumFlag.of(UnitFlag2.class, rs.getInt(24));
         creature.unitFlags3            = EnumFlag.of(UnitFlag3.class, rs.getInt(25));
@@ -89,15 +103,16 @@ public interface RowMappers {
         creature.movementType           = rs.getInt(31);
 
         int ground = rs.getInt(32);
-        if (!rs.wasNull())
+        if (!rs.wasNull() && ground < CreatureGroundMovementType.values().length) {
             creature.movement.ground = CreatureGroundMovementType.values()[ground];
+        }
 
         boolean swim = rs.getBoolean(33);
         if (!rs.wasNull())
             creature.movement.swim = swim;
 
         int flight = rs.getByte(34);
-        if (!rs.wasNull())
+        if (!rs.wasNull() && ground < CreatureFlightMovementType.values().length)
             creature.movement.flight = CreatureFlightMovementType.values()[flight];
 
         boolean rooted = rs.getBoolean(35);
@@ -105,11 +120,11 @@ public interface RowMappers {
             creature.movement.rooted = rooted;
 
         int chase = rs.getByte(36);
-        if (!rs.wasNull())
+        if (!rs.wasNull() && ground < CreatureChaseMovementType.values().length)
             creature.movement.chase = CreatureChaseMovementType.values()[chase];
 
         int random = rs.getByte(37);
-        if (!rs.wasNull())
+        if (!rs.wasNull() && ground < CreatureRandomMovementType.values().length)
             creature.movement.random = CreatureRandomMovementType.values()[random];
 
         int interactionPauseTimer = rs.getInt(38);
@@ -126,6 +141,46 @@ public interface RowMappers {
         creature.stringId               = rs.getString(46);
 
         return creature;
+    };
+
+
+    RowMapper<CreatureMovementData> CREATURE_MOVEMENT_ROWMAPPER = (rs, rowNum) -> {
+
+        CreatureMovementData movement = new CreatureMovementData();
+
+        movement.spawnId = rs.getInt(1);
+
+        int ground = rs.getInt(2);
+        if (!rs.wasNull() && ground < CreatureGroundMovementType.values().length) {
+            movement.ground = CreatureGroundMovementType.values()[ground];
+        }
+
+        boolean swim = rs.getBoolean(3);
+        if (!rs.wasNull())
+            movement.swim = swim;
+
+        int flight = rs.getByte(4);
+        if (!rs.wasNull() && ground < CreatureFlightMovementType.values().length)
+            movement.flight = CreatureFlightMovementType.values()[flight];
+
+        boolean rooted = rs.getBoolean(5);
+        if (!rs.wasNull())
+            movement.rooted = rooted;
+
+        int chase = rs.getByte(6);
+        if (!rs.wasNull() && ground < CreatureChaseMovementType.values().length)
+            movement.chase = CreatureChaseMovementType.values()[chase];
+
+        int random = rs.getByte(7);
+        if (!rs.wasNull() && ground < CreatureRandomMovementType.values().length)
+            movement.random = CreatureRandomMovementType.values()[random];
+
+        int interactionPauseTimer = rs.getInt(8);
+        if (!rs.wasNull())
+            movement.interactionPauseTimer = interactionPauseTimer;
+
+
+        return movement;
     };
 
 

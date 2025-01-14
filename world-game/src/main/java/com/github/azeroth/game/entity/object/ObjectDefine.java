@@ -49,10 +49,4 @@ public interface ObjectDefine {
     int MAX_AGGRO_RESET_TIME = 10; // in seconds
     float MAX_AGGRO_RADIUS = 45.0f;  // yards
 
-
-    ;
-
 }
-
-record PositionZAllowed(float z, float groundZ) {
-};

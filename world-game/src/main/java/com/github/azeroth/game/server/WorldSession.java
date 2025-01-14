@@ -212,7 +212,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAdventureJournalOpenQuest(AdventureJournalOpenQuest openQuest) {
         var uiDisplay = global.getDB2Mgr().GetUiDisplayForClass(player.getClass());
 
@@ -243,7 +243,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAdventureJournalUpdateSuggestions(AdventureJournalUpdateSuggestions updateSuggestions) {
         var uiDisplay = global.getDB2Mgr().GetUiDisplayForClass(player.getClass());
 
@@ -268,7 +268,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAdventureMapStartQuest(AdventureMapStartQuest startQuest) {
         var quest = global.getObjectMgr().getQuestTemplate(startQuest.questID);
 
@@ -290,7 +290,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleArtifactAddPower(ArtifactAddPower artifactAddPower) {
         if (!player.getGameObjectIfCanInteractWith(artifactAddPower.forgeGUID, GameObjectTypes.itemForge)) {
             return;
@@ -441,7 +441,7 @@ public class WorldSession implements Closeable {
         artifact.setModifier(ItemModifier.ArtifactTier, artifactTier);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleArtifactSetAppearance(ArtifactSetAppearance artifactSetAppearance) {
         if (!player.getGameObjectIfCanInteractWith(artifactSetAppearance.forgeGUID, GameObjectTypes.itemForge)) {
             return;
@@ -498,7 +498,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleConfirmArtifactRespec(ConfirmArtifactRespec confirmArtifactRespec) {
         if (!player.getNPCIfCanInteractWith(confirmArtifactRespec.npcGUID, NPCFlags.ArtifactPowerRespec, NPCFlags2.NONE)) {
             return;
@@ -573,7 +573,7 @@ public class WorldSession implements Closeable {
 
     public final void sendAuctionHello(ObjectGuid guid, Creature unit) {
         if (getPlayer().getLevel() < WorldConfig.getIntValue(WorldCfg.AuctionLevelReq)) {
-            sendNotification(global.getObjectMgr().getCypherString(CypherStrings.AuctionReq), WorldConfig.getIntValue(WorldCfg.AuctionLevelReq));
+            sendNotification(global.getObjectMgr().getSysMessage(SysMessage.AuctionReq), WorldConfig.getIntValue(WorldCfg.AuctionLevelReq));
 
             return;
         }
@@ -620,7 +620,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionBrowseQuery(AuctionBrowseQuery browseQuery) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, browseQuery.taintedBy != null);
 
@@ -676,7 +676,7 @@ public class WorldSession implements Closeable {
         sendPacket(listBucketsResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionCancelCommoditiesPurchase(AuctionCancelCommoditiesPurchase cancelCommoditiesPurchase) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, cancelCommoditiesPurchase.taintedBy != null, AuctionCommand.PlaceBid);
 
@@ -701,7 +701,7 @@ public class WorldSession implements Closeable {
         auctionHouse.cancelCommodityQuote(player.getGUID());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionConfirmCommoditiesPurchase(AuctionConfirmCommoditiesPurchase confirmCommoditiesPurchase) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, confirmCommoditiesPurchase.taintedBy != null, AuctionCommand.PlaceBid);
 
@@ -743,7 +743,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionHello(AuctionHelloRequest hello) {
         var unit = getPlayer().getNPCIfCanInteractWith(hello.guid, NPCFlags.auctioneer, NPCFlags2.NONE);
 
@@ -761,7 +761,7 @@ public class WorldSession implements Closeable {
         sendAuctionHello(hello.guid, unit);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionListBiddedItems(AuctionListBiddedItems listBiddedItems) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, listBiddedItems.taintedBy != null);
 
@@ -792,7 +792,7 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionListBucketsByBucketKeys(AuctionListBucketsByBucketKeys listBucketsByBucketKeys) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, listBucketsByBucketKeys.taintedBy != null);
 
@@ -824,7 +824,7 @@ public class WorldSession implements Closeable {
         sendPacket(listBucketsResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionListItemsByBucketKey(AuctionListItemsByBucketKey listItemsByBucketKey) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, listItemsByBucketKey.taintedBy != null);
 
@@ -858,7 +858,7 @@ public class WorldSession implements Closeable {
         sendPacket(listItemsResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionListItemsByItemID(AuctionListItemsByItemID listItemsByItemID) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, listItemsByItemID.taintedBy != null);
 
@@ -892,7 +892,7 @@ public class WorldSession implements Closeable {
         sendPacket(listItemsResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionListOwnedItems(AuctionListOwnedItems listOwnedItems) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, listOwnedItems.taintedBy != null);
 
@@ -922,7 +922,7 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionPlaceBid(AuctionPlaceBid placeBid) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, placeBid.taintedBy != null, AuctionCommand.PlaceBid);
 
@@ -1063,7 +1063,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionRemoveItem(AuctionRemoveItem removeItem) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, removeItem.taintedBy != null, AuctionCommand.Cancel);
 
@@ -1135,7 +1135,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReplicateItems(AuctionReplicateItems replicateItems) {
         var creature = getPlayer().getNPCIfCanInteractWith(replicateItems.auctioneer, NPCFlags.auctioneer, NPCFlags2.NONE);
 
@@ -1162,7 +1162,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionRequestFavoriteList(AuctionRequestFavoriteList requestFavoriteList) {
         var stmt = DB.characters.GetPreparedStatement(CharStatements.SEL_CHARACTER_FAVORITE_AUCTIONS);
         stmt.AddValue(0, player.getGUID().getCounter());
@@ -1187,7 +1187,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionSellCommodity(AuctionSellCommodity sellCommodity) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, sellCommodity.taintedBy != null, AuctionCommand.SellItem);
 
@@ -1403,7 +1403,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionSellItem(AuctionSellItem sellItem) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, sellItem.taintedBy != null, AuctionCommand.SellItem);
 
@@ -1555,7 +1555,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionSetFavoriteItem(AuctionSetFavoriteItem setFavoriteItem) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, false);
 
@@ -1584,7 +1584,7 @@ public class WorldSession implements Closeable {
         DB.characters.CommitTransaction(trans);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAuctionGetCommodityQuote(AuctionGetCommodityQuote getCommodityQuote) {
         var throttle = global.getAuctionHouseMgr().checkThrottle(player, getCommodityQuote.taintedBy != null, AuctionCommand.PlaceBid);
 
@@ -1725,7 +1725,7 @@ public class WorldSession implements Closeable {
         sendPacket(npcInteraction);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAzeriteEssenceUnlockMilestone(AzeriteEssenceUnlockMilestone azeriteEssenceUnlockMilestone) {
         if (!azeriteItem.FindHeartForge(player)) {
             return;
@@ -1765,7 +1765,7 @@ public class WorldSession implements Closeable {
         azeriteItem.setState(ItemUpdateState.changed, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAzeriteEssenceActivateEssence(AzeriteEssenceActivateEssence azeriteEssenceActivateEssence) {
         ActivateEssenceFailed activateEssenceResult = new ActivateEssenceFailed();
         activateEssenceResult.azeriteEssenceID = azeriteEssenceActivateEssence.azeriteEssenceID;
@@ -1884,7 +1884,7 @@ public class WorldSession implements Closeable {
         azeriteItem.setState(ItemUpdateState.changed, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAzeriteEmpoweredItemViewed(AzeriteEmpoweredItemViewed azeriteEmpoweredItemViewed) {
         var item = player.getItemByGuid(azeriteEmpoweredItemViewed.itemGUID);
 
@@ -1896,7 +1896,7 @@ public class WorldSession implements Closeable {
         item.setState(ItemUpdateState.changed, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAzeriteEmpoweredItemSelectPower(AzeriteEmpoweredItemSelectPower azeriteEmpoweredItemSelectPower) {
         var item = player.getItemByPos(azeriteEmpoweredItemSelectPower.containerSlot, azeriteEmpoweredItemSelectPower.slot);
 
@@ -1978,7 +1978,7 @@ public class WorldSession implements Closeable {
         sendPacket(npcInteraction);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoBankItem(AutoBankItem packet) {
         if (!canUseBank()) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleAutoBankItemOpcode - %1$s not found or you can't interact with him.", player.getPlayerTalkClass().getInteractionData().getSourceGuid()));
@@ -2012,7 +2012,7 @@ public class WorldSession implements Closeable {
         getPlayer().bankItem(dest, item, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBankerActivate(Hello packet) {
         var unit = getPlayer().getNPCIfCanInteractWith(packet.unit, NPCFlags.banker, NPCFlags2.NONE);
 
@@ -2029,7 +2029,7 @@ public class WorldSession implements Closeable {
         sendShowBank(packet.unit);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoStoreBankItem(AutoStoreBankItem packet) {
         if (!canUseBank()) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleAutoBankItemOpcode - %1$s not found or you can't interact with him.", player.getPlayerTalkClass().getInteractionData().getSourceGuid()));
@@ -2076,7 +2076,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBuyBankSlot(BuyBankSlot packet) {
         if (!canUseBank(packet.guid)) {
             Log.outDebug(LogFilter.Network, "WORLD: HandleBuyBankSlot - {0} not found or you can't interact with him.", packet.guid.toString());
@@ -2105,7 +2105,7 @@ public class WorldSession implements Closeable {
         getPlayer().updateCriteria(CriteriaType.BankSlotsPurchased);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBuyReagentBank(ReagentBank reagentBank) {
         if (!canUseBank(reagentBank.banker)) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleBuyReagentBankOpcode - %1$s not found or you can't interact with him.", reagentBank.banker));
@@ -2131,7 +2131,7 @@ public class WorldSession implements Closeable {
         player.unlockReagentBank();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReagentBankDeposit(ReagentBank reagentBank) {
         if (!canUseBank(reagentBank.banker)) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleReagentBankDepositOpcode - %1$s not found or you can't interact with him.", reagentBank.banker));
@@ -2173,7 +2173,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoBankReagent(AutoBankReagent autoBankReagent) {
         if (!canUseBank()) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleAutoBankReagentOpcode - %1$s not found or you can't interact with him.", player.getPlayerTalkClass().getInteractionData().getSourceGuid()));
@@ -2212,7 +2212,7 @@ public class WorldSession implements Closeable {
         player.bankItem(dest, item, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoStoreBankReagent(AutoStoreBankReagent autoStoreBankReagent) {
         if (!canUseBank()) {
             Log.outDebug(LogFilter.Network, String.format("WORLD: HandleAutoBankReagentOpcode - %1$s not found or you can't interact with him.", player.getPlayerTalkClass().getInteractionData().getSourceGuid()));
@@ -2259,7 +2259,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlemasterHello(Hello hello) {
         var unit = getPlayer().getNPCIfCanInteractWith(hello.unit, NPCFlags.BattleMaster, NPCFlags2.NONE);
 
@@ -2280,7 +2280,7 @@ public class WorldSession implements Closeable {
 
         if (!getPlayer().getBgAccessByLevel(bgTypeId)) {
             // temp, must be gossip message...
-            sendNotification(CypherStrings.YourBgLevelReqError);
+            sendNotification(SysMessage.YourBgLevelReqError);
 
             return;
         }
@@ -2288,7 +2288,7 @@ public class WorldSession implements Closeable {
         global.getBattlegroundMgr().sendBattlegroundList(getPlayer(), hello.unit, bgTypeId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlemasterJoin(BattlemasterJoin battlemasterJoin) {
         var isPremade = false;
 
@@ -2309,7 +2309,7 @@ public class WorldSession implements Closeable {
         var battlemasterListEntry = CliDB.BattlemasterListStorage.get(bgQueueTypeId.battlemasterListId);
 
         if (global.getDisableMgr().isDisabledFor(DisableType.Battleground, bgQueueTypeId.battlemasterListId, null) || battlemasterListEntry.flags.hasFlag(BattlemasterListFlags.disabled)) {
-            getPlayer().sendSysMessage(CypherStrings.BgDisabled);
+            getPlayer().sendSysMessage(SysMessage.BgDisabled);
 
             return;
         }
@@ -2339,7 +2339,7 @@ public class WorldSession implements Closeable {
 
         var grp = player.getGroup();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		Team getQueueTeam()
 //			{
 //				// mercenary applies only to unrated battlegrounds
@@ -2498,7 +2498,7 @@ public class WorldSession implements Closeable {
         global.getBattlegroundMgr().scheduleQueueUpdate(0, bgQueueTypeId, bracketEntry.getBracketId());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePVPLogData(PVPLogDataRequest packet) {
         var bg = getPlayer().getBattleground();
 
@@ -2518,7 +2518,7 @@ public class WorldSession implements Closeable {
         sendPacket(pvpMatchStatistics);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlefieldList(BattlefieldListRequest battlefieldList) {
         var bl = CliDB.BattlemasterListStorage.get(battlefieldList.listID);
 
@@ -2531,7 +2531,7 @@ public class WorldSession implements Closeable {
         global.getBattlegroundMgr().sendBattlegroundList(getPlayer(), ObjectGuid.Empty, BattlegroundTypeId.forValue(battlefieldList.listID));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattleFieldPort(BattlefieldPort battlefieldPort) {
         if (!getPlayer().inBattlegroundQueue()) {
             Log.outDebug(LogFilter.Battleground, "CMSG_BATTLEFIELD_PORT {0} Slot: {1}, Unk: {2}, Time: {3}, AcceptedInvite: {4}. Player not in queue!", getPlayerInfo(), battlefieldPort.ticket.id, battlefieldPort.ticket.type, battlefieldPort.ticket.time, battlefieldPort.acceptedInvite);
@@ -2696,7 +2696,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlefieldLeave(BattlefieldLeave packet) {
         // not allow leave Battlegroundin combat
         if (getPlayer().isInCombat()) {
@@ -2712,7 +2712,7 @@ public class WorldSession implements Closeable {
         getPlayer().leaveBattleground();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestBattlefieldStatus(RequestBattlefieldStatus packet) {
         // we must update all queues here
         Battleground bg = null;
@@ -2789,7 +2789,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlemasterJoinArena(BattlemasterJoinArena packet) {
         // ignore if we already in BG or BG queue
         if (getPlayer().getInBattleground()) {
@@ -2808,7 +2808,7 @@ public class WorldSession implements Closeable {
         }
 
         if (global.getDisableMgr().isDisabledFor(DisableType.Battleground, (int) BattlegroundTypeId.AA.getValue(), null)) {
-            getPlayer().sendSysMessage(CypherStrings.ArenaDisabled);
+            getPlayer().sendSysMessage(SysMessage.ArenaDisabled);
 
             return;
         }
@@ -2908,7 +2908,7 @@ public class WorldSession implements Closeable {
         global.getBattlegroundMgr().scheduleQueueUpdate(matchmakerRating, bgQueueTypeId, bracketEntry.getBracketId());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReportPvPAFK(ReportPvPPlayerAFK reportPvPPlayerAFK) {
         var reportedPlayer = global.getObjAccessor().findPlayer(reportPvPPlayerAFK.offender);
 
@@ -2923,13 +2923,13 @@ public class WorldSession implements Closeable {
         reportedPlayer.reportedAfkBy(getPlayer());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestRatedPvpInfo(RequestRatedPvpInfo packet) {
         RatedPvpInfo ratedPvpInfo = new RatedPvpInfo();
         sendPacket(ratedPvpInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGetPVPOptionsEnabled(GetPVPOptionsEnabled packet) {
         // This packet is completely irrelevant, it triggers PVP_TYPES_ENABLED lua event but that is not handled in interface code as of 6.1.2
         PVPOptionsEnabled pvpOptionsEnabled = new PVPOptionsEnabled();
@@ -2937,12 +2937,12 @@ public class WorldSession implements Closeable {
         sendPacket(new PVPOptionsEnabled());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestPvpReward(RequestPVPRewards packet) {
         getPlayer().sendPvpRewards();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAreaSpiritHealerQuery(AreaSpiritHealerQuery areaSpiritHealerQuery) {
         var unit = ObjectAccessor.getCreature(getPlayer(), areaSpiritHealerQuery.healerGuid);
 
@@ -2968,7 +2968,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAreaSpiritHealerQueue(AreaSpiritHealerQueue areaSpiritHealerQueue) {
         var unit = ObjectAccessor.getCreature(getPlayer(), areaSpiritHealerQueue.healerGuid);
 
@@ -2994,7 +2994,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleHearthAndResurrect(HearthAndResurrect packet) {
         if (getPlayer().isInFlight()) {
             return;
@@ -3019,7 +3019,7 @@ public class WorldSession implements Closeable {
         getPlayer().teleportTo(getPlayer().getHomeBind());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleJoinSkirmish(JoinSkirmish packet) {
         var player = getPlayer();
 
@@ -3057,7 +3057,7 @@ public class WorldSession implements Closeable {
         };
 
         if (DisableManager.getInstance().isDisabledFor(DisableType.Battleground, (int) BattlegroundTypeId.AA.getValue(), null)) {
-            player.sendSysMessage(CypherStrings.ArenaDisabled);
+            player.sendSysMessage(SysMessage.ArenaDisabled);
 
             return;
         }
@@ -3230,7 +3230,7 @@ public class WorldSession implements Closeable {
         sendPacket(notification);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlenetRequest(BattlenetRequest request) {
         var handler = global.getServiceMgr().getHandler(request.method.getServiceHash(), request.method.getMethodId());
 
@@ -3242,7 +3242,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlenetChangeRealmTicket(ChangeRealmTicket changeRealmTicket) {
         setRealmListSecret(changeRealmTicket.secret);
 
@@ -3278,7 +3278,7 @@ public class WorldSession implements Closeable {
         session.sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public final void handleGetPurchaseListQuery(GetPurchaseListQuery UnnamedParameter) {
         if (!getBattlePayMgr().isAvailable()) {
             return;
@@ -3287,7 +3287,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public final void handleUpdateVasPurchaseStates(UpdateVasPurchaseStates UnnamedParameter) {
         if (!getBattlePayMgr().isAvailable()) {
             return;
@@ -3297,7 +3297,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public final void handleBattlePayDistributionAssign(DistributionAssignToTarget packet) {
         if (!getBattlePayMgr().isAvailable()) {
             return;
@@ -3306,7 +3306,7 @@ public class WorldSession implements Closeable {
         getBattlePayMgr().assignDistributionToCharacter(packet.getTargetCharacter(), packet.getDistributionID(), packet.getProductID(), packet.getSpecializationID(), packet.getChoiceID());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     public final void handleGetProductList(GetProductList UnnamedParameter) {
         if (!getBattlePayMgr().isAvailable()) {
             return;
@@ -3550,12 +3550,12 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetRequestJournal(BattlePetRequestJournal battlePetRequestJournal) {
         getBattlePetMgr().sendJournal();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetRequestJournalLock(BattlePetRequestJournalLock battlePetRequestJournalLock) {
         getBattlePetMgr().sendJournalLockStatus();
 
@@ -3564,7 +3564,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetSetBattleSlot(BattlePetSetBattleSlot battlePetSetBattleSlot) {
         var pet = getBattlePetMgr().getPet(battlePetSetBattleSlot.petGuid);
 
@@ -3577,12 +3577,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetModifyName(BattlePetModifyName battlePetModifyName) {
         getBattlePetMgr().modifyName(battlePetModifyName.petGuid, battlePetModifyName.name, battlePetModifyName.declinedNames);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryBattlePetName(QueryBattlePetName queryBattlePetName) {
         QueryBattlePetNameResponse response = new QueryBattlePetNameResponse();
         response.battlePetID = queryBattlePetName.battlePetID;
@@ -3626,12 +3626,12 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetDeletePet(BattlePetDeletePet battlePetDeletePet) {
         getBattlePetMgr().removePet(battlePetDeletePet.petGuid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetSetFlags(BattlePetSetFlags battlePetSetFlags) {
         if (!getBattlePetMgr().getHasJournalLock()) {
             return;
@@ -3652,17 +3652,17 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetClearFanfare(BattlePetClearFanfare battlePetClearFanfare) {
         getBattlePetMgr().clearFanfare(battlePetClearFanfare.petGuid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCageBattlePet(CageBattlePet cageBattlePet) {
         getBattlePetMgr().cageBattlePet(cageBattlePet.petGuid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetSummon(BattlePetSummon battlePetSummon) {
         if (ObjectGuid.opNotEquals(player.getSummonedBattlePetGUID(), battlePetSummon.petGuid)) {
             getBattlePetMgr().summonPet(battlePetSummon.petGuid);
@@ -3671,7 +3671,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBattlePetUpdateNotify(BattlePetUpdateNotify battlePetUpdateNotify) {
         getBattlePetMgr().updateBattlePetData(battlePetUpdateNotify.petGuid);
     }
@@ -3695,7 +3695,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBlackMarketOpen(BlackMarketOpen blackMarketOpen) {
         var unit = getPlayer().getNPCIfCanInteractWith(blackMarketOpen.guid, NPCFlags.BlackMarket, NPCFlags2.BlackMarketView);
 
@@ -3721,7 +3721,7 @@ public class WorldSession implements Closeable {
         sendPacket(npcInteraction);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBlackMarketRequestItems(BlackMarketRequestItems blackMarketRequestItems) {
         if (!global.getBlackMarketMgr().isEnabled()) {
             return;
@@ -3740,7 +3740,7 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBlackMarketBidOnItem(BlackMarketBidOnItem blackMarketBidOnItem) {
         if (!global.getBlackMarketMgr().isEnabled()) {
             return;
@@ -3822,7 +3822,7 @@ public class WorldSession implements Closeable {
         sendPacket(calendarRaidLockoutAdded);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarGetCalendar(CalendarGetCalendar calendarGetCalendar) {
         var guid = getPlayer().getGUID();
 
@@ -3879,7 +3879,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarGetEvent(CalendarGetEvent calendarGetEvent) {
         var calendarEvent = global.getCalendarMgr().getEvent(calendarGetEvent.eventID);
 
@@ -3890,7 +3890,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarCommunityInvite(CalendarCommunityInviteRequest calendarCommunityInvite) {
         var guild = global.getGuildMgr().getGuildById(getPlayer().getGuildId());
 
@@ -3899,7 +3899,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarAddEvent(CalendarAddEvent calendarAddEvent) {
         var guid = getPlayer().getGUID();
 
@@ -3977,7 +3977,7 @@ public class WorldSession implements Closeable {
         global.getCalendarMgr().addEvent(calendarEvent, CalendarSendEventType.Add);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarUpdateEvent(CalendarUpdateEvent calendarUpdateEvent) {
         var guid = getPlayer().getGUID();
         long oldEventTime;
@@ -4009,13 +4009,13 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarRemoveEvent(CalendarRemoveEvent calendarRemoveEvent) {
         var guid = getPlayer().getGUID();
         global.getCalendarMgr().removeEvent(calendarRemoveEvent.eventID, guid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarCopyEvent(CalendarCopyEvent calendarCopyEvent) {
         var guid = getPlayer().getGUID();
 
@@ -4094,7 +4094,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarInvite(CalendarInvitePkt calendarInvite) {
         var playerGuid = getPlayer().getGUID();
 
@@ -4182,7 +4182,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarEventSignup(CalendarEventSignUp calendarEventSignUp) {
         var guid = getPlayer().getGUID();
 
@@ -4204,7 +4204,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarRsvp(HandleCalendarRsvp calendarRSVP) {
         var guid = getPlayer().getGUID();
 
@@ -4235,7 +4235,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarEventRemoveInvite(CalendarRemoveInvite calendarRemoveInvite) {
         var guid = getPlayer().getGUID();
 
@@ -4254,7 +4254,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarStatus(CalendarStatus calendarStatus) {
         var guid = getPlayer().getGUID();
 
@@ -4277,7 +4277,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarModeratorStatus(CalendarModeratorStatusQuery calendarModeratorStatus) {
         var guid = getPlayer().getGUID();
 
@@ -4298,12 +4298,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarComplain(CalendarComplain calendarComplain) {
         // what to do with complains?
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCalendarGetNumPending(CalendarGetNumPending calendarGetNumPending) {
         var guid = getPlayer().getGUID();
         var pending = global.getCalendarMgr().getPlayerNumPending(guid);
@@ -4311,7 +4311,7 @@ public class WorldSession implements Closeable {
         sendPacket(new CalendarSendNumPending(pending));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetSavedInstanceExtend(SetSavedInstanceExtend setSavedInstanceExtend) {
         // cannot modify locks currently in use
         if (player.getLocation().getMapId() == setSavedInstanceExtend.mapID) {
@@ -4341,7 +4341,7 @@ public class WorldSession implements Closeable {
         sendPacket(calendarRaidLockoutRemoved);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleJoinChannel(JoinChannel packet) {
         var zone = CliDB.AreaTableStorage.get(getPlayer().getZone());
 
@@ -4406,7 +4406,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLeaveChannel(LeaveChannel packet) {
         if (StringUtil.isEmpty(packet.channelName) && packet.zoneChannelID == 0) {
             return;
@@ -4441,7 +4441,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChannelCommand(ChannelCommand packet) {
         var channel = ChannelManager.getChannelForPlayerByNamePart(packet.channelName, getPlayer());
 
@@ -4470,7 +4470,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChannelPlayerCommand(ChannelPlayerCommand packet) {
         if (packet.name.length() >= 49) {
             Log.outDebug(LogFilter.ChatSystem, "{0} {1} ChannelName: {2}, Name: {3}, Name too long.", packet.GetOpcode(), getPlayerInfo(), packet.channelName, packet.name);
@@ -4532,7 +4532,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChannelPassword(ChannelPassword packet) {
         if (packet.password.length() > 31) {
             Log.outDebug(LogFilter.ChatSystem, "{0} {1} ChannelName: {2}, Password: {3}, Password too long.", packet.GetOpcode(), getPlayerInfo(), packet.channelName, packet.password);
@@ -4900,14 +4900,14 @@ public class WorldSession implements Closeable {
         // Apply at_login requests
         if (pCurrChar.hasAtLoginFlag(AtLoginFlags.ResetSpells)) {
             pCurrChar.resetSpells();
-            sendNotification(CypherStrings.ResetSpells);
+            sendNotification(SysMessage.ResetSpells);
         }
 
         if (pCurrChar.hasAtLoginFlag(AtLoginFlags.ResetTalents)) {
             pCurrChar.resetTalents(true);
             pCurrChar.resetTalentSpecialization();
             pCurrChar.sendTalentsInfoData(); // original talents send already in to SendInitialPacketsBeforeAddToMap, resend reset state
-            sendNotification(CypherStrings.ResetTalents);
+            sendNotification(SysMessage.ResetTalents);
         }
 
         if (pCurrChar.hasAtLoginFlag(AtLoginFlags.firstLogin)) {
@@ -5002,7 +5002,7 @@ public class WorldSession implements Closeable {
         }
 
         if (pCurrChar.isGameMaster()) {
-            sendNotification(CypherStrings.GmOn);
+            sendNotification(SysMessage.GmOn);
         }
 
         var IP_str = getRemoteAddress();
@@ -5074,7 +5074,7 @@ public class WorldSession implements Closeable {
         sendPacket(features);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharEnum(EnumCharacters charEnum) {
         // remove expired bans
         var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_EXPIRED_BANS);
@@ -5174,7 +5174,7 @@ public class WorldSession implements Closeable {
         sendPacket(charResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharUndeleteEnum(EnumCharacters enumCharacters) {
         // get all the data necessary for loading all undeleted character (along with their pets) on the account
         EnumCharactersQueryHolder holder = new EnumCharactersQueryHolder();
@@ -5212,7 +5212,7 @@ public class WorldSession implements Closeable {
         sendPacket(charEnum);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharCreate(CreateCharacter charCreate) {
         if (!hasPermission(RBACPermissions.SkipCheckCharacterCreationTeammask)) {
             var mask = WorldConfig.getIntValue(WorldCfg.CharacterCreatingDisabled);
@@ -5600,7 +5600,7 @@ public class WorldSession implements Closeable {
         }));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharDelete(CharDelete charDelete) {
         // Initiating
         var initAccountId = getAccountId();
@@ -5661,7 +5661,7 @@ public class WorldSession implements Closeable {
         sendCharDelete(ResponseCodes.CharDeleteSuccess);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRandomizeCharName(GenerateRandomCharacterName packet) {
         if (!player.isValidRace(race.forValue(packet.race))) {
             Log.outError(LogFilter.Network, "Invalid race ({0}) sent by accountId: {1}", packet.race, getAccountId());
@@ -5682,7 +5682,7 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReorderCharacters(ReorderCharacters reorderChars) {
         SQLTransaction trans = new SQLTransaction();
 
@@ -5697,7 +5697,7 @@ public class WorldSession implements Closeable {
         DB.characters.CommitTransaction(trans);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePlayerLogin(PlayerLogin playerLogin) {
         if (getPlayerLoading() || getPlayer() != null) {
             Log.outError(LogFilter.Network, "Player tries to login again, accountId = {0}", getAccountId());
@@ -5719,22 +5719,22 @@ public class WorldSession implements Closeable {
         sendConnectToInstance(ConnectToSerial.WorldAttempt1);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLoadScreen(LoadingScreenNotify loadingScreenNotify) {
         // TODO: Do something with this packet
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetFactionAtWar(SetFactionAtWar packet) {
         getPlayer().getReputationMgr().setAtWar(packet.factionIndex, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetFactionNotAtWar(SetFactionNotAtWar packet) {
         getPlayer().getReputationMgr().setAtWar(packet.factionIndex, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTutorialFlag(TutorialSetFlag packet) {
         switch (packet.action) {
             case Update: {
@@ -5771,17 +5771,17 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetWatchedFaction(SetWatchedFaction packet) {
         getPlayer().setWatchedFactionIndex(packet.factionIndex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetFactionInactive(SetFactionInactive packet) {
         getPlayer().getReputationMgr().setInactive(packet.index, packet.state);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCheckCharacterNameAvailability(CheckCharacterNameAvailability checkCharacterNameAvailability) {
         // prevent character rename to invalid name
         tangible.RefObject<String> tempRef_Name = new tangible.RefObject<String>(checkCharacterNameAvailability.name);
@@ -5820,12 +5820,12 @@ public class WorldSession implements Closeable {
         }));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestForcedReactions(RequestForcedReactions requestForcedReactions) {
         getPlayer().getReputationMgr().sendForceReactions();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharRename(CharacterRenameRequest request) {
         if (!legitCharacters.contains(request.renameInfo.guid)) {
             Log.outError(LogFilter.Network, "Account {0}, IP: {1} tried to rename character {2}, but it does not belong to their account!", getAccountId(), getRemoteAddress(), request.renameInfo.guid.toString());
@@ -5910,7 +5910,7 @@ public class WorldSession implements Closeable {
         global.getCharacterCacheStorage().updateCharacterData(renameInfo.guid, renameInfo.newName);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetPlayerDeclinedNames(SetPlayerDeclinedNames packet) {
         // not accept declined names for unsupported languages
         String name;
@@ -5975,7 +5975,7 @@ public class WorldSession implements Closeable {
         sendSetPlayerDeclinedNamesResult(DeclinedNameResult.success, packet.player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAlterAppearance(AlterApperance packet) {
         if (!validateAppearance(player.getRace(), player.getClass(), gender.forValue((byte) packet.newSex), packet.customizations)) {
             return;
@@ -6023,7 +6023,7 @@ public class WorldSession implements Closeable {
         global.getCharacterCacheStorage().updateCharacterGender(player.getGUID(), packet.newSex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharCustomize(CharCustomize packet) {
         if (!legitCharacters.contains(packet.customizeInfo.charGUID)) {
             Log.outError(LogFilter.Network, "Account {0}, IP: {1} tried to customise {2}, but it does not belong to their account!", getAccountId(), getRemoteAddress(), packet.customizeInfo.charGUID.toString());
@@ -6141,7 +6141,7 @@ public class WorldSession implements Closeable {
         Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}), Character[{2}] ({3}) Customized to: {4}", getAccountId(), getRemoteAddress(), oldName, customizeInfo.charGUID.toString(), customizeInfo.charName);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleEquipmentSetSave(SaveEquipmentSet saveEquipmentSet) {
         if (saveEquipmentSet.set.getSetId() >= ItemConst.MaxEquipmentSetIndex) // client set slots amount
         {
@@ -6182,7 +6182,7 @@ public class WorldSession implements Closeable {
                             return;
                         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                         (var hasAppearance, _) =
                         CollectionMgr.hasItemAppearance((int) saveEquipmentSet.set.Appearances[i]);
 
@@ -6244,12 +6244,12 @@ public class WorldSession implements Closeable {
         getPlayer().setEquipmentSet(saveEquipmentSet.set);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDeleteEquipmentSet(DeleteEquipmentSet packet) {
         getPlayer().deleteEquipmentSet(packet.ID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUseEquipmentSet(UseEquipmentSet useEquipmentSet) {
         ObjectGuid ignoredItemGuid = new ObjectGuid(0x0C00040000000000L, (long) 0xFFFFFFFFFFFFFFFF);
 
@@ -6315,7 +6315,7 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharRaceOrFactionChange(CharRaceOrFactionChange packet) {
         if (!legitCharacters.contains(packet.raceOrFactionChangeInfo.guid)) {
             Log.outError(LogFilter.Network, "Account {0}, IP: {1} tried to factionchange character {2}, but it does not belong to their account!", getAccountId(), getRemoteAddress(), packet.raceOrFactionChangeInfo.guid.toString());
@@ -6862,7 +6862,7 @@ public class WorldSession implements Closeable {
         sendCharFactionChange(ResponseCodes.success, factionChangeInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleOpeningCinematic(OpeningCinematic packet) {
         // Only players that has not yet gained any experience can use this
         if (getPlayer().getActivePlayerData().XP != 0) {
@@ -6882,7 +6882,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGetUndeleteCooldownStatus(GetUndeleteCharacterCooldownStatus getCooldown) {
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.SEL_LAST_CHAR_UNDELETE);
         stmt.AddValue(0, getBattlenetAccountId());
@@ -6906,7 +6906,7 @@ public class WorldSession implements Closeable {
         sendUndeleteCooldownStatusResponse(cooldown, maxCooldown);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCharUndelete(UndeleteCharacter undeleteCharacter) {
         if (!WorldConfig.getBoolValue(WorldCfg.FeatureSystemCharacterUndeleteEnabled)) {
             sendUndeleteCharacterResponse(CharacterUndeleteResult.disabled, undeleteCharacter.undeleteInfo);
@@ -6999,7 +6999,7 @@ public class WorldSession implements Closeable {
         }));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRepopRequest(RepopRequest packet) {
         if (getPlayer().isAlive() || getPlayer().hasPlayerFlag(playerFlags.Ghost)) {
             return;
@@ -7026,7 +7026,7 @@ public class WorldSession implements Closeable {
         getPlayer().repopAtGraveyard();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePortGraveyard(PortGraveyard packet) {
         if (getPlayer().isAlive() || !getPlayer().hasPlayerFlag(playerFlags.Ghost)) {
             return;
@@ -7035,7 +7035,7 @@ public class WorldSession implements Closeable {
         getPlayer().repopAtGraveyard();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestCemeteryList(RequestCemeteryList requestCemeteryList) {
         var zoneId = getPlayer().getZone();
         var team = (int) getPlayer().getTeam().getValue();
@@ -7068,7 +7068,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReclaimCorpse(ReclaimCorpse packet) {
         if (getPlayer().isAlive()) {
             return;
@@ -7106,7 +7106,7 @@ public class WorldSession implements Closeable {
         getPlayer().spawnCorpseBones();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleResurrectResponse(ResurrectResponse packet) {
         if (getPlayer().isAlive()) {
             return;
@@ -7142,7 +7142,7 @@ public class WorldSession implements Closeable {
         getPlayer().resurrectUsingRequestData();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleStandStateChange(StandStateChange packet) {
         switch (packet.standState) {
             case Stand:
@@ -7157,12 +7157,12 @@ public class WorldSession implements Closeable {
         getPlayer().setStandState(packet.standState);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuickJoinAutoAcceptRequests(QuickJoinAutoAcceptRequest packet) {
         getPlayer().setAutoAcceptQuickJoin(packet.autoAccept);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleOverrideScreenFlash(OverrideScreenFlash packet) {
         getPlayer().setOverrideScreenFlash(packet.screenFlashEnabled);
     }
@@ -7251,7 +7251,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessage(ChatMessage packet) {
         ChatMsg type;
 
@@ -7297,17 +7297,17 @@ public class WorldSession implements Closeable {
         handleChat(type, packet.language, packet.text);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessageWhisper(ChatMessageWhisper packet) {
         handleChat(ChatMsg.Whisper, packet.language, packet.text, packet.target);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessageChannel(ChatMessageChannel packet) {
         handleChat(ChatMsg.channel, packet.language, packet.text, packet.target, packet.channelGUID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessageEmote(ChatMessageEmote packet) {
         handleChat(ChatMsg.emote, language.Universal, packet.text);
     }
@@ -7325,7 +7325,7 @@ public class WorldSession implements Closeable {
 
         if (lang == language.Universal && type != ChatMsg.emote) {
             Log.outError(LogFilter.Network, "CMSG_MESSAGECHAT: Possible hacking-attempt: {0} tried to send a message in universal language", getPlayerInfo());
-            sendNotification(CypherStrings.UnknownLanguage);
+            sendNotification(SysMessage.UnknownLanguage);
 
             return;
         }
@@ -7334,7 +7334,7 @@ public class WorldSession implements Closeable {
         var languageData = global.getLanguageMgr().getLanguageDescById(lang);
 
         if (languageData.isEmpty()) {
-            sendNotification(CypherStrings.UnknownLanguage);
+            sendNotification(SysMessage.UnknownLanguage);
 
             return;
         }
@@ -7342,7 +7342,7 @@ public class WorldSession implements Closeable {
         if (!languageData.Any(langDesc -> langDesc.skillId == 0 || sender.hasSkill(SkillType.forValue(langDesc.skillId)))) {
             // also check SPELL_AURA_COMPREHEND_LANGUAGE (client offers option to speak in that language)
             if (!sender.hasAuraTypeWithMiscvalue(AuraType.ComprehendLanguage, lang.getValue())) {
-                sendNotification(CypherStrings.NotLearnedLanguage);
+                sendNotification(SysMessage.NotLearnedLanguage);
 
                 return;
             }
@@ -7387,13 +7387,13 @@ public class WorldSession implements Closeable {
 
         if (!getCanSpeak()) {
             var timeStr = time.secsToTimeString((long) (MuteTime - gameTime.GetGameTime()), 0, false);
-            sendNotification(CypherStrings.WaitBeforeSpeaking, timeStr);
+            sendNotification(SysMessage.WaitBeforeSpeaking, timeStr);
 
             return;
         }
 
         if (sender.hasAura(1852) && type != ChatMsg.Whisper) {
-            sendNotification(global.getObjectMgr().getCypherString(CypherStrings.GmSilence), sender.getName());
+            sendNotification(global.getObjectMgr().getSysMessage(SysMessage.GmSilence), sender.getName());
 
             return;
         }
@@ -7414,7 +7414,7 @@ public class WorldSession implements Closeable {
                 }
 
                 if (sender.getLevel() < WorldConfig.getIntValue(WorldCfg.ChatSayLevelReq)) {
-                    sendNotification(global.getObjectMgr().getCypherString(CypherStrings.SayReq), WorldConfig.getIntValue(WorldCfg.ChatSayLevelReq));
+                    sendNotification(global.getObjectMgr().getSysMessage(SysMessage.SayReq), WorldConfig.getIntValue(WorldCfg.ChatSayLevelReq));
 
                     return;
                 }
@@ -7429,7 +7429,7 @@ public class WorldSession implements Closeable {
                 }
 
                 if (sender.getLevel() < WorldConfig.getIntValue(WorldCfg.ChatEmoteLevelReq)) {
-                    sendNotification(global.getObjectMgr().getCypherString(CypherStrings.SayReq), WorldConfig.getIntValue(WorldCfg.ChatEmoteLevelReq));
+                    sendNotification(global.getObjectMgr().getSysMessage(SysMessage.SayReq), WorldConfig.getIntValue(WorldCfg.ChatEmoteLevelReq));
 
                     return;
                 }
@@ -7444,7 +7444,7 @@ public class WorldSession implements Closeable {
                 }
 
                 if (sender.getLevel() < WorldConfig.getIntValue(WorldCfg.ChatYellLevelReq)) {
-                    sendNotification(global.getObjectMgr().getCypherString(CypherStrings.SayReq), WorldConfig.getIntValue(WorldCfg.ChatYellLevelReq));
+                    sendNotification(global.getObjectMgr().getSysMessage(SysMessage.SayReq), WorldConfig.getIntValue(WorldCfg.ChatYellLevelReq));
 
                     return;
                 }
@@ -7477,7 +7477,7 @@ public class WorldSession implements Closeable {
                 // Apply checks only if receiver is not already in whitelist and if receiver is not a GM with ".whisper on"
                 if (!receiver.isInWhisperWhiteList(sender.getGUID()) && !receiver.isGameMasterAcceptingWhispers()) {
                     if (!sender.isGameMaster() && sender.getLevel() < WorldConfig.getIntValue(WorldCfg.ChatWhisperLevelReq)) {
-                        sendNotification(global.getObjectMgr().getCypherString(CypherStrings.WhisperReq), WorldConfig.getIntValue(WorldCfg.ChatWhisperLevelReq));
+                        sendNotification(global.getObjectMgr().getSysMessage(SysMessage.WhisperReq), WorldConfig.getIntValue(WorldCfg.ChatWhisperLevelReq));
 
                         return;
                     }
@@ -7490,7 +7490,7 @@ public class WorldSession implements Closeable {
                 }
 
                 if (player.hasAura(1852) && !receiver.isGameMaster()) {
-                    sendNotification(global.getObjectMgr().getCypherString(CypherStrings.GmSilence), player.getName());
+                    sendNotification(global.getObjectMgr().getSysMessage(SysMessage.GmSilence), player.getName());
 
                     return;
                 }
@@ -7588,7 +7588,7 @@ public class WorldSession implements Closeable {
             case Channel:
                 if (!hasPermission(RBACPermissions.SkipCheckChatChannelReq)) {
                     if (player.getLevel() < WorldConfig.getIntValue(WorldCfg.ChatChannelLevelReq)) {
-                        sendNotification(global.getObjectMgr().getCypherString(CypherStrings.ChannelReq), WorldConfig.getIntValue(WorldCfg.ChatChannelLevelReq));
+                        sendNotification(global.getObjectMgr().getSysMessage(SysMessage.ChannelReq), WorldConfig.getIntValue(WorldCfg.ChatChannelLevelReq));
 
                         return;
                     }
@@ -7628,12 +7628,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatAddonMessage(ChatAddonMessage chatAddonMessage) {
         handleChatAddon(chatAddonMessage.params.type, chatAddonMessage.params.prefix, chatAddonMessage.params.text, chatAddonMessage.params.isLogged);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatAddonMessageTargeted(ChatAddonMessageTargeted chatAddonMessageTargeted) {
         handleChatAddon(chatAddonMessageTargeted.params.type, chatAddonMessageTargeted.params.prefix, chatAddonMessageTargeted.params.text, chatAddonMessageTargeted.params.isLogged, chatAddonMessageTargeted.target, chatAddonMessageTargeted.channelGUID);
     }
@@ -7740,7 +7740,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessageAFK(ChatMessageAFK packet) {
         var sender = getPlayer();
 
@@ -7749,7 +7749,7 @@ public class WorldSession implements Closeable {
         }
 
         if (sender.hasAura(1852)) {
-            sendNotification(CypherStrings.GmSilence, sender.getName());
+            sendNotification(SysMessage.GmSilence, sender.getName());
 
             return;
         }
@@ -7763,7 +7763,7 @@ public class WorldSession implements Closeable {
             }
         } else // New AFK mode
         {
-            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerAfkDefault) : packet.text);
+            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getSysMessage(SysMessage.PlayerAfkDefault) : packet.text);
 
             if (sender.isDND()) {
                 sender.toggleDND();
@@ -7781,7 +7781,7 @@ public class WorldSession implements Closeable {
         global.getScriptMgr().onPlayerChat(sender, ChatMsg.Afk, language.Universal, packet.text);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatMessageDND(ChatMessageDND packet) {
         var sender = getPlayer();
 
@@ -7790,7 +7790,7 @@ public class WorldSession implements Closeable {
         }
 
         if (sender.hasAura(1852)) {
-            sendNotification(CypherStrings.GmSilence, sender.getName());
+            sendNotification(SysMessage.GmSilence, sender.getName());
 
             return;
         }
@@ -7804,7 +7804,7 @@ public class WorldSession implements Closeable {
             }
         } else // New DND mode
         {
-            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getCypherString(CypherStrings.PlayerDndDefault) : packet.text);
+            sender.setAutoReplyMsg(StringUtil.isEmpty(packet.text) ? global.getObjectMgr().getSysMessage(SysMessage.PlayerDndDefault) : packet.text);
 
             if (sender.isAFK()) {
                 sender.toggleAFK();
@@ -7822,7 +7822,7 @@ public class WorldSession implements Closeable {
         global.getScriptMgr().onPlayerChat(sender, ChatMsg.Dnd, language.Universal, packet.text);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleEmote(EmoteClient packet) {
         if (!player.isAlive() || player.hasUnitState(UnitState.Died)) {
             return;
@@ -7832,7 +7832,7 @@ public class WorldSession implements Closeable {
         player.setEmoteState(emote.OneshotNone);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTextEmote(CTextEmote packet) {
         if (!player.isAlive()) {
             return;
@@ -7840,7 +7840,7 @@ public class WorldSession implements Closeable {
 
         if (!getCanSpeak()) {
             var timeStr = time.secsToTimeString((long) (MuteTime - gameTime.GetGameTime()), 0, false);
-            sendNotification(CypherStrings.WaitBeforeSpeaking, timeStr);
+            sendNotification(SysMessage.WaitBeforeSpeaking, timeStr);
 
             return;
         }
@@ -7902,7 +7902,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChatIgnoredOpcode(ChatReportIgnored packet) {
         var player = global.getObjAccessor().findPlayer(packet.ignoredGUID);
 
@@ -7927,7 +7927,7 @@ public class WorldSession implements Closeable {
         sendPacket(new ChatRestricted(restriction));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCollectionItemSetFavorite(CollectionItemSetFavorite collectionItemSetFavorite) {
         switch (collectionItemSetFavorite.type) {
             case Toybox:
@@ -7952,7 +7952,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAttackSwing(AttackSwing packet) {
         var enemy = global.getObjAccessor().GetUnit(getPlayer(), packet.victim);
 
@@ -7988,12 +7988,12 @@ public class WorldSession implements Closeable {
         getPlayer().attack(enemy, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAttackStop(AttackStop packet) {
         getPlayer().attackStop();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetSheathed(SetSheathed packet) {
         if (packet.currentSheathState >= sheathState.max.getValue()) {
             Log.outError(LogFilter.Network, "Unknown sheath state {0} ??", packet.currentSheathState);
@@ -8008,7 +8008,7 @@ public class WorldSession implements Closeable {
         sendPacket(new SAttackStop(getPlayer(), enemy));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCanDuel(CanDuel packet) {
         var player = global.getObjAccessor().findPlayer(packet.targetGUID);
 
@@ -8030,7 +8030,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDuelResponse(DuelResponse duelResponse) {
         if (duelResponse.accepted && !duelResponse.forfeited) {
             handleDuelAccepted(duelResponse.arbiterGUID);
@@ -8093,7 +8093,7 @@ public class WorldSession implements Closeable {
         player.duelComplete(DuelCompleteType.Interrupted);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGetGarrisonInfo(GetGarrisonInfo getGarrisonInfo) {
         var garrison = player.getGarrison();
 
@@ -8102,7 +8102,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGarrisonPurchaseBuilding(GarrisonPurchaseBuilding garrisonPurchaseBuilding) {
         if (!player.getNPCIfCanInteractWith(garrisonPurchaseBuilding.npcGUID, NPCFlags.NONE, NPCFlags2.GarrisonArchitect)) {
             return;
@@ -8115,7 +8115,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGarrisonCancelConstruction(GarrisonCancelConstruction garrisonCancelConstruction) {
         if (!player.getNPCIfCanInteractWith(garrisonCancelConstruction.npcGUID, NPCFlags.NONE, NPCFlags2.GarrisonArchitect)) {
             return;
@@ -8128,7 +8128,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGarrisonRequestBlueprintAndSpecializationData(GarrisonRequestBlueprintAndSpecializationData garrisonRequestBlueprintAndSpecializationData) {
         var garrison = player.getGarrison();
 
@@ -8137,7 +8137,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGarrisonGetMapData(GarrisonGetMapData garrisonGetMapData) {
         var garrison = player.getGarrison();
 
@@ -8162,7 +8162,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePartyInvite(PartyInviteClient packet) {
         var invitingPlayer = getPlayer();
         var invitedPlayer = global.getObjAccessor().FindPlayerByName(packet.targetName);
@@ -8300,7 +8300,7 @@ public class WorldSession implements Closeable {
         sendPartyResult(PartyOperation.Invite, invitedPlayer.getName(), PartyResult.Ok);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePartyInviteResponse(PartyInviteResponse packet) {
         var group = getPlayer().getGroupInvite();
 
@@ -8365,7 +8365,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePartyUninvite(PartyUninvite packet) {
         //can't uninvite yourself
         if (Objects.equals(packet.targetGUID, getPlayer().getGUID())) {
@@ -8402,7 +8402,7 @@ public class WorldSession implements Closeable {
         sendPartyResult(PartyOperation.UnInvite, "", PartyResult.TargetNotInGroupS);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetPartyLeader(SetPartyLeader packet) {
         var player = global.getObjAccessor().findConnectedPlayer(packet.targetGUID);
         var group = getPlayer().getGroup();
@@ -8420,7 +8420,7 @@ public class WorldSession implements Closeable {
         group.sendUpdate();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetRole(SetRole packet) {
         RoleChangedInform roleChangedInform = new RoleChangedInform();
 
@@ -8445,7 +8445,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLeaveGroup(LeaveGroup packet) {
         var grp = getPlayer().getGroup();
         var grpInvite = getPlayer().getGroupInvite();
@@ -8474,7 +8474,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetLootMethod(SetLootMethod packet) {
         // not allowed to change
         var group = getPlayer().getGroup();
@@ -8516,7 +8516,7 @@ public class WorldSession implements Closeable {
         group.sendUpdate();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMinimapPing(MinimapPingClient packet) {
         if (!getPlayer().getGroup()) {
             return;
@@ -8529,7 +8529,7 @@ public class WorldSession implements Closeable {
         getPlayer().getGroup().broadcastPacket(minimapPing, true, -1, getPlayer().getGUID());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRandomRoll(RandomRollClient packet) {
         if (packet.min > packet.max || packet.max > 1000000) // < 32768 for urand call
         {
@@ -8539,7 +8539,7 @@ public class WorldSession implements Closeable {
         getPlayer().doRandomRoll(packet.min, packet.max);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUpdateRaidTarget(UpdateRaidTarget packet) {
         var group = getPlayer().getGroup();
 
@@ -8568,7 +8568,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleConvertRaid(ConvertRaid packet) {
         var group = getPlayer().getGroup();
 
@@ -8596,7 +8596,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestPartyJoinUpdates(RequestPartyJoinUpdates packet) {
         var group = getPlayer().getGroup();
 
@@ -8608,7 +8608,7 @@ public class WorldSession implements Closeable {
         group.sendRaidMarkersChanged(this, packet.partyIndex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleChangeSubGroup(ChangeSubGroup packet) {
         // we will get correct for group here, so we don't have to check if group is BG raid
         var group = getPlayer().getGroup();
@@ -8634,7 +8634,7 @@ public class WorldSession implements Closeable {
         group.changeMembersGroup(packet.targetGUID, packet.newSubGroup);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSwapSubGroups(SwapSubGroups packet) {
         var group = getPlayer().getGroup();
 
@@ -8651,7 +8651,7 @@ public class WorldSession implements Closeable {
         group.swapMembersGroups(packet.firstTarget, packet.secondTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetAssistantLeader(SetAssistantLeader packet) {
         var group = getPlayer().getGroup();
 
@@ -8666,7 +8666,7 @@ public class WorldSession implements Closeable {
         group.setGroupMemberFlag(packet.target, packet.apply, GroupMemberFlags.Assistant);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetPartyAssignment(SetPartyAssignment packet) {
         var group = getPlayer().getGroup();
 
@@ -8696,7 +8696,7 @@ public class WorldSession implements Closeable {
         group.sendUpdate();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDoReadyCheckOpcode(DoReadyCheck packet) {
         var group = getPlayer().getGroup();
 
@@ -8713,7 +8713,7 @@ public class WorldSession implements Closeable {
         group.startReadyCheck(getPlayer().getGUID(), packet.partyIndex, duration.ofSeconds(MapDefine.ReadycheckDuration));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReadyCheckResponseOpcode(ReadyCheckResponseClient packet) {
         var group = getPlayer().getGroup();
 
@@ -8725,7 +8725,7 @@ public class WorldSession implements Closeable {
         group.setMemberReadyCheck(getPlayer().getGUID(), packet.isReady);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestPartyMemberStats(RequestPartyMemberStats packet) {
         PartyMemberFullState partyMemberStats = new PartyMemberFullState();
 
@@ -8741,13 +8741,13 @@ public class WorldSession implements Closeable {
         sendPacket(partyMemberStats);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestRaidInfo(RequestRaidInfo packet) {
         // every time the player checks the character screen
         getPlayer().sendRaidInfo();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleOptOutOfLoot(OptOutOfLoot packet) {
         // ignore if player not loaded
         if (!getPlayer()) // needed because STATUS_AUTHED
@@ -8762,7 +8762,7 @@ public class WorldSession implements Closeable {
         getPlayer().setPassOnGroupLoot(packet.passOnLoot);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleInitiateRolePoll(InitiateRolePoll packet) {
         var group = getPlayer().getGroup();
 
@@ -8782,7 +8782,7 @@ public class WorldSession implements Closeable {
         group.broadcastPacket(rolePollInform, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetEveryoneIsAssistant(SetEveryoneIsAssistant packet) {
         var group = getPlayer().getGroup();
 
@@ -8797,7 +8797,7 @@ public class WorldSession implements Closeable {
         group.setEveryoneIsAssistant(packet.everyoneIsAssistant);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClearRaidMarker(ClearRaidMarker packet) {
         var group = getPlayer().getGroup();
 
@@ -8812,7 +8812,7 @@ public class WorldSession implements Closeable {
         group.deleteRaidMarker(packet.markerId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildQuery(QueryGuildInfo query) {
         var guild = global.getGuildMgr().getGuildByGuid(query.guildGuid);
 
@@ -8827,7 +8827,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildInviteByName(GuildInviteByName packet) {
         tangible.RefObject<String> tempRef_Name = new tangible.RefObject<String>(packet.name);
         if (!ObjectManager.normalizePlayerName(tempRef_Name)) {
@@ -8844,7 +8844,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildOfficerRemoveMember(GuildOfficerRemoveMember packet) {
         var guild = getPlayer().getGuild();
 
@@ -8853,7 +8853,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildAcceptInvite(AcceptGuildInvite packet) {
         if (getPlayer().getGuildId() == 0) {
             var guild = global.getGuildMgr().getGuildById(getPlayer().getGuildIdInvited());
@@ -8864,7 +8864,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildDeclineInvitation(GuildDeclineInvitation packet) {
         if (getPlayer().getGuildId() != 0) {
             return;
@@ -8874,7 +8874,7 @@ public class WorldSession implements Closeable {
         getPlayer().setInGuild(0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildGetRoster(GuildGetRoster packet) {
         var guild = getPlayer().getGuild();
 
@@ -8885,7 +8885,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildPromoteMember(GuildPromoteMember packet) {
         var guild = getPlayer().getGuild();
 
@@ -8894,7 +8894,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildDemoteMember(GuildDemoteMember packet) {
         var guild = getPlayer().getGuild();
 
@@ -8903,7 +8903,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildAssignRank(GuildAssignMemberRank packet) {
         var setterGuid = getPlayer().getGUID();
 
@@ -8914,7 +8914,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildLeave(GuildLeave packet) {
         var guild = getPlayer().getGuild();
 
@@ -8923,7 +8923,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildDisband(GuildDelete packet) {
         var guild = getPlayer().getGuild();
 
@@ -8932,7 +8932,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildUpdateMotdText(GuildUpdateMotdText packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.motdText)) {
             return;
@@ -8949,7 +8949,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildSetMemberNote(GuildSetMemberNote packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.note)) {
             return;
@@ -8966,7 +8966,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildGetRanks(GuildGetRanks packet) {
         var guild = global.getGuildMgr().getGuildByGuid(packet.guildGUID);
 
@@ -8977,7 +8977,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildAddRank(GuildAddRank packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.name)) {
             return;
@@ -8994,7 +8994,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildDeleteRank(GuildDeleteRank packet) {
         var guild = getPlayer().getGuild();
 
@@ -9003,7 +9003,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildShiftRank(GuildShiftRank shiftRank) {
         var guild = getPlayer().getGuild();
 
@@ -9012,7 +9012,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildUpdateInfoText(GuildUpdateInfoText packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.infoText)) {
             return;
@@ -9029,7 +9029,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSaveGuildEmblem(SaveGuildEmblem packet) {
         guild.EmblemInfo emblemInfo = new guild.emblemInfo();
         emblemInfo.readPacket(packet);
@@ -9058,7 +9058,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildEventLogQuery(GuildEventLogQuery packet) {
         var guild = getPlayer().getGuild();
 
@@ -9067,7 +9067,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankMoneyWithdrawn(GuildBankRemainingWithdrawMoneyQuery packet) {
         var guild = getPlayer().getGuild();
 
@@ -9076,7 +9076,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildPermissionsQuery(GuildPermissionsQuery packet) {
         var guild = getPlayer().getGuild();
 
@@ -9085,7 +9085,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankActivate(GuildBankActivate packet) {
         var go = getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank);
 
@@ -9104,7 +9104,7 @@ public class WorldSession implements Closeable {
         guild.sendBankList(this, (byte) 0, packet.fullUpdate);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankQueryTab(GuildBankQueryTab packet) {
         if (getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank)) {
             var guild = getPlayer().getGuild();
@@ -9118,7 +9118,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankDepositMoney(GuildBankDepositMoney packet) {
         if (getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank)) {
             if (packet.money != 0 && getPlayer().hasEnoughMoney(packet.money)) {
@@ -9131,7 +9131,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankWithdrawMoney(GuildBankWithdrawMoney packet) {
         if (packet.money != 0 && getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank)) {
             var guild = getPlayer().getGuild();
@@ -9142,7 +9142,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoGuildBankItem(AutoGuildBankItem depositGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(depositGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9161,7 +9161,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleStoreGuildBankItem(StoreGuildBankItem storeGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(storeGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9180,7 +9180,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSwapItemWithGuildBankItem(SwapItemWithGuildBankItem swapItemWithGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(swapItemWithGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9199,7 +9199,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSwapGuildBankItemWithGuildBankItem(SwapGuildBankItemWithGuildBankItem swapGuildBankItemWithGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(swapGuildBankItemWithGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9214,7 +9214,7 @@ public class WorldSession implements Closeable {
         guild.swapItems(getPlayer(), swapGuildBankItemWithGuildBankItem.BankTab[0], swapGuildBankItemWithGuildBankItem.BankSlot[0], swapGuildBankItemWithGuildBankItem.BankTab[1], swapGuildBankItemWithGuildBankItem.BankSlot[1], 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveGuildBankItem(MoveGuildBankItem moveGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(moveGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9229,7 +9229,7 @@ public class WorldSession implements Closeable {
         guild.swapItems(getPlayer(), moveGuildBankItem.bankTab, moveGuildBankItem.bankSlot, moveGuildBankItem.bankTab1, moveGuildBankItem.bankSlot1, 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMergeItemWithGuildBankItem(MergeItemWithGuildBankItem mergeItemWithGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(mergeItemWithGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9248,7 +9248,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSplitItemToGuildBank(SplitItemToGuildBank splitItemToGuildBank) {
         if (!getPlayer().getGameObjectIfCanInteractWith(splitItemToGuildBank.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9267,7 +9267,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMergeGuildBankItemWithItem(MergeGuildBankItemWithItem mergeGuildBankItemWithItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(mergeGuildBankItemWithItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9286,7 +9286,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSplitGuildBankItemToInventory(SplitGuildBankItemToInventory splitGuildBankItemToInventory) {
         if (!getPlayer().getGameObjectIfCanInteractWith(splitGuildBankItemToInventory.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9305,7 +9305,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoStoreGuildBankItem(AutoStoreGuildBankItem autoStoreGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(autoStoreGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9320,7 +9320,7 @@ public class WorldSession implements Closeable {
         guild.swapItemsWithInventory(getPlayer(), true, autoStoreGuildBankItem.bankTab, autoStoreGuildBankItem.bankSlot, InventorySlots.Bag0, ItemConst.NullSlot, 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMergeGuildBankItemWithGuildBankItem(MergeGuildBankItemWithGuildBankItem mergeGuildBankItemWithGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(mergeGuildBankItemWithGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9335,7 +9335,7 @@ public class WorldSession implements Closeable {
         guild.swapItems(getPlayer(), mergeGuildBankItemWithGuildBankItem.bankTab, mergeGuildBankItemWithGuildBankItem.bankSlot, mergeGuildBankItemWithGuildBankItem.bankTab1, mergeGuildBankItemWithGuildBankItem.bankSlot1, mergeGuildBankItemWithGuildBankItem.stackCount);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSplitGuildBankItem(SplitGuildBankItem splitGuildBankItem) {
         if (!getPlayer().getGameObjectIfCanInteractWith(splitGuildBankItem.banker, GameObjectTypes.guildBank)) {
             return;
@@ -9350,7 +9350,7 @@ public class WorldSession implements Closeable {
         guild.swapItems(getPlayer(), splitGuildBankItem.bankTab, splitGuildBankItem.bankSlot, splitGuildBankItem.bankTab1, splitGuildBankItem.bankSlot1, splitGuildBankItem.stackCount);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankBuyTab(GuildBankBuyTab packet) {
         if (packet.banker.isEmpty() || getPlayer().getGameObjectIfCanInteractWith(packet.banker, GameObjectTypes.guildBank)) {
             var guild = getPlayer().getGuild();
@@ -9361,7 +9361,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankUpdateTab(GuildBankUpdateTab packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.name)) {
             return;
@@ -9382,7 +9382,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankLogQuery(GuildBankLogQuery packet) {
         var guild = getPlayer().getGuild();
 
@@ -9391,7 +9391,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankTextQuery(GuildBankTextQuery packet) {
         var guild = getPlayer().getGuild();
 
@@ -9400,7 +9400,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildBankSetTabText(GuildBankSetTabText packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.tabText)) {
             return;
@@ -9417,7 +9417,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildSetRankPermissions(GuildSetRankPermissions packet) {
         if (!disallowHyperlinksAndMaybeKick(packet.rankName)) {
             return;
@@ -9442,7 +9442,7 @@ public class WorldSession implements Closeable {
         guild.handleSetRankInfo(this, GuildRankId.forValue(packet.rankID), packet.rankName, GuildRankRights.forValue(packet.flags), packet.withdrawGoldLimit, rightsAndSlots);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildRequestPartyState(RequestGuildPartyState packet) {
         var guild = global.getGuildMgr().getGuildByGuid(packet.guildGUID);
 
@@ -9451,7 +9451,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildChallengeUpdateRequest(GuildChallengeUpdateRequest packet) {
         var guild = getPlayer().getGuild();
 
@@ -9460,7 +9460,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDeclineGuildInvites(DeclineGuildInvites packet) {
         if (packet.allow) {
             getPlayer().setPlayerFlag(playerFlags.AutoDeclineGuild);
@@ -9469,7 +9469,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestGuildRewardsList(RequestGuildRewardsList packet) {
         if (global.getGuildMgr().getGuildById(getPlayer().getGuildId())) {
             var rewards = global.getGuildMgr().getGuildRewards();
@@ -9492,7 +9492,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildQueryNews(GuildQueryNews packet) {
         var guild = getPlayer().getGuild();
 
@@ -9503,7 +9503,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildNewsUpdateSticky(GuildNewsUpdateSticky packet) {
         var guild = getPlayer().getGuild();
 
@@ -9512,7 +9512,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildReplaceGuildMaster(GuildReplaceGuildMaster replaceGuildMaster) {
         var guild = getPlayer().getGuild();
 
@@ -9521,7 +9521,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildSetGuildMaster(GuildSetGuildMaster packet) {
         var guild = getPlayer().getGuild();
 
@@ -9530,7 +9530,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildSetAchievementTracking(GuildSetAchievementTracking packet) {
         var guild = getPlayer().getGuild();
 
@@ -9539,7 +9539,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildGetAchievementMembers(GuildGetAchievementMembers getAchievementMembers) {
         var guild = getPlayer().getGuild();
 
@@ -9548,7 +9548,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDBQueryBulk(DBQueryBulk dbQuery) {
         var store = global.getDB2Mgr().GetStorage(dbQuery.tableHash);
 
@@ -9581,7 +9581,7 @@ public class WorldSession implements Closeable {
         sendPacket(new AvailableHotfixes(global.getWorldMgr().getRealmId().GetAddress(), global.getDB2Mgr().GetHotfixData()));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleHotfixRequest(HotfixRequest hotfixQuery) {
         var hotfixes = global.getDB2Mgr().GetHotfixData();
 
@@ -9633,7 +9633,7 @@ public class WorldSession implements Closeable {
         sendPacket(hotfixQueryResponse);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleInspect(Inspect inspect) {
         var player = global.getObjAccessor().getPlayer(player, inspect.target);
 
@@ -9705,7 +9705,7 @@ public class WorldSession implements Closeable {
         sendPacket(inspectResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryInspectAchievements(QueryInspectAchievements inspect) {
         var player = global.getObjAccessor().getPlayer(player, inspect.guid);
 
@@ -9747,7 +9747,7 @@ public class WorldSession implements Closeable {
         sendPacket(data);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSplitItem(SplitItem splitItem) {
         if (!splitItem.inv.items.isEmpty()) {
             Log.outError(LogFilter.Network, "WORLD: HandleSplitItemOpcode - Invalid itemCount ({0})", splitItem.inv.items.size());
@@ -9782,7 +9782,7 @@ public class WorldSession implements Closeable {
         player.splitItem(src, dst, (int) splitItem.quantity);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSwapInvenotryItem(SwapInvItem swapInvItem) {
         if (swapInvItem.inv.items.size() != 2) {
             Log.outError(LogFilter.Network, "WORLD: HandleSwapInvItemOpcode - Invalid itemCount ({0})", swapInvItem.inv.items.size());
@@ -9825,7 +9825,7 @@ public class WorldSession implements Closeable {
         getPlayer().swapItem(src, dst);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoEquipItemSlot(AutoEquipItemSlot packet) {
         // cheating attempt, client should never send opcode in that case
         if (packet.inv.items.size() != 1 || !player.isEquipmentPos(InventorySlots.Bag0, packet.itemDstSlot)) {
@@ -9843,7 +9843,7 @@ public class WorldSession implements Closeable {
         getPlayer().swapItem(srcPos, dstPos);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSwapItem(SwapItem swapItem) {
         if (swapItem.inv.items.size() != 2) {
             Log.outError(LogFilter.Network, "WORLD: HandleSwapItem - Invalid itemCount ({0})", swapItem.inv.items.size());
@@ -9889,7 +9889,7 @@ public class WorldSession implements Closeable {
         pl.swapItem(src, dst);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoEquipItem(AutoEquipItem autoEquipItem) {
         if (autoEquipItem.inv.items.size() != 1) {
             Log.outError(LogFilter.Network, "WORLD: HandleAutoEquipItem - Invalid itemCount ({0})", autoEquipItem.inv.items.size());
@@ -10045,7 +10045,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDestroyItem(DestroyItem destroyItem) {
         var pos = (short) ((destroyItem.containerId << 8) | destroyItem.slotNum);
 
@@ -10084,7 +10084,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleReadItem(ReadItem readItem) {
         var item = player.getItemByPos(readItem.packSlot, readItem.slot);
 
@@ -10111,7 +10111,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSellItem(SellItem packet) {
         if (packet.itemGUID.isEmpty()) {
             return;
@@ -10242,7 +10242,7 @@ public class WorldSession implements Closeable {
         return;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBuybackItem(BuyBackItem packet) {
         var creature = player.getNPCIfCanInteractWith(packet.vendorGUID, NPCFlags.vendor, NPCFlags2.NONE);
 
@@ -10287,7 +10287,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBuyItem(BuyItem packet) {
         // client expects count starting at 1, and we send vendorslot+1 to client already
         if (packet.muid > 0) {
@@ -10323,7 +10323,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutoStoreBagItem(AutoStoreBagItem packet) {
         if (!packet.inv.items.isEmpty()) {
             Log.outError(LogFilter.Network, "HandleAutoStoreBagItemOpcode - Invalid itemCount ({0})", packet.inv.items.size());
@@ -10379,7 +10379,7 @@ public class WorldSession implements Closeable {
         getPlayer().storeItem(dest, item, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleWrapItem(WrapItem packet) {
         if (packet.inv.items.size() != 2) {
             Log.outError(LogFilter.Network, "HandleWrapItem - Invalid itemCount ({0})", packet.inv.items.size());
@@ -10519,7 +10519,7 @@ public class WorldSession implements Closeable {
         count = tempRef_count.refArgValue;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSocketGems(SocketGems socketGems) {
         if (socketGems.itemGuid.isEmpty()) {
             return;
@@ -10751,7 +10751,7 @@ public class WorldSession implements Closeable {
         itemTarget.sendUpdateSockets();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelTempEnchantment(CancelTempEnchantment packet) {
         // apply only to equipped item
         if (!player.isEquipmentPos(InventorySlots.Bag0, (byte) packet.slot)) {
@@ -10772,7 +10772,7 @@ public class WorldSession implements Closeable {
         item.clearEnchantment(EnchantmentSlot.Temp);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGetItemPurchaseData(GetItemPurchaseData packet) {
         var item = getPlayer().getItemByGuid(packet.itemGUID);
 
@@ -10785,7 +10785,7 @@ public class WorldSession implements Closeable {
         getPlayer().sendRefundInfo(item);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleItemRefund(ItemPurchaseRefund packet) {
         var item = getPlayer().getItemByGuid(packet.itemGUID);
 
@@ -10826,7 +10826,7 @@ public class WorldSession implements Closeable {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUseCritterItem(UseCritterItem useCritterItem) {
         var item = getPlayer().getItemByGuid(useCritterItem.itemGuid);
 
@@ -10849,28 +10849,28 @@ public class WorldSession implements Closeable {
         getPlayer().destroyItem(item.getBagSlot(), item.getSlot(), true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSortBags(SortBags sortBags) {
         // TODO: Implement sorting
         // Placeholder to prevent completely locking out bags clientside
         sendPacket(new BagCleanupFinished());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSortBankBags(SortBankBags sortBankBags) {
         // TODO: Implement sorting
         // Placeholder to prevent completely locking out bags clientside
         sendPacket(new BagCleanupFinished());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSortReagentBankBags(SortReagentBankBags sortReagentBankBags) {
         // TODO: Implement sorting
         // Placeholder to prevent completely locking out bags clientside
         sendPacket(new BagCleanupFinished());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRemoveNewItem(RemoveNewItem removeNewItem) {
         var item = player.getItemByGuid(removeNewItem.getItemGuid());
 
@@ -11284,7 +11284,7 @@ public class WorldSession implements Closeable {
         sendPacket(new LfgTeleportDenied(err));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgJoin(DFJoin dfJoin) {
         if (!global.getLFGMgr().isOptionEnabled(LfgOptions.EnableDungeonFinder.getValue() | LfgOptions.EnableRaidBrowser.getValue()) || (getPlayer().getGroup() && ObjectGuid.opNotEquals(getPlayer().getGroup().getLeaderGUID(), getPlayer().getGUID()) && (getPlayer().getGroup().getMembersCount() == MapDefine.MaxGroupSize || !getPlayer().getGroup().isLFGGroup()))) {
             return;
@@ -11311,7 +11311,7 @@ public class WorldSession implements Closeable {
         global.getLFGMgr().joinLfg(getPlayer(), dfJoin.roles, newDungeons);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgLeave(DFLeave dfLeave) {
         var group = getPlayer().getGroup();
 
@@ -11323,13 +11323,13 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgProposalResult(DFProposalResponse dfProposalResponse) {
         Log.outDebug(LogFilter.Lfg, "CMSG_LFG_PROPOSAL_RESULT {0} proposal: {1} accept: {2}", getPlayerInfo(), dfProposalResponse.proposalID, dfProposalResponse.Accepted ? 1 : 0);
         global.getLFGMgr().updateProposal(dfProposalResponse.proposalID, getPlayer().getGUID(), dfProposalResponse.accepted);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgSetRoles(DFSetRoles dfSetRoles) {
         var guid = getPlayer().getGUID();
         var group = getPlayer().getGroup();
@@ -11345,20 +11345,20 @@ public class WorldSession implements Closeable {
         global.getLFGMgr().updateRoleCheck(gguid, guid, dfSetRoles.rolesDesired);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgSetBootVote(DFBootPlayerVote dfBootPlayerVote) {
         var guid = getPlayer().getGUID();
         Log.outDebug(LogFilter.Lfg, "CMSG_LFG_SET_BOOT_VOTE {0} agree: {1}", getPlayerInfo(), dfBootPlayerVote.Vote ? 1 : 0);
         global.getLFGMgr().updateBoot(guid, dfBootPlayerVote.vote);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLfgTeleport(DFTeleport dfTeleport) {
         Log.outDebug(LogFilter.Lfg, "CMSG_DF_TELEPORT {0} out: {1}", getPlayerInfo(), dfTeleport.TeleportOut ? 1 : 0);
         global.getLFGMgr().teleportPlayer(getPlayer(), dfTeleport.teleportOut, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDfGetSystemInfo(DFGetSystemInfo dfGetSystemInfo) {
         Log.outDebug(LogFilter.Lfg, "CMSG_LFG_Lock_INFO_REQUEST {0} for {1}", getPlayerInfo(), (dfGetSystemInfo.Player ? "player" : "party"));
 
@@ -11369,7 +11369,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDfGetJoinStatus(DFGetJoinStatus packet) {
         if (!getPlayer().isUsingLfg()) {
             return;
@@ -11389,7 +11389,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLogoutRequest(LogoutRequest packet) {
         var pl = getPlayer();
 
@@ -11443,7 +11443,7 @@ public class WorldSession implements Closeable {
         setLogoutStartTime(gameTime.GetGameTime());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLogoutCancel(LogoutCancel packet) {
         // Player have already logged out serverside, too late to cancel
         if (!getPlayer()) {
@@ -11594,13 +11594,13 @@ public class WorldSession implements Closeable {
     public final void doLootReleaseAll() {
         var lootView = player.getAELootView();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, loot) : lootView) {
             doLootRelease(loot);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAutostoreLootItem(LootItemPkt packet) {
         var player = getPlayer();
         var aeResult = player.getAELootView().size() > 1 ? new AELootResult() : null;
@@ -11662,7 +11662,7 @@ public class WorldSession implements Closeable {
         unit.procSkillsAndAuras(player, null, new ProcFlagsInit(procFlags.Looted), new ProcFlagsInit(), ProcFlagsSpellType.MaskAll, ProcFlagsSpellPhase.NONE, ProcFlagsHit.NONE, null, null, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLootMoney(LootMoney lootMoney) {
         var player = getPlayer();
 
@@ -11736,7 +11736,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLoot(LootUnit packet) {
         // Check possible cheat
         if (!getPlayer().isAlive() || !packet.unit.isCreatureOrVehicle()) {
@@ -11783,7 +11783,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLootRelease(LootRelease packet) {
         // cheaters can modify lguid to prevent correct apply loot release code and re-loot
         // use internal stored guid
@@ -11794,7 +11794,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLootMasterGive(MasterLootItem masterLootItem) {
         AELootResult aeResult = new AELootResult();
 
@@ -11880,7 +11880,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLootRoll(LootRollPacket packet) {
         var lootRoll = getPlayer().getLootRoll(packet.lootObj, packet.lootListID);
 
@@ -11891,7 +11891,7 @@ public class WorldSession implements Closeable {
         lootRoll.playerVote(getPlayer(), packet.rollType);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetLootSpecialization(SetLootSpecialization packet) {
         if (packet.specID != 0) {
             var chrSpec = CliDB.ChrSpecializationStorage.get(packet.specID);
@@ -11936,7 +11936,7 @@ public class WorldSession implements Closeable {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSendMail(SendMail sendMail) {
         if (sendMail.info.attachments.size() > SharedConst.MaxClientMailItems) // client limit
         {
@@ -11960,7 +11960,7 @@ public class WorldSession implements Closeable {
         var player = getPlayer();
 
         if (player.getLevel() < WorldConfig.getIntValue(WorldCfg.MailLevelReq)) {
-            sendNotification(CypherStrings.MailSenderReq, WorldConfig.getIntValue(WorldCfg.MailLevelReq));
+            sendNotification(SysMessage.MailSenderReq, WorldConfig.getIntValue(WorldCfg.MailLevelReq));
 
             return;
         }
@@ -12024,7 +12024,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void mailCountCheckContinuation(Team receiverTeam, ulong mailsCount, uint receiverLevel, uint receiverAccountId, uint receiverBnetAccountId)
 //			{
 //				if (player != player)
@@ -12067,7 +12067,7 @@ public class WorldSession implements Closeable {
 //
 //				if (receiverLevel < WorldConfig.getIntValue(WorldCfg.MailLevelReq))
 //				{
-//					sendNotification(CypherStrings.MailReceiverReq, WorldConfig.getIntValue(WorldCfg.MailLevelReq));
+//					sendNotification(SysMessage.MailReceiverReq, WorldConfig.getIntValue(WorldCfg.MailLevelReq));
 //
 //					return;
 //				}
@@ -12217,7 +12217,7 @@ public class WorldSession implements Closeable {
     }
 
     //called when mail is read
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailMarkAsRead(MailMarkAsRead markAsRead) {
         if (!canOpenMailBox(markAsRead.mailbox)) {
             return;
@@ -12238,7 +12238,7 @@ public class WorldSession implements Closeable {
     }
 
     //called when client deletes mail
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailDelete(MailDelete mailDelete) {
         var m = getPlayer().getMail(mailDelete.mailID);
         var player = getPlayer();
@@ -12258,7 +12258,7 @@ public class WorldSession implements Closeable {
         player.sendMailResult(mailDelete.mailID, MailResponseType.Deleted, MailResponseResult.Ok);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailReturnToSender(MailReturnToSender returnToSender) {
         if (!canOpenMailBox(player.getPlayerTalkClass().getInteractionData().getSourceGuid())) {
             return;
@@ -12315,7 +12315,7 @@ public class WorldSession implements Closeable {
     }
 
     //called when player takes item attached in mail
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailTakeItem(MailTakeItem takeItem) {
         var attachID = takeItem.attachID;
 
@@ -12377,7 +12377,7 @@ public class WorldSession implements Closeable {
                         tangible.OutObject<String> tempOut_sender_name = new tangible.OutObject<String>();
                         if (!global.getCharacterCacheStorage().getCharacterNameByGuid(sender_guid, tempOut_sender_name)) {
                             sender_name = tempOut_sender_name.outArgValue;
-                            sender_name = global.getObjectMgr().getCypherString(CypherStrings.unknown);
+                            sender_name = global.getObjectMgr().getSysMessage(SysMessage.unknown);
                         } else {
                             sender_name = tempOut_sender_name.outArgValue;
                         }
@@ -12415,7 +12415,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailTakeMoney(MailTakeMoney takeMoney) {
         if (!canOpenMailBox(takeMoney.mailbox)) {
             return;
@@ -12451,7 +12451,7 @@ public class WorldSession implements Closeable {
     }
 
     //called when player lists his received mails
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGetMailList(MailGetList getList) {
         if (!canOpenMailBox(getList.mailbox)) {
             return;
@@ -12485,7 +12485,7 @@ public class WorldSession implements Closeable {
     }
 
     //used when player copies mail body to his inventory
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMailCreateTextItem(MailCreateTextItem createTextItem) {
         if (!canOpenMailBox(createTextItem.mailbox)) {
             return;
@@ -12545,7 +12545,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryNextMailTime(MailQueryNextMailTime queryNextMailTime) {
         MailQueryNextTimeResult result = new MailQueryNextTimeResult();
 
@@ -12602,7 +12602,7 @@ public class WorldSession implements Closeable {
         sendPacket(loadCUFProfiles);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestAccountData(RequestAccountData request) {
         if (request.dataType.getValue() > AccountDataTypes.max.getValue()) {
             return;
@@ -12623,7 +12623,7 @@ public class WorldSession implements Closeable {
         sendPacket(data);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUpdateAccountData(UserClientUpdateAccountData packet) {
         if (packet.dataType.getValue() >= AccountDataTypes.max.getValue()) {
             return;
@@ -12645,12 +12645,12 @@ public class WorldSession implements Closeable {
         setAccountData(packet.dataType, packet.time, Encoding.Default.getString(data));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetSelection(SetSelection packet) {
         getPlayer().setSelection(packet.selection);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleObjectUpdateFailed(ObjectUpdateFailed objectUpdateFailed) {
         Log.outError(LogFilter.Network, "Object update failed for {0} for player {1} ({2})", objectUpdateFailed.objectGUID.toString(), getPlayerName(), getPlayer().getGUID().toString());
 
@@ -12665,7 +12665,7 @@ public class WorldSession implements Closeable {
         getPlayer().getClientGuiDs().remove(objectUpdateFailed.objectGUID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleObjectUpdateRescued(ObjectUpdateRescued objectUpdateRescued) {
         Log.outError(LogFilter.Network, "Object update rescued for {0} for player {1} ({2})", objectUpdateRescued.objectGUID.toString(), getPlayerName(), getPlayer().getGUID().toString());
 
@@ -12676,7 +12676,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetActionButton(SetActionButton packet) {
         long action = packet.getButtonAction();
         var type = packet.getButtonType();
@@ -12688,7 +12688,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetActionBarToggles(SetActionBarToggles packet) {
         if (!getPlayer()) // ignore until not logged (check needed because STATUS_AUTHED)
         {
@@ -12702,19 +12702,19 @@ public class WorldSession implements Closeable {
         getPlayer().setMultiActionBars(packet.mask);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCompleteCinematic(CompleteCinematic packet) {
         // If player has sight bound to visual waypoint NPC we should remove it
         getPlayer().getCinematicMgr().endCinematic();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleNextCinematicCamera(NextCinematicCamera packet) {
         // Sent by client when cinematic actually begun. So we begin the server side process
         getPlayer().getCinematicMgr().nextCinematicCamera();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCompleteMovie(CompleteMovie packet) {
         var movie = player.getMovie();
 
@@ -12726,12 +12726,12 @@ public class WorldSession implements Closeable {
         global.getScriptMgr().<IPlayerOnMovieComplete>ForEach(p -> p.OnMovieComplete(player, movie));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleViolenceLevel(ViolenceLevel violenceLevel) {
         // do something?
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAreaTrigger(AreaTriggerPkt packet) {
         var player = getPlayer();
 
@@ -12756,7 +12756,7 @@ public class WorldSession implements Closeable {
         }
 
         if (player.isDebugAreaTriggers()) {
-            player.sendSysMessage(packet.Entered ? CypherStrings.DebugAreatriggerEntered : CypherStrings.DebugAreatriggerLeft, packet.areaTriggerID);
+            player.sendSysMessage(packet.Entered ? SysMessage.DebugAreatriggerEntered : SysMessage.DebugAreatriggerLeft, packet.areaTriggerID);
         }
 
         if (!global.getConditionMgr().isObjectMeetingNotGroupedConditions(ConditionSourceType.AreatriggerClientTriggered, atEntry.id, player)) {
@@ -12987,7 +12987,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePlayedTime(RequestPlayedTime packet) {
         PlayedTime playedTime = new PlayedTime();
         playedTime.totalTime = getPlayer().getTotalPlayedTime();
@@ -12996,7 +12996,7 @@ public class WorldSession implements Closeable {
         sendPacket(playedTime);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSaveCUFProfiles(SaveCUFProfiles packet) {
         if (packet.CUFProfiles.size() > PlayerConst.MaxCUFProfiles) {
             Log.outError(LogFilter.player, "HandleSaveCUFProfiles - {0} tried to save more than {1} CUF profiles. Hacking attempt?", getPlayerName(), PlayerConst.MaxCUFProfiles);
@@ -13013,12 +13013,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetAdvancedCombatLogging(SetAdvancedCombatLogging setAdvancedCombatLogging) {
         getPlayer().setAdvancedCombatLogging(setAdvancedCombatLogging.enable);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMountSpecialAnim(MountSpecial mountSpecial) {
         SpecialMountAnim specialMountAnim = new SpecialMountAnim();
         specialMountAnim.unitGUID = player.getGUID();
@@ -13027,19 +13027,19 @@ public class WorldSession implements Closeable {
         getPlayer().sendMessageToSet(specialMountAnim, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMountSetFavorite(MountSetFavorite mountSetFavorite) {
         collectionMgr.mountSetFavorite(mountSetFavorite.mountSpellID, mountSetFavorite.isFavorite);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCloseInteraction(CloseInteraction closeInteraction) {
         if (Objects.equals(player.getPlayerTalkClass().getInteractionData().getSourceGuid(), closeInteraction.sourceGuid)) {
             player.getPlayerTalkClass().getInteractionData().reset();
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleConversationLineStarted(ConversationLineStarted conversationLineStarted) {
         var convo = ObjectAccessor.getConversation(player, conversationLineStarted.conversationGUID);
 
@@ -13048,7 +13048,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestLatestSplashScreen(RequestLatestSplashScreen requestLatestSplashScreen) {
         UISplashScreenRecord splashScreen = null;
 
@@ -13069,12 +13069,12 @@ public class WorldSession implements Closeable {
         sendPacket(splashScreenShowLatest);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUnregisterAllAddonPrefixes(ChatUnregisterAllAddonPrefixes packet) {
         registeredAddonPrefixes.clear();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAddonRegisteredPrefixes(ChatRegisterAddonPrefixes packet) {
         registeredAddonPrefixes.addAll(Arrays.asList(packet.prefixes));
 
@@ -13088,7 +13088,7 @@ public class WorldSession implements Closeable {
         filterAddonMessages = true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTogglePvP(TogglePvP packet) {
         if (!getPlayer().hasPlayerFlag(playerFlags.InPVP)) {
             getPlayer().setPlayerFlag(playerFlags.InPVP);
@@ -13107,7 +13107,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetPvP(SetPvP packet) {
         if (packet.enablePVP) {
             getPlayer().setPlayerFlag(playerFlags.InPVP);
@@ -13126,12 +13126,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetWarMode(SetWarMode packet) {
         player.setWarModeDesired(packet.enable);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleFarSight(FarSight farSight) {
         if (farSight.enable) {
             Log.outDebug(LogFilter.Network, "Added FarSight {0} to player {1}", getPlayer().getActivePlayerData().farsightObject.toString(), getPlayer().getGUID().toString());
@@ -13150,7 +13150,7 @@ public class WorldSession implements Closeable {
         getPlayer().updateVisibilityForPlayer();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetTitle(SetTitle packet) {
         // -1 at none
         if (packet.titleID > 0) {
@@ -13164,7 +13164,7 @@ public class WorldSession implements Closeable {
         getPlayer().setChosenTitle((int) packet.titleID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleResetInstances(ResetInstances packet) {
         var map = player.getMap();
 
@@ -13189,7 +13189,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetDungeonDifficulty(SetDungeonDifficulty setDungeonDifficulty) {
         var difficultyEntry = CliDB.DifficultyStorage.get(setDungeonDifficulty.difficultyID);
 
@@ -13247,7 +13247,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetRaidDifficulty(SetRaidDifficulty setRaidDifficulty) {
         var difficultyEntry = CliDB.DifficultyStorage.get(setRaidDifficulty.difficultyID);
 
@@ -13322,7 +13322,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetTaxiBenchmark(SetTaxiBenchmarkMode packet) {
         if (packet.enable) {
             player.setPlayerFlag(playerFlags.TaxiBenchmark);
@@ -13331,7 +13331,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGuildSetFocusedAchievement(GuildSetFocusedAchievement setFocusedAchievement) {
         var guild = global.getGuildMgr().getGuildById(getPlayer().getGuildId());
 
@@ -13340,7 +13340,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleInstanceLockResponse(InstanceLockResponse packet) {
         if (!getPlayer().getHasPendingBind()) {
             Log.outInfo(LogFilter.Network, "InstanceLockResponse: Player {0} (guid {1}) tried to bind himself/teleport to graveyard without a pending bind!", getPlayer().getName(), getPlayer().getGUID().toString());
@@ -13357,7 +13357,7 @@ public class WorldSession implements Closeable {
         getPlayer().setPendingBind(0, 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleWarden3Data(WardenData packet) {
         if (warden == null || packet.data.getSize() == 0) {
             return;
@@ -13405,7 +13405,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMovement(ClientPlayerMovement packet) {
         handleMovementOpcode(packet.GetOpcode(), packet.status);
     }
@@ -13567,7 +13567,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveWorldportAck(WorldPortResponse packet) {
         handleMoveWorldportAck();
     }
@@ -13776,7 +13776,7 @@ public class WorldSession implements Closeable {
         player.processDelayedOperations();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSuspendTokenResponse(SuspendTokenResponse suspendTokenResponse) {
         if (!player.isBeingTeleportedFar()) {
             return;
@@ -13801,7 +13801,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveTeleportAck(MoveTeleportAck packet) {
         var plMover = getPlayer().getUnitBeingMoved().toPlayer();
 
@@ -13851,7 +13851,7 @@ public class WorldSession implements Closeable {
         getPlayer().processDelayedOperations();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleForceSpeedChangeAck(MovementSpeedAck packet) {
         getPlayer().validateMovementInfo(packet.ack.status);
 
@@ -13936,7 +13936,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetActiveMover(SetActiveMover packet) {
         if (getPlayer().isInWorld()) {
             if (ObjectGuid.opNotEquals(player.getUnitBeingMoved().getGUID(), packet.activeMover)) {
@@ -13945,7 +13945,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveKnockBackAck(MoveKnockBackAck movementAck) {
         getPlayer().validateMovementInfo(movementAck.ack.status);
 
@@ -13961,12 +13961,12 @@ public class WorldSession implements Closeable {
         getPlayer().sendMessageToSet(updateKnockBack, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMovementAckMessage(MovementAckMessage movementAck) {
         getPlayer().validateMovementInfo(movementAck.ack.status);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSummonResponseOpcode(SummonResponse packet) {
         if (!getPlayer().isAlive() || getPlayer().isInCombat()) {
             return;
@@ -13975,12 +13975,12 @@ public class WorldSession implements Closeable {
         getPlayer().summonIfPossible(packet.accept);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetCollisionHeightAck(MoveSetCollisionHeightAck packet) {
         getPlayer().validateMovementInfo(packet.data.status);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveApplyMovementForceAck(MoveApplyMovementForceAck moveApplyMovementForceAck) {
         var mover = player.getUnitBeingMoved();
         player.validateMovementInfo(moveApplyMovementForceAck.ack.status);
@@ -14000,7 +14000,7 @@ public class WorldSession implements Closeable {
         mover.sendMessageToSet(updateApplyMovementForce, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveRemoveMovementForceAck(MoveRemoveMovementForceAck moveRemoveMovementForceAck) {
         var mover = player.getUnitBeingMoved();
         player.validateMovementInfo(moveRemoveMovementForceAck.ack.status);
@@ -14020,7 +14020,7 @@ public class WorldSession implements Closeable {
         mover.sendMessageToSet(updateRemoveMovementForce, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveSetModMovementForceMagnitudeAck(MovementSpeedAck setModMovementForceMagnitudeAck) {
         var mover = player.getUnitBeingMoved();
         player.validateMovementInfo(setModMovementForceMagnitudeAck.ack.status);
@@ -14061,7 +14061,7 @@ public class WorldSession implements Closeable {
         mover.sendMessageToSet(updateModMovementForceMagnitude, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveTimeSkipped(MoveTimeSkipped moveTimeSkipped) {
         var mover = getPlayer().getUnitBeingMoved();
 
@@ -14086,7 +14086,7 @@ public class WorldSession implements Closeable {
         mover.sendMessageToSet(moveSkipTime, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveSplineDoneOpcode(MoveSplineDone moveSplineDone) {
         var movementInfo = moveSplineDone.status;
         player.validateMovementInfo(movementInfo);
@@ -14132,7 +14132,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTimeSyncResponse(TimeSyncResponse timeSyncResponse) {
         if (!pendingTimeSyncRequests.containsKey(timeSyncResponse.sequenceIndex)) {
             return;
@@ -14200,7 +14200,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveInitActiveMoverComplete(MoveInitActiveMoverComplete moveInitActiveMoverComplete) {
         player.setPlayerLocalFlag(PlayerLocalFlags.OverrideTransportServerTime);
         player.setTransportServerTime((int) (gameTime.GetGameTimeMS() - moveInitActiveMoverComplete.ticks));
@@ -14208,7 +14208,7 @@ public class WorldSession implements Closeable {
         player.updateObjectVisibility(false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void requestMythicPlusSeasonData(ClientPacket packet) {
         sendPacket(new MythicPlusSeasonData());
     }
@@ -14431,7 +14431,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTabardVendorActivate(Hello packet) {
         var unit = getPlayer().getNPCIfCanInteractWith(packet.unit, NPCFlags.TabardDesigner, NPCFlags2.NONE);
 
@@ -14449,7 +14449,7 @@ public class WorldSession implements Closeable {
         sendTabardVendorActivate(packet.unit);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTrainerList(Hello packet) {
         var npc = getPlayer().getNPCIfCanInteractWith(packet.unit, NPCFlags.Trainer, NPCFlags2.NONE);
 
@@ -14468,7 +14468,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTrainerBuySpell(TrainerBuySpell packet) {
         var npc = player.getNPCIfCanInteractWith(packet.trainerGUID, NPCFlags.Trainer, NPCFlags2.NONE);
 
@@ -14509,7 +14509,7 @@ public class WorldSession implements Closeable {
         sendPacket(trainerBuyFailed);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGossipHello(Hello packet) {
         var unit = getPlayer().getNPCIfCanInteractWith(packet.unit, NPCFlags.Gossip, NPCFlags2.NONE);
 
@@ -14557,7 +14557,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGossipSelectOption(GossipSelectOption packet) {
         var gossipMenuItem = player.getPlayerTalkClass().getGossipMenu().getItem(packet.gossipOptionID);
 
@@ -14639,7 +14639,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSpiritHealerActivate(SpiritHealerActivate packet) {
         var unit = getPlayer().getNPCIfCanInteractWith(packet.healer, NPCFlags.SpiritHealer, NPCFlags2.NONE);
 
@@ -14683,7 +14683,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBinderActivate(Hello packet) {
         if (!getPlayer().isInWorld() || !getPlayer().isAlive()) {
             return;
@@ -14719,7 +14719,7 @@ public class WorldSession implements Closeable {
         getPlayer().getPlayerTalkClass().sendCloseGossip();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestStabledPets(RequestStabledPets packet) {
         if (!checkStableMaster(packet.stableMaster)) {
             return;
@@ -14744,7 +14744,7 @@ public class WorldSession implements Closeable {
         sendPacket(petStableResult);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetPetSlot(SetPetSlot setPetSlot) {
         if (!checkStableMaster(setPetSlot.stableMaster) || setPetSlot.destSlot >= (byte) PetSaveMode.LastStableSlot.getValue()) {
             sendPetStableResult(StableResult.InternalError);
@@ -14762,7 +14762,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         (var srcPet, var srcPetSlot) =pet.GetLoadPetInfo(petStable, 0, setPetSlot.petNumber, null);
         var dstPetSlot = PetSaveMode.forValue(setPetSlot.destSlot);
         var dstPet = pet.GetLoadPetInfo(petStable, 0, 0, dstPetSlot).Item1;
@@ -14889,7 +14889,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRepairItem(RepairItem packet) {
         var unit = getPlayer().getNPCIfCanInteractWith(packet.npcGUID, NPCFlags.Repair, NPCFlags2.NONE);
 
@@ -14921,7 +14921,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleListInventory(Hello packet) {
         if (!getPlayer().isAlive()) {
             return;
@@ -14930,7 +14930,7 @@ public class WorldSession implements Closeable {
         sendListInventory(packet.unit);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDismissCritter(DismissCritter packet) {
         Unit pet = ObjectAccessor.GetCreatureOrPetOrVehicle(getPlayer(), packet.critterGUID);
 
@@ -14951,7 +14951,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetAction(PetAction packet) {
         var guid1 = packet.petGUID; //pet guid
         var guid2 = packet.targetGUID; //tag guid
@@ -15009,7 +15009,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetStopAttack(PetStopAttack packet) {
         Unit pet = ObjectAccessor.GetCreatureOrPetOrVehicle(getPlayer(), packet.petGUID);
 
@@ -15176,7 +15176,7 @@ public class WorldSession implements Closeable {
                 switch (ReactStates.forValue(spellid)) {
                     case Passive: //passive
                         pet.attackStop();
-// C# TO JAVA CONVERTER TASK: There is no 'goto' in Java:
+
 						goto case ReactStates.Defensive
                         ;
                     case Defensive: //recovery
@@ -15330,7 +15330,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryPetName(QueryPetName packet) {
         sendQueryPetNameResponse(packet.unitGUID);
     }
@@ -15382,7 +15382,7 @@ public class WorldSession implements Closeable {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetSetAction(PetSetAction packet) {
         var petguid = packet.petGUID;
         var pet = global.getObjAccessor().GetUnit(getPlayer(), petguid);
@@ -15454,7 +15454,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetRename(PetRename packet) {
         var petguid = packet.renameData.petGUID;
         var isdeclined = packet.renameData.hasDeclinedNames;
@@ -15519,7 +15519,7 @@ public class WorldSession implements Closeable {
         pet.setPetNameTimestamp((int) gameTime.GetGameTime()); // cast can't be helped
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetAbandon(PetAbandon packet) {
         if (!getPlayer().isInWorld()) {
             return;
@@ -15533,7 +15533,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetSpellAutocast(PetSpellAutocast packet) {
         var pet = ObjectAccessor.GetCreatureOrPetOrVehicle(getPlayer(), packet.petGUID);
 
@@ -15589,7 +15589,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetCastSpell(PetCastSpell petCastSpell) {
         var caster = global.getObjAccessor().GetUnit(getPlayer(), petCastSpell.petGUID);
 
@@ -15692,7 +15692,7 @@ public class WorldSession implements Closeable {
         sendPacket(petNameInvalid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestPetInfo(RequestPetInfo requestPetInfo) {
         // Handle the packet CMSG_REQUEST_PET_INFO - sent when player does ingame /reload command
 
@@ -15766,7 +15766,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetitionBuy(PetitionBuy packet) {
         // prevent cheating
         var creature = getPlayer().getNPCIfCanInteractWith(packet.unit, NPCFlags.petitioner, NPCFlags2.NONE);
@@ -15852,7 +15852,7 @@ public class WorldSession implements Closeable {
         global.getPetitionMgr().addPetition(charter.getGUID(), player.getGUID(), packet.title, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetitionShowSignatures(PetitionShowSignatures packet) {
         var petition = global.getPetitionMgr().getPetition(packet.item);
 
@@ -15887,12 +15887,12 @@ public class WorldSession implements Closeable {
         sendPacket(signaturesPacket);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryPetition(QueryPetition packet) {
         sendPetitionQuery(packet.itemGUID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetitionRenameGuild(PetitionRenameGuild packet) {
         var item = getPlayer().getItemByGuid(packet.petitionGuid);
 
@@ -15929,7 +15929,7 @@ public class WorldSession implements Closeable {
         sendPacket(renameResponse);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSignPetition(SignPetition packet) {
         var petition = global.getPetitionMgr().getPetition(packet.petitionGUID);
 
@@ -16019,7 +16019,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDeclinePetition(DeclinePetition packet) {
         // Disabled because packet isn't handled by the client in any way
 		/*
@@ -16038,7 +16038,7 @@ public class WorldSession implements Closeable {
 		*/
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleOfferPetition(OfferPetition packet) {
         var player = global.getObjAccessor().findConnectedPlayer(packet.targetPlayer);
 
@@ -16073,7 +16073,7 @@ public class WorldSession implements Closeable {
         sendPetitionSigns(petition, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTurnInPetition(TurnInPetition packet) {
         // Check if player really has the required petition charter
         var item = getPlayer().getItemByGuid(packet.item);
@@ -16159,7 +16159,7 @@ public class WorldSession implements Closeable {
         sendPacket(resultPacket);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetitionShowList(PetitionShowList packet) {
         sendPetitionShowList(packet.petitionUnit);
     }
@@ -16180,7 +16180,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryPlayerNames(QueryPlayerNames queryPlayerName) {
         QueryPlayerNamesResponse response = new QueryPlayerNamesResponse();
 
@@ -16195,7 +16195,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryTime(QueryTime packet) {
         sendQueryTimeResponse();
     }
@@ -16206,7 +16206,7 @@ public class WorldSession implements Closeable {
         sendPacket(queryTimeResponse);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGameObjectQuery(QueryGameObject packet) {
         var info = global.getObjectMgr().getGameObjectTemplate(packet.gameObjectID);
 
@@ -16244,7 +16244,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCreatureQuery(QueryCreature packet) {
         var ci = global.getObjectMgr().getCreatureTemplate(packet.creatureID);
 
@@ -16292,7 +16292,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleNpcTextQuery(QueryNPCText packet) {
         var npcText = global.getObjectMgr().getNpcText(packet.textID);
 
@@ -16317,7 +16317,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryPageText(QueryPageText packet) {
         QueryPageTextResponse response = new QueryPageTextResponse();
         response.pageTextID = packet.pageTextID;
@@ -16358,7 +16358,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryCorpseLocation(QueryCorpseLocationFromClient queryCorpseLocation) {
         CorpseLocation packet = new CorpseLocation();
         var player = global.getObjAccessor().findConnectedPlayer(queryCorpseLocation.player);
@@ -16407,7 +16407,7 @@ public class WorldSession implements Closeable {
         sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryCorpseTransport(QueryCorpseTransport queryCorpseTransport) {
         CorpseTransportQuery response = new CorpseTransportQuery();
         response.player = queryCorpseTransport.player;
@@ -16426,7 +16426,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryQuestCompletionNPCs(QueryQuestCompletionNPCs queryQuestCompletionNPCs) {
         QuestCompletionNPCResponse response = new QuestCompletionNPCResponse();
 
@@ -16455,7 +16455,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestPOIQuery(QuestPOIQuery packet) {
         if (packet.missingQuestCount >= SharedConst.MaxQuestLogSize) {
             return;
@@ -16483,7 +16483,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleItemTextQuery(ItemTextQuery packet) {
         QueryItemTextResponse queryItemTextResponse = new QueryItemTextResponse();
         queryItemTextResponse.id = packet.id;
@@ -16498,7 +16498,7 @@ public class WorldSession implements Closeable {
         sendPacket(queryItemTextResponse);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryRealmName(QueryRealmName queryRealmName) {
         RealmQueryResponse realmQueryResponse = new RealmQueryResponse();
         realmQueryResponse.virtualRealmAddress = queryRealmName.virtualRealmAddress;
@@ -16520,7 +16520,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverStatusQuery(QuestGiverStatusQuery packet) {
         var questStatus = QuestGiverStatus.NONE;
 
@@ -16554,7 +16554,7 @@ public class WorldSession implements Closeable {
         player.getPlayerTalkClass().sendQuestGiverStatus(questStatus, packet.questGiverGUID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverHello(QuestGiverHello packet) {
         var creature = player.getNPCIfCanInteractWith(packet.questGiverGUID, NPCFlags.questGiver, NPCFlags2.NONE);
 
@@ -16588,7 +16588,7 @@ public class WorldSession implements Closeable {
         player.sendPreparedGossip(creature);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverAcceptQuest(QuestGiverAcceptQuest packet) {
         WorldObject obj;
 
@@ -16695,7 +16695,7 @@ public class WorldSession implements Closeable {
         CLOSE_GOSSIP_CLEAR_SHARING_INFO.invoke();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverQueryQuest(QuestGiverQueryQuest packet) {
         // Verify that the guid is valid and is a questgiver or involved in the requested quest
         var obj = global.getObjAccessor().GetObjectByTypeMask(player, packet.questGiverGUID, (TypeMask.unit.getValue() | TypeMask.gameObject.getValue().getValue() | TypeMask.item.getValue().getValue()));
@@ -16725,7 +16725,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestQuery(QueryQuestInfo packet) {
         var quest = global.getObjectMgr().getQuestTemplate(packet.questID);
 
@@ -16738,7 +16738,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverChooseReward(QuestGiverChooseReward packet) {
         var quest = global.getObjectMgr().getQuestTemplate(packet.questID);
 
@@ -16873,7 +16873,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverRequestReward(QuestGiverRequestReward packet) {
         var obj = global.getObjAccessor().GetObjectByTypeMask(player, packet.questGiverGUID, TypeMask.unit.getValue() | TypeMask.gameObject.getValue());
 
@@ -16901,7 +16901,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestLogRemoveQuest(QuestLogRemoveQuest packet) {
         if (packet.entry < SharedConst.MaxQuestLogSize) {
             var questId = player.getQuestSlotQuestId(packet.entry);
@@ -16944,7 +16944,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestConfirmAccept(QuestConfirmAccept packet) {
         var quest = global.getObjectMgr().getQuestTemplate(packet.questID);
 
@@ -16983,7 +16983,7 @@ public class WorldSession implements Closeable {
         player.clearQuestSharingInfo();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverCompleteQuest(QuestGiverCompleteQuest packet) {
         var autoCompleteMode = packet.fromScript; // 0 - standart complete quest mode with npc, 1 - auto-complete mode
 
@@ -17048,7 +17048,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverCloseQuest(QuestGiverCloseQuest questGiverCloseQuest) {
         if (player.findQuestSlot(questGiverCloseQuest.questID) >= SharedConst.MaxQuestLogSize) {
             return;
@@ -17063,7 +17063,7 @@ public class WorldSession implements Closeable {
         global.getScriptMgr().<IQuestOnAckAutoAccept>RunScript(script -> script.OnAcknowledgeAutoAccept(player, quest), quest.getScriptId());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePushQuestToParty(PushQuestToParty packet) {
         var quest = global.getObjectMgr().getQuestTemplate(packet.questID);
 
@@ -17219,7 +17219,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestPushResult(QuestPushResult packet) {
         if (!player.getPlayerSharingQuest().isEmpty()) {
             if (Objects.equals(player.getPlayerSharingQuest(), packet.senderGUID)) {
@@ -17234,17 +17234,17 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverStatusMultipleQuery(QuestGiverStatusMultipleQuery packet) {
         player.sendQuestGiverStatusMultiple();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQuestgiverStatusTrackedQueryOpcode(QuestGiverStatusTrackedQuery questGiverStatusTrackedQuery) {
         player.sendQuestGiverStatusMultiple(questGiverStatusTrackedQuery.questGiverGUIDs);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestWorldQuestUpdate(RequestWorldQuestUpdate packet) {
         WorldQuestUpdateResponse response = new WorldQuestUpdateResponse();
 
@@ -17254,7 +17254,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePlayerChoiceResponse(ChoiceResponse choiceResponse) {
         if (player.getPlayerTalkClass().getInteractionData().getPlayerChoiceId() != choiceResponse.choiceID) {
             Log.outError(LogFilter.player, String.format("Error in CMSG_CHOICE_RESPONSE: %1$s tried to respond to invalid player choice %2$s (allowed %3$s) (possible packet-hacking detected)", getPlayerInfo(), choiceResponse.choiceID, player.getPlayerTalkClass().getInteractionData().getPlayerChoiceId()));
@@ -17324,7 +17324,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryQuestItemUsability(QueryQuestItemUsability request) {
         //foreach (var itemGuid in request.itemGUIDs)
         //{
@@ -17333,7 +17333,7 @@ public class WorldSession implements Closeable {
         //}
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUiMapQuestLinesRequest(UiMapQuestLinesRequest request) {
         var response = new UiMapQuestLinesResponse();
         response.uiMapID = request.uiMapID;
@@ -17384,7 +17384,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleQueryScenarioPOI(QueryScenarioPOI queryScenarioPOI) {
         ScenarioPOIs response = new scenarioPOIs();
 
@@ -17409,28 +17409,28 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSceneTriggerEvent(SceneTriggerEvent sceneTriggerEvent) {
         Log.outDebug(LogFilter.Scenes, "HandleSceneTriggerEvent: SceneInstanceID: {0} Event: {1}", sceneTriggerEvent.sceneInstanceID, sceneTriggerEvent._Event);
 
         getPlayer().getSceneMgr().onSceneTrigger(sceneTriggerEvent.sceneInstanceID, sceneTriggerEvent._Event);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleScenePlaybackComplete(ScenePlaybackComplete scenePlaybackComplete) {
         Log.outDebug(LogFilter.Scenes, "HandleScenePlaybackComplete: SceneInstanceID: {0}", scenePlaybackComplete.sceneInstanceID);
 
         getPlayer().getSceneMgr().onSceneComplete(scenePlaybackComplete.sceneInstanceID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleScenePlaybackCanceled(ScenePlaybackCanceled scenePlaybackCanceled) {
         Log.outDebug(LogFilter.Scenes, "HandleScenePlaybackCanceled: SceneInstanceID: {0}", scenePlaybackCanceled.sceneInstanceID);
 
         getPlayer().getSceneMgr().onSceneCancel(scenePlaybackCanceled.sceneInstanceID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLearnTalents(LearnTalents packet) {
         LearnTalentFailed learnTalentFailed = new LearnTalentFailed();
         var anythingLearned = false;
@@ -17460,7 +17460,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleLearnPvpTalents(LearnPvpTalents packet) {
         LearnPvpTalentFailed learnPvpTalentFailed = new LearnPvpTalentFailed();
         var anythingLearned = false;
@@ -17490,7 +17490,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleConfirmRespecWipe(ConfirmRespecWipe confirmRespecWipe) {
         var unit = getPlayer().getNPCIfCanInteractWith(confirmRespecWipe.respecMaster, NPCFlags.Trainer, NPCFlags2.NONE);
 
@@ -17523,7 +17523,7 @@ public class WorldSession implements Closeable {
         unit.castSpell(getPlayer(), 14867, true); //spell: "Untalent Visual Effect"
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUnlearnSkill(UnlearnSkill packet) {
         var rcEntry = global.getDB2Mgr().GetSkillRaceClassInfo(packet.skillLine, getPlayer().getRace(), getPlayer().getClass());
 
@@ -17534,7 +17534,7 @@ public class WorldSession implements Closeable {
         getPlayer().setSkill(packet.skillLine, 0, 0, 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTradeSkillSetFavorite(TradeSkillSetFavorite tradeSkillSetFavorite) {
         if (!player.hasSpell(tradeSkillSetFavorite.recipeID)) {
             return;
@@ -17543,7 +17543,7 @@ public class WorldSession implements Closeable {
         player.setSpellFavorite(tradeSkillSetFavorite.recipeID, tradeSkillSetFavorite.isFavorite);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleWho(WhoRequestPkt whoRequest) {
         var request = whoRequest.request;
 
@@ -17690,10 +17690,10 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleWhoIs(WhoIsRequest packet) {
         if (!hasPermission(RBACPermissions.OpcodeWhois)) {
-            sendNotification(CypherStrings.YouNotHavePermission);
+            sendNotification(SysMessage.YouNotHavePermission);
 
             return;
         }
@@ -17701,7 +17701,7 @@ public class WorldSession implements Closeable {
         tangible.RefObject<String> tempRef_CharName = new tangible.RefObject<String>(packet.charName);
         if (!ObjectManager.normalizePlayerName(tempRef_CharName)) {
             packet.charName = tempRef_CharName.refArgValue;
-            sendNotification(CypherStrings.NeedCharacterName);
+            sendNotification(SysMessage.NeedCharacterName);
 
             return;
         } else {
@@ -17711,7 +17711,7 @@ public class WorldSession implements Closeable {
         var player = global.getObjAccessor().FindPlayerByName(packet.charName);
 
         if (!player) {
-            sendNotification(CypherStrings.PlayerNotExistOrOffline, packet.charName);
+            sendNotification(SysMessage.PlayerNotExistOrOffline, packet.charName);
 
             return;
         }
@@ -17722,7 +17722,7 @@ public class WorldSession implements Closeable {
         var result = DB.Login.query(stmt);
 
         if (result.isEmpty()) {
-            sendNotification(CypherStrings.AccountForPlayerNotFound, packet.charName);
+            sendNotification(SysMessage.AccountForPlayerNotFound, packet.charName);
 
             return;
         }
@@ -17750,12 +17750,12 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleContactList(SendContactList packet) {
         getPlayer().getSocial().sendSocialList(getPlayer(), packet.flags);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAddFriend(AddFriend packet) {
         tangible.RefObject<String> tempRef_Name = new tangible.RefObject<String>(packet.name);
         if (!ObjectManager.normalizePlayerName(tempRef_Name)) {
@@ -17773,7 +17773,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void processFriendRequest()
 //			{
 //				var playerGuid = player.GUID;
@@ -17851,7 +17851,7 @@ public class WorldSession implements Closeable {
         }));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDelFriend(DelFriend packet) {
         // @todo: handle VirtualRealmAddress
         getPlayer().getSocial().removeFromSocialList(packet.player.guid, SocialFlag.Friend);
@@ -17859,7 +17859,7 @@ public class WorldSession implements Closeable {
         global.getSocialMgr().sendFriendStatus(getPlayer(), FriendsResult.removed, packet.player.guid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAddIgnore(AddIgnore packet) {
         tangible.RefObject<String> tempRef_Name = new tangible.RefObject<String>(packet.name);
         if (!ObjectManager.normalizePlayerName(tempRef_Name)) {
@@ -17896,7 +17896,7 @@ public class WorldSession implements Closeable {
         global.getSocialMgr().sendFriendStatus(getPlayer(), ignoreResult, ignoreGuid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleDelIgnore(DelIgnore packet) {
         // @todo: handle VirtualRealmAddress
         Log.outDebug(LogFilter.Network, "WorldSession.HandleDelIgnoreOpcode: {0}", packet.player.guid.toString());
@@ -17906,21 +17906,21 @@ public class WorldSession implements Closeable {
         global.getSocialMgr().sendFriendStatus(getPlayer(), FriendsResult.IgnoreRemoved, packet.player.guid);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetContactNotes(SetContactNotes packet) {
         // @todo: handle VirtualRealmAddress
         Log.outDebug(LogFilter.Network, "WorldSession.HandleSetContactNotesOpcode: Contact: {0}, Notes: {1}", packet.player.guid.toString(), packet.notes);
         getPlayer().getSocial().setFriendNote(packet.player.guid, packet.notes);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSocialContractRequest(SocialContractRequest socialContractRequest) {
         SocialContractRequestResponse response = new SocialContractRequestResponse();
         response.showSocialContract = false;
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUseItem(UseItem packet) {
         var user = getPlayer();
 
@@ -18014,7 +18014,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleOpenItem(OpenItem packet) {
         var player = getPlayer();
 
@@ -18152,7 +18152,7 @@ public class WorldSession implements Closeable {
         DB.characters.CommitTransaction(trans);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGameObjectUse(GameObjUse packet) {
         var obj = getPlayer().getGameObjectIfCanInteractWith(packet.guid);
 
@@ -18168,7 +18168,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGameobjectReportUse(GameObjReportUse packet) {
         // ignore for remote control state
         if (getPlayer().getUnitBeingMoved() != getPlayer()) {
@@ -18186,7 +18186,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCastSpell(CastSpell cast) {
         // ignore for remote control state (for player case)
         var mover = getPlayer().getUnitBeingMoved();
@@ -18297,14 +18297,14 @@ public class WorldSession implements Closeable {
         spell.prepare(targets);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelCast(CancelCast packet) {
         if (getPlayer().isNonMeleeSpellCast(false)) {
             getPlayer().interruptNonMeleeSpells(false, packet.spellID, false);
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelAura(CancelAura cancelAura) {
         var spellInfo = global.getSpellMgr().getSpellInfo(cancelAura.spellID, player.getMap().getDifficultyID());
 
@@ -18340,7 +18340,7 @@ public class WorldSession implements Closeable {
         getPlayer().removeOwnedAura(cancelAura.spellID, cancelAura.casterGUID, AuraRemoveMode.Cancel);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelGrowthAura(CancelGrowthAura cancelGrowthAura) {
         getPlayer().removeAurasByType(AuraType.ModScale, aurApp ->
         {
@@ -18350,7 +18350,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelMountAura(CancelMountAura packet) {
         getPlayer().removeAurasByType(AuraType.Mounted, aurApp ->
         {
@@ -18360,7 +18360,7 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handlePetCancelAura(PetCancelAura packet) {
         if (!global.getSpellMgr().hasSpellInfo(packet.spellID, Difficulty.NONE)) {
             Log.outError(LogFilter.Network, "WORLD: unknown PET spell id {0}", packet.spellID);
@@ -18391,7 +18391,7 @@ public class WorldSession implements Closeable {
         pet.removeOwnedAura(packet.spellID, ObjectGuid.Empty, AuraRemoveMode.Cancel);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelModSpeedNoControlAuras(CancelModSpeedNoControlAuras cancelModSpeedNoControlAuras) {
         var mover = player.getUnitBeingMoved();
 
@@ -18407,14 +18407,14 @@ public class WorldSession implements Closeable {
         });
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelAutoRepeatSpell(CancelAutoRepeatSpell packet) {
         //may be better send SMSG_CANCEL_AUTO_REPEAT?
         //cancel and prepare for deleting
         player.interruptSpell(CurrentSpellTypes.AutoRepeat);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelChanneling(CancelChannelling cancelChanneling) {
         // ignore for remote control state (for player case)
         var mover = player.getUnitBeingMoved();
@@ -18443,7 +18443,7 @@ public class WorldSession implements Closeable {
         mover.interruptSpell(CurrentSpellTypes.Channeled);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTotemDestroyed(TotemDestroyed totemDestroyed) {
         // ignore for remote control state
         if (getPlayer().getUnitBeingMoved() != getPlayer()) {
@@ -18469,7 +18469,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSelfRes(SelfRes selfRes) {
         ArrayList<Integer> selfResSpells = player.getActivePlayerData().selfResSpells;
 
@@ -18491,7 +18491,7 @@ public class WorldSession implements Closeable {
         player.removeSelfResSpell(selfRes.spellId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSpellClick(SpellClick packet) {
         // this will get something not in world. crash
         var unit = ObjectAccessor.GetCreatureOrPetOrVehicle(getPlayer(), packet.spellClickUnitGuid);
@@ -18508,7 +18508,7 @@ public class WorldSession implements Closeable {
         unit.handleSpellClick(getPlayer());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMirrorImageDataRequest(GetMirrorImageData packet) {
         var guid = packet.unitGUID;
 
@@ -18575,7 +18575,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMissileTrajectoryCollision(MissileTrajectoryCollision packet) {
         var caster = global.getObjAccessor().GetUnit(player, packet.target);
 
@@ -18603,7 +18603,7 @@ public class WorldSession implements Closeable {
         caster.sendMessageToSet(data, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUpdateMissileTrajectory(UpdateMissileTrajectory packet) {
         var caster = global.getObjAccessor().GetUnit(getPlayer(), packet.guid);
         var spell = caster ? caster.getCurrentSpell(CurrentSpellTypes.generic) : null;
@@ -18632,12 +18632,12 @@ public class WorldSession implements Closeable {
 			//HandleMovementOpcodes(recvPacket);*/
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestCategoryCooldowns(RequestCategoryCooldowns requestCategoryCooldowns) {
         getPlayer().sendSpellCategoryCooldowns();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleKeyboundOverride(KeyboundOverride keyboundOverride) {
         var player = getPlayer();
 
@@ -18654,17 +18654,17 @@ public class WorldSession implements Closeable {
         player.castSpell(player, spellKeyboundOverride.data);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSpellEmpowerRelease(SpellEmpowerRelease packet) {
         getPlayer().updateEmpowerState(EmpowerState.Canceled, packet.spellID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSpellEmpowerRelestart(SpellEmpowerRelease packet) {
         getPlayer().updateEmpowerState(EmpowerState.Empowering, packet.spellID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSpellEmpowerMinHoldPct(SpellEmpowerMinHold packet) {
         getPlayer().setEmpoweredSpellMinHoldPct(packet.holdPct);
     }
@@ -18789,7 +18789,7 @@ public class WorldSession implements Closeable {
         sendPacket(data);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleEnableTaxiNodeOpcode(EnableTaxiNode enableTaxiNode) {
         var unit = getPlayer().getNPCIfCanInteractWith(enableTaxiNode.unit, NPCFlags.FlightMaster, NPCFlags2.NONE);
 
@@ -18798,12 +18798,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTaxiNodeStatusQuery(TaxiNodeStatusQuery taxiNodeStatusQuery) {
         sendTaxiStatus(taxiNodeStatusQuery.unitGUID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTaxiQueryAvailableNodes(TaxiQueryAvailableNodes taxiQueryAvailableNodes) {
         // cheating checks
         var unit = getPlayer().getNPCIfCanInteractWith(taxiQueryAvailableNodes.unit, NPCFlags.FlightMaster, NPCFlags2.NONE);
@@ -18828,7 +18828,7 @@ public class WorldSession implements Closeable {
         sendTaxiMenu(unit);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleActivateTaxi(ActivateTaxi activateTaxi) {
         var unit = getPlayer().getNPCIfCanInteractWith(activateTaxi.vendor, NPCFlags.FlightMaster, NPCFlags2.NONE);
 
@@ -18891,7 +18891,7 @@ public class WorldSession implements Closeable {
         getPlayer().activateTaxiPathTo(nodes, unit, 0, preferredMountDisplay);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTaxiRequestEarlyLanding(TaxiRequestEarlyLanding taxiRequestEarlyLanding) {
         MovementGenerator tempVar = getPlayer().getMotionMaster().getCurrentMovementGenerator();
         var flight = tempVar instanceof FlightPathMovementGenerator ? (FlightPathMovementGenerator) tempVar : null;
@@ -18904,14 +18904,14 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGMTicketGetCaseStatus(GMTicketGetCaseStatus packet) {
         //TODO: Implement GmCase and handle this packet correctly
         GMTicketCaseStatus status = new GMTicketCaseStatus();
         sendPacket(status);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleGMTicketSystemStatusOpcode(GMTicketGetSystemStatus packet) {
         // Note: This only disables the ticket UI at client side and is not fully reliable
         // Note: This disables the whole customer support UI after trying to send a ticket in disabled state (MessageBox: "GM Help Tickets are currently unavaiable."). UI remains disabled until the character relogs.
@@ -18920,7 +18920,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSubmitUserFeedback(SubmitUserFeedback userFeedback) {
         if (userFeedback.isSuggestion) {
             if (!global.getSupportMgr().getSuggestionSystemStatus()) {
@@ -18947,7 +18947,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSupportTicketSubmitComplaint(SupportTicketSubmitComplaint packet) {
         if (!global.getSupportMgr().getComplaintSystemStatus()) {
             return;
@@ -18966,7 +18966,7 @@ public class WorldSession implements Closeable {
         global.getSupportMgr().addTicket(comp);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBugReport(BugReport bugReport) {
         // Note: There is no way to trigger this with standard UI except /script ReportBug("text")
         if (!global.getSupportMgr().getBugSystemStatus()) {
@@ -18979,7 +18979,7 @@ public class WorldSession implements Closeable {
         DB.characters.execute(stmt);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleComplaint(Complaint packet) {
         // NOTE: all chat messages from this spammer are automatically ignored by the spam reporter until logout in case of chat spam.
         // if it's mail spam - ALL mails from this spammer are automatically removed by client
@@ -18990,14 +18990,14 @@ public class WorldSession implements Closeable {
         sendPacket(result);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleServerTimeOffsetRequest(ServerTimeOffsetRequest packet) {
         ServerTimeOffset response = new ServerTimeOffset();
         response.time = gameTime.GetGameTime();
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCommerceTokenGetLog(CommerceTokenGetLog commerceTokenGetLog) {
         CommerceTokenGetLogResponse response = new CommerceTokenGetLogResponse();
 
@@ -19008,7 +19008,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCommerceTokenGetMarketPrice(CommerceTokenGetMarketPrice commerceTokenGetMarketPrice) {
         CommerceTokenGetMarketPriceResponse response = new CommerceTokenGetMarketPriceResponse();
 
@@ -19021,7 +19021,7 @@ public class WorldSession implements Closeable {
         sendPacket(response);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAddToy(AddToy packet) {
         if (packet.guid.isEmpty()) {
             return;
@@ -19052,7 +19052,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUseToy(UseToy packet) {
         var itemId = packet.cast.Misc[0];
         var item = global.getObjectMgr().getItemTemplate(itemId);
@@ -19100,7 +19100,7 @@ public class WorldSession implements Closeable {
         spell.prepare(targets);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleToyClearFanfare(ToyClearFanfare toyClearFanfare) {
         collectionMgr.toyClearFanfare(toyClearFanfare.itemID);
     }
@@ -19179,11 +19179,11 @@ public class WorldSession implements Closeable {
         sendTradeStatus(info);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleIgnoreTradeOpcode(IgnoreTrade packet) {
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBusyTradeOpcode(BusyTrade packet) {
     }
 
@@ -19269,7 +19269,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleAcceptTrade(AcceptTrade acceptTrade) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19566,7 +19566,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleUnacceptTrade(UnacceptTrade packet) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19577,7 +19577,7 @@ public class WorldSession implements Closeable {
         my_trade.setAccepted(false, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleBeginTrade(BeginTrade packet) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19590,7 +19590,7 @@ public class WorldSession implements Closeable {
         sendTradeStatus(info);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleCancelTrade(CancelTrade cancelTrade) {
         // sent also after LOGOUT COMPLETE
         if (getPlayer()) // needed because STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT
@@ -19599,7 +19599,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleInitiateTrade(InitiateTrade initiateTrade) {
         if (getPlayer().getTradeData() != null) {
             return;
@@ -19636,7 +19636,7 @@ public class WorldSession implements Closeable {
         }
 
         if (getPlayer().getLevel() < WorldConfig.getIntValue(WorldCfg.TradeLevelReq)) {
-            sendNotification(global.getObjectMgr().getCypherString(CypherStrings.TradeReq), WorldConfig.getIntValue(WorldCfg.TradeLevelReq));
+            sendNotification(global.getObjectMgr().getSysMessage(SysMessage.TradeReq), WorldConfig.getIntValue(WorldCfg.TradeLevelReq));
             info.status = TradeStatus.Failed;
             sendTradeStatus(info);
 
@@ -19710,7 +19710,7 @@ public class WorldSession implements Closeable {
         }
 
         if (pOther.getLevel() < WorldConfig.getIntValue(WorldCfg.TradeLevelReq)) {
-            sendNotification(global.getObjectMgr().getCypherString(CypherStrings.TradeOtherReq), WorldConfig.getIntValue(WorldCfg.TradeLevelReq));
+            sendNotification(global.getObjectMgr().getSysMessage(SysMessage.TradeOtherReq), WorldConfig.getIntValue(WorldCfg.TradeLevelReq));
             info.status = TradeStatus.Failed;
             sendTradeStatus(info);
 
@@ -19726,7 +19726,7 @@ public class WorldSession implements Closeable {
         pOther.getSession().sendTradeStatus(info);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetTradeGold(SetTradeGold setTradeGold) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19738,7 +19738,7 @@ public class WorldSession implements Closeable {
         my_trade.setMoney(setTradeGold.coinage);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetTradeItem(SetTradeItem setTradeItem) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19790,7 +19790,7 @@ public class WorldSession implements Closeable {
         my_trade.setItem(TradeSlots.forValue(setTradeItem.tradeSlot), item);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClearTradeItem(ClearTradeItem clearTradeItem) {
         var my_trade = getPlayer().getTradeData();
 
@@ -19808,11 +19808,11 @@ public class WorldSession implements Closeable {
         my_trade.setItem(TradeSlots.forValue(clearTradeItem.tradeSlot), null);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleSetTradeCurrency(SetTradeCurrency setTradeCurrency) {
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTraitsCommitConfig(TraitsCommitConfig traitsCommitConfig) {
         var configId = traitsCommitConfig.config.ID;
         var existingConfig = player.getTraitConfig(configId);
@@ -19933,7 +19933,7 @@ public class WorldSession implements Closeable {
         player.updateTraitConfig(newConfigState, traitsCommitConfig.savedConfigID, needsCastTime);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClassTalentsRequestNewConfig(ClassTalentsRequestNewConfig classTalentsRequestNewConfig) {
         if (classTalentsRequestNewConfig.config.type != TraitConfigType.Combat) {
             return;
@@ -19952,7 +19952,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		int findFreeLocalIdentifier()
 //			{
 //				var index = 1;
@@ -19997,17 +19997,17 @@ public class WorldSession implements Closeable {
         player.createTraitConfig(classTalentsRequestNewConfig.config);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClassTalentsRenameConfig(ClassTalentsRenameConfig classTalentsRenameConfig) {
         player.renameTraitConfig(classTalentsRenameConfig.configID, classTalentsRenameConfig.name);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClassTalentsDeleteConfig(ClassTalentsDeleteConfig classTalentsDeleteConfig) {
         player.deleteTraitConfig(classTalentsDeleteConfig.configID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClassTalentsSetStarterBuildActive(ClassTalentsSetStarterBuildActive classTalentsSetStarterBuildActive) {
         var traitConfig = player.getTraitConfig(classTalentsSetStarterBuildActive.configID);
 
@@ -20045,7 +20045,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleClassTalentsSetUsesSharedActionBars(ClassTalentsSetUsesSharedActionBars classTalentsSetUsesSharedActionBars) {
         player.setTraitConfigUseSharedActionBars(classTalentsSetUsesSharedActionBars.configID, classTalentsSetUsesSharedActionBars.usesShared, classTalentsSetUsesSharedActionBars.isLastSelectedSavedConfig);
     }
@@ -20058,7 +20058,7 @@ public class WorldSession implements Closeable {
         sendPacket(npcInteraction);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleTransmogrifyItems(TransmogrifyItems transmogrifyItems) {
         var player = getPlayer();
 
@@ -20077,7 +20077,7 @@ public class WorldSession implements Closeable {
         ArrayList<item> resetIllusionItems = new ArrayList<>();
         ArrayList<Integer> bindAppearances = new ArrayList<>();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool validateAndStoreTransmogItem(Item itemTransmogrified, uint itemModifiedAppearanceId, bool isSecondary)
 //			{
 //				var itemModifiedAppearance = CliDB.ItemModifiedAppearanceStorage.get(itemModifiedAppearanceId);
@@ -20410,7 +20410,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveDismissVehicle(MoveDismissVehicle packet) {
         var vehicleGUID = getPlayer().getCharmedGUID();
 
@@ -20425,7 +20425,7 @@ public class WorldSession implements Closeable {
         getPlayer().exitVehicle();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestVehiclePrevSeat(RequestVehiclePrevSeat packet) {
         var vehicle_base = getPlayer().getVehicleBase();
 
@@ -20444,7 +20444,7 @@ public class WorldSession implements Closeable {
         getPlayer().changeSeat((byte) -1, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestVehicleNextSeat(RequestVehicleNextSeat packet) {
         var vehicle_base = getPlayer().getVehicleBase();
 
@@ -20463,7 +20463,7 @@ public class WorldSession implements Closeable {
         getPlayer().changeSeat((byte) -1, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveChangeVehicleSeats(MoveChangeVehicleSeats packet) {
         var vehicle_base = getPlayer().getVehicleBase();
 
@@ -20504,7 +20504,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestVehicleSwitchSeat(RequestVehicleSwitchSeat packet) {
         var vehicle_base = getPlayer().getVehicleBase();
 
@@ -20537,7 +20537,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRideVehicleInteract(RideVehicleInteract packet) {
         var player = global.getObjAccessor().getPlayer(player, packet.vehicle);
 
@@ -20563,7 +20563,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleEjectPassenger(EjectPassenger packet) {
         var vehicle = getPlayer().getVehicleKit();
 
@@ -20600,7 +20600,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleRequestVehicleExit(RequestVehicleExit packet) {
         var vehicle = getPlayer().getVehicle1();
 
@@ -20617,7 +20617,7 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleMoveSetVehicleRecAck(MoveSetVehicleRecIdAck setVehicleRecIdAck) {
         getPlayer().validateMovementInfo(setVehicleRecIdAck.data.status);
     }
@@ -20626,7 +20626,7 @@ public class WorldSession implements Closeable {
         sendPacket(new VoidTransferResult(result));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleVoidStorageUnlock(UnlockVoidStorage unlockVoidStorage) {
         var unit = getPlayer().getNPCIfCanInteractWith(unlockVoidStorage.npc, NPCFlags.VaultKeeper, NPCFlags2.NONE);
 
@@ -20646,7 +20646,7 @@ public class WorldSession implements Closeable {
         getPlayer().unlockVoidStorage();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleVoidStorageQuery(QueryVoidStorage queryVoidStorage) {
         var player = getPlayer();
 
@@ -20687,7 +20687,7 @@ public class WorldSession implements Closeable {
         sendPacket(voidStorageContents);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleVoidStorageTransfer(VoidStorageTransfer voidStorageTransfer) {
         var player = getPlayer();
 
@@ -20811,7 +20811,7 @@ public class WorldSession implements Closeable {
         sendVoidStorageTransferResult(VoidTransferError.Ok);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void handleVoidSwapItem(SwapVoidItem swapVoidItem) {
         var player = getPlayer();
 
@@ -21431,8 +21431,8 @@ public class WorldSession implements Closeable {
         return false;
     }
 
-    public final void sendNotification(CypherStrings str, object... args) {
-        sendNotification(global.getObjectMgr().getCypherString(str), args);
+    public final void sendNotification(SysMessage str, object... args) {
+        sendNotification(global.getObjectMgr().getSysMessage(str), args);
     }
 
     public final void sendNotification(String str, object... args) {
@@ -21583,7 +21583,7 @@ public class WorldSession implements Closeable {
 
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(WorldSession session)
 //		{
 //			return session != null;
@@ -21878,12 +21878,12 @@ public class WorldSession implements Closeable {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private BattlenetRpcErrorCode handleProcessClientRequest(ClientRequest request, ClientResponse response) {
         Bgs.Protocol.Attribute command = null;
         HashMap<String, Bgs.Protocol.Variant> params = new HashMap<String, Bgs.Protocol.Variant>();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		string removeSuffix(string str)
 //			{
 //				var pos = str.IndexOf('_');
@@ -21918,7 +21918,7 @@ public class WorldSession implements Closeable {
         };
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private BattlenetRpcErrorCode handleGetAllValuesForAttribute(GetAllValuesForAttributeRequest request, GetAllValuesForAttributeResponse response) {
         if (!request.AttributeKey.contains("Command_RealmListRequest_v1")) {
             global.getRealmMgr().WriteSubRegions(response);

@@ -4,9 +4,9 @@ package com.github.azeroth.game.chat;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class AccountCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountCommand(CommandHandler handler) {
         if (handler.getSession() == null) {
             return false;
@@ -14,18 +14,18 @@ class AccountCommands {
 
         // GM Level
         var securityLevel = handler.getSession().getSecurity();
-        handler.sendSysMessage(CypherStrings.AccountLevel, securityLevel);
+        handler.sendSysMessage(SysMessage.AccountLevel, securityLevel);
 
         // Security level required
         var session = handler.getSession();
         var hasRBAC = (session.hasPermission(RBACPermissions.EmailConfirmForPassChange));
         int pwConfig = 0; // 0 - PW_NONE, 1 - PW_EMAIL, 2 - PW_RBAC
 
-        handler.sendSysMessage(CypherStrings.AccountSecType, (pwConfig == 0 ? "Lowest level: No Email input required." : pwConfig == 1 ? "Highest level: Email input required." : pwConfig == 2 ? "Special level: Your account may require email input depending on settings. That is the case if another lien is printed." : "Unknown security level: Notify technician for details."));
+        handler.sendSysMessage(SysMessage.AccountSecType, (pwConfig == 0 ? "Lowest level: No Email input required." : pwConfig == 1 ? "Highest level: Email input required." : pwConfig == 2 ? "Special level: Your account may require email input depending on settings. That is the case if another lien is printed." : "Unknown security level: Notify technician for details."));
 
         // RBAC required display - is not displayed for console
         if (pwConfig == 2 && hasRBAC) {
-            handler.sendSysMessage(CypherStrings.RbacEmailRequired);
+            handler.sendSysMessage(SysMessage.RbacEmailRequired);
         }
 
         // Email display if sufficient rights
@@ -39,19 +39,19 @@ class AccountCommands {
 
             if (!result.isEmpty()) {
                 emailoutput = result.<String>Read(0);
-                handler.sendSysMessage(CypherStrings.CommandEmailOutput, emailoutput);
+                handler.sendSysMessage(SysMessage.CommandEmailOutput, emailoutput);
             }
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccount2FARemoveCommand(CommandHandler handler, Integer token) {
 		/*var masterKey = global.SecretMgr.GetSecret(Secrets.TOTPMasterKey);
 		if (!masterKey.isAvailable())
 		{
-			handler.sendSysMessage(CypherStrings.TwoFACommandsNotSetup);
+			handler.sendSysMessage(SysMessage.TwoFACommandsNotSetup);
 			return false;
 		}
 
@@ -65,13 +65,13 @@ class AccountCommands {
 			if (result.isEmpty())
 			{
 				Log.outError(LogFilter.misc, $"Account {accountId} not found in login database when processing .account 2fa setup command.");
-				handler.sendSysMessage(CypherStrings.UnknownError);
+				handler.sendSysMessage(SysMessage.UnknownError);
 				return false;
 			}
 
 			if (result.IsNull(0))
 			{ // 2FA not enabled
-				handler.sendSysMessage(CypherStrings.TwoFANotSetup);
+				handler.sendSysMessage(SysMessage.TwoFANotSetup);
 				return false;
 			}
 
@@ -86,7 +86,7 @@ class AccountCommands {
 				if (!success)
 				{
 					Log.outError(LogFilter.misc, $"Account {accountId} has invalid ciphertext in TOTP token.");
-					handler.sendSysMessage(CypherStrings.UnknownError);
+					handler.sendSysMessage(SysMessage.UnknownError);
 					return false;
 				}
 			}
@@ -97,23 +97,23 @@ class AccountCommands {
 				stmt.AddNull(0);
 				stmt.AddValue(1, accountId);
 				DB.Login.execute(stmt);
-				handler.sendSysMessage(CypherStrings.TwoFARemoveComplete);
+				handler.sendSysMessage(SysMessage.TwoFARemoveComplete);
 				return true;
 			}
 			else
-				handler.sendSysMessage(CypherStrings.TwoFAInvalidToken);
+				handler.sendSysMessage(SysMessage.TwoFAInvalidToken);
 		}
 
-		handler.sendSysMessage(CypherStrings.TwoFARemoveNeedToken);*/
+		handler.sendSysMessage(SysMessage.TwoFARemoveNeedToken);*/
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccount2FASetupCommand(CommandHandler handler, Integer token) {
 		/*var masterKey = global.SecretMgr.GetSecret(Secrets.TOTPMasterKey);
 		if (!masterKey.isAvailable())
 		{
-			handler.sendSysMessage(CypherStrings.TwoFACommandsNotSetup);
+			handler.sendSysMessage(SysMessage.TwoFACommandsNotSetup);
 			return false;
 		}
 
@@ -127,13 +127,13 @@ class AccountCommands {
 			if (result.isEmpty())
 			{
 				Log.outError(LogFilter.misc, $"Account {accountId} not found in login database when processing .account 2fa setup command.");
-				handler.sendSysMessage(CypherStrings.UnknownError);
+				handler.sendSysMessage(SysMessage.UnknownError);
 				return false;
 			}
 
 			if (!result.IsNull(0))
 			{
-				handler.sendSysMessage(CypherStrings.TwoFAAlreadySetup);
+				handler.sendSysMessage(SysMessage.TwoFAAlreadySetup);
 				return false;
 			}
 		}
@@ -156,22 +156,22 @@ class AccountCommands {
 				stmt.AddValue(1, accountId);
 				DB.Login.execute(stmt);
 				suggestions.remove(accountId);
-				handler.sendSysMessage(CypherStrings.TwoFASetupComplete);
+				handler.sendSysMessage(SysMessage.TwoFASetupComplete);
 				return true;
 			}
 			else
-				handler.sendSysMessage(CypherStrings.TwoFAInvalidToken);
+				handler.sendSysMessage(SysMessage.TwoFAInvalidToken);
 		}
 
 		// new suggestion, or no token specified, output TOTP parameters
-		handler.sendSysMessage(CypherStrings.TwoFASecretSuggestion, suggestions[accountId].ToBase32());*/
+		handler.sendSysMessage(SysMessage.TwoFASecretSuggestion, suggestions[accountId].ToBase32());*/
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountAddonCommand(CommandHandler handler, byte expansion) {
         if (expansion > WorldConfig.getIntValue(WorldCfg.expansion)) {
-            handler.sendSysMessage(CypherStrings.ImproperValue);
+            handler.sendSysMessage(SysMessage.ImproperValue);
 
             return false;
         }
@@ -181,16 +181,16 @@ class AccountCommands {
         stmt.AddValue(1, handler.getSession().getAccountId());
         DB.Login.execute(stmt);
 
-        handler.sendSysMessage(CypherStrings.AccountAddon, expansion);
+        handler.sendSysMessage(SysMessage.AccountAddon, expansion);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleAccountCreateCommand(CommandHandler handler, String accountName, String password, String email) {
         if (accountName.contains("@")) {
-            handler.sendSysMessage(CypherStrings.AccountUseBnetCommands);
+            handler.sendSysMessage(SysMessage.AccountUseBnetCommands);
 
             return false;
         }
@@ -199,7 +199,7 @@ class AccountCommands {
 
         switch (result) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.AccountCreated, accountName);
+                handler.sendSysMessage(SysMessage.AccountCreated, accountName);
 
                 if (handler.getSession() != null) {
                     Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) created Account {4} (Email: '{5}')", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString(), accountName, email != null ? email : "");
@@ -207,23 +207,23 @@ class AccountCommands {
 
                 break;
             case NameTooLong:
-                handler.sendSysMessage(CypherStrings.AccountNameTooLong);
+                handler.sendSysMessage(SysMessage.AccountNameTooLong);
 
                 return false;
             case PassTooLong:
-                handler.sendSysMessage(CypherStrings.AccountPassTooLong);
+                handler.sendSysMessage(SysMessage.AccountPassTooLong);
 
                 return false;
             case NameAlreadyExist:
-                handler.sendSysMessage(CypherStrings.AccountAlreadyExist);
+                handler.sendSysMessage(SysMessage.AccountAlreadyExist);
 
                 return false;
             case DBInternalError:
-                handler.sendSysMessage(CypherStrings.AccountNotCreatedSqlError, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotCreatedSqlError, accountName);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.AccountNotCreated, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotCreated, accountName);
 
                 return false;
         }
@@ -231,12 +231,12 @@ class AccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountDeleteCommand(CommandHandler handler, String accountName) {
         var accountId = global.getAccountMgr().getId(accountName);
 
         if (accountId == 0) {
-            handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+            handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
             return false;
         }
@@ -249,19 +249,19 @@ class AccountCommands {
 
         switch (result) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.AccountDeleted, accountName);
+                handler.sendSysMessage(SysMessage.AccountDeleted, accountName);
 
                 break;
             case NameNotExist:
-                handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                 return false;
             case DBInternalError:
-                handler.sendSysMessage(CypherStrings.AccountNotDeletedSqlError, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotDeletedSqlError, accountName);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.AccountNotDeleted, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotDeleted, accountName);
 
                 return false;
         }
@@ -269,10 +269,10 @@ class AccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountEmailCommand(CommandHandler handler, String oldEmail, String password, String email, String emailConfirm) {
         if (!global.getAccountMgr().checkEmail(handler.getSession().getAccountId(), oldEmail)) {
-            handler.sendSysMessage(CypherStrings.CommandWrongemail);
+            handler.sendSysMessage(SysMessage.CommandWrongemail);
 
             Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Tried to change email, but the provided email [{4}] is not equal to registration email [{5}].", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString(), email, oldEmail);
 
@@ -280,7 +280,7 @@ class AccountCommands {
         }
 
         if (!global.getAccountMgr().checkPassword(handler.getSession().getAccountId(), password)) {
-            handler.sendSysMessage(CypherStrings.CommandWrongoldpassword);
+            handler.sendSysMessage(SysMessage.CommandWrongoldpassword);
 
             Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Tried to change email, but the provided password is wrong.", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
@@ -288,13 +288,13 @@ class AccountCommands {
         }
 
         if (Objects.equals(email, oldEmail)) {
-            handler.sendSysMessage(CypherStrings.OldEmailIsNewEmail);
+            handler.sendSysMessage(SysMessage.OldEmailIsNewEmail);
 
             return false;
         }
 
         if (!Objects.equals(email, emailConfirm)) {
-            handler.sendSysMessage(CypherStrings.NewEmailsNotMatch);
+            handler.sendSysMessage(SysMessage.NewEmailsNotMatch);
 
             Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Tried to change email, but the provided password is wrong.", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
@@ -306,17 +306,17 @@ class AccountCommands {
 
         switch (result) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.CommandEmail);
+                handler.sendSysMessage(SysMessage.CommandEmail);
 
                 Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Changed Email from [{4}] to [{5}].", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString(), oldEmail, email);
 
                 break;
             case EmailTooLong:
-                handler.sendSysMessage(CypherStrings.EmailTooLong);
+                handler.sendSysMessage(SysMessage.EmailTooLong);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.CommandNotchangeemail);
+                handler.sendSysMessage(SysMessage.CommandNotchangeemail);
 
                 return false;
         }
@@ -324,15 +324,15 @@ class AccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleAccountPasswordCommand(CommandHandler handler, String oldPassword, String newPassword, String confirmPassword, String confirmEmail) {
         // first, we check config. What security type (sec type) is it ? Depending on it, the command branches out
         var pwConfig = WorldConfig.getUIntValue(WorldCfg.AccPasschangesec); // 0 - PW_NONE, 1 - PW_EMAIL, 2 - PW_RBAC
 
         // We compare the old, saved password to the entered old password - no chance for the unauthorized.
         if (!global.getAccountMgr().checkPassword(handler.getSession().getAccountId(), oldPassword)) {
-            handler.sendSysMessage(CypherStrings.CommandWrongoldpassword);
+            handler.sendSysMessage(SysMessage.CommandWrongoldpassword);
 
             Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Tried to change password, but the provided old password is wrong.", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
@@ -342,7 +342,7 @@ class AccountCommands {
         // This compares the old, current email to the entered email - however, only...
         if ((pwConfig == 1 || (pwConfig == 2 && handler.getSession().hasPermission(RBACPermissions.EmailConfirmForPassChange))) && !global.getAccountMgr().checkEmail(handler.getSession().getAccountId(), confirmEmail)) // ... and returns false if the comparison fails.
         {
-            handler.sendSysMessage(CypherStrings.CommandWrongemail);
+            handler.sendSysMessage(SysMessage.CommandWrongemail);
 
             Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Tried to change password, but the entered email [{4}] is wrong.", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString(), confirmEmail);
 
@@ -351,7 +351,7 @@ class AccountCommands {
 
         // Making sure that newly entered password is correctly entered.
         if (!Objects.equals(newPassword, confirmPassword)) {
-            handler.sendSysMessage(CypherStrings.NewPasswordsNotMatch);
+            handler.sendSysMessage(SysMessage.NewPasswordsNotMatch);
 
             return false;
         }
@@ -361,17 +361,17 @@ class AccountCommands {
 
         switch (result) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.CommandPassword);
+                handler.sendSysMessage(SysMessage.CommandPassword);
 
                 Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] (GUID: {3}) Changed password.", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
                 break;
             case PassTooLong:
-                handler.sendSysMessage(CypherStrings.PasswordTooLong);
+                handler.sendSysMessage(SysMessage.PasswordTooLong);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.CommandNotchangepassword);
+                handler.sendSysMessage(SysMessage.CommandNotchangepassword);
 
                 return false;
         }
@@ -379,9 +379,9 @@ class AccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AccountLockCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountLockCountryCommand(CommandHandler handler, boolean state) {
             if (state) {
 				/*var ipBytes = System.Net.IPAddress.parse(handler.GetSession().GetRemoteAddress()).GetAddressBytes();
@@ -398,7 +398,7 @@ class AccountCommands {
 					stmt.AddValue(0, country);
 					stmt.AddValue(1, handler.GetSession().getAccountId());
 					DB.Login.execute(stmt);
-					handler.sendSysMessage(CypherStrings.CommandAcclocklocked);
+					handler.sendSysMessage(SysMessage.CommandAcclocklocked);
 				}
 				else
 				{
@@ -410,22 +410,22 @@ class AccountCommands {
                 stmt.AddValue(0, "00");
                 stmt.AddValue(1, handler.getSession().getAccountId());
                 DB.Login.execute(stmt);
-                handler.sendSysMessage(CypherStrings.CommandAcclockunlocked);
+                handler.sendSysMessage(SysMessage.CommandAcclockunlocked);
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountLockIpCommand(CommandHandler handler, boolean state) {
             var stmt = DB.Login.GetPreparedStatement(LoginStatements.UPD_ACCOUNT_LOCK);
 
             if (state) {
                 stmt.AddValue(0, true); // locked
-                handler.sendSysMessage(CypherStrings.CommandAcclocklocked);
+                handler.sendSysMessage(SysMessage.CommandAcclocklocked);
             } else {
                 stmt.AddValue(0, false); // unlocked
-                handler.sendSysMessage(CypherStrings.CommandAcclockunlocked);
+                handler.sendSysMessage(SysMessage.CommandAcclockunlocked);
             }
 
             stmt.AddValue(1, handler.getSession().getAccountId());
@@ -436,29 +436,29 @@ class AccountCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AccountOnlineListCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountOnlineListCommand(CommandHandler handler) {
             return handleAccountOnlineListCommandWithParameters(handler, null, null, null, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountOnlineListWithIpFilterCommand(CommandHandler handler, String ipAddress) {
             return handleAccountOnlineListCommandWithParameters(handler, ipAddress, null, null, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountOnlineListWithLimitCommand(CommandHandler handler, int limit) {
             return handleAccountOnlineListCommandWithParameters(handler, null, limit, null, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountOnlineListWithMapFilterCommand(CommandHandler handler, int mapId) {
             return handleAccountOnlineListCommandWithParameters(handler, null, null, mapId, null);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountOnlineListWithZoneFilterCommand(CommandHandler handler, int zoneId) {
             return handleAccountOnlineListCommandWithParameters(handler, null, null, null, zoneId);
         }
@@ -495,17 +495,17 @@ class AccountCommands {
                 if (sessionsMatchCount == 0) {
                     /**- Display the list of account/character online on the first matched sessions
                      */
-                    handler.sendSysMessage(CypherStrings.AccountListBarHeader);
-                    handler.sendSysMessage(CypherStrings.AccountListHeader);
-                    handler.sendSysMessage(CypherStrings.AccountListBar);
+                    handler.sendSysMessage(SysMessage.AccountListBarHeader);
+                    handler.sendSysMessage(SysMessage.AccountListHeader);
+                    handler.sendSysMessage(SysMessage.AccountListBar);
                 }
 
-                handler.sendSysMessage(CypherStrings.AccountListLine, session.getAccountName(), session.getPlayerName(), session.getRemoteAddress(), playerMapId, playerZoneId, session.getAccountExpansion(), session.getSecurity());
+                handler.sendSysMessage(SysMessage.AccountListLine, session.getAccountName(), session.getPlayerName(), session.getRemoteAddress(), playerMapId, playerZoneId, session.getAccountExpansion(), session.getSecurity());
 
                 ++sessionsMatchCount;
 
                 // Apply optional count limit
-// C# TO JAVA CONVERTER TASK: Comparisons involving nullable type instances are not converted to null-value logic:
+
                 if (limit != null && sessionsMatchCount >= limit) {
                     break;
                 }
@@ -513,25 +513,25 @@ class AccountCommands {
 
             // Header is printed on first matched session. If it wasn't printed then no sessions matched the criteria
             if (sessionsMatchCount == 0) {
-                handler.sendSysMessage(CypherStrings.AccountListEmpty);
+                handler.sendSysMessage(SysMessage.AccountListEmpty);
 
                 return true;
             }
 
-            handler.sendSysMessage(CypherStrings.AccountListBar);
+            handler.sendSysMessage(SysMessage.AccountListBar);
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AccountSetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountSet2FACommand(CommandHandler handler, String accountName, String secret) {
 			/*uint targetAccountId = global.AccountMgr.getId(accountName);
 			if (targetAccountId == 0)
 			{
-				handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+				handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 				return false;
 			}
 
@@ -545,26 +545,26 @@ class AccountCommands {
 				stmt.AddNull(0);
 				stmt.AddValue(1, targetAccountId);
 				DB.Login.execute(stmt);
-				handler.sendSysMessage(CypherStrings.TwoFARemoveComplete);
+				handler.sendSysMessage(SysMessage.TwoFARemoveComplete);
 				return true;
 			}
 
 			var masterKey = global.SecretMgr.GetSecret(Secrets.TOTPMasterKey);
 			if (!masterKey.isAvailable())
 			{
-				handler.sendSysMessage(CypherStrings.TwoFACommandsNotSetup);
+				handler.sendSysMessage(SysMessage.TwoFACommandsNotSetup);
 				return false;
 			}
 
 			var decoded = secret.FromBase32();
 			if (decoded == null)
 			{
-				handler.sendSysMessage(CypherStrings.TwoFASecretInvalid);
+				handler.sendSysMessage(SysMessage.TwoFASecretInvalid);
 				return false;
 			}
 			if (128 < (decoded.length + 12 + 12))
 			{
-				handler.sendSysMessage(CypherStrings.TwoFASecretTooLong);
+				handler.sendSysMessage(SysMessage.TwoFASecretTooLong);
 				return false;
 			}
 
@@ -575,12 +575,12 @@ class AccountCommands {
 			stmt.AddValue(0, decoded);
 			stmt.AddValue(1, targetAccountId);
 			DB.Login.execute(stmt);
-			handler.sendSysMessage(CypherStrings.TwoFASecretSetComplete, accountName);*/
+			handler.sendSysMessage(SysMessage.TwoFASecretSetComplete, accountName);*/
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
         private static boolean handleAccountSetAddonCommand(CommandHandler handler, String accountName, byte expansion) {
             int accountId;
 
@@ -591,7 +591,7 @@ class AccountCommands {
                 accountId = global.getAccountMgr().getId(accountName);
 
                 if (accountId == 0) {
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 }
@@ -625,17 +625,17 @@ class AccountCommands {
 
             DB.Login.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.AccountSetaddon, accountName, accountId, expansion);
+            handler.sendSysMessage(SysMessage.AccountSetaddon, accountName, accountId, expansion);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountSetPasswordCommand(CommandHandler handler, String accountName, String password, String confirmPassword) {
             var targetAccountId = global.getAccountMgr().getId(accountName);
 
             if (targetAccountId == 0) {
-                handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                 return false;
             }
@@ -647,7 +647,7 @@ class AccountCommands {
             }
 
             if (!password.equals(confirmPassword)) {
-                handler.sendSysMessage(CypherStrings.NewPasswordsNotMatch);
+                handler.sendSysMessage(SysMessage.NewPasswordsNotMatch);
 
                 return false;
             }
@@ -656,19 +656,19 @@ class AccountCommands {
 
             switch (result) {
                 case Ok:
-                    handler.sendSysMessage(CypherStrings.CommandPassword);
+                    handler.sendSysMessage(SysMessage.CommandPassword);
 
                     break;
                 case NameNotExist:
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 case PassTooLong:
-                    handler.sendSysMessage(CypherStrings.PasswordTooLong);
+                    handler.sendSysMessage(SysMessage.PasswordTooLong);
 
                     return false;
                 default:
-                    handler.sendSysMessage(CypherStrings.CommandNotchangepassword);
+                    handler.sendSysMessage(SysMessage.CommandNotchangepassword);
 
                     return false;
             }
@@ -676,8 +676,8 @@ class AccountCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
         private static boolean handleAccountSetSecLevelCommand(CommandHandler handler, String accountName, byte securityLevel, Integer realmId) {
             int accountId;
 
@@ -685,7 +685,7 @@ class AccountCommands {
                 accountId = global.getAccountMgr().getId(accountName);
 
                 if (accountId == 0) {
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 }
@@ -703,7 +703,7 @@ class AccountCommands {
             }
 
             if (securityLevel > (int) AccountTypes.Console.getValue()) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -727,7 +727,7 @@ class AccountCommands {
             var targetSecurity = global.getAccountMgr().getSecurity(accountId, realmID);
 
             if (targetSecurity.getValue() >= playerSecurity.getValue() || AccountTypes.forValue(securityLevel) >= playerSecurity.getValue()) {
-                handler.sendSysMessage(CypherStrings.YoursSecurityIsLow);
+                handler.sendSysMessage(SysMessage.YoursSecurityIsLow);
 
                 return false;
             }
@@ -743,7 +743,7 @@ class AccountCommands {
                 var result = DB.Login.query(stmt);
 
                 if (!result.isEmpty()) {
-                    handler.sendSysMessage(CypherStrings.YoursSecurityIsLow);
+                    handler.sendSysMessage(SysMessage.YoursSecurityIsLow);
 
                     return false;
                 }
@@ -751,26 +751,26 @@ class AccountCommands {
 
             // Check if provided realmID has a negative value other than -1
             if (realmID < -1) {
-                handler.sendSysMessage(CypherStrings.InvalidRealmid);
+                handler.sendSysMessage(SysMessage.InvalidRealmid);
 
                 return false;
             }
 
             global.getAccountMgr().updateAccountAccess(null, accountId, (byte) securityLevel, realmID);
 
-            handler.sendSysMessage(CypherStrings.YouChangeSecurity, accountName, securityLevel);
+            handler.sendSysMessage(SysMessage.YouChangeSecurity, accountName, securityLevel);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static class SetSecCommands {
-            // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
             private static boolean handleAccountSetEmailCommand(CommandHandler handler, String accountName, String email, String confirmEmail) {
                 var targetAccountId = global.getAccountMgr().getId(accountName);
 
                 if (targetAccountId == 0) {
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 }
@@ -782,7 +782,7 @@ class AccountCommands {
                 }
 
                 if (!email.equals(confirmEmail)) {
-                    handler.sendSysMessage(CypherStrings.NewEmailsNotMatch);
+                    handler.sendSysMessage(SysMessage.NewEmailsNotMatch);
 
                     return false;
                 }
@@ -791,20 +791,20 @@ class AccountCommands {
 
                 switch (result) {
                     case Ok:
-                        handler.sendSysMessage(CypherStrings.CommandEmail);
+                        handler.sendSysMessage(SysMessage.CommandEmail);
                         Log.outInfo(LogFilter.player, "ChangeEmail: Account {0} [Id: {1}] had it's email changed to {2}.", accountName, targetAccountId, email);
 
                         break;
                     case NameNotExist:
-                        handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                        handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                         return false;
                     case EmailTooLong:
-                        handler.sendSysMessage(CypherStrings.EmailTooLong);
+                        handler.sendSysMessage(SysMessage.EmailTooLong);
 
                         return false;
                     default:
-                        handler.sendSysMessage(CypherStrings.CommandNotchangeemail);
+                        handler.sendSysMessage(SysMessage.CommandNotchangeemail);
 
                         return false;
                 }
@@ -812,12 +812,12 @@ class AccountCommands {
                 return true;
             }
 
-            // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
             private static boolean handleAccountSetRegEmailCommand(CommandHandler handler, String accountName, String email, String confirmEmail) {
                 var targetAccountId = global.getAccountMgr().getId(accountName);
 
                 if (targetAccountId == 0) {
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 }
@@ -829,7 +829,7 @@ class AccountCommands {
                 }
 
                 if (!email.equals(confirmEmail)) {
-                    handler.sendSysMessage(CypherStrings.NewEmailsNotMatch);
+                    handler.sendSysMessage(SysMessage.NewEmailsNotMatch);
 
                     return false;
                 }
@@ -838,20 +838,20 @@ class AccountCommands {
 
                 switch (result) {
                     case Ok:
-                        handler.sendSysMessage(CypherStrings.CommandEmail);
+                        handler.sendSysMessage(SysMessage.CommandEmail);
                         Log.outInfo(LogFilter.player, "ChangeRegEmail: Account {0} [Id: {1}] had it's Registration Email changed to {2}.", accountName, targetAccountId, email);
 
                         break;
                     case NameNotExist:
-                        handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                        handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                         return false;
                     case EmailTooLong:
-                        handler.sendSysMessage(CypherStrings.EmailTooLong);
+                        handler.sendSysMessage(SysMessage.EmailTooLong);
 
                         return false;
                     default:
-                        handler.sendSysMessage(CypherStrings.CommandNotchangeemail);
+                        handler.sendSysMessage(SysMessage.CommandNotchangeemail);
 
                         return false;
                 }

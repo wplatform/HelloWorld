@@ -9,50 +9,19 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.*;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.dbc.defines.TaxiNodeFlag;
 import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.dbc.gtable.GameTable;
-import com.github.azeroth.defines.*;
 import com.github.azeroth.defines.QuestSort;
 import com.github.azeroth.defines.SpellCategory;
+import com.github.azeroth.defines.*;
 import com.github.azeroth.game.DungeonEncounter;
 import com.github.azeroth.game.*;
 import com.github.azeroth.game.condition.ConditionManager;
 import com.github.azeroth.game.condition.ConditionSourceInfo;
 import com.github.azeroth.game.condition.ConditionSourceType;
 import com.github.azeroth.game.condition.DisableManager;
-import com.github.azeroth.game.domain.player.*;
-import com.github.azeroth.game.domain.scene.SceneTemplate;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerCreateProperties;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerId;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerSpawn;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerTemplate;
-import com.github.azeroth.game.entity.creature.*;
-import com.github.azeroth.game.entity.creature.EquipmentInfo;
-import com.github.azeroth.game.entity.creature.Trainer;
-import com.github.azeroth.game.entity.creature.TrainerSpell;
-import com.github.azeroth.game.entity.creature.VendorItemData;
-import com.github.azeroth.game.entity.gobject.*;
-import com.github.azeroth.game.entity.item.ItemTemplate;
-import com.github.azeroth.game.entity.item.enums.ItemClass;
-import com.github.azeroth.game.entity.item.enums.ItemSubclassConsumable;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.WorldLocation;
-import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.entity.object.enums.HighGuid;
-import com.github.azeroth.game.entity.object.enums.SummonerType;
-import com.github.azeroth.game.entity.object.enums.TypeId;
-import com.github.azeroth.game.entity.player.AccessRequirement;
-import com.github.azeroth.game.domain.unit.NPCFlag;
-import com.github.azeroth.game.entity.vehicle.VehicleAccessory;
-import com.github.azeroth.game.entity.vehicle.VehicleSeatAddon;
-import com.github.azeroth.game.entity.vehicle.VehicleTemplate;
-import com.github.azeroth.game.map.*;
-import com.github.azeroth.game.movement.MotionMaster;
-import com.github.azeroth.game.phasing.PhaseShift;
-import com.github.azeroth.game.phasing.PhasingHandler;
-import com.github.azeroth.game.quest.Quest;
-import com.github.azeroth.game.domain.ScriptInfo;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.gobject.GameObjectLocale;
 import com.github.azeroth.game.domain.gossip.GossipMenuOption;
@@ -60,26 +29,67 @@ import com.github.azeroth.game.domain.gossip.GossipMenus;
 import com.github.azeroth.game.domain.gossip.GossipOptionNpc;
 import com.github.azeroth.game.domain.misc.RaceUnlockRequirement;
 import com.github.azeroth.game.domain.misc.*;
-import com.github.azeroth.game.domain.quest.QuestTemplate;
+import com.github.azeroth.game.domain.player.*;
 import com.github.azeroth.game.domain.quest.*;
 import com.github.azeroth.game.domain.reputation.RepRewardRate;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
 import com.github.azeroth.game.domain.reputation.ReputationOnKill;
+import com.github.azeroth.game.domain.scene.SceneTemplate;
+import com.github.azeroth.game.domain.script.ScriptInfo;
+import com.github.azeroth.game.domain.script.ScriptsType;
 import com.github.azeroth.game.domain.spawn.*;
+import com.github.azeroth.game.domain.unit.*;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerCreateProperties;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerId;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerSpawn;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerTemplate;
+import com.github.azeroth.game.entity.creature.Trainer;
+import com.github.azeroth.game.entity.creature.TrainerSpell;
+import com.github.azeroth.game.entity.gobject.*;
+import com.github.azeroth.game.entity.item.ItemTemplate;
+import com.github.azeroth.game.entity.item.enums.InventoryType;
+import com.github.azeroth.game.entity.item.enums.ItemClass;
+import com.github.azeroth.game.entity.item.enums.ItemSubclassConsumable;
+import com.github.azeroth.game.entity.object.ObjectDefine;
+import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.enums.HighGuid;
+import com.github.azeroth.game.entity.object.enums.SummonerType;
+import com.github.azeroth.game.entity.object.enums.TypeId;
+import com.github.azeroth.game.entity.player.AccessRequirement;
+import com.github.azeroth.game.entity.player.Player;
+import com.github.azeroth.game.entity.vehicle.VehicleAccessory;
+import com.github.azeroth.game.entity.vehicle.VehicleSeatAddon;
+import com.github.azeroth.game.entity.vehicle.VehicleTemplate;
+import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.map.enums.LoadResult;
+import com.github.azeroth.game.map.grid.Coordinate;
+import com.github.azeroth.game.map.model.ZoneAndAreaId;
+import com.github.azeroth.game.movement.MotionMaster;
+import com.github.azeroth.game.movement.MovementGeneratorType;
+import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.phasing.PhasingHandler;
+import com.github.azeroth.game.quest.Quest;
 import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.service.repository.*;
 import com.github.azeroth.game.spell.SpellInfo;
 import com.github.azeroth.game.spell.SpellManager;
+import com.github.azeroth.game.spell.auras.enums.AuraType;
 import com.github.azeroth.game.world.World;
+import com.github.azeroth.game.world.setting.WorldSetting;
+import com.github.azeroth.utils.MathUtil;
 import com.github.azeroth.utils.RandomUtil;
 import com.github.azeroth.utils.StringUtil;
+import com.github.azeroth.utils.Utils;
 
 import java.util.*;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.azeroth.game.domain.unit.UnitDefine.BASE_ATTACK_TIME;
 import static game.WardenActions.Log;
 import static java.util.logging.Logger.global;
 
@@ -192,7 +202,7 @@ public final class ObjectManager {
     //Maps
     public final MapCache<Integer, GameTele> gameTeleStorage;
     //General
-    private final MapCache<Integer, LocalizedString> stringStorage;
+    private final MapCache<Integer, LocalizedString> messageTextStorage;
     private final MapCache<Integer, RepRewardRate> repRewardRateStorage;
     private final MapCache<Integer, ReputationOnKill> repOnKillStorage;
     private final MapCache<Integer, RepSpilloverTemplate> repSpilloverTemplateStorage;
@@ -224,8 +234,10 @@ public final class ObjectManager {
     private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
     private final HashMap<Integer, List<Integer>> spellScriptsStorage = new HashMap<>();
     private final HashMap<Integer, List<Integer>> areaTriggerScriptStorage = new HashMap<>();
-    private final HashMap<Integer, CellObjectGuids> mapObjectGuidsStore = new HashMap<>();
-    private final HashMap<Integer, CellObjectGuids> mapPersonalObjectGuidsStore = new HashMap<>();
+    private final MapCache<Tuple<Integer,Difficulty, Integer>, CellSpawnData> mapCellSpawnDataStorage;
+
+    private final MapCache<Pair<Integer,Difficulty>, CellSpawnData> transportMapSpawnDataStorage;
+    private final MapCache<PersonalCellSpawnDataKey, CellSpawnData> mapPersonalSpawnDataStorage;
     private final HashMap<Integer, InstanceTemplate> instanceTemplateStorage = new HashMap<>();
     private final ArrayList<Short> transportMaps = new ArrayList<>();
     private final MapCache<Integer, SpawnGroupTemplateData> spawnGroupDataStorage;
@@ -249,17 +261,14 @@ public final class ObjectManager {
     private final MapCache<Integer, CreatureTemplate> creatureTemplateStorage;
     private final HashMap<Integer, CreatureModelInfo> creatureModelStorage = new HashMap<Integer, CreatureModelInfo>();
     private final HashMap<Long, CreatureData> creatureDataStorage = new HashMap<Long, CreatureData>();
-    private final HashMap<Long, CreatureAddon> creatureAddonStorage = new HashMap<Long, CreatureAddon>();
-    private final Map<Integer, List<Integer>> creatureQuestItemStorage = new HashMap<>();
-    private final HashMap<Integer, CreatureAddon> creatureTemplateAddonStorage = new HashMap<Integer, CreatureAddon>();
-    private final HashMap<Long, CreatureMovementData> creatureMovementOverrides = new HashMap<Long, CreatureMovementData>();
-    private final MultiMap<Integer, Tuple<Integer, EquipmentInfo>> equipmentInfoStorage = new MultiMap<Integer, Tuple<Integer, EquipmentInfo>>();
-    private final HashMap<ObjectGuid, ObjectGuid> linkedRespawnStorage = new HashMap<ObjectGuid, ObjectGuid>();
+    private final MapCache<Long, CreatureAddon> creatureAddonStorage;
+    private final MapCache<Pair<Integer, Difficulty>, List<Integer>> creatureQuestItemStorage;
+    private final HashMap<Integer, CreatureMovementData> creatureMovementOverrides = new HashMap<>();
+    private final MapCache<Integer, List<EquipmentInfo>> equipmentInfoStorage;
+    private final HashMap<ObjectGuid, ObjectGuid> linkedRespawnStorage = new HashMap<>();
     private final HashMap<Integer, CreatureBaseStats> creatureBaseStatsStorage = new HashMap<Integer, CreatureBaseStats>();
-    private final HashMap<Integer, VendorItemData> cacheVendorItemStorage = new HashMap<Integer, VendorItemData>();
+    private final MapCache<Integer, VendorItemData> cacheVendorItemStorage;
     private final HashMap<Integer, Trainer> trainers = new HashMap<Integer, Trainer>();
-    private final ArrayList<Integer>[] difficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded difficulty 1 second in creatures, used in CheckCreatureTemplate
-    private final ArrayList<Integer>[] hasDifficultyEntries = new ArrayList<Integer>[SharedConst.MaxCreatureDifficulties]; // already loaded creatures with difficulty 1 values, used in CheckCreatureTemplate
     private final MapCache<Integer, NpcText> npcTextStorage;
     //GameObject
     private final HashMap<Integer, GameObjectTemplate> gameObjectTemplateStorage = new HashMap<Integer, GameObjectTemplate>();
@@ -290,7 +299,6 @@ public final class ObjectManager {
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<Integer, AreaTriggerStruct>();
     private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<Long, AccessRequirement>();
     private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
-    private final HashMap<HighGuid, ObjectGuidGenerator> guidGenerators = new HashMap<HighGuid, ObjectGuidGenerator>();
     private final int[] baseXPTable = new int[SharedDefine.MAX_LEVEL];
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> spellScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> eventScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
@@ -335,14 +343,13 @@ public final class ObjectManager {
     private int[] playerXPperLevel;
 
     private ObjectManager() {
-        this.stringStorage = cacheProvider.newGenericMapCache("LocalizedStringStorage", Integer.class, LocalizedString.class);
+        this.messageTextStorage = cacheProvider.newGenericMapCache("LocalizedStringStorage", Integer.class, LocalizedString.class);
         this.gameTeleStorage = cacheProvider.newGenericMapCache("GameTeleportStorage", Integer.class, GameTele.class);
         this.tempSummonDataStorage = cacheProvider.newGenericMapCache("TempSummonDataStorage", new TypeReference<>() {});
         this.pageTextStorage = cacheProvider.newGenericMapCache("PageTextStorage", new TypeReference<>() {});
         this.mailLevelRewardStorage = cacheProvider.newGenericMapCache("MailLevelRewardStorage", new TypeReference<>() {});
         this.repOnKillStorage = cacheProvider.newGenericMapCache("RepOnKillStorage", new TypeReference<>() {});
         this.repRewardRateStorage = cacheProvider.newGenericMapCache("RepRewardRateStorage", new TypeReference<>() {});
-
         this.repSpilloverTemplateStorage = cacheProvider.newGenericMapCache("RepSpilloverTemplateStorage", new TypeReference<>() {});
         this.playerChoices = cacheProvider.newGenericMapCache("PlayerChoicesStorage", new TypeReference<>() {});
         this.gossipMenusStorage = cacheProvider.newGenericMapCache("GossipMenusStorage", new TypeReference<>() {});
@@ -363,12 +370,14 @@ public final class ObjectManager {
         this.creatureTemplateStorage = cacheProvider.newGenericMapCache("CreatureTemplateStorage", new TypeReference<>(){});
         this.petInfoStore = cacheProvider.newGenericMapCache("PetInfoStorage", new TypeReference<>(){});
         this.phaseNameStorage = cacheProvider.newGenericMapCache("PhaseNameStorage", new TypeReference<>(){});
+        this.mapCellSpawnDataStorage = cacheProvider.newGenericMapCache("MapCellSpawnDataStorage", new TypeReference<>(){});
+        this.transportMapSpawnDataStorage = cacheProvider.newGenericMapCache("TransportMapSpawnDataStorage", new TypeReference<>(){});
+        this.mapPersonalSpawnDataStorage = cacheProvider.newGenericMapCache("MapPersonalSpawnDataStorage", new TypeReference<>(){});
+        this.cacheVendorItemStorage = cacheProvider.newGenericMapCache("CacheVendorItemStorage", new TypeReference<>(){});
+        this.equipmentInfoStorage = cacheProvider.newGenericMapCache("EquipmentInfoStorage", new TypeReference<>(){});
+        this.creatureAddonStorage = cacheProvider.newGenericMapCache("CreatureAddonStorage", new TypeReference<>(){});
+        this.creatureQuestItemStorage = cacheProvider.newGenericMapCache("CreatureQuestItemStorage", new TypeReference<>(){});
 
-
-        for (var i = 0; i < SharedConst.MaxCreatureDifficulties; ++i) {
-            difficultyEntries[i] = new ArrayList<>();
-            hasDifficultyEntries[i] = new ArrayList<>();
-        }
     }
 
     //Static Methods
@@ -380,7 +389,7 @@ public final class ObjectManager {
         var pos = name.indexOf('-');
 
         if (pos != -1) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
             return new ExtendedPlayerName(name.substring(0, pos), name.charAt((pos + 1)..));
         } else {
             return new ExtendedPlayerName(name, "");
@@ -413,12 +422,12 @@ public final class ObjectManager {
         return cinfo.getFirstInvisibleModel();
     }
     //General
-    public boolean loadLocalizedStrings() {
+    public boolean loadMessageText() {
         var time = System.currentTimeMillis();
-        stringStorage.clear();
+        messageTextStorage.clear();
 
 
-        try (Stream<SystemText> trinityString = miscRepository.queryAllTrinityString()) {
+        try (Stream<SystemText> trinityString = miscRepository.streamAllMessageText()) {
             trinityString.forEach(e -> {
                 LocalizedString string = new LocalizedString();
                 Locale[] values = Locale.values();
@@ -430,17 +439,17 @@ public final class ObjectManager {
                 string.set(values[5], e.contentLoc6);
                 string.set(values[6], e.contentLoc7);
                 string.set(values[7], e.contentLoc8);
-                stringStorage.put(e.id, string);
+                messageTextStorage.put(e.id, string);
             });
         }
-        if (stringStorage.isEmpty()) {
+        if (messageTextStorage.isEmpty()) {
 
             Logs.SERVER_LOADING.info(">> Loaded 0 trinity strings. DB table `trinity_string` is empty. You have imported an incorrect database for more info search for TCE00003 on forum.");
 
 
             return false;
         } else {
-            Logs.SERVER_LOADING.info(">> Loaded {} trinity strings in {} ms", stringStorage.size(), System.currentTimeMillis() - time);
+            Logs.SERVER_LOADING.info(">> Loaded {} trinity strings in {} ms", messageTextStorage.size(), System.currentTimeMillis() - time);
 
         }
 
@@ -545,13 +554,13 @@ public final class ObjectManager {
         }
     }
 
-    public String getSystemText(int entry) {
-        return getSystemText(entry, Locale.enUS);
+    public String getMessageText(int entry) {
+        return getMessageText(entry, Locale.enUS);
     }
 
-    public String getSystemText(int entry, Locale locale) {
+    public String getMessageText(int entry, Locale locale) {
 
-        LocalizedString localizedString = stringStorage.get(entry);
+        LocalizedString localizedString = messageTextStorage.get(entry);
         if (localizedString == null) {
             Logs.SQL.error("System text entry {} not found in DB.", entry);
             return "<error>";
@@ -1073,36 +1082,37 @@ public final class ObjectManager {
     }
 
     public void loadSpellScripts() {
-        loadScripts(ScriptsType.spell);
+        loadScripts(ScriptsType.SPELL);
 
         // check ids
         for (var script : spellScripts.entrySet()) {
             var spellId = script.getKey() & 0x00FFFFFF;
-            var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
+            var spellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
 
             if (spellInfo == null) {
-                Logs.SQL.error("Table `spell_scripts` has not existing spell (Id: {0}) as script id", spellId);
+                Logs.SQL.error("Table `spell_scripts` has not existing spell (Id: {}) as script id", spellId);
 
                 continue;
             }
 
             var spellEffIndex = (byte) ((script.getKey() >> 24) & 0x000000FF);
 
-            if (spellEffIndex >= spellInfo.effects.count) {
-                Logs.SQL.error(String.format("Table `spell_scripts` has too high effect index %1$s for spell (Id: %2$s) as script id", spellEffIndex, spellId));
+            if (spellEffIndex >= spellInfo.getEffects().size()) {
+                Logs.SQL.error("Table `spell_scripts` has too high effect index {} for spell (Id: {}) as script id", spellEffIndex, spellId);
 
                 continue;
             }
 
             //check for correct spellEffect
-            if (spellInfo.getEffect(spellEffIndex).effect == 0 || (spellInfo.getEffect(spellEffIndex).effect != SpellEffectName.ScriptEffect && spellInfo.getEffect(spellEffIndex).effect != SpellEffectName.DUMMY)) {
+            if (spellInfo.getEffect(spellEffIndex).effect == SpellEffectName.NONE
+                    || (spellInfo.getEffect(spellEffIndex).effect != SpellEffectName.SCRIPT_EFFECT && spellInfo.getEffect(spellEffIndex).effect != SpellEffectName.DUMMY)) {
                 Logs.SQL.error(String.format("Table `spell_scripts` - spell %1$s effect %2$s is not SPELL_EFFECT_SCRIPT_EFFECT or SPELL_EFFECT_DUMMY", spellId, spellEffIndex));
             }
         }
     }
 
     public void loadEventScripts() {
-        loadScripts(ScriptsType.event);
+        loadScripts(ScriptsType.EVENT);
 
         ArrayList<Integer> evt_scripts = new ArrayList<>();
 
@@ -1117,7 +1127,7 @@ public final class ObjectManager {
 
         // Load all possible script entries from spells
         for (var spellNameEntry : CliDB.SpellNameStorage.values()) {
-            var spell = global.getSpellMgr().getSpellInfo(spellNameEntry.id, Difficulty.NONE);
+            var spell = world.getSpellManager().getSpellInfo(spellNameEntry.id, Difficulty.NONE);
 
             if (spell != null) {
                 for (var spellEffectInfo : spell.effects) {
@@ -1196,7 +1206,7 @@ public final class ObjectManager {
     }
 
     public boolean registerSpellScript(int spellId, String scriptName, boolean allRanks) {
-        var spellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
+        var spellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
 
         if (spellInfo == null) {
             Log.outError(LogFilter.ServerLoading, "Scriptname: `{0}` spell (Id: {1}) does not exist.", scriptName, spellId);
@@ -1270,7 +1280,7 @@ public final class ObjectManager {
 
         spellScriptsStorage.RemoveIfMatching((script) ->
         {
-            var spellEntry = global.getSpellMgr().getSpellInfo(script.key, Difficulty.NONE);
+            var spellEntry = world.getSpellManager().getSpellInfo(script.key, Difficulty.NONE);
 
             var SpellScriptLoaders = global.getScriptMgr().createSpellScriptLoaders(script.key);
 
@@ -1365,31 +1375,19 @@ public final class ObjectManager {
     }
 
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> getScriptsMapByType(ScriptsType type) {
-        switch (type) {
-            case First:
-            case Spell:
-                return spellScripts;
-            case Event:
-                return eventScripts;
-            case Waypoint:
-                return waypointScripts;
-            default:
-                return null;
-        }
+        return switch (type) {
+            case SPELL -> spellScripts;
+            case EVENT -> eventScripts;
+            case WAYPOINT -> waypointScripts;
+        };
     }
 
     public String getScriptsTableNameByType(ScriptsType type) {
-        switch (type) {
-            case First:
-            case Spell:
-                return "spell_scripts";
-            case Event:
-                return "event_scripts";
-            case Waypoint:
-                return "waypoint_scripts";
-            default:
-                return "";
-        }
+        return switch (type) {
+            case SPELL -> "spell_scripts";
+            case EVENT -> "event_scripts";
+            case WAYPOINT -> "waypoint_scripts";
+        };
     }
 
     //Creatures
@@ -1413,161 +1411,264 @@ public final class ObjectManager {
 
         loadCreatureLocales(templateHashMap);
 
+        loadCreatureTemplateAddons(templateHashMap);
+        loadCreatureTemplateSparring(templateHashMap);
+        loadCreatureTemplateDifficulty(templateHashMap);
+
         // Checking needs to be done after loading because of the difficulty self referencing
         for (var template : templateHashMap.values()) {
-            checkCreatureTemplate(template);
+            checkCreatureTemplate(template, templateHashMap);
         }
         creatureTemplateStorage.putAll(templateHashMap);
         Logs.SERVER_LOADING.info(">> Loaded {} creature definitions in {} ms", creatureTemplateStorage.size(), System.currentTimeMillis() - time);
     }
 
-    public void loadCreatureTemplateAddons() {
-        var time = System.currentTimeMillis();
-        //                                         0      1        2      3           4         5         6            7         8      9          10               11            12                      13
-        var result = DB.World.query("SELECT entry, path_id, mount, standState, animTier, visFlags, sheathState, PvPFlags, emote, aiAnimKit, movementAnimKit, meleeAnimKit, visibilityDistanceType, auras FROM creature_template_addon");
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature template addon definitions. DB table `creature_template_addon` is empty.");
 
+    public void checkCreatureTemplate(CreatureTemplate cInfo, HashMap<Integer, CreatureTemplate> templateHashMap) {
+        if (cInfo == null) {
             return;
         }
 
-        int count = 0;
+        FactionTemplate factionTemplate = dbcObjectManager.factionTemplate(cInfo.faction);
+        if (factionTemplate == null)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has non-existing faction template ({}). This can lead to crashes, set to faction 35.", cInfo.entry, cInfo.faction);
+            cInfo.faction = Objects.requireNonNull(dbcObjectManager.factionTemplate(35)).getId(); // this might seem stupid but all shit will would break if faction 35 did not exist
+        }
 
-        do {
-            var entry = result.<Integer>Read(0);
-
-            if (getCreatureTemplate(entry) == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_template_addon WHERE entry = %1$s", entry));
-                } else {
-                    Logs.SQL.error(String.format("Creature template (Entry: %1$s) does not exist but has a record in `creature_template_addon`", entry));
+        for (int k = 0; k < CreatureTemplate.MAX_KILL_CREDIT; ++k)
+        {
+            if (cInfo.killCredit[k] != 0)
+            {
+                if (templateHashMap.get(cInfo.killCredit[k]) == null)
+                {
+                    Logs.SQL.error("Creature (Entry: {}) lists non-existing creature entry {} in `KillCredit{}`.", cInfo.entry, cInfo.killCredit[k], k + 1);
+                    cInfo.killCredit[k] = 0;
                 }
-
-                continue;
             }
+        }
 
-            CreatureAddon creatureAddon = new CreatureAddon();
-            creatureAddon.pathId = result.<Integer>Read(1);
-            creatureAddon.mount = result.<Integer>Read(2);
-            creatureAddon.standState = result.<Byte>Read(3);
-            creatureAddon.animTier = result.<Byte>Read(4);
-            creatureAddon.visFlags = result.<Byte>Read(5);
-            creatureAddon.sheathState = result.<Byte>Read(6);
-            creatureAddon.pvpFlags = result.<Byte>Read(7);
-            creatureAddon.emote = result.<Integer>Read(8);
-            creatureAddon.aiAnimKit = result.<SHORT>Read(9);
-            creatureAddon.movementAnimKit = result.<SHORT>Read(10);
-            creatureAddon.meleeAnimKit = result.<SHORT>Read(11);
-            creatureAddon.visibilityDistanceType = visibilityDistanceType.forValue(result.<Byte>Read(12));
+        if (cInfo.models.isEmpty())
+            Logs.SQL.error("Creature (Entry: {}) does not have any existing display id in creature_template_model.", cInfo.entry);
 
-            var tokens = new LocalizedString();
+        if ((1 << cInfo.unitClass.ordinal()-1 & SharedDefine.CLASS_MASK_ALL_CREATURES) == 0)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has invalid unit_class ({}) in creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", cInfo.entry, cInfo.unitClass);
+            cInfo.unitClass = UnitClass.WARRIOR;
+        }
 
-            for (var c = 0; c < tokens.length; ++c) {
-                var id = tokens.get(c).Trim().replace(",", "");
 
-                int spellId;
-                tangible.OutObject<Integer> tempOut_spellId = new tangible.OutObject<Integer>();
-                if (!tangible.TryParseHelper.tryParseInt(id, tempOut_spellId)) {
-                    spellId = tempOut_spellId.outArgValue;
-                    continue;
-                } else {
-                    spellId = tempOut_spellId.outArgValue;
+
+        if (cInfo.baseAttackTime == 0)
+            cInfo.baseAttackTime  = BASE_ATTACK_TIME;
+
+        if (cInfo.rangeAttackTime == 0)
+            cInfo.rangeAttackTime = BASE_ATTACK_TIME;
+
+        if (cInfo.speedWalk == 0.0f)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has wrong value ({}) in speed_walk, set to 1.", cInfo.entry, cInfo.speedWalk);
+            cInfo.speedWalk = 1.0f;
+        }
+
+        if (cInfo.speedRun == 0.0f)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has wrong value ({}) in speed_run, set to 1.14286.", cInfo.entry, cInfo.speedRun);
+            cInfo.speedRun = 1.14286f;
+        }
+
+        if (cInfo.type != null && dbcObjectManager.creatureType(cInfo.type) == null)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has invalid creature type ({}) in `type`.", cInfo.entry, cInfo.type);
+            cInfo.type = CreatureType.HUMANOID;
+        }
+
+        if (cInfo.family != null && dbcObjectManager.creatureFamily(cInfo.family) == null)
+        {
+            Logs.SQL.error("Creature (Entry: {}) has invalid creature family ({}) in `family`.", cInfo.entry, cInfo.family);
+            cInfo.family = CreatureFamily.NONE;
+        }
+
+        checkCreatureMovement("creature_template_movement", cInfo.entry, cInfo.movement);
+
+        if (cInfo.vehicleId != 0)
+        {
+            VehicleEntry vehId = dbcObjectManager.vehicle(cInfo.vehicleId);
+            if (vehId == null)
+            {
+                Logs.SQL.error("Creature (Entry: {}) has a non-existing VehicleId ({}). This *WILL* cause the client to freeze!", cInfo.entry, cInfo.vehicleId);
+                cInfo.vehicleId = 0;
+            }
+        }
+
+        for (int j = 0; j < CreatureTemplate.MAX_CREATURE_SPELLS; ++j)
+        {
+            if (cInfo.spells[j] != 0 && world.getSpellManager().getSpellInfo(cInfo.spells[j], Difficulty.NONE) == null)
+            {
+                Logs.SQL.error("Creature (Entry: {}) has non-existing Spell{} ({}), set to 0.", cInfo.entry, j+1, cInfo.spells[j]);
+                cInfo.spells[j] = 0;
+            }
+        }
+
+        if (cInfo.movementType > MovementGeneratorType.RANDOM.ordinal())
+        {
+            Logs.SQL.error("Creature (Entry: {}) has wrong movement generator type ({}), ignored and set to IDLE.", cInfo.entry, cInfo.movementType);
+            cInfo.movementType = MovementGeneratorType.IDLE.ordinal();
+        }
+
+        if (cInfo.requiredExpansion >= Expansion.MAX_EXPANSION)
+        {
+            Logs.SQL.error("Table `creature_template` lists creature (Entry: {}) with `RequiredExpansion` {}. Ignored and set to 0.", cInfo.entry, cInfo.requiredExpansion);
+            cInfo.requiredExpansion = 0;
+        }
+
+        if (cInfo.flagsExtra.hasNotFlag(CreatureFlagExtra.DB_ALLOWED))
+        {
+            Logs.SQL.error("Table `creature_template` lists creature (Entry: {}) with disallowed `flags_extra` {}, removing incorrect flag.", cInfo.entry, cInfo.flagsExtra);
+            cInfo.flagsExtra.removeNotFlag(CreatureFlagExtra.DB_ALLOWED);
+        }
+
+        if (cInfo.unitFlags.hasNotFlag(UnitFlag.ALLOWED))
+        {
+            Logs.SQL.error("Table `creature_template` lists creature (Entry: {}) with disallowed `unit_flags` {}, removing incorrect flag.", cInfo.entry, cInfo.unitFlags);
+            cInfo.unitFlags.removeNotFlag(UnitFlag.ALLOWED);
+        }
+
+        if (cInfo.unitFlags2.hasNotFlag(UnitFlag2.ALLOWED))
+        {
+            Logs.SQL.error("Table `creature_template` lists creature (Entry: {}) with disallowed `unit_flags2` {}, removing incorrect flag.", cInfo.entry, cInfo.unitFlags2);
+            cInfo.unitFlags2.removeNotFlag(UnitFlag2.ALLOWED);
+        }
+
+        if (cInfo.unitFlags3.hasNotFlag(UnitFlag3.ALLOWED))
+        {
+            Logs.SQL.error("Table `creature_template` lists creature (Entry: {}) with disallowed `unit_flags3` {}, removing incorrect flag.", cInfo.entry, cInfo.unitFlags3);
+            cInfo.unitFlags3.removeNotFlag(UnitFlag3.ALLOWED);
+        }
+
+        if (!Utils.isArrayEmpty(cInfo.gossipMenuIds) && !cInfo.npcFlag.hasFlag(NPCFlag.GOSSIP))
+            Logs.SQL.error("Creature (Entry: {}) has assigned gossip menu, but npcflag does not include UNIT_NPC_FLAG_GOSSIP.", cInfo.entry);
+        else if (Utils.isArrayEmpty(cInfo.gossipMenuIds) && cInfo.npcFlag.hasFlag(NPCFlag.GOSSIP))
+            Logs.SQL.error("Creature (Entry: {}) has npcflag UNIT_NPC_FLAG_GOSSIP, but gossip menu is unassigned.", cInfo.entry);
+    }
+
+
+    public void loadCreatureTemplateAddons(HashMap<Integer, CreatureTemplate> templateHashMap) {
+        var time = System.currentTimeMillis();
+
+        AtomicInteger count = new AtomicInteger();
+        try(var items = creatureRepository.streamAllCreatureTemplateAddon()) {
+            items.forEach(e -> {
+                CreatureTemplate template = templateHashMap.get(e.entry);
+                if (template == null) {
+                    Logs.SQL.error("Creature template (Entry: {}) does not exist but has a record in `creature_template_addon`", e.entry);
+                    return;
                 }
+                for (int aura : e.auras) {
 
-                var AdditionalSpellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
+                    SpellInfo spellInfo = spellManager.getSpellInfo(aura, Difficulty.NONE);
 
-                if (AdditionalSpellInfo == null) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM creature_template_addon WHERE entry = %1$s", entry));
-                    } else {
-                        Logs.SQL.error(String.format("Creature (Entry: %1$s) has wrong spell %2$s defined in `auras` field in `creature_template_addon`.", entry, spellId));
+                    if (spellInfo == null) {
+                        Logs.SQL.error("Creature (Entry: {}) has wrong spell '{}' defined in `auras` field in `creature_template_addon`.", e.entry, aura);
+                        continue;
                     }
 
-                    continue;
-                }
+                    if (spellInfo.hasAura(AuraType.CONTROL_VEHICLE))
+                        Logs.SQL.error("Creature (Entry: {}) has SPELL_AURA_CONTROL_VEHICLE aura {} defined in `auras` field in `creature_template_addon`.", e.entry, spellInfo.getId());
 
-                if (AdditionalSpellInfo.hasAura(AuraType.ControlVehicle)) {
-                    Logs.SQL.debug(String.format("Creature (Entry: %1$s) has SPELL_AURA_CONTROL_VEHICLE aura %2$s defined in `auras` field in `creature_template_addon`.", entry, spellId));
-                }
 
-                if (creatureAddon.auras.contains(spellId)) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM creature_template_addon WHERE entry = %1$s", entry));
-                    } else {
-                        Logs.SQL.error(String.format("Creature (Entry: %1$s) has duplicate aura (spell %2$s) in `auras` field in `creature_template_addon`.", entry, spellId));
+                    if (spellInfo.getDuration() > 0) {
+                        Logs.SQL.error("Creature (Entry: {}) has temporary aura (spell {}) in `auras` field in `creature_template_addon`.", e.entry, spellInfo.getId());
                     }
-
-                    continue;
                 }
 
-                if (AdditionalSpellInfo.duration > 0) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM creature_template_addon WHERE entry = %1$s", entry));
-                    } else {
-                        Logs.SQL.error(String.format("Creature (Entry: %1$s) has temporary aura (spell %2$s) in `auras` field in `creature_template_addon`.", entry, spellId));
+                if (e.mount != 0) {
+                    if (!dbcObjectManager.creatureDisplayInfo().contains(e.mount)) {
+                        Logs.SQL.error("Creature (Entry: {}) has invalid displayInfoId ({}) for mount defined in `creature_template_addon`", e.entry, e.mount);
+                        e.mount = 0;
                     }
-
-                    continue;
                 }
 
-                creatureAddon.auras.add(spellId);
-            }
-
-            if (creatureAddon.mount != 0) {
-                if (CliDB.CreatureDisplayInfoStorage.get(creatureAddon.mount) == null) {
-                    Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid displayInfoId (%2$s) for mount defined in `creature_template_addon`", entry, creatureAddon.mount));
-                    creatureAddon.mount = 0;
+                // PvPFlags don't need any checking for the time being since they cover the entire range of a byte
+                if (!dbcObjectManager.emote().contains(e.emote)) {
+                    Logs.SQL.error("Creature (Entry: {}) has invalid emote ({}) defined in `creature_template_addon`.", e.entry, e.emote);
+                    e.emote = 0;
                 }
-            }
 
-            if (creatureAddon.standState >= UnitStandStateType.max.getValue()) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid unit stand state (%2$s) defined in `creature_template_addon`. Truncated to 0.", entry, creatureAddon.standState));
-                creatureAddon.standState = 0;
-            }
+                if (e.aiAnimKit != 0 && !dbcObjectManager.animKit().contains(e.aiAnimKit)) {
+                    Logs.SQL.error("Creature (Entry: {}) has invalid aiAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.aiAnimKit);
+                    e.aiAnimKit = 0;
+                }
 
-            if (creatureAddon.animTier >= animTier.max.getValue()) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid animation tier (%2$s) defined in `creature_template_addon`. Truncated to 0.", entry, creatureAddon.animTier));
-                creatureAddon.animTier = 0;
-            }
+                if (e.movementAnimKit != 0 && !dbcObjectManager.animKit().contains(e.movementAnimKit)) {
+                    Logs.SQL.error("Creature (Entry: {}) has invalid movementAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.movementAnimKit);
+                    e.movementAnimKit = 0;
+                }
 
-            if (creatureAddon.sheathState >= sheathState.max.getValue()) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid sheath state (%2$s) defined in `creature_template_addon`. Truncated to 0.", entry, creatureAddon.sheathState));
-                creatureAddon.sheathState = 0;
-            }
+                if (e.meleeAnimKit != 0 && !dbcObjectManager.animKit().contains(e.meleeAnimKit)) {
+                    Logs.SQL.error("Creature (Entry: {}) has invalid meleeAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.meleeAnimKit);
+                    e.meleeAnimKit = 0;
+                }
 
-            // PvPFlags don't need any checking for the time being since they cover the entire range of a byte
+                template.creatureTemplateAddon = e;
 
-            if (!CliDB.EmotesStorage.containsKey(creatureAddon.emote)) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid emote (%2$s) defined in `creatureaddon`.", entry, creatureAddon.emote));
-                creatureAddon.emote = 0;
-            }
+                count.incrementAndGet();
 
-            if (creatureAddon.aiAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.aiAnimKit)) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid aiAnimKit (%2$s) defined in `creature_template_addon`.", entry, creatureAddon.aiAnimKit));
-                creatureAddon.aiAnimKit = 0;
-            }
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} creature template addons in {} ms", count, System.currentTimeMillis() - time);
+    }
 
-            if (creatureAddon.movementAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.movementAnimKit)) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid movementAnimKit (%2$s) defined in `creature_template_addon`.", entry, creatureAddon.movementAnimKit));
-                creatureAddon.movementAnimKit = 0;
-            }
 
-            if (creatureAddon.meleeAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.meleeAnimKit)) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid meleeAnimKit (%2$s) defined in `creature_template_addon`.", entry, creatureAddon.meleeAnimKit));
-                creatureAddon.meleeAnimKit = 0;
-            }
+    void loadCreatureTemplateSparring(HashMap<Integer, CreatureTemplate> templateHashMap) {
+        long oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = creatureRepository.streamAllCreatureTemplateSparring()) {
+            items.forEach(fields -> {
+                Integer entry = (Integer) fields[0];
+                Float noNPCDamageBelowHealthPct = (Float) fields[1];
+                CreatureTemplate template = templateHashMap.get(entry);
+                if (template == null) {
+                    Logs.SQL.error("Creature template (Entry: {}) does not exist but has a record in `creature_template_sparring`", entry);
+                    return;
+                }
+                if (noNPCDamageBelowHealthPct <= 0 || noNPCDamageBelowHealthPct > 100) {
+                    Logs.SQL.error("Creature (Entry: {}) has invalid NoNPCDamageBelowHealthPct ({}) defined in `creature_template_sparring`. Skipping",
+                            entry, noNPCDamageBelowHealthPct);
+                    return;
+                }
+                count.incrementAndGet();
 
-            if (creatureAddon.visibilityDistanceType.getValue() >= visibilityDistanceType.max.getValue()) {
-                Logs.SQL.debug(String.format("Creature (Entry: %1$s) has invalid visibilityDistanceType (%2$s) defined in `creature_template_addon`.", entry, creatureAddon.visibilityDistanceType));
-                creatureAddon.visibilityDistanceType = visibilityDistanceType.NORMAL;
-            }
+            });
+        }
+        Logs.SQL.error(">> Loaded {} creature template sparring rows in {} ms", count, System.currentTimeMillis() - oldMSTime);
+    }
 
-            creatureTemplateAddonStorage.put(entry, creatureAddon);
-            count++;
-        } while (result.NextRow());
+    void loadCreatureTemplateDifficulty(HashMap<Integer, CreatureTemplate> templateHashMap) {
+        long oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var items = creatureRepository.streamAllCreatureTemplateDifficulty()) {
+            items.forEach(e -> {
+                CreatureTemplate template = templateHashMap.get(e.entry);
+                if (template == null) {
+                    Logs.SQL.error("Creature template (Entry: {}) does not exist but has a record in `creature_template_sparring`", e.entry);
+                    return;
+                }
+                e.damageModifier *= getDamageMod(template.classification);
 
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature template addons in %2$s ms", count, time.GetMSTimeDiffToNow(time)));
+                if (e.goldMin > e.goldMax) {
+                    Logs.SQL.error("Table `creature_template_difficulty` lists creature (ID: {}) with `GoldMin` {} greater than `GoldMax` {}, setting `GoldMax` to {}.",
+                            e.entry, e.goldMin, e.goldMax, e.goldMin);
+                    e.goldMax = e.goldMin;
+                }
+
+                template.difficultyStore.put(e.difficulty, e);
+                count.incrementAndGet();
+
+            });
+        }
+        Logs.SQL.error(">> Loaded {} creature template difficulty data in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadCreatureAddons() {
@@ -1632,7 +1733,7 @@ public final class ObjectManager {
                     spellId = tempOut_spellId.outArgValue;
                 }
 
-                var AdditionalSpellInfo = global.getSpellMgr().getSpellInfo(spellId, Difficulty.NONE);
+                var AdditionalSpellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
 
                 if (AdditionalSpellInfo == null) {
                     Logs.SQL.error(String.format("Creature (GUID: %1$s) has wrong spell %2$s defined in `auras` field in `creatureaddon`.", guid, spellId));
@@ -1718,915 +1819,322 @@ public final class ObjectManager {
 
     public void loadCreatureQuestItems() {
         var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var item = creatureRepository.streamAllCreatureQuestItem()) {
+            item.forEach(fields -> {
 
-        //                                          0              1      2
-        var result = DB.World.query("SELECT creatureEntry, itemId, Idx FROM creature_questitem ORDER BY Idx ASC");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature quest items. DB table `creature_questitem` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-            var item = result.<Integer>Read(1);
-            var idx = result.<Integer>Read(2);
-
-            if (!creatureTemplateStorage.containsKey(entry)) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_questitem WHERE creatureEntry = %1$s", entry));
-                } else {
-                    Logs.SQL.error("Table `creature_questitem` has data for nonexistent creature (entry: {0}, idx: {1}), skipped", entry, idx);
+                Difficulty difficulty = Difficulty.values()[fields[1]];
+                CreatureTemplate creatureInfo = getCreatureTemplate(fields[0]);
+                if (creatureInfo == null) {
+                    Logs.SQL.error("Table `creature_questitem` has data for nonexistent creature (entry: {}, difficulty: {}, idx: {}), skipped", fields[0], fields[1], fields[3]);
+                    return;
                 }
-
-                continue;
-            }
-
-            if (!CliDB.ItemStorage.containsKey(item)) {
-                Logs.SQL.error("Table `creature_questitem` has nonexistent item (ID: {0}) in creature (entry: {1}, idx: {2}), skipped", item, entry, idx);
-
-                continue;
-            }
-
-            creatureQuestItemStorage.add(entry, item);
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} creature quest items in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+                ;
+                ItemEntry db2Data = dbcObjectManager.item(fields[2]);
+                if (db2Data == null) {
+                    Logs.SQL.error("Table `creature_questitem` has nonexistent item (ID: {}) in creature (entry: {}, difficulty: {}, idx: {}), skipped", fields[2], fields[0], fields[1], fields[3]);
+                    return;
+                }
+                creatureQuestItemStorage.compute(Pair.of(fields[1], difficulty), Functions.addToList(fields[1]));
+                count.getAndIncrement();
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} creature quest items in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadEquipmentTemplates() {
         var time = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var item = creatureRepository.streamAllCreatureEquipTemplate()) {
+            item.forEach(fields -> {
 
-        //                                                0   1        2                 3            4
-        var result = DB.World.query("SELECT creatureID, ID, ItemID1, AppearanceModID1, ItemVisual1, " + "ItemID2, AppearanceModID2, ItemVisual2, ItemID3, AppearanceModID3, ItemVisual3 " + "FROM creature_equip_template");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature equipment templates. DB table `creature_equip_template` is empty!");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-
-            if (getCreatureTemplate(entry) == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_equip_template WHERE creatureID = %1$s", entry));
-                } else {
-                    Logs.SQL.error("Creature template (CreatureID: {0}) does not exist but has a record in `creature_equip_template`", entry);
+                if (getCreatureTemplate(fields[0]) == null) {
+                    Logs.SQL.error("Creature template (CreatureID: {}) does not exist but has a record in `creature_equip_template`", fields[0]);
+                    return;
                 }
 
-                continue;
-            }
+                EquipmentInfo equipmentInfo = new EquipmentInfo();
 
-            var id = result.<Integer>Read(1);
+                for (var i = 0; i < UnitDefine.MAX_EQUIPMENT_ITEMS; ++i) {
+                    equipmentInfo.getItems()[i].itemId = fields[(2 + i * 3)];
+                    equipmentInfo.getItems()[i].appearanceModId = (short) fields[(3 + i * 3)];
+                    equipmentInfo.getItems()[i].itemVisual = (short) fields[(4 + i * 3)];
 
-            EquipmentInfo equipmentInfo = new EquipmentInfo();
-
-            for (var i = 0; i < SharedConst.MaxEquipmentItems; ++i) {
-                equipmentInfo.getItems()[i].itemId = result.<Integer>Read(2 + i * 3);
-                equipmentInfo.getItems()[i].appearanceModId = result.<SHORT>Read(3 + i * 3);
-                equipmentInfo.getItems()[i].itemVisual = result.<SHORT>Read(4 + i * 3);
-
-                if (equipmentInfo.getItems()[i].itemId == 0) {
-                    continue;
-                }
-
-                var dbcItem = CliDB.ItemStorage.get(equipmentInfo.getItems()[i].itemId);
-
-                if (dbcItem == null) {
-                    Logs.SQL.error("Unknown item (ID: {0}) in creature_equip_template.ItemID{1} for creatureID  = {2}, forced to 0.", equipmentInfo.getItems()[i].itemId, i + 1, entry);
-
-                    equipmentInfo.getItems()[i].itemId = 0;
-
-                    continue;
-                }
-
-                if (global.getDB2Mgr().getItemModifiedAppearance(equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId) == null) {
-                    Logs.SQL.error("Unknown item appearance for (ID: {0}, AppearanceModID: {1}) pair in creature_equip_template.ItemID{2} creature_equip_template.AppearanceModID{3} " + "for CreatureID: {4} and ID: {5}, forced to default.", equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId, i + 1, i + 1, entry, id);
-
-                    var defaultAppearance = global.getDB2Mgr().GetDefaultItemModifiedAppearance(equipmentInfo.getItems()[i].itemId);
-
-                    if (defaultAppearance != null) {
-                        equipmentInfo.getItems()[i].appearanceModId = (short) defaultAppearance.ItemAppearanceModifierID;
-                    } else {
-                        equipmentInfo.getItems()[i].appearanceModId = 0;
+                    if (equipmentInfo.getItems()[i].itemId == 0) {
+                        continue;
                     }
 
-                    continue;
+                    var dbcItem = dbcObjectManager.item(equipmentInfo.getItems()[i].itemId);
+
+                    if (dbcItem == null) {
+                        Logs.SQL.error("Unknown item (ID={}) in creature_equip_template.ItemID{} for CreatureID = {} and ID={}, forced to 0.", equipmentInfo.getItems()[i].itemId, i + 1, fields[0], fields[1]);
+
+                        equipmentInfo.getItems()[i].itemId = 0;
+
+                        continue;
+                    }
+
+                    if (dbcObjectManager.getItemModifiedAppearance(equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId) == null) {
+                        Logs.SQL.error("Unknown item appearance for (ID: {}, AppearanceModID: {}) pair in creature_equip_template.ItemID{} " +
+                                        "creature_equip_template.AppearanceModID{} for CreatureID: {} and ID: {}, forced to default.",
+                                equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId, i + 1, i + 1, fields[0], fields[1]);
+
+                        var defaultAppearance = dbcObjectManager.getDefaultItemModifiedAppearance(equipmentInfo.getItems()[i].itemId);
+
+                        if (defaultAppearance != null) {
+                            equipmentInfo.getItems()[i].appearanceModId = (short) defaultAppearance.getItemAppearanceModifierID();
+                        } else {
+                            equipmentInfo.getItems()[i].appearanceModId = 0;
+                        }
+
+                        continue;
+                    }
+
+                    if (dbcItem.getInventoryType() != InventoryType.WEAPON.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.SHIELD.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.RANGED.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.TWO_HANDED_WEAPON.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.WEAPON_MAIN_HAND.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.WEAPON_OFFHAND.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.HOLDABLE.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.THROWN.ordinal()
+                            && dbcItem.getInventoryType() != InventoryType.RANGEDRIGHT.ordinal()) {
+                        Logs.SQL.error("Item (ID={}) in creature_equip_template.ItemID{} for CreatureID = {} and ID = {} is not equipable in a hand, forced to 0.",
+                                equipmentInfo.getItems()[i].itemId, i + 1, fields[0], fields[1]);
+
+                        equipmentInfo.getItems()[i].itemId = 0;
+                    }
                 }
-
-                if (dbcItem.inventoryType != inventoryType.Weapon && dbcItem.inventoryType != inventoryType.Shield && dbcItem.inventoryType != inventoryType.Ranged && dbcItem.inventoryType != inventoryType.Weapon2Hand && dbcItem.inventoryType != inventoryType.WeaponMainhand && dbcItem.inventoryType != inventoryType.WeaponOffhand && dbcItem.inventoryType != inventoryType.Holdable && dbcItem.inventoryType != inventoryType.Thrown && dbcItem.inventoryType != inventoryType.RangedRight) {
-                    Logs.SQL.error("Item (ID {0}) in creature_equip_template.ItemID{1} for creatureID  = {2} is not equipable in a hand, forced to 0.", equipmentInfo.getItems()[i].itemId, i + 1, entry);
-
-                    equipmentInfo.getItems()[i].itemId = 0;
-                }
-            }
-
-            equipmentInfoStorage.add(entry, Tuple.create(id, equipmentInfo));
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} equipment templates in {1} ms", count, time.GetMSTimeDiffToNow(time));
+                equipmentInfoStorage.compute(fields[0], Functions.addToList(equipmentInfo));
+                count.getAndIncrement();
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} equipment templates in {} ms", count, System.currentTimeMillis()- time);
     }
 
     public void loadCreatureMovementOverrides() {
         var oldMSTime = System.currentTimeMillis();
-
         creatureMovementOverrides.clear();
-
-        // Load the data from creature_movement_override and if NULL fallback to creature_template_movement
-        var result = DB.World.query("SELECT cmo.spawnId,COALESCE(cmo.ground, ctm.ground),COALESCE(cmo.swim, ctm.swim),COALESCE(cmo.flight, ctm.flight),COALESCE(cmo.rooted, ctm.rooted),COALESCE(cmo.chase, ctm.chase),COALESCE(cmo.random, ctm.random)," + "COALESCE(cmo.interactionPauseTimer, ctm.interactionPauseTimer) FROM creature_movement_override AS cmo LEFT JOIN creature AS c ON c.guid = cmo.SpawnId LEFT JOIN creature_template_movement AS ctm ON ctm.creatureId = c.id");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature movement overrides. DB table `creature_movement_override` is empty!");
-
-            return;
+        try (var item = creatureRepository.streamAllCreatureMovementOverride()) {
+            item.forEach(e -> {
+                checkCreatureMovement("creature_movement_override", e.spawnId, e);
+                creatureMovementOverrides.put(e.spawnId, e);
+            });
         }
-
-        do {
-            var spawnId = result.<Long>Read(0);
-
-            if (getCreatureData(spawnId) == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_movement_override WHERE spawnId = %1$s", spawnId));
-                } else {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) does not exist but has a record in `creature_movement_override`", spawnId));
-                }
-
-                continue;
-            }
-
-            CreatureMovementData movement = new creatureMovementData();
-
-            if (!result.IsNull(1)) {
-                movement.ground = CreatureGroundMovementType.forValue(result.<Byte>Read(1));
-            }
-
-            if (!result.IsNull(2)) {
-                movement.swim = result.<Boolean>Read(2);
-            }
-
-            if (!result.IsNull(3)) {
-                movement.flight = CreatureFlightMovementType.forValue(result.<Byte>Read(3));
-            }
-
-            if (!result.IsNull(4)) {
-                movement.rooted = result.<Boolean>Read(4);
-            }
-
-            if (!result.IsNull(5)) {
-                movement.chase = CreatureChaseMovementType.forValue(result.<Byte>Read(5));
-            }
-
-            if (!result.IsNull(6)) {
-                movement.random = CreatureRandomMovementType.forValue(result.<Byte>Read(6));
-            }
-
-            if (!result.IsNull(7)) {
-                movement.interactionPauseTimer = result.<Integer>Read(7);
-            }
-
-            checkCreatureMovement("creature_movement_override", spawnId, movement);
-
-            creatureMovementOverrides.put(spawnId, movement);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s movement overrides in %2$s ms", creatureMovementOverrides.size(), time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} movement overrides in {} ms", creatureMovementOverrides.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadCreatureClassLevelStats() {
         var time = System.currentTimeMillis();
-
+        AtomicInteger count = new AtomicInteger();
         creatureBaseStatsStorage.clear();
-
-        //                                         0      1      2         3            4
-        var result = DB.World.query("SELECT level, class, basemana, attackpower, rangedattackpower FROM creature_classlevelstats");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature base stats. DB table `creature_classlevelstats` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var level = result.<Byte>Read(0);
-            var _class = result.<Byte>Read(1);
-
-            if (_class == 0 || ((1 << (_class - 1)) & playerClass.ClassMaskAllCreatures.getValue()) == 0) {
-                Logs.SQL.error("Creature base stats for level {0} has invalid class {1}", level, _class);
-            }
-
-            CreatureBaseStats stats = new CreatureBaseStats();
-
-            stats.setBaseMana(result.<Integer>Read(2));
-            stats.setAttackPower(result.<SHORT>Read(3));
-            stats.setRangedAttackPower(result.<SHORT>Read(4));
-
-            creatureBaseStatsStorage.put(MathUtil.MakePair16(level, _class), stats);
-
-            ++count;
-        } while (result.NextRow());
-
-        for (var creatureTemplate : creatureTemplateStorage.values()) {
-            for (var lvl = creatureTemplate.minLevel; lvl <= creatureTemplate.maxLevel; ++lvl) {
-                if (creatureBaseStatsStorage.get(MathUtil.MakePair16((int) lvl, creatureTemplate.unitClass)) == null) {
-                    Logs.SQL.error("Missing base stats for creature class {0} level {1}", creatureTemplate.unitClass, lvl);
+        try (var item = creatureRepository.streamAllCreatureClassLevelStats()) {
+            item.forEach(e -> {
+                if (((1 << (e.klass - 1)) & SharedDefine.CLASS_MASK_ALL_CREATURES) == 0) {
+                    Logs.SQL.error("Creature base stats for level {} has invalid class {}", e.level, e.klass);
                 }
-            }
+                creatureBaseStatsStorage.put(e.level << 8 | e.klass, e);
+                count.getAndIncrement();
+            });
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} creature base stats in {1} ms", count, time.GetMSTimeDiffToNow(time));
+
+        for (int unitLevel = 1; unitLevel <= SharedDefine.DEFAULT_MAX_LEVEL + 3; ++unitLevel)
+        {
+            for (int unitClass = 1; unitClass <= UnitClass.values().length; ++unitClass)
+            {
+                if (creatureBaseStatsStorage.get(unitLevel << 8 | unitClass) == null)
+                    Logs.SQL.error("Missing base stats for creature class {} level {}", unitClass, unitLevel);
+            }
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} creature base stats in {} ms", count, System.currentTimeMillis() - time);
     }
 
     public void loadCreatureModelInfo() {
         var time = System.currentTimeMillis();
-        var result = DB.World.query("SELECT displayID, boundingRadius, combatReach, DisplayID_Other_Gender FROM creature_model_info");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature model definitions. DB table `creaturemodelinfo` is empty.");
-
-            return;
-        }
-
         // List of model FileDataIDs that the client treats as invisible stalker
-        int[] trigggerCreatureModelFileID = {124640, 124641, 124642, 343863, 439302};
+        int[] triggerCreatureModelFileID = {124640, 124641, 124642, 343863, 439302};
+        AtomicInteger count = new AtomicInteger();
+        try (var item = creatureRepository.streamAllCreatureModelInfo()) {
+            item.forEach(e -> {
 
-        int count = 0;
+                CreatureDisplayInfo creatureDisplay = dbcObjectManager.creatureDisplayInfo(e.displayId);
+                if (creatureDisplay == null) {
+                    Logs.SQL.error("Table `creature_model_info` has a non-existent DisplayID (ID: {}). Skipped.", e.displayId);
+                    return;
+                }
 
-        do {
-            var displayId = result.<Integer>Read(0);
+                if (e.displayIdOtherGender != 0 && !dbcObjectManager.creatureDisplayInfo().contains(e.displayIdOtherGender)) {
+                    Logs.SQL.error("Table `creature_model_info` has a non-existent DisplayID_Other_Gender (ID: {}) being used by DisplayID (ID: {}).", e.displayIdOtherGender, e.displayId);
+                    e.displayIdOtherGender = 0;
+                }
 
-            var creatureDisplay = CliDB.CreatureDisplayInfoStorage.get(displayId);
+                if (e.combatReach < 0.1f) {
+                    e.combatReach = ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH;
+                }
 
-            if (creatureDisplay == null) {
-                Logs.SQL.debug("Table `creature_model_info` has a non-existent displayID (ID: {0}). Skipped.", displayId);
-
-                continue;
-            }
-
-            CreatureModelInfo modelInfo = new CreatureModelInfo();
-            modelInfo.boundingRadius = result.<Float>Read(1);
-            modelInfo.combatReach = result.<Float>Read(2);
-            modelInfo.displayIdOtherGender = result.<Integer>Read(3);
-            modelInfo.gender = creatureDisplay.gender;
-
-            // Checks
-            if (modelInfo.gender == (byte) gender.unknown.getValue()) {
-                modelInfo.gender = (byte) gender.Male.getValue();
-            }
-
-            if (modelInfo.displayIdOtherGender != 0 && !CliDB.CreatureDisplayInfoStorage.containsKey(modelInfo.displayIdOtherGender)) {
-                Logs.SQL.debug("Table `creature_model_info` has a non-existent DisplayID_Other_Gender (ID: {0}) being used by displayID (ID: {1}).", modelInfo.displayIdOtherGender, displayId);
-                modelInfo.displayIdOtherGender = 0;
-            }
-
-            if (modelInfo.combatReach < 0.1f) {
-                modelInfo.combatReach = SharedConst.DefaultPlayerCombatReach;
-            }
-
-            var modelData = CliDB.CreatureModelDataStorage.get(creatureDisplay.modelID);
-
-            if (modelData != null) {
-                for (int i = 0; i < 5; ++i) {
-                    if (modelData.FileDataID == trigggerCreatureModelFileID[i]) {
-                        modelInfo.isTrigger = true;
-
-                        break;
+                CreatureModelData creatureModelData = dbcObjectManager.creatureModelData(creatureDisplay.getModelID());
+                if (creatureModelData != null) {
+                    if (IntStream.range(0, triggerCreatureModelFileID.length)
+                            .anyMatch(i -> creatureModelData.getFileDataID() == triggerCreatureModelFileID[i])) {
+                        e.isTrigger = true;
                     }
                 }
-            }
-
-            creatureModelStorage.put(displayId, modelInfo);
-            count++;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} creature model based info in {1} ms", count, time.GetMSTimeDiffToNow(time));
+                creatureModelStorage.put(e.displayId, e);
+                count.incrementAndGet();
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} creature model based info in {} ms", count, System.currentTimeMillis() - time);
     }
 
-    public void loadCreatureScalingData() {
-        var oldMSTime = System.currentTimeMillis();
-
-        //                                   0      1             2                     3                     4
-        var result = DB.World.query("SELECT entry, difficultyID, LevelScalingDeltaMin, LevelScalingDeltaMax, ContentTuningID FROM creature_template_scaling ORDER BY Entry");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature template scaling definitions. DB table `creature_template_scaling` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-            var difficulty = Difficulty.forValue(result.<Byte>Read(1));
-
-            var template = creatureTemplateStorage.get(entry);
-
-            if (template == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_template_scaling WHERE entry = %1$s", entry));
-                } else {
-                    Logs.SQL.error(String.format("Creature template (Entry: %1$s) does not exist but has a record in `creature_template_scaling`", entry));
-                }
-
-                continue;
-            }
-
-            CreatureLevelScaling creatureLevelScaling = new CreatureLevelScaling();
-            creatureLevelScaling.deltaLevelMin = result.<SHORT>Read(2);
-            creatureLevelScaling.deltaLevelMax = result.<SHORT>Read(3);
-            creatureLevelScaling.contentTuningId = result.<Integer>Read(4);
-
-            template.difficultyStore[difficulty] = creatureLevelScaling;
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature template scaling data in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
-    }
-
-    public void checkCreatureTemplate(CreatureTemplate cInfo) {
-        if (cInfo == null) {
-            return;
-        }
-
-        var ok = true; // bool to allow continue outside this loop
-
-        for (int diff = 0; diff < SharedConst.MaxCreatureDifficulties && ok; ++diff) {
-            if (cInfo.DifficultyEntry[diff] == 0) {
-                continue;
-            }
-
-            ok = false; // will be set to true at the end of this loop again
-
-            var difficultyInfo = getCreatureTemplate(cInfo.DifficultyEntry[diff]);
-
-            if (difficultyInfo == null) {
-                Logs.SQL.error("Creature (Entry: {0}) has `difficulty_entry_{1}`={2} but creature entry {3} does not exist.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff], cInfo.DifficultyEntry[diff]);
-
-                continue;
-            }
-
-            var ok2 = true;
-
-            for (int diff2 = 0; diff2 < SharedConst.MaxCreatureDifficulties && ok2; ++diff2) {
-                ok2 = false;
-
-                if (_difficultyEntries[diff2].contains(cInfo.entry)) {
-                    Logs.SQL.error("Creature (Entry: {0}) is listed as `difficulty_entry_{1}` of another creature, but itself lists {2} in `difficulty_entry_{3}`.", cInfo.entry, diff2 + 1, cInfo.DifficultyEntry[diff], diff + 1);
-
-                    continue;
-                }
-
-                if (_difficultyEntries[diff2].contains(cInfo.DifficultyEntry[diff])) {
-                    Logs.SQL.error("Creature (Entry: {0}) already listed as `difficulty_entry_{1}` for another entry.", cInfo.DifficultyEntry[diff], diff2 + 1);
-
-                    continue;
-                }
-
-                if (_hasDifficultyEntries[diff2].contains(cInfo.DifficultyEntry[diff])) {
-                    Logs.SQL.error("Creature (Entry: {0}) has `difficulty_entry_{1}`={2} but creature entry {3} has itself a second in `difficulty_entry_{4}`.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff], cInfo.DifficultyEntry[diff], diff2 + 1);
-
-                    continue;
-                }
-
-                ok2 = true;
-            }
-
-            if (!ok2) {
-                continue;
-            }
-
-            if (cInfo.healthScalingExpansion > difficultyInfo.healthScalingExpansion) {
-                Logs.SQL.error("Creature (Id: {0}, Expansion {1}) has different `HealthScalingExpansion` in difficulty {2} mode (Id: {3}, Expansion: {4}).", cInfo.entry, cInfo.healthScalingExpansion, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.healthScalingExpansion);
-            }
-
-            if (cInfo.minLevel > difficultyInfo.minLevel) {
-                Logs.SQL.error("Creature (Entry: {0}, minlevel: {1}) has lower `minlevel` in difficulty {2} mode (Entry: {3}, minlevel: {4}).", cInfo.entry, cInfo.minLevel, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.minLevel);
-            }
-
-            if (cInfo.maxLevel > difficultyInfo.maxLevel) {
-                Logs.SQL.error("Creature (Entry: {0}, maxlevel: {1}) has lower `maxlevel` in difficulty {2} mode (Entry: {3}, maxlevel: {4}).", cInfo.entry, cInfo.maxLevel, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.maxLevel);
-            }
-
-            if (cInfo.faction != difficultyInfo.faction) {
-                Logs.SQL.error("Creature (Entry: {0}, faction: {1}) has different `faction` in difficulty {2} mode (Entry: {3}, faction: {4}).", cInfo.entry, cInfo.faction, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.faction);
-            }
-
-            if (cInfo.unitClass != difficultyInfo.unitClass) {
-                Logs.SQL.error("Creature (Entry: {0}, class: {1}) has different `unit_class` in difficulty {2} mode (Entry: {3}, class: {4}).", cInfo.entry, cInfo.unitClass, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.unitClass);
-
-                continue;
-            }
-
-            if (cInfo.npcFlag != difficultyInfo.npcFlag) {
-                Logs.SQL.error("Creature (Entry: {0}) has different `npcflag` in difficulty {1} mode (Entry: {2}).", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff]);
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `npcflag`=`npcflag`^{0} WHERE `entry`={1};", cInfo.Npcflag ^ difficultyInfo.npcFlag, cInfo.DifficultyEntry[diff]);
-
-                continue;
-            }
-
-            if (cInfo.dmgSchool != difficultyInfo.dmgSchool) {
-                Logs.SQL.error("Creature (Entry: {0}, `dmgschool`: {1}) has different `dmgschool` in difficulty {2} mode (Entry: {3}, `dmgschool`: {4}).", cInfo.entry, cInfo.dmgSchool, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.dmgSchool);
-
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `dmgschool`={0} WHERE `entry`={1};", cInfo.dmgSchool, cInfo.DifficultyEntry[diff]);
-            }
-
-            if (cInfo.unitFlags2 != difficultyInfo.unitFlags2) {
-                Logs.SQL.error("Creature (Entry: {0}, `unit_flags2`: {1}) has different `unit_flags2` in difficulty {2} mode (Entry: {3}, `unit_flags2`: {4}).", cInfo.entry, cInfo.unitFlags2, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.unitFlags2);
-
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `unit_flags2`=`unit_flags2`^{0} WHERE `entry`={1};", cInfo.UnitFlags2 ^ difficultyInfo.unitFlags2, cInfo.DifficultyEntry[diff]);
-            }
-
-            if (cInfo.family != difficultyInfo.family) {
-                Logs.SQL.error("Creature (Entry: {0}, family: {1}) has different `family` in difficulty {2} mode (Entry: {3}, family: {4}).", cInfo.entry, cInfo.family, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.family);
-            }
-
-            if (cInfo.trainerClass != difficultyInfo.trainerClass) {
-                Logs.SQL.error("Creature (Entry: {0}) has different `trainer_class` in difficulty {1} mode (Entry: {2}).", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff]);
-
-                continue;
-            }
-
-            if (cInfo.type != difficultyInfo.type) {
-                Logs.SQL.error("Creature (Entry: {0}, type: {1}) has different `type` in difficulty {2} mode (Entry: {3}, type: {4}).", cInfo.entry, cInfo.type, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.type);
-            }
-
-            if (cInfo.vehicleId == 0 && difficultyInfo.vehicleId != 0) {
-                Logs.SQL.error("Non-vehicle CREATURE (Entry: {0}, VehicleId: {1}) has `VehicleId` set in difficulty {2} mode (Entry: {3}, VehicleId: {4}).", cInfo.entry, cInfo.vehicleId, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.vehicleId);
-            }
-
-            if (cInfo.regenHealth != difficultyInfo.regenHealth) {
-                Logs.SQL.error("Creature (Entry: {0}, RegenHealth: {1}) has different `RegenHealth` in difficulty {2} mode (Entry: {3}, RegenHealth: {4}).", cInfo.entry, cInfo.regenHealth, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.regenHealth);
-
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `RegenHealth`={0} WHERE `entry`={1};", cInfo.regenHealth, cInfo.DifficultyEntry[diff]);
-            }
-
-            var differenceMask = cInfo.mechanicImmuneMask & (~difficultyInfo.mechanicImmuneMask);
-
-            if (differenceMask != 0) {
-                Logs.SQL.error("Creature (Entry: {0}, mechanic_immune_mask: {1}) has weaker immunities in difficulty {2} mode (Entry: {3}, mechanic_immune_mask: {4}).", cInfo.entry, cInfo.mechanicImmuneMask, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.mechanicImmuneMask);
-
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `mechanic_immune_mask`=`mechanic_immune_mask`|{0} WHERE `entry`={1};", differenceMask, cInfo.DifficultyEntry[diff]);
-            }
-
-            differenceMask = (int) ((cInfo.FlagsExtra ^ difficultyInfo.flagsExtra.getValue()) & (~CreatureFlagExtra.InstanceBind));
-
-            if (differenceMask != 0) {
-                Logs.SQL.error("Creature (Entry: {0}, flags_extra: {1}) has different `flags_extra` in difficulty {2} mode (Entry: {3}, flags_extra: {4}).", cInfo.entry, cInfo.flagsExtra, diff + 1, cInfo.DifficultyEntry[diff], difficultyInfo.flagsExtra);
-
-                Logs.SQL.error("Possible FIX: UPDATE `creature_template` SET `flags_extra`=`flags_extra`^{0} WHERE `entry`={1};", differenceMask, cInfo.DifficultyEntry[diff]);
-            }
-
-            if (difficultyInfo.aiName.isEmpty()) {
-                Logs.SQL.error("Creature (Entry: {0}) lists difficulty {1} mode entry {2} with `AIName` filled in. `AIName` of difficulty 0 mode creature is always used instead.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff]);
-
-                continue;
-            }
-
-            if (difficultyInfo.scriptID != 0) {
-                Logs.SQL.error("Creature (Entry: {0}) lists difficulty {1} mode entry {2} with `ScriptName` filled in. `ScriptName` of difficulty 0 mode creature is always used instead.", cInfo.entry, diff + 1, cInfo.DifficultyEntry[diff]);
-
-                continue;
-            }
-
-            _hasDifficultyEntries[diff].add(cInfo.entry);
-            _difficultyEntries[diff].add(cInfo.DifficultyEntry[diff]);
-            ok = true;
-        }
-
-        if (cInfo.minGold > cInfo.maxGold) {
-            Log.outTrace(LogFilter.Sql, String.format("Creature (Entry: %1$s) has `mingold` %2$s which is greater than `maxgold` %3$s, setting `maxgold` to %4$s.", cInfo.entry, cInfo.minGold, cInfo.maxGold, cInfo.minGold));
-            cInfo.maxGold = cInfo.minGold;
-        }
-
-        if (!CliDB.FactionTemplateStorage.containsKey(cInfo.faction)) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has non-existing faction template ({1}). This can lead to crashes, set to faction 35", cInfo.entry, cInfo.faction);
-            cInfo.faction = 35;
-        }
-
-        for (var k = 0; k < SharedConst.MaxCreatureKillCredit; ++k) {
-            if (cInfo.KillCredit[k] != 0) {
-                if (getCreatureTemplate(cInfo.KillCredit[k]) == null) {
-                    Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) lists non-existing creature entry {1} in `KillCredit{2}`.", cInfo.entry, cInfo.KillCredit[k], k + 1);
-                    cInfo.KillCredit[k] = 0;
-                }
-            }
-        }
-
-        if (cInfo.models.isEmpty()) {
-            Logs.SQL.error(String.format("Creature (Entry: %1$s) does not have any existing display id in creature_template_model.", cInfo.entry));
-        }
-
-        if (cInfo.unitClass == 0 || ((1 << ((int) cInfo.UnitClass - 1)) & playerClass.ClassMaskAllCreatures.getValue()) == 0) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid unit_class ({1}) in creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", cInfo.entry, cInfo.unitClass);
-            cInfo.unitClass = (int) playerClass.Warrior.getValue();
-        }
-
-        if (cInfo.dmgSchool >= (int) SpellSchools.max.getValue()) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid spell school second ({1}) in `dmgschool`.", cInfo.entry, cInfo.dmgSchool);
-            cInfo.dmgSchool = (int) SpellSchools.NORMAL.getValue();
-        }
-
-        if (cInfo.baseAttackTime == 0) {
-            cInfo.baseAttackTime = SharedConst.baseAttackTime;
-        }
-
-        if (cInfo.rangeAttackTime == 0) {
-            cInfo.rangeAttackTime = SharedConst.baseAttackTime;
-        }
-
-        if (cInfo.speedWalk == 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in speed_walk, set to 1.", cInfo.entry, cInfo.speedWalk);
-            cInfo.speedWalk = 1.0f;
-        }
-
-        if (cInfo.speedRun == 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in speed_run, set to 1.14286.", cInfo.entry, cInfo.speedRun);
-            cInfo.speedRun = 1.14286f;
-        }
-
-        if (cInfo.type != 0 && !CliDB.CreatureTypeStorage.containsKey((int) cInfo.type.getValue())) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid creature type ({1}) in `type`.", cInfo.entry, cInfo.type);
-            cInfo.type = creatureType.Humanoid;
-        }
-
-        if (cInfo.family != 0 && !CliDB.CreatureFamilyStorage.containsKey(cInfo.family)) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has invalid creature family ({1}) in `family`.", cInfo.entry, cInfo.family);
-            cInfo.family = creatureFamily.NONE;
-        }
-
-        checkCreatureMovement("creature_template_movement", cInfo.entry, cInfo.movement);
-
-        if (cInfo.hoverHeight < 0.0f) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong second ({1}) in `HoverHeight`", cInfo.entry, cInfo.hoverHeight);
-            cInfo.hoverHeight = 1.0f;
-        }
-
-        if (cInfo.vehicleId != 0) {
-            if (!CliDB.VehicleStorage.containsKey(cInfo.vehicleId)) {
-                Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has a non-existing vehicleId ({1}). This *WILL* cause the client to freeze!", cInfo.entry, cInfo.vehicleId);
-                cInfo.vehicleId = 0;
-            }
-        }
-
-        for (byte j = 0; j < SharedConst.MaxCreatureSpells; ++j) {
-            if (cInfo.Spells[j] != 0 && !global.getSpellMgr().hasSpellInfo(cInfo.Spells[j], Difficulty.NONE)) {
-                Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has non-existing Spell{1} ({2}), set to 0.", cInfo.entry, j + 1, cInfo.Spells[j]);
-                cInfo.Spells[j] = 0;
-            }
-        }
-
-        if (cInfo.movementType >= (int) MovementGeneratorType.MaxDB.getValue()) {
-            Log.outTrace(LogFilter.Sql, "Creature (Entry: {0}) has wrong movement generator type ({1}), ignored and set to IDLE.", cInfo.entry, cInfo.movementType);
-            cInfo.movementType = (int) MovementGeneratorType.IDLE.getValue();
-        }
-
-        if (cInfo.healthScalingExpansion < expansion.LevelCurrent.getValue() || cInfo.healthScalingExpansion >= expansion.max.getValue()) {
-            Log.outTrace(LogFilter.Sql, "Table `creature_template` lists creature (Id: {0}) with invalid `HealthScalingExpansion` {1}. Ignored and set to 0.", cInfo.entry, cInfo.healthScalingExpansion);
-            cInfo.healthScalingExpansion = 0;
-        }
-
-        if (cInfo.requiredExpansion > expansion.max.getValue()) {
-            Log.outTrace(LogFilter.Sql, "Table `creature_template` lists creature (Entry: {0}) with `RequiredExpansion` {1}. Ignored and set to 0.", cInfo.entry, cInfo.requiredExpansion);
-            cInfo.requiredExpansion = 0;
-        }
-
-        var badFlags = (int) (cInfo.flagsExtra.getValue() & ~CreatureFlagExtra.DBAllowed.getValue().getValue());
-
-        if (badFlags != 0) {
-            Log.outTrace(LogFilter.Sql, "Table `creature_template` lists creature (Entry: {0}) with disallowed `flags_extra` {1}, removing incorrect flag.", cInfo.entry, badFlags);
-            cInfo.flagsExtra = CreatureFlagExtra.forValue(cInfo.flagsExtra.getValue() & CreatureFlagExtra.DBAllowed.getValue());
-        }
-
-        var disallowedUnitFlags = (int) (cInfo.UnitFlag.getValue() & ~UnitFlag.Allowed.getValue().getValue());
-
-        if (disallowedUnitFlags != 0) {
-            Log.outTrace(LogFilter.Sql, String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags));
-            cInfo.unitFlags = UnitFlag.forValue(cInfo.UnitFlag.getValue() & UnitFlag.Allowed.getValue());
-        }
-
-        var disallowedUnitFlags2 = (cInfo.unitFlags2 & ~(int) UnitFlag2.Allowed.getValue());
-
-        if (disallowedUnitFlags2 != 0) {
-            Log.outTrace(LogFilter.Sql, String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags2` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags2));
-            cInfo.unitFlags2 &= (int) UnitFlag2.Allowed.getValue();
-        }
-
-        var disallowedUnitFlags3 = (cInfo.unitFlags3 & ~(int) unitFlags3.Allowed.getValue());
-
-        if (disallowedUnitFlags3 != 0) {
-            Log.outTrace(LogFilter.Sql, String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags2` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags3));
-            cInfo.unitFlags3 &= (int) unitFlags3.Allowed.getValue();
-        }
-
-        if (cInfo.dynamicFlags != 0) {
-            Log.outTrace(LogFilter.Sql, String.format("Table `creature_template` lists creature (Entry: %1$s) with `dynamicflags` > 0. Ignored and set to 0.", cInfo.entry));
-            cInfo.dynamicFlags = 0;
-        }
-
-        var levels = cInfo.getMinMaxLevel();
-
-        if (levels[0] < 1 || levels[0] > SharedConst.StrongMaxLevel) {
-            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated minLevel %2$s is not within [1, 255], second has been set to %3$s.", cInfo.entry, cInfo.minLevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
-            cInfo.minLevel = (short) (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? 0 : 1);
-        }
-
-        if (levels[1] < 1 || levels[1] > SharedConst.StrongMaxLevel) {
-            Log.outTrace(LogFilter.Sql, String.format("Creature (ID: %1$s): Calculated maxLevel %2$s is not within [1, 255], second has been set to %3$s.", cInfo.entry, cInfo.maxLevel, (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? SharedConst.MaxLevel : 1)));
-            cInfo.maxLevel = (short) (cInfo.healthScalingExpansion == expansion.LevelCurrent.getValue() ? 0 : 1);
-        }
-
-        cInfo.ModDamage *= CREATURE._GetDamageMod(cInfo.rank);
-
-        if (cInfo.gossipMenuId != 0 && !cInfo.npcFlag.hasFlag((long) NPCFlag.Gossip.getValue())) {
-            Log.outInfo(LogFilter.Sql, String.format("Creature (Entry: %1$s) has assigned gossip menu %2$s, but npcflag does not include UNIT_NPC_FLAG_GOSSIP.", cInfo.entry, cInfo.gossipMenuId));
-        } else if (cInfo.gossipMenuId == 0 && cInfo.npcFlag.hasFlag((long) NPCFlag.Gossip.getValue())) {
-            Log.outInfo(LogFilter.Sql, String.format("Creature (Entry: %1$s) has npcflag UNIT_NPC_FLAG_GOSSIP, but gossip menu is unassigned.", cInfo.entry));
-        }
-    }
 
     public void loadLinkedRespawn() {
         var oldMSTime = System.currentTimeMillis();
-
         linkedRespawnStorage.clear();
-        //                                                 0        1          2
-        var result = DB.World.query("SELECT guid, linkedGuid, linkType FROM linked_respawn ORDER BY guid ASC");
+        try(var item = creatureRepository.streamAllLinkedRespawn()) {
+            item.forEach(fields -> {
+                int guidLow = fields[0];
+                int linkedGuidLow = fields[1];
+                LinkedRespawnType linkType = LinkedRespawnType.values()[(byte) fields[2]];
+                ObjectGuid guid = null, linkedGuid = null;
+                boolean error = false;
+                switch (linkType) {
+                    case CREATURE_TO_CREATURE -> {
+                        SpawnData slave = getCreatureData(guidLow);
+                        if (slave == null) {
+                            Logs.SQL.error("LinkedRespawn: Creature (guid) '{}' not found in creature table", guidLow);
+                            error = true;
+                            break;
+                        }
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 linked respawns. DB table `linked_respawn` is empty.");
+                        SpawnData master = getCreatureData(linkedGuidLow);
+                        if (master == null) {
+                            Logs.SQL.error("LinkedRespawn: Creature (linkedGuid) '{}' not found in creature table", linkedGuidLow);
+                            error = true;
+                            break;
+                        }
 
-            return;
+                        MapEntry map = dbcObjectManager.map(master.mapId);
+                        if (map == null || !map.isInstanceable() || (master.mapId != slave.mapId)) {
+                            Logs.SQL.error("LinkedRespawn: Creature '{}' linking to Creature '{}' on an unpermitted map.", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        // they must have a possibility to meet (normal/heroic difficulty)
+                        if (!Objects.equals(master.spawnDifficulties, slave.spawnDifficulties)) {
+                            Logs.SQL.error("LinkedRespawn: Creature '{}' linking to Creature '{}' with not corresponding spawnMask", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        guid = ObjectGuid.create(HighGuid.Creature, slave.mapId, slave.id, guidLow);
+                        linkedGuid = ObjectGuid.create(HighGuid.Creature, slave.mapId, master.id, linkedGuidLow);
+                    }
+                    case CREATURE_TO_GO -> {
+                        CreatureData slave = getCreatureData(guidLow);
+                        if (slave == null) {
+                            Logs.SQL.error("LinkedRespawn: Creature (guid) '{}' not found in creature table", guidLow);
+                            error = true;
+                            break;
+                        }
+
+                        GameObjectData master = getGameObjectData(linkedGuidLow);
+                        if (master == null) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject (linkedGuid) '{}' not found in gameobject table", linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        MapEntry map = dbcObjectManager.map(master.mapId);
+                        if (map == null || !map.isInstanceable() || (master.mapId != slave.mapId)) {
+                            Logs.SQL.error("LinkedRespawn: Creature '{}' linking to Gameobject '{}' on an unpermitted map.", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        // they must have a possibility to meet (normal/heroic difficulty)
+                        if (!Objects.equals(master.spawnDifficulties, slave.spawnDifficulties)) {
+                            Logs.SQL.error("LinkedRespawn: Creature '{}' linking to Gameobject '{}' with not corresponding spawnMask", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+                        guid = ObjectGuid.create(HighGuid.Creature, slave.mapId, slave.id, guidLow);
+                        linkedGuid = ObjectGuid.create(HighGuid.GameObject, slave.mapId, master.id, linkedGuidLow);
+                    }
+                    case GO_TO_GO -> {
+                        GameObjectData slave = getGameObjectData(guidLow);
+                        if (slave == null) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject (guid) '{}' not found in gameobject table", guidLow);
+                            error = true;
+                            break;
+                        }
+
+                        GameObjectData master = getGameObjectData(linkedGuidLow);
+                        if (master == null) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject (linkedGuid) '{}' not found in gameobject table", linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        MapEntry map = dbcObjectManager.map(master.mapId);
+                        if (map == null || !map.isInstanceable() || (master.mapId != slave.mapId)) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject '{}' linking to Gameobject '{}' on an unpermitted map.", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        // they must have a possibility to meet (normal/heroic difficulty)
+                        if (!Objects.equals(master.spawnDifficulties, slave.spawnDifficulties)) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject '{}' linking to Gameobject '{}' with not corresponding spawnMask", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+                        guid = ObjectGuid.create(HighGuid.GameObject, slave.mapId, slave.id, guidLow);
+                        linkedGuid = ObjectGuid.create(HighGuid.GameObject, slave.mapId, master.id, linkedGuidLow);
+                    }
+                    case GO_TO_CREATURE -> {
+                        GameObjectData slave = getGameObjectData(guidLow);
+                        if (slave == null) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject (guid) '{}' not found in gameobject table", guidLow);
+                            error = true;
+                            break;
+                        }
+
+                        CreatureData master = getCreatureData(linkedGuidLow);
+                        if (master == null) {
+                            Logs.SQL.error("LinkedRespawn: Creature (linkedGuid) '{}' not found in creature table", linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        MapEntry map = dbcObjectManager.map(master.mapId);
+                        if (map == null || !map.isInstanceable() || (master.mapId != slave.mapId)) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject '{}' linking to Creature '{}' on an unpermitted map.", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+
+                        // they must have a possibility to meet (normal/heroic difficulty)
+                        if (!Objects.equals(master.spawnDifficulties, slave.spawnDifficulties)) {
+                            Logs.SQL.error("LinkedRespawn: Gameobject '{}' linking to Creature '{}' with not corresponding spawnMask", guidLow, linkedGuidLow);
+                            error = true;
+                            break;
+                        }
+                        guid = ObjectGuid.create(HighGuid.GameObject, slave.mapId, slave.id, guidLow);
+                        linkedGuid = ObjectGuid.create(HighGuid.Creature, slave.mapId, master.id, linkedGuidLow);
+                        break;
+                    }
+                }
+                if (!error) {
+                    linkedRespawnStorage.put(guid, linkedGuid);
+                }
+
+            });
         }
 
-        do {
-            var guidLow = result.<Long>Read(0);
-            var linkedGuidLow = result.<Long>Read(1);
-            var linkType = result.<Byte>Read(2);
 
-            var guid = ObjectGuid.Empty;
-            var linkedGuid = ObjectGuid.Empty;
-            var error = false;
-
-            switch (CreatureLinkedRespawnType.forValue(linkType)) {
-                case CreatureToCreature: {
-                    var slave = getCreatureData(guidLow);
-
-                    if (slave == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get creature data for GUIDLow {0}", guidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var master = getCreatureData(linkedGuidLow);
-
-                    if (master == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get creature data for GUIDLow {0}", linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var map = CliDB.MapStorage.get(master.getMapId());
-
-                    if (map == null || !map.Instanceable() || (master.getMapId() != slave.getMapId())) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Creature '{0}' linking to '{1}' on an unpermitted map.", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    // they must have a possibility to meet (normal/heroic difficulty)
-                    if (!master.spawnDifficulties.Intersect(slave.spawnDifficulties).Any()) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("LinkedRespawn: Creature '{0}' linking to '{1}' with not corresponding spawnMask", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    guid = ObjectGuid.create(HighGuid.Creature, slave.getMapId(), slave.id, guidLow);
-                    linkedGuid = ObjectGuid.create(HighGuid.Creature, master.getMapId(), master.id, linkedGuidLow);
-
-                    break;
-                }
-                case CreatureToGO: {
-                    var slave = getCreatureData(guidLow);
-
-                    if (slave == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get creature data for GUIDLow {0}", guidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var master = getGameObjectData(linkedGuidLow);
-
-                    if (master == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get gameobject data for GUIDLow {0}", linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var map = CliDB.MapStorage.get(master.getMapId());
-
-                    if (map == null || !map.Instanceable() || (master.getMapId() != slave.getMapId())) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Creature '{0}' linking to '{1}' on an unpermitted map.", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    // they must have a possibility to meet (normal/heroic difficulty)
-                    if (!master.spawnDifficulties.Intersect(slave.spawnDifficulties).Any()) {
-                        Logs.SQL.error("LinkedRespawn: Creature '{0}' linking to '{1}' with not corresponding spawnMask", guidLow, linkedGuidLow);
-                        error = true;
-
-                        break;
-                    }
-
-                    guid = ObjectGuid.create(HighGuid.Creature, slave.getMapId(), slave.id, guidLow);
-                    linkedGuid = ObjectGuid.create(HighGuid.GameObject, master.getMapId(), master.id, linkedGuidLow);
-
-                    break;
-                }
-                case GOToGO: {
-                    var slave = getGameObjectData(guidLow);
-
-                    if (slave == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get gameobject data for GUIDLow {0}", guidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var master = getGameObjectData(linkedGuidLow);
-
-                    if (master == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get gameobject data for GUIDLow {0}", linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var map = CliDB.MapStorage.get(master.getMapId());
-
-                    if (map == null || !map.Instanceable() || (master.getMapId() != slave.getMapId())) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Creature '{0}' linking to '{1}' on an unpermitted map.", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    // they must have a possibility to meet (normal/heroic difficulty)
-                    if (!master.spawnDifficulties.Intersect(slave.spawnDifficulties).Any()) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("LinkedRespawn: Creature '{0}' linking to '{1}' with not corresponding spawnMask", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    guid = ObjectGuid.create(HighGuid.GameObject, slave.getMapId(), slave.id, guidLow);
-                    linkedGuid = ObjectGuid.create(HighGuid.GameObject, master.getMapId(), master.id, linkedGuidLow);
-
-                    break;
-                }
-                case GOToCreature: {
-                    var slave = getGameObjectData(guidLow);
-
-                    if (slave == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get gameobject data for GUIDLow {0}", guidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var master = getCreatureData(linkedGuidLow);
-
-                    if (master == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Couldn't get creature data for GUIDLow {0}", linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    var map = CliDB.MapStorage.get(master.getMapId());
-
-                    if (map == null || !map.Instanceable() || (master.getMapId() != slave.getMapId())) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("Creature '{0}' linking to '{1}' on an unpermitted map.", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    // they must have a possibility to meet (normal/heroic difficulty)
-                    if (!master.spawnDifficulties.Intersect(slave.spawnDifficulties).Any()) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM linked_respawn WHERE guid = %1$s", guidLow));
-                        } else {
-                            Logs.SQL.error("LinkedRespawn: Creature '{0}' linking to '{1}' with not corresponding spawnMask", guidLow, linkedGuidLow);
-                        }
-
-                        error = true;
-
-                        break;
-                    }
-
-                    guid = ObjectGuid.create(HighGuid.GameObject, slave.getMapId(), slave.id, guidLow);
-                    linkedGuid = ObjectGuid.create(HighGuid.Creature, master.getMapId(), master.id, linkedGuidLow);
-
-                    break;
-                }
-            }
-
-            if (!error) {
-                linkedRespawnStorage.put(guid, linkedGuid);
-            }
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} linked respawns in {1} ms", linkedRespawnStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} linked respawns in {} ms", linkedRespawnStorage.size(), System.currentTimeMillis()- oldMSTime);
     }
 
     public void loadNPCText() {
@@ -2690,7 +2198,7 @@ public final class ObjectManager {
                 spell.getReqAbility().set(2, trainerSpellsResult.<Integer>Read(7));
                 spell.setReqLevel(trainerSpellsResult.<Byte>Read(8));
 
-                var spellInfo = global.getSpellMgr().getSpellInfo(spell.getSpellId(), Difficulty.NONE);
+                var spellInfo = world.getSpellManager().getSpellInfo(spell.getSpellId(), Difficulty.NONE);
 
                 if (spellInfo == null) {
                     Logs.SQL.error(String.format("Table `trainer_spell` references non-existing spell (SpellId: %1$s) for TrainerId %2$s, ignoring", spell.getSpellId(), trainerId));
@@ -2709,7 +2217,7 @@ public final class ObjectManager {
                 for (var i = 0; i < spell.getReqAbility().size(); ++i) {
                     var requiredSpell = spell.getReqAbility().get(i);
 
-                    if (requiredSpell != 0 && !global.getSpellMgr().hasSpellInfo(requiredSpell, Difficulty.NONE)) {
+                    if (requiredSpell != 0 && !world.getSpellManager().hasSpellInfo(requiredSpell, Difficulty.NONE)) {
                         Logs.SQL.error(String.format("Table `trainer_spell` references non-existing spell (ReqAbility %1$s: %2$s) for TrainerId %3$s and SpellId %4$s, ignoring", i + 1, requiredSpell, trainerId, spell.getSpellId()));
                         allReqValid = false;
                     }
@@ -2832,73 +2340,41 @@ public final class ObjectManager {
     }
 
     public void loadVendors() {
-        var time = System.currentTimeMillis();
+        var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
         // For reload case
         cacheVendorItemStorage.clear();
 
-        ArrayList<Integer> skipvendors = new ArrayList<>();
+        Map<Integer, VendorItemData> tmp = new HashMap<>();
+        Set<Integer> skipVendors = new HashSet<>();
 
-        var result = DB.World.query("SELECT entry, item, maxcount, incrtime, extendedCost, type, bonusListIDs, playerConditionID, IgnoreFiltering FROM npc_vendor ORDER BY entry, slot ASC");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 Vendors. DB table `npc_vendor` is empty!");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-            var itemid = result.<Integer>Read(1);
-
-            // if item is a negative, its a reference
-            if (itemid < 0) {
-                count += loadReferenceVendor((int) entry, -itemid, skipvendors);
-            } else {
-                VendorItem vItem = new VendorItem();
-                vItem.setItem((int) itemid);
-                vItem.setMaxcount(result.<Integer>Read(2));
-                vItem.setIncrtime(result.<Integer>Read(3));
-                vItem.setExtendedCost(result.<Integer>Read(4));
-                vItem.setType(ItemVendorType.forValue(result.<Byte>Read(5)));
-                vItem.setPlayerConditionId(result.<Integer>Read(7));
-                vItem.setIgnoreFiltering(result.<Boolean>Read(8));
-
-                var bonusListIDsTok = new LocalizedString();
-
-                if (!bonusListIDsTok.isEmpty()) {
-                    for (String token : bonusListIDsTok) {
-                        int id;
-                        tangible.OutObject<Integer> tempOut_id = new tangible.OutObject<Integer>();
-                        if (tangible.TryParseHelper.tryParseInt(token, tempOut_id)) {
-                            id = tempOut_id.outArgValue;
-                            vItem.getBonusListIDs().add(id);
-                        } else {
-                            id = tempOut_id.outArgValue;
-                        }
+        try(var items = creatureRepository.streamAllNpcVendor()) {
+            items.forEach(e-> {
+                var vList = tmp.compute(e.entry, Functions.ifAbsent(VendorItemData::new));
+                if(e.item < 0) {
+                    count.addAndGet(loadReferenceVendor(e.entry, -e.item, skipVendors, vList));
+                } else {
+                    if (!isVendorItemValid(e.entry, e, skipVendors)) {
+                        return;
                     }
+                    vList.addItem(e);
+                    count.getAndIncrement();
                 }
-
-                if (!isVendorItemValid(entry, vItem, null, skipvendors)) {
-                    continue;
-                }
-
-                if (cacheVendorItemStorage.get(entry) == null) {
-                    cacheVendorItemStorage.put(entry, new VendorItemData());
-                }
-
-                cacheVendorItemStorage.get(entry).addItem(vItem);
-                ++count;
-            }
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} Vendors in {1} ms", count, time.GetMSTimeDiffToNow(time));
+            });
+        }
+        cacheVendorItemStorage.putAll(tmp);
+        Logs.SERVER_LOADING.info(">> Loaded {} Vendors in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadCreatures() {
         var time = System.currentTimeMillis();
 
+        // Build single time for check spawnmask
+        HashMap<Short, Set<Difficulty>> spawnMasks = new HashMap<>();
+        for (MapDifficulty mapDifficulty : dbcObjectManager.mapDifficulty())
+            spawnMasks.compute(mapDifficulty.getMapID(), Functions.addToSet(mapDifficulty.getDifficulty()));
+
+        PhaseShift phaseShift = new PhaseShift();
         try(var items = creatureRepository.streamAllCreature()) {
             items.forEach(data -> {
                 var cInfo = getCreatureTemplate(data.id);
@@ -2908,206 +2384,172 @@ public final class ObjectManager {
                     return;
                 }
 
-                data.spawnGroupData = isTransportMap(data.mapId) ? getLegacySpawnGroup() : getDefaultSpawnGroup(); // transport spawns default to compatibility group
+                data.creatureTemplate = cInfo;
+                // transport spawns default to compatibility group
+                data.spawnGroupData = isTransportMap(data.mapId) ? getLegacySpawnGroup() : getDefaultSpawnGroup();
+
+                MapEntry mapEntry = dbcObjectManager.map(data.mapId);
+                if (mapEntry == null)
+                {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {}) that spawned at nonexistent map (Id: {}), skipped.", data.spawnId, data.mapId);
+                    return;
+                }
+                if (world.getWorldSettings().creatureCheckInvalidPosition) {
+                    if (world.getVMapManager().isMapLoadingEnabled() && !isTransportMap(data.mapId)) {
+                        Coordinate gridCoord = MapDefine.computeGridCoordinate(data.positionX, data.positionY);
+                        int gx = (MapDefine.MAX_NUMBER_OF_GRIDS - 1) - gridCoord.axisX();
+                        int gy = (MapDefine.MAX_NUMBER_OF_GRIDS - 1) - gridCoord.axisY();
+
+                        LoadResult result = world.getVMapManager().existsMap(data.mapId, gx, gy);
+                        if (result != LoadResult.Success) {
+                            Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {} MapID: {}) spawned on a possible invalid position ({}, {}, {})",
+                                    data.spawnId, data.id, data.mapId, data.positionX, data.positionY, data.positionZ);
+                        }
+                    }
+                }
+
+                if (data.spawnDifficulties.isEmpty()) {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {}) that is not spawned in any difficulty, skipped.", data.spawnId);
+                    return;
+                }
+                if (data.display != null) {
+                    if (getCreatureModelInfo(data.display.creatureDisplayId) == null) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with invalid `modelid` {}, ignoring.", data.spawnId, data.id, data.display.creatureDisplayId);
+                        data.display = null;
+                    }
+                }
+
+                // -1 random, 0 no equipment
+                if (data.equipmentId != 0)
+                {
+                    if (getEquipmentInfo(data.id, data.equipmentId) == null)
+                    {
+                        Logs.SQL.error("Table `creature` has creature (Entry: {}) with equipment_id {} not found in table `creature_equip_template`, set to no equipment.", data.id, data.equipmentId);
+                        data.equipmentId = 0;
+                    }
+                }
+
+                if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.INSTANCE_BIND)) {
+                    if (!mapEntry.isDungeon())
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with `creature_template`.`flags_extra` including CREATURE_FLAG_EXTRA_INSTANCE_BIND but creature is not in instance.", data.spawnId, data.id);
+                }
+
+                if (data.movementType >= MovementGeneratorType.MAX_DB_MOTION_TYPE) {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with wrong movement generator type ({}), ignored and set to IDLE.", data.spawnId, data.id, data.movementType);
+                    data.movementType = (byte) MovementGeneratorType.IDLE.ordinal();
+                }
+
+                if (data.wanderDistance < 0.0f) {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with `wander_distance`< 0, set to 0.", data.spawnId, data.id);
+                    data.wanderDistance = 0.0f;
+                } else if (data.movementType == MovementGeneratorType.RANDOM.ordinal()) {
+                    if (MathUtil.fuzzyEq(data.wanderDistance, 0.0f)) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with `MovementType`=1 (random movement) but with `wander_distance`=0, replace by idle movement type (0).", data.spawnId, data.id);
+                        data.movementType = (byte) MovementGeneratorType.IDLE.ordinal();
+                    }
+                } else if (data.movementType == MovementGeneratorType.IDLE.ordinal()) {
+                    if (data.wanderDistance != 0.0f) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with `MovementType`=0 (idle) have `wander_distance`<>0, set to 0.", data.spawnId, data.id);
+                        data.wanderDistance = 0.0f;
+                    }
+                }
+
+                if (data.phaseUseFlags.hasNotFlag(PhaseUseFlag.ALL)) {
+                    Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) has unknown `phaseUseFlags` set, removed unknown value.", data.spawnId, data.id);
+                    data.phaseUseFlags.removeNotFlag(PhaseUseFlag.ALL);
+                }
+
+                if (data.phaseUseFlags.hasFlag(PhaseUseFlag.ALWAYS_VISIBLE, PhaseUseFlag.INVERSE)) {
+                    Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) has both `phaseUseFlags` PHASE_USE_FLAGS_ALWAYS_VISIBLE and PHASE_USE_FLAGS_INVERSE,"
+                            + " removing PHASE_USE_FLAGS_INVERSE.", data.spawnId, data.id);
+                    data.phaseUseFlags.removeFlag(PhaseUseFlag.INVERSE);
+                }
+
+                if (data.phaseGroup != 0 && data.phaseId != 0) {
+                    Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) with both `phaseid` and `phasegroup` set, `phasegroup` set to 0", data.spawnId, data.id);
+                    data.phaseGroup = 0;
+                }
+
+                if (data.phaseId != 0) {
+                    if (!dbcObjectManager.phase().contains(data.phaseId)) {
+                        Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) with `phaseid` {} does not exist, set to 0", data.spawnId, data.id, data.phaseId);
+                        data.phaseId = 0;
+                    }
+                }
+
+                if (data.phaseGroup != 0) {
+                    List<Integer> phasesForGroup = dbcObjectManager.getPhasesForGroup(data.phaseGroup);
+                    if (phasesForGroup == null || phasesForGroup.isEmpty()) {
+                        Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) with `phasegroup` {} does not exist, set to 0", data.spawnId, data.id, data.phaseGroup);
+                        data.phaseGroup = 0;
+                    }
+                }
+
+                if (data.terrainSwapMap != -1) {
+                    MapEntry terrainSwapEntry = dbcObjectManager.map(data.terrainSwapMap);
+                    if (terrainSwapEntry == null) {
+                        Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) with `terrainSwapMap` {} does not exist, set to -1", data.spawnId, data.id, data.terrainSwapMap);
+                        data.terrainSwapMap = -1;
+                    } else if (terrainSwapEntry.getParentMapID() != (short) data.mapId) {
+                        Logs.SQL.error("Table `creature` have creature (GUID: {} Entry: {}) with `terrainSwapMap` {} which cannot be used on spawn map, set to -1", data.spawnId, data.id, data.terrainSwapMap);
+                        data.terrainSwapMap = -1;
+                    }
+                }
+
+                if (data.unitFlags != null) {
+                    if (data.unitFlags.hasNotFlag(UnitFlag.ALLOWED)) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with disallowed `unit_flags` {}, removing incorrect flag.", data.spawnId, data.id, data.unitFlags);
+                        data.unitFlags.removeFlag(UnitFlag.ALLOWED);
+                    }
+                }
+
+                if (data.unitFlags2 != null) {
+                    if (data.unitFlags2.hasNotFlag(UnitFlag2.ALLOWED)) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with disallowed `unit_flags2` {}, removing incorrect flag.", data.spawnId, data.id, data.unitFlags2);
+                        data.unitFlags2.removeFlag(UnitFlag2.ALLOWED);
+                    }
+                }
+
+                if (data.unitFlags3 != null) {
+                    if (data.unitFlags3.hasNotFlag(UnitFlag3.ALLOWED)) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with disallowed `unit_flags3` {}, removing incorrect flag.", data.spawnId, data.id, data.unitFlags3);
+                        data.unitFlags3.removeNotFlag(UnitFlag3.ALLOWED);
+                    }
+
+                    if (data.unitFlags3.hasFlag(UnitFlag3.FAKE_DEAD) && (data.unitFlags == null || !(data.unitFlags.hasFlag(UnitFlag.IMMUNE_TO_PC, UnitFlag.IMMUNE_TO_NPC)))) {
+                        Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) has UNIT_FLAG3_FAKE_DEAD set without IMMUNE_TO_PC | IMMUNE_TO_NPC, removing incorrect flag.", data.spawnId, data.id);
+                        data.unitFlags3.removeFlag(UnitFlag3.FAKE_DEAD);
+                    }
+                }
+
+                int healthPct = Math.clamp(data.curHealthPct, 1, 100);
+                if (data.curHealthPct != healthPct) {
+                    Logs.SQL.error("Table `creature` has creature (GUID: {} Entry: {}) with invalid `curHealthPct` {}, set to {}.", data.spawnId, data.id, data.curHealthPct, healthPct);
+                    data.curHealthPct = healthPct;
+                }
+
+                if (world.getWorldSettings().calculateGameObjectZoneAreaData) {
+                    PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
+                    ZoneAndAreaId result = world.getTerrainManager().getZoneAndAreaId(phaseShift, data.mapId, data.positionX, data.positionY, data.positionZ);
+                    if (result != null) {
+                        creatureRepository.updateCreatureZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
+                    }
+                }
+                creatureDataStorage.put(data.spawnId, data);
+                // Add to grid if not managed by the game event
+                if (data.eventEntry == 0) {
+                    addCreatureToGrid(data);
+                }
 
             });
         }
 
-        // Build single time for check spawnmask
-        HashMap<Integer, List<Difficulty>> spawnMasks = new HashMap<>();
-
-        for (var mapDifficulty : dbcObjectManager.mapDifficulty()) {
-            spawnMasks.compute(mapDifficulty.getMapID().intValue(),
-                    Functions.addToList(Difficulty.values()[mapDifficulty.getDifficultyID()]));
-        }
-
-        PhaseShift phaseShift = new PhaseShift();
-
-        int count = 0;
-
-        do {
-            var guid = result.<Long>Read(0);
-            var entry = result.<Integer>Read(1);
-
-
-
-
-
-            var scriptId = result.<String>Read(27);
-
-            if (StringUtil.isEmpty(scriptId)) {
-                data.scriptId = getScriptId(scriptId);
-            }
-
-            data.stringId = result.<String>Read(28);
-            data.setSpawnGroupData(spawnGroupDataStorage.get(isTransportMap(data.getMapId()) ? 1 : 0)); // transport spawns default to compatibility group
-
-            var mapEntry = CliDB.MapStorage.get(data.getMapId());
-
-            if (mapEntry == null) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0}) that spawned at not existed map (Id: {1}), skipped.", guid, data.getMapId());
-
-                continue;
-            }
-
-            if (data.spawnDifficulties.isEmpty()) {
-                Logs.SQL.error(String.format("Table `creature` has creature (GUID: %1$s) that is not spawned in any difficulty, skipped.", guid));
-
-                continue;
-            }
-
-            var ok = true;
-
-            for (int diff = 0; diff < SharedConst.MaxCreatureDifficulties && ok; ++diff) {
-                if (_difficultyEntries[diff].contains(data.id)) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0}) that listed as difficulty {1} template (entry: {2}) in `creaturetemplate`, skipped.", guid, diff + 1, data.id);
-                    ok = false;
-                }
-            }
-
-            if (!ok) {
-                continue;
-            }
-
-            // -1 random, 0 no equipment,
-            if (data.equipmentId != 0) {
-                if (getEquipmentInfo(data.id, data.equipmentId) == null) {
-                    Logs.SQL.error("Table `creature` have creature (Entry: {0}) with equipmentid {1} not found in table `creatureequiptemplate`, set to no equipment.", data.id, data.equipmentId);
-                    data.equipmentId = 0;
-                }
-            }
-
-            if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.InstanceBind)) {
-                if (!mapEntry.IsDungeon()) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `creature_template`.`flagsextra` including CREATUREFLAGEXTRAINSTANCEBIND " + "but creature are not in instance.", guid, data.id);
-                }
-            }
-
-            if (data.wanderDistance < 0.0f) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `wander_distance`< 0, set to 0.", guid, data.id);
-                data.wanderDistance = 0.0f;
-            } else if (data.movementType == (byte) MovementGeneratorType.random.getValue()) {
-                if (MathUtil.fuzzyEq(data.wanderDistance, 0.0f)) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `MovementType`=1 (random movement) but with `wander_distance`=0, replace by idle movement type (0).", guid, data.id);
-                    data.movementType = (byte) MovementGeneratorType.IDLE.getValue();
-                }
-            } else if (data.movementType == (byte) MovementGeneratorType.IDLE.getValue()) {
-                if (data.wanderDistance != 0.0f) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `MovementType`=0 (idle) have `wander_distance`<>0, set to 0.", guid, data.id);
-                    data.wanderDistance = 0.0f;
-                }
-            }
-
-            if ((boolean) (data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.All.getValue())) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown second.", guid, data.id);
-                data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & PhaseUseFlagsValues.All.getValue());
-            }
-
-            if (data.phaseUseFlags.hasFlag(PhaseUseFlagsValues.ALWAYSVISIBLE) && data.phaseUseFlags.hasFlag(PhaseUseFlagsValues.INVERSE)) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) has both `phaseUseFlags` PHASE_USE_FLAGS_ALWAYS_VISIBLE and PHASE_USE_FLAGS_INVERSE," + " removing PHASE_USE_FLAGS_INVERSE.", guid, data.id);
-
-                data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.INVERSE.getValue());
-            }
-
-            if (data.phaseGroup != 0 && data.phaseId != 0) {
-                Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with both `phaseid` and `phasegroup` set, `phasegroup` set to 0", guid, data.id);
-                data.phaseGroup = 0;
-            }
-
-            if (data.phaseId != 0) {
-                if (!CliDB.PhaseStorage.containsKey(data.phaseId)) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `phaseid` {2} does not exist, set to 0", guid, data.id, data.phaseId);
-                    data.phaseId = 0;
-                }
-            }
-
-            if (data.phaseGroup != 0) {
-                if (global.getDB2Mgr().GetPhasesForGroup(data.phaseGroup).isEmpty()) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `phasegroup` {2} does not exist, set to 0", guid, data.id, data.phaseGroup);
-                    data.phaseGroup = 0;
-                }
-            }
-
-            if (data.terrainSwapMap != -1) {
-                var terrainSwapEntry = CliDB.MapStorage.get(data.terrainSwapMap);
-
-                if (terrainSwapEntry == null) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `terrainSwapMap` {2} does not exist, set to -1", guid, data.id, data.terrainSwapMap);
-                    data.terrainSwapMap = -1;
-                } else if (terrainSwapEntry.ParentMapID != data.getMapId()) {
-                    Logs.SQL.error("Table `creature` have creature (GUID: {0} Entry: {1}) with `terrainSwapMap` {2} which cannot be used on spawn map, set to -1", guid, data.id, data.terrainSwapMap);
-                    data.terrainSwapMap = -1;
-                }
-            }
-
-            var disallowedUnitFlags = (int) (cInfo.UnitFlag.getValue() & ~UnitFlag.Allowed.getValue().getValue());
-
-            if (disallowedUnitFlags != 0) {
-                Logs.SQL.error(String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags));
-                cInfo.unitFlags = UnitFlag.forValue(cInfo.UnitFlag.getValue() & UnitFlag.Allowed.getValue());
-            }
-
-            var disallowedUnitFlags2 = (cInfo.unitFlags2 & ~(int) UnitFlag2.Allowed.getValue());
-
-            if (disallowedUnitFlags2 != 0) {
-                Logs.SQL.error(String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags2` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags2));
-                cInfo.unitFlags2 &= (int) UnitFlag2.Allowed.getValue();
-            }
-
-            var disallowedUnitFlags3 = (cInfo.unitFlags3 & ~(int) unitFlags3.Allowed.getValue());
-
-            if (disallowedUnitFlags3 != 0) {
-                Logs.SQL.error(String.format("Table `creature_template` lists creature (Entry: %1$s) with disallowed `unit_flags2` %2$s, removing incorrect flag.", cInfo.entry, disallowedUnitFlags3));
-                cInfo.unitFlags3 &= (int) unitFlags3.Allowed.getValue();
-            }
-
-            if (cInfo.dynamicFlags != 0) {
-                Logs.SQL.error(String.format("Table `creature_template` lists creature (Entry: %1$s) with `dynamicflags` > 0. Ignored and set to 0.", cInfo.entry));
-                cInfo.dynamicFlags = 0;
-            }
-
-            if (WorldConfig.getBoolValue(WorldCfg.CalculateCreatureZoneAreaData)) {
-                PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
-                int zoneId;
-                tangible.OutObject<Integer> tempOut_zoneId = new tangible.OutObject<Integer>();
-                int areaId;
-                tangible.OutObject<Integer> tempOut_areaId = new tangible.OutObject<Integer>();
-                global.getTerrainMgr().getZoneAndAreaId(phaseShift, tempOut_zoneId, tempOut_areaId, data.getMapId(), data.spawnPoint);
-                areaId = tempOut_areaId.outArgValue;
-                zoneId = tempOut_zoneId.outArgValue;
-
-                var stmt = DB.World.GetPreparedStatement(WorldStatements.UPD_CREATURE_ZONE_AREA_DATA);
-                stmt.AddValue(0, zoneId);
-                stmt.AddValue(1, areaId);
-                stmt.AddValue(2, guid);
-
-                DB.World.execute(stmt);
-            }
-
-            // Add to grid if not managed by the game event
-            if (gameEvent == 0) {
-                addCreatureToGrid(data);
-            }
-
-            creatureDataStorage.put(guid, data);
-            count++;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} creatures in {1} ms", count, time.GetMSTimeDiffToNow(time));
+        Logs.SERVER_LOADING.info("Loaded {} creatures in {} ms", creatureDataStorage.size(), System.currentTimeMillis() - time);
     }
 
-    public boolean hasPersonalSpawns(int mapid, Difficulty spawnMode, int phaseId) {
-        return mapPersonalObjectGuidsStore.containsKey((mapid, spawnMode, phaseId));
-    }
 
-    public CellObjectGuids getCellPersonalObjectGuids(int mapid, Difficulty spawnMode, int phaseId, int cell_id) {
-        var guids = mapPersonalObjectGuidsStore.get((mapid, spawnMode, phaseId));
-
-        if (guids != null) {
-            return guids.get(cell_id);
-        }
-
-        return null;
+    public CellSpawnData getCellPersonalObjectGuids(int mapId, Difficulty spawnMode, int cellId, int phaseId) {
+        return mapPersonalSpawnDataStorage.get(PersonalCellSpawnDataKey.of(mapId, spawnMode, cellId, phaseId));
     }
 
     public void addCreatureToGrid(CreatureData data) {
@@ -3118,7 +2560,7 @@ public final class ObjectManager {
         removeSpawnDataFromGrid(data);
     }
 
-    public ArrayList<Integer> getCreatureQuestItemList(int id) {
+    public List<Integer> getCreatureQuestItemList(int id) {
         return creatureQuestItemStorage.get(id);
     }
 
@@ -3128,10 +2570,6 @@ public final class ObjectManager {
 
     public CreatureTemplate getCreatureTemplate(int entry) {
         return creatureTemplateStorage.get(entry);
-    }
-
-    public CreatureAddon getCreatureTemplateAddon(int entry) {
-        return creatureTemplateAddonStorage.get(entry);
     }
 
     public int getCreatureDefaultTrainer(int creatureId) {
@@ -3155,7 +2593,7 @@ public final class ObjectManager {
         var retGuid = linkedRespawnStorage.get(spawnId);
 
         if (retGuid.IsEmpty) {
-            return ObjectGuid.Empty;
+            return ObjectGuid.EMPTY;
         }
 
         return retGuid;
@@ -3245,35 +2683,33 @@ public final class ObjectManager {
         return new DefaultCreatureBaseStats();
     }
 
-    public CreatureModelInfo getCreatureModelRandomGender(tangible.RefObject<CreatureModel> model, CreatureTemplate creatureTemplate) {
-        var modelInfo = getCreatureModelInfo(model.refArgValue.creatureDisplayId);
+    public CreatureModelInfo getCreatureModelRandomGender(final CreatureModel model, CreatureTemplate creatureTemplate) {
+        var modelInfo = getCreatureModelInfo(model.creatureDisplayId);
 
         if (modelInfo == null) {
             return null;
         }
 
         // If a model for another gender exists, 50% chance to use it
-        if (modelInfo.displayIdOtherGender != 0 && RandomUtil.URand(0, 1) == 0) {
-            var minfotmp = getCreatureModelInfo(modelInfo.displayIdOtherGender);
+        if (modelInfo.displayIdOtherGender != 0 && RandomUtil.randomInt(0, 2) == 0) {
+            var minfoTmp = getCreatureModelInfo(modelInfo.displayIdOtherGender);
 
-            if (minfotmp == null) {
-                Logs.SQL.error(String.format("Model (Entry: %1$s) has modelidothergender %2$s not found in table `creaturemodelinfo`. ", model.refArgValue.creatureDisplayId, modelInfo.displayIdOtherGender));
+            if (minfoTmp == null) {
+                Logs.SQL.error("Model (Entry: {}) has modelid_other_gender {} not found in table `creature_model_info`. ", model.creatureDisplayId, modelInfo.displayIdOtherGender);
             } else {
                 // DisplayID changed
-                model.refArgValue.creatureDisplayId = modelInfo.displayIdOtherGender;
-
+                model.creatureDisplayId = modelInfo.displayIdOtherGender;
                 if (creatureTemplate != null) {
-                    var creatureModel = tangible.ListHelper.find(creatureTemplate.models, templateModel ->
-                    {
-                        return templateModel.creatureDisplayId == modelInfo.displayIdOtherGender;
+                    creatureTemplate.models.stream()
+                            .filter(templateModel -> templateModel.creatureDisplayId == modelInfo.displayIdOtherGender)
+                            .findFirst().ifPresent(e -> {
+                        model.creatureDisplayId = e.creatureDisplayId;
+                        model.probability = e.probability;
+                        model.displayScale = e.displayScale;
                     });
-
-                    if (creatureModel != null) {
-                        model.refArgValue = creatureModel;
-                    }
                 }
 
-                return minfotmp;
+                return minfoTmp;
             }
         }
 
@@ -3301,7 +2737,7 @@ public final class ObjectManager {
             go.name = db2go.name.charAt(global.getWorldMgr().getDefaultDbcLocale());
             go.size = db2go.scale;
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //			unsafe
 //				{
 //					for (byte x = 0; x < db2go.PropValue.length; ++x)
@@ -3334,7 +2770,7 @@ public final class ObjectManager {
                 got.unk1 = result.<String>Read(6);
                 got.size = result.<Float>Read(7);
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //				unsafe
 //					{
 //						for (byte x = 0; x < SharedConst.MaxGOData; ++x)
@@ -3389,11 +2825,11 @@ public final class ObjectManager {
                         }
 
                         break;
-                    case Chair: //7
-                        tangible.RefObject<Integer> tempRef_chairheight = new tangible.RefObject<Integer>(got.chair.chairheight);
-                        checkAndFixGOChairHeightId(got, tempRef_chairheight, 1);
-                        got.chair.chairheight = tempRef_chairheight.refArgValue;
+                    case CHAIR: //7
 
+                        if(checkAndFixGOChairHeightId(got, got.chair.chairheight, 1)) {
+                            got.chair.chairheight = 0;
+                        }
                         break;
                     case SpellFocus: //8
                         if (got.spellFocus.spellFocusType != 0) {
@@ -3674,7 +3110,7 @@ public final class ObjectManager {
         // build single time for check spawnmask
         HashMap<Integer, ArrayList<Difficulty>> spawnMasks = new HashMap<Integer, ArrayList<Difficulty>>();
 
-        for (var mapDifficultyPair : global.getDB2Mgr().GetMapDifficulties().entrySet()) {
+        for (var mapDifficultyPair : dbcObjectManager.GetMapDifficulties().entrySet()) {
             for (var difficultyPair : mapDifficultyPair.getValue()) {
                 if (!spawnMasks.containsKey(mapDifficultyPair.getKey())) {
                     spawnMasks.put(mapDifficultyPair.getKey(), new ArrayList<Difficulty>());
@@ -3793,7 +3229,7 @@ public final class ObjectManager {
             }
 
             if (data.phaseGroup != 0) {
-                if (global.getDB2Mgr().GetPhasesForGroup(data.phaseGroup).isEmpty()) {
+                if (dbcObjectManager.GetPhasesForGroup(data.phaseGroup).isEmpty()) {
                     Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with `phaseGroup` {2} does not exist, set to 0", guid, data.id, data.phaseGroup);
                     data.phaseGroup = 0;
                 }
@@ -4130,7 +3566,7 @@ public final class ObjectManager {
             var itemTemplate = new ItemTemplate(db2Data, sparse);
             itemTemplate.setMaxDurability(fillMaxDurability(db2Data.classID, db2Data.SubclassID, sparse.inventoryType, itemQuality.forValue(sparse.OverallQualityID), sparse.itemLevel));
 
-            var itemSpecOverrides = global.getDB2Mgr().GetItemSpecOverrides(sparse.id);
+            var itemSpecOverrides = dbcObjectManager.GetItemSpecOverrides(sparse.id);
 
             if (itemSpecOverrides != null) {
                 for (var itemSpecOverride : itemSpecOverrides) {
@@ -4301,16 +3737,7 @@ public final class ObjectManager {
         vList.addItem(vItem);
 
         if (persist) {
-            var stmt = DB.World.GetPreparedStatement(WorldStatements.INS_NPC_VENDOR);
-
-            stmt.AddValue(0, entry);
-            stmt.AddValue(1, vItem.getItem());
-            stmt.AddValue(2, vItem.getMaxcount());
-            stmt.AddValue(3, vItem.getIncrtime());
-            stmt.AddValue(4, vItem.getExtendedCost());
-            stmt.AddValue(5, (byte) vItem.getType().getValue());
-
-            DB.World.execute(stmt);
+            creatureRepository.insertNpcVendor(entry, vItem.item, vItem.maxcount, vItem.incrtime, vItem.extendedCost, vItem.type.ordinal());
         }
     }
 
@@ -4330,136 +3757,126 @@ public final class ObjectManager {
         }
 
         if (persist) {
-            var stmt = DB.World.GetPreparedStatement(WorldStatements.DEL_NPC_VENDOR);
-
-            stmt.AddValue(0, entry);
-            stmt.AddValue(1, item);
-            stmt.AddValue(2, (byte) type.getValue());
-
-            DB.World.execute(stmt);
+            creatureRepository.deleteNpcVendor(entry, item, type.ordinal());
         }
 
         return true;
     }
 
-    public boolean isVendorItemValid(int vendorentry, VendorItem vItem, Player player, ArrayList<Integer> skipvendors) {
+    public boolean isVendorItemValid(int vendorentry, VendorItem vItem, Player player, Set<Integer> skipvendors) {
         return isVendorItemValid(vendorentry, vItem, player, skipvendors, 0);
     }
 
-    public boolean isVendorItemValid(int vendorentry, VendorItem vItem, Player player) {
-        return isVendorItemValid(vendorentry, vItem, player, null, 0);
+    public boolean isVendorItemValid(int vendorentry, VendorItem vItem, Set<Integer> skipvendors) {
+        return isVendorItemValid(vendorentry, vItem, null, skipvendors, 0);
     }
 
     public boolean isVendorItemValid(int vendorentry, VendorItem vItem) {
         return isVendorItemValid(vendorentry, vItem, null, null, 0);
     }
 
-    public boolean isVendorItemValid(int vendorentry, VendorItem vItem, Player player, ArrayList<Integer> skipvendors, long ORnpcflag) {
-        var cInfo = getCreatureTemplate(vendorentry);
+    public boolean isVendorItemValid(int vendorEntry, VendorItem vItem, Player player, Set<Integer> skipVendors, int orNpcFlag) {
+        var cInfo = getCreatureTemplate(vendorEntry);
 
         if (cInfo == null) {
             if (player != null) {
-                player.sendSysMessage(CypherStrings.CommandVendorselection);
-            } else if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                DB.World.execute(String.format("DELETE FROM npc_vendor WHERE entry = %1$s", vendorentry));
+                player.sendSysMessage(SysMessage.LANG_COMMAND_VENDORSELECTION);
             } else {
-                Logs.SQL.error("Table `(gameevent)npcvendor` have data for not existed creature template (Entry: {0}), ignore", vendorentry);
+                Logs.SQL.error("Table `(game_event_)npc_vendor` has data for nonexistent creature template (Entry: {}), ignore", vendorEntry);
             }
-
             return false;
         }
 
-        if (!(boolean) (((long) cInfo.npcFlag | ORnpcflag) & (long) NPCFlag.vendor.getValue())) {
-            if (skipvendors == null || skipvendors.isEmpty()) {
+        if (!EnumFlag.of(NPCFlag.class, orNpcFlag).addFlag(cInfo.npcFlag).hasFlag(NPCFlag.VENDOR)) {
+            if (skipVendors == null || skipVendors.isEmpty()) {
                 if (player != null) {
-                    player.sendSysMessage(CypherStrings.CommandVendorselection);
-                } else if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM npc_vendor WHERE entry = %1$s", vendorentry));
+                    player.sendSysMessage(SysMessage.LANG_COMMAND_VENDORSELECTION);
                 } else {
-                    Logs.SQL.error("Table `(gameevent)npcvendor` have data for not creature template (Entry: {0}) without vendor flag, ignore", vendorentry);
+                    Logs.SQL.error("Table `(game_event_)npc_vendor` has data for creature template (Entry: {}) without vendor flag, ignore", vendorEntry);
                 }
 
-                if (skipvendors != null) {
-                    skipvendors.add(vendorentry);
+                if (skipVendors != null) {
+                    skipVendors.add(vendorEntry);
                 }
             }
 
             return false;
         }
 
-        if ((vItem.getType() == ItemVendorType.item && getItemTemplate(vItem.getItem()) == null) || (vItem.getType() == ItemVendorType.currency && CliDB.CurrencyTypesStorage.get(vItem.getItem()) == null)) {
+        if ((vItem.type == ItemVendorType.ITEM && getItemTemplate(vItem.item) == null)
+                || (vItem.type == ItemVendorType.CURRENCY && dbcObjectManager.currencyType(vItem.item) == null)) {
             if (player != null) {
-                player.sendSysMessage(CypherStrings.ItemNotFound, vItem.getItem(), vItem.getType());
+                player.sendSysMessage(SysMessage.LANG_ITEM_NOT_FOUND, vItem.item, vItem.type);
             } else {
-                Logs.SQL.error("Table `(gameevent)npcvendor` for vendor (Entry: {0}) have in item list non-existed item ({1}, type {2}), ignore", vendorentry, vItem.getItem(), vItem.getType());
+                Logs.SQL.error("Table `(game_event_)npc_vendor` for Vendor (Entry: {}) have in item list non-existed item ({}, type {}), ignore", vendorEntry, vItem.item, vItem.type);
             }
 
             return false;
         }
 
-        if (vItem.getPlayerConditionId() != 0 && !CliDB.PlayerConditionStorage.containsKey(vItem.getPlayerConditionId())) {
-            Logs.SQL.error("Table `(game_event_)npc_vendor` has item (Entry: {0}) with invalid playerConditionId ({1}) for vendor ({2}), ignore", vItem.getItem(), vItem.getPlayerConditionId(), vendorentry);
+        if (vItem.playerConditionId != 0 && !dbcObjectManager.playerCondition().contains(vItem.playerConditionId)) {
+            Logs.SQL.error("Table `(game_event_)npc_vendor` has Item (Entry: {}) with invalid PlayerConditionId ({}) for vendor ({}), ignore", vItem.item, vItem.playerConditionId, vendorEntry);
 
             return false;
         }
 
-        if (vItem.getExtendedCost() != 0 && !CliDB.ItemExtendedCostStorage.containsKey(vItem.getExtendedCost())) {
+        if (vItem.extendedCost != 0 && !dbcObjectManager.itemExtendedCost().contains(vItem.extendedCost)) {
             if (player != null) {
-                player.sendSysMessage(CypherStrings.ExtendedCostNotExist, vItem.getExtendedCost());
+                player.sendSysMessage(SysMessage.LANG_EXTENDED_COST_NOT_EXIST, vItem.extendedCost);
             } else {
-                Logs.SQL.error("Table `(gameevent)npcvendor` have item (Entry: {0}) with wrong extendedCost ({1}) for vendor ({2}), ignore", vItem.getItem(), vItem.getExtendedCost(), vendorentry);
+                Logs.SQL.error("Table `(game_event_)npc_vendor` has Item (Entry: {}) with wrong ExtendedCost ({}) for vendor ({}), ignore", vItem.item, vItem.extendedCost, vendorEntry);
             }
 
             return false;
         }
 
-        if (vItem.getType() == ItemVendorType.item) // not applicable to currencies
+        if (vItem.type == ItemVendorType.ITEM) // not applicable to currencies
         {
-            if (vItem.getMaxcount() > 0 && vItem.getIncrtime() == 0) {
+            if (vItem.maxcount > 0 && vItem.incrtime == 0) {
                 if (player != null) {
-                    player.sendSysMessage("MaxCount != 0 ({0}) but IncrTime == 0", vItem.getMaxcount());
+                    player.sendSysMessage("MaxCount != 0 (%d) but IncrTime == 0", vItem.maxcount);
                 } else {
-                    Logs.SQL.error("Table `(gameevent)npcvendor` has `maxcount` ({0}) for item {1} of vendor (Entry: {2}) but `incrtime`=0, ignore", vItem.getMaxcount(), vItem.getItem(), vendorentry);
+                    Logs.SQL.error("Table `(game_event_)npc_vendor` has `maxcount` ({}) for item {} of vendor (Entry: {}) but `incrtime`=0, ignore", vItem.maxcount, vItem.item, vendorEntry);
                 }
 
                 return false;
-            } else if (vItem.getMaxcount() == 0 && vItem.getIncrtime() > 0) {
+            } else if (vItem.maxcount == 0 && vItem.incrtime > 0) {
                 if (player != null) {
                     player.sendSysMessage("MaxCount == 0 but IncrTime<>= 0");
                 } else {
-                    Logs.SQL.error("Table `(gameevent)npcvendor` has `maxcount`=0 for item {0} of vendor (Entry: {0}) but `incrtime`<>0, ignore", vItem.getItem(), vendorentry);
+                    Logs.SQL.error("Table `(game_event_)npc_vendor` has `maxcount`=0 for item {} of vendor (Entry: {}) but `incrtime`<>0, ignore", vItem.item, vendorEntry);
                 }
 
                 return false;
             }
 
-            for (var bonusList : vItem.getBonusListIDs()) {
-                if (global.getDB2Mgr().GetItemBonusList(bonusList) == null) {
-                    Logs.SQL.error("Table `(game_event_)npc_vendor` have item (Entry: {0}) with invalid bonus {1} for vendor ({2}), ignore", vItem.getItem(), bonusList, vendorentry);
+            for (var bonusListId : vItem.bonusListIDs) {
+                if (dbcObjectManager.getItemBonusList(bonusListId).isEmpty()) {
+                    Logs.SQL.error("Table `(game_event_)npc_vendor` have Item (Entry: {}) with invalid bonus {} for vendor ({}), ignore", vItem.item, bonusListId, vendorEntry);
 
                     return false;
                 }
             }
         }
 
-        var vItems = getNpcVendorItemList(vendorentry);
+        var vItems = getNpcVendorItemList(vendorEntry);
 
         if (vItems == null) {
             return true; // later checks for non-empty lists
         }
 
-        if (vItems.findItemCostPair(vItem.getItem(), vItem.getExtendedCost(), vItem.getType()) != null) {
+        if (vItems.findItemCostPair(vItem.item, vItem.extendedCost, vItem.type) != null) {
             if (player != null) {
-                player.sendSysMessage(CypherStrings.ItemAlreadyInList, vItem.getItem(), vItem.getExtendedCost(), vItem.getType());
+                player.sendSysMessage(SysMessage.LANG_ITEM_ALREADY_IN_LIST, vItem.item, vItem.extendedCost, vItem.type);
             } else {
-                Logs.SQL.error("Table `npcvendor` has duplicate items {0} (with extended cost {1}, type {2}) for vendor (Entry: {3}), ignoring", vItem.getItem(), vItem.getExtendedCost(), vItem.getType(), vendorentry);
+                Logs.SQL.error("Table `npc_vendor` has duplicate items {} (with extended cost {}, type {}) for vendor (Entry: {}), ignoring", vItem.item, vItem.extendedCost, vItem.type, vendorEntry);
             }
 
             return false;
         }
 
-        if (vItem.getType() == ItemVendorType.currency && vItem.getMaxcount() == 0) {
-            Logs.SQL.error("Table `(game_event_)npc_vendor` have item (Entry: {0}, type: {1}) with missing maxcount for vendor ({2}), ignore", vItem.getItem(), vItem.getType(), vendorentry);
+        if (vItem.type == ItemVendorType.CURRENCY && vItem.maxcount == 0) {
+            Logs.SQL.error("Table `(game_event_)npc_vendor` have Item (Entry: {}, type: {}) with missing maxcount for vendor ({}), ignore", vItem.item, vItem.type, vendorEntry);
 
             return false;
         }
@@ -4475,9 +3892,6 @@ public final class ObjectManager {
         return creatureMovementOverrides.get(spawnId);
     }
 
-    public boolean tryGetGetCreatureMovementOverride(long spawnId, tangible.OutObject<CreatureMovementData> movementData) {
-        return (creatureMovementOverrides.containsKey(spawnId) && (movementData.outArgValue = creatureMovementOverrides.get(spawnId)) == movementData.outArgValue);
-    }
 
     public EquipmentInfo getEquipmentInfo(int entry, int id) {
         var equip = equipmentInfoStorage.get(entry);
@@ -4488,6 +3902,7 @@ public final class ObjectManager {
 
         if (id == -1) {
             return equip[RandomUtil.IRand(0, equip.size() - 1)].item2;
+            return RandomUtil.random(equip).
         } else {
             return (tangible.ListHelper.find(equip, p -> p.Item1 == id) == null ? null : tangible.ListHelper.find(equip, p -> p.Item1 == id).item2);
         }
@@ -4618,7 +4033,7 @@ public final class ObjectManager {
 
             var difficulty = result.<Integer>Read(1);
 
-            if (global.getDB2Mgr().GetMapDifficultyData(mapid, Difficulty.forValue(difficulty)) == null) {
+            if (dbcObjectManager.GetMapDifficultyData(mapid, Difficulty.forValue(difficulty)) == null) {
                 Logs.SQL.error("Map {0} referenced in `access_requirement` does not have difficulty {1}, skipped", mapid, difficulty);
 
                 continue;
@@ -4755,7 +4170,7 @@ public final class ObjectManager {
                     break;
                 }
                 case CastSpell:
-                    if (!global.getSpellMgr().hasSpellInfo(creditEntry, Difficulty.NONE)) {
+                    if (!world.getSpellManager().hasSpellInfo(creditEntry, Difficulty.NONE)) {
                         Logs.SQL.error("Table `instance_encounters` has an invalid spell (entry {0}) linked to the encounter {1} ({2}), skipped!", creditEntry, entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()));
 
                         continue;
@@ -4770,7 +4185,7 @@ public final class ObjectManager {
 
             if (dungeonEncounter.difficultyID == 0) {
                 for (var difficulty : CliDB.DifficultyStorage.values()) {
-                    if (global.getDB2Mgr().GetMapDifficultyData((int) dungeonEncounter.mapID, Difficulty.forValue(difficulty.id)) != null) {
+                    if (dbcObjectManager.GetMapDifficultyData((int) dungeonEncounter.mapID, Difficulty.forValue(difficulty.id)) != null) {
                         dungeonEncounterStorage.add(MathUtil.MakePair64((int) dungeonEncounter.mapID, difficulty.id), new dungeonEncounter(dungeonEncounter, creditType, creditEntry, lastEncounterDungeon));
                     }
                 }
@@ -5005,7 +4420,7 @@ public final class ObjectManager {
         // Alternative first GameTele what contains wnameLow as substring in case no GameTele location found
         GameTele alt = null;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, tele) : gameTeleStorage) {
             if (Objects.equals(tele.nameLow, name)) {
                 return tele;
@@ -5020,7 +4435,7 @@ public final class ObjectManager {
     public GameTele getGameTeleExactName(String name) {
         name = name.toLowerCase();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, tele) : gameTeleStorage) {
             if (Objects.equals(tele.nameLow, name)) {
                 return tele;
@@ -5104,11 +4519,11 @@ public final class ObjectManager {
         return spawnGroupDataStorage.get(1);
     }
 
-    public ArrayList<SpawnMetadata> getSpawnMetadataForGroup(int groupId) {
+    public List<SpawnMetadata> getSpawnMetadataForGroup(int groupId) {
         return spawnGroupMapStorage.get(groupId);
     }
 
-    public ArrayList<Integer> getSpawnGroupsForMap(int mapId) {
+    public List<Integer> getSpawnGroupsForMap(int mapId) {
         return spawnGroupsByMap.get(mapId);
     }
 
@@ -5137,8 +4552,8 @@ public final class ObjectManager {
         }
     }
 
-    public ArrayList<InstanceSpawnGroupInfo> getInstanceSpawnGroupsForMap(int mapId) {
-        return instanceSpawnGroupStorage.get(mapId);
+    public List<InstanceSpawnGroupInfo> getInstanceSpawnGroupsForMap(int mapId) {
+        return instanceSpawnGroupStorage.get((short) mapId);
     }
 
     //Player
@@ -7913,24 +7328,11 @@ public final class ObjectManager {
     }
 
 
-    public CellObjectGuids getCellObjectGuids(int mapId, Difficulty difficulty, int cellId) {
-        var key = (mapId, difficulty);
-
-        TValue internDict;
-        var val;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if ((mapObjectGuidsStore.containsKey(key) && (internDict = mapObjectGuidsStore.get(key)) == internDict) && internDict.TryGetValue(cellId, out val)) {
-            return val;
-        }
-
-        return null;
+    public CellSpawnData getCellObjectGuids(int mapId, Difficulty difficulty, int cellId) {
+        var key = Tuple.of(mapId, difficulty, cellId);
+        return mapCellSpawnDataStorage.get(key);
     }
 
-    public HashMap<Integer, CellObjectGuids> getMapObjectGuids(int mapid, Difficulty difficulty) {
-        var key = (mapid, difficulty);
-
-        return mapObjectGuidsStore.get(key);
-    }
 
     public PageText getPageText(int pageEntry) {
         return pageTextStorage.get(pageEntry);
@@ -8008,26 +7410,26 @@ public final class ObjectManager {
     }
 
     public int getTaxiMountDisplayId(int id, Team team, boolean allowed_alt_team) {
-        CreatureModel mountModel = new creatureModel();
+        CreatureModel mountModel = new CreatureModel();
         CreatureTemplate mount_info = null;
 
         // select mount creature id
-        var node = CliDB.TaxiNodesStorage.get(id);
+        var node = dbcObjectManager.taxiNode(id);
 
         if (node != null) {
             int mount_entry;
 
             if (team == Team.ALLIANCE) {
-                mount_entry = node.MountCreatureID[1];
+                mount_entry = node.getMountCreatureID2();
             } else {
-                mount_entry = node.MountCreatureID[0];
+                mount_entry = node.getMountCreatureID1();
             }
 
             // Fix for Alliance not being able to use Acherus taxi
             // only one mount type for both sides
             if (mount_entry == 0 && allowed_alt_team) {
                 // Simply reverse the selection. At least one team in theory should have a valid mount ID to choose.
-                mount_entry = team == Team.ALLIANCE ? node.MountCreatureID[0] : node.MountCreatureID[1];
+                mount_entry = team == Team.ALLIANCE ? node.getMountCreatureID1() : node.getMountCreatureID2();
             }
 
             mount_info = getCreatureTemplate(mount_entry);
@@ -8046,9 +7448,7 @@ public final class ObjectManager {
         }
 
         // minfo is not actually used but the mount_id was updated
-        tangible.RefObject<CreatureModel> tempRef_mountModel = new tangible.RefObject<CreatureModel>(mountModel);
-        getCreatureModelRandomGender(tempRef_mountModel, mount_info);
-        mountModel = tempRef_mountModel.refArgValue;
+        getCreatureModelRandomGender(mountModel, mount_info);
 
         return mountModel.creatureDisplayId;
     }
@@ -8114,7 +7514,7 @@ public final class ObjectManager {
         return sceneTemplateStorage.get(sceneId);
     }
 
-    public ArrayList<TempSummonData> getSummonGroup(int summonerId, SummonerType summonerType, byte group) {
+    public List<TempSummonData> getSummonGroup(int summonerId, SummonerType summonerType, byte group) {
         var key = Tuple.of(summonerId, summonerType, group);
 
         return tempSummonDataStorage.get(key);
@@ -8126,8 +7526,7 @@ public final class ObjectManager {
     }
 
     public String getPhaseName(int phaseId) {
-        TValue value;
-        return (phaseNameStorage.containsKey(phaseId) && (value = phaseNameStorage.get(phaseId)) == value) ? value : "Unknown Name";
+        return phaseNameStorage.get(phaseId);
     }
 
     //Vehicles
@@ -8340,16 +7739,16 @@ public final class ObjectManager {
             return;
         }
 
-        if (global.getMapMgr().IsScriptScheduled()) // function cannot be called when scripts are in use.
+        if (world.getMapManager().isScriptScheduled()) // function cannot be called when scripts are in use.
         {
             return;
         }
 
-        Logs.SERVER_LOADING.info("Loading {0}...", tableName);
+        Logs.SERVER_LOADING.info("Loading {}...", tableName);
 
         scripts.clear(); // need for reload support
 
-        var isSpellScriptTable = (type == ScriptsType.spell);
+        var isSpellScriptTable = (type == ScriptsType.SPELL);
         //                                         0    1       2         3         4          5    6  7  8  9
         var result = DB.World.query("SELECT id, delay, command, datalong, datalong2, dataint, x, y, z, o{0} FROM {1}", isSpellScriptTable ? ", effIndex" : "", tableName);
 
@@ -8373,7 +7772,7 @@ public final class ObjectManager {
             tmp.delay = result.<Integer>Read(1);
             tmp.command = ScriptCommands.forValue(result.<Integer>Read(2));
 
-// C# TO JAVA CONVERTER TASK: C# 'unsafe' code is not converted by C# to Java Converter:
+
 //			unsafe
 //				{
 //					tmp.raw.nData[0] = result.Read<uint>(3);
@@ -8387,7 +7786,7 @@ public final class ObjectManager {
 
             // generic command args check
             switch (tmp.command) {
-                case Talk: {
+                case TALK: {
                     if (tmp.talk.chatType.getValue() > ChatMsg.RaidBossWhisper.getValue()) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8411,7 +7810,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case Emote: {
+                case EMOTE: {
                     if (!CliDB.EmotesStorage.containsKey(tmp.emote.emoteID)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8425,7 +7824,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case TeleportTo: {
+                case TELEPORT_TO: {
                     if (!CliDB.MapStorage.containsKey(tmp.teleportTo.mapID)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8449,7 +7848,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case QuestExplored: {
+                case QUEST_EXPLORED: {
                     var quest = getQuestTemplate(tmp.questExplored.questID);
 
                     if (quest == null) {
@@ -8500,7 +7899,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case KillCredit: {
+                case KILL_CREDIT: {
                     if (getCreatureTemplate(tmp.killCredit.creatureEntry) == null) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8514,7 +7913,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case RespawnGameobject: {
+                case RESPAWN_GAMEOBJECT: {
                     var data = getGameObjectData(tmp.respawnGameObject.GOGuid);
 
                     if (data == null) {
@@ -8552,7 +7951,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case TempSummonCreature: {
+                case TEMP_SUMMON_CREATURE: {
                     if (!MapDefine.isValidMapCoordinatei(tmp.tempSummonCreature.posX, tmp.tempSummonCreature.posY, tmp.tempSummonCreature.posZ, tmp.tempSummonCreature.orientation)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8576,8 +7975,8 @@ public final class ObjectManager {
                     break;
                 }
 
-                case OpenDoor:
-                case CloseDoor: {
+                case OPEN_DOOR:
+                case CLOSE_DOOR: {
                     var data = getGameObjectData(tmp.toggleDoor.GOGuid);
 
                     if (data == null) {
@@ -8615,8 +8014,8 @@ public final class ObjectManager {
                     break;
                 }
 
-                case RemoveAura: {
-                    if (!global.getSpellMgr().hasSpellInfo(tmp.removeAura.spellID, Difficulty.NONE)) {
+                case REMOVE_AURA: {
+                    if (!world.getSpellManager().hasSpellInfo(tmp.removeAura.spellID, Difficulty.NONE)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
                         } else {
@@ -8640,8 +8039,8 @@ public final class ObjectManager {
                     break;
                 }
 
-                case CastSpell: {
-                    if (!global.getSpellMgr().hasSpellInfo(tmp.castSpell.spellID, Difficulty.NONE)) {
+                case CAST_SPELL: {
+                    if (!world.getSpellManager().hasSpellInfo(tmp.castSpell.spellID, Difficulty.NONE)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
                         } else {
@@ -8684,7 +8083,7 @@ public final class ObjectManager {
                     break;
                 }
 
-                case CreateItem: {
+                case CREATE_ITEM: {
                     if (getItemTemplate(tmp.createItem.itemEntry) == null) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8707,7 +8106,7 @@ public final class ObjectManager {
 
                     break;
                 }
-                case PlayAnimkit: {
+                case PLAY_ANIMKIT: {
                     if (!CliDB.AnimKitStorage.containsKey(tmp.playAnimKit.animKitID)) {
                         if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
                             DB.World.execute(String.format("DELETE FROM %1$s WHERE id = %2$s", tableName, tmp.id));
@@ -8887,189 +8286,127 @@ public final class ObjectManager {
     }
 
     private void checkCreatureMovement(String table, long id, CreatureMovementData creatureMovement) {
-        if (creatureMovement.ground.getValue() >= CreatureGroundMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Ground` wrong second (%2$s) for Id %3$s, setting to run.", table, creatureMovement.ground, id));
-            creatureMovement.ground = CreatureGroundMovementType.run;
+        if (creatureMovement.ground == null) {
+            Logs.SQL.error("`{}`.`Ground` wrong value ({}) for Id {}, setting to Run.", table, creatureMovement.ground, id);
+            creatureMovement.ground = CreatureGroundMovementType.Run;
         }
 
-        if (creatureMovement.flight.getValue() >= CreatureFlightMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Flight` wrong second (%2$s) for Id %3$s, setting to NONE.", table, creatureMovement.flight, id));
-            creatureMovement.flight = CreatureFlightMovementType.NONE;
+        if (creatureMovement.flight == null) {
+            Logs.SQL.error("`{}`.`Flight` wrong value ({}) for Id {}, setting to None.", table, creatureMovement.flight, id);
+            creatureMovement.flight = CreatureFlightMovementType.None;
         }
 
-        if (creatureMovement.chase.getValue() >= CreatureChaseMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Chase` wrong second (%2$s) for Id %3$s, setting to run.", table, creatureMovement.chase, id));
-            creatureMovement.chase = CreatureChaseMovementType.run;
+        if (creatureMovement.chase == null) {
+            Logs.SQL.error("`{}`.`Chase` wrong value ({}) for Id {}, setting to Run.", table, creatureMovement.chase, id);
+            creatureMovement.chase = CreatureChaseMovementType.Run;
         }
 
-        if (creatureMovement.random.getValue() >= CreatureRandomMovementType.max.getValue()) {
-            Logs.SQL.error(String.format("`%1$s`.`Random` wrong second (%2$s) for Id %3$s, setting to Walk.", table, creatureMovement.random, id));
+        if (creatureMovement.random == null) {
+            Logs.SQL.error("`{}`.`Random` wrong value ({}) for Id {}, setting to Walk.", table, creatureMovement.random, id);
             creatureMovement.random = CreatureRandomMovementType.Walk;
         }
     }
 
-    private int loadReferenceVendor(int vendor, int item, ArrayList<Integer> skip_vendors) {
-        // find all items from the reference vendor
-        var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_NPC_VENDOR_REF);
-        stmt.AddValue(0, item);
-        var result = DB.World.query(stmt);
-
-        if (result.isEmpty()) {
-            return 0;
-        }
-
-        int count = 0;
-
-        do {
-            var item_id = result.<Integer>Read(0);
-
-            // if item is a negative, its a reference
-            if (item_id < 0) {
-                count += loadReferenceVendor(vendor, -item_id, skip_vendors);
+    private int loadReferenceVendor(int vendor, int item, Set<Integer> skipVendors, VendorItemData vList) {
+        AtomicInteger count = new AtomicInteger();
+        creatureRepository.queryNpcVendorByEntry(item).forEach(e->{
+            if(e.item < 0) {
+                count.addAndGet(loadReferenceVendor(vendor, -item, skipVendors, vList));
             } else {
-                VendorItem vItem = new VendorItem();
-                vItem.setItem((int) item_id);
-                vItem.setMaxcount(result.<Integer>Read(1));
-                vItem.setIncrtime(result.<Integer>Read(2));
-                vItem.setExtendedCost(result.<Integer>Read(3));
-                vItem.setType(ItemVendorType.forValue(result.<Byte>Read(4)));
-                vItem.setPlayerConditionId(result.<Integer>Read(6));
-                vItem.setIgnoreFiltering(result.<Boolean>Read(7));
-
-                var bonusListIDsTok = new LocalizedString();
-
-                if (!bonusListIDsTok.isEmpty()) {
-                    for (String token : bonusListIDsTok) {
-                        int id;
-                        tangible.OutObject<Integer> tempOut_id = new tangible.OutObject<Integer>();
-                        if (tangible.TryParseHelper.tryParseInt(token, tempOut_id)) {
-                            id = tempOut_id.outArgValue;
-                            vItem.getBonusListIDs().add(id);
-                        } else {
-                            id = tempOut_id.outArgValue;
-                        }
-                    }
+                if (!isVendorItemValid( vendor, e, null, skipVendors)) {
+                    return;
                 }
-
-                if (!isVendorItemValid((int) vendor, vItem, null, skip_vendors)) {
-                    continue;
-                }
-
-                var vList = cacheVendorItemStorage.get((int) vendor);
-
-                if (vList == null) {
-                    continue;
-                }
-
-                vList.addItem(vItem);
-                ++count;
+                vList.addItem(e);
+                count.getAndIncrement();
             }
-        } while (result.NextRow());
-
-        return count;
+        });
+        return count.get();
     }
 
     private void addSpawnDataToGrid(SpawnData data) {
-        var cellId = MapDefine.computeCellCoord(data.spawnPoint.getX(), data.spawnPoint.getY()).getId();
+        var cellId = MapDefine.computeCellCoordinate(data.positionX, data.positionY).getId();
         var isPersonalPhase = PhasingHandler.isPersonalPhase(data.phaseId);
 
         if (!isPersonalPhase) {
             for (var difficulty : data.spawnDifficulties) {
-                var key = (data.getMapId(), difficulty);
-
-                if (!mapObjectGuidsStore.containsKey(key)) {
-                    mapObjectGuidsStore.put(key, new HashMap<Integer, CellObjectGuids>());
-                }
-
-                if (!mapObjectGuidsStore.get(key).containsKey(cellId)) {
-                    mapObjectGuidsStore.get(key).put(cellId, new CellObjectGuids());
-                }
-
-                mapObjectGuidsStore.get(key).get(cellId).addSpawn(data);
+                var key = Tuple.of(data.getMapId(), difficulty, cellId);
+                CellSpawnData cellSpawnData = mapCellSpawnDataStorage.compute(key, Functions.ifAbsent(CellSpawnData::new));
+                cellSpawnData.addSpawn(data);
             }
         } else {
             for (var difficulty : data.spawnDifficulties) {
-                var key = (data.getMapId(), difficulty, data.phaseId);
+                PersonalCellSpawnDataKey key = PersonalCellSpawnDataKey.of(data.mapId, difficulty, cellId, data.phaseId);
+                CellSpawnData cellSpawnData = mapPersonalSpawnDataStorage.compute(key, Functions.ifAbsent(CellSpawnData::new));
+                cellSpawnData.addSpawn(data);
 
-                if (!mapPersonalObjectGuidsStore.containsKey(key)) {
-                    mapPersonalObjectGuidsStore.put(key, new HashMap<Integer, CellObjectGuids>());
-                }
-
-                if (!mapPersonalObjectGuidsStore.get(key).containsKey(cellId)) {
-                    mapPersonalObjectGuidsStore.get(key).put(cellId, new CellObjectGuids());
-                }
-
-                mapPersonalObjectGuidsStore.get(key).get(cellId).addSpawn(data);
             }
         }
     }
 
     private void removeSpawnDataFromGrid(SpawnData data) {
-        var cellId = MapDefine.computeCellCoord(data.spawnPoint.getX(), data.spawnPoint.getY()).getId();
+        var cellId = MapDefine.computeCellCoordinate(data.positionX, data.positionY).getId();
         var isPersonalPhase = PhasingHandler.isPersonalPhase(data.phaseId);
 
         if (!isPersonalPhase) {
             for (var difficulty : data.spawnDifficulties) {
-                var key = (data.getMapId(), difficulty);
-
-                if (!mapObjectGuidsStore.containsKey(key) || !mapObjectGuidsStore.get(key).containsKey(cellId)) {
+                var key = Tuple.of(data.getMapId(), difficulty, cellId);
+                CellSpawnData cellSpawnData = mapCellSpawnDataStorage.get(key);
+                if (cellSpawnData == null) {
                     continue;
                 }
-
-                mapObjectGuidsStore.get((data.getMapId(), difficulty)).get(cellId).removeSpawn(data);
+                cellSpawnData.removeSpawn(data);
+                mapCellSpawnDataStorage.put(key, cellSpawnData);
             }
         } else {
             for (var difficulty : data.spawnDifficulties) {
-                var key = (data.getMapId(), difficulty, data.phaseId);
-
-                if (!mapPersonalObjectGuidsStore.containsKey(key) || !mapPersonalObjectGuidsStore.get(key).containsKey(cellId)) {
+                PersonalCellSpawnDataKey key = PersonalCellSpawnDataKey.of(data.mapId, difficulty, cellId, data.phaseId);
+                CellSpawnData cellSpawnData = mapPersonalSpawnDataStorage.get(key);
+                if (cellSpawnData == null) {
                     continue;
                 }
-
-                mapPersonalObjectGuidsStore.get(key).get(cellId).removeSpawn(data);
+                cellSpawnData.removeSpawn(data);
+                mapPersonalSpawnDataStorage.put(key, cellSpawnData);
             }
         }
     }
 
-    private MultiMap<Integer, Integer> getGameObjectQuestItemMap() {
-        return gameObjectQuestItemStorage;
-    }
 
     private void checkGOLockId(GameObjectTemplate goInfo, int dataN, int N) {
-        if (CliDB.LockStorage.containsKey(dataN)) {
+        if (dbcObjectManager.lock().contains(dataN)) {
             return;
         }
 
-        Logs.SQL.debug("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but lock (Id: {4}) not found.", goInfo.entry, goInfo.type, N, goInfo.door.open, goInfo.door.open);
+        Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but lock (Id: {}) not found.", goInfo.entry, goInfo.type, N, goInfo.door.open, goInfo.door.open);
     }
 
     private void checkGOLinkedTrapId(GameObjectTemplate goInfo, int dataN, int N) {
         var trapInfo = getGameObjectTemplate(dataN);
 
         if (trapInfo != null) {
-            if (trapInfo.type != GameObjectTypes.trap) {
-                Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but GO (Entry {4}) have not GAMEOBJECT_TYPE_TRAP type.", goInfo.entry, goInfo.type, N, dataN, dataN);
+            if (trapInfo.type != GameObjectType.TRAP) {
+                Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but GO (Entry {}) have not GAMEOBJECT_TYPE_TRAP ({}) type.", goInfo.entry, goInfo.type, N, dataN, dataN, GameObjectType.TRAP.ordinal());
             }
         }
     }
 
     private void checkGOSpellId(GameObjectTemplate goInfo, int dataN, int N) {
-        if (global.getSpellMgr().hasSpellInfo(dataN, Difficulty.NONE)) {
+        if (world.getSpellManager().hasSpellInfo(dataN, Difficulty.NONE)) {
             return;
         }
 
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but spell (Entry {4}) not exist.", goInfo.entry, goInfo.type, N, dataN, dataN);
+        Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but Spell (Entry {}) not exist.", goInfo.entry, goInfo.type, N, dataN, dataN);
     }
 
-    private void checkAndFixGOChairHeightId(GameObjectTemplate goInfo, tangible.RefObject<Integer> dataN, int N) {
-        if (dataN.refArgValue <= (UnitStandStateType.SitHighChair - UnitStandStateType.SitLowChair)) {
-            return;
+    private boolean checkAndFixGOChairHeightId(GameObjectTemplate goInfo, int dataN, int N) {
+        int bound = UnitStandStateType.STATE_SIT_HIGH_CHAIR.ordinal() - UnitStandStateType.STATE_SIT_LOW_CHAIR.ordinal();
+        if (dataN <= bound) {
+            return true;
         }
 
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but correct chair height in range 0..{4}.", goInfo.entry, goInfo.type, N, dataN.refArgValue, UnitStandStateType.SitHighChair - UnitStandStateType.SitLowChair);
+        Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but correct chair height in range 0..{}.", goInfo.entry, goInfo.type, N, dataN, dataN);
 
         // prevent client and server unexpected work
-        dataN.refArgValue = 0;
+        return false;
     }
 
     private void checkGONoDamageImmuneId(GameObjectTemplate goTemplate, int dataN, int N) {
@@ -9077,8 +8414,7 @@ public final class ObjectManager {
         if (dataN <= 1) {
             return;
         }
-
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) noDamageImmune field second.", goTemplate.entry, goTemplate.type, N, dataN);
+        Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but expected boolean (0/1) noDamageImmune field value.", goTemplate.entry, goTemplate.type, N, dataN);
     }
 
     private void checkGOConsumable(GameObjectTemplate goInfo, int dataN, int N) {
@@ -9086,41 +8422,35 @@ public final class ObjectManager {
         if (dataN <= 1) {
             return;
         }
-
-        Logs.SQL.error("Gameobject (Entry: {0} GoType: {1}) have data{2}={3} but expected boolean (0/1) consumable field second.", goInfo.entry, goInfo.type, N, dataN);
+        Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but expected boolean (0/1) consumable field value.", goInfo.entry, goInfo.type, N, dataN);
     }
 
-    private ArrayList<Difficulty> parseSpawnDifficulties(String difficultyString, String table, long spawnId, int mapId, ArrayList<Difficulty> mapDifficulties) {
-        ArrayList<Difficulty> difficulties = new ArrayList<>();
-        LocalizedString tokens = new LocalizedString();
+    private List<Difficulty> parseSpawnDifficulties(String difficultyString, String table, long spawnId, int mapId, ArrayList<Difficulty> mapDifficulties) {
+        Set<Difficulty> difficulties = new HashSet<>();
 
-        if (tokens.length == 0) {
-            return difficulties;
-        }
 
         var isTransportMap = isTransportMap(mapId);
 
-        for (String token : tokens) {
-            var difficultyId = Difficulty.valueOf(token);
+        int[] ints = StringUtil.distinctSplitInts(difficultyString, ",");
 
-            if (difficultyId != 0 && !CliDB.DifficultyStorage.containsKey(difficultyId)) {
-                Logs.SQL.error(String.format("Table `%1$s` has %2$s (GUID: %3$s) with non invalid difficulty id %4$s, skipped.", table, table, spawnId, difficultyId));
+        for (int difficultyId : ints) {
+            Difficulty difficulty = difficultyId > Difficulty.values().length || difficultyId < 0 ? Difficulty.NONE : Difficulty.values()[difficultyId];
 
+            if (difficulty != Difficulty.NONE && dbcObjectManager.difficulty(difficultyId) == null)
+            {
+                Logs.SQL.error("Table `{}` has {} (GUID: {}) with non invalid difficulty id {}, skipped.", table, table, spawnId, difficulty);
                 continue;
             }
 
-            if (!isTransportMap && !mapDifficulties.contains(difficultyId)) {
-                Logs.SQL.error(String.format("Table `%1$s` has %2$s (GUID: %3$s) has unsupported difficulty %4$s for map (Id: %5$s).", table, table, spawnId, difficultyId, mapId));
-
+            if (!isTransportMap && mapDifficulties.get(difficultyId) == null)
+            {
+                Logs.SQL.error("Table `{}` has {} (GUID: {}) has unsupported difficulty {} for map (Id: {}).", table, table, spawnId, difficulty, mapId);
                 continue;
             }
-
-            difficulties.add(difficultyId);
+            difficulties.add(difficulty);
         }
 
-        collections.sort(difficulties);
-
-        return difficulties;
+        return difficulties.stream().sorted().toList();
     }
 
     private int fillMaxDurability(ItemClass itemClass, int itemSubClass, InventoryType inventoryType, ItemQuality quality, int itemLevel) {
@@ -9148,7 +8478,7 @@ public final class ObjectManager {
     private void onDeleteSpawnData(SpawnData data) {
         var templateIt = spawnGroupDataStorage.get(data.getSpawnGroupData().getGroupId());
 
-        if (templateIt.flags.hasFlag(SpawnGroupFlags.System)) // system groups don't store their members in the map
+        if (templateIt.flags.hasFlag(SpawnGroupFlag.SYSTEM)) // system groups don't store their members in the map
         {
             return;
         }
@@ -9361,30 +8691,20 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(">> Loaded {} phase areas in {} ms.", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    private ObjectGuidGenerator getGuidSequenceGenerator(HighGuid high) {
-        if (!guidGenerators.containsKey(high)) {
-            guidGenerators.put(high, new ObjectGuidGenerator(high));
-        }
 
-        return guidGenerators.get(high);
-    }
 
-    private CellObjectGuids createCellObjectGuids(int mapid, Difficulty difficulty, int cellid) {
-        var key = (mapid, difficulty);
 
-        TValue internalDict;
-        if (!(mapObjectGuidsStore.containsKey(key) && (internalDict = mapObjectGuidsStore.get(key)) == internalDict)) {
-            internalDict = new HashMap<Integer, CellObjectGuids>();
-            mapObjectGuidsStore.put(key, internalDict);
-        }
-
-        var cell;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
-        if (!internalDict.TryGetValue(cellid, out cell)) {
-            cell = new CellObjectGuids();
-            mapObjectGuidsStore.get(key).put(cellid, cell);
-        }
-
-        return cell;
+    private float getDamageMod(CreatureClassification rank) {
+        WorldSetting worldSettings = world.getWorldSettings();
+        // define rates for each elite rank
+        return switch (rank) {
+            case Normal -> worldSettings.rate.creatureDamageNormal;
+            case Elite -> worldSettings.rate.creatureDamageElite;
+            case RareElite -> worldSettings.rate.creatureDamageRareElite;
+            case Obsolete -> worldSettings.rate.creatureDamageObsolete;
+            case Trivial -> worldSettings.rate.creatureDamageTrivial;
+            case MinusMob -> worldSettings.rate.creatureDamageMinusMob;
+            case Rare -> worldSettings.rate.creatureDamageRare;
+        };
     }
 }

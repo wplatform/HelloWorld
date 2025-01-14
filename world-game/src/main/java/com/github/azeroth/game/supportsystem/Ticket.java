@@ -103,23 +103,23 @@ public class Ticket {
 
     public String formatViewMessageString(CommandHandler handler, String closedName, String assignedToName, String unassignedName, String deletedName) {
         StringBuilder ss = new StringBuilder();
-        ss.append(handler.getParsedString(CypherStrings.CommandTicketlistguid, idProtected));
-        ss.append(handler.getParsedString(CypherStrings.CommandTicketlistname, getPlayerName()));
+        ss.append(handler.getParsedString(SysMessage.CommandTicketlistguid, idProtected));
+        ss.append(handler.getParsedString(SysMessage.CommandTicketlistname, getPlayerName()));
 
         if (!StringUtil.isEmpty(closedName)) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketclosed, closedName));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketclosed, closedName));
         }
 
         if (!StringUtil.isEmpty(assignedToName)) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketlistassignedto, assignedToName));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketlistassignedto, assignedToName));
         }
 
         if (!StringUtil.isEmpty(unassignedName)) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketlistunassigned, unassignedName));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketlistunassigned, unassignedName));
         }
 
         if (!StringUtil.isEmpty(deletedName)) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketdeleted, deletedName));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketdeleted, deletedName));
         }
 
         return ss.toString();

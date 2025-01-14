@@ -69,7 +69,7 @@ public class LootItemStorage {
                 var key = result.<Long>Read(0);
 
                 if (!lootItemStorage.containsKey(key)) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
                     lootItemStorage.TryAdd(key, new StoredLootContainer(key));
                 }
 
@@ -98,7 +98,7 @@ public class LootItemStorage {
         var lt = LootStorage.items.getLootFor(item.getEntry());
 
         if (lt != null) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(id, storedItem) : container.getLootItems().KeyValueList) {
                 LootItem li = new LootItem();
                 li.itemid = id;
@@ -149,7 +149,7 @@ public class LootItemStorage {
 
     public final void removeStoredLootForContainer(long containerId) {
         tangible.OutObject<StoredLootContainer> tempOut__ = new tangible.OutObject<StoredLootContainer>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
         lootItemStorage.TryRemove(containerId, tempOut__);
         _ = tempOut__.outArgValue;
 
@@ -222,7 +222,7 @@ public class LootItemStorage {
 
         DB.characters.CommitTransaction(trans);
 
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
         lootItemStorage.TryAdd(containerId, container);
     }
 }

@@ -102,7 +102,7 @@ public class BattlegroundQueue {
             var arenaTeam = global.getArenaTeamMgr().getArenaTeamById(arenateamid);
 
             if (arenaTeam != null) {
-                global.getWorldMgr().sendWorldText(CypherStrings.ArenaQueueAnnounceWorldJoin, arenaTeam.getName(), m_queueId.teamSize, m_queueId.teamSize, ginfo.arenaTeamRating);
+                global.getWorldMgr().sendWorldText(SysMessage.ArenaQueueAnnounceWorldJoin, arenaTeam.getName(), m_queueId.teamSize, m_queueId.teamSize, ginfo.arenaTeamRating);
             }
         }
 
@@ -163,11 +163,11 @@ public class BattlegroundQueue {
 
                     // Show queue status to player only (when joining queue)
                     if (WorldConfig.getBoolValue(WorldCfg.BattlegroundQueueAnnouncerPlayeronly)) {
-                        leader.sendSysMessage(CypherStrings.BgQueueAnnounceSelf, bgName, q_min_level, q_max_level, qAlliance, (MinPlayers > qAlliance) ? MinPlayers - qAlliance : 0, qHorde, (MinPlayers > qHorde) ? MinPlayers - qHorde : 0);
+                        leader.sendSysMessage(SysMessage.BgQueueAnnounceSelf, bgName, q_min_level, q_max_level, qAlliance, (MinPlayers > qAlliance) ? MinPlayers - qAlliance : 0, qHorde, (MinPlayers > qHorde) ? MinPlayers - qHorde : 0);
                     }
                     // System message
                     else {
-                        global.getWorldMgr().sendWorldText(CypherStrings.BgQueueAnnounceWorld, bgName, q_min_level, q_max_level, qAlliance, (MinPlayers > qAlliance) ? MinPlayers - qAlliance : 0, qHorde, (MinPlayers > qHorde) ? MinPlayers - qHorde : 0);
+                        global.getWorldMgr().sendWorldText(SysMessage.BgQueueAnnounceWorld, bgName, q_min_level, q_max_level, qAlliance, (MinPlayers > qAlliance) ? MinPlayers - qAlliance : 0, qHorde, (MinPlayers > qHorde) ? MinPlayers - qHorde : 0);
                     }
                 }
             }
@@ -279,7 +279,7 @@ public class BattlegroundQueue {
             var team = global.getArenaTeamMgr().getArenaTeamById(group.arenaTeamId);
 
             if (team != null) {
-                global.getWorldMgr().sendWorldText(CypherStrings.ArenaQueueAnnounceWorldExit, team.getName(), m_queueId.teamSize, m_queueId.teamSize, group.arenaTeamRating);
+                global.getWorldMgr().sendWorldText(SysMessage.ArenaQueueAnnounceWorldExit, team.getName(), m_queueId.teamSize, m_queueId.teamSize, group.arenaTeamRating);
             }
         }
 

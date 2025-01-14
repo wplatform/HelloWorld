@@ -5,9 +5,9 @@ import com.github.azeroth.game.dungeonfinding.LFGQueue;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.group.PlayerGroup;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class LFGCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleLfgPlayerInfoCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -28,7 +28,7 @@ class LFGCommands {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleLfgGroupInfoCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -54,13 +54,13 @@ class LFGCommands {
         }
 
         if (!groupTarget) {
-            handler.sendSysMessage(CypherStrings.LfgNotInGroup, player.getName());
+            handler.sendSysMessage(SysMessage.LfgNotInGroup, player.getName());
 
             return false;
         }
 
         var guid = groupTarget.getGUID();
-        handler.sendSysMessage(CypherStrings.LfgGroupInfo, groupTarget.isLFGGroup(), global.getLFGMgr().getState(guid), global.getLFGMgr().getDungeon(guid));
+        handler.sendSysMessage(SysMessage.LfgGroupInfo, groupTarget.isLFGGroup(), global.getLFGMgr().getState(guid), global.getLFGMgr().getDungeon(guid));
 
         for (var slot : groupTarget.getMemberSlots()) {
             var p = global.getObjAccessor().findPlayer(slot.guid);
@@ -75,28 +75,28 @@ class LFGCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleLfgOptionsCommand(CommandHandler handler, Integer optionsArg) {
         if (optionsArg != null) {
             global.getLFGMgr().setOptions(LfgOptions.forValue(optionsArg.intValue()));
-            handler.sendSysMessage(CypherStrings.LfgOptionsChanged);
+            handler.sendSysMessage(SysMessage.LfgOptionsChanged);
         }
 
-        handler.sendSysMessage(CypherStrings.LfgOptions, global.getLFGMgr().getOptions());
+        handler.sendSysMessage(SysMessage.LfgOptions, global.getLFGMgr().getOptions());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleLfgQueueInfoCommand(CommandHandler handler, String full) {
         handler.sendSysMessage(global.getLFGMgr().dumpQueueInfo(!full.isEmpty()));
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleLfgCleanCommand(CommandHandler handler) {
-        handler.sendSysMessage(CypherStrings.LfgClean);
+        handler.sendSysMessage(SysMessage.LfgClean);
         global.getLFGMgr().clean();
 
         return true;
@@ -110,6 +110,6 @@ class LFGCommands {
         var guid = player.getGUID();
         var dungeons = global.getLFGMgr().getSelectedDungeons(guid);
 
-        handler.sendSysMessage(CypherStrings.LfgPlayerInfo, player.getName(), global.getLFGMgr().getState(guid), dungeons.size(), LFGQueue.concatenateDungeons(dungeons), LFGQueue.getRolesString(global.getLFGMgr().getRoles(guid)));
+        handler.sendSysMessage(SysMessage.LfgPlayerInfo, player.getName(), global.getLFGMgr().getState(guid), dungeons.size(), LFGQueue.concatenateDungeons(dungeons), LFGQueue.getRolesString(global.getLFGMgr().getRoles(guid)));
     }
 }

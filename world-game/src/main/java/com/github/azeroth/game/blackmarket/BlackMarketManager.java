@@ -238,7 +238,7 @@ public class BlackMarketManager {
             tangible.OutObject<String> tempOut_bidderName = new tangible.OutObject<String>();
             if (logGmTrade && !global.getCharacterCacheStorage().getCharacterNameByGuid(bidderGuid, tempOut_bidderName)) {
                 bidderName = tempOut_bidderName.outArgValue;
-                bidderName = global.getObjectMgr().getCypherString(CypherStrings.unknown);
+                bidderName = global.getObjectMgr().getSysMessage(SysMessage.unknown);
             } else {
                 bidderName = tempOut_bidderName.outArgValue;
             }

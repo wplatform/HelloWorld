@@ -11,20 +11,20 @@ import game.Quest;
 import java.util.ArrayList;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class QuestCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleQuestAdd(CommandHandler handler, Quest quest) {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
 
         if (global.getDisableMgr().isDisabledFor(DisableType.Quest, quest.id, null)) {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, quest.id);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, quest.id);
 
             return false;
         }
@@ -34,7 +34,7 @@ class QuestCommands {
         var result = itc.values().FirstOrDefault(p -> p.StartQuest == quest.id);
 
         if (result != null) {
-            handler.sendSysMessage(CypherStrings.CommandQuestStartfromitem, quest.id, result.id);
+            handler.sendSysMessage(SysMessage.CommandQuestStartfromitem, quest.id, result.id);
 
             return false;
         }
@@ -51,19 +51,19 @@ class QuestCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleQuestComplete(CommandHandler handler, Quest quest) {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
 
         // If player doesn't have the quest
         if (player.getQuestStatus(quest.id) == QuestStatus.NONE || global.getDisableMgr().isDisabledFor(DisableType.Quest, quest.id, null)) {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, quest.id);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, quest.id);
 
             return false;
         }
@@ -77,12 +77,12 @@ class QuestCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleQuestRemove(CommandHandler handler, Quest quest) {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -113,29 +113,29 @@ class QuestCommands {
             global.getScriptMgr().<IPlayerOnQuestStatusChange>ForEach(p -> p.OnQuestStatusChange(player, quest.id));
             global.getScriptMgr().<IQuestOnQuestStatusChange>RunScript(script -> script.OnQuestStatusChange(player, quest, oldStatus, QuestStatus.NONE), quest.getScriptId());
 
-            handler.sendSysMessage(CypherStrings.CommandQuestRemoved);
+            handler.sendSysMessage(SysMessage.CommandQuestRemoved);
 
             return true;
         } else {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, quest.id);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, quest.id);
 
             return false;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleQuestReward(CommandHandler handler, Quest quest) {
         var player = handler.getSelectedPlayer();
 
         if (!player) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
 
         // If player doesn't have the quest
         if (player.getQuestStatus(quest.id) != QuestStatus.Complete || global.getDisableMgr().isDisabledFor(DisableType.Quest, quest.id, null)) {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, quest.id);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, quest.id);
 
             return false;
         }
@@ -218,14 +218,14 @@ class QuestCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class ObjectiveCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleQuestObjectiveComplete(CommandHandler handler, int objectiveId) {
             var player = handler.getSelectedPlayerOrSelf();
 
             if (!player) {
-                handler.sendSysMessage(CypherStrings.NoCharSelected);
+                handler.sendSysMessage(SysMessage.NoCharSelected);
 
                 return false;
             }
@@ -233,7 +233,7 @@ class QuestCommands {
             var obj = global.getObjectMgr().getQuestObjective(objectiveId);
 
             if (obj == null) {
-                handler.sendSysMessage(CypherStrings.QuestObjectiveNotfound);
+                handler.sendSysMessage(SysMessage.QuestObjectiveNotfound);
 
                 return false;
             }

@@ -73,7 +73,7 @@ public class CommandManager {
             } while (result.NextRow());
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(name, cmd) : COMMANDS) {
             cmd.resolveNames(name);
         }

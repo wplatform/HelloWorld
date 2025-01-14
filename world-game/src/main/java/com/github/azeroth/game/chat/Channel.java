@@ -107,7 +107,7 @@ public class Channel {
 
             if (!channelEntry.flags.hasFlag(ChannelDBCFlags.global)) {
                 if (channelEntry.flags.hasFlag(ChannelDBCFlags.CityOnly)) {
-                    channelName.refArgValue = String.format(channelEntry.name.charAt(locale).ConvertFormatSyntax(), global.getObjectMgr().getCypherString(CypherStrings.ChannelCity, locale));
+                    channelName.refArgValue = String.format(channelEntry.name.charAt(locale).ConvertFormatSyntax(), global.getObjectMgr().getSysMessage(SysMessage.ChannelCity, locale));
                 } else {
                     channelName.refArgValue = String.format(channelEntry.name.charAt(locale).ConvertFormatSyntax(), zoneEntry.AreaName.get(locale));
                 }

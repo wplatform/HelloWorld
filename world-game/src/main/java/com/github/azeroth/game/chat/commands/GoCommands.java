@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class GoCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoAreaTriggerCommand(CommandHandler handler, int areaTriggerId) {
         var at = CliDB.AreaTriggerStorage.get(areaTriggerId);
 
         if (at == null) {
-            handler.sendSysMessage(CypherStrings.CommandGoareatrnotfound, areaTriggerId);
+            handler.sendSysMessage(SysMessage.CommandGoareatrnotfound, areaTriggerId);
 
             return false;
         }
@@ -29,7 +29,7 @@ class GoCommands {
         return doTeleport(handler, new Position(at.pos.X, at.pos.Y, at.pos.Z), at.ContinentID);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoBossCommand(CommandHandler handler, String[] needles) {
         if (needles.isEmpty()) {
             return false;
@@ -77,7 +77,7 @@ class GoCommands {
 
         // check if we even have any matches left
         if (matches.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CommandNoBossesMatch);
+            handler.sendSysMessage(SysMessage.CommandNoBossesMatch);
 
             return false;
         }
@@ -88,11 +88,11 @@ class GoCommands {
 
         for (var i = keyValueList.size(); i > 0; ) {
             if ((++i) != 0 && keyValueList.get(i).key == maxCount) {
-                handler.sendSysMessage(CypherStrings.CommandMultipleBossesMatch);
+                handler.sendSysMessage(SysMessage.CommandMultipleBossesMatch);
                 --i;
 
                 do {
-                    handler.sendSysMessage(CypherStrings.CommandMultipleBossesEntry, keyValueList.get(i).value.entry, keyValueList.get(i).value.name, global.getObjectMgr().getScriptName(keyValueList.get(i).value.scriptID));
+                    handler.sendSysMessage(SysMessage.CommandMultipleBossesEntry, keyValueList.get(i).value.entry, keyValueList.get(i).value.name, global.getObjectMgr().getScriptName(keyValueList.get(i).value.scriptID));
                 } while (((++i) != 0) && (keyValueList.get(i).key == maxCount));
 
                 return false;
@@ -103,11 +103,11 @@ class GoCommands {
         var spawns = spawnLookup.get(boss.entry);
 
         if (spawns.size() > 1) {
-            handler.sendSysMessage(CypherStrings.CommandBossMultipleSpawns, boss.name, boss.entry);
+            handler.sendSysMessage(SysMessage.CommandBossMultipleSpawns, boss.name, boss.entry);
 
             for (var spawnData : spawns) {
                 var map = CliDB.MapStorage.get(spawnData.getMapId());
-                handler.sendSysMessage(CypherStrings.CommandBossMultipleSpawnEty, spawnData.getSpawnId(), spawnData.getMapId(), map.MapName[handler.getSessionDbcLocale()], spawnData.spawnPoint.toString());
+                handler.sendSysMessage(SysMessage.CommandBossMultipleSpawnEty, spawnData.getSpawnId(), spawnData.getMapId(), map.MapName[handler.getSessionDbcLocale()], spawnData.spawnPoint.toString());
             }
 
             return false;
@@ -126,38 +126,38 @@ class GoCommands {
 
         if (!player.teleportTo(new worldLocation(mapId, spawn.spawnPoint))) {
             var mapName = CliDB.MapStorage.get(mapId).MapName[handler.getSessionDbcLocale()];
-            handler.sendSysMessage(CypherStrings.CommandGoBossFailed, spawn.spawnId, boss.name, boss.entry, mapName);
+            handler.sendSysMessage(SysMessage.CommandGoBossFailed, spawn.spawnId, boss.name, boss.entry, mapName);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandWentToBoss, boss.name, boss.entry, spawn.spawnId);
+        handler.sendSysMessage(SysMessage.CommandWentToBoss, boss.name, boss.entry, spawn.spawnId);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoBugTicketCommand(CommandHandler handler, int ticketId) {
         return GoCommands.<BugTicket>HandleGoTicketCommand(handler, ticketId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoComplaintTicketCommand(CommandHandler handler, int ticketId) {
         return GoCommands.<ComplaintTicket>HandleGoTicketCommand(handler, ticketId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoGraveyardCommand(CommandHandler handler, int graveyardId) {
         var gy = global.getObjectMgr().getWorldSafeLoc(graveyardId);
 
         if (gy == null) {
-            handler.sendSysMessage(CypherStrings.CommandGraveyardnoexist, graveyardId);
+            handler.sendSysMessage(SysMessage.CommandGraveyardnoexist, graveyardId);
 
             return false;
         }
 
         if (!MapDefine.isValidMapCoordinatei(gy.loc)) {
-            handler.sendSysMessage(CypherStrings.InvalidTargetCoord, gy.loc.getX(), gy.loc.getY(), gy.loc.getMapId());
+            handler.sendSysMessage(SysMessage.InvalidTargetCoord, gy.loc.getX(), gy.loc.getY(), gy.loc.getMapId());
 
             return false;
         }
@@ -176,7 +176,7 @@ class GoCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoGridCommand(CommandHandler handler, float gridX, float gridY, Integer mapIdArg) {
         var player = handler.getSession().getPlayer();
         var mapId = (mapIdArg == null ? player.getLocation().getMapId() : mapIdArg.intValue());
@@ -186,7 +186,7 @@ class GoCommands {
         var y = (gridY - MapDefine.CenterGridId + 0.5f) * MapDefine.SizeofGrids;
 
         if (!MapDefine.isValidMapCoordinatei(mapId, x, y)) {
-            handler.sendSysMessage(CypherStrings.InvalidTargetCoord, x, y, mapId);
+            handler.sendSysMessage(SysMessage.InvalidTargetCoord, x, y, mapId);
 
             return false;
         }
@@ -206,7 +206,7 @@ class GoCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoInstanceCommand(CommandHandler handler, String[] labels) {
         if (labels.isEmpty()) {
             return false;
@@ -231,7 +231,7 @@ class GoCommands {
         }
 
         if (matches.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CommandNoInstancesMatch);
+            handler.sendSysMessage(SysMessage.CommandNoInstancesMatch);
 
             return false;
         }
@@ -242,11 +242,11 @@ class GoCommands {
 
         for (var i = keyValueList.size(); i > 0; ) {
             if ((++i) != 0 && keyValueList.get(i).key == maxCount) {
-                handler.sendSysMessage(CypherStrings.CommandMultipleInstancesMatch);
+                handler.sendSysMessage(SysMessage.CommandMultipleInstancesMatch);
                 --i;
 
                 do {
-                    handler.sendSysMessage(CypherStrings.CommandMultipleInstancesEntry, keyValueList.get(i).value.item2, keyValueList.get(i).value.Item1, keyValueList.get(i).value.Item3);
+                    handler.sendSysMessage(SysMessage.CommandMultipleInstancesEntry, keyValueList.get(i).value.item2, keyValueList.get(i).value.Item1, keyValueList.get(i).value.Item3);
                 } while (((++i) != 0) && (keyValueList.get(i).key == maxCount));
 
                 return false;
@@ -270,16 +270,16 @@ class GoCommands {
 
         if (exit != null) {
             if (player.teleportTo(exit.target_mapId, exit.target_X, exit.target_Y, exit.target_Z, exit.target_Orientation + (float) Math.PI)) {
-                handler.sendSysMessage(CypherStrings.CommandWentToInstanceGate, mapName, mapId);
+                handler.sendSysMessage(SysMessage.CommandWentToInstanceGate, mapName, mapId);
 
                 return true;
             } else {
                 var parentMapId = exit.target_mapId;
                 var parentMapName = CliDB.MapStorage.get(parentMapId).MapName[handler.getSessionDbcLocale()];
-                handler.sendSysMessage(CypherStrings.CommandGoInstanceGateFailed, mapName, mapId, parentMapName, parentMapId);
+                handler.sendSysMessage(SysMessage.CommandGoInstanceGateFailed, mapName, mapId, parentMapName, parentMapId);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.CommandInstanceNoExit, mapName, mapId);
+            handler.sendSysMessage(SysMessage.CommandInstanceNoExit, mapName, mapId);
         }
 
         // try going to start
@@ -287,20 +287,20 @@ class GoCommands {
 
         if (entrance != null) {
             if (player.teleportTo(entrance.target_mapId, entrance.target_X, entrance.target_Y, entrance.target_Z, entrance.target_Orientation)) {
-                handler.sendSysMessage(CypherStrings.CommandWentToInstanceStart, mapName, mapId);
+                handler.sendSysMessage(SysMessage.CommandWentToInstanceStart, mapName, mapId);
 
                 return true;
             } else {
-                handler.sendSysMessage(CypherStrings.CommandGoInstanceStartFailed, mapName, mapId);
+                handler.sendSysMessage(SysMessage.CommandGoInstanceStartFailed, mapName, mapId);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.CommandInstanceNoEntrance, mapName, mapId);
+            handler.sendSysMessage(SysMessage.CommandInstanceNoEntrance, mapName, mapId);
         }
 
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoOffsetCommand(CommandHandler handler, float dX, Float dY, Float dZ, Float dO) {
         Position loc = handler.getSession().getPlayer().getLocation();
         loc.relocateOffset(new Position(dX, (dY == null ? 0f : dY.floatValue()), (dZ == null ? 0f : dZ.floatValue()), (dO == null ? 0f : dO.floatValue())));
@@ -308,12 +308,12 @@ class GoCommands {
         return doTeleport(handler, loc);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoQuestCommand(CommandHandler handler, int questId) {
         var player = handler.getSession().getPlayer();
 
         if (global.getObjectMgr().getQuestTemplate(questId) == null) {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, questId);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, questId);
 
             return false;
         }
@@ -331,13 +331,13 @@ class GoCommands {
             x = data.points.get(0).X;
             y = data.points.get(0).Y;
         } else {
-            handler.sendSysMessage(CypherStrings.CommandQuestNotfound, questId);
+            handler.sendSysMessage(SysMessage.CommandQuestNotfound, questId);
 
             return false;
         }
 
         if (!MapDefine.isValidMapCoordinatei(mapId, x, y) || global.getObjectMgr().isTransportMap(mapId)) {
-            handler.sendSysMessage(CypherStrings.InvalidTargetCoord, x, y, mapId);
+            handler.sendSysMessage(SysMessage.InvalidTargetCoord, x, y, mapId);
 
             return false;
         }
@@ -357,17 +357,17 @@ class GoCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoSuggestionTicketCommand(CommandHandler handler, int ticketId) {
         return GoCommands.<SuggestionTicket>HandleGoTicketCommand(handler, ticketId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoTaxinodeCommand(CommandHandler handler, int nodeId) {
         var node = CliDB.TaxiNodesStorage.get(nodeId);
 
         if (node == null) {
-            handler.sendSysMessage(CypherStrings.CommandGotaxinodenotfound, nodeId);
+            handler.sendSysMessage(SysMessage.CommandGotaxinodenotfound, nodeId);
 
             return false;
         }
@@ -376,20 +376,20 @@ class GoCommands {
     }
 
     //teleport at coordinates, including Z and orientation
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoXYZCommand(CommandHandler handler, float x, float y, Float z, Integer id, Float o) {
         var player = handler.getSession().getPlayer();
         var mapId = (id == null ? player.getLocation().getMapId() : id.intValue());
 
         if (z != null) {
             if (!MapDefine.isValidMapCoordinatei(mapId, x, y, z.floatValue())) {
-                handler.sendSysMessage(CypherStrings.InvalidTargetCoord, x, y, mapId);
+                handler.sendSysMessage(SysMessage.InvalidTargetCoord, x, y, mapId);
 
                 return false;
             }
         } else {
             if (!MapDefine.isValidMapCoordinatei(mapId, x, y)) {
-                handler.sendSysMessage(CypherStrings.InvalidTargetCoord, x, y, mapId);
+                handler.sendSysMessage(SysMessage.InvalidTargetCoord, x, y, mapId);
 
                 return false;
             }
@@ -402,7 +402,7 @@ class GoCommands {
     }
 
     //teleport at coordinates
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGoZoneXYCommand(CommandHandler handler, float x, float y, Integer areaIdArg) {
         var player = handler.getSession().getPlayer();
 
@@ -411,7 +411,7 @@ class GoCommands {
         var areaEntry = CliDB.AreaTableStorage.get(areaId);
 
         if (x < 0 || x > 100 || y < 0 || y > 100 || areaEntry == null) {
-            handler.sendSysMessage(CypherStrings.InvalidZoneCoord, x, y, areaId);
+            handler.sendSysMessage(SysMessage.InvalidZoneCoord, x, y, areaId);
 
             return false;
         }
@@ -429,7 +429,7 @@ class GoCommands {
         if (!global.getDB2Mgr().Zone2MapCoordinates(areaEntry.ParentAreaID != 0 ? areaEntry.ParentAreaID : areaId, tempRef_x, tempRef_y)) {
             y = tempRef_y.refArgValue;
             x = tempRef_x.refArgValue;
-            handler.sendSysMessage(CypherStrings.InvalidZoneMap, areaId, areaEntry.AreaName[handler.getSessionDbcLocale()], terrain.getId(), terrain.getMapName());
+            handler.sendSysMessage(SysMessage.InvalidZoneMap, areaId, areaEntry.AreaName[handler.getSessionDbcLocale()], terrain.getId(), terrain.getMapName());
 
             return false;
         } else {
@@ -438,7 +438,7 @@ class GoCommands {
         }
 
         if (!MapDefine.isValidMapCoordinatei(zoneEntry.ContinentID, x, y)) {
-            handler.sendSysMessage(CypherStrings.InvalidTargetCoord, x, y, zoneEntry.ContinentID);
+            handler.sendSysMessage(SysMessage.InvalidTargetCoord, x, y, zoneEntry.ContinentID);
 
             return false;
         }
@@ -461,7 +461,7 @@ class GoCommands {
         var ticket = global.getSupportMgr().<T>GetTicket(ticketId);
 
         if (ticket == null) {
-            handler.sendSysMessage(CypherStrings.CommandTicketnotexist);
+            handler.sendSysMessage(SysMessage.CommandTicketnotexist);
 
             return true;
         }
@@ -493,7 +493,7 @@ class GoCommands {
         }
 
         if (!MapDefine.isValidMapCoordinatei(mapId, pos) || global.getObjectMgr().isTransportMap(mapId)) {
-            handler.sendSysMessage(CypherStrings.InvalidTargetCoord, pos.getX(), pos.getY(), mapId);
+            handler.sendSysMessage(SysMessage.InvalidTargetCoord, pos.getX(), pos.getY(), mapId);
 
             return false;
         }
@@ -510,14 +510,14 @@ class GoCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class GoCommandCreature {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleGoCreatureSpawnIdCommand(CommandHandler handler, long spawnId) {
             var spawnpoint = global.getObjectMgr().getCreatureData(spawnId);
 
             if (spawnpoint == null) {
-                handler.sendSysMessage(CypherStrings.CommandGocreatnotfound);
+                handler.sendSysMessage(SysMessage.CommandGocreatnotfound);
 
                 return false;
             }
@@ -525,7 +525,7 @@ class GoCommands {
             return doTeleport(handler, spawnpoint.spawnPoint, spawnpoint.getMapId());
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleGoCreatureCIdCommand(CommandHandler handler, int id) {
             CreatureData spawnpoint = null;
 
@@ -537,14 +537,14 @@ class GoCommands {
                 if (spawnpoint == null) {
                     spawnpoint = pair.getValue();
                 } else {
-                    handler.sendSysMessage(CypherStrings.CommandGocreatmultiple);
+                    handler.sendSysMessage(SysMessage.CommandGocreatmultiple);
 
                     break;
                 }
             }
 
             if (spawnpoint == null) {
-                handler.sendSysMessage(CypherStrings.CommandGocreatnotfound);
+                handler.sendSysMessage(SysMessage.CommandGocreatnotfound);
 
                 return false;
             }
@@ -553,14 +553,14 @@ class GoCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class GoCommandGameobject {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleGoGameObjectSpawnIdCommand(CommandHandler handler, long spawnId) {
             var spawnpoint = global.getObjectMgr().getGameObjectData(spawnId);
 
             if (spawnpoint == null) {
-                handler.sendSysMessage(CypherStrings.CommandGoobjnotfound);
+                handler.sendSysMessage(SysMessage.CommandGoobjnotfound);
 
                 return false;
             }
@@ -568,7 +568,7 @@ class GoCommands {
             return doTeleport(handler, spawnpoint.spawnPoint, spawnpoint.getMapId());
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleGoGameObjectGOIdCommand(CommandHandler handler, int goId) {
             GameObjectData spawnpoint = null;
 
@@ -580,14 +580,14 @@ class GoCommands {
                 if (spawnpoint == null) {
                     spawnpoint = pair.getValue();
                 } else {
-                    handler.sendSysMessage(CypherStrings.CommandGocreatmultiple);
+                    handler.sendSysMessage(SysMessage.CommandGocreatmultiple);
 
                     break;
                 }
             }
 
             if (spawnpoint == null) {
-                handler.sendSysMessage(CypherStrings.CommandGoobjnotfound);
+                handler.sendSysMessage(SysMessage.CommandGoobjnotfound);
 
                 return false;
             }

@@ -866,7 +866,7 @@ public class ThreatManager {
     }
 
     private void sendThreatListToClients(boolean newHighest) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		void fillSharedPacketDataAndSend(dynamic packet)
 //			{
 //				packet.unitGUID = owner.GUID;

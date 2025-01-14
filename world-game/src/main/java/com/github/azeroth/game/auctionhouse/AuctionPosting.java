@@ -164,7 +164,7 @@ public class AuctionPosting {
                     return (long) (leftPrice - rightPrice);
                 }
                 case Name:
-// C# TO JAVA CONVERTER TASK: The following System.String compare method is not converted:
+
                     return left.bucket.FullName[_locale.getValue()].CompareTo(right.bucket.FullName[_locale.getValue()]);
                 case Level: {
                     var leftLevel = left.items.get(0).getModifier(ItemModifier.battlePetSpeciesId) == 0 ? left.bucket.SortLevel : (int) left.items.get(0).getModifier(ItemModifier.battlePetLevel);

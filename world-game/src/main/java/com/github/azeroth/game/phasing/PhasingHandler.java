@@ -2,7 +2,7 @@ package com.github.azeroth.game.phasing;
 
 
 import com.github.azeroth.dbc.defines.PhaseEntryFlags;
-import com.github.azeroth.dbc.defines.PhaseUseFlagsValue;
+import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.game.chat.CommandHandler;
 import com.github.azeroth.game.condition.ConditionSourceInfo;
 import com.github.azeroth.game.condition.ConditionSourceType;
@@ -25,7 +25,7 @@ public class PhasingHandler {
 
     static {
         ALWAYS_VISIBLE = new PhaseShift();
-        initDbPhaseShift(ALWAYS_VISIBLE, PhaseUseFlagsValue.ALWAYS_VISIBLE, 0, 0);
+        initDbPhaseShift(ALWAYS_VISIBLE, PhaseUseFlag.ALWAYS_VISIBLE, 0, 0);
     }
 
 
@@ -145,7 +145,7 @@ public class PhasingHandler {
         obj.getPhaseShift().uiMapPhaseIds.clear();
         obj.getSuppressedPhaseShift().visibleMapIds.clear();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(mapId, visibleMapInfo) : global.getObjectMgr().getTerrainSwaps().KeyValueList) {
             if (global.getConditionMgr().isObjectMeetingNotGroupedConditions(ConditionSourceType.TerrainSwap, visibleMapInfo.id, srcInfo)) {
                 if (mapId == obj.getLocation().getMapId()) {
@@ -395,17 +395,17 @@ public class PhasingHandler {
     }
 
 
-    public static void initDbPhaseShift(PhaseShift phaseShift, PhaseUseFlagsValue phaseUseFlags, int phaseId, int phaseGroupId) {
+    public static void initDbPhaseShift(PhaseShift phaseShift, PhaseUseFlag phaseUseFlags, int phaseId, int phaseGroupId) {
         phaseShift.clearPhases();
         phaseShift.isDbPhaseShift = true;
 
         var flags = PhaseShiftFlag.NONE;
 
-        if (phaseUseFlags.hasFlag(PhaseUseFlagsValue.ALWAYSVISIBLE)) {
+        if (phaseUseFlags.hasFlag(PhaseUseFlag.ALWAYSVISIBLE)) {
             flags = PhaseShiftFlag.forValue(flags.getValue() | PhaseShiftFlag.ALWAYSVISIBLE.getValue().getValue() | PhaseShiftFlag.UNPHASED.getValue().getValue());
         }
 
-        if (phaseUseFlags.hasFlag(PhaseUseFlagsValue.INVERSE)) {
+        if (phaseUseFlags.hasFlag(PhaseUseFlag.INVERSE)) {
             flags = PhaseShiftFlag.forValue(flags.getValue() | PhaseShiftFlag.INVERSE.getValue());
         }
 
@@ -443,7 +443,7 @@ public class PhasingHandler {
     }
 
 
-    public static boolean inDbPhaseShift(WorldObject obj, PhaseUseFlagsValue phaseUseFlags, short phaseId, int phaseGroupId) {
+    public static boolean inDbPhaseShift(WorldObject obj, PhaseUseFlag phaseUseFlags, short phaseId, int phaseGroupId) {
         game.PhaseShift phaseShift = new PhaseShift();
         initDbPhaseShift(phaseShift, phaseUseFlags, phaseId, phaseGroupId);
 
@@ -508,12 +508,12 @@ public class PhasingHandler {
             }
         }
 
-        chat.sendSysMessage(CypherStrings.PhaseshiftStatus, phaseShift.flags, phaseShift.personalGuid.toString(), phaseOwnerName);
+        chat.sendSysMessage(SysMessage.PhaseshiftStatus, phaseShift.flags, phaseShift.personalGuid.toString(), phaseOwnerName);
 
         if (!phaseShift.phases.isEmpty()) {
             StringBuilder phases = new StringBuilder();
-            var cosmetic = global.getObjectMgr().getCypherString(CypherStrings.PhaseFlagCosmetic, chat.getSessionDbcLocale());
-            var personal = global.getObjectMgr().getCypherString(CypherStrings.PhaseFlagPersonal, chat.getSessionDbcLocale());
+            var cosmetic = global.getObjectMgr().getSysMessage(SysMessage.PhaseFlagCosmetic, chat.getSessionDbcLocale());
+            var personal = global.getObjectMgr().getSysMessage(SysMessage.PhaseFlagPersonal, chat.getSessionDbcLocale());
 
             for (var pair : phaseShift.phases.entrySet()) {
                 phases.append("\r\n");
@@ -529,7 +529,7 @@ public class PhasingHandler {
                 }
             }
 
-            chat.sendSysMessage(CypherStrings.PhaseshiftPhases, phases.toString());
+            chat.sendSysMessage(SysMessage.PhaseshiftPhases, phases.toString());
         }
 
         if (!phaseShift.visibleMapIds.isEmpty()) {
@@ -539,7 +539,7 @@ public class PhasingHandler {
                 visibleMapIds.append(visibleMapId.getKey() + ',' + ' ');
             }
 
-            chat.sendSysMessage(CypherStrings.PhaseshiftVisibleMapIds, visibleMapIds.toString());
+            chat.sendSysMessage(SysMessage.PhaseshiftVisibleMapIds, visibleMapIds.toString());
         }
 
         if (!phaseShift.uiMapPhaseIds.isEmpty()) {
@@ -549,7 +549,7 @@ public class PhasingHandler {
                 uiWorldMapAreaIdSwaps.append(String.format("%1$s, ", uiWorldMapAreaIdSwap.getKey()));
             }
 
-            chat.sendSysMessage(CypherStrings.PhaseshiftUiWorldMapAreaSwaps, uiWorldMapAreaIdSwaps.toString());
+            chat.sendSysMessage(SysMessage.PhaseshiftUiWorldMapAreaSwaps, uiWorldMapAreaIdSwaps.toString());
         }
     }
 

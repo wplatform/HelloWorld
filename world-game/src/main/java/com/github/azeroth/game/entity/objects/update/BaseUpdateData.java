@@ -48,23 +48,23 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         return getChangesMask();
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChanged(UpdateField<U> updateField) {
         getChangesMask().reset(updateField.getBit());
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChanged(UpdateFieldArray<U> updateField, int index) {
         getChangesMask().reset(updateField.getFirstElementBit() + index);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChanged(DynamicUpdateField<U> updateField, int index) {
         getChangesMask().reset(getBit());
         updateField.clearChanged(index);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChangesMask(UpdateField<U> updateField) {
         if (U.class.isAssignableFrom(IHasChangesMask.class)) {
             ((IHasChangesMask) updateField.getValue()).clearChangesMask();
@@ -74,14 +74,14 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
     public final void clearChangesMask(UpdateFieldString updateField) {
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChangesMask(OptionalUpdateField<U> updateField) {
         if (U.class.isAssignableFrom(IHasChangesMask.class) && updateField.hasValue()) {
             ((IHasChangesMask) updateField.getValue()).clearChangesMask();
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChangesMask(UpdateFieldArray<U> updateField) {
         if (U.class.isAssignableFrom(IHasChangesMask.class)) {
             for (var i = 0; i < updateField.getSize(); ++i) {
@@ -90,7 +90,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void clearChangesMask(DynamicUpdateField<U> updateField) {
         if (U.class.isAssignableFrom(IHasChangesMask.class)) {
             for (var i = 0; i < updateField.size(); ++i) {
@@ -101,7 +101,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> UpdateField<U> modifyValue(UpdateField<U> updateField) {
         markChanged(updateField);
 
@@ -114,7 +114,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         return updateField;
     }
 
-// C# TO JAVA CONVERTER TASK: 'ref return' methods are not converted by C# to Java Converter:
+
 //	public ref U ModifyValue<U>(UpdateFieldArray<U> updateField, int index) where U : new()
 //		{
 //			markChanged(updateField, index);
@@ -122,7 +122,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
 //			return ref updateField.Values[index];
 //		}
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> DynamicUpdateField<U> modifyValue(DynamicUpdateField<U> updateField) {
         getChangesMask().set(updateField.getBlockBit());
         getChangesMask().set(updateField.getBit());
@@ -130,7 +130,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         return updateField;
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> DynamicUpdateFieldSetter<U> modifyValue(DynamicUpdateField<U> updateField, int index) {
         if (index >= updateField.getValues().size()) {
             // fill with zeros until reaching desired slot
@@ -145,7 +145,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         return new DynamicUpdateFieldSetter<U>(updateField, index);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void markChanged(UpdateField<U> updateField) {
         getChangesMask().set(updateField.getBlockBit());
         getChangesMask().set(updateField.getBit());
@@ -156,7 +156,7 @@ public abstract class BaseUpdateData<T> implements IHasChangesMask {
         getChangesMask().set(updateField.bit);
     }
 
-    // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+
     public final <U> void markChanged(UpdateFieldArray<U> updateField, int index) {
         getChangesMask().set(updateField.getBit());
         getChangesMask().set(updateField.getFirstElementBit() + index);

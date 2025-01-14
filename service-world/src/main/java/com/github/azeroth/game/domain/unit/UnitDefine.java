@@ -1,8 +1,7 @@
-package com.github.azeroth.game.entity.unit;
+package com.github.azeroth.game.domain.unit;
 
 import com.github.azeroth.defines.SpellMissInfo;
 import com.github.azeroth.game.domain.unit.UnitMod;
-import com.github.azeroth.game.networking.opcode.ServerOpCode;
 
 
 public interface UnitDefine {
@@ -83,21 +82,6 @@ public interface UnitDefine {
             4.5f,                  // MOVE_FLIGHT_BACK
             3.14f                  // MOVE_PITCH_RATE
     };
-    // Spline packets are for creatures and move_update are for players
-    ServerOpCode[][] MOVE_TYPE_TO_OPCODE = {
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_WALK_SPEED, ServerOpCode.SMSG_MOVE_SET_WALK_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_WALK_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_RUN_SPEED, ServerOpCode.SMSG_MOVE_SET_RUN_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_RUN_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_RUN_BACK_SPEED, ServerOpCode.SMSG_MOVE_SET_RUN_BACK_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_RUN_BACK_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_SWIM_SPEED, ServerOpCode.SMSG_MOVE_SET_SWIM_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_SWIM_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_SWIM_BACK_SPEED, ServerOpCode.SMSG_MOVE_SET_SWIM_BACK_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_SWIM_BACK_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_TURN_RATE, ServerOpCode.SMSG_MOVE_SET_TURN_RATE, ServerOpCode.SMSG_MOVE_UPDATE_TURN_RATE},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_FLIGHT_SPEED, ServerOpCode.SMSG_MOVE_SET_FLIGHT_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_FLIGHT_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_FLIGHT_BACK_SPEED, ServerOpCode.SMSG_MOVE_SET_FLIGHT_BACK_SPEED, ServerOpCode.SMSG_MOVE_UPDATE_FLIGHT_BACK_SPEED},
-            {ServerOpCode.SMSG_MOVE_SPLINE_SET_PITCH_RATE, ServerOpCode.SMSG_MOVE_SET_PITCH_RATE, ServerOpCode.SMSG_MOVE_UPDATE_PITCH_RATE},
-    };
 
-    static ProcFlagsInit createProcHitMask(SpellNonMeleeDamage damageInfo, SpellMissInfo missCondition) {
-        return null;
-    }
 
 }

@@ -309,7 +309,7 @@ public class SupportManager {
     }
 
     public final <T extends ticket> void showList(CommandHandler handler) {
-        handler.sendSysMessage(CypherStrings.CommandTicketshowlist);
+        handler.sendSysMessage(SysMessage.CommandTicketshowlist);
 
         switch (T.class.name) {
             case "BugTicket":
@@ -340,7 +340,7 @@ public class SupportManager {
     }
 
     public final <T extends ticket> void showClosedList(CommandHandler handler) {
-        handler.sendSysMessage(CypherStrings.CommandTicketshowclosedlist);
+        handler.sendSysMessage(SysMessage.CommandTicketshowclosedlist);
 
         switch (T.class.name) {
             case "BugTicket":

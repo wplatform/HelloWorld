@@ -5,6 +5,8 @@ import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
+import com.github.azeroth.game.networking.packet.garrison.GarrisonFollower;
+import com.github.azeroth.game.networking.packet.garrison.GarrisonRemoteInfo;
 import game.PhasingHandler;
 
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ public class Garrison {
 
                 followerIds.add(followerId);
 
-                var follower = new follower();
+                var follower = new Follower();
                 follower.packetInfo.dbID = dbId;
                 follower.packetInfo.garrFollowerID = followerId;
                 follower.packetInfo.quality = followers.<Integer>Read(2);
@@ -852,7 +854,7 @@ public class Garrison {
             buildingInfo.packetInfo = buildingInfo;
         }
 
-        // C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
+        
         private <T extends WorldObject> T buildingSpawnHelper(GameObject building, long spawnId, Map map) {
             T spawn = new T();
 
@@ -889,7 +891,7 @@ public class Garrison {
     }
 
     public static class Follower {
-        public garrisonFollower packetInfo = new garrisonFollower();
+        public GarrisonFollower packetInfo = new GarrisonFollower();
 
         public final int getItemLevel() {
             return (packetInfo.itemLevelWeapon + packetInfo.itemLevelArmor) / 2;

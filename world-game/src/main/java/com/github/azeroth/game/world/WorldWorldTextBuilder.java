@@ -18,7 +18,7 @@ public class WorldWorldTextBuilder extends MessageBuilder {
 
     @Override
     public MultiplePacketSender invoke(Locale locale) {
-        var text = global.getObjectMgr().getCypherString(iTextId, locale);
+        var text = global.getObjectMgr().getSysMessage(iTextId, locale);
 
         if (iArgs != null) {
             text = String.format(text, iArgs);

@@ -136,6 +136,10 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         return this;
     }
 
+    public boolean isEmpty() {
+        return this.flag == 0;
+    }
+
     @SafeVarargs
     public final EnumFlag<T> set(T... elements) {
         int newFlag = 0;
@@ -167,6 +171,10 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         return of(elementType, 0);
     }
 
+    public static <T extends Enum<T> & EnumFlag.FlagValue> EnumFlag<T> of(EnumFlag<T> enumFlag) {
+        return of(enumFlag.elementType, enumFlag.flag);
+    }
+
     public static <T extends Enum<T> & EnumFlag.FlagValue> EnumFlag<T> of(T element) {
         @SuppressWarnings("unchecked")
         Class<T> elementType = (Class<T>) element.getClass();
@@ -188,4 +196,8 @@ public final class EnumFlag<T extends Enum<T> & EnumFlag.FlagValue> {
         return new EnumFlag<>(elementType, value);
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(flag);
+    }
 }

@@ -2,22 +2,23 @@ package com.github.azeroth.game.ai;
 
 
 import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.NearestAttackableUnitInObjectRangeCheck;
 import com.github.azeroth.game.map.UnitLastSearcher;
 import com.github.azeroth.game.map.grid.Cell;
 
 public class TotemAI extends NullCreatureAI {
-    private ObjectGuid victimGuid = ObjectGuid.EMPTY;
+    private ObjectGuid victimGuid;
 
     public TotemAI(Creature creature) {
         super(creature);
-        victimGuid = ObjectGuid.Empty;
+        victimGuid = ObjectGuid.EMPTY;
     }
 
     @Override
     public void updateAI(int diff) {
-        if (me.toTotem().GetTotemType() != TotemType.active) {
+        if (me.toTotem().getTotemType() != TotemType.active) {
             return;
         }
 

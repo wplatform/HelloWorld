@@ -1,4 +1,4 @@
-package com.github.azeroth.game.entity.creature;
+package com.github.azeroth.game.domain.creature;
 
 public final class EquipmentItem {
     public int itemId;

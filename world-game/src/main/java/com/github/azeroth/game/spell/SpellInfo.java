@@ -2763,7 +2763,7 @@ public class SpellInfo {
                                     immuneInfo.auraTypeImmune.add(AuraType.ModConfuse);
                                     immuneInfo.auraTypeImmune.add(AuraType.ModFear);
                                     immuneInfo.auraTypeImmune.add(AuraType.ModRoot2);
-// C# TO JAVA CONVERTER TASK: There is no 'goto' in Java:
+
 									goto case 61869
                                     ;
                                     // no break intended
@@ -3578,7 +3578,7 @@ public class SpellInfo {
         ArrayList<SpellPowerCost> costs = new ArrayList<>();
 
         if (caster.isUnit()) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //			SpellPowerCost getOrCreatePowerCost(Power powerType)
 //				{
 //					var itr = costs.find(cost => cost.power == powerType);

@@ -1948,7 +1948,7 @@ public class PlayerGroup extends RefManager<PlayerGroup, Player, GroupReference>
         return true;
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(PlayerGroup group)
 //		{
 //			return group != null;

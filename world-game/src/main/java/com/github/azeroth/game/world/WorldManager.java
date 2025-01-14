@@ -444,7 +444,7 @@ public class WorldManager {
 
         Log.outInfo(LogFilter.ServerLoading, "Loading Cypher Strings...");
 
-        if (!global.getObjectMgr().loadCypherStrings()) {
+        if (!global.getObjectMgr().loadSysMessage()) {
             system.exit(1);
         }
 
@@ -1599,7 +1599,7 @@ public class WorldManager {
     }
 
     // Send a System Message to all players (except self if mentioned)
-    public final void sendWorldText(CypherStrings string_id, object... args) {
+    public final void sendWorldText(SysMessage string_id, object... args) {
         WorldWorldTextBuilder wt_builder = new WorldWorldTextBuilder((int) string_id.getValue(), args);
         var wt_do = new LocalizedDo(wt_builder);
 
@@ -1613,7 +1613,7 @@ public class WorldManager {
     }
 
     // Send a System Message to all GMs (except self if mentioned)
-    public final void sendGMText(CypherStrings string_id, object... args) {
+    public final void sendGMText(SysMessage string_id, object... args) {
         var wt_builder = new WorldWorldTextBuilder((int) string_id.getValue(), args);
         var wt_do = new LocalizedDo(wt_builder);
 
@@ -2012,7 +2012,7 @@ public class WorldManager {
 
                 removeQueuedPlayer(session);
                 tangible.OutObject<WorldSession> tempOut__ = new tangible.OutObject<WorldSession>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
                 sessions.TryRemove(pair.key, tempOut__);
                 _ = tempOut__.outArgValue;
                 sessionsByBnetGuid.remove(session.BattlenetAccountGUID, session);
@@ -2492,11 +2492,11 @@ public class WorldManager {
         var abcenter = WorldConfig.getUIntValue(WorldCfg.AutoBroadcastCenter);
 
         if (abcenter == 0) {
-            sendWorldText(CypherStrings.AutoBroadcast, pair.value.message);
+            sendWorldText(SysMessage.AutoBroadcast, pair.value.message);
         } else if (abcenter == 1) {
             sendGlobalMessage(new PrintNotification(pair.value.message));
         } else if (abcenter == 2) {
-            sendWorldText(CypherStrings.AutoBroadcast, pair.value.message);
+            sendWorldText(SysMessage.AutoBroadcast, pair.value.message);
             sendGlobalMessage(new PrintNotification(pair.value.message));
         }
 

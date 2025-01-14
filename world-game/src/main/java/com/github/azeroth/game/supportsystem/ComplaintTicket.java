@@ -135,19 +135,19 @@ public class ComplaintTicket extends Ticket {
         var curTime = (long) gameTime.GetGameTime();
 
         StringBuilder ss = new StringBuilder();
-        ss.append(handler.getParsedString(CypherStrings.CommandTicketlistguid, idProtected));
-        ss.append(handler.getParsedString(CypherStrings.CommandTicketlistname, getPlayerName()));
-        ss.append(handler.getParsedString(CypherStrings.CommandTicketlistagecreate, time.secsToTimeString(curTime - createTimeProtected, TimeFormat.ShortText, false)));
+        ss.append(handler.getParsedString(SysMessage.CommandTicketlistguid, idProtected));
+        ss.append(handler.getParsedString(SysMessage.CommandTicketlistname, getPlayerName()));
+        ss.append(handler.getParsedString(SysMessage.CommandTicketlistagecreate, time.secsToTimeString(curTime - createTimeProtected, TimeFormat.ShortText, false)));
 
         if (!assignedToProtected.isEmpty()) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketlistassignedto, getAssignedToName()));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketlistassignedto, getAssignedToName()));
         }
 
         if (detailed) {
-            ss.append(handler.getParsedString(CypherStrings.CommandTicketlistmessage, note));
+            ss.append(handler.getParsedString(SysMessage.CommandTicketlistmessage, note));
 
             if (!StringUtil.isEmpty(commentProtected)) {
-                ss.append(handler.getParsedString(CypherStrings.CommandTicketlistcomment, commentProtected));
+                ss.append(handler.getParsedString(SysMessage.CommandTicketlistcomment, commentProtected));
             }
         }
 

@@ -2,16 +2,19 @@ package com.github.azeroth.game.ai;
 
 
 import com.github.azeroth.game.combat.CombatManager;
+import com.github.azeroth.game.domain.creature.TempSummonType;
 import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.dynamic.DynamicObject;
 import com.github.azeroth.game.entity.gobject.GameObject;
+import com.github.azeroth.game.entity.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.AreaBoundary;
 import com.github.azeroth.game.spell.SpellInfo;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -345,21 +348,21 @@ public class CreatureAI extends UnitAI {
         return true;
     }
 
-    public final CypherStrings visualizeBoundary(Duration duration, Unit owner) {
+    public final SysMessage visualizeBoundary(Duration duration, Unit owner) {
         return visualizeBoundary(duration, owner, false);
     }
 
-    public final CypherStrings visualizeBoundary(Duration duration) {
+    public final SysMessage visualizeBoundary(Duration duration) {
         return visualizeBoundary(duration, null, false);
     }
 
-    public final CypherStrings visualizeBoundary(Duration duration, Unit owner, boolean fill) {
+    public final SysMessage visualizeBoundary(Duration duration, Unit owner, boolean fill) {
         if (owner == null) {
             return 0;
         }
 
         if (boundary.isEmpty()) {
-            return CypherStrings.CreatureMovementNotBounded;
+            return SysMessage.CreatureMovementNotBounded;
         }
 
         ArrayList<java.util.Map.entry<Integer, Integer>> q = new ArrayList<java.util.Map.entry<Integer, Integer>>();
@@ -377,7 +380,7 @@ public class CreatureAI extends UnitAI {
 
                 if (!isInBoundary(startPosition)) // fall back to creature home position
                 {
-                    return CypherStrings.CreatureNoInteriorPointFound;
+                    return SysMessage.CreatureNoInteriorPointFound;
                 }
             }
         }
@@ -437,7 +440,7 @@ public class CreatureAI extends UnitAI {
             }
         }
 
-        return boundsWarning ? CypherStrings.CreatureMovementMaybeUnbounded : 0;
+        return boundsWarning ? SysMessage.CreatureMovementMaybeUnbounded : 0;
     }
 
     public final boolean isInBoundary() {
@@ -467,7 +470,7 @@ public class CreatureAI extends UnitAI {
     }
 
     public final Creature doSummon(int entry, Position pos, Duration despawnTime) {
-        return doSummon(entry, pos, despawnTime, TempSummonType.CorpseTimedDespawn);
+        return doSummon(entry, pos, despawnTime, TempSummonType.CORPSE_TIMED_DESPAWN);
     }
 
     public final Creature doSummon(int entry, Position pos, Duration despawnTime, TempSummonType summonType) {
@@ -475,7 +478,7 @@ public class CreatureAI extends UnitAI {
     }
 
     public final Creature doSummon(int entry, WorldObject obj, float radius, Duration despawnTime) {
-        return doSummon(entry, obj, radius, despawnTime, TempSummonType.CorpseTimedDespawn);
+        return doSummon(entry, obj, radius, despawnTime, TempSummonType.CORPSE_TIMED_DESPAWN);
     }
 
     public final Creature doSummon(int entry, WorldObject obj, float radius) {

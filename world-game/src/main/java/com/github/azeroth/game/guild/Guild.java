@@ -1514,7 +1514,7 @@ public class Guild {
     public final void massInviteToEvent(WorldSession session, int minLevel, int maxLevel, GuildRankOrder minRank) {
         CalendarCommunityInvite packet = new CalendarCommunityInvite();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(guid, member) : m_members) {
             // not sure if needed, maybe client checks it as well
             if (packet.invites.size() >= SharedConst.CalendarMaxInvites) {
@@ -1659,7 +1659,7 @@ public class Guild {
             Member oldLeader = null;
             Member newLeader = null;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(memberGuid, member) : m_members) {
                 if (Objects.equals(memberGuid, guid)) {
                     oldLeader = member;
@@ -1889,7 +1889,7 @@ public class Guild {
         session.sendPacket(newsPacket);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(Guild guild)
 //		{
 //			return guild != null;
@@ -2123,11 +2123,11 @@ public class Guild {
         stmt.AddValue(0, m_id);
         trans.append(stmt);
 
-        _CreateRank(trans, global.getObjectMgr().getCypherString(CypherStrings.GuildMaster, loc), GuildRankRights.All);
-        _CreateRank(trans, global.getObjectMgr().getCypherString(CypherStrings.GuildOfficer, loc), GuildRankRights.All);
-        _CreateRank(trans, global.getObjectMgr().getCypherString(CypherStrings.GuildVeteran, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
-        _CreateRank(trans, global.getObjectMgr().getCypherString(CypherStrings.GuildMember, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
-        _CreateRank(trans, global.getObjectMgr().getCypherString(CypherStrings.GuildInitiate, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
+        _CreateRank(trans, global.getObjectMgr().getSysMessage(SysMessage.GuildMaster, loc), GuildRankRights.All);
+        _CreateRank(trans, global.getObjectMgr().getSysMessage(SysMessage.GuildOfficer, loc), GuildRankRights.All);
+        _CreateRank(trans, global.getObjectMgr().getSysMessage(SysMessage.GuildVeteran, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
+        _CreateRank(trans, global.getObjectMgr().getSysMessage(SysMessage.GuildMember, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
+        _CreateRank(trans, global.getObjectMgr().getSysMessage(SysMessage.GuildInitiate, loc), GuildRankRights.GChatListen.getValue() | GuildRankRights.GChatSpeak.getValue());
     }
 
     private boolean _CreateRank(SQLTransaction trans, String name, GuildRankRights rights) {
@@ -2428,7 +2428,7 @@ public class Guild {
         return null;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Fields
 
     private void _RemoveItem(SQLTransaction trans, byte tabId, byte slotId) {
@@ -2638,7 +2638,7 @@ public class Guild {
                 packet.itemInfo.add(itemInfo);
             }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(guid, member) : m_members) {
                 if (!_MemberHasTabRights(guid, tabId, GuildBankRights.ViewTab)) {
                     continue;
@@ -2735,10 +2735,10 @@ public class Guild {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Classes
 
     public static class Member {
@@ -3014,7 +3014,7 @@ public class Guild {
             return m_level;
         }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
         ///#region Fields
 
         public final void setLevel(int var) {
@@ -3102,7 +3102,7 @@ public class Guild {
         }
 
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
         ///#endregion
     }
 
@@ -4351,6 +4351,6 @@ public class Guild {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

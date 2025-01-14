@@ -82,7 +82,7 @@ public class VisibleChangesNotifier implements IGridNotifierCreature, IGridNotif
 
 //Checks
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 ///#region Checks
 
 // Success at unit in range, range update for next check (this can be use with UnitLastSearcher to find nearest unit)
@@ -99,6 +99,6 @@ public class VisibleChangesNotifier implements IGridNotifierCreature, IGridNotif
 
 // CHECK modifiers
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 ///#endregion
 

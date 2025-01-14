@@ -24,7 +24,7 @@ public final class SpellCastVisual {
         data.writeInt32(scriptVisualID);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator spellCastVisualField(SpellCastVisual spellCastVisual)
 //		{
 //			SpellCastVisualField visual = new();

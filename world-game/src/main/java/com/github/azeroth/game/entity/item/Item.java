@@ -2087,7 +2087,7 @@ public class Item extends WorldObject {
         setUpdateFieldValue(gemField.modifyValue(gemField.context), gem.context);
 
         for (var i = 0; i < 16; ++i) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
             setUpdateFieldValue(ref gemField.modifyValue(gemField.bonusListIDs, i), gem.BonusListIDs[i]);
         }
     }
@@ -2546,7 +2546,7 @@ public class Item extends WorldObject {
             } else {
                 ItemModList itemModList = getValues().modifyValue(getItemData()).modifyValue(getItemData().modifiers);
                 itemModList.modifyValue(itemModList.VALUES, modifierIndex);
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
                 setUpdateFieldValue(ref itemModList.modifyValue(itemModList.VALUES, modifierIndex).getValue().value, value);
             }
         } else {
@@ -2947,7 +2947,7 @@ public class Item extends WorldObject {
     }
 
     public final void setSpellCharges(int index, int value) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getItemData()).modifyValue(getItemData().spellCharges, index), value);
     }
 

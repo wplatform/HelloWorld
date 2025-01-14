@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class PhaseShift {
-    public PhaseShiftFlag flags = PhaseShiftFlag.Unphased;
+    public PhaseShiftFlag flags;
     ;
     public ObjectGuid personalGuid = ObjectGuid.EMPTY;
     public IntMap<PhaseRef> phases = new IntMap<>();

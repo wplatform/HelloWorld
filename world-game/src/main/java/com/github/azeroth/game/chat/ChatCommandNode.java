@@ -11,7 +11,7 @@ public class ChatCommandNode {
     public String name;
     public Commandpermissions permission = new commandPermissions();
     public String helpText;
-    public CypherStrings helpString = CypherStrings.values()[0];
+    public SysMessage helpString = SysMessage.values()[0];
 
     private java.lang.reflect.Method methodInfo;
     private ParameterInfo[] parameters;
@@ -38,7 +38,7 @@ public class ChatCommandNode {
 
         while (!oldTail.isEmpty()) {
             /* oldTail = token DELIMITER newTail */
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             var(token, newTail) = oldTail.Tokenize();
 
             if (token.isEmpty()) {
@@ -56,16 +56,16 @@ public class ChatCommandNode {
                 if (listOfPossibleCommands.size() > 1) {
                     /* there are multiple matching subcommands - print possibilities and return */
                     if (cmd != null) {
-                        handler.sendSysMessage(CypherStrings.SubcmdAmbiguous, cmd.name, ' ', token);
+                        handler.sendSysMessage(SysMessage.SubcmdAmbiguous, cmd.name, ' ', token);
                     } else {
-                        handler.sendSysMessage(CypherStrings.CmdAmbiguous, token);
+                        handler.sendSysMessage(SysMessage.CmdAmbiguous, token);
                     }
 
-                    handler.sendSysMessage(listOfPossibleCommands.get(0).value.hasVisibleSubCommands(handler) ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, listOfPossibleCommands.get(0).key);
+                    handler.sendSysMessage(listOfPossibleCommands.get(0).value.hasVisibleSubCommands(handler) ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, listOfPossibleCommands.get(0).key);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                     for (var(name, command) : listOfPossibleCommands) {
-                        handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, name);
+                        handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, name);
                     }
 
                     return true;
@@ -110,9 +110,9 @@ public class ChatCommandNode {
                 /* no matching subcommands found */
                 if (cmd != null) {
                     cmd.sendCommandHelp(handler);
-                    handler.sendSysMessage(CypherStrings.SubcmdInvalid, cmd.name, ' ', token);
+                    handler.sendSysMessage(SysMessage.SubcmdInvalid, cmd.name, ' ', token);
                 } else {
-                    handler.sendSysMessage(CypherStrings.CmdInvalid, token);
+                    handler.sendSysMessage(SysMessage.CmdInvalid, token);
                 }
 
                 return;
@@ -123,16 +123,16 @@ public class ChatCommandNode {
                 if (listOfPossibleCommands.size() > 1) {
                     /* there are multiple matching subcommands - print possibilities and return */
                     if (cmd != null) {
-                        handler.sendSysMessage(CypherStrings.SubcmdAmbiguous, cmd.name, ' ', token);
+                        handler.sendSysMessage(SysMessage.SubcmdAmbiguous, cmd.name, ' ', token);
                     } else {
-                        handler.sendSysMessage(CypherStrings.CmdAmbiguous, token);
+                        handler.sendSysMessage(SysMessage.CmdAmbiguous, token);
                     }
 
-                    handler.sendSysMessage(listOfPossibleCommands.get(0).value.hasVisibleSubCommands(handler) ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, listOfPossibleCommands.get(0).key);
+                    handler.sendSysMessage(listOfPossibleCommands.get(0).value.hasVisibleSubCommands(handler) ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, listOfPossibleCommands.get(0).key);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                     for (var(name, command) : listOfPossibleCommands) {
-                        handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, name);
+                        handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, name);
                     }
 
                     return;
@@ -146,18 +146,18 @@ public class ChatCommandNode {
         if (cmd != null) {
             cmd.sendCommandHelp(handler);
         } else if (cmdStr.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.AvailableCmds);
+            handler.sendSysMessage(SysMessage.AvailableCmds);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(name, command) : map) {
                 if (!command.isVisible(handler)) {
                     continue;
                 }
 
-                handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, name);
+                handler.sendSysMessage(command.hasVisibleSubCommands(handler) ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, name);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.CmdInvalid, cmdStr);
+            handler.sendSysMessage(SysMessage.CmdInvalid, cmdStr);
         }
     }
 
@@ -198,7 +198,7 @@ public class ChatCommandNode {
 
         name = name;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(subToken, cmd) : subCommands) {
             cmd.resolveNames(String.format("%1$s %2$s", name, subToken));
         }
@@ -213,14 +213,14 @@ public class ChatCommandNode {
             } else if (!helpText.isEmpty()) {
                 handler.sendSysMessage(helpText);
             } else {
-                handler.sendSysMessage(CypherStrings.CmdHelpGeneric, name);
-                handler.sendSysMessage(CypherStrings.CmdNoHelpAvailable, name);
+                handler.sendSysMessage(SysMessage.CmdHelpGeneric, name);
+                handler.sendSysMessage(SysMessage.CmdNoHelpAvailable, name);
             }
         }
 
         var header = false;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, command) : subCommands) {
             var subCommandHasSubCommand = command.hasVisibleSubCommands(handler);
 
@@ -230,14 +230,14 @@ public class ChatCommandNode {
 
             if (!header) {
                 if (!hasInvoker) {
-                    handler.sendSysMessage(CypherStrings.CmdHelpGeneric, name);
+                    handler.sendSysMessage(SysMessage.CmdHelpGeneric, name);
                 }
 
-                handler.sendSysMessage(CypherStrings.SubcmdsList);
+                handler.sendSysMessage(SysMessage.SubcmdsList);
                 header = true;
             }
 
-            handler.sendSysMessage(subCommandHasSubCommand ? CypherStrings.SubcmdsListEntryEllipsis : CypherStrings.SubcmdsListEntry, command.name);
+            handler.sendSysMessage(subCommandHasSubCommand ? SysMessage.SubcmdsListEntryEllipsis : SysMessage.SubcmdsListEntry, command.name);
         }
     }
 
@@ -260,7 +260,7 @@ public class ChatCommandNode {
         {
             return (Boolean) methodInfo.invoke(null, new Object[]{handler, new StringArguments(args)});
         } else {
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
             var parseArgs = new dynamic[_parameters.length];
             parseArgs[0] = handler;
             var result = CommandArgs.consumeFromOffset(parseArgs, 1, parameters, handler, args);
@@ -291,7 +291,7 @@ public class ChatCommandNode {
     }
 
     private boolean hasVisibleSubCommands(CommandHandler who) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, command) : subCommands) {
             if (command.isVisible(who)) {
                 return true;

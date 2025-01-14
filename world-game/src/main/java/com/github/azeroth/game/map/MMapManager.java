@@ -157,13 +157,13 @@ public class MMapManager {
         var packedGridPos = packTileID(x, y);
 
         var tileRef;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!mmap.loadedTileRefs.TryGetValue(packedGridPos, out tileRef)) {
             return false;
         }
 
         // unload, and mark as non loaded
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!Detour.dtStatusFailed(mmap.navMesh.removeTile(tileRef, out _))) {
             mmap.loadedTileRefs.remove(packedGridPos);
             --loadedTiles;
@@ -190,7 +190,7 @@ public class MMapManager {
             var x = (i.key >> 16);
             var y = (i.key & 0x0000FFFF);
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             if (Detour.dtStatusFailed(mmap.navMesh.removeTile(i.value, out _))) {
                 Logs.MAPS.error("MMAP:unloadMap: Could not unload {0:D4}{1:D2}{2:D2}.mmtile from navmesh", mapId, x, y);
             } else {

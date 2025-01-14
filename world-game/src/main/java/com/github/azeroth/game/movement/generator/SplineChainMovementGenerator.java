@@ -89,7 +89,7 @@ public class SplineChainMovementGenerator extends MovementGenerator {
 
             owner.addUnitState(UnitState.RoamingMove);
             Span<Vector3> partial = thisLink.points.toArray(new Vector3[0]);
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
             sendPathSpline(owner, thisLink.velocity, partial[(_nextFirstWP - 1)..]);
 
             Log.outDebug(LogFilter.movement, String.format("SplineChainMovementGenerator::Initialize: resumed spline chain generator from resume state. (%1$s)", owner.getGUID()));

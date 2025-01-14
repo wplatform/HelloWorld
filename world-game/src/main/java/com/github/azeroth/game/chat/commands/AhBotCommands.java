@@ -3,9 +3,9 @@ package com.github.azeroth.game.chat.commands;
 
 import com.github.azeroth.game.chat.CommandHandler;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class AhBotCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAHBotRebuildCommand(CommandHandler handler, StringArguments args) {
 		/*char* arg = strtok((char*)args, " ");
 
@@ -17,14 +17,14 @@ class AhBotCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAHBotReloadCommand(CommandHandler handler, StringArguments args) {
         //sAuctionBot->ReloadAllConfig();
         //handler->SendSysMessage(LANG_AHBOT_RELOAD_OK);
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAHBotStatusCommand(CommandHandler handler, StringArguments args) {
 		/*   char* arg = strtok((char*)args, " ");
 		if (!arg)
@@ -50,7 +50,7 @@ class AhBotCommands {
 
 		public uint fmtId = session ? LANG_AHBOT_STATUS_FORMAT_CHAT : LANG_AHBOT_STATUS_FORMAT_CONSOLE;
 
-		handler->PSendSysMessage(fmtId, handler->GetCypherString(LANG_AHBOT_STATUS_ITEM_COUNT),
+		handler->PSendSysMessage(fmtId, handler->getSysMessage(LANG_AHBOT_STATUS_ITEM_COUNT),
 			statusInfo[AUCTION_HOUSE_ALLIANCE].itemsCount,
 			statusInfo[AUCTION_HOUSE_HORDE].itemsCount,
 			statusInfo[AUCTION_HOUSE_NEUTRAL].itemsCount,
@@ -60,7 +60,7 @@ class AhBotCommands {
 
 		if (all)
 		{
-			handler->PSendSysMessage(fmtId, handler->GetCypherString(LANG_AHBOT_STATUS_ITEM_RATIO),
+			handler->PSendSysMessage(fmtId, handler->getSysMessage(LANG_AHBOT_STATUS_ITEM_RATIO),
 				sAuctionBotConfig->GetConfig(CONFIG_AHBOT_ALLIANCE_ITEM_AMOUNT_RATIO),
 				sAuctionBotConfig->GetConfig(CONFIG_AHBOT_HORDE_ITEM_AMOUNT_RATIO),
 				sAuctionBotConfig->GetConfig(CONFIG_AHBOT_NEUTRAL_ITEM_AMOUNT_RATIO),
@@ -78,7 +78,7 @@ class AhBotCommands {
 				handler->SendSysMessage(LANG_AHBOT_STATUS_TITLE2_CHAT);
 
 			for (int i = 0; i < MAX_AUCTION_QUALITY; ++i)
-				handler->PSendSysMessage(fmtId, handler->GetCypherString(ahbotQualityIds[i]),
+				handler->PSendSysMessage(fmtId, handler->getSysMessage(ahbotQualityIds[i]),
 					statusInfo[AUCTION_HOUSE_ALLIANCE].QualityInfo[i],
 					statusInfo[AUCTION_HOUSE_HORDE].QualityInfo[i],
 					statusInfo[AUCTION_HOUSE_NEUTRAL].QualityInfo[i],
@@ -91,9 +91,9 @@ class AhBotCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class ItemsCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountCommand(CommandHandler handler, StringArguments args) {
 			/*public uint qVals[MAX_AUCTION_QUALITY];
 			char* arg = strtok((char*)args, " ");
@@ -108,42 +108,42 @@ class AhBotCommands {
 			sAuctionBot->SetItemsAmount(qVals);
 
 			for (int i = 0; i < MAX_AUCTION_QUALITY; ++i)
-				handler->PSendSysMessage(LANG_AHBOT_ITEMS_AMOUNT, handler->GetCypherString(ahbotQualityIds[i]), sAuctionBotConfig->GetConfigItemQualityAmount(AuctionQuality(i)));
+				handler->PSendSysMessage(LANG_AHBOT_ITEMS_AMOUNT, handler->getSysMessage(ahbotQualityIds[i]), sAuctionBotConfig->GetConfigItemQualityAmount(AuctionQuality(i)));
 			*/
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityBlue(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityGray(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityGreen(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityOrange(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityPurple(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityWhite(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsAmountQualityYellow(CommandHandler handler, StringArguments args) {
             return true;
         }
@@ -156,16 +156,16 @@ class AhBotCommands {
 			public uint qualityVal = atoi(arg);
 
 			sAuctionBot->SetItemsAmountForQuality(Q, qualityVal);
-			handler->PSendSysMessage(LANG_AHBOT_ITEMS_AMOUNT, handler->GetCypherString(ahbotQualityIds[Q]),
+			handler->PSendSysMessage(LANG_AHBOT_ITEMS_AMOUNT, handler->getSysMessage(ahbotQualityIds[Q]),
 				sAuctionBotConfig->GetConfigItemQualityAmount(Q));
 			*/
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class RatioCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsRatioCommand(CommandHandler handler, StringArguments args) {
 			/*public uint rVal[MAX_AUCTION_QUALITY];
 			char* arg = strtok((char*)args, " ");
@@ -185,17 +185,17 @@ class AhBotCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsRatioHouseAlliance(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsRatioHouseHorde(CommandHandler handler, StringArguments args) {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAHBotItemsRatioHouseNeutral(CommandHandler handler, StringArguments args) {
             return true;
         }

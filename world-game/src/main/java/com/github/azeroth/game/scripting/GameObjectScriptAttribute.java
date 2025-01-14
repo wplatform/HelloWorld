@@ -1,6 +1,6 @@
 package com.github.azeroth.game.scripting;
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public class GameObjectScriptAttribute extends ScriptAttribute {
     private int[] gameObjectIds;
 

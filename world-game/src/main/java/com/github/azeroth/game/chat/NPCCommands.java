@@ -18,9 +18,9 @@ import java.util.Arrays;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class NPCCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcDespawnGroup(CommandHandler handler, String[] opts) {
         if (opts.isEmpty()) {
             return false;
@@ -46,7 +46,7 @@ class NPCCommands {
         tangible.OutObject<Integer> tempOut_despawnedCount = new tangible.OutObject<Integer>();
         if (!player.getMap().spawnGroupDespawn(groupId, deleteRespawnTimes, tempOut_despawnedCount)) {
             despawnedCount = tempOut_despawnedCount.outArgValue;
-            handler.sendSysMessage(CypherStrings.SpawngroupBadgroup, groupId);
+            handler.sendSysMessage(SysMessage.SpawngroupBadgroup, groupId);
 
             return false;
         } else {
@@ -58,18 +58,18 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcEvadeCommand(CommandHandler handler, EvadeReason why, String force) {
         var creatureTarget = handler.getSelectedCreature();
 
         if (!creatureTarget || creatureTarget.isPet()) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
 
         if (!creatureTarget.isAIEnabled()) {
-            handler.sendSysMessage(CypherStrings.CreatureNotAiEnabled);
+            handler.sendSysMessage(SysMessage.CreatureNotAiEnabled);
 
             return false;
         }
@@ -83,12 +83,12 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcInfoCommand(CommandHandler handler) {
         var target = handler.getSelectedCreature();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -111,20 +111,20 @@ class NPCCommands {
         var curRespawnDelayStr = time.secsToTimeString((long) curRespawnDelay, TimeFormat.ShortText, false);
         var defRespawnDelayStr = time.secsToTimeString(target.getRespawnDelay(), TimeFormat.ShortText, false);
 
-        handler.sendSysMessage(CypherStrings.NpcinfoChar, target.getName(), target.getSpawnId(), target.getGUID().toString(), entry, faction, npcflags, displayid, nativeid);
+        handler.sendSysMessage(SysMessage.NpcinfoChar, target.getName(), target.getSpawnId(), target.getGUID().toString(), entry, faction, npcflags, displayid, nativeid);
 
         if (target.getCreatureData() != null && target.getCreatureData().getSpawnGroupData().getGroupId() != 0) {
             var groupData = target.getCreatureData().getSpawnGroupData();
-            handler.sendSysMessage(CypherStrings.SpawninfoGroupId, groupData.getName(), groupData.getGroupId(), groupData.getFlags(), target.getMap().isSpawnGroupActive(groupData.getGroupId()));
+            handler.sendSysMessage(SysMessage.SpawninfoGroupId, groupData.getName(), groupData.getGroupId(), groupData.getFlags(), target.getMap().isSpawnGroupActive(groupData.getGroupId()));
         }
 
-        handler.sendSysMessage(CypherStrings.SpawninfoCompatibilityMode, target.getRespawnCompatibilityMode());
-        handler.sendSysMessage(CypherStrings.NpcinfoLevel, target.getLevel());
-        handler.sendSysMessage(CypherStrings.NpcinfoEquipment, target.getCurrentEquipmentId(), target.getOriginalEquipmentId());
-        handler.sendSysMessage(CypherStrings.NpcinfoHealth, target.getCreateHealth(), target.getMaxHealth(), target.getHealth());
-        handler.sendSysMessage(CypherStrings.NpcinfoMovementData, target.getMovementTemplate().toString());
+        handler.sendSysMessage(SysMessage.SpawninfoCompatibilityMode, target.getRespawnCompatibilityMode());
+        handler.sendSysMessage(SysMessage.NpcinfoLevel, target.getLevel());
+        handler.sendSysMessage(SysMessage.NpcinfoEquipment, target.getCurrentEquipmentId(), target.getOriginalEquipmentId());
+        handler.sendSysMessage(SysMessage.NpcinfoHealth, target.getCreateHealth(), target.getMaxHealth(), target.getHealth());
+        handler.sendSysMessage(SysMessage.NpcinfoMovementData, target.getMovementTemplate().toString());
 
-        handler.sendSysMessage(CypherStrings.NpcinfoUnitFieldFlags, (int) target.getUnitData().flags);
+        handler.sendSysMessage(SysMessage.NpcinfoUnitFieldFlags, (int) target.getUnitData().flags);
 
         for (UnitFlags value : UnitFlag.values()) {
             if (target.hasUnitFlag(value)) {
@@ -132,7 +132,7 @@ class NPCCommands {
             }
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoUnitFieldFlags2, (int) target.getUnitData().flags2);
+        handler.sendSysMessage(SysMessage.NpcinfoUnitFieldFlags2, (int) target.getUnitData().flags2);
 
         for (UnitFlags2 value : UnitFlag2.values()) {
             if (target.hasUnitFlag2(value)) {
@@ -140,7 +140,7 @@ class NPCCommands {
             }
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoUnitFieldFlags3, (int) target.getUnitData().flags3);
+        handler.sendSysMessage(SysMessage.NpcinfoUnitFieldFlags3, (int) target.getUnitData().flags3);
 
         for (UnitFlags3 value : unitFlags3.values()) {
             if (target.hasUnitFlag3(value)) {
@@ -148,31 +148,31 @@ class NPCCommands {
             }
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoDynamicFlags, target.getDynamicFlags());
-        handler.sendSysMessage(CypherStrings.CommandRawpawntimes, defRespawnDelayStr, curRespawnDelayStr);
-        handler.sendSysMessage(CypherStrings.NpcinfoLoot, cInfo.lootId, cInfo.pickPocketId, cInfo.skinLootId);
-        handler.sendSysMessage(CypherStrings.NpcinfoDungeonId, target.getInstanceId());
+        handler.sendSysMessage(SysMessage.NpcinfoDynamicFlags, target.getDynamicFlags());
+        handler.sendSysMessage(SysMessage.CommandRawpawntimes, defRespawnDelayStr, curRespawnDelayStr);
+        handler.sendSysMessage(SysMessage.NpcinfoLoot, cInfo.lootId, cInfo.pickPocketId, cInfo.skinLootId);
+        handler.sendSysMessage(SysMessage.NpcinfoDungeonId, target.getInstanceId());
 
         var data = global.getObjectMgr().getCreatureData(target.getSpawnId());
 
         if (data != null) {
-            handler.sendSysMessage(CypherStrings.NpcinfoPhases, data.phaseId, data.phaseGroup);
+            handler.sendSysMessage(SysMessage.NpcinfoPhases, data.phaseId, data.phaseGroup);
         }
 
         PhasingHandler.printToChat(handler, target);
 
-        handler.sendSysMessage(CypherStrings.NpcinfoArmor, target.getArmor());
-        handler.sendSysMessage(CypherStrings.NpcinfoPosition, target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ());
-        handler.sendSysMessage(CypherStrings.ObjectinfoAiInfo, target.getAIName(), target.getScriptName());
-        handler.sendSysMessage(CypherStrings.ObjectinfoStringIds, target.getStringIds()[0], target.getStringIds()[1], target.getStringIds()[2]);
-        handler.sendSysMessage(CypherStrings.NpcinfoReactstate, target.getReactState());
+        handler.sendSysMessage(SysMessage.NpcinfoArmor, target.getArmor());
+        handler.sendSysMessage(SysMessage.NpcinfoPosition, target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ());
+        handler.sendSysMessage(SysMessage.ObjectinfoAiInfo, target.getAIName(), target.getScriptName());
+        handler.sendSysMessage(SysMessage.ObjectinfoStringIds, target.getStringIds()[0], target.getStringIds()[1], target.getStringIds()[2]);
+        handler.sendSysMessage(SysMessage.NpcinfoReactstate, target.getReactState());
         var ai = target.getAI();
 
         if (ai != null) {
-            handler.sendSysMessage(CypherStrings.ObjectinfoAiType, "ai");
+            handler.sendSysMessage(SysMessage.ObjectinfoAiType, "ai");
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoFlagsExtra, cInfo.flagsExtra);
+        handler.sendSysMessage(SysMessage.NpcinfoFlagsExtra, cInfo.flagsExtra);
 
         for (int value : CreatureFlagExtra.values()) {
             if (cInfo.flagsExtra.hasFlag(CreatureFlagExtra.forValue(value))) {
@@ -180,7 +180,7 @@ class NPCCommands {
             }
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoNpcFlags, target.getUnitData().npcFlags.get(0));
+        handler.sendSysMessage(SysMessage.NpcinfoNpcFlags, target.getUnitData().npcFlags.get(0));
 
         for (int value : NPCFlags.values()) {
             if (npcflags.hasFlag(value)) {
@@ -188,7 +188,7 @@ class NPCCommands {
             }
         }
 
-        handler.sendSysMessage(CypherStrings.NpcinfoMechanicImmune, mechanicImmuneMask);
+        handler.sendSysMessage(SysMessage.NpcinfoMechanicImmune, mechanicImmuneMask);
 
         for (int value : mechanics.values()) {
             if ((boolean) (mechanicImmuneMask & (1 << (value - 1)))) {
@@ -199,7 +199,7 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcMoveCommand(CommandHandler handler, Long spawnId) {
         var creature = handler.getSelectedCreature();
         var player = handler.getSession().getPlayer();
@@ -218,13 +218,13 @@ class NPCCommands {
         var data = global.getObjectMgr().getCreatureData(lowguid);
 
         if (data == null) {
-            handler.sendSysMessage(CypherStrings.CommandCreatguidnotfound, lowguid);
+            handler.sendSysMessage(SysMessage.CommandCreatguidnotfound, lowguid);
 
             return false;
         }
 
         if (player.getLocation().getMapId() != data.getMapId()) {
-            handler.sendSysMessage(CypherStrings.CommandCreatureatsamemap, lowguid);
+            handler.sendSysMessage(SysMessage.CommandCreatureatsamemap, lowguid);
 
             return false;
         }
@@ -248,12 +248,12 @@ class NPCCommands {
             creature.despawnOrUnsummon(duration.FromSeconds(0), duration.FromSeconds(1));
         }
 
-        handler.sendSysMessage(CypherStrings.CommandCreaturemoved);
+        handler.sendSysMessage(SysMessage.CommandCreaturemoved);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcNearCommand(CommandHandler handler, Float dist) {
         var distance = (dist == null ? 10.0f : dist.floatValue());
         int count = 0;
@@ -286,23 +286,23 @@ class NPCCommands {
                     continue;
                 }
 
-                handler.sendSysMessage(CypherStrings.CreatureListChat, guid, guid, creatureTemplate.name, x, y, z, mapId, "", "");
+                handler.sendSysMessage(SysMessage.CreatureListChat, guid, guid, creatureTemplate.name, x, y, z, mapId, "", "");
 
                 ++count;
             } while (result.NextRow());
         }
 
-        handler.sendSysMessage(CypherStrings.CommandNearNpcMessage, distance, count);
+        handler.sendSysMessage(SysMessage.CommandNearNpcMessage, distance, count);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcPlayEmoteCommand(CommandHandler handler, int emote) {
         var target = handler.getSelectedCreature();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -312,7 +312,7 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcSayCommand(CommandHandler handler, Tail text) {
         if (text.isEmpty()) {
             return false;
@@ -321,7 +321,7 @@ class NPCCommands {
         var creature = handler.getSelectedCreature();
 
         if (!creature) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -347,12 +347,12 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcShowLootCommand(CommandHandler handler, String all) {
         var creatureTarget = handler.getSelectedCreature();
 
         if (creatureTarget == null || creatureTarget.isPet()) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -360,17 +360,17 @@ class NPCCommands {
         var loot = creatureTarget.getLoot();
 
         if (!creatureTarget.isDead() || loot == null || loot.isLooted()) {
-            handler.sendSysMessage(CypherStrings.CommandNotDeadOrNoLoot, creatureTarget.getName());
+            handler.sendSysMessage(SysMessage.CommandNotDeadOrNoLoot, creatureTarget.getName());
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.CommandNpcShowlootHeader, creatureTarget.getName(), creatureTarget.getEntry());
-        handler.sendSysMessage(CypherStrings.CommandNpcShowlootMoney, loot.gold / MoneyConstants.gold, (loot.gold % MoneyConstants.gold) / MoneyConstants.Silver, loot.gold % MoneyConstants.Silver);
+        handler.sendSysMessage(SysMessage.CommandNpcShowlootHeader, creatureTarget.getName(), creatureTarget.getEntry());
+        handler.sendSysMessage(SysMessage.CommandNpcShowlootMoney, loot.gold / MoneyConstants.gold, (loot.gold % MoneyConstants.gold) / MoneyConstants.Silver, loot.gold % MoneyConstants.Silver);
 
         if (all.equalsIgnoreCase("all")) // nonzero from strcmp <. not equal
         {
-            handler.sendSysMessage(CypherStrings.CommandNpcShowlootLabel, "Standard items", loot.items.size());
+            handler.sendSysMessage(SysMessage.CommandNpcShowlootLabel, "Standard items", loot.items.size());
 
             for (var item : loot.items) {
                 if (!item.is_looted) {
@@ -378,7 +378,7 @@ class NPCCommands {
                 }
             }
         } else {
-            handler.sendSysMessage(CypherStrings.CommandNpcShowlootLabel, "Standard items", loot.items.size());
+            handler.sendSysMessage(SysMessage.CommandNpcShowlootLabel, "Standard items", loot.items.size());
 
             for (var item : loot.items) {
                 if (!item.is_looted && !item.freeforall && item.conditions.isEmpty()) {
@@ -387,7 +387,7 @@ class NPCCommands {
             }
 
             if (!loot.getPlayerFFAItems().isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CommandNpcShowlootLabel2, "FFA items per allowed player");
+                handler.sendSysMessage(SysMessage.CommandNpcShowlootLabel2, "FFA items per allowed player");
                 _IterateNotNormalLootMap(handler, loot.getPlayerFFAItems(), loot.items);
             }
         }
@@ -395,7 +395,7 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcSpawnGroup(CommandHandler handler, String[] opts) {
         if (opts.isEmpty()) {
             return false;
@@ -430,22 +430,22 @@ class NPCCommands {
         ArrayList<WorldObject> creatureList = new ArrayList<>();
 
         if (!player.getMap().spawnGroupSpawn(groupId, ignoreRespawn, force, creatureList)) {
-            handler.sendSysMessage(CypherStrings.SpawngroupBadgroup, groupId);
+            handler.sendSysMessage(SysMessage.SpawngroupBadgroup, groupId);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.SpawngroupSpawncount, creatureList.size());
+        handler.sendSysMessage(SysMessage.SpawngroupSpawncount, creatureList.size());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcTameCommand(CommandHandler handler) {
         var creatureTarget = handler.getSelectedCreature();
 
         if (!creatureTarget || creatureTarget.isPet()) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -453,7 +453,7 @@ class NPCCommands {
         var player = handler.getSession().getPlayer();
 
         if (!player.getPetGUID().isEmpty()) {
-            handler.sendSysMessage(CypherStrings.YouAlreadyHavePet);
+            handler.sendSysMessage(SysMessage.YouAlreadyHavePet);
 
             return false;
         }
@@ -461,7 +461,7 @@ class NPCCommands {
         var cInfo = creatureTarget.getTemplate();
 
         if (!cInfo.isTameable(player.getCanTameExoticPets())) {
-            handler.sendSysMessage(CypherStrings.CreatureNonTameable, cInfo.entry);
+            handler.sendSysMessage(SysMessage.CreatureNonTameable, cInfo.entry);
 
             return false;
         }
@@ -470,7 +470,7 @@ class NPCCommands {
         var pet = player.createTamedPetFrom(creatureTarget);
 
         if (!pet) {
-            handler.sendSysMessage(CypherStrings.CreatureNonTameable, cInfo.entry);
+            handler.sendSysMessage(SysMessage.CreatureNonTameable, cInfo.entry);
 
             return false;
         }
@@ -505,12 +505,12 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcTextEmoteCommand(CommandHandler handler, Tail text) {
         var creature = handler.getSelectedCreature();
 
         if (!creature) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -520,10 +520,10 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcWhisperCommand(CommandHandler handler, String recv, Tail text) {
         if (text.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.CmdSyntax);
+            handler.sendSysMessage(SysMessage.CmdSyntax);
 
             return false;
         }
@@ -531,7 +531,7 @@ class NPCCommands {
         var creature = handler.getSelectedCreature();
 
         if (!creature) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -548,7 +548,7 @@ class NPCCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleNpcYellCommand(CommandHandler handler, Tail text) {
         if (text.isEmpty()) {
             return false;
@@ -557,7 +557,7 @@ class NPCCommands {
         var creature = handler.getSelectedCreature();
 
         if (!creature) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -584,7 +584,7 @@ class NPCCommands {
             name = itemTemplate.getName(handler.getSessionDbcLocale());
         }
 
-        handler.sendSysMessage(alternateString ? CypherStrings.CommandNpcShowlootEntry2 : CypherStrings.CommandNpcShowlootEntry, itemCount, ItemConst.ItemQualityColors[(int) (itemTemplate != null ? itemTemplate.getQuality() : itemQuality.Poor)], itemId, name, itemId);
+        handler.sendSysMessage(alternateString ? SysMessage.CommandNpcShowlootEntry2 : SysMessage.CommandNpcShowlootEntry, itemCount, ItemConst.ItemQualityColors[(int) (itemTemplate != null ? itemTemplate.getQuality() : itemQuality.Poor)], itemId, name, itemId);
     }
 
     private static void _IterateNotNormalLootMap(CommandHandler handler, MultiMap<ObjectGuid, NotNormalLootItem> map, ArrayList<LootItem> items) {
@@ -596,7 +596,7 @@ class NPCCommands {
             var list = map.get(key);
 
             var player = global.getObjAccessor().findConnectedPlayer(key);
-            handler.sendSysMessage(CypherStrings.CommandNpcShowlootSublabel, player ? player.getName() : String.format("Offline player (GUID %1$s)", key), list.count);
+            handler.sendSysMessage(SysMessage.CommandNpcShowlootSublabel, player ? player.getName() : String.format("Offline player (GUID %1$s)", key), list.count);
 
             for (var it : list) {
                 var item = items.get(it.lootListId);
@@ -608,9 +608,9 @@ class NPCCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class AddCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcAddCommand(CommandHandler handler, int id) {
             if (global.getObjectMgr().getCreatureTemplate(id) == null) {
                 return false;
@@ -667,11 +667,11 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
+
         private static boolean handleNpcAddVendorItemCommand(CommandHandler handler, int itemId, Integer mc, Integer it, Integer ec, String bonusListIds) {
             if (itemId == 0) {
-                handler.sendSysMessage(CypherStrings.CommandNeeditemsend);
+                handler.sendSysMessage(SysMessage.CommandNeeditemsend);
 
                 return false;
             }
@@ -679,7 +679,7 @@ class NPCCommands {
             var vendor = handler.getSelectedCreature();
 
             if (!vendor) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -721,18 +721,18 @@ class NPCCommands {
 
             var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
 
-            handler.sendSysMessage(CypherStrings.ItemAddedToList, itemId, itemTemplate.getName(), maxcount, incrtime, extendedcost);
+            handler.sendSysMessage(SysMessage.ItemAddedToList, itemId, itemTemplate.getName(), maxcount, incrtime, extendedcost);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcAddMoveCommand(CommandHandler handler, long lowGuid) {
             // attempt check creature existence by DB data
             var data = global.getObjectMgr().getCreatureData(lowGuid);
 
             if (data == null) {
-                handler.sendSysMessage(CypherStrings.CommandCreatguidnotfound, lowGuid);
+                handler.sendSysMessage(SysMessage.CommandCreatguidnotfound, lowGuid);
 
                 return false;
             }
@@ -743,17 +743,17 @@ class NPCCommands {
             stmt.AddValue(1, lowGuid);
             DB.World.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.WaypointAdded);
+            handler.sendSysMessage(SysMessage.WaypointAdded);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcAddFormationCommand(CommandHandler handler, long leaderGUID) {
             var creature = handler.getSelectedCreature();
 
             if (!creature || creature.getSpawnId() == 0) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -791,8 +791,8 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
+
         private static boolean handleNpcAddTempSpawnCommand(CommandHandler handler, String lootStr, int id) {
             var loot = false;
 
@@ -817,9 +817,9 @@ class NPCCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class DeleteCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcDeleteCommand(CommandHandler handler, Long spawnIdArg) {
             long spawnId;
 
@@ -829,7 +829,7 @@ class NPCCommands {
                 var creature = handler.getSelectedCreature();
 
                 if (!creature || creature.isPet() || creature.isTotem()) {
-                    handler.sendSysMessage(CypherStrings.SelectCreature);
+                    handler.sendSysMessage(SysMessage.SelectCreature);
 
                     return false;
                 }
@@ -838,7 +838,7 @@ class NPCCommands {
 
                 if (summon != null) {
                     summon.unSummon();
-                    handler.sendSysMessage(CypherStrings.CommandDelcreatmessage);
+                    handler.sendSysMessage(SysMessage.CommandDelcreatmessage);
 
                     return true;
                 }
@@ -847,22 +847,22 @@ class NPCCommands {
             }
 
             if (CREATURE.deleteFromDB(spawnId)) {
-                handler.sendSysMessage(CypherStrings.CommandDelcreatmessage);
+                handler.sendSysMessage(SysMessage.CommandDelcreatmessage);
 
                 return true;
             }
 
-            handler.sendSysMessage(CypherStrings.CommandCreatguidnotfound, spawnId);
+            handler.sendSysMessage(SysMessage.CommandCreatguidnotfound, spawnId);
 
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcDeleteVendorItemCommand(CommandHandler handler, int itemId) {
             var vendor = handler.getSelectedCreature();
 
             if (!vendor || !vendor.isVendor()) {
-                handler.sendSysMessage(CypherStrings.CommandVendorselection);
+                handler.sendSysMessage(SysMessage.CommandVendorselection);
 
                 return false;
             }
@@ -872,27 +872,27 @@ class NPCCommands {
             }
 
             if (!global.getObjectMgr().removeVendorItem(vendor.getEntry(), itemId, ItemVendorType.item)) {
-                handler.sendSysMessage(CypherStrings.ItemNotInList, itemId);
+                handler.sendSysMessage(SysMessage.ItemNotInList, itemId);
 
                 return false;
             }
 
             var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
-            handler.sendSysMessage(CypherStrings.ItemDeletedFromList, itemId, itemTemplate.getName());
+            handler.sendSysMessage(SysMessage.ItemDeletedFromList, itemId, itemTemplate.getName());
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class FollowCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcFollowCommand(CommandHandler handler) {
             var player = handler.getSession().getPlayer();
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -900,18 +900,18 @@ class NPCCommands {
             // Follow player - Using pet's default dist and angle
             creature.getMotionMaster().moveFollow(player, SharedConst.PetFollowDist, creature.getFollowAngle());
 
-            handler.sendSysMessage(CypherStrings.CreatureFollowYouNow, creature.getName());
+            handler.sendSysMessage(SysMessage.CreatureFollowYouNow, creature.getName());
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcUnFollowCommand(CommandHandler handler) {
             var player = handler.getPlayer();
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -928,21 +928,21 @@ class NPCCommands {
             });
 
             if (movement != null) {
-                handler.sendSysMessage(CypherStrings.CreatureNotFollowYou, creature.getName());
+                handler.sendSysMessage(SysMessage.CreatureNotFollowYou, creature.getName());
 
                 return false;
             }
 
             creature.getMotionMaster().remove(movement);
-            handler.sendSysMessage(CypherStrings.CreatureNotFollowYouNow, creature.getName());
+            handler.sendSysMessage(SysMessage.CreatureNotFollowYouNow, creature.getName());
 
             return true;
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class SetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetAllowMovementCommand(CommandHandler handler) {
 			/*
 			if (global.WorldMgr.getAllowMovement())
@@ -959,24 +959,24 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetDataCommand(CommandHandler handler, int data_1, int data_2) {
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
 
             creature.getAI().setData(data_1, data_2);
             var AIorScript = !Objects.equals(creature.getAIName(), "") ? "AI type: " + creature.getAIName() : (!Objects.equals(creature.getScriptName(), "") ? "Script Name: " + creature.getScriptName() : "No AI or Script Name Set");
-            handler.sendSysMessage(CypherStrings.NpcSetdata, creature.getGUID(), creature.getEntry(), creature.getName(), data_1, data_2, AIorScript);
+            handler.sendSysMessage(SysMessage.NpcSetdata, creature.getGUID(), creature.getEntry(), creature.getName(), data_1, data_2, AIorScript);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetEntryCommand(CommandHandler handler, int newEntryNum) {
             if (newEntryNum == 0) {
                 return false;
@@ -985,7 +985,7 @@ class NPCCommands {
             var unit = handler.getSelectedUnit();
 
             if (!unit || !unit.isTypeId(TypeId.UNIT)) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -993,18 +993,18 @@ class NPCCommands {
             var creature = unit.toCreature();
 
             if (creature.updateEntry(newEntryNum)) {
-                handler.sendSysMessage(CypherStrings.Done);
+                handler.sendSysMessage(SysMessage.Done);
             } else {
-                handler.sendSysMessage(CypherStrings.error);
+                handler.sendSysMessage(SysMessage.error);
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetFactionIdCommand(CommandHandler handler, int factionId) {
             if (!CliDB.FactionTemplateStorage.containsKey(factionId)) {
-                handler.sendSysMessage(CypherStrings.WrongFaction, factionId);
+                handler.sendSysMessage(SysMessage.WrongFaction, factionId);
 
                 return false;
             }
@@ -1012,7 +1012,7 @@ class NPCCommands {
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1040,12 +1040,12 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetFlagCommand(CommandHandler handler, NPCFlags npcFlags, NPCFlags2 npcFlags2) {
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1058,15 +1058,15 @@ class NPCCommands {
             stmt.AddValue(1, creature.getEntry());
             DB.World.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.ValueSavedRejoin);
+            handler.sendSysMessage(SysMessage.ValueSavedRejoin);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetLevelCommand(CommandHandler handler, byte lvl) {
             if (lvl < 1 || lvl > WorldConfig.getIntValue(WorldCfg.MaxPlayerLevel) + 3) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -1074,7 +1074,7 @@ class NPCCommands {
             var creature = handler.getSelectedCreature();
 
             if (!creature || creature.isPet()) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1087,12 +1087,12 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetLinkCommand(CommandHandler handler, long linkguid) {
             var creature = handler.getSelectedCreature();
 
             if (!creature) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1114,18 +1114,18 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetModelCommand(CommandHandler handler, int displayId) {
             var creature = handler.getSelectedCreature();
 
             if (!creature || creature.isPet()) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
 
             if (!CliDB.CreatureDisplayInfoStorage.containsKey(displayId)) {
-                handler.sendSysMessage(CypherStrings.CommandInvalidParam, displayId);
+                handler.sendSysMessage(SysMessage.CommandInvalidParam, displayId);
 
                 return false;
             }
@@ -1138,7 +1138,7 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetMoveTypeCommand(CommandHandler handler, Long lowGuid, String type, String nodel) {
             // 3 arguments:
             // GUID (optional - you can also select the creature)
@@ -1173,7 +1173,7 @@ class NPCCommands {
                     var data = global.getObjectMgr().getCreatureData(lowguid);
 
                     if (data == null) {
-                        handler.sendSysMessage(CypherStrings.CommandCreatguidnotfound, lowguid);
+                        handler.sendSysMessage(SysMessage.CommandCreatguidnotfound, lowguid);
 
                         return false;
                     }
@@ -1223,18 +1223,18 @@ class NPCCommands {
             }
 
             if (!doNotDelete) {
-                handler.sendSysMessage(CypherStrings.MoveTypeSet, type);
+                handler.sendSysMessage(SysMessage.MoveTypeSet, type);
             } else {
-                handler.sendSysMessage(CypherStrings.MoveTypeSetNodel, type);
+                handler.sendSysMessage(SysMessage.MoveTypeSetNodel, type);
             }
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetPhaseCommand(CommandHandler handler, int phaseId) {
             if (phaseId == 0) {
-                handler.sendSysMessage(CypherStrings.PhaseNotfound);
+                handler.sendSysMessage(SysMessage.PhaseNotfound);
 
                 return false;
             }
@@ -1242,7 +1242,7 @@ class NPCCommands {
             var creature = handler.getSelectedCreature();
 
             if (!creature || creature.isPet()) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1256,7 +1256,7 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetPhaseGroup(CommandHandler handler, StringArguments args) {
             if (args.isEmpty()) {
                 return false;
@@ -1267,7 +1267,7 @@ class NPCCommands {
             var creature = handler.getSelectedCreature();
 
             if (!creature || creature.isPet()) {
-                handler.sendSysMessage(CypherStrings.SelectCreature);
+                handler.sendSysMessage(SysMessage.SelectCreature);
 
                 return false;
             }
@@ -1281,10 +1281,10 @@ class NPCCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetWanderDistanceCommand(CommandHandler handler, float option) {
             if (option < 0.0f) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -1321,12 +1321,12 @@ class NPCCommands {
 
             DB.World.execute(stmt);
 
-            handler.sendSysMessage(CypherStrings.CommandWanderDistance, option);
+            handler.sendSysMessage(SysMessage.CommandWanderDistance, option);
 
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleNpcSetSpawnTimeCommand(CommandHandler handler, int spawnTime) {
             var creature = handler.getSelectedCreature();
 
@@ -1340,7 +1340,7 @@ class NPCCommands {
             DB.World.execute(stmt);
 
             creature.setRespawnDelay(spawnTime);
-            handler.sendSysMessage(CypherStrings.CommandSpawntime, spawnTime);
+            handler.sendSysMessage(SysMessage.CommandSpawntime, spawnTime);
 
             return true;
         }

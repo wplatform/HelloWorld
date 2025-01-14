@@ -4,12 +4,12 @@ package com.github.azeroth.game.chat.commands;
 import com.github.azeroth.game.chat.CommandHandler;
 
 class TitleCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleTitlesCurrentCommand(CommandHandler handler, int titleId) {
         var target = handler.getSelectedPlayer();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -22,7 +22,7 @@ class TitleCommands {
         var titleInfo = CliDB.CharTitlesStorage.get(titleId);
 
         if (titleInfo == null) {
-            handler.sendSysMessage(CypherStrings.InvalidTitleId, titleId);
+            handler.sendSysMessage(SysMessage.InvalidTitleId, titleId);
 
             return false;
         }
@@ -33,17 +33,17 @@ class TitleCommands {
         target.setTitle(titleInfo);
         target.setChosenTitle(titleInfo.MaskID);
 
-        handler.sendSysMessage(CypherStrings.TitleCurrentRes, titleId, titleNameStr, tNameLink);
+        handler.sendSysMessage(SysMessage.TitleCurrentRes, titleId, titleNameStr, tNameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleTitlesAddCommand(CommandHandler handler, int titleId) {
         var target = handler.getSelectedPlayer();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -56,7 +56,7 @@ class TitleCommands {
         var titleInfo = CliDB.CharTitlesStorage.get(titleId);
 
         if (titleInfo == null) {
-            handler.sendSysMessage(CypherStrings.InvalidTitleId, titleId);
+            handler.sendSysMessage(SysMessage.InvalidTitleId, titleId);
 
             return false;
         }
@@ -66,17 +66,17 @@ class TitleCommands {
         var titleNameStr = String.format((target.getNativeGender() == gender.Male ? titleInfo.Name : titleInfo.name1)[handler.getSessionDbcLocale()].ConvertFormatSyntax(), target.getName());
 
         target.setTitle(titleInfo);
-        handler.sendSysMessage(CypherStrings.TitleAddRes, titleId, titleNameStr, tNameLink);
+        handler.sendSysMessage(SysMessage.TitleAddRes, titleId, titleNameStr, tNameLink);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleTitlesRemoveCommand(CommandHandler handler, int titleId) {
         var target = handler.getSelectedPlayer();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -89,7 +89,7 @@ class TitleCommands {
         var titleInfo = CliDB.CharTitlesStorage.get(titleId);
 
         if (titleInfo == null) {
-            handler.sendSysMessage(CypherStrings.InvalidTitleId, titleId);
+            handler.sendSysMessage(SysMessage.InvalidTitleId, titleId);
 
             return false;
         }
@@ -99,25 +99,25 @@ class TitleCommands {
         var tNameLink = handler.getNameLink(target);
         var titleNameStr = String.format((target.getNativeGender() == gender.Male ? titleInfo.Name : titleInfo.name1)[handler.getSessionDbcLocale()].ConvertFormatSyntax(), target.getName());
 
-        handler.sendSysMessage(CypherStrings.TitleRemoveRes, titleId, titleNameStr, tNameLink);
+        handler.sendSysMessage(SysMessage.TitleRemoveRes, titleId, titleNameStr, tNameLink);
 
         if (!target.hasTitle(target.getPlayerData().playerTitle)) {
             target.setChosenTitle(0);
-            handler.sendSysMessage(CypherStrings.CurrentTitleReset, tNameLink);
+            handler.sendSysMessage(SysMessage.CurrentTitleReset, tNameLink);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class TitleSetCommands {
         //Edit Player KnownTitles
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleTitlesSetMaskCommand(CommandHandler handler, long mask) {
             var target = handler.getSelectedPlayer();
 
             if (!target) {
-                handler.sendSysMessage(CypherStrings.NoCharSelected);
+                handler.sendSysMessage(SysMessage.NoCharSelected);
 
                 return false;
             }
@@ -136,11 +136,11 @@ class TitleCommands {
             mask &= ~titles2; // remove not existed titles
 
             target.setKnownTitles(0, mask);
-            handler.sendSysMessage(CypherStrings.Done);
+            handler.sendSysMessage(SysMessage.Done);
 
             if (!target.hasTitle(target.getPlayerData().playerTitle)) {
                 target.setChosenTitle(0);
-                handler.sendSysMessage(CypherStrings.CurrentTitleReset, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.CurrentTitleReset, handler.getNameLink(target));
             }
 
             return true;

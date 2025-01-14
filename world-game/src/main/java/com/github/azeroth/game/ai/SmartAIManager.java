@@ -149,7 +149,7 @@ public class SmartAIManager {
         TC_SAI_IS_BOOLEAN_VALID(e, value, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public static void TC_SAI_IS_BOOLEAN_VALID(SmartScriptHolder e, int value, String valueName) {
         if (value > 1) {
             Logs.SQL.error(String.format("SmartAIMgr: %1$s uses param %2$s of type Boolean with second %3$s, valid values are 0 or 1, skipped.", e, valueName, value));

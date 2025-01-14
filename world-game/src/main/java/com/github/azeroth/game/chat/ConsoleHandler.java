@@ -6,7 +6,7 @@ import com.github.azeroth.game.entity.player.Player;
 public class ConsoleHandler extends CommandHandler {
     @Override
     public String getNameLink() {
-        return getCypherString(CypherStrings.ConsoleCommand);
+        return getSysMessage(SysMessage.ConsoleCommand);
     }
 
     @Override

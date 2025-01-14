@@ -110,7 +110,7 @@ public class CombatManager {
 
     public final boolean hasPvECombat() {
         synchronized (pveRefs) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, refe) : pveRefs) {
                 if (!refe.isSuppressedFor(owner)) {
                     return true;
@@ -321,7 +321,7 @@ public class CombatManager {
 
     public final void revalidateCombat() {
         synchronized (pveRefs) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(guid, refe) : pveRefs.ToList()) {
                 if (!canBeginCombat(owner, refe.getOther(owner))) {
                     pveRefs.remove(guid); // erase manually here to avoid iterator invalidation
@@ -329,7 +329,7 @@ public class CombatManager {
                 }
             }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(guid, refe) : pvpRefs.ToList()) {
                 if (!canBeginCombat(owner, refe.getOther(owner))) {
                     pvpRefs.remove(guid); // erase manually here to avoid iterator invalidation

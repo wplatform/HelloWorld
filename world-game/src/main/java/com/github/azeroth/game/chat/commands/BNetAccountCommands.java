@@ -4,12 +4,12 @@ package com.github.azeroth.game.chat.commands;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class BNetAccountCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountCreateCommand(CommandHandler handler, String accountName, String password, Boolean createGameAccount) {
         if (accountName.isEmpty() || !accountName.contains('@')) {
-            handler.sendSysMessage(CypherStrings.AccountInvalidBnetName);
+            handler.sendSysMessage(SysMessage.AccountInvalidBnetName);
 
             return false;
         }
@@ -18,9 +18,9 @@ class BNetAccountCommands {
         switch (global.getBNetAccountMgr().createBattlenetAccount(accountName, password, (createGameAccount == null ? true : createGameAccount.booleanValue()), gameAccountName)) {
             case Ok:
                 if (createGameAccount != null && createGameAccount.booleanValue()) {
-                    handler.sendSysMessage(CypherStrings.AccountCreatedBnetWithGame, accountName, gameAccountName);
+                    handler.sendSysMessage(SysMessage.AccountCreatedBnetWithGame, accountName, gameAccountName);
                 } else {
-                    handler.sendSysMessage(CypherStrings.AccountCreated, accountName);
+                    handler.sendSysMessage(SysMessage.AccountCreated, accountName);
                 }
 
                 if (handler.getSession() != null) {
@@ -29,15 +29,15 @@ class BNetAccountCommands {
 
                 break;
             case NameTooLong:
-                handler.sendSysMessage(CypherStrings.AccountNameTooLong);
+                handler.sendSysMessage(SysMessage.AccountNameTooLong);
 
                 return false;
             case PassTooLong:
-                handler.sendSysMessage(CypherStrings.AccountPassTooLong);
+                handler.sendSysMessage(SysMessage.AccountPassTooLong);
 
                 return false;
             case NameAlreadyExist:
-                handler.sendSysMessage(CypherStrings.AccountAlreadyExist);
+                handler.sendSysMessage(SysMessage.AccountAlreadyExist);
 
                 return false;
             default:
@@ -47,12 +47,12 @@ class BNetAccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleGameAccountCreateCommand(CommandHandler handler, String bnetAccountName) {
         var accountId = global.getBNetAccountMgr().getId(bnetAccountName);
 
         if (accountId == 0) {
-            handler.sendSysMessage(CypherStrings.AccountNotExist, bnetAccountName);
+            handler.sendSysMessage(SysMessage.AccountNotExist, bnetAccountName);
 
             return false;
         }
@@ -65,7 +65,7 @@ class BNetAccountCommands {
 
         switch (global.getAccountMgr().createAccount(accountName, randPassword.ToHexString(), bnetAccountName, accountId, index)) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.AccountCreated, accountName);
+                handler.sendSysMessage(SysMessage.AccountCreated, accountName);
 
                 if (handler.getSession() != null) {
                     Log.outInfo(LogFilter.player, "Account: {0} (IP: {1}) Character:[{2}] ({3}) created Account {4} (Email: '{5}')", handler.getSession().getAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString(), accountName, bnetAccountName);
@@ -73,23 +73,23 @@ class BNetAccountCommands {
 
                 break;
             case NameTooLong:
-                handler.sendSysMessage(CypherStrings.AccountNameTooLong);
+                handler.sendSysMessage(SysMessage.AccountNameTooLong);
 
                 return false;
             case PassTooLong:
-                handler.sendSysMessage(CypherStrings.AccountPassTooLong);
+                handler.sendSysMessage(SysMessage.AccountPassTooLong);
 
                 return false;
             case NameAlreadyExist:
-                handler.sendSysMessage(CypherStrings.AccountAlreadyExist);
+                handler.sendSysMessage(SysMessage.AccountAlreadyExist);
 
                 return false;
             case DBInternalError:
-                handler.sendSysMessage(CypherStrings.AccountNotCreatedSqlError, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotCreatedSqlError, accountName);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.AccountNotCreated, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotCreated, accountName);
 
                 return false;
         }
@@ -97,19 +97,19 @@ class BNetAccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountLinkCommand(CommandHandler handler, String bnetAccountName, String gameAccountName) {
         switch (global.getBNetAccountMgr().linkWithGameAccount(bnetAccountName, gameAccountName)) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.AccountBnetLinked, bnetAccountName, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountBnetLinked, bnetAccountName, gameAccountName);
 
                 break;
             case NameNotExist:
-                handler.sendSysMessage(CypherStrings.AccountOrBnetDoesNotExist, bnetAccountName, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountOrBnetDoesNotExist, bnetAccountName, gameAccountName);
 
                 break;
             case BadLink:
-                handler.sendSysMessage(CypherStrings.AccountAlreadyLinked, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountAlreadyLinked, gameAccountName);
 
                 break;
             default:
@@ -119,7 +119,7 @@ class BNetAccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleListGameAccountsCommand(CommandHandler handler, String battlenetAccountName) {
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.SEL_BNET_GAME_ACCOUNT_LIST);
         stmt.AddValue(0, battlenetAccountName);
@@ -139,7 +139,7 @@ class BNetAccountCommands {
             };
 
             handler.sendSysMessage("----------------------------------------------------");
-            handler.sendSysMessage(CypherStrings.AccountBnetListHeader);
+            handler.sendSysMessage(SysMessage.AccountBnetListHeader);
             handler.sendSysMessage("----------------------------------------------------");
 
             do {
@@ -148,17 +148,17 @@ class BNetAccountCommands {
 
             handler.sendSysMessage("----------------------------------------------------");
         } else {
-            handler.sendSysMessage(CypherStrings.AccountBnetListNoAccounts, battlenetAccountName);
+            handler.sendSysMessage(SysMessage.AccountBnetListNoAccounts, battlenetAccountName);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountPasswordCommand(CommandHandler handler, String oldPassword, String newPassword, String passwordConfirmation) {
         // We compare the old, saved password to the entered old password - no chance for the unauthorized.
         if (!global.getBNetAccountMgr().checkPassword(handler.getSession().getBattlenetAccountId(), oldPassword)) {
-            handler.sendSysMessage(CypherStrings.CommandWrongoldpassword);
+            handler.sendSysMessage(SysMessage.CommandWrongoldpassword);
 
             Log.outInfo(LogFilter.player, "Battle.net account: {0} (IP: {1}) Character:[{2}] ({3}) Tried to change password, but the provided old password is wrong.", handler.getSession().getBattlenetAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
@@ -167,7 +167,7 @@ class BNetAccountCommands {
 
         // Making sure that newly entered password is correctly entered.
         if (!Objects.equals(newPassword, passwordConfirmation)) {
-            handler.sendSysMessage(CypherStrings.NewPasswordsNotMatch);
+            handler.sendSysMessage(SysMessage.NewPasswordsNotMatch);
 
             return false;
         }
@@ -177,17 +177,17 @@ class BNetAccountCommands {
 
         switch (result) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.CommandPassword);
+                handler.sendSysMessage(SysMessage.CommandPassword);
 
                 Log.outInfo(LogFilter.player, "Battle.net account: {0} (IP: {1}) Character:[{2}] ({3}) Changed password.", handler.getSession().getBattlenetAccountId(), handler.getSession().getRemoteAddress(), handler.getSession().getPlayer().getName(), handler.getSession().getPlayer().getGUID().toString());
 
                 break;
             case PassTooLong:
-                handler.sendSysMessage(CypherStrings.PasswordTooLong);
+                handler.sendSysMessage(SysMessage.PasswordTooLong);
 
                 return false;
             default:
-                handler.sendSysMessage(CypherStrings.CommandNotchangepassword);
+                handler.sendSysMessage(SysMessage.CommandNotchangepassword);
 
                 return false;
         }
@@ -195,19 +195,19 @@ class BNetAccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAccountUnlinkCommand(CommandHandler handler, String gameAccountName) {
         switch (global.getBNetAccountMgr().unlinkGameAccount(gameAccountName)) {
             case Ok:
-                handler.sendSysMessage(CypherStrings.AccountBnetUnlinked, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountBnetUnlinked, gameAccountName);
 
                 break;
             case NameNotExist:
-                handler.sendSysMessage(CypherStrings.AccountNotExist, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountNotExist, gameAccountName);
 
                 break;
             case BadLink:
-                handler.sendSysMessage(CypherStrings.AccountBnetNotLinked, gameAccountName);
+                handler.sendSysMessage(SysMessage.AccountBnetNotLinked, gameAccountName);
 
                 break;
             default:
@@ -217,9 +217,9 @@ class BNetAccountCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AccountLockCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountLockCountryCommand(CommandHandler handler, boolean state) {
 			/*if (state)
 			{
@@ -249,16 +249,16 @@ class BNetAccountCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountLockIpCommand(CommandHandler handler, boolean state) {
             var stmt = DB.Login.GetPreparedStatement(LoginStatements.UPD_BNET_ACCOUNT_LOCK);
 
             if (state) {
                 stmt.AddValue(0, true); // locked
-                handler.sendSysMessage(CypherStrings.CommandAcclocklocked);
+                handler.sendSysMessage(SysMessage.CommandAcclocklocked);
             } else {
                 stmt.AddValue(0, false); // unlocked
-                handler.sendSysMessage(CypherStrings.CommandAcclockunlocked);
+                handler.sendSysMessage(SysMessage.CommandAcclockunlocked);
             }
 
             stmt.AddValue(1, handler.getSession().getBattlenetAccountId());
@@ -269,20 +269,20 @@ class BNetAccountCommands {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static class AccountSetCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
         private static boolean handleAccountSetPasswordCommand(CommandHandler handler, String accountName, String password, String passwordConfirmation) {
             var targetAccountId = global.getBNetAccountMgr().getId(accountName);
 
             if (targetAccountId == 0) {
-                handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                 return false;
             }
 
             if (!Objects.equals(password, passwordConfirmation)) {
-                handler.sendSysMessage(CypherStrings.NewPasswordsNotMatch);
+                handler.sendSysMessage(SysMessage.NewPasswordsNotMatch);
 
                 return false;
             }
@@ -291,15 +291,15 @@ class BNetAccountCommands {
 
             switch (result) {
                 case Ok:
-                    handler.sendSysMessage(CypherStrings.CommandPassword);
+                    handler.sendSysMessage(SysMessage.CommandPassword);
 
                     break;
                 case NameNotExist:
-                    handler.sendSysMessage(CypherStrings.AccountNotExist, accountName);
+                    handler.sendSysMessage(SysMessage.AccountNotExist, accountName);
 
                     return false;
                 case PassTooLong:
-                    handler.sendSysMessage(CypherStrings.PasswordTooLong);
+                    handler.sendSysMessage(SysMessage.PasswordTooLong);
 
                     return false;
                 default:

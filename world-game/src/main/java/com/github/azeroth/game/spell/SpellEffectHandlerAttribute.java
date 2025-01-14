@@ -1,7 +1,7 @@
 package com.github.azeroth.game.spell;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public class SpellEffectHandlerAttribute extends Attribute {
     private SpelleffectName effectName = SpellEffectName.values()[0];
 

@@ -129,8 +129,8 @@ class ChaseMovementGenerator extends MovementGenerator {
         var mutualChase = isMutualChase(owner, target);
         var hitboxSum = owner.getCombatReach() + target.getCombatReach();
 
-        if (SharedConst.DefaultPlayerCombatReach > hitboxSum) {
-            hitboxSum = SharedConst.DefaultPlayerCombatReach;
+        if (ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH > hitboxSum) {
+            hitboxSum = ObjectDefine.DEFAULT_PLAYER_COMBAT_REACH;
         }
 
         var minRange = range != null ? range.getValue().minRange + hitboxSum : SharedConst.contactDistance;

@@ -12,6 +12,7 @@ import com.github.azeroth.game.domain.unit.UnitFlag3;
 import com.github.azeroth.utils.RandomUtil;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 
 
@@ -39,7 +40,7 @@ public class CreatureTemplate {
     public LocalizedString iconName = new LocalizedString();
     public int[] gossipMenuIds;
     public short minLevel;
-    public HashMap<Difficulty, CreatureDifficulty> difficultyStore = new HashMap<>();
+    public EnumMap<Difficulty, CreatureDifficulty> difficultyStore = new EnumMap<>(Difficulty.class);
     public short maxLevel;
     public Expansion healthScalingExpansion;
     public int requiredExpansion;
@@ -50,12 +51,12 @@ public class CreatureTemplate {
     public float speedRun;
     public float scale;
     public CreatureClassification classification;
-    public int dmgSchool;
+    public SpellSchool dmgSchool;
     public int baseAttackTime;
     public int rangeAttackTime;
     public float baseVariance;
     public float rangeVariance;
-    public int unitClass;
+    public UnitClass unitClass;
     public EnumFlag<UnitFlag> unitFlags;
     public EnumFlag<UnitFlag2> unitFlags2;
     public EnumFlag<UnitFlag3> unitFlags3;
@@ -101,6 +102,8 @@ public class CreatureTemplate {
     public CreatureSummonedData summonedData;
 
     public int[] questItems;
+
+    public CreatureAddon creatureTemplateAddon;
 
 
     public static int difficultyIDToDifficultyEntryIndex(Difficulty difficulty) {

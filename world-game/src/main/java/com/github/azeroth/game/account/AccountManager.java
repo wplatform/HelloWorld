@@ -46,7 +46,7 @@ public final class AccountManager {
             return AccountOpResult.NameAlreadyExist;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(salt, verifier) = SRP6.MakeRegistrationData(username, password);
 
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.INS_ACCOUNT);
@@ -167,7 +167,7 @@ public final class AccountManager {
         stmt.AddValue(1, accountId);
         DB.Login.execute(stmt);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(salt, verifier) = SRP6.MakeRegistrationData(newUsername, newPassword);
         stmt = DB.Login.GetPreparedStatement(LoginStatements.UPD_LOGON);
         stmt.AddValue(0, salt);
@@ -192,7 +192,7 @@ public final class AccountManager {
             return AccountOpResult.PassTooLong;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(salt, verifier) = SRP6.MakeRegistrationData(username, newPassword);
 
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.UPD_LOGON);

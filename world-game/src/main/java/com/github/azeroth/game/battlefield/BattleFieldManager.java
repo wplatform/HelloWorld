@@ -156,7 +156,7 @@ int zoneId
         updateTimer += diff;
 
         if (updateTimer > 1000) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(map, battlefield) : battlefieldsByMap.KeyValueList) {
                 if (battlefield.isEnabled()) {
                     threadTaskManager.Schedule(() -> battlefield.update(updateTimer));

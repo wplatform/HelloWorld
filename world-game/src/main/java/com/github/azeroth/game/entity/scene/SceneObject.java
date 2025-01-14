@@ -88,7 +88,7 @@ public class SceneObject extends WorldObject implements GridObject<SceneObject> 
     @Override
     public void addToWorld() {
         if (!isInWorld()) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
             super.addToWorld();
         }
@@ -99,7 +99,7 @@ public class SceneObject extends WorldObject implements GridObject<SceneObject> 
         if (isInWorld()) {
             super.removeFromWorld();
             tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
             _ = tempOut__.outArgValue;
         }

@@ -5,10 +5,12 @@ import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.creature.minion;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.enums.TypeId;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.TransportTemplate;
 import com.github.azeroth.game.map.grid.Cell;
+import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.scripting.interfaces.itransport.*;
 import game.*;
 
@@ -207,7 +209,7 @@ public class Transport extends GameObject implements ITransport {
         if (getTemplate().moTransport.allowstopping == 0) {
             pathProgress = gameTime.GetGameTimeMS();
         }
-// C# TO JAVA CONVERTER TASK: Comparisons involving nullable type instances are not converted to null-value logic:
+
         else if (requestStopTimestamp == null || requestStopTimestamp > pathProgress + diff) {
             pathProgress += diff;
         } else {
@@ -650,7 +652,7 @@ public class Transport extends GameObject implements ITransport {
     }
 
     private void loadStaticPassengers() {
-        var mapId = (int) getTemplate().moTransport.spawnMap;
+        var mapId = getTemplate().moTransport.spawnMap;
         var cells = global.getObjectMgr().getMapObjectGuids(mapId, getMap().getDifficultyID());
 
         if (cells == null) {

@@ -1053,7 +1053,7 @@ public class LFGManager {
         byte agreeNum = 0;
         byte denyNum = 0;
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, answer) : boot.votes) {
             switch (answer) {
                 case LfgAnswer.Pending:

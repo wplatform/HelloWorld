@@ -3,8 +3,8 @@ package com.github.azeroth.game.entity;
 import java.util.Iterator;
 
 
-// C# TO JAVA CONVERTER TASK: The C# 'new()' constraint has no equivalent in Java:
-// C# TO JAVA CONVERTER TASK: The interface type was changed to the closest equivalent Java type, but the methods implemented will need adjustment:
+
+
 public class UpdateFieldArray<T> implements Iterable<T> {
     private T[] values;
     private int firstElementBit;
@@ -55,7 +55,7 @@ public class UpdateFieldArray<T> implements Iterable<T> {
 
     public final Iterator<T> iterator() {
         for (var obj : getValues()) {
-// C# TO JAVA CONVERTER TASK: Java does not have an equivalent to the C# 'yield' keyword:
+
             yield return obj;
         }
     }

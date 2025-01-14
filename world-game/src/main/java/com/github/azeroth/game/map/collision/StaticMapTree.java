@@ -237,7 +237,7 @@ public class StaticMapTree {
                                     }
 
                                     treeValues[spawnIndex] = new ModelInstance(spawn, model);
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
                                     loadedSpawns.put(spawnIndex, 1);
                                 } else {
                                     loadedSpawns.put(spawnIndex, ++loadCount);

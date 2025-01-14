@@ -63,7 +63,7 @@ public class ScriptManager {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Main Script API
 
     //Initialization
@@ -117,7 +117,7 @@ public class ScriptManager {
         TValue classKvp;
         if (scriptClassByType.containsKey(T.class) && (classKvp = scriptClassByType.get(T.class)) == classKvp) {
             var ifaceImp;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             if (classKvp.TryGetValue(playerClass, out ifaceImp)) {
                 for (T s : ifaceImp) {
                     try {
@@ -129,7 +129,7 @@ public class ScriptManager {
             }
 
             var ifaceImpNone;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             if (classKvp.TryGetValue(playerClass.NONE, out ifaceImpNone)) {
                 for (T s : ifaceImpNone) {
                     try {
@@ -232,10 +232,10 @@ public class ScriptManager {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Loading and Unloading
 
     public final <T> ScriptRegistry getScriptRegistry() {
@@ -596,10 +596,10 @@ public class ScriptManager {
         scriptClassByType.clear();
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Spells and Auras
 
     //SpellScriptLoader
@@ -719,10 +719,10 @@ public class ScriptManager {
         return scriptDic;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region AreaTriggers
 
     public final ArrayList<AreaTriggerScript> createAreaTriggerScripts(int areaTriggerId, AreaTrigger invoker) {
@@ -783,10 +783,10 @@ public class ScriptManager {
         return scriptDic;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Player Chat
 
     public final void onPlayerChat(Player player, ChatMsg type, Language lang, String msg) {
@@ -809,6 +809,6 @@ public class ScriptManager {
         this.<IPlayerOnChatChannel>ForEach(p -> p.OnChat(player, type, lang, msg, channel));
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

@@ -21,7 +21,7 @@ public class ArenaTeamManager {
     public final ArenaTeam getArenaTeamByName(String arenaTeamName) {
         var search = arenaTeamName.toLowerCase();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, team) : arenaTeamStorage) {
             if (Objects.equals(search, team.getName().toLowerCase())) {
                 return team;
@@ -32,7 +32,7 @@ public class ArenaTeamManager {
     }
 
     public final ArenaTeam getArenaTeamByCaptain(ObjectGuid guid) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(_, team) : arenaTeamStorage) {
             if (Objects.equals(team.getCaptain(), guid)) {
                 return team;

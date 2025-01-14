@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class ModifyCommand {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyHPCommand(CommandHandler handler, int hp) {
         var target = handler.getSelectedPlayerOrSelf();
         var maxHp = hp;
@@ -25,7 +25,7 @@ class ModifyCommand {
         if (checkModifyResources(handler, target, tempRef_hp, tempRef_maxHp)) {
             maxHp = tempRef_maxHp.refArgValue;
             hp = tempRef_hp.refArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeHp, CypherStrings.YoursHpChanged, hp, maxHp);
+            notifyModification(handler, target, SysMessage.YouChangeHp, SysMessage.YoursHpChanged, hp, maxHp);
             target.setMaxHealth((int) maxHp);
             target.setHealth((int) hp);
 
@@ -38,7 +38,7 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyManaCommand(CommandHandler handler, int mana) {
         var target = handler.getSelectedPlayerOrSelf();
         var maxMana = mana;
@@ -48,7 +48,7 @@ class ModifyCommand {
         if (checkModifyResources(handler, target, tempRef_mana, tempRef_maxMana)) {
             maxMana = tempRef_maxMana.refArgValue;
             mana = tempRef_mana.refArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeMana, CypherStrings.YoursManaChanged, mana, maxMana);
+            notifyModification(handler, target, SysMessage.YouChangeMana, SysMessage.YoursManaChanged, mana, maxMana);
             target.setMaxPower(powerType.mana, maxMana);
             target.setPower(powerType.mana, mana);
 
@@ -61,7 +61,7 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyEnergyCommand(CommandHandler handler, int energy) {
         var target = handler.getSelectedPlayerOrSelf();
         byte energyMultiplier = 10;
@@ -72,7 +72,7 @@ class ModifyCommand {
         if (checkModifyResources(handler, target, tempRef_energy, tempRef_maxEnergy, energyMultiplier)) {
             maxEnergy = tempRef_maxEnergy.refArgValue;
             energy = tempRef_energy.refArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeEnergy, CypherStrings.YoursEnergyChanged, energy / energyMultiplier, maxEnergy / energyMultiplier);
+            notifyModification(handler, target, SysMessage.YouChangeEnergy, SysMessage.YoursEnergyChanged, energy / energyMultiplier, maxEnergy / energyMultiplier);
             target.setMaxPower(powerType.Energy, maxEnergy);
             target.setPower(powerType.Energy, energy);
 
@@ -85,7 +85,7 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyRageCommand(CommandHandler handler, int rage) {
         var target = handler.getSelectedPlayerOrSelf();
         byte rageMultiplier = 10;
@@ -96,7 +96,7 @@ class ModifyCommand {
         if (checkModifyResources(handler, target, tempRef_rage, tempRef_maxRage, rageMultiplier)) {
             maxRage = tempRef_maxRage.refArgValue;
             rage = tempRef_rage.refArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeRage, CypherStrings.YoursRageChanged, rage / rageMultiplier, maxRage / rageMultiplier);
+            notifyModification(handler, target, SysMessage.YouChangeRage, SysMessage.YoursRageChanged, rage / rageMultiplier, maxRage / rageMultiplier);
             target.setMaxPower(powerType.Rage, maxRage);
             target.setPower(powerType.Rage, rage);
 
@@ -109,7 +109,7 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyRunicPowerCommand(CommandHandler handler, int rune) {
         var target = handler.getSelectedPlayerOrSelf();
         byte runeMultiplier = 10;
@@ -120,7 +120,7 @@ class ModifyCommand {
         if (checkModifyResources(handler, target, tempRef_rune, tempRef_maxRune, runeMultiplier)) {
             maxRune = tempRef_maxRune.refArgValue;
             rune = tempRef_rune.refArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeRunicPower, CypherStrings.YoursRunicPowerChanged, rune / runeMultiplier, maxRune / runeMultiplier);
+            notifyModification(handler, target, SysMessage.YouChangeRunicPower, SysMessage.YoursRunicPowerChanged, rune / runeMultiplier, maxRune / runeMultiplier);
             target.setMaxPower(powerType.RunicPower, maxRune);
             target.setPower(powerType.RunicPower, rune);
 
@@ -133,14 +133,14 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyFactionCommand(CommandHandler handler, StringArguments args) {
         var pfactionid = handler.extractKeyFromLink(args, "Hfaction");
 
         var target = handler.getSelectedCreature();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.SelectCreature);
+            handler.sendSysMessage(SysMessage.SelectCreature);
 
             return false;
         }
@@ -153,7 +153,7 @@ class ModifyCommand {
             int _flag = target.getUnitData().flags;
             var _npcflag = (long) target.getUnitData().npcFlags.get(0) << 32 | target.getUnitData().npcFlags.get(1);
             int _dyflag = target.getObjectData().dynamicFlags;
-            handler.sendSysMessage(CypherStrings.CurrentFaction, target.getGUID().toString(), _factionid, _flag, _npcflag, _dyflag);
+            handler.sendSysMessage(SysMessage.CurrentFaction, target.getGUID().toString(), _factionid, _flag, _npcflag, _dyflag);
 
             return true;
         } else {
@@ -188,12 +188,12 @@ class ModifyCommand {
         }
 
         if (!CliDB.FactionTemplateStorage.containsKey(factionid)) {
-            handler.sendSysMessage(CypherStrings.WrongFaction, factionid);
+            handler.sendSysMessage(SysMessage.WrongFaction, factionid);
 
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.YouChangeFaction, target.getGUID().toString(), factionid, flag, npcflag, dyflag);
+        handler.sendSysMessage(SysMessage.YouChangeFaction, target.getGUID().toString(), factionid, flag, npcflag, dyflag);
 
         target.setFaction(factionid);
         target.replaceAllUnitFlags(UnitFlag.forValue(flag));
@@ -204,7 +204,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifySpellCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -240,7 +240,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -250,10 +250,10 @@ class ModifyCommand {
             return false;
         }
 
-        handler.sendSysMessage(CypherStrings.YouChangeSpellflatid, spellflatid, val, mark, handler.getNameLink(target));
+        handler.sendSysMessage(SysMessage.YouChangeSpellflatid, spellflatid, val, mark, handler.getNameLink(target));
 
         if (handler.needReportToTarget(target)) {
-            target.sendSysMessage(CypherStrings.YoursSpellflatidChanged, handler.getNameLink(), spellflatid, val, mark);
+            target.sendSysMessage(SysMessage.YoursSpellflatidChanged, handler.getNameLink(), spellflatid, val, mark);
         }
 
         SetSpellModifier packet = new SetSpellModifier(ServerOpcode.SetFlatSpellModifier);
@@ -269,12 +269,12 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyTalentCommand(CommandHandler handler) {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyScaleCommand(CommandHandler handler, StringArguments args) {
         var target = handler.getSelectedUnit();
 
@@ -282,7 +282,7 @@ class ModifyCommand {
         tangible.OutObject<Float> tempOut_Scale = new tangible.OutObject<Float>();
         if (checkModifySpeed(args, handler, target, tempOut_Scale, 0.1f, 10.0f, false)) {
             scale = tempOut_Scale.outArgValue;
-            notifyModification(handler, target, CypherStrings.YouChangeSize, CypherStrings.YoursSizeChanged, scale);
+            notifyModification(handler, target, SysMessage.YouChangeSize, SysMessage.YoursSizeChanged, scale);
             var creatureTarget = target.toCreature();
 
             if (creatureTarget) {
@@ -299,7 +299,7 @@ class ModifyCommand {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyMountCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -315,7 +315,7 @@ class ModifyCommand {
         }
 
         if (!CliDB.CreatureDisplayInfoStorage.HasRecord(mount)) {
-            handler.sendSysMessage(CypherStrings.NoMount);
+            handler.sendSysMessage(SysMessage.NoMount);
 
             return false;
         }
@@ -323,7 +323,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -342,7 +342,7 @@ class ModifyCommand {
             speed = tempOut_speed.outArgValue;
         }
 
-        notifyModification(handler, target, CypherStrings.YouGiveMount, CypherStrings.MountGived);
+        notifyModification(handler, target, SysMessage.YouGiveMount, SysMessage.MountGived);
         target.mount(mount);
         target.setSpeedRate(UnitMoveType.run, speed);
         target.setSpeedRate(UnitMoveType.flight, speed);
@@ -350,12 +350,12 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyMoneyCommand(CommandHandler handler, StringArguments args) {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -371,13 +371,13 @@ class ModifyCommand {
         if (moneyToAdd < 0) {
             var newmoney = (long) targetMoney + moneyToAdd;
 
-            Log.outDebug(LogFilter.ChatSystem, global.getObjectMgr().getCypherString(CypherStrings.CurrentMoney), targetMoney, moneyToAdd, newmoney);
+            Log.outDebug(LogFilter.ChatSystem, global.getObjectMgr().getSysMessage(SysMessage.CurrentMoney), targetMoney, moneyToAdd, newmoney);
 
             if (newmoney <= 0) {
-                handler.sendSysMessage(CypherStrings.YouTakeAllMoney, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.YouTakeAllMoney, handler.getNameLink(target));
 
                 if (handler.needReportToTarget(target)) {
-                    target.sendSysMessage(CypherStrings.YoursAllMoneyGone, handler.getNameLink());
+                    target.sendSysMessage(SysMessage.YoursAllMoneyGone, handler.getNameLink());
                 }
 
                 target.setMoney(0);
@@ -388,19 +388,19 @@ class ModifyCommand {
                     newmoney = (long) PlayerConst.MaxMoneyAmount;
                 }
 
-                handler.sendSysMessage(CypherStrings.YouTakeMoney, moneyToAddMsg, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.YouTakeMoney, moneyToAddMsg, handler.getNameLink(target));
 
                 if (handler.needReportToTarget(target)) {
-                    target.sendSysMessage(CypherStrings.YoursMoneyTaken, handler.getNameLink(), moneyToAddMsg);
+                    target.sendSysMessage(SysMessage.YoursMoneyTaken, handler.getNameLink(), moneyToAddMsg);
                 }
 
                 target.setMoney((long) newmoney);
             }
         } else {
-            handler.sendSysMessage(CypherStrings.YouGiveMoney, moneyToAdd, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.YouGiveMoney, moneyToAdd, handler.getNameLink(target));
 
             if (handler.needReportToTarget(target)) {
-                target.sendSysMessage(CypherStrings.YoursMoneyGiven, handler.getNameLink(), moneyToAdd);
+                target.sendSysMessage(SysMessage.YoursMoneyGiven, handler.getNameLink(), moneyToAdd);
             }
 
             if ((long) moneyToAdd >= PlayerConst.MaxMoneyAmount) {
@@ -412,12 +412,12 @@ class ModifyCommand {
             target.modifyMoney(moneyToAdd);
         }
 
-        Log.outDebug(LogFilter.ChatSystem, global.getObjectMgr().getCypherString(CypherStrings.NewMoney), targetMoney, moneyToAdd, target.getMoney());
+        Log.outDebug(LogFilter.ChatSystem, global.getObjectMgr().getSysMessage(SysMessage.NewMoney), targetMoney, moneyToAdd, target.getMoney());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyHonorCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -426,7 +426,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -441,11 +441,11 @@ class ModifyCommand {
         //target.modifyCurrency(CurrencyTypes.HonorPoints, amount, true, true);
         handler.sendSysMessage("NOT IMPLEMENTED: {0} honor NOT added.", amount);
 
-        //handler.sendSysMessage(CypherStrings.CommandModifyHonor, handler.getNameLink(target), target.GetCurrency((uint)CurrencyTypes.HonorPoints));
+        //handler.sendSysMessage(SysMessage.CommandModifyHonor, handler.getNameLink(target), target.GetCurrency((uint)CurrencyTypes.HonorPoints));
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyDrunkCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -466,7 +466,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyRepCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -475,7 +475,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -514,13 +514,13 @@ class ModifyCommand {
         var factionEntry = CliDB.FactionStorage.get(factionId);
 
         if (factionEntry == null) {
-            handler.sendSysMessage(CypherStrings.CommandFactionUnknown, factionId);
+            handler.sendSysMessage(SysMessage.CommandFactionUnknown, factionId);
 
             return false;
         }
 
         if (factionEntry.ReputationIndex < 0) {
-            handler.sendSysMessage(CypherStrings.CommandFactionNorepError, factionEntry.name.charAt(handler.getSessionDbcLocale()), factionId);
+            handler.sendSysMessage(SysMessage.CommandFactionNorepError, factionEntry.name.charAt(handler.getSessionDbcLocale()), factionId);
 
             return false;
         }
@@ -533,7 +533,7 @@ class ModifyCommand {
             var r = 0;
 
             for (; i != ReputationMgr.REPUTATIONRANKTHRESHOLDS.length - 1; ++i, ++r) {
-                var rank = handler.getCypherString(ReputationMgr.ReputationRankStrIndex[r]);
+                var rank = handler.getSysMessage(ReputationMgr.ReputationRankStrIndex[r]);
 
                 if (StringUtil.isEmpty(rank)) {
                     continue;
@@ -544,7 +544,7 @@ class ModifyCommand {
                 }
 
                 if (i == ReputationMgr.REPUTATIONRANKTHRESHOLDS.length - 1) {
-                    handler.sendSysMessage(CypherStrings.CommandInvalidParam, rankTxt);
+                    handler.sendSysMessage(SysMessage.CommandInvalidParam, rankTxt);
 
                     return false;
                 }
@@ -566,7 +566,7 @@ class ModifyCommand {
                     tangible.OutObject<Integer> tempOut_delta = new tangible.OutObject<Integer>();
                     if (!tangible.TryParseHelper.tryParseInt(deltaTxt, tempOut_delta) || delta < 0 || delta >= toNextRank) {
                         delta = tempOut_delta.outArgValue;
-                        handler.sendSysMessage(CypherStrings.CommandFactionDelta, Math.max(0, toNextRank - 1));
+                        handler.sendSysMessage(SysMessage.CommandFactionDelta, Math.max(0, toNextRank - 1));
 
                         return false;
                     } else {
@@ -580,12 +580,12 @@ class ModifyCommand {
 
         target.getReputationMgr().setOneFactionReputation(factionEntry, amount, false);
         target.getReputationMgr().sendState(target.getReputationMgr().getState(factionEntry));
-        handler.sendSysMessage(CypherStrings.CommandModifyRep, factionEntry.name.charAt(handler.getSessionDbcLocale()), factionId, handler.getNameLink(target), target.getReputationMgr().getReputation(factionEntry));
+        handler.sendSysMessage(SysMessage.CommandModifyRep, factionEntry.name.charAt(handler.getSessionDbcLocale()), factionId, handler.getNameLink(target), target.getReputationMgr().getReputation(factionEntry));
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyPhaseCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -595,7 +595,7 @@ class ModifyCommand {
         var visibleMapId = args.NextUInt32(" ");
 
         if (phaseId != 0 && !CliDB.PhaseStorage.containsKey(phaseId)) {
-            handler.sendSysMessage(CypherStrings.PhaseNotfound);
+            handler.sendSysMessage(SysMessage.PhaseNotfound);
 
             return false;
         }
@@ -606,7 +606,7 @@ class ModifyCommand {
             var visibleMap = CliDB.MapStorage.get(visibleMapId);
 
             if (visibleMap == null || visibleMap.ParentMapID != target.getLocation().getMapId()) {
-                handler.sendSysMessage(CypherStrings.PhaseNotfound);
+                handler.sendSysMessage(SysMessage.PhaseNotfound);
 
                 return false;
             }
@@ -629,7 +629,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyPowerCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -638,7 +638,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -656,13 +656,13 @@ class ModifyCommand {
         var powerType = global.getDB2Mgr().GetPowerTypeByName(powerTypeToken);
 
         if (powerType == null) {
-            handler.sendSysMessage(CypherStrings.InvalidPowerName);
+            handler.sendSysMessage(SysMessage.InvalidPowerName);
 
             return false;
         }
 
         if (target.getPowerIndex(powerType.PowerTypeEnum) == powerType.max.getValue()) {
-            handler.sendSysMessage(CypherStrings.InvalidPowerName);
+            handler.sendSysMessage(SysMessage.InvalidPowerName);
 
             return false;
         }
@@ -670,12 +670,12 @@ class ModifyCommand {
         var powerAmount = args.NextInt32(" ");
 
         if (powerAmount < 1) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
-        notifyModification(handler, target, CypherStrings.YouChangePower, CypherStrings.YourPowerChanged, powerType.NameGlobalStringTag, powerAmount, powerAmount);
+        notifyModification(handler, target, SysMessage.YouChangePower, SysMessage.YourPowerChanged, powerType.NameGlobalStringTag, powerAmount, powerAmount);
         powerAmount *= powerType.DisplayModifier;
         target.setMaxPower(powerType.PowerTypeEnum, powerAmount);
         target.setPower(powerType.PowerTypeEnum, powerAmount);
@@ -683,7 +683,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyStandStateCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -695,7 +695,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyGenderCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -704,7 +704,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -733,7 +733,7 @@ class ModifyCommand {
 
             gender = gender.Female;
         } else {
-            handler.sendSysMessage(CypherStrings.MustMaleOrFemale);
+            handler.sendSysMessage(SysMessage.MustMaleOrFemale);
 
             return false;
         }
@@ -784,16 +784,16 @@ class ModifyCommand {
 
         target.setCustomizations(customizations);
 
-        handler.sendSysMessage(CypherStrings.YouChangeGender, handler.getNameLink(target), gender);
+        handler.sendSysMessage(SysMessage.YouChangeGender, handler.getNameLink(target), gender);
 
         if (handler.needReportToTarget(target)) {
-            target.sendSysMessage(CypherStrings.YourGenderChanged, gender, handler.getNameLink());
+            target.sendSysMessage(SysMessage.YourGenderChanged, gender, handler.getNameLink());
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyCurrencyCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -802,7 +802,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -824,7 +824,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyXPCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -833,7 +833,7 @@ class ModifyCommand {
         var xp = args.NextInt32(" ");
 
         if (xp < 1) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
@@ -841,7 +841,7 @@ class ModifyCommand {
         var target = handler.getSelectedPlayerOrSelf();
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -856,7 +856,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleModifyMorphCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -880,7 +880,7 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleDeMorphCommand(CommandHandler handler) {
         var target = handler.getSelectedUnit();
 
@@ -898,7 +898,7 @@ class ModifyCommand {
         return true;
     }
 
-    private static void notifyModification(CommandHandler handler, Unit target, CypherStrings resourceMessage, CypherStrings resourceReportMessage, object... args) {
+    private static void notifyModification(CommandHandler handler, Unit target, SysMessage resourceMessage, SysMessage resourceReportMessage, object... args) {
         var player = target.toPlayer();
 
         if (player) {
@@ -924,13 +924,13 @@ class ModifyCommand {
         }
 
         if (res.refArgValue < 1 || resmax.refArgValue < 1 || resmax.refArgValue < res.refArgValue) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -957,13 +957,13 @@ class ModifyCommand {
         speed.outArgValue = args.NextSingle(" ");
 
         if (speed.outArgValue > maximumBound || speed.outArgValue < minimumBound) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         if (!target) {
-            handler.sendSysMessage(CypherStrings.NoCharSelected);
+            handler.sendSysMessage(SysMessage.NoCharSelected);
 
             return false;
         }
@@ -977,7 +977,7 @@ class ModifyCommand {
             }
 
             if (player.isInFlight() && checkInFlight) {
-                handler.sendSysMessage(CypherStrings.CharInFlight, handler.getNameLink(player));
+                handler.sendSysMessage(SysMessage.CharInFlight, handler.getNameLink(player));
 
                 return false;
             }
@@ -986,14 +986,14 @@ class ModifyCommand {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class ModifySpeed {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifySpeedCommand(CommandHandler handler, StringArguments args) {
             return handleModifyASpeedCommand(handler, args);
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifyASpeedCommand(CommandHandler handler, StringArguments args) {
             var target = handler.getSelectedPlayerOrSelf();
 
@@ -1001,7 +1001,7 @@ class ModifyCommand {
             tangible.OutObject<Float> tempOut_allSpeed = new tangible.OutObject<Float>();
             if (checkModifySpeed(args, handler, target, tempOut_allSpeed, 0.1f, 50.0f)) {
                 allSpeed = tempOut_allSpeed.outArgValue;
-                notifyModification(handler, target, CypherStrings.YouChangeAspeed, CypherStrings.YoursAspeedChanged, allSpeed);
+                notifyModification(handler, target, SysMessage.YouChangeAspeed, SysMessage.YoursAspeedChanged, allSpeed);
                 target.setSpeedRate(UnitMoveType.Walk, allSpeed);
                 target.setSpeedRate(UnitMoveType.run, allSpeed);
                 target.setSpeedRate(UnitMoveType.swim, allSpeed);
@@ -1015,7 +1015,7 @@ class ModifyCommand {
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifySwimCommand(CommandHandler handler, StringArguments args) {
             var target = handler.getSelectedPlayerOrSelf();
 
@@ -1023,7 +1023,7 @@ class ModifyCommand {
             tangible.OutObject<Float> tempOut_swimSpeed = new tangible.OutObject<Float>();
             if (checkModifySpeed(args, handler, target, tempOut_swimSpeed, 0.1f, 50.0f)) {
                 swimSpeed = tempOut_swimSpeed.outArgValue;
-                notifyModification(handler, target, CypherStrings.YouChangeSwimSpeed, CypherStrings.YoursSwimSpeedChanged, swimSpeed);
+                notifyModification(handler, target, SysMessage.YouChangeSwimSpeed, SysMessage.YoursSwimSpeedChanged, swimSpeed);
                 target.setSpeedRate(UnitMoveType.swim, swimSpeed);
 
                 return true;
@@ -1034,7 +1034,7 @@ class ModifyCommand {
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifyBWalkCommand(CommandHandler handler, StringArguments args) {
             var target = handler.getSelectedPlayerOrSelf();
 
@@ -1042,7 +1042,7 @@ class ModifyCommand {
             tangible.OutObject<Float> tempOut_backSpeed = new tangible.OutObject<Float>();
             if (checkModifySpeed(args, handler, target, tempOut_backSpeed, 0.1f, 50.0f)) {
                 backSpeed = tempOut_backSpeed.outArgValue;
-                notifyModification(handler, target, CypherStrings.YouChangeBackSpeed, CypherStrings.YoursBackSpeedChanged, backSpeed);
+                notifyModification(handler, target, SysMessage.YouChangeBackSpeed, SysMessage.YoursBackSpeedChanged, backSpeed);
                 target.setSpeedRate(UnitMoveType.RunBack, backSpeed);
 
                 return true;
@@ -1053,7 +1053,7 @@ class ModifyCommand {
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifyFlyCommand(CommandHandler handler, StringArguments args) {
             var target = handler.getSelectedPlayerOrSelf();
 
@@ -1061,7 +1061,7 @@ class ModifyCommand {
             tangible.OutObject<Float> tempOut_flySpeed = new tangible.OutObject<Float>();
             if (checkModifySpeed(args, handler, target, tempOut_flySpeed, 0.1f, 50.0f, false)) {
                 flySpeed = tempOut_flySpeed.outArgValue;
-                notifyModification(handler, target, CypherStrings.YouChangeFlySpeed, CypherStrings.YoursFlySpeedChanged, flySpeed);
+                notifyModification(handler, target, SysMessage.YouChangeFlySpeed, SysMessage.YoursFlySpeedChanged, flySpeed);
                 target.setSpeedRate(UnitMoveType.flight, flySpeed);
 
                 return true;
@@ -1072,7 +1072,7 @@ class ModifyCommand {
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleModifyWalkSpeedCommand(CommandHandler handler, StringArguments args) {
             var target = handler.getSelectedPlayerOrSelf();
 
@@ -1080,7 +1080,7 @@ class ModifyCommand {
             tangible.OutObject<Float> tempOut_Speed = new tangible.OutObject<Float>();
             if (checkModifySpeed(args, handler, target, tempOut_Speed, 0.1f, 50.0f)) {
                 speed = tempOut_Speed.outArgValue;
-                notifyModification(handler, target, CypherStrings.YouChangeSpeed, CypherStrings.YoursSpeedChanged, speed);
+                notifyModification(handler, target, SysMessage.YouChangeSpeed, SysMessage.YoursSpeedChanged, speed);
                 target.setSpeedRate(UnitMoveType.run, speed);
 
                 return true;

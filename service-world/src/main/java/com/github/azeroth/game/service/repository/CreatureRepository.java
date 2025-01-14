@@ -2,8 +2,10 @@ package com.github.azeroth.game.service.repository;
 
 
 import com.github.azeroth.game.domain.creature.*;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface CreatureRepository {
@@ -55,4 +57,65 @@ public interface CreatureRepository {
     Stream<TempSummonData> streamsAllTempSummon();
     @Query("SELECT npc_entry, spell_id, cast_flags, user_type FROM npc_spellclick_spells")
     Stream<int[]> streamAllNpcSpellClickSpells();
+
+    @Modifying
+    @Query("UPDATE creature SET zoneId = :zoneId, areaId = :areaId WHERE guid = :guid")
+    void updateCreatureZoneAndAreaId(int zoneId, int areaId, long guid);
+
+    @Query("SELECT entry, item, maxcount, incrtime, ExtendedCost, type, BonusListIDs, PlayerConditionID, IgnoreFiltering FROM npc_vendor ORDER BY entry, slot ASC")
+    Stream<VendorItem> streamAllNpcVendor();
+
+    @Query("SELECT item, maxcount, incrtime, ExtendedCost, type, BonusListIDs, PlayerConditionID, IgnoreFiltering FROM npc_vendor WHERE entry = :entry ORDER BY slot ASC")
+    List<VendorItem> queryNpcVendorByEntry(int entry);
+
+    @Modifying
+    @Query("DELETE FROM npc_vendor WHERE entry = :entry AND item = :item AND type = :type")
+    void deleteNpcVendor(int entry, int item, int type);
+
+    @Modifying
+    @Query("INSERT INTO npc_vendor (entry, item, maxcount, incrtime, extendedcost, type) VALUES(:entry, :item, :maxcount, :incrtime, :extendedcost, :type)")
+    void insertNpcVendor(int entry, int item, int maxcount, int incrtime, int extendedcost,int type);
+
+
+    @Query("SELECT entry, path_id, mount, standState, animTier, visFlags, sheathState, PvPFlags, emote, aiAnimKit, movementAnimKit, meleeAnimKit, visibilityDistanceType, auras FROM creature_template_addon")
+    Stream<CreatureAddon> streamAllCreatureTemplateAddon();
+
+    @Query("SELECT Entry, NoNPCDamageBelowHealthPct FROM creature_template_sparring")
+    Stream<Object[]> streamAllCreatureTemplateSparring();
+
+    @Query("""
+            SELECT Entry, DifficultyID, LevelScalingDeltaMin, LevelScalingDeltaMax, SandboxScalingId, HealthScalingExpansion,
+                HealthModifier, ManaModifier, ArmorModifier, DamageModifier, CreatureDifficultyID, TypeFlags, TypeFlags2,
+                LootID, PickPocketLootID, SkinLootID, GoldMin, GoldMax,
+                StaticFlags1, StaticFlags2, StaticFlags3, StaticFlags4, StaticFlags5, StaticFlags6, StaticFlags7, StaticFlags8
+            FROM creature_template_difficulty ORDER BY Entry
+            """)
+    Stream<CreatureDifficulty> streamAllCreatureTemplateDifficulty();
+
+    @Query("SELECT displayID, boundingRadius, combatReach, DisplayID_Other_Gender FROM creature_model_info")
+    Stream<CreatureModelInfo> streamAllCreatureModelInfo();
+
+    @Query("SELECT level, `class` as klass, basemana, attackpower, rangedattackpower FROM creature_classlevelstats")
+    Stream<CreatureBaseStats> streamAllCreatureClassLevelStats();
+
+    @Query("""
+            SELECT cmo.SpawnId,
+                COALESCE(cmo.Ground, ctm.Ground),
+                COALESCE(cmo.Swim, ctm.Swim),
+                COALESCE(cmo.Flight, ctm.Flight),
+                COALESCE(cmo.Rooted, ctm.Rooted),
+                COALESCE(cmo.Chase, ctm.Chase),
+                COALESCE(cmo.Random, ctm.Random),
+                COALESCE(cmo.InteractionPauseTimer, ctm.InteractionPauseTimer)
+            FROM creature_movement_override AS cmo "
+            LEFT JOIN creature AS c ON c.guid = cmo.SpawnId
+            LEFT JOIN creature_template_movement AS ctm ON ctm.CreatureId = c.id
+            """)
+    Stream<CreatureMovementData> streamAllCreatureMovementOverride();
+    @Query("SELECT CreatureID, ID, ItemID1, AppearanceModID1, ItemVisual1, ItemID2, AppearanceModID2, ItemVisual2, ItemID3, AppearanceModID3, ItemVisual3 FROM creature_equip_template")
+    Stream<int[]> streamAllCreatureEquipTemplate();
+    @Query("SELECT guid, linkedGuid, linkType FROM linked_respawn ORDER BY guid ASC")
+    Stream<int[]> streamAllLinkedRespawn();
+    @Query("SELECT CreatureEntry, DifficultyID, ItemId, Idx FROM creature_questitem ORDER BY Idx ASC")
+    Stream<int[]> streamAllCreatureQuestItem();
 }

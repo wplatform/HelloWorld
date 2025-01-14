@@ -130,7 +130,7 @@ public class WardenCheckManager {
                     continue;
                 }
 
-// C# TO JAVA CONVERTER TASK: The '0:U4' format specifier is not converted to Java:
+
                 var str = String.format("{0:U4}", id);
                 wardenCheck.idStr = str.toCharArray();
             }

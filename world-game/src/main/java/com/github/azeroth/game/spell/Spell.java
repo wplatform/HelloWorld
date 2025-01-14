@@ -3762,7 +3762,7 @@ public class Spell {
         return false;
     }
 
-// C# TO JAVA CONVERTER TASK: Methods returning tuples are not converted by C# to Java Converter:
+
 //	public list<(ISpellScript, ISpellEffect)> getEffectScripts(SpellScriptHookType h, int index)
 //		{
 //			if (effectHandlers.TryGetValue(index, out var effDict) && effDict.TryGetValue(h, out var scripts))
@@ -3816,7 +3816,7 @@ public class Spell {
         return (auraSpellInfo == triggeredByAuraSpell);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(Spell spell)
 //		{
 //			return spell != null;
@@ -5924,7 +5924,7 @@ public class Spell {
 
         // skip check if done already (for instant cast spells for example)
         if (!skipCheck) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //			void cleanupSpell(SpellCastResult result, System.Nullable<int> param1 = null, System.Nullable<int> param2 = null)
 //				{
 //					sendCastResult(result, param1, param2);
@@ -6257,7 +6257,7 @@ public class Spell {
                 channeledDuration = duration;
                 sendChannelStart((int) duration);
             } else if (duration == -1) {
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to 'unchecked' in this context:
+
                 sendChannelStart((int) duration);
             }
 
@@ -7417,7 +7417,7 @@ public class Spell {
 		}*/
 
         // spell has attribute usable while having a cc state, check if caster has allowed mechanic auras, another mechanic types must prevent cast spell
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		SpellCastResult mechanicCheck(AuraType auraType, ref int _param1)
 //			{
 //				var foundNotMechanic = false;
@@ -7610,7 +7610,7 @@ public class Spell {
         return SpellCastResult.SpellCastOk;
     }
 
-// C# TO JAVA CONVERTER TASK: Methods returning tuples are not converted by C# to Java Converter:
+
 //	(float minRange, float maxRange) GetMinMaxRange(bool strict)
 //		{
 //			var rangeMod = 0.0f;
@@ -7681,7 +7681,7 @@ public class Spell {
             return SpellCastResult.SpellCastOk;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         var(minRange, maxRange) = GetMinMaxRange(strict);
 
         // dont check max_range to strictly after cast
@@ -9316,14 +9316,14 @@ public class Spell {
 
     private void addSpellEffect(int index, ISpellScript script, ISpellEffect effect) {
         var effecTypes;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!effectHandlers.TryGetValue(index, out effecTypes)) {
             effecTypes = new Dictionary<SpellScriptHookType, ArrayList<(ISpellScript, ISpellEffect) >> ();
             effectHandlers.add(index, effecTypes);
         }
 
         var effects;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!effecTypes.TryGetValue(effect.getHookType(), out effects)) {
             effects = new ArrayList<(ISpellScript, ISpellEffect) > ();
             effecTypes.add(effect.getHookType(), effects);
@@ -9508,7 +9508,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public final void effectJoinOrLeavePlayerParty() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -9543,7 +9543,7 @@ public class Spell {
 			group->RemoveCreatureMember(creature->GetGUID());*/
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public final void effectChangeItemBonuses() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -9629,7 +9629,7 @@ public class Spell {
         item.setState(ItemUpdateState.changed, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     public final void effectSetCovenant() {
         Player player;
         tangible.OutObject<Player> tempOut_player = new tangible.OutObject<Player>();
@@ -9645,7 +9645,7 @@ public class Spell {
         player.setCovenant(covenantId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUnused() {
     }
 
@@ -9680,7 +9680,7 @@ public class Spell {
         sendResurrectRequest(player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectInstaKill() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -9710,7 +9710,7 @@ public class Spell {
         unit.kill(getUnitCasterForEffectHandlers(), unitTarget, false);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnvironmentalDMG() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -9740,7 +9740,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSchoolDmg() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -9769,7 +9769,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDummy() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -9795,7 +9795,7 @@ public class Spell {
         caster.getMap().scriptsStart(ScriptsType.spell, (int) ((int) spellInfo.getId() | (int) (effectInfo.effectIndex << 24)), caster, unitTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTriggerSpell() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget && effectHandleMode != SpellEffectHandleMode.Launch) {
             return;
@@ -9949,7 +9949,7 @@ public class Spell {
         }, delay);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTriggerMissileSpell() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget && effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -10018,7 +10018,7 @@ public class Spell {
         caster.castSpell(targets, spellInfo.getId(), args);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectForceCast() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10086,7 +10086,7 @@ public class Spell {
         unitTarget.castSpell(caster, spellInfo.getId(), args);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTriggerRitualOfSummoning() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -10147,7 +10147,7 @@ public class Spell {
         speedZ.outArgValue = (float) Math.sqrt((float) (2 * MotionMaster.GRAVITY * height));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectJump() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -10180,7 +10180,7 @@ public class Spell {
         unitCaster.getMotionMaster().moveJump(unitTarget.getLocation(), speedXY, speedZ, eventId.jump, false, arrivalCast);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectJumpDest() {
         if (effectHandleMode != SpellEffectHandleMode.Launch) {
             return;
@@ -10212,7 +10212,7 @@ public class Spell {
         unitCaster.getMotionMaster().moveJump(destTarget, speedXY, speedZ, eventId.jump, !targets.getObjectTargetGUID().isEmpty(), arrivalCast);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTeleportUnits() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10262,7 +10262,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTeleportUnitsWithVisualLoadingScreen() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10301,7 +10301,7 @@ public class Spell {
         unitTarget.getEvents().AddEventAtOffset(new DelayedSpellTeleportEvent(unitTarget, targetDest, unitTarget == _caster ? TeleportToOptions.Spell : 0, spellInfo.getId()), duration.ofSeconds(effectInfo.miscValue));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectApplyAura() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10335,7 +10335,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUnlearnSpecialization() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10353,7 +10353,7 @@ public class Spell {
         Log.outDebug(LogFilter.spells, "Spell: Player {0} has unlearned spell {1} from NpcGUID: {2}", player.getGUID().toString(), spellToUnlearn, caster.getGUID().toString());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPowerDrain() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10393,7 +10393,7 @@ public class Spell {
         executeLogEffectTakeTargetPower(effectInfo.effect, unitTarget, powerType, (int) newDamage, gainMultiplier);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSendEvent() {
         // we do not handle a flag dropping or clicking on flag in Battlegroundby sendevent system
         if (effectHandleMode != SpellEffectHandleMode.HitTarget && effectHandleMode != SpellEffectHandleMode.hit) {
@@ -10433,7 +10433,7 @@ public class Spell {
         GameEvents.trigger((int) effectInfo.miscValue, caster, target);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPowerBurn() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10462,7 +10462,7 @@ public class Spell {
         damageInEffects += newDamage;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHeal() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -10514,7 +10514,7 @@ public class Spell {
         healingInEffects += addhealth;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHealPct() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10535,7 +10535,7 @@ public class Spell {
         healingInEffects += heal;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHealMechanical() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10561,7 +10561,7 @@ public class Spell {
         healingInEffects += heal;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHealthLeech() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10607,7 +10607,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10617,7 +10617,7 @@ public class Spell {
         executeLogEffectCreateItem(effectInfo.effect, effectInfo.itemType);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateItem2() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10647,7 +10647,7 @@ public class Spell {
         // @todo executeLogEffectCreateItem(i, getEffect(i].itemType);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateRandomItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10664,7 +10664,7 @@ public class Spell {
         // @todo executeLogEffectCreateItem(i, getEffect(i].itemType);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPersistentAA() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -10715,7 +10715,7 @@ public class Spell {
         dynObjAura._ApplyEffectForTargets(effectInfo.effectIndex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnergize() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10748,7 +10748,7 @@ public class Spell {
         unitCaster.energizeBySpell(unitTarget, spellInfo, damage, power);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnergizePct() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10779,7 +10779,7 @@ public class Spell {
         unitCaster.energizeBySpell(unitTarget, spellInfo, gain, power);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectOpenLock() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -10904,7 +10904,7 @@ public class Spell {
         executeLogEffectOpenLock(effectInfo.effect, gameObjTarget != null ? GameObjTarget : (WorldObject) itemTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonChangeItem() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -11028,7 +11028,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectProficiency() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -11053,7 +11053,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonType() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -11294,7 +11294,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnSpell() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11341,7 +11341,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDispel() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11440,7 +11440,7 @@ public class Spell {
         callScriptSuccessfulDispel(effectInfo.effectIndex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDualWield() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11453,7 +11453,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDistract() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11472,7 +11472,7 @@ public class Spell {
         unitTarget.getMotionMaster().moveDistract((int) (Damage * time.InMilliseconds), unitTarget.getLocation().getAbsoluteAngle(destTarget));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPickPocket() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11515,7 +11515,7 @@ public class Spell {
         player.sendLoot(creature.getLoot());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectAddFarsight() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -11545,7 +11545,7 @@ public class Spell {
         dynObj.setCasterViewpoint();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUntrainTalents() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11563,7 +11563,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTeleUnitsFaceCaster() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11582,7 +11582,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnSkill() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11613,7 +11613,7 @@ public class Spell {
         unitTarget.toPlayer().setSkill(skillid, (int) damage, Math.max(skillval, (short) 1), tier.Value[(int) Damage - 1]);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPlayMovie() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11632,7 +11632,7 @@ public class Spell {
         unitTarget.toPlayer().sendMovieStart(movieId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTradeSkill() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -11646,7 +11646,7 @@ public class Spell {
         // m_caster.ToPlayer().setSkill(skillid, skillval?skillval:1, skillmax+75);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnchantItemPerm() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11717,7 +11717,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnchantItemPrismatic() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11787,7 +11787,7 @@ public class Spell {
         itemTarget.clearSoulboundTradeable(item_owner);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnchantItemTmp() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11842,7 +11842,7 @@ public class Spell {
         item_owner.applyEnchantment(itemTarget, EnchantmentSlot.Temp, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTameCreature() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -11905,7 +11905,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonPet() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -12005,7 +12005,7 @@ public class Spell {
         executeLogEffectSummonObject(effectInfo.effect, pet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnPetSpell() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12038,7 +12038,7 @@ public class Spell {
         pet.getOwningPlayer().petSpellInitialize();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTaunt() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12085,7 +12085,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectWeaponDmg() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -12226,7 +12226,7 @@ public class Spell {
         damageInEffects += unitTarget.meleeDamageBonusTaken(unitCaster, weaponDamage, attackType, DamageEffectType.SpellDirect, spellInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectThreat() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12249,7 +12249,7 @@ public class Spell {
         unitTarget.getThreatManager().addThreat(unitCaster, damage, spellInfo, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHealMaxHealth() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12277,7 +12277,7 @@ public class Spell {
         healingInEffects += addhealth;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectInterruptCast() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -12313,7 +12313,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonObjectWild() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -12378,7 +12378,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectScriptEffect() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12579,7 +12579,7 @@ public class Spell {
         caster.getMap().scriptsStart(ScriptsType.spell, (int) ((int) spellInfo.getId() | (int) (effectInfo.effectIndex << 24)), caster, unitTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSanctuary() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12603,7 +12603,7 @@ public class Spell {
         unitTarget.setLastSanctuaryTime(gameTime.GetGameTimeMS());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDuel() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12698,7 +12698,7 @@ public class Spell {
         global.getScriptMgr().<IPlayerOnDuelRequest>ForEach(p -> p.OnDuelRequest(target, caster));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectStuck() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -12750,7 +12750,7 @@ public class Spell {
         spell.sendSpellCooldown();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonPlayer() {
         // workaround - this effect should not use target map
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
@@ -12770,7 +12770,7 @@ public class Spell {
         unitTarget.toPlayer().sendSummonRequestFrom(unitCaster);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectActivateObject() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12783,7 +12783,7 @@ public class Spell {
         gameObjTarget.activateObject(GameObjectActions.forValue(effectInfo.miscValue), effectInfo.miscValueB, caster, spellInfo.getId(), effectInfo.effectIndex);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectApplyGlyph() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -12835,7 +12835,7 @@ public class Spell {
         player.sendPacket(activeGlyphs);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnchantHeldItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12895,7 +12895,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDisEnchant() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12913,7 +12913,7 @@ public class Spell {
         // item will be removed at disenchanting end
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectInebriate() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12940,7 +12940,7 @@ public class Spell {
         player.setDrunkValue(currentDrunk, castItem != null ? castItem.getEntry() : 0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectFeedPet() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -12995,7 +12995,7 @@ public class Spell {
         caster.castSpell(pet, effectInfo.triggerSpell, args);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDismissPet() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13011,7 +13011,7 @@ public class Spell {
         pet.remove(PetSaveMode.NotInSlot);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonObject() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13077,7 +13077,7 @@ public class Spell {
         unitCaster.getObjectSlot()[slot] = go.getGUID();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectResurrect() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13113,7 +13113,7 @@ public class Spell {
         sendResurrectRequest(player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectAddExtraAttacks() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13128,7 +13128,7 @@ public class Spell {
         executeLogEffectExtraAttacks(effectInfo.effect, unitTarget, (int) damage);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectParry() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13139,7 +13139,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectBlock() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13150,7 +13150,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLeap() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13167,7 +13167,7 @@ public class Spell {
         unitTarget.nearTeleportTo(destTarget.getX(), destTarget.getY(), destTarget.getZ(), destTarget.getO(), unitTarget == caster);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectReputation() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13194,7 +13194,7 @@ public class Spell {
         player.getReputationMgr().modifyReputation(factionEntry, repChange);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectQuestComplete() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13226,7 +13226,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectForceDeselect() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13269,7 +13269,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSelfResurrect() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13309,7 +13309,7 @@ public class Spell {
         player.spawnCorpseBones();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSkinning() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13368,7 +13368,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCharge() {
         if (unitTarget == null) {
             return;
@@ -13426,7 +13426,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectChargeDest() {
         if (destTarget == null) {
             return;
@@ -13455,7 +13455,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectKnockBack() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13511,7 +13511,7 @@ public class Spell {
         unit.procSkillsAndAuras(getUnitCasterForEffectHandlers(), unitTarget, new ProcFlagsInit(procFlags.NONE), new ProcFlagsInit(procFlags.NONE, ProcFlags2.Knockback), ProcFlagsSpellType.MaskAll, ProcFlagsSpellPhase.hit, ProcFlagsHit.NONE, null, null, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLeapBack() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -13532,7 +13532,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectQuestClear() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13583,7 +13583,7 @@ public class Spell {
         global.getScriptMgr().<IQuestOnQuestStatusChange>RunScript(script -> script.OnQuestStatusChange(player, quest, oldStatus, QuestStatus.NONE), quest.getScriptId());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSendTaxi() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13596,7 +13596,7 @@ public class Spell {
         unitTarget.toPlayer().activateTaxiPathTo((int) effectInfo.miscValue, spellInfo.getId());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPullTowards() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13629,7 +13629,7 @@ public class Spell {
         unitTarget.jumpTo(speedXY, speedZ, 0.0f, pos);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPullTowardsDest() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13668,7 +13668,7 @@ public class Spell {
         unitTarget.jumpTo(speedXY, speedZ, 0.0f, pos);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectChangeRaidMarker() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13689,7 +13689,7 @@ public class Spell {
         group.addRaidMarker((byte) damage, player.getLocation().getMapId(), destTarget.getX(), destTarget.getY(), destTarget.getZ());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDispelMechanic() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13721,7 +13721,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectResurrectPet() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13797,7 +13797,7 @@ public class Spell {
         pet.SavePetToDB(PetSaveMode.AsCurrent);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDestroyAllTotems() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -13847,7 +13847,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDurabilityDamage() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13880,7 +13880,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDurabilityDamagePCT() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13916,7 +13916,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifyThreatPercent() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -13931,7 +13931,7 @@ public class Spell {
         unitTarget.getThreatManager().modifyThreatByPercent(unitCaster, damage);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTransmitted() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14073,7 +14073,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectProspecting() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14104,7 +14104,7 @@ public class Spell {
         player.sendLoot(itemTarget.getLoot());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectMilling() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14135,7 +14135,7 @@ public class Spell {
         player.sendLoot(itemTarget.getLoot());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSkill() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14155,7 +14155,7 @@ public class Spell {
     }
 
     // remove insignia spell effect
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private void effectSkinPlayerCorpse() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14179,7 +14179,7 @@ public class Spell {
         target.removedInsignia(player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectStealBeneficialBuff() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14284,7 +14284,7 @@ public class Spell {
         spellDispellLog.casterGUID = caster.getGUID();
         spellDispellLog.dispelledBySpellID = spellInfo.getId();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(spellId, auraCaster, stolenCharges) : successList) {
             var dispellData = new SpellDispellData();
             dispellData.spellID = spellId;
@@ -14298,7 +14298,7 @@ public class Spell {
         caster.sendMessageToSet(spellDispellLog, true);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectKillCreditPersonal() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14311,7 +14311,7 @@ public class Spell {
         unitTarget.toPlayer().killedMonsterCredit((int) effectInfo.miscValue);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectKillCredit() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14328,7 +14328,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectQuestFail() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14341,7 +14341,7 @@ public class Spell {
         unitTarget.toPlayer().failQuest((int) effectInfo.miscValue);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectQuestStart() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14373,7 +14373,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateTamedPet() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14408,7 +14408,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDiscoverTaxi() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14425,7 +14425,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTitanGrip() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14436,7 +14436,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRedirectThreat() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14453,7 +14453,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGameObjectDamage() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14472,7 +14472,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGameObjectRepair() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14485,7 +14485,7 @@ public class Spell {
         gameObjTarget.modifyHealth(damage, caster);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGameObjectSetDestructionState() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14576,7 +14576,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRenamePet() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14589,7 +14589,7 @@ public class Spell {
         unitTarget.setPetFlag(UnitPetFlags.CanBeRenamed);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPlayMusic() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14610,7 +14610,7 @@ public class Spell {
         unitTarget.toPlayer().sendPacket(new PlayMusic(soundid));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectActivateSpec() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14632,7 +14632,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPlaySound() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14650,7 +14650,7 @@ public class Spell {
 
         switch (spellInfo.getId()) {
             case 91604: // Restricted Flight Area
-                player.getSession().sendNotification(CypherStrings.ZoneNoflyzone);
+                player.getSession().sendNotification(SysMessage.ZoneNoflyzone);
 
                 break;
             default:
@@ -14668,7 +14668,7 @@ public class Spell {
         player.playDirectSound(soundId, player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRemoveAura() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14682,7 +14682,7 @@ public class Spell {
         unitTarget.removeAura(effectInfo.triggerSpell);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDamageFromMaxHealthPCT() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14695,7 +14695,7 @@ public class Spell {
         damageInEffects += (int) unitTarget.countPctFromMaxHealth(damage);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveCurrency() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14712,7 +14712,7 @@ public class Spell {
         unitTarget.toPlayer().modifyCurrency((int) effectInfo.miscValue, (int) damage, CurrencyGainSource.spell, CurrencyDestroyReason.spell);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCastButtons() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14763,7 +14763,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRechargeItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14792,7 +14792,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectBind() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14827,7 +14827,7 @@ public class Spell {
         player.sendPlayerBound(caster.getGUID(), areaId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectTeleportToReturnPoint() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14844,7 +14844,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectIncreaseCurrencyCap() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14859,7 +14859,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonRaFFriend() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14872,7 +14872,7 @@ public class Spell {
         caster.castSpell(unitTarget, effectInfo.triggerSpell, new CastSpellExtraArgs(this));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUnlockGuildVaultTab() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14887,7 +14887,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSummonPersonalGameObject() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -14942,7 +14942,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectResurrectWithAura() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -14984,7 +14984,7 @@ public class Spell {
         sendResurrectRequest(target);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateAreaTrigger() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15000,7 +15000,7 @@ public class Spell {
         areaTrigger.createAreaTrigger((int) effectInfo.miscValue, unitCaster, null, spellInfo, destTarget, duration, spellVisual, castId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRemoveTalent() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15022,7 +15022,7 @@ public class Spell {
         player.sendTalentsInfoData();
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectDestroyItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15040,7 +15040,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnGarrisonBuilding() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15057,7 +15057,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectRemoveAuraBySpellLabel() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15070,7 +15070,7 @@ public class Spell {
         unitTarget.getAppliedAurasQuery().hasLabel(new integer(effectInfo.miscValue)).execute(UnitTarget::RemoveAura);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateGarrison() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15083,7 +15083,7 @@ public class Spell {
         unitTarget.toPlayer().createGarrison((int) effectInfo.miscValue);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateConversation() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15098,7 +15098,7 @@ public class Spell {
         conversation.CreateConversation((int) effectInfo.miscValue, unitCaster, destTarget, ObjectGuid.Empty, spellInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCancelConversation() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15122,7 +15122,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectAddGarrisonFollower() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15139,7 +15139,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateHeirloomItem() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15164,7 +15164,7 @@ public class Spell {
         executeLogEffectCreateItem(effectInfo.effect, spellMisc.data0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectActivateGarrisonBuilding() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15181,7 +15181,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGrantBattlePetLevel() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15200,7 +15200,7 @@ public class Spell {
         playerCaster.getSession().getBattlePetMgr().grantBattlePetLevel(unitTarget.getBattlePetCompanionGUID(), (short) damage);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveExperience() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15216,7 +15216,7 @@ public class Spell {
         playerTarget.giveXP(xp, null);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveRestedExperience() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15232,7 +15232,7 @@ public class Spell {
         playerTarget.getRestMgr().addRestBonus(RestTypes.XP, Damage * time.Hour * playerTarget.getRestMgr().calcExtraPerSec(RestTypes.XP, 0.125f));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectHealBattlePetPct() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15249,7 +15249,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectEnableBattlePets() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15264,7 +15264,7 @@ public class Spell {
         player.getSession().getBattlePetMgr().unlockSlot(BattlePetSlots.Slot0);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectChangeBattlePetQuality() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15291,7 +15291,7 @@ public class Spell {
         playerCaster.getSession().getBattlePetMgr().changeBattlePetQuality(unitTarget.getBattlePetCompanionGUID(), quality);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLaunchQuestChoice() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15304,7 +15304,7 @@ public class Spell {
         unitTarget.toPlayer().sendPlayerChoice(getCaster().getGUID(), effectInfo.miscValue);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUncageBattlePet() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15355,7 +15355,7 @@ public class Spell {
         castItem = null;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUpgradeHeirloom() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15372,7 +15372,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectApplyEnchantIllusion() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15399,7 +15399,7 @@ public class Spell {
         itemTarget.clearSoulboundTradeable(player);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUpdatePlayerPhase() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15412,7 +15412,7 @@ public class Spell {
         PhasingHandler.onConditionChange(unitTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectUpdateZoneAurasAndPhases() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15425,7 +15425,7 @@ public class Spell {
         unitTarget.toPlayer().updateAreaDependentAuras(unitTarget.getArea());
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveArtifactPower() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -15448,7 +15448,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveArtifactPowerNoBonus() {
         if (effectHandleMode != SpellEffectHandleMode.LaunchTarget) {
             return;
@@ -15469,7 +15469,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPlaySceneScriptPackage() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15496,7 +15496,7 @@ public class Spell {
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateSceneObject() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15519,7 +15519,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreatePrivateSceneObject() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15542,7 +15542,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectPlayScene() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15555,7 +15555,7 @@ public class Spell {
         caster.toPlayer().getSceneMgr().playScene((int) effectInfo.miscValue, destTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGiveHonor() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15574,7 +15574,7 @@ public class Spell {
         playerTarget.sendPacket(packet);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectJumpCharge() {
         if (effectHandleMode != SpellEffectHandleMode.Launch) {
             return;
@@ -15630,7 +15630,7 @@ public class Spell {
         unitCaster.getMotionMaster().moveJumpWithGravity(destTarget, speed, jumpParams.jumpGravity, eventId.jump, false, arrivalCast, effectExtra);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnTransmogSet() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15643,7 +15643,7 @@ public class Spell {
         unitTarget.toPlayer().getSession().getCollectionMgr().addTransmogSet((int) effectInfo.miscValue);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnAzeriteEssencePower() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15688,7 +15688,7 @@ public class Spell {
         azeriteItem.setState(ItemUpdateState.changed, playerTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreatePrivateConversation() {
         if (effectHandleMode != SpellEffectHandleMode.hit) {
             return;
@@ -15703,7 +15703,7 @@ public class Spell {
         conversation.CreateConversation((int) effectInfo.miscValue, unitCaster, destTarget, unitCaster.getGUID(), spellInfo);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectSendChatMessage() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15725,7 +15725,7 @@ public class Spell {
         unitCaster.talk(broadcastTextId, chatType, global.getCreatureTextMgr().getRangeForChatType(chatType), unitTarget);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectGrantBattlePetExperience() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15744,7 +15744,7 @@ public class Spell {
         playerCaster.getSession().getBattlePetMgr().grantBattlePetExperience(unitTarget.getBattlePetCompanionGUID(), (short) damage, BattlePetXpSource.SpellEffect);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectLearnTransmogIllusion() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15765,7 +15765,7 @@ public class Spell {
         player.getSession().getCollectionMgr().addTransmogIllusion(illusionId);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifyAuraStacks() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15791,7 +15791,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifyCooldown() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15800,7 +15800,7 @@ public class Spell {
         unitTarget.getSpellHistory().modifyCooldown(effectInfo.triggerSpell, duration.ofSeconds(damage));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifyCooldowns() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15827,7 +15827,7 @@ public class Spell {
         }, duration.ofSeconds(damage));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifyCooldownsByCategory() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15836,7 +15836,7 @@ public class Spell {
         unitTarget.getSpellHistory().modifyCoooldowns(itr -> global.getSpellMgr().getSpellInfo(itr.spellId, Difficulty.NONE).categoryId == effectInfo.miscValue, duration.ofSeconds(damage));
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectModifySpellCharges() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15847,7 +15847,7 @@ public class Spell {
         }
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectCreateTraitTreeConfig() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;
@@ -15870,7 +15870,7 @@ public class Spell {
         target.createTraitConfig(newConfig);
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private void effectChangeActiveCombatTraitConfig() {
         if (effectHandleMode != SpellEffectHandleMode.HitTarget) {
             return;

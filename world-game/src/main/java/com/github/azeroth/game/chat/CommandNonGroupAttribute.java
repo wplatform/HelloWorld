@@ -1,14 +1,14 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public class CommandNonGroupAttribute extends CommandAttribute {
 
-    public CommandNonGroupAttribute(String command, CypherStrings help, RBACPermissions rbac) {
+    public CommandNonGroupAttribute(String command, SysMessage help, RBACPermissions rbac) {
         this(command, help, rbac, false);
     }
 
-    public CommandNonGroupAttribute(String command, CypherStrings help, RBACPermissions rbac, boolean allowConsole) {
+    public CommandNonGroupAttribute(String command, SysMessage help, RBACPermissions rbac, boolean allowConsole) {
         super(command, help, rbac, allowConsole);
     }
 

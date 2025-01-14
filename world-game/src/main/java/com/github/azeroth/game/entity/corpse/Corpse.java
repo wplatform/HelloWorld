@@ -106,7 +106,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
     public void addToWorld() {
         // Register the corpse for guid lookup
         if (!isInWorld()) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
         }
 
@@ -118,7 +118,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
         // Remove the corpse from the accessor
         if (isInWorld()) {
             tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
             _ = tempOut__.outArgValue;
         }
@@ -376,7 +376,7 @@ public class Corpse extends WorldObject implements GridObject<Corpse> {
 
 
     public final void setItem(int slot, int item) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'ref' keyword - these cannot be converted using the 'RefObject' helper class unless the method is within the code being modified:
+
         setUpdateFieldValue(ref getValues().modifyValue(getCorpseData()).modifyValue(getCorpseData().items, (int) slot), item);
     }
 

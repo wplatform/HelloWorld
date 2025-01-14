@@ -13,7 +13,7 @@ public class ObjectGUIDCheck implements ICheck<WorldObject> {
         return Objects.equals(obj.getGUID(), gUID);
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator Predicate<WorldObject>(ObjectGUIDCheck check)
 //		{
 //			return check.Invoke;

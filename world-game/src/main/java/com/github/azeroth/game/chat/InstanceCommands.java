@@ -6,13 +6,13 @@ import com.github.azeroth.game.map.InstanceLock;
 import java.util.ArrayList;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class InstanceCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleInstanceGetBossStateCommand(CommandHandler handler, int encounterId, PlayerIdentifier player) {
         // Character name must be provided when using this from console.
         if (player == null || handler.getSession() == null) {
-            handler.sendSysMessage(CypherStrings.CmdSyntax);
+            handler.sendSysMessage(SysMessage.CmdSyntax);
 
             return false;
         }
@@ -22,7 +22,7 @@ class InstanceCommands {
         }
 
         if (player.isConnected()) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -30,30 +30,30 @@ class InstanceCommands {
         var map = player.getConnectedPlayer().getMap().getToInstanceMap();
 
         if (map == null) {
-            handler.sendSysMessage(CypherStrings.NotDungeon);
+            handler.sendSysMessage(SysMessage.NotDungeon);
 
             return false;
         }
 
         if (map.getInstanceScript() == null) {
-            handler.sendSysMessage(CypherStrings.NoInstanceData);
+            handler.sendSysMessage(SysMessage.NoInstanceData);
 
             return false;
         }
 
         if (encounterId > map.getInstanceScript().getEncounterCount()) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         var state = map.getInstanceScript().getBossState(encounterId);
-        handler.sendSysMessage(CypherStrings.CommandInstGetBossState, encounterId, state);
+        handler.sendSysMessage(SysMessage.CommandInstGetBossState, encounterId, state);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleInstanceListBindsCommand(CommandHandler handler) {
         var player = handler.getSelectedPlayer();
 
@@ -68,19 +68,19 @@ class InstanceCommands {
             MapDb2Entries entries = new MapDb2Entries(instanceLock.getMapId(), instanceLock.getDifficultyId());
             var timeleft = !instanceLock.isExpired() ? time.secsToTimeString((long) (instanceLock.getEffectiveExpiryTime() - now).TotalSeconds, 0, false) : "-";
 
-            handler.sendSysMessage(CypherStrings.CommandListBindInfo, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getCypherString(instanceLock.isExpired() ? CypherStrings.Yes : CypherStrings.No), handler.getCypherString(instanceLock.isExtended() ? CypherStrings.Yes : CypherStrings.No), timeleft);
+            handler.sendSysMessage(SysMessage.CommandListBindInfo, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getSysMessage(instanceLock.isExpired() ? SysMessage.Yes : SysMessage.No), handler.getSysMessage(instanceLock.isExtended() ? SysMessage.Yes : SysMessage.No), timeleft);
         }
 
-        handler.sendSysMessage(CypherStrings.CommandListBindPlayerBinds, instanceLocks.size());
+        handler.sendSysMessage(SysMessage.CommandListBindPlayerBinds, instanceLocks.size());
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleInstanceSetBossStateCommand(CommandHandler handler, int encounterId, EncounterState state, PlayerIdentifier player) {
         // Character name must be provided when using this from console.
         if (player == null || handler.getSession() == null) {
-            handler.sendSysMessage(CypherStrings.CmdSyntax);
+            handler.sendSysMessage(SysMessage.CmdSyntax);
 
             return false;
         }
@@ -90,7 +90,7 @@ class InstanceCommands {
         }
 
         if (!player.isConnected()) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -98,45 +98,45 @@ class InstanceCommands {
         var map = player.getConnectedPlayer().getMap().getToInstanceMap();
 
         if (map == null) {
-            handler.sendSysMessage(CypherStrings.NotDungeon);
+            handler.sendSysMessage(SysMessage.NotDungeon);
 
             return false;
         }
 
         if (map.getInstanceScript() == null) {
-            handler.sendSysMessage(CypherStrings.NoInstanceData);
+            handler.sendSysMessage(SysMessage.NoInstanceData);
 
             return false;
         }
 
         // Reject improper values.
         if (encounterId > map.getInstanceScript().getEncounterCount()) {
-            handler.sendSysMessage(CypherStrings.BadValue);
+            handler.sendSysMessage(SysMessage.BadValue);
 
             return false;
         }
 
         map.getInstanceScript().setBossState(encounterId, state);
-        handler.sendSysMessage(CypherStrings.CommandInstSetBossState, encounterId, state);
+        handler.sendSysMessage(SysMessage.CommandInstSetBossState, encounterId, state);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleInstanceStatsCommand(CommandHandler handler) {
         handler.sendSysMessage("instances loaded: {0}", global.getMapMgr().GetNumInstances());
         handler.sendSysMessage("players in instances: {0}", global.getMapMgr().GetNumPlayersInInstances());
 
         var statistics = global.getInstanceLockMgr().getStatistics();
 
-        handler.sendSysMessage(CypherStrings.CommandInstStatSaves, statistics.instanceCount);
-        handler.sendSysMessage(CypherStrings.CommandInstStatPlayersbound, statistics.playerCount);
+        handler.sendSysMessage(SysMessage.CommandInstStatSaves, statistics.instanceCount);
+        handler.sendSysMessage(SysMessage.CommandInstStatPlayersbound, statistics.playerCount);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleInstanceUnbindCommand(CommandHandler handler, Object mapArg, Integer difficultyArg) {
         var player = handler.getSelectedPlayer();
 
@@ -166,16 +166,16 @@ class InstanceCommands {
             MapDb2Entries entries = new MapDb2Entries(instanceLock.getMapId(), instanceLock.getDifficultyId());
             var timeleft = !instanceLock.isExpired() ? time.secsToTimeString((long) (instanceLock.getEffectiveExpiryTime() - now).TotalSeconds, 0, false) : "-";
 
-            handler.sendSysMessage(CypherStrings.CommandInstUnbindUnbinding, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getCypherString(instanceLock.isExpired() ? CypherStrings.Yes : CypherStrings.No), handler.getCypherString(instanceLock.isExtended() ? CypherStrings.Yes : CypherStrings.No), timeleft);
+            handler.sendSysMessage(SysMessage.CommandInstUnbindUnbinding, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getSysMessage(instanceLock.isExpired() ? SysMessage.Yes : SysMessage.No), handler.getSysMessage(instanceLock.isExtended() ? SysMessage.Yes : SysMessage.No), timeleft);
         }
 
-        handler.sendSysMessage(CypherStrings.CommandInstUnbindUnbound, locksReset.size());
+        handler.sendSysMessage(SysMessage.CommandInstUnbindUnbound, locksReset.size());
 
         for (var instanceLock : locksNotReset) {
             MapDb2Entries entries = new MapDb2Entries(instanceLock.getMapId(), instanceLock.getDifficultyId());
             var timeleft = !instanceLock.isExpired() ? time.secsToTimeString((long) (instanceLock.getEffectiveExpiryTime() - now).TotalSeconds, 0, false) : "-";
 
-            handler.sendSysMessage(CypherStrings.CommandInstUnbindFailed, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getCypherString(instanceLock.isExpired() ? CypherStrings.Yes : CypherStrings.No), handler.getCypherString(instanceLock.isExtended() ? CypherStrings.Yes : CypherStrings.No), timeleft);
+            handler.sendSysMessage(SysMessage.CommandInstUnbindFailed, entries.Map.id, entries.Map.MapName.get(global.getWorldMgr().getDefaultDbcLocale()), entries.MapDifficulty.difficultyID, CliDB.DifficultyStorage.get(entries.MapDifficulty.difficultyID).name, instanceLock.getInstanceId(), handler.getSysMessage(instanceLock.isExpired() ? SysMessage.Yes : SysMessage.No), handler.getSysMessage(instanceLock.isExtended() ? SysMessage.Yes : SysMessage.No), timeleft);
         }
 
         player.sendRaidInfo();

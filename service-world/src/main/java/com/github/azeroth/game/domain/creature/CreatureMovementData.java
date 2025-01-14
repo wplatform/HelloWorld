@@ -2,6 +2,7 @@ package com.github.azeroth.game.domain.creature;
 
 
 public class CreatureMovementData {
+    public int spawnId;
     public CreatureGroundMovementType ground;
     public CreatureFlightMovementType flight;
     public boolean swim;

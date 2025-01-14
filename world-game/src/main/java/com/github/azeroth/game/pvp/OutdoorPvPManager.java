@@ -142,7 +142,7 @@ int zoneId
         m_UpdateTimer += diff;
 
         if (m_UpdateTimer > 1000) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(_, outdoor) : m_OutdoorPvPByMap.KeyValueList) {
                 threadTaskManager.Schedule(() -> outdoor.update(m_UpdateTimer));
             }

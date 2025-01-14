@@ -652,15 +652,15 @@ public abstract class WorldObject extends GenericObject {
             creature.removeUnitFlag2(UnitFlag2.INFINITE_AOI);
 
             switch (type) {
-                case Large:
+                case LARGE:
                     creature.setUnitFlag2(UnitFlag2.LARGE_AOI);
 
                     break;
-                case Gigantic:
+                case GIGANTIC:
                     creature.setUnitFlag2(UnitFlag2.GIGANTIC_AOI);
 
                     break;
-                case Infinite:
+                case INFINITE:
                     creature.setUnitFlag2(UnitFlag2.INFINITE_AOI);
 
                     break;
@@ -1350,7 +1350,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         return calculateSpellDamage(out _, target, spellEffectInfo, basePoints, castItemId, itemLevel);
     }
 
@@ -1502,7 +1502,7 @@ public abstract class WorldObject extends GenericObject {
         if (!positive) {
             var mechanicMask = spellInfo.getSpellMechanicMaskByEffectMask(effectMask);
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //			bool mechanicCheck(AuraEffect aurEff)
 //				{
 //					if ((mechanicMask & (1ul << aurEff.miscValue)) != 0)
@@ -3572,7 +3572,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(WorldObject obj)
 //		{
 //			return obj != null;
@@ -3823,7 +3823,7 @@ public abstract class WorldObject extends GenericObject {
             if (isGameObject()) {
                 var rotation = toGameObject().getWorldRotation();
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
                 rotation.toEulerAnglesZYX(out playOrphanSpellVisual.sourceRotation.Z, out playOrphanSpellVisual.sourceRotation.Y, out playOrphanSpellVisual.sourceRotation.X);
             } else {
                 playOrphanSpellVisual.sourceRotation = new Position(0.0f, 0.0f, getLocation().getO());
@@ -3854,7 +3854,7 @@ public abstract class WorldObject extends GenericObject {
             if (isGameObject()) {
                 var rotation = toGameObject().getWorldRotation();
 
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
                 rotation.toEulerAnglesZYX(out playOrphanSpellVisual.sourceRotation.Z, out playOrphanSpellVisual.sourceRotation.Y, out playOrphanSpellVisual.sourceRotation.X);
             } else {
                 playOrphanSpellVisual.sourceRotation = new Position(0.0f, 0.0f, getLocation().getO());

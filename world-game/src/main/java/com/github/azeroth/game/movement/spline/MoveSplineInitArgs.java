@@ -45,7 +45,7 @@ public class MoveSplineInitArgs {
 
     // Returns true to show that the arguments were configured correctly and MoveSpline initialization will succeed.
     public final boolean validate(Unit unit) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		bool CHECK(bool exp, bool verbose)
 //			{
 //				if (!exp)

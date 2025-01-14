@@ -9,7 +9,7 @@ import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.dbc.domain.ArtifactCategory;
 import com.github.azeroth.dbc.domain.ChrSpecialization;
 import com.github.azeroth.dbc.domain.CreatureFamilyEntry;
-import com.github.azeroth.dbc.domain.CreatureType;
+import com.github.azeroth.dbc.domain.CreatureTypeEntry;
 import com.github.azeroth.dbc.domain.Emote;
 import com.github.azeroth.dbc.domain.Language;
 import com.github.azeroth.dbc.domain.QuestInfo;
@@ -436,8 +436,8 @@ public interface DbcObjectManager {
         return getEntityStore(DbcObjects.CreatureFamily);
     }
 
-    default CreatureFamilyEntry creatureFamily(int id) {
-        return creatureFamily().get(id);
+    default CreatureFamilyEntry creatureFamily(CreatureFamily id) {
+        return creatureFamily().get(id.ordinal());
     }
 
     default DbcEntityStore<CreatureModelData> creatureModelData() {
@@ -448,12 +448,12 @@ public interface DbcObjectManager {
         return creatureModelData().get(id);
     }
 
-    default DbcEntityStore<CreatureType> creatureType() {
+    default DbcEntityStore<CreatureTypeEntry> creatureType() {
         return getEntityStore(DbcObjects.CreatureType);
     }
 
-    default CreatureType creatureType(int id) {
-        return creatureType().get(id);
+    default CreatureTypeEntry creatureType(CreatureType id) {
+        return creatureType().get(id.ordinal());
     }
 
     default DbcEntityStore<CriteriaEntity> criteria() {
@@ -968,11 +968,11 @@ public interface DbcObjectManager {
         return itemEffect().get(id);
     }
 
-    default DbcEntityStore<Item> item() {
+    default DbcEntityStore<ItemEntry> item() {
         return getEntityStore(DbcObjects.Item);
     }
 
-    default Item item(int id) {
+    default ItemEntry item(int id) {
         return item().get(id);
     }
 
@@ -2303,9 +2303,9 @@ public interface DbcObjectManager {
 
     Integer getItemDisplayId(Integer itemId, Integer appearanceModId);
 
-    ItemModifiedAppearance getItemModifiedAppearance(Integer itemId, Integer appearanceModId);
+    ItemModifiedAppearance getItemModifiedAppearance(int itemId, short appearanceModId);
 
-    ItemModifiedAppearance getDefaultItemModifiedAppearance(Integer itemId);
+    ItemModifiedAppearance getDefaultItemModifiedAppearance(int itemId);
 
     List<ItemSetSpell> getItemSetSpells(Integer itemSetId);
 
@@ -2440,4 +2440,5 @@ public interface DbcObjectManager {
     Set<Integer> getDefaultItemBonusTree(Integer itemId, ItemContext itemContext);
 
 
+    List<ItemBonus> getItemBonusList(int bonusList);
 }

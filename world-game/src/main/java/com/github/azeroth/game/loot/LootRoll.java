@@ -165,7 +165,7 @@ public class LootRoll {
     private void sendStartRoll() {
         var itemTemplate = global.getObjectMgr().getItemTemplate(m_lootItem.itemid);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote != RollVote.NotEmitedYet) {
                 continue;
@@ -196,7 +196,7 @@ public class LootRoll {
         }
 
         // Handle auto pass option
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote != RollVote.Pass) {
                 continue;
@@ -214,7 +214,7 @@ public class LootRoll {
         lootAllPassed.item.UIType = LootSlotType.AllowLoot;
         lootAllPassed.write();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote != RollVote.NotValid) {
                 continue;
@@ -242,7 +242,7 @@ public class LootRoll {
         lootRoll.item.UIType = LootSlotType.RollOngoing;
         lootRoll.write();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote == RollVote.NotValid) {
                 continue;
@@ -275,7 +275,7 @@ public class LootRoll {
     // Send roll 'value' of the whole group and the winner to the whole group
     private void sendLootRollWon(ObjectGuid targetGuid, int rollNumber, RollVote rollType) {
         // Send roll values
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             switch (roll.vote) {
                 case RollVote.Pass:
@@ -302,7 +302,7 @@ public class LootRoll {
         lootRollWon.mainSpec = true; // offspec rolls not implemented
         lootRollWon.write();
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote == RollVote.NotValid) {
                 continue;
@@ -449,7 +449,7 @@ public class LootRoll {
             sendAllPassed();
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(playerGuid, roll) : m_rollVoteMap) {
             if (roll.vote != RollVote.NotEmitedYet) {
                 continue;

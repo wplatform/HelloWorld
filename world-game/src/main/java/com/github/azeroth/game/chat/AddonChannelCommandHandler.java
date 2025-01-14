@@ -47,7 +47,7 @@ class AddonChannelCommandHandler extends CommandHandler {
                         sendOK();
                     }
                 } else {
-                    sendSysMessage(CypherStrings.CmdInvalid, cmd);
+                    sendSysMessage(SysMessage.CmdInvalid, cmd);
                     sendFailed();
                 }
 
@@ -96,20 +96,20 @@ class AddonChannelCommandHandler extends CommandHandler {
 
     private void sendAck() // a Command acknowledged, no body
     {
-// C# TO JAVA CONVERTER TASK: The '0:4' format specifier is not converted to Java:
+
         send(String.format("a{0:4}\0", echo));
         hadAck = true;
     }
 
     private void sendOK() // o Command OK, no body
     {
-// C# TO JAVA CONVERTER TASK: The '0:4' format specifier is not converted to Java:
+
         send(String.format("o{0:4}\0", echo));
     }
 
     private void sendFailed() // f Command failed, no body
     {
-// C# TO JAVA CONVERTER TASK: The '0:4' format specifier is not converted to Java:
+
         send(String.format("f{0:4}\0", echo));
     }
 }

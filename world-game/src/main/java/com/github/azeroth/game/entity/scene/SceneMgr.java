@@ -65,7 +65,7 @@ public class SceneMgr {
         var sceneInstanceId = getNewStandaloneSceneInstanceId();
 
         if (isDebuggingScenes) {
-            getPlayer().sendSysMessage(CypherStrings.CommandSceneDebugPlay, sceneInstanceId, sceneTemplate.scenePackageId, sceneTemplate.playbackFlags);
+            getPlayer().sendSysMessage(SysMessage.CommandSceneDebugPlay, sceneInstanceId, sceneTemplate.scenePackageId, sceneTemplate.playbackFlags);
         }
 
         PlayScene playScene = new playScene();
@@ -113,7 +113,7 @@ public class SceneMgr {
         }
 
         if (isDebuggingScenes) {
-            getPlayer().sendSysMessage(CypherStrings.CommandSceneDebugTrigger, sceneInstanceId, triggerName);
+            getPlayer().sendSysMessage(SysMessage.CommandSceneDebugTrigger, sceneInstanceId, triggerName);
         }
 
         var sceneTemplate = getSceneTemplateFromInstanceId(sceneInstanceId);
@@ -126,7 +126,7 @@ public class SceneMgr {
         }
 
         if (isDebuggingScenes) {
-            getPlayer().sendSysMessage(CypherStrings.CommandSceneDebugCancel, sceneInstanceId);
+            getPlayer().sendSysMessage(SysMessage.CommandSceneDebugCancel, sceneInstanceId);
         }
 
         var sceneTemplate = getSceneTemplateFromInstanceId(sceneInstanceId);
@@ -155,7 +155,7 @@ public class SceneMgr {
         }
 
         if (isDebuggingScenes) {
-            getPlayer().sendSysMessage(CypherStrings.CommandSceneDebugComplete, sceneInstanceId);
+            getPlayer().sendSysMessage(SysMessage.CommandSceneDebugComplete, sceneInstanceId);
         }
 
         var sceneTemplate = getSceneTemplateFromInstanceId(sceneInstanceId);

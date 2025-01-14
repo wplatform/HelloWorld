@@ -1,18 +1,18 @@
 package com.github.azeroth.game.chat;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class GMCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMChatCommand(CommandHandler handler, Boolean enableArg) {
         var session = handler.getSession();
 
         if (session != null) {
             if (enableArg == null) {
                 if (session.hasPermission(RBACPermissions.ChatUseStaffBadge) && session.getPlayer().isGMChat()) {
-                    session.sendNotification(CypherStrings.GmChatOn);
+                    session.sendNotification(SysMessage.GmChatOn);
                 } else {
-                    session.sendNotification(CypherStrings.GmChatOff);
+                    session.sendNotification(SysMessage.GmChatOff);
                 }
 
                 return true;
@@ -20,21 +20,21 @@ class GMCommands {
 
             if (enableArg != null) {
                 session.getPlayer().setGMChat(true);
-                session.sendNotification(CypherStrings.GmChatOn);
+                session.sendNotification(SysMessage.GmChatOn);
             } else {
                 session.getPlayer().setGMChat(false);
-                session.sendNotification(CypherStrings.GmChatOff);
+                session.sendNotification(SysMessage.GmChatOff);
             }
 
             return true;
         }
 
-        handler.sendSysMessage(CypherStrings.UseBol);
+        handler.sendSysMessage(SysMessage.UseBol);
 
         return false;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMFlyCommand(CommandHandler handler, boolean enable) {
         var target = handler.getSelectedPlayer();
 
@@ -50,12 +50,12 @@ class GMCommands {
             target.setCanTransitionBetweenSwimAndFly(false);
         }
 
-        handler.sendSysMessage(CypherStrings.CommandFlymodeStatus, handler.getNameLink(target), enable ? "on" : "off");
+        handler.sendSysMessage(SysMessage.CommandFlymodeStatus, handler.getNameLink(target), enable ? "on" : "off");
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMListIngameCommand(CommandHandler handler) {
         var first = true;
         var footer = false;
@@ -67,7 +67,7 @@ class GMCommands {
                 if (first) {
                     first = false;
                     footer = true;
-                    handler.sendSysMessage(CypherStrings.GmsOnSrv);
+                    handler.sendSysMessage(SysMessage.GmsOnSrv);
                     handler.sendSysMessage("========================");
                 }
 
@@ -93,13 +93,13 @@ class GMCommands {
         }
 
         if (first) {
-            handler.sendSysMessage(CypherStrings.GmsNotLogged);
+            handler.sendSysMessage(SysMessage.GmsNotLogged);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMListFullCommand(CommandHandler handler) {
         // Get the accounts with GM level >0
         var stmt = DB.Login.GetPreparedStatement(LoginStatements.SEL_GM_ACCOUNTS);
@@ -108,7 +108,7 @@ class GMCommands {
         var result = DB.Login.query(stmt);
 
         if (!result.isEmpty()) {
-            handler.sendSysMessage(CypherStrings.Gmlist);
+            handler.sendSysMessage(SysMessage.Gmlist);
             handler.sendSysMessage("========================");
 
             // Cycle through them. Display username and GM level
@@ -133,36 +133,36 @@ class GMCommands {
 
             handler.sendSysMessage("========================");
         } else {
-            handler.sendSysMessage(CypherStrings.GmlistEmpty);
+            handler.sendSysMessage(SysMessage.GmlistEmpty);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMOffCommand(CommandHandler handler) {
         handler.getPlayer().setGameMaster(false);
         handler.getPlayer().updateTriggerVisibility();
-        handler.getSession().sendNotification(CypherStrings.GmOff);
+        handler.getSession().sendNotification(SysMessage.GmOff);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMOnCommand(CommandHandler handler) {
         handler.getPlayer().setGameMaster(true);
         handler.getPlayer().updateTriggerVisibility();
-        handler.getSession().sendNotification(CypherStrings.GmOn);
+        handler.getSession().sendNotification(SysMessage.GmOn);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleGMVisibleCommand(CommandHandler handler, Boolean visibleArg) {
         var player = handler.getSession().getPlayer();
 
         if (visibleArg == null) {
-            handler.sendSysMessage(CypherStrings.YouAre, player.isGMVisible() ? global.getObjectMgr().getCypherString(CypherStrings.Visible) : global.getObjectMgr().getCypherString(CypherStrings.Invisible));
+            handler.sendSysMessage(SysMessage.YouAre, player.isGMVisible() ? global.getObjectMgr().getSysMessage(SysMessage.Visible) : global.getObjectMgr().getSysMessage(SysMessage.Invisible));
 
             return true;
         }
@@ -176,12 +176,12 @@ class GMCommands {
 
             player.setGMVisible(true);
             player.updateObjectVisibility();
-            handler.getSession().sendNotification(CypherStrings.InvisibleVisible);
+            handler.getSession().sendNotification(SysMessage.InvisibleVisible);
         } else {
             player.addAura(VISUAL_AURA, player);
             player.setGMVisible(false);
             player.updateObjectVisibility();
-            handler.getSession().sendNotification(CypherStrings.InvisibleInvisible);
+            handler.getSession().sendNotification(SysMessage.InvisibleInvisible);
         }
 
         return true;

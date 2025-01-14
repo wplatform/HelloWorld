@@ -68,7 +68,7 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
     public void addToWorld() {
         // Register the dynamicObject for guid lookup and for caster
         if (!isInWorld()) {
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryAdd(getGUID(), this);
             super.addToWorld();
             bindToCaster();
@@ -95,7 +95,7 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
             unbindFromCaster();
             super.removeFromWorld();
             tangible.OutObject<WorldObject> tempOut__ = new tangible.OutObject<WorldObject>();
-// C# TO JAVA CONVERTER TASK: There is no Java ConcurrentHashMap equivalent to this .NET ConcurrentDictionary method:
+
             getMap().getObjectsStore().TryRemove(getGUID(), tempOut__);
             _ = tempOut__.outArgValue;
         }

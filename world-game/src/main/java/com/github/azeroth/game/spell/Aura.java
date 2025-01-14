@@ -1308,7 +1308,7 @@ public class Aura {
             }
 
             // check same periodic auras
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //			bool hasPeriodicNonAreaEffect(SpellInfo spellInfo)
 //				{
 //					foreach (var spellEffectInfo in spellInfo.effects)
@@ -1625,7 +1625,7 @@ public class Aura {
         return DUMMYHASHSET;
     }
 
-// C# TO JAVA CONVERTER TASK: Methods returning tuples are not converted by C# to Java Converter:
+
 //	public list<(IAuraScript, IAuraEffectHandler)> getEffectScripts(AuraScriptHookType h, int index)
 //		{
 //			if (effectHandlers.TryGetValue(index, out var effDict) && effDict.TryGetValue(h, out var scripts))
@@ -2313,14 +2313,14 @@ public class Aura {
 
     private void addAuraEffect(int index, IAuraScript script, IAuraEffectHandler effect) {
         var effecTypes;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!effectHandlers.TryGetValue(index, out effecTypes)) {
             effecTypes = new Dictionary<AuraScriptHookType, ArrayList<(IAuraScript, IAuraEffectHandler) >> ();
             effectHandlers.add(index, effecTypes);
         }
 
         var effects;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!effecTypes.TryGetValue(effect.getHookType(), out effects)) {
             effects = new ArrayList<(IAuraScript, IAuraEffectHandler) > ();
             effecTypes.add(effect.getHookType(), effects);
@@ -2350,7 +2350,7 @@ public class Aura {
         return (byte) maxProcCharges;
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region CallScripts
 
     private boolean callScriptCheckAreaTargetHandlers(Unit target) {
@@ -2842,6 +2842,6 @@ public class Aura {
         return String.format("Id: %1$s Name: '%2$s' Caster: %3$s\nOwner: %4$s", getId(), getSpellInfo().getSpellName().get(global.getWorldMgr().getDefaultDbcLocale()), getCasterGuid(), (getOwner() != null ? getOwner().getDebugInfo() : "NULL"));
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

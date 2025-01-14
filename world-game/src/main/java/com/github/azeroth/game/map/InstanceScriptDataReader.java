@@ -62,7 +62,7 @@ class InstanceScriptDataReader {
 
     private Result parseHeader() {
         var header;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!doc.RootElement.TryGetProperty("Header", out header)) {
             Log.outError(LogFilter.Scripts, String.format("Missing data header for instance %1$s [%2$s-%3$s | %4$s-%5$s]", getInstanceId(), getMapId(), getMapName(), getDifficultyId(), getDifficultyName()));
 
@@ -80,7 +80,7 @@ class InstanceScriptDataReader {
 
     private Result parseBossStates() {
         var bossStates;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!doc.RootElement.TryGetProperty("BossStates", out bossStates)) {
             Log.outError(LogFilter.Scripts, String.format("Missing boss states for instance %1$s [%2$s-%3$s | %4$s-%5$s]", getInstanceId(), getMapId(), getMapName(), getDifficultyId(), getDifficultyName()));
 
@@ -124,7 +124,7 @@ class InstanceScriptDataReader {
 
     private Result parseAdditionalData() {
         var moreData;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
         if (!doc.RootElement.TryGetProperty("AdditionalData", out moreData)) {
             return result.Ok;
         }
@@ -137,7 +137,7 @@ class InstanceScriptDataReader {
 
         for (var valueBase : instance.getPersistentScriptValues()) {
             var value;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             if (moreData.TryGetProperty(valueBase.getName(), out value) && value.ValueKind != JsonValueKind.Null) {
                 if (value.ValueKind != JsonValueKind.Number) {
                     Log.outError(LogFilter.Scripts, String.format("Additional data second for first %1$s is not a number for instance %2$s [%3$s-%4$s | %5$s-%6$s]", valueBase.getName(), getInstanceId(), getMapId(), getMapName(), getDifficultyId(), getDifficultyName()));
@@ -146,7 +146,7 @@ class InstanceScriptDataReader {
                 }
 
                 var doubleValue;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
                 if (value.TryGetDouble(out doubleValue)) {
                     valueBase.loadValue(doubleValue);
                 } else {

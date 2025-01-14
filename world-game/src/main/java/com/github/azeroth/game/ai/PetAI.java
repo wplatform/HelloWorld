@@ -179,7 +179,7 @@ public class PetAI extends CreatureAI {
                 var index = RandomUtil.IRand(0, targetSpellStore.size() - 1);
                 var tss = targetSpellStore.get(index);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 var(target, spell) = tss;
 
                 targetSpellStore.remove(index);

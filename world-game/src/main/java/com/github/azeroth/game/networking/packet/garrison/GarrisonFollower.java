@@ -1,6 +1,7 @@
 package com.github.azeroth.game.networking.packet.garrison;
 
 
+import com.github.azeroth.dbc.domain.GarrAbility;
 import com.github.azeroth.game.networking.WorldPacket;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class GarrisonFollower {
     public int durability;
     public int currentBuildingID;
     public int currentMissionID;
-    public ArrayList<GarrAbilityRecord> abilityID = new ArrayList<>();
+    public ArrayList<GarrAbility> abilityID = new ArrayList<>();
     public int zoneSupportSpellID;
     public int followerStatus;
     public int health;
@@ -43,7 +44,7 @@ public class GarrisonFollower {
         data.writeInt8(boardIndex);
         data.writeInt64(healingTimestamp);
 
-        abilityID.forEach(ability -> data.writeInt32(ability.id));
+        abilityID.forEach(ability -> data.writeInt32(ability.getId()));
 
         data.writeBits(customName.getBytes().length, 7);
         data.flushBits();

@@ -1,5 +1,8 @@
-package com.github.azeroth.game.entity.creature;
+package com.github.azeroth.game.domain.creature;
 
+
+import com.github.azeroth.game.domain.creature.ItemVendorType;
+import com.github.azeroth.game.domain.creature.VendorItem;
 
 import java.util.ArrayList;
 
@@ -12,7 +15,7 @@ public class VendorItemData {
             return null;
         }
 
-        return items.get((int) slot);
+        return items.get(slot);
     }
 
     public final boolean empty() {
@@ -28,17 +31,12 @@ public class VendorItemData {
     }
 
     public final boolean removeItem(int item_id, ItemVendorType type) {
-        var i = tangible.ListHelper.removeAll(items, p -> p.item == item_id && p.type == type);
-
-        if (i == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return items.removeIf(vendorItem -> vendorItem.item == item_id && vendorItem.type == type);
     }
 
     public final VendorItem findItemCostPair(int itemId, int extendedCost, ItemVendorType type) {
-        return tangible.ListHelper.find(items, p -> p.item == itemId && p.extendedCost == extendedCost && p.type == type);
+        return items.stream().filter(vendorItem -> vendorItem.item == itemId && vendorItem.extendedCost == extendedCost && vendorItem.type == type)
+                .findFirst().orElse(null);
     }
 
     public final void clear() {

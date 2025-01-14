@@ -23,7 +23,7 @@ import lombok.ToString;
         @Db2Field(name = "name", type = Db2Type.STRING),
         @Db2Field(name = "flags", type = Db2Type.BYTE)
 })
-public class CreatureType implements DbcEntity {
+public class CreatureTypeEntry implements DbcEntity {
     @Id
 
     @Column("ID")

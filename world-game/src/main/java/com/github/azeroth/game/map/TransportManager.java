@@ -28,7 +28,7 @@ public class TransportManager {
         leg.getSpline().initSplineCustom(initer);
         leg.getSpline().initLengths();
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		uint legTimeAccelDecel(double dist)
 //			{
 //				var speed = (double)goInfo.moTransport.moveSpeed;
@@ -41,7 +41,7 @@ public class TransportManager {
 //					return (uint)((dist - (accelDist + accelDist)) / speed * 1000.0 + speed / accel * 2000.0);
 //			}
 
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		uint legTimeAccel(double dist)
 //			{
 //				var speed = (double)goInfo.moTransport.moveSpeed;

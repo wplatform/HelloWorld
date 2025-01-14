@@ -6,16 +6,16 @@ import game.*;
 import java.util.ArrayList;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class CharacterCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterTitlesCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
         }
 
         if (player == null || !player.isConnected()) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -24,7 +24,7 @@ class CharacterCommands {
 
         var loc = handler.getSessionDbcLocale();
         var targetName = player.getName();
-        var knownStr = handler.getCypherString(CypherStrings.Known);
+        var knownStr = handler.getSysMessage(SysMessage.Known);
 
         // Search in CharTitles.dbc
         for (var titleInfo : CliDB.CharTitlesStorage.values()) {
@@ -42,16 +42,16 @@ class CharacterCommands {
                 var activeStr = "";
 
                 if (target.getPlayerData().playerTitle == titleInfo.MaskID) {
-                    activeStr = handler.getCypherString(CypherStrings.active);
+                    activeStr = handler.getSysMessage(SysMessage.active);
                 }
 
                 var titleName = String.format(name.ConvertFormatSyntax(), targetName);
 
                 // send title in "id (idx:idx) - [namedlink locale]" format
                 if (handler.getSession() != null) {
-                    handler.sendSysMessage(CypherStrings.TitleListChat, titleInfo.id, titleInfo.MaskID, titleInfo.id, titleName, loc, knownStr, activeStr);
+                    handler.sendSysMessage(SysMessage.TitleListChat, titleInfo.id, titleInfo.MaskID, titleInfo.id, titleName, loc, knownStr, activeStr);
                 } else {
-                    handler.sendSysMessage(CypherStrings.TitleListConsole, titleInfo.id, titleInfo.MaskID, name, loc, knownStr, activeStr);
+                    handler.sendSysMessage(SysMessage.TitleListConsole, titleInfo.id, titleInfo.MaskID, name, loc, knownStr, activeStr);
                 }
             }
         }
@@ -60,8 +60,8 @@ class CharacterCommands {
     }
 
     //rename character
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleCharacterRenameCommand(CommandHandler handler, PlayerIdentifier player, String newName) {
         if (player == null && !newName.isEmpty()) {
             return false;
@@ -84,7 +84,7 @@ class CharacterCommands {
             tangible.RefObject<String> tempRef_newName = new tangible.RefObject<String>(newName);
             if (!ObjectManager.normalizePlayerName(tempRef_newName)) {
                 newName = tempRef_newName.refArgValue;
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             } else {
@@ -92,7 +92,7 @@ class CharacterCommands {
             }
 
             if (ObjectManager.checkPlayerName(newName, player.isConnected() ? player.getConnectedPlayer().getSession().getSessionDbcLocale() : global.getWorldMgr().getDefaultDbcLocale(), true) != ResponseCodes.CharNameSuccess) {
-                handler.sendSysMessage(CypherStrings.BadValue);
+                handler.sendSysMessage(SysMessage.BadValue);
 
                 return false;
             }
@@ -101,7 +101,7 @@ class CharacterCommands {
 
             if (session != null) {
                 if (!session.hasPermission(RBACPermissions.SkipCheckCharacterCreationReservedname) && global.getObjectMgr().isReservedName(newName)) {
-                    handler.sendSysMessage(CypherStrings.ReservedName);
+                    handler.sendSysMessage(SysMessage.ReservedName);
 
                     return false;
                 }
@@ -112,7 +112,7 @@ class CharacterCommands {
             var result = DB.characters.query(stmt);
 
             if (!result.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.RenamePlayerAlreadyExists, newName);
+                handler.sendSysMessage(SysMessage.RenamePlayerAlreadyExists, newName);
 
                 return false;
             }
@@ -140,7 +140,7 @@ class CharacterCommands {
 
             global.getCharacterCacheStorage().updateCharacterData(player.getGUID(), newName);
 
-            handler.sendSysMessage(CypherStrings.RenamePlayerWithNewName, player.getName(), newName);
+            handler.sendSysMessage(SysMessage.RenamePlayerWithNewName, player.getName(), newName);
 
             if (session != null) {
                 var sessionPlayer = session.getPlayer();
@@ -155,7 +155,7 @@ class CharacterCommands {
             var target = player.getConnectedPlayer();
 
             if (target != null) {
-                handler.sendSysMessage(CypherStrings.RenamePlayer, handler.getNameLink(target));
+                handler.sendSysMessage(SysMessage.RenamePlayer, handler.getNameLink(target));
                 target.setAtLoginFlag(AtLoginFlags.Rename);
             } else {
                 // check offline security
@@ -163,7 +163,7 @@ class CharacterCommands {
                     return false;
                 }
 
-                handler.sendSysMessage(CypherStrings.RenamePlayerGuid, handler.playerLink(player.getName()), player.getGUID().toString());
+                handler.sendSysMessage(SysMessage.RenamePlayerGuid, handler.playerLink(player.getName()), player.getGUID().toString());
 
                 var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ADD_AT_LOGIN_FLAG);
                 stmt.AddValue(0, (short) AtLoginFlags.Rename.getValue());
@@ -175,7 +175,7 @@ class CharacterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterLevelCommand(CommandHandler handler, PlayerIdentifier player, short newlevel) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -204,12 +204,12 @@ class CharacterCommands {
 
             if (handler.needReportToTarget(target)) {
                 if (oldlevel == newlevel) {
-                    target.sendSysMessage(CypherStrings.YoursLevelProgressReset, handler.getNameLink());
+                    target.sendSysMessage(SysMessage.YoursLevelProgressReset, handler.getNameLink());
                 } else if (oldlevel < newlevel) {
-                    target.sendSysMessage(CypherStrings.YoursLevelUp, handler.getNameLink(), newlevel);
+                    target.sendSysMessage(SysMessage.YoursLevelUp, handler.getNameLink(), newlevel);
                 } else // if (oldlevel > newlevel)
                 {
-                    target.sendSysMessage(CypherStrings.YoursLevelDown, handler.getNameLink(), newlevel);
+                    target.sendSysMessage(SysMessage.YoursLevelDown, handler.getNameLink(), newlevel);
                 }
             }
         } else {
@@ -222,13 +222,13 @@ class CharacterCommands {
 
         if (!handler.getSession() || (handler.getSession().getPlayer() != player.getConnectedPlayer())) // including chr == NULL
         {
-            handler.sendSysMessage(CypherStrings.YouChangeLvl, handler.playerLink(player.getName()), newlevel);
+            handler.sendSysMessage(SysMessage.YouChangeLvl, handler.playerLink(player.getName()), newlevel);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterCustomizeCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTarget(handler);
@@ -241,10 +241,10 @@ class CharacterCommands {
         var target = player.getConnectedPlayer();
 
         if (target != null) {
-            handler.sendSysMessage(CypherStrings.CustomizePlayer, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.CustomizePlayer, handler.getNameLink(target));
             target.setAtLoginFlag(AtLoginFlags.Customize);
         } else {
-            handler.sendSysMessage(CypherStrings.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
+            handler.sendSysMessage(SysMessage.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
             var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ADD_AT_LOGIN_FLAG);
             stmt.AddValue(0, (short) AtLoginFlags.Customize.getValue());
             stmt.AddValue(1, player.getGUID().getCounter());
@@ -254,7 +254,7 @@ class CharacterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterChangeAccountCommand(CommandHandler handler, PlayerIdentifier player, AccountIdentifier newAccount) {
         if (player == null) {
             player = PlayerIdentifier.fromTarget(handler);
@@ -267,7 +267,7 @@ class CharacterCommands {
         var characterInfo = global.getCharacterCacheStorage().getCharacterCacheByGuid(player.getGUID());
 
         if (characterInfo == null) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -283,7 +283,7 @@ class CharacterCommands {
 
         if (charCount != 0) {
             if (charCount >= WorldConfig.getIntValue(WorldCfg.CharactersPerRealm)) {
-                handler.sendSysMessage(CypherStrings.AccountCharacterListFull, newAccount.getName(), newAccount.getID());
+                handler.sendSysMessage(SysMessage.AccountCharacterListFull, newAccount.getName(), newAccount.getID());
 
                 return false;
             }
@@ -305,7 +305,7 @@ class CharacterCommands {
 
         global.getCharacterCacheStorage().updateCharacterAccountId(player.getGUID(), newAccount.getID());
 
-        handler.sendSysMessage(CypherStrings.ChangeAccountSuccess, player.getName(), newAccount.getName());
+        handler.sendSysMessage(SysMessage.ChangeAccountSuccess, player.getName(), newAccount.getName());
 
         var logString = String.format("changed ownership of player %1$s (%2$s) from account %3$s to account %4$s", player.getName(), player.getGUID(), oldAccountId, newAccount.getID());
         var session = handler.getSession();
@@ -317,13 +317,13 @@ class CharacterCommands {
                 Log.outCommand(session.getAccountId(), String.format("GM %1$s (Account: %2$s) %3$s", sessionPlayer.getName(), session.getAccountId(), logString));
             }
         } else {
-            Log.outCommand(0, String.format("%1$s %2$s", handler.getCypherString(CypherStrings.Console), logString));
+            Log.outCommand(0, String.format("%1$s %2$s", handler.getSysMessage(SysMessage.Console), logString));
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterChangeFactionCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTarget(handler);
@@ -336,10 +336,10 @@ class CharacterCommands {
         var target = player.getConnectedPlayer();
 
         if (target != null) {
-            handler.sendSysMessage(CypherStrings.CustomizePlayer, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.CustomizePlayer, handler.getNameLink(target));
             target.setAtLoginFlag(AtLoginFlags.ChangeFaction);
         } else {
-            handler.sendSysMessage(CypherStrings.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
+            handler.sendSysMessage(SysMessage.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
             var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ADD_AT_LOGIN_FLAG);
             stmt.AddValue(0, (short) AtLoginFlags.ChangeFaction.getValue());
             stmt.AddValue(1, player.getGUID().getCounter());
@@ -349,7 +349,7 @@ class CharacterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterChangeRaceCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTarget(handler);
@@ -362,10 +362,10 @@ class CharacterCommands {
         var target = player.getConnectedPlayer();
 
         if (target != null) {
-            handler.sendSysMessage(CypherStrings.CustomizePlayer, handler.getNameLink(target));
+            handler.sendSysMessage(SysMessage.CustomizePlayer, handler.getNameLink(target));
             target.setAtLoginFlag(AtLoginFlags.ChangeRace);
         } else {
-            handler.sendSysMessage(CypherStrings.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
+            handler.sendSysMessage(SysMessage.CustomizePlayerGuid, handler.playerLink(player.getName()), player.getGUID().getCounter());
             var stmt = DB.characters.GetPreparedStatement(CharStatements.UPD_ADD_AT_LOGIN_FLAG);
             stmt.AddValue(0, (short) AtLoginFlags.ChangeRace.getValue());
             stmt.AddValue(1, player.getGUID().getCounter());
@@ -375,14 +375,14 @@ class CharacterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterReputationCommand(CommandHandler handler, PlayerIdentifier player) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
         }
 
         if (player == null || !player.isConnected()) {
-            handler.sendSysMessage(CypherStrings.PlayerNotFound);
+            handler.sendSysMessage(SysMessage.PlayerNotFound);
 
             return false;
         }
@@ -397,7 +397,7 @@ class CharacterCommands {
             var factionEntry = CliDB.FactionStorage.get(faction.id);
             var factionName = factionEntry != null ? factionEntry.name.charAt(loc) : "#Not found#";
             var rank = target.getReputationMgr().getRank(factionEntry);
-            var rankName = handler.getCypherString(ReputationMgr.ReputationRankStrIndex[rank.getValue()]);
+            var rankName = handler.getSysMessage(ReputationMgr.ReputationRankStrIndex[rank.getValue()]);
             StringBuilder ss = new StringBuilder();
 
             if (handler.getSession() != null) {
@@ -409,27 +409,27 @@ class CharacterCommands {
             ss.append(String.format(" %1$s (%2$s)", rankName, target.getReputationMgr().getReputation(factionEntry)));
 
             if (faction.flags.hasFlag(ReputationFlags.Visible)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionVisible));
+                ss.append(handler.getSysMessage(SysMessage.FactionVisible));
             }
 
             if (faction.flags.hasFlag(ReputationFlags.AtWar)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionAtwar));
+                ss.append(handler.getSysMessage(SysMessage.FactionAtwar));
             }
 
             if (faction.flags.hasFlag(ReputationFlags.Peaceful)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionPeaceForced));
+                ss.append(handler.getSysMessage(SysMessage.FactionPeaceForced));
             }
 
             if (faction.flags.hasFlag(ReputationFlags.hidden)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionHidden));
+                ss.append(handler.getSysMessage(SysMessage.FactionHidden));
             }
 
             if (faction.flags.hasFlag(ReputationFlags.header)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionInvisibleForced));
+                ss.append(handler.getSysMessage(SysMessage.FactionInvisibleForced));
             }
 
             if (faction.flags.hasFlag(ReputationFlags.inactive)) {
-                ss.append(handler.getCypherString(CypherStrings.FactionInactive));
+                ss.append(handler.getSysMessage(SysMessage.FactionInactive));
             }
 
             handler.sendSysMessage(ss.toString());
@@ -438,7 +438,7 @@ class CharacterCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static boolean handleCharacterEraseCommand(CommandHandler handler, PlayerIdentifier player) {
         int accountId;
 
@@ -457,13 +457,13 @@ class CharacterCommands {
         accountName = tempOut_accountName.outArgValue;
 
         player.deleteFromDB(player.getGUID(), accountId, true, true);
-        handler.sendSysMessage(CypherStrings.CharacterDeleted, player.getName(), player.getGUID().toString(), accountName, accountId);
+        handler.sendSysMessage(SysMessage.CharacterDeleted, player.getName(), player.getGUID().toString(), accountName, accountId);
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
+
     private static boolean handleLevelUpCommand(CommandHandler handler, PlayerIdentifier player, short level) {
         if (player == null) {
             player = PlayerIdentifier.fromTargetOrSelf(handler);
@@ -494,12 +494,12 @@ class CharacterCommands {
 
             if (handler.needReportToTarget(player.getConnectedPlayer())) {
                 if (oldlevel == newlevel) {
-                    player.getConnectedPlayer().sendSysMessage(CypherStrings.YoursLevelProgressReset, handler.getNameLink());
+                    player.getConnectedPlayer().sendSysMessage(SysMessage.YoursLevelProgressReset, handler.getNameLink());
                 } else if (oldlevel < newlevel) {
-                    player.getConnectedPlayer().sendSysMessage(CypherStrings.YoursLevelUp, handler.getNameLink(), newlevel);
+                    player.getConnectedPlayer().sendSysMessage(SysMessage.YoursLevelUp, handler.getNameLink(), newlevel);
                 } else // if (oldlevel > newlevel)
                 {
-                    player.getConnectedPlayer().sendSysMessage(CypherStrings.YoursLevelDown, handler.getNameLink(), newlevel);
+                    player.getConnectedPlayer().sendSysMessage(SysMessage.YoursLevelDown, handler.getNameLink(), newlevel);
                 }
             }
         } else {
@@ -512,15 +512,15 @@ class CharacterCommands {
 
         if (handler.getSession() == null || handler.getSession().getPlayer() != target) // including chr == NULL
         {
-            handler.sendSysMessage(CypherStrings.YouChangeLvl, handler.playerLink(player.getName()), newlevel);
+            handler.sendSysMessage(SysMessage.YouChangeLvl, handler.playerLink(player.getName()), newlevel);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+    
     private static class DeletedCommands {
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleCharacterDeletedDeleteCommand(CommandHandler handler, String needle) {
             ArrayList<DeletedInfo> foundList = new ArrayList<>();
 
@@ -529,12 +529,12 @@ class CharacterCommands {
             }
 
             if (foundList.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListEmpty);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListEmpty);
 
                 return false;
             }
 
-            handler.sendSysMessage(CypherStrings.CharacterDeletedDelete);
+            handler.sendSysMessage(SysMessage.CharacterDeletedDelete);
             handleCharacterDeletedListHelper(foundList, handler);
 
             // Call the appropriate function to delete them (current account for deleted character is 0)
@@ -545,8 +545,8 @@ class CharacterCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
+
         private static boolean handleCharacterDeletedListCommand(CommandHandler handler, String needle) {
             ArrayList<DeletedInfo> foundList = new ArrayList<>();
 
@@ -556,7 +556,7 @@ class CharacterCommands {
 
             // if no character have been found, output a warning
             if (foundList.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListEmpty);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListEmpty);
 
                 return false;
             }
@@ -566,8 +566,8 @@ class CharacterCommands {
             return true;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
+
         private static boolean handleCharacterDeletedRestoreCommand(CommandHandler handler, String needle, String newCharName, AccountIdentifier newAccount) {
             ArrayList<DeletedInfo> foundList = new ArrayList<>();
 
@@ -576,12 +576,12 @@ class CharacterCommands {
             }
 
             if (foundList.isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListEmpty);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListEmpty);
 
                 return false;
             }
 
-            handler.sendSysMessage(CypherStrings.CharacterDeletedRestore);
+            handler.sendSysMessage(SysMessage.CharacterDeletedRestore);
             handleCharacterDeletedListHelper(foundList, handler);
 
             if (newCharName.isEmpty()) {
@@ -610,12 +610,12 @@ class CharacterCommands {
                 return true;
             }
 
-            handler.sendSysMessage(CypherStrings.CharacterDeletedErrRename);
+            handler.sendSysMessage(SysMessage.CharacterDeletedErrRename);
 
             return false;
         }
 
-        // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+        
         private static boolean handleCharacterDeletedOldCommand(CommandHandler handler, Short days) {
             var keepDays = WorldConfig.getIntValue(WorldCfg.ChardeleteKeepDays);
 
@@ -692,30 +692,30 @@ class CharacterCommands {
 
         private static void handleCharacterDeletedListHelper(ArrayList<DeletedInfo> foundList, CommandHandler handler) {
             if (handler.getSession() == null) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListBar);
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListHeader);
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListBar);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListBar);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListHeader);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListBar);
             }
 
             for (var info : foundList) {
                 var dateStr = time.UnixTimeToDateTime(info.deleteDate).ToShortDateString();
 
                 if (!handler.getSession()) {
-                    handler.sendSysMessage(CypherStrings.CharacterDeletedListLineConsole, info.guid.toString(), info.name, info.accountName.isEmpty() ? "<Not existed>" : info.accountName, info.accountId, dateStr);
+                    handler.sendSysMessage(SysMessage.CharacterDeletedListLineConsole, info.guid.toString(), info.name, info.accountName.isEmpty() ? "<Not existed>" : info.accountName, info.accountId, dateStr);
                 } else {
-                    handler.sendSysMessage(CypherStrings.CharacterDeletedListLineChat, info.guid.toString(), info.name, info.accountName.isEmpty() ? "<Not existed>" : info.accountName, info.accountId, dateStr);
+                    handler.sendSysMessage(SysMessage.CharacterDeletedListLineChat, info.guid.toString(), info.name, info.accountName.isEmpty() ? "<Not existed>" : info.accountName, info.accountId, dateStr);
                 }
             }
 
             if (!handler.getSession()) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedListBar);
+                handler.sendSysMessage(SysMessage.CharacterDeletedListBar);
             }
         }
 
         private static void handleCharacterDeletedRestoreHelper(DeletedInfo delInfo, CommandHandler handler) {
             if (delInfo.accountName.isEmpty()) // account not exist
             {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedSkipAccount, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
+                handler.sendSysMessage(SysMessage.CharacterDeletedSkipAccount, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
 
                 return;
             }
@@ -724,13 +724,13 @@ class CharacterCommands {
             var charcount = global.getAccountMgr().getCharactersCount(delInfo.accountId);
 
             if (charcount >= WorldConfig.getIntValue(WorldCfg.CharactersPerRealm)) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedSkipFull, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
+                handler.sendSysMessage(SysMessage.CharacterDeletedSkipFull, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
 
                 return;
             }
 
             if (!global.getCharacterCacheStorage().getCharacterGuidByName(delInfo.name).isEmpty()) {
-                handler.sendSysMessage(CypherStrings.CharacterDeletedSkipName, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
+                handler.sendSysMessage(SysMessage.CharacterDeletedSkipName, delInfo.name, delInfo.guid.toString(), delInfo.accountId);
 
                 return;
             }

@@ -36,6 +36,6 @@ enum ABObjectives {
     }
 }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
 ///#endregion
 

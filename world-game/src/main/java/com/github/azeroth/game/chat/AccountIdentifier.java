@@ -54,7 +54,7 @@ class AccountIdentifier {
     public final ChatCommandResult tryConsume(CommandHandler handler, String args) {
         dynamic text;
         tangible.OutObject<dynamic> tempOut_text = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
         var next = CommandArgs.tryConsume(tempOut_text, String.class, handler, args);
         text = tempOut_text.outArgValue;
 
@@ -77,7 +77,7 @@ class AccountIdentifier {
         tangible.OutObject<Integer> tempOut_id = new tangible.OutObject<Integer>();
         if (tangible.TryParseHelper.tryParseInt(text, tempOut_id)) {
             id = tempOut_id.outArgValue;
-            return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserAccountNameNoExist, name));
+            return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserAccountNameNoExist, name));
         } else {
             id = tempOut_id.outArgValue;
         }
@@ -91,7 +91,7 @@ class AccountIdentifier {
             return next;
         } else {
             name = tempOut__name.outArgValue;
-            return ChatCommandResult.fromErrorMessage(handler.getParsedString(CypherStrings.CmdparserAccountIdNoExist, id));
+            return ChatCommandResult.fromErrorMessage(handler.getParsedString(SysMessage.CmdparserAccountIdNoExist, id));
         }
     }
 }

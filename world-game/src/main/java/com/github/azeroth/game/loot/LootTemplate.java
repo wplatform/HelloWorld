@@ -88,7 +88,7 @@ public class LootTemplate {
     }
 
     public final void processPersonalLoot(HashMap<Player, loot> personalLoot, boolean rate, short lootMode) {
-// C# TO JAVA CONVERTER TASK: Local functions are not converted by C# to Java Converter:
+
 //		list<Player> getLootersForItem(Func<Player, bool> predicate)
 //			{
 //				list<Player> lootersForItem = new();

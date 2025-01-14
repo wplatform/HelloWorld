@@ -16,7 +16,7 @@ class SHA1Randx {
         o1 = sh.ComputeHash(buff, 0, halfSize);
 
         sh = SHA1.create();
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# range operator:
+
         o2 = sh.ComputeHash(span[halfSize..].ToArray(), 0, buff.length - halfSize);
 
         fillUp();

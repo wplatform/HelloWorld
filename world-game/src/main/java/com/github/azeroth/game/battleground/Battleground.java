@@ -955,7 +955,7 @@ public class Battleground extends ZoneScript implements Closeable {
 
         for (var score : playerScores.entrySet()) {
             var playerData;
-// C# TO JAVA CONVERTER TASK: The following method call contained an unresolved 'out' keyword - these cannot be converted using the 'OutObject' helper class unless the method is within the code being modified:
+
             score.getValue().buildPvPLogPlayerDataPacket(out playerData);
 
             var player = global.getObjAccessor().getPlayer(getBgMap(), playerData.playerGUID);
@@ -1356,11 +1356,11 @@ public class Battleground extends ZoneScript implements Closeable {
         return addSpiritGuide(type, pos.getX(), pos.getY(), pos.getZ(), pos.getO(), teamIndex);
     }
 
-    public final void sendMessageToAll(CypherStrings entry, ChatMsg msgType) {
+    public final void sendMessageToAll(SysMessage entry, ChatMsg msgType) {
         sendMessageToAll(entry, msgType, null);
     }
 
-    public final void sendMessageToAll(CypherStrings entry, ChatMsg msgType, Player source) {
+    public final void sendMessageToAll(SysMessage entry, ChatMsg msgType, Player source) {
         if (entry == 0) {
             return;
         }
@@ -1370,7 +1370,7 @@ public class Battleground extends ZoneScript implements Closeable {
         broadcastWorker(localizer);
     }
 
-    public final void sendMessageToAll(CypherStrings entry, ChatMsg msgType, Player source, object... args) {
+    public final void sendMessageToAll(SysMessage entry, ChatMsg msgType, Player source, object... args) {
         if (entry == 0) {
             return;
         }
@@ -1455,7 +1455,7 @@ public class Battleground extends ZoneScript implements Closeable {
             updatePlayerScore(killer, ScoreType.honorableKills, 1);
             updatePlayerScore(killer, ScoreType.killingBlows, 1);
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
             for (var(guid, player) : m_Players) {
                 var creditedPlayer = global.getObjAccessor().findPlayer(guid);
 
@@ -1673,7 +1673,7 @@ public class Battleground extends ZoneScript implements Closeable {
         m_Status = status;
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator bool(Battleground bg)
 //		{
 //			return bg != null;
@@ -1839,7 +1839,7 @@ public class Battleground extends ZoneScript implements Closeable {
     public void handleQuestComplete(int questid, Player player) {
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#region Fields
 
     public boolean canActivateGO(int entry, int team) {
@@ -2008,12 +2008,12 @@ public class Battleground extends ZoneScript implements Closeable {
             // announce every time.Minute
             if (newtime > (time.Minute * time.InMilliseconds)) {
                 if (newtime / (time.Minute * time.InMilliseconds) != m_PrematureCountDownTimer / (time.Minute * time.InMilliseconds)) {
-                    sendMessageToAll(CypherStrings.BattlegroundPrematureFinishWarning, ChatMsg.System, null, m_PrematureCountDownTimer / (time.Minute * time.InMilliseconds));
+                    sendMessageToAll(SysMessage.BattlegroundPrematureFinishWarning, ChatMsg.System, null, m_PrematureCountDownTimer / (time.Minute * time.InMilliseconds));
                 }
             } else {
                 //announce every 15 seconds
                 if (newtime / (15 * time.InMilliseconds) != m_PrematureCountDownTimer / (15 * time.InMilliseconds)) {
-                    sendMessageToAll(CypherStrings.BattlegroundPrematureFinishWarningSecs, ChatMsg.System, null, m_PrematureCountDownTimer / time.InMilliseconds);
+                    sendMessageToAll(SysMessage.BattlegroundPrematureFinishWarningSecs, ChatMsg.System, null, m_PrematureCountDownTimer / time.InMilliseconds);
                 }
             }
 
@@ -2157,7 +2157,7 @@ public class Battleground extends ZoneScript implements Closeable {
 
                 // Announce BG starting
                 if (WorldConfig.getBoolValue(WorldCfg.BattlegroundQueueAnnouncerEnable)) {
-                    global.getWorldMgr().sendWorldText(CypherStrings.BgStartedAnnounceWorld, getName(), getMinLevel(), getMaxLevel());
+                    global.getWorldMgr().sendWorldText(SysMessage.BgStartedAnnounceWorld, getName(), getMinLevel(), getMaxLevel());
                 }
             }
         }
@@ -2406,6 +2406,6 @@ public class Battleground extends ZoneScript implements Closeable {
         }
     }
 
-// C# TO JAVA CONVERTER TASK: There is no preprocessor in Java:
+
     ///#endregion
 }

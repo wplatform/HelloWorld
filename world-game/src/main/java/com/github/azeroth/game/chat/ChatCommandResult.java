@@ -1,7 +1,7 @@
 package com.github.azeroth.game.chat;
 
 public final class ChatCommandResult {
-    // C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+    
     private final dynamic value;
     private boolean result;
     private String errorMessage;
@@ -44,7 +44,7 @@ public final class ChatCommandResult {
         errorMessage = value;
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator string(ChatCommandResult stringResult)
 //		{
 //			return stringResult.value;

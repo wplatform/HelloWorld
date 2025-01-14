@@ -181,7 +181,7 @@ public class FlightPathMovementGenerator extends MovementGeneratorMedium<Player>
 
             if (!nodes.isEmpty()) {
                 var start = nodes[0];
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to the C# index operator:
+
                 var end = nodes[ ^ 1];
                 var passedPreviousSegmentProximityCheck = false;
 

@@ -45,7 +45,7 @@ public class PlayerMenu {
             packet.textID = (int) text.getData().SelectRandomElementByWeight(data -> data.probability).broadcastTextID;
         }
 
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
         for (var(index, item) : gossipMenu.getMenuItems()) {
             ClientGossipOptions opt = new ClientGossipOptions();
             opt.gossipOptionID = item.gossipOptionId;

@@ -1,7 +1,7 @@
 package com.github.azeroth.game.service;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 public final class ServiceAttribute extends Attribute {
     private int serviceHash;
     private int methodId;

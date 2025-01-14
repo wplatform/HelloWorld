@@ -7,7 +7,7 @@ final class QuotedString {
         return str.isEmpty();
     }
 
-// C# TO JAVA CONVERTER TASK: The following operator overload is not converted by C# to Java Converter:
+
 //	public static implicit operator string(QuotedString quotedString)
 //		{
 //			return quotedString.str;
@@ -23,7 +23,7 @@ final class QuotedString {
         if ((args.charAt(0) != '"') && (args.charAt(0) != '\'')) {
             dynamic str;
             tangible.OutObject<dynamic> tempOut_str = new tangible.OutObject<dynamic>();
-// C# TO JAVA CONVERTER TASK: There is no Java equivalent to the C# 'dynamic' keyword:
+
             var tempVar = CommandArgs.tryConsume(tempOut_str, String.class, handler, args);
             str = tempOut_str.outArgValue;
             return tempVar;
@@ -33,7 +33,7 @@ final class QuotedString {
 
         for (var i = 1; i < args.length(); ++i) {
             if (args.charAt(i) == QUOTE) {
-// C# TO JAVA CONVERTER TASK: Java has no equivalent to C# deconstruction declarations:
+
                 var(remainingToken, tail) = args.Substring(i + 1).Tokenize();
 
                 if (remainingToken.isEmpty()) // if this is not empty, then we did not consume the full token

@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.locale;
 
 
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
 class MiscAddItemCommands {
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAddItemCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -37,7 +37,7 @@ class MiscAddItemCommands {
                 });
 
                 if (record == null) {
-                    handler.sendSysMessage(CypherStrings.CommandCouldnotfind, itemName);
+                    handler.sendSysMessage(SysMessage.CommandCouldnotfind, itemName);
 
                     return false;
                 }
@@ -110,7 +110,7 @@ class MiscAddItemCommands {
         var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
 
         if (itemTemplate == null) {
-            handler.sendSysMessage(CypherStrings.CommandItemidinvalid, itemId);
+            handler.sendSysMessage(SysMessage.CommandItemidinvalid, itemId);
 
             return false;
         }
@@ -121,18 +121,18 @@ class MiscAddItemCommands {
 
             if (destroyedItemCount > 0) {
                 // output the amount of items successfully destroyed
-                handler.sendSysMessage(CypherStrings.Removeitem, itemId, destroyedItemCount, handler.getNameLink(playerTarget));
+                handler.sendSysMessage(SysMessage.Removeitem, itemId, destroyedItemCount, handler.getNameLink(playerTarget));
 
                 // check to see if we were unable to destroy all of the amount requested.
                 var unableToDestroyItemCount = (int) (-count - destroyedItemCount);
 
                 if (unableToDestroyItemCount > 0) {
                     // output message for the amount of items we couldn't destroy
-                    handler.sendSysMessage(CypherStrings.RemoveitemFailure, itemId, unableToDestroyItemCount, handler.getNameLink(playerTarget));
+                    handler.sendSysMessage(SysMessage.RemoveitemFailure, itemId, unableToDestroyItemCount, handler.getNameLink(playerTarget));
                 }
             } else {
                 // failed to destroy items of the amount requested
-                handler.sendSysMessage(CypherStrings.RemoveitemFailure, itemId, -count, handler.getNameLink(playerTarget));
+                handler.sendSysMessage(SysMessage.RemoveitemFailure, itemId, -count, handler.getNameLink(playerTarget));
             }
 
             return true;
@@ -154,7 +154,7 @@ class MiscAddItemCommands {
 
         if (count == 0 || dest.isEmpty()) // can't add any
         {
-            handler.sendSysMessage(CypherStrings.ItemCannotCreate, itemId, noSpaceForCount);
+            handler.sendSysMessage(SysMessage.ItemCannotCreate, itemId, noSpaceForCount);
 
             return false;
         }
@@ -174,7 +174,7 @@ class MiscAddItemCommands {
 
         if (count > 0 && item) {
             player.sendNewItem(item, (int) count, false, true);
-            handler.sendSysMessage(CypherStrings.Additem, itemId, count, handler.getNameLink(playerTarget));
+            handler.sendSysMessage(SysMessage.Additem, itemId, count, handler.getNameLink(playerTarget));
 
             if (player != playerTarget) {
                 playerTarget.sendNewItem(item, (int) count, true, false);
@@ -182,18 +182,18 @@ class MiscAddItemCommands {
         }
 
         if (noSpaceForCount > 0) {
-            handler.sendSysMessage(CypherStrings.ItemCannotCreate, itemId, noSpaceForCount);
+            handler.sendSysMessage(SysMessage.ItemCannotCreate, itemId, noSpaceForCount);
         }
 
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
-// C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
+
     private static boolean handleAddItemSetCommand(CommandHandler handler, int itemSetId, String bonuses, Byte context) {
         // prevent generation all items with itemset field value '0'
         if (itemSetId == 0) {
-            handler.sendSysMessage(CypherStrings.NoItemsFromItemsetFound, itemSetId);
+            handler.sendSysMessage(SysMessage.NoItemsFromItemsetFound, itemSetId);
 
             return false;
         }
@@ -229,7 +229,7 @@ class MiscAddItemCommands {
             playerTarget = player;
         }
 
-        Log.outDebug(LogFilter.Server, global.getObjectMgr().getCypherString(CypherStrings.Additemset), itemSetId);
+        Log.outDebug(LogFilter.Server, global.getObjectMgr().getSysMessage(SysMessage.Additemset), itemSetId);
 
         var found = false;
         var its = global.getObjectMgr().getItemTemplates();
@@ -265,12 +265,12 @@ class MiscAddItemCommands {
                 }
             } else {
                 player.sendEquipError(msg, null, null, template.getValue().id);
-                handler.sendSysMessage(CypherStrings.ItemCannotCreate, template.getValue().id, 1);
+                handler.sendSysMessage(SysMessage.ItemCannotCreate, template.getValue().id, 1);
             }
         }
 
         if (!found) {
-            handler.sendSysMessage(CypherStrings.CommandNoitemsetfound, itemSetId);
+            handler.sendSysMessage(SysMessage.CommandNoitemsetfound, itemSetId);
 
             return false;
         }
@@ -278,7 +278,7 @@ class MiscAddItemCommands {
         return true;
     }
 
-    // C# TO JAVA CONVERTER TASK: Java annotations will not correspond to .NET attributes:
+
     private static boolean handleAddItemToCommand(CommandHandler handler, StringArguments args) {
         if (args.isEmpty()) {
             return false;
@@ -322,7 +322,7 @@ class MiscAddItemCommands {
                 });
 
                 if (itr == null) {
-                    handler.sendSysMessage(CypherStrings.CommandCouldnotfind, itemName);
+                    handler.sendSysMessage(SysMessage.CommandCouldnotfind, itemName);
 
                     return false;
                 }
@@ -387,7 +387,7 @@ class MiscAddItemCommands {
         var itemTemplate = global.getObjectMgr().getItemTemplate(itemId);
 
         if (itemTemplate == null) {
-            handler.sendSysMessage(CypherStrings.CommandItemidinvalid, itemId);
+            handler.sendSysMessage(SysMessage.CommandItemidinvalid, itemId);
 
             return false;
         }
@@ -398,18 +398,18 @@ class MiscAddItemCommands {
 
             if (destroyedItemCount > 0) {
                 // output the amount of items successfully destroyed
-                handler.sendSysMessage(CypherStrings.Removeitem, itemId, destroyedItemCount, handler.getNameLink(playerTarget));
+                handler.sendSysMessage(SysMessage.Removeitem, itemId, destroyedItemCount, handler.getNameLink(playerTarget));
 
                 // check to see if we were unable to destroy all of the amount requested.
                 var unableToDestroyItemCount = (int) (-count - destroyedItemCount);
 
                 if (unableToDestroyItemCount > 0) {
                     // output message for the amount of items we couldn't destroy
-                    handler.sendSysMessage(CypherStrings.RemoveitemFailure, itemId, unableToDestroyItemCount, handler.getNameLink(playerTarget));
+                    handler.sendSysMessage(SysMessage.RemoveitemFailure, itemId, unableToDestroyItemCount, handler.getNameLink(playerTarget));
                 }
             } else {
                 // failed to destroy items of the amount requested
-                handler.sendSysMessage(CypherStrings.RemoveitemFailure, itemId, -count, handler.getNameLink(playerTarget));
+                handler.sendSysMessage(SysMessage.RemoveitemFailure, itemId, -count, handler.getNameLink(playerTarget));
             }
 
             return true;
@@ -431,7 +431,7 @@ class MiscAddItemCommands {
 
         if (count == 0 || dest.isEmpty()) // can't add any
         {
-            handler.sendSysMessage(CypherStrings.ItemCannotCreate, itemId, noSpaceForCount);
+            handler.sendSysMessage(SysMessage.ItemCannotCreate, itemId, noSpaceForCount);
 
             return false;
         }
@@ -458,7 +458,7 @@ class MiscAddItemCommands {
         }
 
         if (noSpaceForCount > 0) {
-            handler.sendSysMessage(CypherStrings.ItemCannotCreate, itemId, noSpaceForCount);
+            handler.sendSysMessage(SysMessage.ItemCannotCreate, itemId, noSpaceForCount);
         }
 
         return true;
