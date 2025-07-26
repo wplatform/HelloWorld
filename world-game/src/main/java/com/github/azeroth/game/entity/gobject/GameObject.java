@@ -9,6 +9,10 @@ import com.github.azeroth.defines.LootMode;
 import com.github.azeroth.game.ai.AISelector;
 import com.github.azeroth.game.ai.GameObjectAI;
 import com.github.azeroth.game.battleground.Battleground;
+import com.github.azeroth.game.domain.gobject.GameObjectData;
+import com.github.azeroth.game.domain.gobject.GameObjectOverride;
+import com.github.azeroth.game.domain.gobject.GameObjectTemplate;
+import com.github.azeroth.game.domain.gobject.GameObjectTemplateAddon;
 import com.github.azeroth.game.entity.ObjectFieldData;
 import com.github.azeroth.game.entity.UpdateMask;
 import com.github.azeroth.game.entity.gameObjectFieldData;
@@ -2577,7 +2581,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                 }
 
                 //required lvl checks!
-                var userLevels = global.getDB2Mgr().GetContentTuningData(info.contentTuningId, player.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
+                var userLevels = global.getDB2Mgr().GetContentTuningData(info.requiredLevel, player.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
 
                 if (userLevels != null) {
                     if (player.getLevel() < userLevels.getValue().maxLevel) {
@@ -2585,7 +2589,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
                     }
                 }
 
-                var targetLevels = global.getDB2Mgr().GetContentTuningData(info.contentTuningId, targetPlayer.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
+                var targetLevels = global.getDB2Mgr().GetContentTuningData(info.requiredLevel, targetPlayer.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
 
                 if (targetLevels != null) {
                     if (targetPlayer.getLevel() < targetLevels.getValue().maxLevel) {
@@ -3891,7 +3895,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
             var player = target.toPlayer();
 
             if (player != null) {
-                var userLevels = global.getDB2Mgr().GetContentTuningData(getTemplate().contentTuningId, player.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
+                var userLevels = global.getDB2Mgr().GetContentTuningData(getTemplate().requiredLevel, player.getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
 
                 if (userLevels != null) {
                     return (byte) Math.Clamp(player.getLevel(), userLevels.getValue().minLevel, userLevels.getValue().maxLevel);

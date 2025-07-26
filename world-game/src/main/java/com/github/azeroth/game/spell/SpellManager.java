@@ -2572,7 +2572,7 @@ public final class SpellManager {
         spellInfoMap.clear();
         var loadData = new HashMap<( int id, Difficulty difficulty),SpellInfoLoadHelper > ();
 
-        HashMap<Integer, BattlePetSpeciesRecord> battlePetSpeciesByCreature = new HashMap<Integer, BattlePetSpeciesRecord>();
+        HashMap<Integer, BattlePetSpecie> battlePetSpeciesByCreature = new HashMap<Integer, BattlePetSpecie>();
 
         for (var battlePetSpecies : CliDB.BattlePetSpeciesStorage.values()) {
             if (battlePetSpecies.creatureID != 0) {

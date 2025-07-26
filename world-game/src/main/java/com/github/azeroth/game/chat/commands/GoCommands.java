@@ -3,7 +3,7 @@ package com.github.azeroth.game.chat.commands;
 
 import com.github.azeroth.game.domain.creature.CreatureTemplate;
 import com.github.azeroth.game.entity.creature.creatureData;
-import com.github.azeroth.game.entity.gobject.GameObjectData;
+import com.github.azeroth.game.domain.gobject.GameObjectData;
 import com.github.azeroth.game.supportsystem.BugTicket;
 import com.github.azeroth.game.supportsystem.ComplaintTicket;
 import com.github.azeroth.game.supportsystem.SuggestionTicket;

@@ -98,6 +98,10 @@ public interface CreatureRepository {
     @Query("SELECT level, `class` as klass, basemana, attackpower, rangedattackpower FROM creature_classlevelstats")
     Stream<CreatureBaseStats> streamAllCreatureClassLevelStats();
 
+
+    @Query("SELECT guid, PathId, mount, StandState, AnimTier, VisFlags, SheathState, PvPFlags, emote, aiAnimKit, movementAnimKit, meleeAnimKit, visibilityDistanceType, auras FROM creature_addon")
+    Stream<CreatureAddon> streamAllCreatureAddon();
+
     @Query("""
             SELECT cmo.SpawnId,
                 COALESCE(cmo.Ground, ctm.Ground),
@@ -116,6 +120,26 @@ public interface CreatureRepository {
     Stream<int[]> streamAllCreatureEquipTemplate();
     @Query("SELECT guid, linkedGuid, linkType FROM linked_respawn ORDER BY guid ASC")
     Stream<int[]> streamAllLinkedRespawn();
+    @Modifying
+    @Query("DELETE FROM linked_respawn WHERE guid = :guid AND linkType  = :linkType")
+    void deleteLinkedRespawn(int guid, int linkType);
+    @Modifying
+    @Query("DELETE FROM linked_respawn WHERE linkedGuid = :linkedGuid AND linkType = :linkType")
+    void deleteLinkedRespawnMaster(int linkedGuid, int linkType);
+
+    @Modifying
+    @Query("REPLACE INTO linked_respawn (guid, linkedGuid, linkType) VALUES (?, ?, ?)")
+    void replaceLinkedRespawn(int guid, int linkedGuid, int linkType);
     @Query("SELECT CreatureEntry, DifficultyID, ItemId, Idx FROM creature_questitem ORDER BY Idx ASC")
     Stream<int[]> streamAllCreatureQuestItem();
+    @Query("SELECT CreatureID, TrainerID, MenuID, OptionID FROM creature_trainer")
+    Stream<int[]> streamAllCreatureTrainer();
+
+    @Query("SELECT TrainerId, SpellId, MoneyCost, ReqSkillLine, ReqSkillRank, ReqAbility1, ReqAbility2, ReqAbility3, ReqLevel FROM trainer_spell")
+    Stream<TrainerSpell> streamAllTrainerSpell();
+
+    @Query("SELECT Id, Type, Greeting FROM trainer")
+    Stream<TrainerEntry> streamAllTrainer();
+    @Query("SELECT id, locale, Greeting_lang FROM trainer_locale")
+    Stream<Object[]> streamAllTrainerLocale();
 }

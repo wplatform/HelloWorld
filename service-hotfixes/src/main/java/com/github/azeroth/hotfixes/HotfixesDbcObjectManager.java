@@ -19,6 +19,7 @@ import com.github.azeroth.dbc.model.*;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.utils.MathUtil;
 import com.github.azeroth.utils.StringUtil;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
@@ -114,7 +115,8 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     private Map<Short, List<SpellVisualMissile>> spellVisualMissilesBySet;
     private Map<Integer, List<Talent>> talentsByPosition;
 
-    private Map<Integer, TaxiPathNode> taxiPathNodesByPath;
+    @Getter
+    private Map<Integer, List<TaxiPathNode>> taxiPathNodesByPath;
     private Map<Pair<Short, Short>, TaxiPath> taxiPaths;
     private Set<Integer> toys;
 
@@ -710,7 +712,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
         for (TaxiPathNode entry : taxiPathNode()) {
             //the max value of node index is 10100111(167)
             int id = entry.getPathID() << 10 | entry.getNodeIndex();
-            taxiPathNodesByPath.put(id, entry);
+            taxiPathNodesByPath.compute(id, Functions.addToList(entry));
         }
 
         // Initialize global taxinodes mask

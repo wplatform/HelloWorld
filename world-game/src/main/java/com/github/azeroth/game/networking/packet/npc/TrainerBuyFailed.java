@@ -1,20 +1,22 @@
 package com.github.azeroth.game.networking.packet.npc;
 
+import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
 
 public class TrainerBuyFailed extends ServerPacket {
     public ObjectGuid trainerGUID = ObjectGuid.EMPTY;
     public int spellID;
-    public TrainerFailReason trainerFailedReason = TrainerFailReason.values()[0];
+    public int trainerFailedReason;
 
     public TrainerBuyFailed() {
-        super(ServerOpcode.TrainerBuyFailed);
+        super(ServerOpCode.SMSG_TRAINER_BUY_FAILED);
     }
 
     @Override
     public void write() {
         this.writeGuid(trainerGUID);
         this.writeInt32(spellID);
-        this.writeInt32((int) trainerFailedReason.getValue());
+        this.writeInt32(trainerFailedReason);
     }
 }

@@ -33,7 +33,7 @@ import lombok.ToString;
         @Db2Field(name = "typeID", type = Db2Type.BYTE),
         @Db2Field(name = "id", type = Db2Type.INT)
 })
-public class GameObject implements DbcEntity {
+public class GameObjectEntry implements DbcEntity {
     @Column("Name")
     private LocalizedString name;
 
@@ -112,5 +112,10 @@ public class GameObject implements DbcEntity {
 
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
+
+
+    public int[] getPropValues() {
+        return new int[]{propValue1, propValue2, propValue3, propValue4, propValue5, propValue6, propValue7, propValue8};
+    }
 
 }

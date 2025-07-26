@@ -12,6 +12,7 @@ import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.dbc.defines.TaxiNodeFlag;
 import com.github.azeroth.dbc.domain.*;
+import com.github.azeroth.dbc.domain.GameObjectEntry;
 import com.github.azeroth.dbc.gtable.GameTable;
 import com.github.azeroth.defines.QuestSort;
 import com.github.azeroth.defines.SpellCategory;
@@ -23,7 +24,7 @@ import com.github.azeroth.game.condition.ConditionSourceInfo;
 import com.github.azeroth.game.condition.ConditionSourceType;
 import com.github.azeroth.game.condition.DisableManager;
 import com.github.azeroth.game.domain.creature.*;
-import com.github.azeroth.game.domain.gobject.GameObjectLocale;
+import com.github.azeroth.game.domain.gobject.*;
 import com.github.azeroth.game.domain.gossip.GossipMenuOption;
 import com.github.azeroth.game.domain.gossip.GossipMenus;
 import com.github.azeroth.game.domain.gossip.GossipOptionNpc;
@@ -44,8 +45,7 @@ import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerId;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerSpawn;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerTemplate;
 import com.github.azeroth.game.entity.creature.Trainer;
-import com.github.azeroth.game.entity.creature.TrainerSpell;
-import com.github.azeroth.game.entity.gobject.*;
+import com.github.azeroth.game.domain.creature.TrainerSpell;
 import com.github.azeroth.game.entity.item.ItemTemplate;
 import com.github.azeroth.game.entity.item.enums.InventoryType;
 import com.github.azeroth.game.entity.item.enums.ItemClass;
@@ -71,7 +71,6 @@ import com.github.azeroth.game.movement.MovementGeneratorType;
 import com.github.azeroth.game.phasing.PhaseShift;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.quest.Quest;
-import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.service.repository.*;
 import com.github.azeroth.game.spell.SpellInfo;
 import com.github.azeroth.game.spell.SpellManager;
@@ -260,23 +259,22 @@ public final class ObjectManager {
     //Creature
     private final MapCache<Integer, CreatureTemplate> creatureTemplateStorage;
     private final HashMap<Integer, CreatureModelInfo> creatureModelStorage = new HashMap<Integer, CreatureModelInfo>();
-    private final HashMap<Long, CreatureData> creatureDataStorage = new HashMap<Long, CreatureData>();
-    private final MapCache<Long, CreatureAddon> creatureAddonStorage;
+    private final MapCache<Integer, CreatureData> creatureDataStorage;
     private final MapCache<Pair<Integer, Difficulty>, List<Integer>> creatureQuestItemStorage;
     private final HashMap<Integer, CreatureMovementData> creatureMovementOverrides = new HashMap<>();
     private final MapCache<Integer, List<EquipmentInfo>> equipmentInfoStorage;
     private final HashMap<ObjectGuid, ObjectGuid> linkedRespawnStorage = new HashMap<>();
     private final HashMap<Integer, CreatureBaseStats> creatureBaseStatsStorage = new HashMap<Integer, CreatureBaseStats>();
     private final MapCache<Integer, VendorItemData> cacheVendorItemStorage;
-    private final HashMap<Integer, Trainer> trainers = new HashMap<Integer, Trainer>();
+    private final HashMap<Integer, Trainer> trainers = new HashMap<>();
     private final MapCache<Integer, NpcText> npcTextStorage;
     //GameObject
     private final HashMap<Integer, GameObjectTemplate> gameObjectTemplateStorage = new HashMap<Integer, GameObjectTemplate>();
-    private final HashMap<Long, GameObjectData> gameObjectDataStorage = new HashMap<Long, GameObjectData>();
-    private final HashMap<Long, GameObjectTemplateAddon> gameObjectTemplateAddonStorage = new HashMap<Long, GameObjectTemplateAddon>();
-    private final HashMap<Long, GameObjectOverride> gameObjectOverrideStorage = new HashMap<Long, GameObjectOverride>();
-    private final HashMap<Long, GameObjectAddon> gameObjectAddonStorage = new HashMap<Long, GameObjectAddon>();
-    private final MultiMap<Integer, Integer> gameObjectQuestItemStorage = new MultiMap<Integer, Integer>();
+    private final HashMap<Integer, GameObjectData> gameObjectDataStorage = new HashMap<>();
+    private final MapCache<Integer, GameObjectTemplateAddon> gameObjectTemplateAddonStorage;
+    private final MapCache<Integer, GameObjectOverride> gameObjectOverrideStorage;
+    private final HashMap<Integer, GameObjectAddon> gameObjectAddonStorage = new HashMap<>();
+    private final Map<Integer, List<Integer>> gameObjectQuestItemStorage = new HashMap<>();
     private final ArrayList<Integer> gameObjectForQuestStorage = new ArrayList<>();
     //Item
     private final HashMap<Integer, ItemTemplate> itemTemplateStorage = new HashMap<Integer, ItemTemplate>();
@@ -297,7 +295,7 @@ public final class ObjectManager {
     private final Map<Tuple<Integer, Integer, Integer>, Integer> creatureDefaultTrainers = new HashMap<>();
     private final Set<Integer> tavernAreaTriggerStorage = new HashSet<>();
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<Integer, AreaTriggerStruct>();
-    private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<Long, AccessRequirement>();
+    private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<>();
     private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
     private final int[] baseXPTable = new int[SharedDefine.MAX_LEVEL];
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> spellScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
@@ -327,6 +325,7 @@ public final class ObjectManager {
     private DbcObjectManager dbcObjectManager;
     private MiscRepository miscRepository;
     private CreatureRepository creatureRepository;
+    private GameObjectRepository gameObjectRepository;
     private ReputationRepository reputationRepository;
     private ConditionManager conditionManager;
     private QuestRepository questRepository;
@@ -375,8 +374,11 @@ public final class ObjectManager {
         this.mapPersonalSpawnDataStorage = cacheProvider.newGenericMapCache("MapPersonalSpawnDataStorage", new TypeReference<>(){});
         this.cacheVendorItemStorage = cacheProvider.newGenericMapCache("CacheVendorItemStorage", new TypeReference<>(){});
         this.equipmentInfoStorage = cacheProvider.newGenericMapCache("EquipmentInfoStorage", new TypeReference<>(){});
-        this.creatureAddonStorage = cacheProvider.newGenericMapCache("CreatureAddonStorage", new TypeReference<>(){});
+        this.creatureDataStorage = cacheProvider.newGenericMapCache("CreatureDataStorage", new TypeReference<>(){});
         this.creatureQuestItemStorage = cacheProvider.newGenericMapCache("CreatureQuestItemStorage", new TypeReference<>(){});
+        this.gameObjectTemplateAddonStorage = cacheProvider.newGenericMapCache("GameObjectTemplateAddonStorage", new TypeReference<>(){});
+
+        this.gameObjectOverrideStorage = cacheProvider.newGenericMapCache("GameObjectOverrideStorage", new TypeReference<>(){});
 
     }
 
@@ -1671,150 +1673,75 @@ public final class ObjectManager {
         Logs.SQL.error(">> Loaded {} creature template difficulty data in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    public void loadCreatureAddons() {
-        var time = System.currentTimeMillis();
-        //                                         0     1        2      3           4         5         6            7         8      9          10               11            12                      13
-        var result = DB.World.query("SELECT guid, path_id, mount, standState, animTier, visFlags, sheathState, PvPFlags, emote, aiAnimKit, movementAnimKit, meleeAnimKit, visibilityDistanceType, auras FROM creature_addon");
+    public void loadCreatureAddons(Map<Integer, CreatureData> creatureData) {
+        var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try (var item = creatureRepository.streamAllCreatureAddon()) {
+            item.forEach(e -> {
+                var creData = creatureData.get(e.entry);
+                if (creData == null)
+                {
+                    Logs.SQL.error("Creature (GUID: {}) does not exist but has a record in `creature_addon`", e.entry);
+                    return;
+                }
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 creature addon definitions. DB table `creature_addon` is empty.");
+                if (creData.movementType == MovementGeneratorType.WAYPOINT.ordinal() && e.pathId == 0)
+                {
+                    creData.movementType = (byte) MovementGeneratorType.IDLE.ordinal();
+                    Logs.SQL.error("Creature (GUID {}) has movement type set to WAYPOINT_MOTION_TYPE but no path assigned", e.entry);
+                }
 
-            return;
+                for (int aura : e.auras) {
+
+                    SpellInfo spellInfo = spellManager.getSpellInfo(aura, Difficulty.NONE);
+
+                    if (spellInfo == null) {
+                        Logs.SQL.error("Creature (GUID: {}) has wrong spell '{}' defined in `auras` field in `creature_addon`.", e.entry, aura);
+                        continue;
+                    }
+
+                    if (spellInfo.hasAura(AuraType.CONTROL_VEHICLE))
+                        Logs.SQL.error("Creature (GUID: {}) has SPELL_AURA_CONTROL_VEHICLE aura {} defined in `auras` field in `creature_template_addon`.", e.entry, spellInfo.getId());
+
+
+                    if (spellInfo.getDuration() > 0) {
+                        Logs.SQL.error("Creature (GUID: {}) has temporary aura (spell {}) in `auras` field in `creature_template_addon`.", e.entry, spellInfo.getId());
+                    }
+                }
+
+                if (e.mount != 0) {
+                    if (!dbcObjectManager.creatureDisplayInfo().contains(e.mount)) {
+                        Logs.SQL.error("Creature (GUID: {}) has invalid displayInfoId ({}) for mount defined in `creature_template_addon`", e.entry, e.mount);
+                        e.mount = 0;
+                    }
+                }
+
+                // PvPFlags don't need any checking for the time being since they cover the entire range of a byte
+                if (!dbcObjectManager.emote().contains(e.emote)) {
+                    Logs.SQL.error("Creature (GUID: {}) has invalid emote ({}) defined in `creature_template_addon`.", e.entry, e.emote);
+                    e.emote = 0;
+                }
+
+                if (e.aiAnimKit != 0 && !dbcObjectManager.animKit().contains(e.aiAnimKit)) {
+                    Logs.SQL.error("Creature (GUID: {}) has invalid aiAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.aiAnimKit);
+                    e.aiAnimKit = 0;
+                }
+
+                if (e.movementAnimKit != 0 && !dbcObjectManager.animKit().contains(e.movementAnimKit)) {
+                    Logs.SQL.error("Creature (GUID: {}) has invalid movementAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.movementAnimKit);
+                    e.movementAnimKit = 0;
+                }
+
+                if (e.meleeAnimKit != 0 && !dbcObjectManager.animKit().contains(e.meleeAnimKit)) {
+                    Logs.SQL.error("Creature (GUID: {}) has invalid meleeAnimKit ({}) defined in `creature_template_addon`.", e.entry, e.meleeAnimKit);
+                    e.meleeAnimKit = 0;
+                }
+                creData.creatureAddon = e;
+                count.getAndIncrement();
+            });
         }
+        Logs.SERVER_LOADING.info( ">> Loaded {} creature addons in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
-        int count = 0;
-
-        do {
-            var guid = result.<Long>Read(0);
-            var creData = getCreatureData(guid);
-
-            if (creData == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM creature_addon WHERE guid = %1$s", guid));
-                } else {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) does not exist but has a record in `creatureaddon`", guid));
-                }
-
-                continue;
-            }
-
-            CreatureAddon creatureAddon = new CreatureAddon();
-
-            creatureAddon.pathId = result.<Integer>Read(1);
-
-            if (creData.movementType == (byte) MovementGeneratorType.Waypoint.getValue() && creatureAddon.pathId == 0) {
-                creData.movementType = (byte) MovementGeneratorType.IDLE.getValue();
-                Logs.SQL.error(String.format("Creature (GUID %1$s) has movement type set to WAYPOINTMOTIONTYPE but no path assigned", guid));
-            }
-
-            creatureAddon.mount = result.<Integer>Read(2);
-            creatureAddon.standState = result.<Byte>Read(3);
-            creatureAddon.animTier = result.<Byte>Read(4);
-            creatureAddon.visFlags = result.<Byte>Read(5);
-            creatureAddon.sheathState = result.<Byte>Read(6);
-            creatureAddon.pvpFlags = result.<Byte>Read(7);
-            creatureAddon.emote = result.<Integer>Read(8);
-            creatureAddon.aiAnimKit = result.<SHORT>Read(9);
-            creatureAddon.movementAnimKit = result.<SHORT>Read(10);
-            creatureAddon.meleeAnimKit = result.<SHORT>Read(11);
-            creatureAddon.visibilityDistanceType = visibilityDistanceType.forValue(result.<Byte>Read(12));
-
-            var tokens = new LocalizedString();
-
-            for (var c = 0; c < tokens.length; ++c) {
-                var id = tokens.get(c).Trim().replace(",", "");
-
-                int spellId;
-                tangible.OutObject<Integer> tempOut_spellId = new tangible.OutObject<Integer>();
-                if (!tangible.TryParseHelper.tryParseInt(id, tempOut_spellId)) {
-                    spellId = tempOut_spellId.outArgValue;
-                    continue;
-                } else {
-                    spellId = tempOut_spellId.outArgValue;
-                }
-
-                var AdditionalSpellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
-
-                if (AdditionalSpellInfo == null) {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) has wrong spell %2$s defined in `auras` field in `creatureaddon`.", guid, spellId));
-
-                    continue;
-                }
-
-                if (AdditionalSpellInfo.hasAura(AuraType.ControlVehicle)) {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) has SPELL_AURA_CONTROL_VEHICLE aura %2$s defined in `auras` field in `creature_addon`.", guid, spellId));
-                }
-
-                if (creatureAddon.auras.contains(spellId)) {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) has duplicate aura (spell %2$s) in `auras` field in `creature_addon`.", guid, spellId));
-
-                    continue;
-                }
-
-                if (AdditionalSpellInfo.duration > 0) {
-                    Logs.SQL.debug(String.format("Creature (GUID: %1$s) has temporary aura (spell %2$s) in `auras` field in `creature_addon`.", guid, spellId));
-
-                    continue;
-                }
-
-                creatureAddon.auras.add(spellId);
-            }
-
-            if (creatureAddon.mount != 0) {
-                if (!CliDB.CreatureDisplayInfoStorage.containsKey(creatureAddon.mount)) {
-                    Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid displayInfoId (%2$s) for mount defined in `creatureaddon`", guid, creatureAddon.mount));
-                    creatureAddon.mount = 0;
-                }
-            }
-
-            if (creatureAddon.standState >= UnitStandStateType.max.getValue()) {
-                Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid unit stand state (%2$s) defined in `creature_addon`. Truncated to 0.", guid, creatureAddon.standState));
-                creatureAddon.standState = 0;
-            }
-
-            if (creatureAddon.animTier >= animTier.max.getValue()) {
-                Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid animation tier (%2$s) defined in `creature_addon`. Truncated to 0.", guid, creatureAddon.animTier));
-                creatureAddon.animTier = 0;
-            }
-
-            if (creatureAddon.sheathState >= sheathState.max.getValue()) {
-                Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid sheath state (%2$s) defined in `creature_addon`. Truncated to 0.", guid, creatureAddon.sheathState));
-                creatureAddon.sheathState = 0;
-            }
-
-            // PvPFlags don't need any checking for the time being since they cover the entire range of a byte
-
-            if (!CliDB.EmotesStorage.containsKey(creatureAddon.emote)) {
-                Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid emote (%2$s) defined in `creatureaddon`.", guid, creatureAddon.emote));
-                creatureAddon.emote = 0;
-            }
-
-
-            if (creatureAddon.aiAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.aiAnimKit)) {
-                Logs.SQL.error(String.format("Creature (Guid: %1$s) has invalid aiAnimKit (%2$s) defined in `creature_addon`.", guid, creatureAddon.aiAnimKit));
-                creatureAddon.aiAnimKit = 0;
-            }
-
-            if (creatureAddon.movementAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.movementAnimKit)) {
-                Logs.SQL.error(String.format("Creature (Guid: %1$s) has invalid movementAnimKit (%2$s) defined in `creature_addon`.", guid, creatureAddon.movementAnimKit));
-                creatureAddon.movementAnimKit = 0;
-            }
-
-            if (creatureAddon.meleeAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(creatureAddon.meleeAnimKit)) {
-                Logs.SQL.error(String.format("Creature (Guid: %1$s) has invalid meleeAnimKit (%2$s) defined in `creature_addon`.", guid, creatureAddon.meleeAnimKit));
-                creatureAddon.meleeAnimKit = 0;
-            }
-
-            if (creatureAddon.visibilityDistanceType.getValue() >= visibilityDistanceType.max.getValue()) {
-                Logs.SQL.error(String.format("Creature (GUID: %1$s) has invalid visibilityDistanceType (%2$s) defined in `creature_addon`.", guid, creatureAddon.visibilityDistanceType));
-                creatureAddon.visibilityDistanceType = visibilityDistanceType.NORMAL;
-            }
-
-            creatureAddonStorage.put(guid, creatureAddon);
-            count++;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s creature addons in %2$s ms", count, time.GetMSTimeDiffToNow(time)));
     }
 
     public void loadCreatureQuestItems() {
@@ -2181,103 +2108,70 @@ public final class ObjectManager {
 
         // For reload case
         trainers.clear();
-
-        MultiMap<Integer, TrainerSpell> spellsByTrainer = new MultiMap<Integer, TrainerSpell>();
-        var trainerSpellsResult = DB.World.query("SELECT trainerId, spellId, moneyCost, reqSkillLine, reqSkillRank, ReqAbility1, ReqAbility2, ReqAbility3, ReqLevel FROM trainer_spell");
-
-        if (!trainerSpellsResult.isEmpty()) {
-            do {
-                TrainerSpell spell = new TrainerSpell();
-                var trainerId = trainerSpellsResult.<Integer>Read(0);
-                spell.setSpellId(trainerSpellsResult.<Integer>Read(1));
-                spell.setMoneyCost(trainerSpellsResult.<Integer>Read(2));
-                spell.setReqSkillLine(trainerSpellsResult.<Integer>Read(3));
-                spell.setReqSkillRank(trainerSpellsResult.<Integer>Read(4));
-                spell.getReqAbility().set(0, trainerSpellsResult.<Integer>Read(5));
-                spell.getReqAbility().set(1, trainerSpellsResult.<Integer>Read(6));
-                spell.getReqAbility().set(2, trainerSpellsResult.<Integer>Read(7));
-                spell.setReqLevel(trainerSpellsResult.<Byte>Read(8));
-
-                var spellInfo = world.getSpellManager().getSpellInfo(spell.getSpellId(), Difficulty.NONE);
-
-                if (spellInfo == null) {
-                    Logs.SQL.error(String.format("Table `trainer_spell` references non-existing spell (SpellId: %1$s) for TrainerId %2$s, ignoring", spell.getSpellId(), trainerId));
-
-                    continue;
+        Map<Integer, List<TrainerSpell>> spellsByTrainer = new HashMap<>();
+        try(var items = creatureRepository.streamAllTrainerSpell()) {
+            items.forEach(e -> {
+                SpellInfo spellInfo = spellManager.getSpellInfo(e.spellId, Difficulty.NONE);
+                if (spellInfo == null)
+                {
+                    Logs.SQL.error("Table `trainer_spell` references non-existing spell (SpellId: {}) for TrainerId {}, ignoring", e.spellId, e.trainerId);
+                    return;
                 }
 
-                if (spell.getReqSkillLine() != 0 && !CliDB.SkillLineStorage.containsKey(spell.getReqSkillLine())) {
-                    Logs.SQL.error(String.format("Table `trainer_spell` references non-existing skill (ReqSkillLine: %1$s) for TrainerId %2$s and SpellId %3$s, ignoring", spell.getReqSkillLine(), trainerId, spell.getSpellId()));
-
-                    continue;
+                if (e.reqSkillLine != 0 && dbcObjectManager.skillLine(e.reqSkillLine) == null)
+                {
+                    Logs.SQL.error("Table `trainer_spell` references non-existing skill (ReqSkillLine: {}) for TrainerId {} and SpellId {}, ignoring",
+                            e.reqSkillLine, e.trainerId, e.spellId);
+                    return;
                 }
 
-                var allReqValid = true;
-
-                for (var i = 0; i < spell.getReqAbility().size(); ++i) {
-                    var requiredSpell = spell.getReqAbility().get(i);
-
-                    if (requiredSpell != 0 && !world.getSpellManager().hasSpellInfo(requiredSpell, Difficulty.NONE)) {
-                        Logs.SQL.error(String.format("Table `trainer_spell` references non-existing spell (ReqAbility %1$s: %2$s) for TrainerId %3$s and SpellId %4$s, ignoring", i + 1, requiredSpell, trainerId, spell.getSpellId()));
+                boolean allReqValid = true;
+                for (int i = 0; i < e.reqAbility.length; ++i)
+                {
+                    int requiredSpell = e.reqAbility[i];
+                    if (requiredSpell != 0 && world.getSpellManager().getSpellInfo(requiredSpell, Difficulty.NONE) == null)
+                    {
+                        Logs.SQL.error("Table `trainer_spell` references non-existing spell (ReqAbility{}: {}) for TrainerId {} and SpellId {}, ignoring",
+                                i + 1, requiredSpell, e.trainerId, e.spellId);
                         allReqValid = false;
                     }
                 }
 
-                if (!allReqValid) {
-                    continue;
-                }
+                if (!allReqValid)
+                    return;
+                spellsByTrainer.compute(e.trainerId, Functions.addToList(e));
 
-                spellsByTrainer.add(trainerId, spell);
-            } while (trainerSpellsResult.NextRow());
+            });
         }
 
-        var trainersResult = DB.World.query("SELECT id, type, Greeting FROM trainer");
-
-        if (!trainersResult.isEmpty()) {
-            do {
-                var trainerId = trainersResult.<Integer>Read(0);
-                var trainerType = trainerType.forValue(trainersResult.<Byte>Read(1));
-                var greeting = trainersResult.<String>Read(2);
-                ArrayList<TrainerSpell> spells = new ArrayList<>();
-                var spellList = spellsByTrainer.get(trainerId);
-
-                if (spellList != null) {
-                    spells = spellList;
-                    spellsByTrainer.remove(trainerId);
-                }
-
-                trainers.put(trainerId, new Trainer(trainerId, trainerType, greeting, spells));
-            } while (trainersResult.NextRow());
+        try(var items = creatureRepository.streamAllTrainer()) {
+            items.forEach(e -> {
+                List<TrainerSpell> spellList = spellsByTrainer.get(e.id);
+                List<TrainerSpell> spells = spellList == null ? Collections.emptyList() : spellList;
+                spellsByTrainer.remove(e.id);
+                trainers.put(e.id, new Trainer(e.id, e.type, e.greeting, spells));
+            });
         }
 
-        for (var unusedSpells : spellsByTrainer.KeyValueList) {
-            Logs.SQL.error(String.format("Table `trainer_spell` references non-existing trainer (TrainerId: %1$s) for SpellId %2$s, ignoring", unusedSpells.key, unusedSpells.value.spellId));
+        for (var unusedSpells : spellsByTrainer.entrySet()) {
+
+            for (TrainerSpell unusedSpell : unusedSpells.getValue()) {
+                Logs.SQL.error("Table `trainer_spell` references non-existing trainer (TrainerId: {}) for SpellId {}, ignoring", unusedSpells.getKey(), unusedSpell.spellId);
+
+            }
         }
 
-        var trainerLocalesResult = DB.World.query("SELECT id, locale, Greeting_lang FROM trainer_locale");
-
-        if (!trainerLocalesResult.isEmpty()) {
-            do {
-                var trainerId = trainerLocalesResult.<Integer>Read(0);
-                var localeName = trainerLocalesResult.<String>Read(1);
-
-                var locale = localeName.<locale>ToEnum();
-
-                if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                    continue;
-                }
-
-                var trainer = trainers.get(trainerId);
-
-                if (trainer != null) {
-                    trainer.addGreetingLocale(locale, trainerLocalesResult.<String>Read(2));
-                } else {
-                    Logs.SQL.error(String.format("Table `trainer_locale` references non-existing trainer (TrainerId: %1$s) for locale %2$s, ignoring", trainerId, localeName));
-                }
-            } while (trainerLocalesResult.NextRow());
+        try(var items = creatureRepository.streamAllTrainerLocale()) {
+            items.forEach(fields -> {
+                int trainerId = (Integer)fields[0];
+                String localeName = (String)fields[1];
+                String greeting = (String)fields[2];
+                Trainer trainer = trainers.get(trainerId);
+                trainer.addGreetingLocale(Locale.valueOf(localeName), greeting);
+            });
         }
+        Logs.SERVER_LOADING.info(">> Loaded {} Trainers in {} ms", trainers.size(), System.currentTimeMillis() - oldMSTime);
 
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s Trainers in %2$s ms", trainers.size(), time.GetMSTimeDiffToNow(oldMSTime)));
     }
 
     public void loadCreatureTrainers() {
@@ -2285,58 +2179,43 @@ public final class ObjectManager {
 
         creatureDefaultTrainers.clear();
 
-        var result = DB.World.query("SELECT creatureID, trainerID, MenuID, OptionID FROM creature_trainer");
+        try(var items = creatureRepository.streamAllCreatureTrainer()) {
+            items.forEach(fields -> {
+                int creatureId = fields[0];
+                int trainerId = fields[1];
+                int gossipMenuId = fields[2];
+                int gossipOptionId = fields[3];
 
-        if (!result.isEmpty()) {
-            do {
-                var creatureId = result.<Integer>Read(0);
-                var trainerId = result.<Integer>Read(1);
-                var gossipMenuId = result.<Integer>Read(2);
-                var gossipOptionIndex = result.<Integer>Read(3);
-
-                if (getCreatureTemplate(creatureId) == null) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM creature_trainer WHERE creatureID = %1$s", creatureId));
-                    } else {
-                        Logs.SQL.error(String.format("Table `creature_trainer` references non-existing creature template (CreatureId: %1$s), ignoring", creatureId));
-                    }
-
-                    continue;
+                if (getCreatureTemplate(creatureId) == null)
+                {
+                    Logs.SQL.error("Table `creature_trainer` references non-existing creature template (CreatureID: {}), ignoring", creatureId);
+                    return;
                 }
 
-                if (getTrainer(trainerId) == null) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM creature_trainer WHERE creatureID = %1$s", creatureId));
-                    } else {
-                        Logs.SQL.error(String.format("Table `creature_trainer` references non-existing trainer (TrainerId: %1$s) for CreatureId %2$s MenuId %3$s OptionIndex %4$s, ignoring", trainerId, creatureId, gossipMenuId, gossipOptionIndex));
-                    }
-
-                    continue;
+                if (getTrainer(trainerId) == null)
+                {
+                    Logs.SQL.error("Table `creature_trainer` references non-existing trainer (TrainerID: {}) for CreatureID {} MenuID {} OptionID {}, ignoring",
+                            trainerId, creatureId, gossipMenuId, gossipOptionId);
+                    return;
                 }
 
-                if (gossipMenuId != 0 || gossipOptionIndex != 0) {
-                    var gossipMenuItems = getGossipMenuItemsMapBounds(gossipMenuId);
-                    var gossipOptionItr = tangible.ListHelper.find(gossipMenuItems, entry ->
+                if (gossipMenuId != 0 || gossipOptionId != 0)
+                {
+                    List<GossipMenuOption> gossipMenuItems = getGossipMenuItemsMapBounds(gossipMenuId);
+                    Optional<GossipMenuOption> gossipMenuOption = gossipMenuItems.stream().filter(e -> e.orderIndex == gossipOptionId).findFirst();
+
+                    if (gossipMenuOption.isEmpty())
                     {
-                        return entry.orderIndex == gossipOptionIndex;
-                    });
-
-                    if (gossipOptionItr == null) {
-                        if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                            DB.World.execute(String.format("DELETE FROM creature_trainer WHERE creatureID = %1$s", creatureId));
-                        } else {
-                            Logs.SQL.error(String.format("Table `creature_trainer` references non-existing gossip menu option (MenuId %1$s OptionIndex %2$s) for CreatureId %3$s and TrainerId %4$s, ignoring", gossipMenuId, gossipOptionIndex, creatureId, trainerId));
-                        }
-
-                        continue;
+                        Logs.SQL.error("Table `creature_trainer` references non-existing gossip menu option (MenuID {} OptionID {}) for CreatureID {} and TrainerID {}, ignoring",
+                                gossipMenuId, gossipOptionId, creatureId, trainerId);
+                        return;
                     }
                 }
 
-                creatureDefaultTrainers.put((creatureId, gossipMenuId, gossipOptionIndex), trainerId);
-            } while (result.NextRow());
+                creatureDefaultTrainers.put(Tuple.of(creatureId, gossipMenuId, gossipMenuId), trainerId);
+            });
         }
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s default trainers in %2$s ms", creatureDefaultTrainers.size(), time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} default trainers in {} ms", creatureDefaultTrainers.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadVendors() {
@@ -2368,7 +2247,7 @@ public final class ObjectManager {
 
     public void loadCreatures() {
         var time = System.currentTimeMillis();
-
+        Map<Integer, CreatureData> creatureData = new HashMap<>();
         // Build single time for check spawnmask
         HashMap<Short, Set<Difficulty>> spawnMasks = new HashMap<>();
         for (MapDifficulty mapDifficulty : dbcObjectManager.mapDifficulty())
@@ -2394,6 +2273,13 @@ public final class ObjectManager {
                     Logs.SQL.error("Table `creature` has creature (GUID: {}) that spawned at nonexistent map (Id: {}), skipped.", data.spawnId, data.mapId);
                     return;
                 }
+
+                data.scriptId       = getScriptId(data.script);
+                data.spawnDifficulties = parseSpawnDifficulties(data.spawnDifficultiesText, "creature", data.spawnId, data.mapId, spawnMasks.get(data.mapId));
+                data.spawnGroupData = isTransportMap(data.mapId) ? getLegacySpawnGroup() : getDefaultSpawnGroup(); // transport spawns default to compatibility group
+
+
+
                 if (world.getWorldSettings().creatureCheckInvalidPosition) {
                     if (world.getVMapManager().isMapLoadingEnabled() && !isTransportMap(data.mapId)) {
                         Coordinate gridCoord = MapDefine.computeGridCoordinate(data.positionX, data.positionY);
@@ -2535,14 +2421,25 @@ public final class ObjectManager {
                         creatureRepository.updateCreatureZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
                     }
                 }
-                creatureDataStorage.put(data.spawnId, data);
                 // Add to grid if not managed by the game event
-                if (data.eventEntry == 0) {
+                if (data.gameEvent == 0)
                     addCreatureToGrid(data);
-                }
 
+                creatureData.put(data.spawnId, data);
             });
         }
+
+        loadCreatureAddons(creatureData);
+
+        creatureData.forEach((k,v)-> {
+            creatureDataStorage.put(k, v);
+            // Add to grid if not managed by the game event
+            if (v.eventEntry == 0) {
+                addCreatureToGrid(v);
+            }
+        });
+
+
 
         Logs.SERVER_LOADING.info("Loaded {} creatures in {} ms", creatureDataStorage.size(), System.currentTimeMillis() - time);
     }
@@ -2560,13 +2457,10 @@ public final class ObjectManager {
         removeSpawnDataFromGrid(data);
     }
 
-    public List<Integer> getCreatureQuestItemList(int id) {
-        return creatureQuestItemStorage.get(id);
+    public List<Integer> getCreatureQuestItemList(int id, Difficulty difficulty) {
+        return creatureQuestItemStorage.get(Pair.of(id, difficulty));
     }
 
-    public CreatureAddon getCreatureAddon(long lowguid) {
-        return creatureAddonStorage.get(lowguid);
-    }
 
     public CreatureTemplate getCreatureTemplate(int entry) {
         return creatureTemplateStorage.get(entry);
@@ -2577,67 +2471,61 @@ public final class ObjectManager {
     }
 
     public int getCreatureTrainerForGossipOption(int creatureId, int gossipMenuId, int gossipOptionIndex) {
-        return creatureDefaultTrainers.get((creatureId, gossipMenuId, gossipOptionIndex));
+        return creatureDefaultTrainers.get(Tuple.of(creatureId, gossipMenuId, gossipOptionIndex));
     }
 
 
-    public HashMap<Long, CreatureData> getAllCreatureData() {
-        return creatureDataStorage;
-    }
 
-    public CreatureData getCreatureData(long spawnId) {
+    public CreatureData getCreatureData(int spawnId) {
         return creatureDataStorage.get(spawnId);
     }
 
     public ObjectGuid getLinkedRespawnGuid(ObjectGuid spawnId) {
         var retGuid = linkedRespawnStorage.get(spawnId);
 
-        if (retGuid.IsEmpty) {
+        if (retGuid.isEmpty()) {
             return ObjectGuid.EMPTY;
         }
 
         return retGuid;
     }
 
-    public boolean setCreatureLinkedRespawn(long guidLow, long linkedGuidLow) {
+    public boolean setCreatureLinkedRespawn(int guidLow, int linkedGuidLow) {
         if (guidLow == 0) {
             return false;
         }
 
         var master = getCreatureData(guidLow);
         var guid = ObjectGuid.create(HighGuid.Creature, master.getMapId(), master.id, guidLow);
-        PreparedStatement stmt;
 
         if (linkedGuidLow == 0) // we're removing the linking
         {
             linkedRespawnStorage.remove(guid);
-            stmt = DB.World.GetPreparedStatement(WorldStatements.DEL_LINKED_RESPAWN);
-            stmt.AddValue(0, guidLow);
-            stmt.AddValue(1, (int) CreatureLinkedRespawnType.CreatureToCreature.getValue());
-            DB.World.execute(stmt);
-
+            creatureRepository.deleteLinkedRespawn(guidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
             return true;
         }
 
         var slave = getCreatureData(linkedGuidLow);
 
         if (slave == null) {
-            Logs.SQL.error("Creature '{0}' linking to non-existent creature '{1}'.", guidLow, linkedGuidLow);
+            Logs.SQL.error("Creature '{}' linking to non-existent creature '{}'.", guidLow, linkedGuidLow);
 
             return false;
         }
 
-        var map = CliDB.MapStorage.get(master.getMapId());
 
-        if (map == null || !map.Instanceable() || (master.getMapId() != slave.getMapId())) {
-            Logs.SQL.error("Creature '{0}' linking to '{1}' on an unpermitted map.", guidLow, linkedGuidLow);
+
+        var map = dbcObjectManager.map(master.getMapId());
+
+        if (map == null || !map.isInstanceable() || (master.getMapId() != slave.getMapId())) {
+            Logs.SQL.error("Creature '{}' linking to '{}' on an unpermitted map.", guidLow, linkedGuidLow);
 
             return false;
         }
 
         // they must have a possibility to meet (normal/heroic difficulty)
-        if (!master.spawnDifficulties.Intersect(slave.spawnDifficulties).Any()) {
-            Logs.SQL.error("LinkedRespawn: Creature '{0}' linking to '{1}' with not corresponding spawnMask", guidLow, linkedGuidLow);
+        if (!master.spawnDifficulties.containsAll(slave.spawnDifficulties)) {
+            Logs.SQL.error("LinkedRespawn: Creature '{}' linking to '{}' with not corresponding spawnMask", guidLow, linkedGuidLow);
 
             return false;
         }
@@ -2645,24 +2533,20 @@ public final class ObjectManager {
         var linkedGuid = ObjectGuid.create(HighGuid.Creature, slave.getMapId(), slave.id, linkedGuidLow);
 
         linkedRespawnStorage.put(guid, linkedGuid);
-        stmt = DB.World.GetPreparedStatement(WorldStatements.REP_LINKED_RESPAWN);
-        stmt.AddValue(0, guidLow);
-        stmt.AddValue(1, linkedGuidLow);
-        stmt.AddValue(2, (int) CreatureLinkedRespawnType.CreatureToCreature.getValue());
-        DB.World.execute(stmt);
 
+        creatureRepository.replaceLinkedRespawn(guidLow, linkedGuidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
         return true;
     }
 
-    public CreatureData newOrExistCreatureData(long spawnId) {
+    public CreatureData newOrExistCreatureData(int spawnId) {
         if (!creatureDataStorage.containsKey(spawnId)) {
-            creatureDataStorage.put(spawnId, new creatureData());
+            creatureDataStorage.put(spawnId, new CreatureData());
         }
 
         return creatureDataStorage.get(spawnId);
     }
 
-    public void deleteCreatureData(long spawnId) {
+    public void deleteCreatureData(int spawnId) {
         var data = getCreatureData(spawnId);
 
         if (data != null) {
@@ -2674,7 +2558,8 @@ public final class ObjectManager {
     }
 
     public CreatureBaseStats getCreatureBaseStats(int level, int unitClass) {
-        var stats = creatureBaseStatsStorage.get(MathUtil.MakePair16(level, unitClass));
+        int id = level << 8 | unitClass;
+        var stats = creatureBaseStatsStorage.get(id);
 
         if (stats != null) {
             return stats;
@@ -2728,61 +2613,28 @@ public final class ObjectManager {
     //GameObjects
     public void loadGameObjectTemplate() {
         var time = System.currentTimeMillis();
-
-        for (var db2go : CliDB.GameObjectsStorage.values()) {
+        for (GameObjectEntry db2go : dbcObjectManager.gameObject()) {
             GameObjectTemplate go = new GameObjectTemplate();
-            go.entry = db2go.id;
-            go.type = db2go.typeID;
-            go.displayId = db2go.displayID;
-            go.name = db2go.name.charAt(global.getWorldMgr().getDefaultDbcLocale());
-            go.size = db2go.scale;
 
+            go.entry = db2go.getId();
+            go.type = GameObjectType.values()[db2go.getTypeID()];
+            go.displayId = db2go.getDisplayID();
+            go.name = db2go.getName().get(world.getDbcLocale());
+            go.size = db2go.getScale();
 
-//			unsafe
-//				{
-//					for (byte x = 0; x < db2go.PropValue.length; ++x)
-//						go.raw.data[x] = db2go.PropValue[x];
-//				}
+            int[] propValues = db2go.getPropValues();
+            System.arraycopy(propValues, 0, go.raw, 0, propValues.length);
 
-            go.contentTuningId = 0;
+            go.requiredLevel = 0;
             go.scriptId = 0;
 
-            gameObjectTemplateStorage.put(db2go.id, go);
+            gameObjectTemplateStorage.put(db2go.getId(), go);
         }
 
-        //                                          0      1     2          3     4         5               6     7
-        var result = DB.World.query("SELECT entry, type, displayId, name, iconName, castBarCaption, unk1, size, " + "Data0, data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, " + "Data13, Data14, Data15, Data16, Data17, Data18, Data19, Data20, Data21, Data22, Data23, Data24, Data25, Data26, Data27, Data28, " + "Data29, Data30, Data31, Data32, Data33, Data34, contentTuningId, AIName, ScriptName FROM gameobject_template");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameobject definitions. DB table `gameobject_template` is empty.");
-        } else {
-            do {
-                var entry = result.<Integer>Read(0);
-
-                GameObjectTemplate got = new GameObjectTemplate();
-
-                got.entry = entry;
-                got.type = GameObjectTypes.forValue(result.<Integer>Read(1));
-                got.displayId = result.<Integer>Read(2);
-                got.name = result.<String>Read(3);
-                got.iconName = result.<String>Read(4);
-                got.castBarCaption = result.<String>Read(5);
-                got.unk1 = result.<String>Read(6);
-                got.size = result.<Float>Read(7);
-
-
-//				unsafe
-//					{
-//						for (byte x = 0; x < SharedConst.MaxGOData; ++x)
-//							got.raw.data[x] = result.Read<int>(8 + x);
-//					}
-
-                got.contentTuningId = result.<Integer>Read(43);
-                got.AIName = result.<String>Read(44);
-                got.scriptId = getScriptId(result.<String>Read(45));
-
+        try(var items = gameObjectRepository.streamAllGameObjectTemplate()) {
+            items.forEach(got -> {
                 switch (got.type) {
-                    case Door: //0
+                    case DOOR: //0
                         if (got.door.open != 0) {
                             checkGOLockId(got, got.door.open, 1);
                         }
@@ -2790,7 +2642,7 @@ public final class ObjectManager {
                         checkGONoDamageImmuneId(got, got.door.noDamageImmune, 3);
 
                         break;
-                    case Button: //1
+                    case BUTTON: //1
                         if (got.button.open != 0) {
                             checkGOLockId(got, got.button.open, 1);
                         }
@@ -2798,7 +2650,7 @@ public final class ObjectManager {
                         checkGONoDamageImmuneId(got, got.button.noDamageImmune, 4);
 
                         break;
-                    case QuestGiver: //2
+                    case QUEST_GIVER: //2
                         if (got.questGiver.open != 0) {
                             checkGOLockId(got, got.questGiver.open, 0);
                         }
@@ -2806,7 +2658,7 @@ public final class ObjectManager {
                         checkGONoDamageImmuneId(got, got.questGiver.noDamageImmune, 5);
 
                         break;
-                    case Chest: //3
+                    case CHEST: //3
                         if (got.chest.open != 0) {
                             checkGOLockId(got, got.chest.open, 0);
                         }
@@ -2819,7 +2671,7 @@ public final class ObjectManager {
                         }
 
                         break;
-                    case Trap: //6
+                    case TRAP: //6
                         if (got.trap.open != 0) {
                             checkGOLockId(got, got.trap.open, 0);
                         }
@@ -2831,10 +2683,10 @@ public final class ObjectManager {
                             got.chair.chairheight = 0;
                         }
                         break;
-                    case SpellFocus: //8
+                    case SPELL_FOCUS: //8
                         if (got.spellFocus.spellFocusType != 0) {
-                            if (!CliDB.SpellFocusObjectStorage.containsKey(got.spellFocus.spellFocusType)) {
-                                Logs.SQL.error("GameObject (Entry: {0} GoType: {1}) have data0={2} but spellFocus (Id: {3}) not exist.", entry, got.type, got.spellFocus.spellFocusType, got.spellFocus.spellFocusType);
+                            if (!dbcObjectManager.spellFocusObject().contains(got.spellFocus.spellFocusType)) {
+                                Logs.SQL.error("GameObject (Entry: {} GoType: {}) have data0={} but SpellFocus (Id: {}) not exist.", got.entry, got.type, got.spellFocus.spellFocusType, got.spellFocus.spellFocusType);
                             }
                         }
 
@@ -2844,7 +2696,7 @@ public final class ObjectManager {
                         }
 
                         break;
-                    case Goober: //10
+                    case GOOBER: //10
                         if (got.goober.open != 0) {
                             checkGOLockId(got, got.goober.open, 0);
                         }
@@ -2854,7 +2706,7 @@ public final class ObjectManager {
                         if (got.goober.pageID != 0) // pageId
                         {
                             if (getPageText(got.goober.pageID) == null) {
-                                Logs.SQL.error("GameObject (Entry: {0} GoType: {1}) have data7={2} but PageText (Entry {3}) not exist.", entry, got.type, got.goober.pageID, got.goober.pageID);
+                                Logs.SQL.error("GameObject (Entry: {} GoType: {}) have data7={} but PageText (Entry {}) not exist.", got.entry, got.type, got.goober.pageID, got.goober.pageID);
                             }
                         }
 
@@ -2866,23 +2718,25 @@ public final class ObjectManager {
                         }
 
                         break;
-                    case AreaDamage: //12
+                    case AREA_DAMAGE: //12
                         if (got.areaDamage.open != 0) {
                             checkGOLockId(got, got.areaDamage.open, 0);
                         }
 
                         break;
-                    case Camera: //13
+                    case CAMERA: //13
                         if (got.camera.open != 0) {
                             checkGOLockId(got, got.camera.open, 0);
                         }
 
                         break;
-                    case MapObjTransport: //15
+                    case MAP_OBJ_TRANSPORT: //15
                     {
                         if (got.moTransport.taxiPathID != 0) {
-                            if (got.moTransport.taxiPathID >= CliDB.TaxiPathNodesByPath.size() || CliDB.TaxiPathNodesByPath.get(got.moTransport.taxiPathID).isEmpty()) {
-                                Logs.SQL.error("GameObject (Entry: {0} GoType: {1}) have data0={2} but taxiPath (Id: {3}) not exist.", entry, got.type, got.moTransport.taxiPathID, got.moTransport.taxiPathID);
+
+                            List<TaxiPathNode> taxiPathNodes = dbcObjectManager.getTaxiPathNodesByPath().get(got.moTransport.taxiPathID);
+                            if (taxiPathNodes == null || taxiPathNodes.isEmpty()) {
+                                Logs.SQL.error("GameObject (Entry: {} GoType: {}) have data0={} but TaxiPath (Id: {}) not exist.", got.entry, got.type, got.moTransport.taxiPathID, got.moTransport.taxiPathID);
                             }
                         }
 
@@ -2894,12 +2748,12 @@ public final class ObjectManager {
 
                         break;
                     }
-                    case SpellCaster: //22
+                    case SPELL_CASTER: //22
                         // always must have spell
                         checkGOSpellId(got, got.spellCaster.spell, 0);
 
                         break;
-                    case FlagStand: //24
+                    case FLAG_STAND: //24
                         if (got.flagStand.open != 0) {
                             checkGOLockId(got, got.flagStand.open, 0);
                         }
@@ -2907,13 +2761,13 @@ public final class ObjectManager {
                         checkGONoDamageImmuneId(got, got.flagStand.noDamageImmune, 5);
 
                         break;
-                    case FishingHole: //25
+                    case FISHING_HOLE: //25
                         if (got.fishingHole.open != 0) {
                             checkGOLockId(got, got.fishingHole.open, 4);
                         }
 
                         break;
-                    case FlagDrop: //26
+                    case FLAG_DROP: //26
                         if (got.flagDrop.open != 0) {
                             checkGOLockId(got, got.flagDrop.open, 0);
                         }
@@ -2921,19 +2775,18 @@ public final class ObjectManager {
                         checkGONoDamageImmuneId(got, got.flagDrop.noDamageImmune, 3);
 
                         break;
-                    case BarberChair: //32
-                        tangible.RefObject<Integer> tempRef_chairheight2 = new tangible.RefObject<Integer>(got.barberChair.chairheight);
-                        checkAndFixGOChairHeightId(got, tempRef_chairheight2, 0);
-                        got.barberChair.chairheight = tempRef_chairheight2.refArgValue;
+                    case BARBER_CHAIR: //32
 
-                        if (got.barberChair.sitAnimKit != 0 && !CliDB.AnimKitStorage.containsKey(got.barberChair.sitAnimKit)) {
-                            Logs.SQL.error("GameObject (Entry: {0} GoType: {1}) have data2 = {2} but animKit.dbc (Id: {3}) not exist, set to 0.", entry, got.type, got.barberChair.sitAnimKit, got.barberChair.sitAnimKit);
+                        checkAndFixGOChairHeightId(got, got.barberChair.chairheight, 0);
+
+                        if (got.barberChair.sitAnimKit != 0 && dbcObjectManager.animKit(got.barberChair.sitAnimKit) == null) {
+                            Logs.SQL.error("GameObject (Entry: {} GoType: {}) have data0={} but SpellFocus (Id: {}) not exist.", got.entry, got.type, got.barberChair.sitAnimKit, got.barberChair.sitAnimKit);
 
                             got.barberChair.sitAnimKit = 0;
                         }
 
                         break;
-                    case GarrisonBuilding: {
+                    case GARRISON_BUILDING: {
                         var transportMap = got.garrisonBuilding.spawnMap;
 
                         if (transportMap != 0) {
@@ -2942,7 +2795,7 @@ public final class ObjectManager {
                     }
 
                     break;
-                    case GatheringNode:
+                    case GATHERING_NODE:
                         if (got.gatheringNode.open != 0) {
                             checkGOLockId(got, got.gatheringNode.open, 0);
                         }
@@ -2953,476 +2806,373 @@ public final class ObjectManager {
 
                         break;
                 }
+            });
+        };
 
-                gameObjectTemplateStorage.put(entry, got);
-            } while (result.NextRow());
+        Logs.SERVER_LOADING.info(">> Loaded {} game object templates in {} ms", gameObjectTemplateStorage.size(), System.currentTimeMillis() - time);
 
-            Logs.SERVER_LOADING.info("Loaded {0} game object templates in {1} ms", gameObjectTemplateStorage.size(), time.GetMSTimeDiffToNow(time));
-        }
+
     }
 
     public void loadGameObjectTemplateAddons() {
         var oldMSTime = System.currentTimeMillis();
 
-        //                                         0       1       2      3        4        5        6        7        8        9        10             11
-        var result = DB.World.query("SELECT entry, faction, flags, mingold, maxgold, artkit0, artkit1, artkit2, artkit3, artkit4, worldEffectID, AIAnimKitID FROM gameobject_template_addon");
+        AtomicInteger count = new AtomicInteger();
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameobject template addon definitions. DB table `gameobject_template_addon` is empty.");
+        try(var items = gameObjectRepository.streamAllGameObjectTemplateAddons()) {
+            items.forEach(gameObjectAddon -> {
+                int entry = gameObjectAddon.entry;
 
-            return;
+                GameObjectTemplate got = getGameObjectTemplate(entry);
+
+                int[] artKits = gameObjectAddon.artKits;
+                for (int i = 0; i < artKits.length; i++) {
+                    int artKit = artKits[i];
+                    if (artKit == 0)
+                        continue;
+
+                    if (!dbcObjectManager.gameObjectArtKit().contains(artKit)) {
+                        Logs.SQL.error("GameObject (Entry: {}) has invalid `artkit{}` ({}) defined, set to zero instead.", entry, i, artKit);
+                        artKits[i] = 0;
+                    }
+
+                }
+
+                // checks
+                if (gameObjectAddon.faction != 0 && !dbcObjectManager.factionTemplate().contains(gameObjectAddon.faction)) {
+                    Logs.SQL.error("GameObject (Entry: {}) has invalid faction ({}) defined in `gameobject_template_addon`.", entry, gameObjectAddon.faction));
+                }
+
+                if (gameObjectAddon.maxgold > 0) {
+                    switch (got.type) {
+                        case CHEST:
+                        case FISHING_HOLE:
+                            break;
+                        default:
+                            Logs.SQL.error("GameObject (Entry {} GoType: {}) cannot be looted but has maxgold set in `gameobject_template_addon`.", entry, got.type);
+
+                            break;
+                    }
+                }
+
+                if (gameObjectAddon.worldEffectId != 0 && !dbcObjectManager.worldEffect().contains(gameObjectAddon.worldEffectId)) {
+                    Logs.SQL.error("GameObject (Entry: {}) has invalid WorldEffectID ({}) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.worldEffectId);
+                    gameObjectAddon.worldEffectId = 0;
+                }
+
+                if (gameObjectAddon.aiAnimKitId != 0 && !dbcObjectManager.animKit().contains(gameObjectAddon.aiAnimKitId)) {
+                    Logs.SQL.error("GameObject (Entry: {}) has invalid AIAnimKitID ({}) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.aiAnimKitId));
+                    gameObjectAddon.aiAnimKitId = 0;
+                }
+
+                gameObjectTemplateAddonStorage.put(entry, gameObjectAddon);
+                count.incrementAndGet();
+            });
+
+            Logs.SERVER_LOADING.info(">> Loaded {} game object template addons in {} ms", count, System.currentTimeMillis() - oldMSTime);
         }
 
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-
-            var got = getGameObjectTemplate(entry);
-
-            if (got == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM gameobject_template_addon WHERE entry = %1$s", entry));
-                } else {
-                    Logs.SQL.error(String.format("GameObject template (Entry: %1$s) does not exist but has a record in `gameobject_template_addon`", entry));
-                }
-
-                continue;
-            }
-
-            GameObjectTemplateAddon gameObjectAddon = new GameObjectTemplateAddon();
-            gameObjectAddon.faction = result.<SHORT>Read(1);
-            gameObjectAddon.flags = GameObjectFlags.forValue(result.<Integer>Read(2));
-            gameObjectAddon.mingold = result.<Integer>Read(3);
-            gameObjectAddon.maxgold = result.<Integer>Read(4);
-            gameObjectAddon.worldEffectId = result.<Integer>Read(10);
-            gameObjectAddon.aiAnimKitId = result.<Integer>Read(11);
-
-            for (var i = 0; i < gameObjectAddon.artKits.length; ++i) {
-                var artKitID = result.<Integer>Read(5 + i);
-
-                if (artKitID == 0) {
-                    continue;
-                }
-
-                if (!CliDB.GameObjectArtKitStorage.containsKey(artKitID)) {
-                    Logs.SQL.error(String.format("GameObject (Entry: %1$s) has invalid `artkit%2$s` (%3$s) defined, set to zero instead.", entry, i, artKitID));
-
-                    continue;
-                }
-
-                gameObjectAddon.ArtKits[i] = artKitID;
-            }
-
-            // checks
-            if (gameObjectAddon.faction != 0 && !CliDB.FactionTemplateStorage.containsKey(gameObjectAddon.faction)) {
-                Logs.SQL.error(String.format("GameObject (Entry: %1$s) has invalid faction (%2$s) defined in `gameobject_template_addon`.", entry, gameObjectAddon.faction));
-            }
-
-            if (gameObjectAddon.maxgold > 0) {
-                switch (got.type) {
-                    case Chest:
-                    case FishingHole:
-                        break;
-                    default:
-                        Logs.SQL.error(String.format("GameObject (Entry %1$s GoType: %2$s) cannot be looted but has maxgold set in `gameobject_template_addon`.", entry, got.type));
-
-                        break;
-                }
-            }
-
-            if (gameObjectAddon.worldEffectId != 0 && !CliDB.WorldEffectStorage.containsKey(gameObjectAddon.worldEffectId)) {
-                Logs.SQL.error(String.format("GameObject (Entry: %1$s) has invalid worldEffectID (%2$s) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.worldEffectId));
-                gameObjectAddon.worldEffectId = 0;
-            }
-
-            if (gameObjectAddon.aiAnimKitId != 0 && !CliDB.AnimKitStorage.containsKey(gameObjectAddon.aiAnimKitId)) {
-                Logs.SQL.error(String.format("GameObject (Entry: %1$s) has invalid AIAnimKitID (%2$s) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.aiAnimKitId));
-                gameObjectAddon.aiAnimKitId = 0;
-            }
-
-            gameObjectTemplateAddonStorage.put(entry, gameObjectAddon);
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} game object template addons in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
     }
 
     public void loadGameObjectOverrides() {
         var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        try(var items = gameObjectRepository.streamAllGameObjectOverrides()) {
+            items.forEach(gameObjectOverride -> {
+                var goData = getGameObjectData(gameObjectOverride.spawnId);
 
-        //                                   0        1        2
-        var result = DB.World.query("SELECT spawnId, faction, flags FROM gameobject_overrides");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameobject faction and flags overrides. DB table `gameobject_overrides` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var spawnId = result.<Long>Read(0);
-            var goData = getGameObjectData(spawnId);
-
-            if (goData == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM gameobject_overrides WHERE spawnId = %1$s", spawnId));
-                } else {
-                    Logs.SQL.error(String.format("GameObject (SpawnId: %1$s) does not exist but has a record in `gameobject_overrides`", spawnId));
+                if (goData == null) {
+                    Logs.SQL.error("GameObject (SpawnId: {}) does not exist but has a record in `gameobject_overrides`", gameObjectOverride.spawnId);
+                    return;
                 }
 
-                continue;
-            }
+                gameObjectOverrideStorage.put(gameObjectOverride.spawnId, gameObjectOverride);
 
-            GameObjectOverride gameObjectOverride = new GameObjectOverride();
-            gameObjectOverride.faction = result.<SHORT>Read(1);
-            gameObjectOverride.flags = GameObjectFlags.forValue(result.<Integer>Read(2));
+                if (gameObjectOverride.faction != 0 && !dbcObjectManager.factionTemplate().contains(gameObjectOverride.faction)) {
+                    Logs.SQL.error(String.format("GameObject (SpawnId: %1$s) has invalid faction (%2$s) defined in `gameobject_overrides`.", gameObjectOverride.spawnId, gameObjectOverride.faction));
+                }
 
-            gameObjectOverrideStorage.put(spawnId, gameObjectOverride);
+                count.incrementAndGet();
+            });
+        }
 
-            if (gameObjectOverride.faction != 0 && !CliDB.FactionTemplateStorage.containsKey(gameObjectOverride.faction)) {
-                Logs.SQL.error(String.format("GameObject (SpawnId: %1$s) has invalid faction (%2$s) defined in `gameobject_overrides`.", spawnId, gameObjectOverride.faction));
-            }
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s gameobject faction and flags overrides in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+        Logs.SERVER_LOADING.info(">> Loaded {} gameobject faction and flags overrides in {} ms", count, System.currentTimeMillis() - (oldMSTime));
     }
 
     public void loadGameObjects() {
         var time = System.currentTimeMillis();
 
-
-        //                                         0                1   2    3           4           5           6
-        var result = DB.World.query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, " + "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnDifficulties, eventEntry, poolSpawnId, " + "phaseUseFlags, phaseid, phasegroup, terrainSwapMap, ScriptName " + "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid " + "LEFT OUTER JOIN pool_members ON pool_members.type = 1 AND gameobject.guid = pool_members.spawnId");
-
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameObjects. DB table `gameobject` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
+        AtomicInteger count = new AtomicInteger();
         // build single time for check spawnmask
-        HashMap<Integer, ArrayList<Difficulty>> spawnMasks = new HashMap<Integer, ArrayList<Difficulty>>();
-
-        for (var mapDifficultyPair : dbcObjectManager.GetMapDifficulties().entrySet()) {
-            for (var difficultyPair : mapDifficultyPair.getValue()) {
-                if (!spawnMasks.containsKey(mapDifficultyPair.getKey())) {
-                    spawnMasks.put(mapDifficultyPair.getKey(), new ArrayList<Difficulty>());
-                }
-
-                spawnMasks.get(mapDifficultyPair.getKey()).add(Difficulty.forValue(difficultyPair.key));
-            }
-        }
+        HashMap<Integer, Set<Difficulty>> spawnMasks = new HashMap<>();
+        for (MapDifficulty mapDifficulty : dbcObjectManager.mapDifficulty())
+            spawnMasks.compute(mapDifficulty.getMapID().intValue(), Functions.addToSet(mapDifficulty.getDifficulty()));
 
         PhaseShift phaseShift = new PhaseShift();
 
-        do {
-            var guid = result.<Long>Read(0);
-            var entry = result.<Integer>Read(1);
+        try(var items = gameObjectRepository.streamAllGameObject()) {
+            items.forEach(data -> {
+                var gInfo = getGameObjectTemplate(data.id);
 
-            var gInfo = getGameObjectTemplate(entry);
+                if (gInfo == null) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {}) with non existing gameobject entry {}, skipped.", data.spawnId, data.id);
 
-            if (gInfo == null) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0}) with non existing gameobject entry {1}, skipped.", guid, entry);
-
-                continue;
-            }
-
-            if (gInfo.displayId == 0) {
-                switch (gInfo.type) {
-                    case Trap:
-                    case SpellFocus:
-                        break;
-                    default:
-                        Logs.SQL.error("Gameobject (GUID: {0} Entry {1} GoType: {2}) doesn't have a displayId ({3}), not loaded.", guid, entry, gInfo.type, gInfo.displayId);
-
-                        break;
+                    return;
                 }
-            }
 
-            if (gInfo.displayId != 0 && !CliDB.GameObjectDisplayInfoStorage.containsKey(gInfo.displayId)) {
-                Logs.SQL.error("Gameobject (GUID: {0} Entry {1} GoType: {2}) has an invalid displayId ({3}), not loaded.", guid, entry, gInfo.type, gInfo.displayId);
+                if (gInfo.displayId == 0) {
+                    switch (gInfo.type) {
+                        case TRAP:
+                        case SPELL_FOCUS:
+                            break;
+                        default:
+                            Logs.SQL.error("Gameobject (GUID: {} Entry {} GoType: {}) doesn't have a displayId ({}), not loaded.", data.spawnId, data.id, gInfo.type, gInfo.displayId);
 
-                continue;
-            }
-
-            GameObjectData data = new GameObjectData();
-            data.setSpawnId(guid);
-            data.id = entry;
-            data.setMapId(result.<SHORT>Read(2));
-            data.spawnPoint = new Position(result.<Float>Read(3), result.<Float>Read(4), result.<Float>Read(5), result.<Float>Read(6));
-            data.rotation.X = result.<Float>Read(7);
-            data.rotation.Y = result.<Float>Read(8);
-            data.rotation.Z = result.<Float>Read(9);
-            data.rotation.W = result.<Float>Read(10);
-            data.spawnTimeSecs = result.<Integer>Read(11);
-            data.setSpawnGroupData(isTransportMap(data.getMapId()) ? getLegacySpawnGroup() : getDefaultSpawnGroup()); // transport spawns default to compatibility group
-
-            var mapEntry = CliDB.MapStorage.get(data.getMapId());
-
-            if (mapEntry == null) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) spawned on a non-existed map (Id: {2}), skip", guid, data.id, data.getMapId());
-
-                continue;
-            }
-
-            if (data.spawnTimeSecs == 0 && gInfo.isDespawnAtAction()) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with `spawntimesecs` (0) second, but the gameobejct is marked as despawnable at action.", guid, data.id);
-            }
-
-            data.animprogress = result.<Integer>Read(12);
-            data.artKit = 0;
-
-            var gostate = result.<Integer>Read(13);
-
-            if (gostate >= (int) GOState.max.getValue()) {
-                if (gInfo.type != GameObjectTypes.transport || gostate > GOState.TransportActive.getValue() + SharedConst.MaxTransportStopFrames) {
-                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid `state` ({2}) second, skip", guid, data.id, gostate);
-
-                    continue;
+                            break;
+                    }
                 }
-            }
 
-            data.goState = GOState.forValue(gostate);
+                if (gInfo.displayId != 0 && !dbcObjectManager.gameObjectDisplayInfo().contains(gInfo.displayId)) {
+                    Logs.SQL.error("Gameobject (GUID: {} Entry {} GoType: {}) has an invalid displayId ({}), not loaded.", data.spawnId, data.id, gInfo.type, gInfo.displayId);
 
-            data.spawnDifficulties = parseSpawnDifficulties(result.<String>Read(14), "gameobject", guid, data.getMapId(), spawnMasks.get(data.getMapId()));
-
-            if (data.spawnDifficulties.isEmpty()) {
-                Logs.SQL.error(String.format("Table `creature` has creature (GUID: %1$s) that is not spawned in any difficulty, skipped.", guid));
-
-                continue;
-            }
-
-            short gameEvent = result.<Byte>Read(15);
-            data.poolId = result.<Integer>Read(16);
-            data.phaseUseFlags = PhaseUseFlagsValues.forValue(result.<Byte>Read(17));
-            data.phaseId = result.<Integer>Read(18);
-            data.phaseGroup = result.<Integer>Read(19);
-
-            if ((boolean) (data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.All.getValue())) {
-                Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) has unknown `phaseUseFlags` set, removed unknown second.", guid, data.id);
-                data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & PhaseUseFlagsValues.All.getValue());
-            }
-
-            if (data.phaseUseFlags.hasFlag(PhaseUseFlagsValues.ALWAYSVISIBLE) && data.phaseUseFlags.hasFlag(PhaseUseFlagsValues.INVERSE)) {
-                Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) has both `phaseUseFlags` PHASE_USE_FLAGS_ALWAYS_VISIBLE and PHASE_USE_FLAGS_INVERSE," + " removing PHASE_USE_FLAGS_INVERSE.", guid, data.id);
-
-                data.phaseUseFlags = PhaseUseFlagsValues.forValue(data.phaseUseFlags.getValue() & ~PhaseUseFlagsValues.INVERSE.getValue());
-            }
-
-            if (data.phaseGroup != 0 && data.phaseId != 0) {
-                Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with both `phaseid` and `phasegroup` set, `phasegroup` set to 0", guid, data.id);
-                data.phaseGroup = 0;
-            }
-
-            if (data.phaseId != 0) {
-                if (!CliDB.PhaseStorage.containsKey(data.phaseId)) {
-                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with `phaseid` {2} does not exist, set to 0", guid, data.id, data.phaseId);
-                    data.phaseId = 0;
+                    return;
                 }
-            }
 
-            if (data.phaseGroup != 0) {
-                if (dbcObjectManager.GetPhasesForGroup(data.phaseGroup).isEmpty()) {
-                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with `phaseGroup` {2} does not exist, set to 0", guid, data.id, data.phaseGroup);
+                data.setSpawnGroupData(isTransportMap(data.getMapId()) ? getLegacySpawnGroup() : getDefaultSpawnGroup()); // transport spawns default to compatibility group
+
+                var mapEntry = dbcObjectManager.map(data.getMapId());
+
+                if (mapEntry == null) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) spawned on a non-existed map (Id: {}), skip", data.spawnId, data.id, data.getMapId());
+
+                    return;
+                }
+
+                if(world.getWorldSettings().gameObjectCheckInvalidPosition) {
+                    if (world.getVMapManager().isMapLoadingEnabled() && !isTransportMap(data.mapId))
+                    {
+                        Coordinate gridCoord = MapDefine.computeGridCoordinate(data.positionX, data.positionY);
+                        int gx = (MapDefine.MAX_NUMBER_OF_GRIDS - 1) - gridCoord.axisX();
+                        int gy = (MapDefine.MAX_NUMBER_OF_GRIDS - 1) - gridCoord.axisY();
+
+                        LoadResult result = world.getVMapManager().existsMap(data.mapId, gx, gy);
+                        if (result != LoadResult.Success) {
+                            Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {} MapID: {}) spawned on a possible invalid position ({})",
+                                    data.spawnId, data.id, data.mapId, data.positionString());
+                        }
+                    }
+                }
+
+                if (data.spawnTimeSecs == 0 && gInfo.isDespawnAtAction()) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with `spawntimesecs` (0) value, but the gameobejct is marked as despawnable at action.", data.spawnId, data.id);
+                }
+
+
+                data.artKit = 0;
+
+
+
+                if (data.goState == null) {
+                    if (gInfo.type != GameObjectType.TRANSPORT || data.goState.value > GOState.TRANSPORT_ACTIVE.value + SharedDefine.MAX_GO_STATE_TRANSPORT_STOP_FRAMES) {
+                        Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid `state` ({}) value, skip", data.spawnId, data.id, data.goState);
+
+                        return;
+                    }
+                }
+
+
+                data.spawnDifficulties = parseSpawnDifficulties(data.spawnDifficultiesText, "gameobject", data.id, data.getMapId(), spawnMasks.get(data.getMapId()));
+
+                if (data.spawnDifficulties.isEmpty()) {
+                    Logs.SQL.error(String.format("Table `creature` has creature (GUID: %1$s) that is not spawned in any difficulty, skipped.", data.id));
+
+                    return;
+                }
+
+
+                if (data.phaseUseFlags.hasNotFlag(PhaseUseFlag.ALL)) {
+                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) has unknown `phaseUseFlags` set, removed unknown second.", data.spawnId, data.id);
+                    data.phaseUseFlags.removeNotFlag(PhaseUseFlag.ALL);
+                }
+
+                if (data.phaseUseFlags.hasFlag(PhaseUseFlag.ALWAYS_VISIBLE) && data.phaseUseFlags.hasFlag(PhaseUseFlag.INVERSE)) {
+                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) has both `phaseUseFlags` PHASE_USE_FLAGS_ALWAYS_VISIBLE and PHASE_USE_FLAGS_INVERSE," + " removing PHASE_USE_FLAGS_INVERSE.", data.id, data.id);
+
+                    data.phaseUseFlags.removeFlag(PhaseUseFlag.INVERSE);
+                }
+
+                if (data.phaseGroup != 0 && data.phaseId != 0) {
+                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) with both `phaseid` and `phasegroup` set, `phasegroup` set to 0", data.spawnId, data.id);
                     data.phaseGroup = 0;
                 }
-            }
 
-            data.terrainSwapMap = result.<Integer>Read(20);
-
-            if (data.terrainSwapMap != -1) {
-                var terrainSwapEntry = CliDB.MapStorage.get(data.terrainSwapMap);
-
-                if (terrainSwapEntry == null) {
-                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with `terrainSwapMap` {2} does not exist, set to -1", guid, data.id, data.terrainSwapMap);
-                    data.terrainSwapMap = -1;
-                } else if (terrainSwapEntry.ParentMapID != data.getMapId()) {
-                    Logs.SQL.error("Table `gameobject` have gameobject (GUID: {0} Entry: {1}) with `terrainSwapMap` {2} which cannot be used on spawn map, set to -1", guid, data.id, data.terrainSwapMap);
-                    data.terrainSwapMap = -1;
+                if (data.phaseId != 0) {
+                    if (!dbcObjectManager.phase().contains(data.phaseId)) {
+                        Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) with `phaseid` {} does not exist, set to 0", data.spawnId, data.id, data.phaseId);
+                        data.phaseId = 0;
+                    }
                 }
-            }
 
-            data.scriptId = getScriptId(result.<String>Read(21));
+                if (data.phaseGroup != 0) {
+                    if (dbcObjectManager.getPhasesForGroup(data.phaseGroup).isEmpty()) {
+                        Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) with `phaseGroup` {} does not exist, set to 0", data.spawnId, data.id, data.phaseGroup);
+                        data.phaseGroup = 0;
+                    }
+                }
 
-            if (data.rotation.X < -1.0f || data.rotation.X > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationX ({2}) second, skip", guid, data.id, data.rotation.X);
 
-                continue;
-            }
 
-            if (data.rotation.Y < -1.0f || data.rotation.Y > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationY ({2}) second, skip", guid, data.id, data.rotation.Y);
+                if (data.terrainSwapMap != -1) {
+                    var terrainSwapEntry = dbcObjectManager.map(data.terrainSwapMap);
 
-                continue;
-            }
+                    if (terrainSwapEntry == null) {
+                        Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) with `terrainSwapMap` {} does not exist, set to -1", data.spawnId, data.id, data.terrainSwapMap);
+                        data.terrainSwapMap = -1;
+                    } else if (terrainSwapEntry.getParentMapID() != data.getMapId()) {
+                        Logs.SQL.error("Table `gameobject` have gameobject (GUID: {} Entry: {}) with `terrainSwapMap` {} which cannot be used on spawn map, set to -1", data.spawnId, data.id, data.terrainSwapMap);
+                        data.terrainSwapMap = -1;
+                    }
+                }
 
-            if (data.rotation.Z < -1.0f || data.rotation.Z > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationZ ({2}) second, skip", guid, data.id, data.rotation.Z);
+                data.scriptId = getScriptId(data.script);
 
-                continue;
-            }
+                if (data.rotation.x < -1.0f || data.rotation.x > 1.0f) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotationX ({}) second, skip", data.spawnId, data.id, data.rotation.x);
 
-            if (data.rotation.W < -1.0f || data.rotation.W > 1.0f) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid rotationW ({2}) second, skip", guid, data.id, data.rotation.W);
+                    return;
+                }
 
-                continue;
-            }
+                if (data.rotation.y < -1.0f || data.rotation.y > 1.0f) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotationY ({}) second, skip", data.spawnId, data.id, data.rotation.y);
 
-            if (!MapDefine.isValidMapCoordinatei(data.getMapId(), data.spawnPoint)) {
-                Logs.SQL.error("Table `gameobject` has gameobject (GUID: {0} Entry: {1}) with invalid coordinates, skip", guid, data.id);
+                    return;
+                }
 
-                continue;
-            }
+                if (data.rotation.z < -1.0f || data.rotation.z > 1.0f) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotationZ ({}) second, skip", data.spawnId, data.id, data.rotation.z);
 
-            if (!(Math.abs(Quaternion.Dot(data.rotation, data.rotation) - 1) < 1e-5)) {
-                Logs.SQL.error(String.format("Table `gameobject` has gameobject (GUID: %1$s Entry: %2$s) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id));
-                data.rotation = Quaternion.CreateFromRotationMatrix(Extensions.fromEulerAnglesZYX(data.spawnPoint.getO(), 0f, 0f));
-            }
+                    return;
+                }
 
-            if (WorldConfig.getBoolValue(WorldCfg.CalculateGameobjectZoneAreaData)) {
-                PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
-                int zoneId;
-                tangible.OutObject<Integer> tempOut_zoneId = new tangible.OutObject<Integer>();
-                int areaId;
-                tangible.OutObject<Integer> tempOut_areaId = new tangible.OutObject<Integer>();
-                global.getTerrainMgr().getZoneAndAreaId(phaseShift, tempOut_zoneId, tempOut_areaId, data.getMapId(), data.spawnPoint);
-                areaId = tempOut_areaId.outArgValue;
-                zoneId = tempOut_zoneId.outArgValue;
+                if (data.rotation.w < -1.0f || data.rotation.w > 1.0f) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotationW ({}) second, skip", data.spawnId, data.id, data.rotation.w);
 
-                var stmt = DB.World.GetPreparedStatement(WorldStatements.UPD_GAMEOBJECT_ZONE_AREA_DATA);
-                stmt.AddValue(0, zoneId);
-                stmt.AddValue(1, areaId);
-                stmt.AddValue(2, guid);
-                DB.World.execute(stmt);
-            }
+                    return;
+                }
 
-            // if not this is to be managed by GameEvent System
-            if (gameEvent == 0) {
-                addGameObjectToGrid(data);
-            }
+                if (!world.getMapManager().isValidMapCoordinate(data.getMapId(), data.positionX, data.positionY, data.positionZ)) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid coordinates, skip", data.spawnId, data.id);
 
-            gameObjectDataStorage.put(guid, data);
-            ++count;
-        } while (result.NextRow());
+                    return;
+                }
 
-        Logs.SERVER_LOADING.info("Loaded {0} gameobjects in {1} ms", count, time.GetMSTimeDiffToNow(time));
+
+                if (!data.rotation.isUnit()) {
+                    Logs.SQL.error("Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", data.spawnId, data.id);
+                    data.rotation.setEulerAngles(data.positionO, 0.0f, 0.0f);
+                }
+
+
+                if (world.getWorldSettings().calculateGameObjectZoneAreaData) {
+                    PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
+                    ZoneAndAreaId result = world.getTerrainManager().getZoneAndAreaId(phaseShift, data.mapId, data.positionX, data.positionY, data.positionZ);
+                    if (result != null) {
+                        gameObjectRepository.updateGameObjectZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
+                    }
+                }
+
+                // if not this is to be managed by GameEvent System
+                if (data.gameEvent == 0) {
+                    addGameObjectToGrid(data);
+                }
+
+                gameObjectDataStorage.put(data.spawnId, data);
+                count.incrementAndGet();
+            });
+            Logs.SERVER_LOADING.info(">> Loaded {} gameobjects in {} ms", count, System.currentTimeMillis() - time);
+        }
+
     }
 
     public void loadGameObjectAddons() {
         var oldMSTime = System.currentTimeMillis();
-
+        AtomicInteger count = new AtomicInteger();
         gameObjectAddonStorage.clear();
 
-        //                                         0     1                 2                 3                 4                 5                 6                  7              8
-        var result = DB.World.query("SELECT guid, parent_rotation0, parent_rotation1, parent_rotation2, parent_rotation3, invisibilityType, invisibilityValue, worldEffectID, AIAnimKitID FROM gameobject_addon");
+        try(var items = gameObjectRepository.streamAllGameObjectAddons()) {
+            items.forEach(data -> {
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameobject addon definitions. DB table `gameobject_addon` is empty.");
-
-            return;
-        }
-
-        int count = 0;
-
-        do {
-            var guid = result.<Long>Read(0);
-
-            var goData = getGameObjectData(guid);
-
-            if (goData == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM gameobject_addon WHERE guid = %1$s", guid));
-                } else {
-                    Logs.SQL.error(String.format("GameObject (GUID: %1$s) does not exist but has a record in `gameobject_addon`", guid));
+                var goData = getGameObjectData(data.guid);
+                if (goData == null)
+                {
+                    Logs.SQL.error("GameObject (GUID: {}) does not exist but has a record in `gameobject_addon`", data.guid);
+                    return;
                 }
 
-                continue;
-            }
+                if (data.invisibilityType.ordinal() > 0 && data.invisibilityValue == 0)
+                {
+                    Logs.SQL.error("GameObject (GUID: {}) has InvisibilityType set but has no InvisibilityValue in `gameobject_addon`, set to 1", data.guid);
+                    data.invisibilityValue = 1;
+                }
 
-            GameObjectAddon gameObjectAddon = new GameObjectAddon();
-            gameObjectAddon.parentRotation = new Quaternion(result.<Float>Read(1), result.<Float>Read(2), result.<Float>Read(3), result.<Float>Read(4));
-            gameObjectAddon.invisibilityType = InvisibilityType.forValue(result.<Byte>Read(5));
-            gameObjectAddon.invisibilityValue = result.<Integer>Read(6);
-            gameObjectAddon.worldEffectID = result.<Integer>Read(7);
-            gameObjectAddon.AIAnimKitID = result.<Integer>Read(8);
+                if (!data.parentRotation.isUnit())
+                {
+                    Logs.SQL.error("GameObject (GUID: {}) has invalid parent rotation in `gameobject_addon`, set to default", data.guid);
+                    data.parentRotation = new QuaternionData();
+                }
 
-            if (gameObjectAddon.invisibilityType.getValue() >= InvisibilityType.max.getValue()) {
-                Logs.SQL.error(String.format("GameObject (GUID: %1$s) has invalid InvisibilityType in `gameobject_addon`, disabled invisibility", guid));
-                gameObjectAddon.invisibilityType = InvisibilityType.General;
-                gameObjectAddon.invisibilityValue = 0;
-            }
+                if (data.worldEffectID != 0 && !dbcObjectManager.worldEffect().contains(data.worldEffectID))
+                {
+                    Logs.SQL.error("GameObject (GUID: {}) has invalid WorldEffectID ({}) in `gameobject_addon`, set to 0.", data.guid, data.worldEffectID);
+                    data.worldEffectID = 0;
+                }
 
-            if (gameObjectAddon.invisibilityType != 0 && gameObjectAddon.invisibilityValue == 0) {
-                Logs.SQL.error(String.format("GameObject (GUID: %1$s) has InvisibilityType set but has no InvisibilityValue in `gameobject_addon`, set to 1", guid));
-                gameObjectAddon.invisibilityValue = 1;
-            }
+                if (data.aiAnimKitID != 0 && !dbcObjectManager.animKit().contains(data.aiAnimKitID))
+                {
+                    Logs.SQL.error("GameObject (GUID: {}) has invalid AIAnimKitID ({}) in `gameobject_addon`, set to 0.", data.guid, data.aiAnimKitID);
+                    data.aiAnimKitID = 0;
+                }
 
-            if (!(Math.abs(Quaternion.Dot(gameObjectAddon.parentRotation, gameObjectAddon.parentRotation) - 1) < 1e-5)) {
-                Logs.SQL.error(String.format("GameObject (GUID: %1$s) has invalid parent rotation in `gameobject_addon`, set to default", guid));
-                gameObjectAddon.parentRotation = Quaternion.Identity;
-            }
 
-            if (gameObjectAddon.worldEffectID != 0 && !CliDB.WorldEffectStorage.containsKey(gameObjectAddon.worldEffectID)) {
-                Logs.SQL.error(String.format("GameObject (GUID: %1$s) has invalid worldEffectID (%2$s) in `gameobject_addon`, set to 0.", guid, gameObjectAddon.worldEffectID));
-                gameObjectAddon.worldEffectID = 0;
-            }
-
-            if (gameObjectAddon.AIAnimKitID != 0 && !CliDB.AnimKitStorage.containsKey(gameObjectAddon.AIAnimKitID)) {
-                Logs.SQL.error(String.format("GameObject (GUID: %1$s) has invalid AIAnimKitID (%2$s) in `gameobject_addon`, set to 0.", guid, gameObjectAddon.AIAnimKitID));
-                gameObjectAddon.AIAnimKitID = 0;
-            }
-
-            gameObjectAddonStorage.put(guid, gameObjectAddon);
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s gameobject addons in %2$s ms", count, time.GetMSTimeDiffToNow(oldMSTime)));
+                gameObjectAddonStorage.put(data.guid, data);
+                count.incrementAndGet();
+            });
+        }
+        Logs.SERVER_LOADING.info(">> Loaded {} gameobject addons in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadGameObjectQuestItems() {
         var oldMSTime = System.currentTimeMillis();
+        var count = new AtomicInteger();
 
-        //                                           0                1
-        var result = DB.World.query("SELECT GameObjectEntry, itemId, Idx FROM gameobject_questitem ORDER BY Idx ASC");
+        try(var items = gameObjectRepository.streamAllGameObjectQuestItem()) {
+            items.forEach(fields -> {
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 gameobject quest items. DB table `gameobject_questitem` is empty.");
+                int entry = fields[0];
+                int item  = fields[1];
+                int idx   = fields[2];
 
-            return;
+
+                GameObjectTemplate goInfo = getGameObjectTemplate(entry);
+                if (goInfo == null)
+                {
+                    Logs.SQL.error("Table `gameobject_questitem` has data for nonexistent gameobject (entry: {}, idx: {}), skipped", entry, idx);
+                    return;
+                };
+
+
+
+                if (!dbcObjectManager.item().contains(item))
+                {
+                    Logs.SQL.error("Table `gameobject_questitem` has nonexistent item (ID: {}) in gameobject (entry: {}, idx: {}), skipped", item, entry, idx);
+                    return;
+                };
+                gameObjectQuestItemStorage.compute(entry, Functions.addToList(item));
+                count.incrementAndGet();
+
+            });
         }
-
-        int count = 0;
-
-        do {
-            var entry = result.<Integer>Read(0);
-            var item = result.<Integer>Read(1);
-            var idx = result.<Integer>Read(2);
-
-            if (!gameObjectTemplateStorage.containsKey(entry)) {
-                Logs.SQL.error("Table `gameobject_questitem` has data for nonexistent gameobject (entry: {0}, idx: {1}), skipped", entry, idx);
-
-                continue;
-            }
-
-            if (!CliDB.ItemStorage.containsKey(item)) {
-                Logs.SQL.error("Table `gameobject_questitem` has nonexistent item (ID: {0}) in gameobject (entry: {1}, idx: {2}), skipped", item, entry, idx);
-
-                continue;
-            }
-
-            gameObjectQuestItemStorage.add(entry, item);
-
-            ++count;
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} gameobject quest items in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} gameobject quest items in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadGameObjectForQuests() {
@@ -3523,7 +3273,7 @@ public final class ObjectManager {
         gameObjectDataStorage.remove(spawnId);
     }
 
-    public GameObjectData newOrExistGameObjectData(long spawnId) {
+    public GameObjectData newOrExistGameObjectData(int spawnId) {
         if (!gameObjectDataStorage.containsKey(spawnId)) {
             gameObjectDataStorage.put(spawnId, new GameObjectData());
         }
@@ -4543,7 +4293,7 @@ public final class ObjectManager {
         switch (type) {
             case Creature:
                 return getCreatureData(spawnId);
-            case GameObject:
+            case GameObjectEntry:
                 return getGameObjectData(spawnId);
             case AreaTrigger:
                 return global.getAreaTriggerDataStorage().GetAreaTriggerSpawn(spawnId);
@@ -7458,6 +7208,7 @@ public final class ObjectManager {
     }
 
     public AccessRequirement getAccessRequirement(int mapid, Difficulty difficulty) {
+
         return accessRequirementStorage.get(MathUtil.MakePair64(mapid, (int) difficulty.getValue()));
     }
 
@@ -7465,29 +7216,28 @@ public final class ObjectManager {
         return tavernAreaTriggerStorage.contains(Trigger_ID);
     }
 
-    public AreaTriggerStruct getGoBackTrigger(int Map) {
+    public AreaTriggerStruct getGoBackTrigger(int map) {
         Integer parentId = null;
-        var mapEntry = CliDB.MapStorage.get(Map);
-
-        if (mapEntry == null || mapEntry.CorpseMapID < 0) {
+        var mapEntry = dbcObjectManager.map(map);
+        if (mapEntry == null || mapEntry.getCorpseMapID() < 0) {
             return null;
         }
 
-        if (mapEntry.IsDungeon()) {
-            var iTemplate = getInstanceTemplate(Map);
+        if (mapEntry.isDungeon()) {
+            var iTemplate = getInstanceTemplate(map);
 
             if (iTemplate != null) {
                 parentId = iTemplate.parent;
             }
         }
 
-        var entrance_map = (parentId == null ? (int) mapEntry.CorpseMapID : parentId.intValue());
+        var entrance_map = (parentId == null ? (int) mapEntry.getCorpseMapID() : parentId);
 
         for (var pair : areaTriggerStorage.entrySet()) {
             if (pair.getValue().target_mapId == entrance_map) {
-                var atEntry = CliDB.AreaTriggerStorage.get(pair.getKey());
+                var atEntry = dbcObjectManager.areaTrigger(pair.getKey());
 
-                if (atEntry != null && atEntry.ContinentID == Map) {
+                if (atEntry != null && atEntry.getContinentID() == map) {
                     return pair.getValue();
                 }
             }
@@ -7499,7 +7249,7 @@ public final class ObjectManager {
     public AreaTriggerStruct getMapEntranceTrigger(int Map) {
         for (var pair : areaTriggerStorage.entrySet()) {
             if (pair.getValue().target_mapId == Map) {
-                var atEntry = CliDB.AreaTriggerStorage.get(pair.getKey());
+                var atEntry = dbcObjectManager.areaTrigger(pair.getKey());
 
                 if (atEntry != null) {
                     return pair.getValue();
@@ -8425,8 +8175,8 @@ public final class ObjectManager {
         Logs.SQL.error("Gameobject (Entry: {} GoType: {}) have data{}={} but expected boolean (0/1) consumable field value.", goInfo.entry, goInfo.type, N, dataN);
     }
 
-    private List<Difficulty> parseSpawnDifficulties(String difficultyString, String table, long spawnId, int mapId, ArrayList<Difficulty> mapDifficulties) {
-        Set<Difficulty> difficulties = new HashSet<>();
+    private Set<Difficulty> parseSpawnDifficulties(String difficultyString, String table, long spawnId, int mapId, Set<Difficulty> mapDifficulties) {
+        Set<Difficulty> difficulties = EnumSet.noneOf(Difficulty.class);
 
 
         var isTransportMap = isTransportMap(mapId);
@@ -8436,21 +8186,18 @@ public final class ObjectManager {
         for (int difficultyId : ints) {
             Difficulty difficulty = difficultyId > Difficulty.values().length || difficultyId < 0 ? Difficulty.NONE : Difficulty.values()[difficultyId];
 
-            if (difficulty != Difficulty.NONE && dbcObjectManager.difficulty(difficultyId) == null)
-            {
+            if (difficulty != Difficulty.NONE && dbcObjectManager.difficulty(difficultyId) == null) {
                 Logs.SQL.error("Table `{}` has {} (GUID: {}) with non invalid difficulty id {}, skipped.", table, table, spawnId, difficulty);
                 continue;
             }
 
-            if (!isTransportMap && mapDifficulties.get(difficultyId) == null)
-            {
+            if (!isTransportMap && mapDifficulties.contains(difficulty)) {
                 Logs.SQL.error("Table `{}` has {} (GUID: {}) has unsupported difficulty {} for map (Id: {}).", table, table, spawnId, difficulty, mapId);
                 continue;
             }
             difficulties.add(difficulty);
         }
-
-        return difficulties.stream().sorted().toList();
+        return difficulties;
     }
 
     private int fillMaxDurability(ItemClass itemClass, int itemSubClass, InventoryType inventoryType, ItemQuality quality, int itemLevel) {

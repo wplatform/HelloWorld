@@ -1,25 +1,39 @@
 package com.github.azeroth.game.entity.creature;
 
 
+import com.github.azeroth.common.Locale;
+import com.github.azeroth.common.LocalizedString;
+import com.github.azeroth.common.Logs;
+import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.defines.SkillType;
+import com.github.azeroth.defines.SpellEffectName;
 import com.github.azeroth.game.battlepet.BattlePetMgr;
+import com.github.azeroth.game.domain.creature.TrainerSpell;
+import com.github.azeroth.game.domain.creature.TrainerSpellState;
+import com.github.azeroth.game.domain.creature.TrainerType;
 import com.github.azeroth.game.entity.player.Player;
+import com.github.azeroth.game.networking.packet.npc.TrainerBuyFailed;
+import com.github.azeroth.game.networking.packet.npc.TrainerList;
+import com.github.azeroth.game.networking.packet.npc.TrainerListSpell;
+import com.github.azeroth.game.spell.SpellManager;
 
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
 
 
 public class Trainer {
+
+    public final int FAIL_REASON_UNAVAILABLE = 0;
+    public final int FAIL_REASON_NOT_ENOUGH_MONEY = 1;
     private final int id;
     private final TrainerType type;
-    private final ArrayList<TrainerSpell> spells;
-    private final String[] greeting = new String[Locale.Total.getValue()];
+    private final List<TrainerSpell> spells;
+    private final LocalizedString greeting = new LocalizedString();
 
-    public Trainer(int id, TrainerType type, String greeting, ArrayList<TrainerSpell> spells) {
-        id = id;
-        type = type;
-        spells = spells;
-
-        _greeting[Locale.enUS.getValue()] = greeting;
+    public Trainer(int id, TrainerType type, String greeting, List<TrainerSpell> spells) {
+        this.id = id;
+        this.type = type;
+        this.spells = spells;
+        this.greeting.set(Locale.enUS, greeting);
     }
 
     public final void sendSpells(Creature npc, Player player, Locale locale) {
@@ -27,29 +41,30 @@ public class Trainer {
 
         TrainerList trainerList = new TrainerList();
         trainerList.trainerGUID = npc.getGUID();
-        trainerList.trainerType = type.getValue();
-        trainerList.trainerID = (int) id;
-        trainerList.greeting = getGreeting(locale);
+        trainerList.trainerType = type;
+        trainerList.trainerID = id;
+        trainerList.greeting = greeting.get(locale);
 
         for (var trainerSpell : spells) {
-            if (!player.isSpellFitByClassAndRace(trainerSpell.getSpellId())) {
+            if (!player.isSpellFitByClassAndRace(trainerSpell.spellId)) {
                 continue;
             }
 
-            if (!global.getConditionMgr().isObjectMeetingTrainerSpellConditions(id, trainerSpell.getSpellId(), player)) {
-                Log.outDebug(LogFilter.condition, String.format("SendSpells: conditions not met for trainer id %1$s spell %2$s player '%3$s' (%4$s)", id, trainerSpell.getSpellId(), player.getName(), player.getGUID()));
+            if (player.getWorldContext().getConditionManager().isObjectMeetingTrainerSpellConditions(id, trainerSpell.spellId, player)) {
+                Logs.CONDITION.debug("SendSpells: conditions not met for trainer id {} spell {} player '{}' ({})",
+                        id, trainerSpell.spellId, player.getName(), player.getGUID());
 
                 continue;
             }
 
             TrainerListSpell trainerListSpell = new TrainerListSpell();
-            trainerListSpell.spellID = trainerSpell.getSpellId();
-            trainerListSpell.moneyCost = (int) (trainerSpell.getMoneyCost() * reputationDiscount);
-            trainerListSpell.reqSkillLine = trainerSpell.getReqSkillLine();
-            trainerListSpell.reqSkillRank = trainerSpell.getReqSkillRank();
-            trainerListSpell.reqAbility = tangible.IntegerLists.toArray(trainerSpell.getReqAbility());
+            trainerListSpell.spellID = trainerSpell.spellId;
+            trainerListSpell.moneyCost = (int) (trainerSpell.moneyCost * reputationDiscount);
+            trainerListSpell.reqSkillLine = trainerSpell.reqSkillLine;
+            trainerListSpell.reqSkillRank = trainerSpell.reqSkillRank;
+            trainerListSpell.reqAbility = trainerSpell.reqAbility;
             trainerListSpell.usable = getSpellState(player, trainerSpell);
-            trainerListSpell.reqLevel = trainerSpell.getReqLevel();
+            trainerListSpell.reqLevel = trainerSpell.reqLevel;
             trainerList.spells.add(trainerListSpell);
         }
 
@@ -60,13 +75,13 @@ public class Trainer {
         var trainerSpell = getSpell(spellId);
 
         if (trainerSpell == null || !canTeachSpell(player, trainerSpell)) {
-            sendTeachFailure(npc, player, spellId, TrainerFailReason.Unavailable);
+            sendTeachFailure(npc, player, spellId, FAIL_REASON_UNAVAILABLE);
 
             return;
         }
 
         var sendSpellVisual = true;
-        var speciesEntry = BattlePetMgr.getBattlePetSpeciesBySpell(trainerSpell.getSpellId());
+        var speciesEntry = BattlePetMgr.getBattlePetSpeciesBySpell(trainerSpell.spellId);
 
         if (speciesEntry != null) {
             if (player.getSession().getBattlePetMgr().hasMaxPetCount(speciesEntry, player.getGUID())) {
@@ -78,10 +93,10 @@ public class Trainer {
         }
 
         var reputationDiscount = player.getReputationPriceDiscount(npc);
-        var moneyCost = (long) (trainerSpell.getMoneyCost() * reputationDiscount);
+        var moneyCost = (long) (trainerSpell.moneyCost * reputationDiscount);
 
         if (!player.hasEnoughMoney(moneyCost)) {
-            sendTeachFailure(npc, player, spellId, TrainerFailReason.NotEnoughMoney);
+            sendTeachFailure(npc, player, spellId, FAIL_REASON_NOT_ENOUGH_MONEY);
 
             return;
         }
@@ -93,50 +108,52 @@ public class Trainer {
             player.sendPlaySpellVisualKit(362, 1, 0); // 113 EmoteSalute
         }
 
+        boolean castable = player.getWorldContext().getSpellManager().getSpellInfo(trainerSpell.spellId, Difficulty.NONE).hasEffect(SpellEffectName.LEARN_SPELL);
         // learn explicitly or cast explicitly
-        if (trainerSpell.isCastable()) {
-            player.castSpell(player, trainerSpell.getSpellId(), true);
+        if (castable) {
+            player.castSpell(player, trainerSpell.spellId, true);
         } else {
             var dependent = false;
 
             if (speciesEntry != null) {
-                player.getSession().getBattlePetMgr().addPet(speciesEntry.id, BattlePetMgr.selectPetDisplay(speciesEntry), BattlePetMgr.rollPetBreed(speciesEntry.id), BattlePetMgr.getDefaultPetQuality(speciesEntry.id));
+                player.getSession().getBattlePetMgr().addPet(speciesEntry.getId(), BattlePetMgr.selectPetDisplay(speciesEntry), BattlePetMgr.rollPetBreed(speciesEntry.getId()), BattlePetMgr.getDefaultPetQuality(speciesEntry.getId()));
                 // If the spell summons a battle pet, we fake that it has been learned and the battle pet is added
                 // marking as dependent prevents saving the spell to database (intended)
                 dependent = true;
             }
 
-            player.learnSpell(trainerSpell.getSpellId(), dependent);
+            player.learnSpell(trainerSpell.spellId, dependent);
         }
     }
 
     public final void addGreetingLocale(Locale locale, String greeting) {
-        _greeting[locale.getValue()] = greeting;
+        this.greeting.set(locale, greeting);
     }
 
     private TrainerSpell getSpell(int spellId) {
-        return tangible.ListHelper.find(spells, trainerSpell -> trainerSpell.spellId == spellId);
+        return spells.stream().filter(e -> e.spellId == spellId).findFirst().orElse(null);
     }
 
     private boolean canTeachSpell(Player player, TrainerSpell trainerSpell) {
         var state = getSpellState(player, trainerSpell);
 
-        if (state != TrainerSpellState.Available) {
+        if (state != TrainerSpellState.AVAILABLE) {
             return false;
         }
 
-        var trainerSpellInfo = global.getSpellMgr().getSpellInfo(trainerSpell.getSpellId(), Difficulty.NONE);
+        SpellManager spellManager = player.getWorldContext().getSpellManager();
+        var trainerSpellInfo = spellManager.getSpellInfo(trainerSpell.spellId, Difficulty.NONE);
 
         if (trainerSpellInfo.isPrimaryProfessionFirstRank() && player.getFreePrimaryProfessionPoints() == 0) {
             return false;
         }
 
         for (var effect : trainerSpellInfo.getEffects()) {
-            if (!effect.isEffect(SpellEffectName.LearnSpell)) {
+            if (!effect.isEffect(SpellEffectName.LEARN_SPELL)) {
                 continue;
             }
 
-            var learnedSpellInfo = global.getSpellMgr().getSpellInfo(effect.triggerSpell, Difficulty.NONE);
+            var learnedSpellInfo = spellManager.getSpellInfo(effect.triggerSpell, Difficulty.NONE);
 
             if (learnedSpellInfo != null && learnedSpellInfo.isPrimaryProfessionFirstRank() && player.getFreePrimaryProfessionPoints() == 0) {
                 return false;
@@ -147,37 +164,37 @@ public class Trainer {
     }
 
     private TrainerSpellState getSpellState(Player player, TrainerSpell trainerSpell) {
-        if (player.hasSpell(trainerSpell.getSpellId())) {
-            return TrainerSpellState.Known;
+        if (player.hasSpell(trainerSpell.spellId)) {
+            return TrainerSpellState.KNOWN;
         }
 
         // check race/class requirement
-        if (!player.isSpellFitByClassAndRace(trainerSpell.getSpellId())) {
-            return TrainerSpellState.Unavailable;
+        if (!player.isSpellFitByClassAndRace(trainerSpell.spellId)) {
+            return TrainerSpellState.UNAVAILABLE;
         }
 
         // check skill requirement
-        if (trainerSpell.getReqSkillLine() != 0 && player.getBaseSkillValue(SkillType.forValue(trainerSpell.getReqSkillLine())).getValue() < trainerSpell.getReqSkillRank()) {
-            return TrainerSpellState.Unavailable;
+        if (trainerSpell.reqSkillLine != 0 && player.getBaseSkillValue(SkillType.values()[trainerSpell.reqSkillLine]) < trainerSpell.reqSkillRank) {
+            return TrainerSpellState.UNAVAILABLE;
         }
 
-        for (var reqAbility : trainerSpell.getReqAbility()) {
+        for (var reqAbility : trainerSpell.reqAbility) {
             if (reqAbility != 0 && !player.hasSpell(reqAbility)) {
-                return TrainerSpellState.Unavailable;
+                return TrainerSpellState.UNAVAILABLE;
             }
         }
 
         // check level requirement
-        if (player.getLevel() < trainerSpell.getReqLevel()) {
-            return TrainerSpellState.Unavailable;
+        if (player.getLevel() < trainerSpell.reqLevel) {
+            return TrainerSpellState.UNAVAILABLE;
         }
 
         // check ranks
         var hasLearnSpellEffect = false;
         var knowsAllLearnedSpells = true;
 
-        for (var spellEffectInfo : global.getSpellMgr().getSpellInfo(trainerSpell.getSpellId(), Difficulty.NONE).getEffects()) {
-            if (!spellEffectInfo.isEffect(SpellEffectName.LearnSpell)) {
+        for (var spellEffectInfo : player.getWorldContext().getSpellManager().getSpellInfo(trainerSpell.spellId, Difficulty.NONE).getEffects()) {
+            if (!spellEffectInfo.isEffect(SpellEffectName.LEARN_SPELL)) {
                 continue;
             }
 
@@ -189,25 +206,17 @@ public class Trainer {
         }
 
         if (hasLearnSpellEffect && knowsAllLearnedSpells) {
-            return TrainerSpellState.Known;
+            return TrainerSpellState.KNOWN;
         }
 
-        return TrainerSpellState.Available;
+        return TrainerSpellState.AVAILABLE;
     }
 
-    private void sendTeachFailure(Creature npc, Player player, int spellId, TrainerFailReason reason) {
+    private void sendTeachFailure(Creature npc, Player player, int spellId, int reason) {
         TrainerBuyFailed trainerBuyFailed = new TrainerBuyFailed();
         trainerBuyFailed.trainerGUID = npc.getGUID();
         trainerBuyFailed.spellID = spellId;
         trainerBuyFailed.trainerFailedReason = reason;
         player.sendPacket(trainerBuyFailed);
-    }
-
-    private String getGreeting(Locale locale) {
-        if (_greeting[locale.getValue()].isEmpty()) {
-            return _greeting[Locale.enUS.getValue()];
-        }
-
-        return _greeting[locale.getValue()];
     }
 }

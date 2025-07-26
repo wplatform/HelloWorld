@@ -15261,7 +15261,7 @@ public class Spell {
 
         var player = unitTarget.toPlayer();
         player.setPlayerFlag(playerFlags.PetBattlesUnlocked);
-        player.getSession().getBattlePetMgr().unlockSlot(BattlePetSlots.Slot0);
+        player.getSession().getBattlePetMgr().unlockSlot(BattlePetSlot.Slot0);
     }
 
     

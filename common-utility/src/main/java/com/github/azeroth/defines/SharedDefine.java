@@ -142,18 +142,12 @@ public interface SharedDefine {
     int DISPEL_ALL_MASK = ((1 << DispelType.MAGIC.ordinal()) | (1 << DispelType.CURSE.ordinal()) | (1 << DispelType.DISEASE.ordinal()) | (1 << DispelType.POISON.ordinal()));
 
 
-    int MAX_GAME_OBJECT_TYPE = 52;             // sending to client this or greater second can crash client.
     int MAX_GAME_OBJECT_DATA = 33;             // Max number of uint32 vars in gameobject_template data field
 
 
     int MAX_GO_STATE = 3;
     int MAX_GO_STATE_TRANSPORT_STOP_FRAMES = 9;
 
-
-    // this is important type for npcs!
-    enum TrainerType {
-        TRAINER_TYPE_CLASS
-    }
 
 
     int CREATURE_TYPEMASK_DEMON_OR_UNDEAD = (1 << (CreatureType.DEMON.ordinal() - 1)) | (1 << (CreatureType.UNDEAD.ordinal() - 1));

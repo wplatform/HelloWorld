@@ -3,7 +3,7 @@ package com.github.azeroth.game.map;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
-import com.github.azeroth.game.entity.gobject.GameObjectTemplate;
+import com.github.azeroth.game.domain.gobject.GameObjectTemplate;
 import com.github.azeroth.game.entity.gobject.transport;
 import com.github.azeroth.game.movement.spline;
 import game.PhasingHandler;

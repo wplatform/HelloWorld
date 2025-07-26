@@ -1,8 +1,10 @@
 package com.github.azeroth.game.battlepet;
 
 
+import com.github.azeroth.game.networking.packet.battlepet.BattlePetStruct;
+
 public class BattlePet {
-    public battlePetStruct packetInfo = new battlePetStruct();
+    public BattlePetStruct packetInfo = new BattlePetStruct();
     public long nameTimestamp;
     public com.github.azeroth.game.entity.unit.declinedName declinedName;
     public BattlePetsaveInfo saveInfo = BattlePetSaveInfo.values()[0];

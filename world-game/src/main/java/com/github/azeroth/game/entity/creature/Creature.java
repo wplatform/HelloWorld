@@ -95,8 +95,8 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     private byte originalEquipmentId;
 
     private byte currentEquipmentId;
-    private Creaturetemplate template;
-    private creatureData creatureData;
+    private CreatureTemplate template;
+    private CreatureData creatureData;
     private boolean isReputationGainDisabled;
     private boolean cannotReachTarget;
     // Part of Evade mechanics
@@ -4009,15 +4009,12 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
 
     private CreatureAddon getCreatureAddon() {
         if (getSpawnId() != 0) {
-            var addon = global.getObjectMgr().getCreatureAddon(getSpawnId());
-
-            if (addon != null) {
-                return addon;
+            if (creatureData.creatureAddon != null) {
+                return creatureData.creatureAddon;
             }
         }
-
         // dependent from difficulty mode entry
-        return global.getObjectMgr().getCreatureTemplateAddon(getTemplate().entry);
+        return creatureInfo.creatureTemplateAddon;
     }
 
     private boolean isSpawnedOnTransport() {

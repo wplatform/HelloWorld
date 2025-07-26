@@ -29,6 +29,5 @@ public enum Difficulty {
     EVENT_SCENARIO_6,
     WORLD_PVP_SCENARIO_2,
     TIME_WALKING_RAID,
-    PVP,
-
+    PVP
 }

@@ -294,11 +294,6 @@ import java.nio.file.Path;
  * worldserver.nograyaggro.Above
  * worldserver.nograyaggro.Below
  * <p>
- * worldserver.gameobject.CheckInvalidPosition
- * worldserver.loot.EnableAELoot
- * worldserver.blackmarket.Enabled
- * worldserver.blackmarket.MaxAuctions
- * worldserver.blackmarket.UpdatePeriod
  * worldserver.appender.Console
  * worldserver.appender.Server
  * worldserver.appender.GM
@@ -469,6 +464,13 @@ public class WorldSetting {
 
     public boolean calculateCreatureZoneAreaData;
     public boolean calculateGameObjectZoneAreaData;
+
+
+    public boolean gameObjectCheckInvalidPosition;
+    public boolean lootEnableAELoot;
+    public boolean blackMarketEnabled;
+    public boolean blackMarketMaxAuctions;
+    public boolean blackMarketUpdatePeriod;
 
     public GmSetting gm;
     public QuestSetting quest;

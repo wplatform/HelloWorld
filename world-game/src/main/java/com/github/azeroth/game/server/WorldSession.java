@@ -3569,7 +3569,7 @@ public class WorldSession implements Closeable {
         var pet = getBattlePetMgr().getPet(battlePetSetBattleSlot.petGuid);
 
         if (pet != null) {
-            var slot = getBattlePetMgr().getSlot(BattlePetSlots.forValue(battlePetSetBattleSlot.slot));
+            var slot = getBattlePetMgr().getSlot(BattlePetSlot.forValue(battlePetSetBattleSlot.slot));
 
             if (slot != null) {
                 slot.pet = pet.packetInfo;

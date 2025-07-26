@@ -1,6 +1,7 @@
 package com.github.azeroth.game.entity.gobject;
 
 
+import com.github.azeroth.game.domain.gobject.GameObjectData;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.creature.minion;

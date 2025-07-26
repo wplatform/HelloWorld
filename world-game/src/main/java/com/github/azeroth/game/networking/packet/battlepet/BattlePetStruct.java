@@ -1,5 +1,6 @@
 package com.github.azeroth.game.networking.packet.battlepet;
 
+import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 
 
@@ -17,7 +18,7 @@ public final class BattlePetStruct {
     public int maxHealth;
     public int speed;
     public byte quality;
-    public BattlePetownerInfo ownerInfo = null;
+    public BattlePetOwnerInfo ownerInfo = null;
     public String name;
 
     public void write(WorldPacket data) {
@@ -48,41 +49,11 @@ public final class BattlePetStruct {
         }
     }
 
-    public BattlePetStruct clone() {
-        BattlePetStruct varCopy = new battlePetStruct();
-
-        varCopy.guid = this.guid;
-        varCopy.species = this.species;
-        varCopy.creatureID = this.creatureID;
-        varCopy.displayID = this.displayID;
-        varCopy.breed = this.breed;
-        varCopy.level = this.level;
-        varCopy.exp = this.exp;
-        varCopy.flags = this.flags;
-        varCopy.power = this.power;
-        varCopy.health = this.health;
-        varCopy.maxHealth = this.maxHealth;
-        varCopy.speed = this.speed;
-        varCopy.quality = this.quality;
-        varCopy.ownerInfo = this.ownerInfo;
-        varCopy.name = this.name;
-
-        return varCopy;
-    }
 
     public final static class BattlePetOwnerInfo {
         public ObjectGuid UUID = ObjectGuid.EMPTY;
         public int playerVirtualRealm;
         public int playerNativeRealm;
 
-        public BattlePetOwnerInfo clone() {
-            BattlePetOwnerInfo varCopy = new BattlePetOwnerInfo();
-
-            varCopy.guid = this.guid;
-            varCopy.playerVirtualRealm = this.playerVirtualRealm;
-            varCopy.playerNativeRealm = this.playerNativeRealm;
-
-            return varCopy;
-        }
     }
 }

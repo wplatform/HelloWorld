@@ -1,10 +1,12 @@
-package com.github.azeroth.game.service.mapper;
+package com.github.azeroth.game.service.repository.mapper;
 
 import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.Logs;
+import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.domain.creature.*;
+import com.github.azeroth.game.domain.gobject.*;
 import com.github.azeroth.game.domain.misc.NpcText;
 import com.github.azeroth.game.domain.player.PlayerInfo;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
@@ -199,6 +201,150 @@ public interface RowMappers {
             playerInfo.introMovieId = introMovieId;
         }
         return playerInfo;
+    };
+
+
+    RowMapper<GameObjectTemplate> GAME_OBJECT_TEMPLATE_ROW_MAPPER = (rs, rowNum) -> {
+        GameObjectTemplate got = new GameObjectTemplate();
+
+        got.entry          = rs.getInt(1);
+        got.type           = GameObjectType.values()[rs.getByte(2)];
+        got.displayId      = rs.getInt(3);
+        got.name           = rs.getString(4);
+        got.iconName       = rs.getString(5);
+        got.castBarCaption = rs.getString(6);
+        got.unk1           = rs.getString(7);
+        got.size           = rs.getFloat(8);
+
+        for (byte i = 0; i < got.raw.length; ++i)
+            got.raw[i] = rs.getInt(9 + i);
+
+        got.requiredLevel = rs.getInt(42);
+        got.aiName = rs.getString(43);
+        got.scriptName = rs.getString(44);
+        got.stringId = rs.getString(45);
+
+        return got;
+    };
+
+
+    RowMapper<GameObjectTemplateAddon> GAME_OBJECT_TEMPLATE_ADDON_ROW_MAPPER = (rs, rowNum) -> {
+        GameObjectTemplateAddon gameObjectAddon = new GameObjectTemplateAddon();
+
+        gameObjectAddon.entry          = rs.getInt(1);
+        gameObjectAddon.faction        = rs.getInt(2);
+        gameObjectAddon.flags          = GameObjectFlag.values()[rs.getInt(3)];
+        gameObjectAddon.mingold        = rs.getInt(4);
+        gameObjectAddon.maxgold        = rs.getInt(5);
+        gameObjectAddon.worldEffectId  = rs.getInt(11);
+        gameObjectAddon.aiAnimKitId    = rs.getInt(12);
+
+        for (byte i = 0; i < gameObjectAddon.artKits.length; ++i)
+            gameObjectAddon.artKits[i] = rs.getInt(6 + i);
+        return gameObjectAddon;
+    };
+
+
+    RowMapper<GameObjectData> GAME_OBJECTS_ROW_MAPPER = (rs, rowNum) -> {
+        GameObjectData data = new GameObjectData();
+
+        data.spawnId          = rs.getInt(1);
+        data.id  = rs.getInt(2);
+        data.mapId  = rs.getInt(3);
+        data.positionX = rs.getFloat(4);
+        data.positionY = rs.getFloat(5);
+        data.positionZ = rs.getFloat(6);
+        data.positionO = rs.getFloat(7);
+        data.rotation.x = rs.getFloat(8);
+        data.rotation.y = rs.getFloat(9);
+        data.rotation.z = rs.getFloat(10);
+        data.rotation.w = rs.getFloat(11);
+        data.spawnTimeSecs = rs.getInt(12);
+
+        data.animProgress = rs.getInt(13);
+        data.artKit         = 0;
+        data.goState     = GOState.valueOf(rs.getByte(13));
+        data.spawnDifficultiesText = rs.getString(14);
+        data.gameEvent      = rs.getInt(15);
+        data.poolId         = rs.getInt(16);
+        data.phaseUseFlags  = EnumFlag.of(PhaseUseFlag.class, rs.getInt(17));
+        data.phaseId        = rs.getInt(18);
+        data.phaseGroup     = rs.getInt(19);
+        data.terrainSwapMap = rs.getInt(20);
+        data.script = rs.getString(21);
+        data.stringId = rs.getString(22);
+
+        return data;
+    };
+
+
+    RowMapper<GameObjectAddon> GAME_OBJECT_ADDON_ROW_MAPPER = (rs, rowNum) -> {
+        GameObjectAddon data = new GameObjectAddon();
+        data.guid = rs.getInt(1);
+        data.parentRotation = new QuaternionData(rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5));
+        int invisibilityTypeValue = rs.getInt(6);
+        if (invisibilityTypeValue >= InvisibilityType.values().length) {
+            Logs.SQL.error("GameObject (GUID: {}) has invalid InvisibilityType in `gameobject_addon`, disabled invisibility", data.guid);
+            data.invisibilityType = InvisibilityType.GENERAL;
+            data.invisibilityValue = 0;
+        } else {
+            data.invisibilityType = InvisibilityType.values()[invisibilityTypeValue];
+            data.invisibilityValue = rs.getInt(7);
+        }
+        data.worldEffectID = rs.getInt(8);
+        data.aiAnimKitID = rs.getInt(8);
+        return data;
+    };
+
+
+    RowMapper<CreatureData> CREATURE_ROW_MAPPER = (rs, rowNum) -> {
+        CreatureData data = new CreatureData();
+
+        data.spawnId        = rs.getInt(1);
+        data.id             = rs.getInt(2);
+        data.mapId          = rs.getInt(3);
+        data.positionX = rs.getFloat(4);
+        data.positionY = rs.getFloat(5);
+        data.positionZ = rs.getFloat(6);
+        data.positionO = rs.getFloat(7);
+        int displayId = rs.getInt(8);
+        if (displayId == 0) {
+            data.display = new CreatureModel(displayId, 1.0f, 1.0f);
+        }
+
+        data.equipmentId    = rs.getByte(9);
+        data.spawnTimeSecs  = rs.getInt(10);
+        data.wanderDistance = rs.getFloat(11);
+        data.currentWaypoint= rs.getInt(12);
+        data.curHealthPct   = rs.getInt(13);
+        data.movementType   = rs.getByte(14);
+        data.spawnDifficultiesText = rs.getString(15);
+        data.gameEvent     = rs.getInt(16);
+        data.poolId         = rs.getInt(17);
+
+        long npcFlag = rs.getLong(18);
+        if (!rs.wasNull())
+            data.npcFlag = npcFlag;
+
+        int unitFlags = rs.getInt(19);
+        if (!rs.wasNull())
+            data.unitFlags = EnumFlag.of(UnitFlag.class, unitFlags);
+
+        int unitFlags2 = rs.getInt(20);
+        if (!rs.wasNull())
+            data.unitFlags2 = EnumFlag.of(UnitFlag2.class, unitFlags2);
+
+        int unitFlags3 = rs.getInt(21);
+        if (!rs.wasNull())
+            data.unitFlags3 = EnumFlag.of(UnitFlag3.class, unitFlags3);
+
+        data.phaseUseFlags  = EnumFlag.of(PhaseUseFlag.class, rs.getByte(22));
+        data.phaseId        = rs.getInt(23);
+        data.phaseGroup     = rs.getInt(24);
+        data.terrainSwapMap = rs.getInt(25);
+        data.script         = rs.getString(26);
+        data.stringId       = rs.getString(27);
+        return data;
     };
 
 }

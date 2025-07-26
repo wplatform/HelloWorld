@@ -2,7 +2,7 @@ package com.github.azeroth.game.chat;
 
 
 import com.github.azeroth.game.entity.gobject.GameObject;
-import com.github.azeroth.game.entity.gobject.GameObjectData;
+import com.github.azeroth.game.domain.gobject.GameObjectData;
 import com.github.azeroth.game.entity.object.WorldObject;
 import game.PhasingHandler;
 

@@ -1,7 +1,8 @@
-package com.github.azeroth.game.entity.gobject;
+package com.github.azeroth.game.domain.gobject;
 
 
 import com.github.azeroth.defines.GameObjectType;
+import com.github.azeroth.defines.SharedDefine;
 
 
 public class GameObjectTemplate {
@@ -30,10 +31,14 @@ public class GameObjectTemplate {
     public float size;
 
     
-    public int contentTuningId;
-
+    public int requiredLevel;
     
-    public String AIName;
+
+    public String aiName;
+
+    public String scriptName;
+
+    public String stringId;
 
     
     public int scriptId;
@@ -213,118 +218,106 @@ public class GameObjectTemplate {
     public craftingTable craftingTable = new craftingTable();
 
     
-    public raw raw = new raw();
+    public int[] raw = new int[SharedDefine.MAX_GAME_OBJECT_DATA];
 
     
-    public QueryGameObjectResponse queryData;
 
     // helpers
     public final boolean isDespawnAtAction() {
-        switch (type) {
-            case Chest:
-                return chest.consumable != 0;
-            case Goober:
-                return goober.consumable != 0;
-            default:
-                return false;
-        }
+        return switch (type) {
+            case CHEST -> chest.consumable != 0;
+            case GOOBER -> goober.consumable != 0;
+            default -> false;
+        };
     }
 
     public final boolean isUsableMounted() {
-        switch (type) {
-            case MAILBOX:
-                return true;
-            case BARBER_CHAIR:
-                return false;
-            case QUEST_GIVER:
-                return questGiver.allowMounted != 0;
-            case TEXT:
-                return text.allowMounted != 0;
-            case GOOBER:
-                return goober.allowMounted != 0;
-            case SpellCaster:
-                return spellCaster.allowMounted != 0;
-            case UILink:
-                return UILink.allowMounted != 0;
-            default:
-                return false;
-        }
+        return switch (type) {
+            case MAILBOX -> true;
+            case BARBER_CHAIR -> false;
+            case QUEST_GIVER -> questGiver.allowMounted != 0;
+            case TEXT -> text.allowMounted != 0;
+            case GOOBER -> goober.allowMounted != 0;
+            case SPELL_CASTER -> spellCaster.allowMounted != 0;
+            case UI_LINK -> UILink.allowMounted != 0;
+            default -> false;
+        };
     }
 
     public final int getConditionID1() {
         return switch (type) {
-            case Door -> door.conditionID1;
-            case Button -> button.conditionID1;
-            case QuestGiver -> questGiver.conditionID1;
-            case Chest -> chest.conditionID1;
-            case Generic -> generic.conditionID1;
-            case Trap -> trap.conditionID1;
-            case Chair -> chair.conditionID1;
-            case SpellFocus -> spellFocus.conditionID1;
-            case Text -> text.conditionID1;
-            case Goober -> goober.conditionID1;
-            case Camera -> camera.conditionID1;
-            case Ritual -> ritual.conditionID1;
-            case Mailbox -> mailBox.conditionID1;
-            case SpellCaster -> spellCaster.conditionID1;
-            case FlagStand -> flagStand.conditionID1;
-            case AuraGenerator -> auraGenerator.conditionID1;
-            case GuildBank -> guildBank.conditionID1;
-            case NewFlag -> newFlag.conditionID1;
-            case ItemForge -> itemForge.conditionID1;
-            case GatheringNode -> gatheringNode.conditionID1;
+            case DOOR -> door.conditionID1;
+            case BUTTON -> button.conditionID1;
+            case QUEST_GIVER -> questGiver.conditionID1;
+            case CHEST -> chest.conditionID1;
+            case GENERIC -> generic.conditionID1;
+            case TRAP -> trap.conditionID1;
+            case CHAIR -> chair.conditionID1;
+            case SPELL_FOCUS -> spellFocus.conditionID1;
+            case TEXT -> text.conditionID1;
+            case GOOBER -> goober.conditionID1;
+            case CAMERA -> camera.conditionID1;
+            case RITUAL -> ritual.conditionID1;
+            case MAILBOX -> mailBox.conditionID1;
+            case SPELL_CASTER -> spellCaster.conditionID1;
+            case FLAG_STAND -> flagStand.conditionID1;
+            case AURA_GENERATOR -> auraGenerator.conditionID1;
+            case GUILD_BANK -> guildBank.conditionID1;
+            case NEW_FLAG -> newFlag.conditionID1;
+            case ITEM_FORGE -> itemForge.conditionID1;
+            case GATHERING_NODE -> gatheringNode.conditionID1;
             default -> 0;
         };
     }
 
     public final int getInteractRadiusOverride() {
         return switch (type) {
-            case Door -> door.interactRadiusOverride;
-            case Button -> button.interactRadiusOverride;
-            case QuestGiver -> questGiver.interactRadiusOverride;
-            case Chest -> chest.interactRadiusOverride;
-            case Binder -> binder.interactRadiusOverride;
-            case Generic -> generic.interactRadiusOverride;
-            case Trap -> trap.interactRadiusOverride;
-            case Chair -> chair.interactRadiusOverride;
-            case SpellFocus -> spellFocus.interactRadiusOverride;
-            case Text -> text.interactRadiusOverride;
-            case Goober -> goober.interactRadiusOverride;
-            case Transport -> transport.interactRadiusOverride;
-            case AreaDamage -> areaDamage.interactRadiusOverride;
-            case Camera -> camera.interactRadiusOverride;
-            case MapObjTransport -> moTransport.interactRadiusOverride;
-            case DuelArbiter -> duelFlag.interactRadiusOverride;
-            case FishingNode -> fishingNode.interactRadiusOverride;
-            case Ritual -> ritual.interactRadiusOverride;
-            case Mailbox -> mailBox.interactRadiusOverride;
-            case GuardPost -> guardPost.interactRadiusOverride;
-            case SpellCaster -> spellCaster.interactRadiusOverride;
-            case MeetingStone -> meetingStone.interactRadiusOverride;
-            case FlagStand -> flagStand.interactRadiusOverride;
-            case FishingHole -> fishingHole.interactRadiusOverride;
-            case FlagDrop -> flagDrop.interactRadiusOverride;
-            case ControlZone -> controlZone.interactRadiusOverride;
-            case AuraGenerator -> auraGenerator.interactRadiusOverride;
-            case DungeonDifficulty -> dungeonDifficulty.interactRadiusOverride;
-            case BarberChair -> barberChair.interactRadiusOverride;
-            case DestructibleBuilding -> destructibleBuilding.interactRadiusOverride;
-            case GuildBank -> guildBank.interactRadiusOverride;
-            case TrapDoor -> trapDoor.interactRadiusOverride;
-            case NewFlag -> newFlag.interactRadiusOverride;
-            case NewFlagDrop -> newFlagDrop.interactRadiusOverride;
-            case GarrisonBuilding -> garrisonBuilding.interactRadiusOverride;
-            case GarrisonPlot -> garrisonPlot.interactRadiusOverride;
-            case CapturePoint -> capturePoint.interactRadiusOverride;
-            case PhaseableMo -> phaseableMO.interactRadiusOverride;
-            case GarrisonMonument -> garrisonMonument.interactRadiusOverride;
-            case GarrisonShipment -> garrisonShipment.interactRadiusOverride;
-            case GarrisonMonumentPlaque -> garrisonMonumentPlaque.interactRadiusOverride;
-            case ItemForge -> itemForge.interactRadiusOverride;
+            case DOOR -> door.interactRadiusOverride;
+            case BUTTON -> button.interactRadiusOverride;
+            case QUEST_GIVER -> questGiver.interactRadiusOverride;
+            case CHEST -> chest.interactRadiusOverride;
+            case BINDER -> binder.interactRadiusOverride;
+            case GENERIC -> generic.interactRadiusOverride;
+            case TRAP -> trap.interactRadiusOverride;
+            case CHAIR -> chair.interactRadiusOverride;
+            case SPELL_FOCUS -> spellFocus.interactRadiusOverride;
+            case TEXT -> text.interactRadiusOverride;
+            case GOOBER -> goober.interactRadiusOverride;
+            case TRANSPORT -> transport.interactRadiusOverride;
+            case AREA_DAMAGE -> areaDamage.interactRadiusOverride;
+            case CAMERA -> camera.interactRadiusOverride;
+            case MAP_OBJ_TRANSPORT -> moTransport.interactRadiusOverride;
+            case DUEL_ARBITER -> duelFlag.interactRadiusOverride;
+            case FISHING_NODE -> fishingNode.interactRadiusOverride;
+            case RITUAL -> ritual.interactRadiusOverride;
+            case MAILBOX -> mailBox.interactRadiusOverride;
+            case GUARD_POST -> guardPost.interactRadiusOverride;
+            case SPELL_CASTER -> spellCaster.interactRadiusOverride;
+            case MEETING_STONE -> meetingStone.interactRadiusOverride;
+            case FLAG_STAND -> flagStand.interactRadiusOverride;
+            case FISHING_HOLE -> fishingHole.interactRadiusOverride;
+            case FLAG_DROP -> flagDrop.interactRadiusOverride;
+            case CONTROL_ZONE -> controlZone.interactRadiusOverride;
+            case AURA_GENERATOR -> auraGenerator.interactRadiusOverride;
+            case DUNGEON_DIFFICULTY -> dungeonDifficulty.interactRadiusOverride;
+            case BARBER_CHAIR -> barberChair.interactRadiusOverride;
+            case DESTRUCTIBLE_BUILDING -> destructibleBuilding.interactRadiusOverride;
+            case GUILD_BANK -> guildBank.interactRadiusOverride;
+            case TRAPDOOR -> trapDoor.interactRadiusOverride;
+            case NEW_FLAG -> newFlag.interactRadiusOverride;
+            case NEW_FLAG_DROP -> newFlagDrop.interactRadiusOverride;
+            case GARRISON_BUILDING -> garrisonBuilding.interactRadiusOverride;
+            case GARRISON_PLOT -> garrisonPlot.interactRadiusOverride;
+            case CAPTURE_POINT -> capturePoint.interactRadiusOverride;
+            case PHASEABLE_MO -> phaseableMO.interactRadiusOverride;
+            case GARRISON_MONUMENT -> garrisonMonument.interactRadiusOverride;
+            case GARRISON_SHIPMENT -> garrisonShipment.interactRadiusOverride;
+            case GARRISON_MONUMENT_PLAQUE -> garrisonMonumentPlaque.interactRadiusOverride;
+            case ITEM_FORGE -> itemForge.interactRadiusOverride;
             case UILink -> UILink.interactRadiusOverride;
-            case KeystoneReceptacle -> keystoneReceptacle.interactRadiusOverride;
-            case GatheringNode -> gatheringNode.interactRadiusOverride;
-            case ChallengeModeReward -> challengeModeReward.interactRadiusOverride;
+            case KEYSTONE_RECEPTACLE -> keystoneReceptacle.interactRadiusOverride;
+            case GATHERING_NODE -> gatheringNode.interactRadiusOverride;
+            case CHALLENGE_MODE_REWARD -> challengeModeReward.interactRadiusOverride;
             case SiegeableMo -> siegeableMO.interactRadiusOverride;
             case PvpReward -> pvpReward.interactRadiusOverride;
             case PlayerChoiceChest -> playerChoiceChest.interactRadiusOverride;
@@ -337,36 +330,36 @@ public class GameObjectTemplate {
 
     public final int getRequireLOS() {
         return switch (type) {
-            case Button -> button.requireLOS;
-            case QuestGiver -> questGiver.requireLOS;
-            case Chest -> chest.requireLOS;
-            case Trap -> trap.requireLOS;
-            case Goober -> goober.requireLOS;
-            case FlagStand -> flagStand.requireLOS;
-            case NewFlag -> newFlag.requireLOS;
-            case GatheringNode -> gatheringNode.requireLOS;
+            case BUTTON -> button.requireLOS;
+            case QUEST_GIVER -> questGiver.requireLOS;
+            case CHEST -> chest.requireLOS;
+            case TRAP -> trap.requireLOS;
+            case GOOBER -> goober.requireLOS;
+            case FLAG_STAND -> flagStand.requireLOS;
+            case NEW_FLAG -> newFlag.requireLOS;
+            case GATHERING_NODE -> gatheringNode.requireLOS;
             default -> 0;
         };
     }
 
     public final int getLockId() {
         return switch (type) {
-            case Door -> door.open;
-            case Button -> button.open;
-            case QuestGiver -> questGiver.open;
-            case Chest -> chest.open;
-            case Trap -> trap.open;
-            case Goober -> goober.open;
-            case AreaDamage -> areaDamage.open;
-            case Camera -> camera.open;
-            case FlagStand -> flagStand.open;
-            case FishingHole -> fishingHole.open;
-            case FlagDrop -> flagDrop.open;
-            case NewFlag -> newFlag.open;
-            case NewFlagDrop -> newFlagDrop.open;
-            case CapturePoint -> capturePoint.open;
-            case GatheringNode -> gatheringNode.open;
-            case ChallengeModeReward -> challengeModeReward.open;
+            case DOOR -> door.open;
+            case BUTTON -> button.open;
+            case QUEST_GIVER -> questGiver.open;
+            case CHEST -> chest.open;
+            case TRAP -> trap.open;
+            case GOOBER -> goober.open;
+            case AREA_DAMAGE -> areaDamage.open;
+            case CAMERA -> camera.open;
+            case FLAG_STAND -> flagStand.open;
+            case FISHING_HOLE -> fishingHole.open;
+            case FLAG_DROP -> flagDrop.open;
+            case NEW_FLAG -> newFlag.open;
+            case NEW_FLAG_DROP -> newFlagDrop.open;
+            case CAPTURE_POINT -> capturePoint.open;
+            case GATHERING_NODE -> gatheringNode.open;
+            case CHALLENGE_MODE_REWARD -> challengeModeReward.open;
             case PvpReward -> pvpReward.open;
             default -> 0;
         };
@@ -375,17 +368,17 @@ public class GameObjectTemplate {
     // despawn at targeting of cast?
     public final boolean getDespawnPossibility() {
         switch (type) {
-            case Door:
+            case DOOR:
                 return door.noDamageImmune != 0;
-            case Button:
+            case BUTTON:
                 return button.noDamageImmune != 0;
-            case QuestGiver:
+            case QUEST_GIVER:
                 return questGiver.noDamageImmune != 0;
-            case Goober:
+            case GOOBER:
                 return goober.noDamageImmune != 0;
-            case FlagStand:
+            case FLAG_STAND:
                 return flagStand.noDamageImmune != 0;
-            case FlagDrop:
+            case FLAG_DROP:
                 return flagDrop.noDamageImmune != 0;
             default:
                 return true;
@@ -399,19 +392,19 @@ public class GameObjectTemplate {
      */
     public final int getNoDamageImmune() {
         switch (type) {
-            case Door:
+            case DOOR:
                 return door.noDamageImmune;
-            case Button:
+            case BUTTON:
                 return button.noDamageImmune;
-            case QuestGiver:
+            case QUEST_GIVER:
                 return questGiver.noDamageImmune;
-            case Chest:
+            case CHEST:
                 return 1;
-            case Goober:
+            case GOOBER:
                 return goober.noDamageImmune;
-            case FlagStand:
+            case FLAG_STAND:
                 return flagStand.noDamageImmune;
-            case FlagDrop:
+            case FLAG_DROP:
                 return flagDrop.noDamageImmune;
             default:
                 return 0;
@@ -420,8 +413,8 @@ public class GameObjectTemplate {
 
     public final int getNotInCombat() {
         return switch (type) {
-            case Chest -> chest.notInCombat;
-            case GatheringNode -> gatheringNode.notInCombat;
+            case CHEST -> chest.notInCombat;
+            case GATHERING_NODE -> gatheringNode.notInCombat;
             default -> 0;
         };
     }
@@ -433,9 +426,9 @@ public class GameObjectTemplate {
      */
     public final int getCharges() {
         switch (type) {
-            case GuardPost:
+            case GUARD_POST:
                 return guardPost.charges;
-            case SpellCaster:
+            case SPELL_CASTER:
                 return (int) spellCaster.charges;
             default:
                 return 0;
@@ -443,51 +436,45 @@ public class GameObjectTemplate {
     }
 
     public final int getLinkedGameObjectEntry() {
-        switch (type) {
-            case Button:
-                return button.linkedTrap;
-            case Chest:
-                return chest.linkedTrap;
-            case SpellFocus:
-                return spellFocus.linkedTrap;
-            case Goober:
-                return goober.linkedTrap;
-            case GatheringNode:
-                return gatheringNode.linkedTrap;
-            default:
-                return 0;
-        }
+        return switch (type) {
+            case BUTTON -> button.linkedTrap;
+            case CHEST -> chest.linkedTrap;
+            case SPELL_FOCUS -> spellFocus.linkedTrap;
+            case GOOBER -> goober.linkedTrap;
+            case GATHERING_NODE -> gatheringNode.linkedTrap;
+            default -> 0;
+        };
     }
 
     public final int getAutoCloseTime() {
         int autoCloseTime = 0;
 
         switch (type) {
-            case Door:
+            case DOOR:
                 autoCloseTime = door.autoClose;
 
                 break;
-            case Button:
+            case BUTTON:
                 autoCloseTime = button.autoClose;
 
                 break;
-            case Trap:
+            case TRAP:
                 autoCloseTime = trap.autoClose;
 
                 break;
-            case Goober:
+            case GOOBER:
                 autoCloseTime = goober.autoClose;
 
                 break;
-            case Transport:
+            case TRANSPORT:
                 autoCloseTime = transport.autoClose;
 
                 break;
-            case AreaDamage:
+            case AREA_DAMAGE:
                 autoCloseTime = areaDamage.autoClose;
 
                 break;
-            case TrapDoor:
+            case TRAPDOOR:
                 autoCloseTime = trapDoor.autoClose;
 
                 break;
@@ -500,11 +487,11 @@ public class GameObjectTemplate {
 
     public final int getLootId() {
         switch (type) {
-            case Chest:
+            case CHEST:
                 return chest.chestLoot;
-            case FishingHole:
+            case FISHING_HOLE:
                 return fishingHole.chestLoot;
-            case GatheringNode:
+            case GATHERING_NODE:
                 return gatheringNode.chestLoot;
             default:
                 return 0;
@@ -513,9 +500,9 @@ public class GameObjectTemplate {
 
     public final int getGossipMenuId() {
         switch (type) {
-            case QuestGiver:
+            case QUEST_GIVER:
                 return questGiver.gossipID;
-            case Goober:
+            case GOOBER:
                 return goober.gossipID;
             default:
                 return 0;
@@ -524,15 +511,15 @@ public class GameObjectTemplate {
 
     public final int getEventScriptId() {
         switch (type) {
-            case Goober:
+            case GOOBER:
                 return goober.eventID;
-            case Chest:
+            case CHEST:
                 return chest.triggeredEvent;
-            case Chair:
+            case CHAIR:
                 return chest.triggeredEvent;
-            case Camera:
+            case CAMERA:
                 return camera.eventID;
-            case GatheringNode:
+            case GATHERING_NODE:
                 return gatheringNode.triggeredEvent;
             default:
                 return 0;
@@ -541,8 +528,8 @@ public class GameObjectTemplate {
 
     public final int getTrivialSkillHigh() {
         return switch (type) {
-            case Chest -> chest.trivialSkillHigh;
-            case GatheringNode -> gatheringNode.trivialSkillHigh;
+            case CHEST -> chest.trivialSkillHigh;
+            case GATHERING_NODE -> gatheringNode.trivialSkillHigh;
             default -> 0;
         };
     }
@@ -595,148 +582,71 @@ public class GameObjectTemplate {
     }
 
     public final boolean isGiganticGameObject() {
-        switch (type) {
-            case Door:
-                return door.giganticAOI != 0;
-            case Button:
-                return button.giganticAOI != 0;
-            case QuestGiver:
-                return questGiver.giganticAOI != 0;
-            case Chest:
-                return chest.giganticAOI != 0;
-            case Generic:
-                return generic.giganticAOI != 0;
-            case Trap:
-                return trap.giganticAOI != 0;
-            case SpellFocus:
-                return spellFocus.giganticAOI != 0;
-            case Goober:
-                return goober.giganticAOI != 0;
-            case Transport:
-                return true;
-            case SpellCaster:
-                return spellCaster.giganticAOI != 0;
-            case FlagStand:
-                return flagStand.giganticAOI != 0;
-            case FlagDrop:
-                return flagDrop.giganticAOI != 0;
-            case ControlZone:
-                return controlZone.giganticAOI != 0;
-            case DungeonDifficulty:
-                return dungeonDifficulty.giganticAOI != 0;
-            case TrapDoor:
-                return trapDoor.giganticAOI != 0;
-            case NewFlag:
-                return newFlag.giganticAOI != 0;
-            case GarrisonPlot:
-                return true;
-            case CapturePoint:
-                return capturePoint.giganticAOI != 0;
-            case GarrisonShipment:
-                return garrisonShipment.giganticAOI != 0;
-            case UILink:
-                return UILink.giganticAOI != 0;
-            case GatheringNode:
-                return gatheringNode.giganticAOI != 0;
-            default:
-                return false;
-        }
+        return switch (type) {
+            case DOOR -> door.giganticAOI != 0;
+            case BUTTON -> button.giganticAOI != 0;
+            case QUEST_GIVER -> questGiver.giganticAOI != 0;
+            case CHEST -> chest.giganticAOI != 0;
+            case GENERIC -> generic.giganticAOI != 0;
+            case TRAP -> trap.giganticAOI != 0;
+            case SPELL_FOCUS -> spellFocus.giganticAOI != 0;
+            case GOOBER -> goober.giganticAOI != 0;
+            case TRANSPORT -> true;
+            case SPELL_CASTER -> spellCaster.giganticAOI != 0;
+            case FLAG_STAND -> flagStand.giganticAOI != 0;
+            case FLAG_DROP -> flagDrop.giganticAOI != 0;
+            case CONTROL_ZONE -> controlZone.giganticAOI != 0;
+            case DUNGEON_DIFFICULTY -> dungeonDifficulty.giganticAOI != 0;
+            case TRAPDOOR -> trapDoor.giganticAOI != 0;
+            case NEW_FLAG -> newFlag.giganticAOI != 0;
+            case GARRISON_PLOT -> true;
+            case CAPTURE_POINT -> capturePoint.giganticAOI != 0;
+            case GARRISON_SHIPMENT -> garrisonShipment.giganticAOI != 0;
+            case UI_LINK -> UILink.giganticAOI != 0;
+            case GATHERING_NODE -> gatheringNode.giganticAOI != 0;
+            default -> false;
+        };
     }
 
     public final boolean isLargeGameObject() {
-        switch (type) {
-            case Chest:
-                return chest.largeAOI != 0;
-            case Generic:
-                return generic.largeAOI != 0;
-            case DungeonDifficulty:
-                return dungeonDifficulty.largeAOI != 0;
-            case GarrisonShipment:
-                return garrisonShipment.largeAOI != 0;
-            case ItemForge:
-                return itemForge.largeAOI != 0;
-            case GatheringNode:
-                return gatheringNode.largeAOI != 0;
-            default:
-                return false;
-        }
+        return switch (type) {
+            case CHEST -> chest.largeAOI != 0;
+            case GENERIC -> generic.largeAOI != 0;
+            case DUNGEON_DIFFICULTY -> dungeonDifficulty.largeAOI != 0;
+            case GARRISON_SHIPMENT -> garrisonShipment.largeAOI != 0;
+            case ITEM_FORGE -> itemForge.largeAOI != 0;
+            case GATHERING_NODE -> gatheringNode.largeAOI != 0;
+            default -> false;
+        };
     }
 
     public final int getServerOnly() {
         return switch (type) {
-            case Generic -> generic.serverOnly;
-            case Trap -> trap.serverOnly;
-            case SpellFocus -> spellFocus.serverOnly;
-            case AuraGenerator -> auraGenerator.serverOnly;
+            case GENERIC -> generic.serverOnly;
+            case TRAP -> trap.serverOnly;
+            case SPELL_FOCUS -> spellFocus.serverOnly;
+            case AURA_GENERATOR -> auraGenerator.serverOnly;
             default -> 0;
         };
     }
 
     public final int getSpellFocusType() {
-        switch (type) {
-            case SpellFocus:
-                return spellFocus.spellFocusType;
-            case UILink:
-                return UILink.spellFocusType;
-            default:
-                return 0;
-        }
+        return switch (type) {
+            case SPELL_FOCUS -> spellFocus.spellFocusType;
+            case UI_LINK -> UILink.spellFocusType;
+            default -> 0;
+        };
     }
 
     public final int getSpellFocusRadius() {
-        switch (type) {
-            case SpellFocus:
-                return spellFocus.radius;
-            case UILink:
-                return UILink.radius;
-            default:
-                return 0;
-        }
-    }
-
-    public final void initializeQueryData() {
-        queryData = new QueryGameObjectResponse();
-
-        queryData.gameObjectID = entry;
-        queryData.allow = true;
-
-        GameObjectStats stats = new GameObjectStats();
-        stats.type = (int) type.getValue();
-        stats.displayID = displayId;
-
-        stats.name.charAt(0) = name;
-        stats.iconName = iconName;
-        stats.castBarCaption = castBarCaption;
-        stats.unkString = unk1;
-
-        stats.size = size;
-
-        var items = global.getObjectMgr().getGameObjectQuestItemList(entry);
-
-        for (var item : items) {
-            stats.questItems.add(item);
-        }
-
-
-//		unsafe
-//			{
-//				for (var i = 0; i < SharedConst.MaxGOData; i++)
-//					stats.Data[i] = raw.data[i];
-//			}
-
-        stats.contentTuningId = contentTuningId;
-
-        queryData.stats = stats;
+        return switch (type) {
+            case SPELL_FOCUS -> spellFocus.radius;
+            case UI_LINK -> UILink.radius;
+            default -> 0;
+        };
     }
 
 
-    ///#region TypeStructs
-
-
-//	public unsafe struct raw
-//		{
-//			public fixed int data[SharedConst.MaxGOData];
-//		}
 
     public final static class door {
         public int startOpen; // 0 startOpen, enum { false, true, }; Default: false
@@ -754,26 +664,6 @@ public class GameObjectTemplate {
         public int interactRadiusOverride; // 12 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         public int collisionupdatedelayafteropen; // 13 Collision update delay(ms) after open, int, Min value: 0, Max value: 2147483647, Default value: 0
 
-        public door clone() {
-            door varCopy = new door();
-
-            varCopy.startOpen = this.startOpen;
-            varCopy.open = this.open;
-            varCopy.autoClose = this.autoClose;
-            varCopy.noDamageImmune = this.noDamageImmune;
-            varCopy.openTextID = this.openTextID;
-            varCopy.closeTextID = this.closeTextID;
-            varCopy.ignoredByPathing = this.ignoredByPathing;
-            varCopy.conditionID1 = this.conditionID1;
-            varCopy.doorisOpaque = this.doorisOpaque;
-            varCopy.giganticAOI = this.giganticAOI;
-            varCopy.infiniteAOI = this.infiniteAOI;
-            varCopy.notLOSBlocking = this.notLOSBlocking;
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-            varCopy.collisionupdatedelayafteropen = this.collisionupdatedelayafteropen;
-
-            return varCopy;
-        }
     }
 
     public final static class button {
@@ -789,23 +679,6 @@ public class GameObjectTemplate {
         public int conditionID1; // 9 conditionID1, References: PlayerCondition, noValue = 0
         public int interactRadiusOverride; // 10 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
 
-        public button clone() {
-            button varCopy = new button();
-
-            varCopy.startOpen = this.startOpen;
-            varCopy.open = this.open;
-            varCopy.autoClose = this.autoClose;
-            varCopy.linkedTrap = this.linkedTrap;
-            varCopy.noDamageImmune = this.noDamageImmune;
-            varCopy.giganticAOI = this.giganticAOI;
-            varCopy.openTextID = this.openTextID;
-            varCopy.closeTextID = this.closeTextID;
-            varCopy.requireLOS = this.requireLOS;
-            varCopy.conditionID1 = this.conditionID1;
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-
-            return varCopy;
-        }
     }
 
     public final static class questgiver {
@@ -823,25 +696,6 @@ public class GameObjectTemplate {
         public int neverUsableWhileMounted; // 11 Never Usable While Mounted, enum { false, true, }; Default: false
         public int interactRadiusOverride; // 12 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
 
-        public questgiver clone() {
-            questgiver varCopy = new questgiver();
-
-            varCopy.open = this.open;
-            varCopy.questGiver = this.questGiver;
-            varCopy.pageMaterial = this.pageMaterial;
-            varCopy.gossipID = this.gossipID;
-            varCopy.customAnim = this.customAnim;
-            varCopy.noDamageImmune = this.noDamageImmune;
-            varCopy.openTextID = this.openTextID;
-            varCopy.requireLOS = this.requireLOS;
-            varCopy.allowMounted = this.allowMounted;
-            varCopy.giganticAOI = this.giganticAOI;
-            varCopy.conditionID1 = this.conditionID1;
-            varCopy.neverUsableWhileMounted = this.neverUsableWhileMounted;
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-
-            return varCopy;
-        }
     }
 
     public final static class chest {
@@ -881,59 +735,11 @@ public class GameObjectTemplate {
         public int chestPushLoot; // 33 chest Push loot, References: treasure, noValue = 0
         public int forceSingleLooter; // 34 Force Single Looter, enum { false, true, }; Default: false
 
-        public chest clone() {
-            chest varCopy = new chest();
-
-            varCopy.open = this.open;
-            varCopy.chestLoot = this.chestLoot;
-            varCopy.chestRestockTime = this.chestRestockTime;
-            varCopy.consumable = this.consumable;
-            varCopy.minRestock = this.minRestock;
-            varCopy.maxRestock = this.maxRestock;
-            varCopy.triggeredEvent = this.triggeredEvent;
-            varCopy.linkedTrap = this.linkedTrap;
-            varCopy.questID = this.questID;
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-            varCopy.requireLOS = this.requireLOS;
-            varCopy.leaveLoot = this.leaveLoot;
-            varCopy.notInCombat = this.notInCombat;
-            varCopy.logloot = this.logloot;
-            varCopy.openTextID = this.openTextID;
-            varCopy.usegrouplootrules = this.usegrouplootrules;
-            varCopy.floatingTooltip = this.floatingTooltip;
-            varCopy.conditionID1 = this.conditionID1;
-            varCopy.unused = this.unused;
-            varCopy.xpDifficulty = this.xpDifficulty;
-            varCopy.unused2 = this.unused2;
-            varCopy.groupXP = this.groupXP;
-            varCopy.damageImmuneOK = this.damageImmuneOK;
-            varCopy.trivialSkillLow = this.trivialSkillLow;
-            varCopy.trivialSkillHigh = this.trivialSkillHigh;
-            varCopy.dungeonEncounter = this.dungeonEncounter;
-            varCopy.spell = this.spell;
-            varCopy.giganticAOI = this.giganticAOI;
-            varCopy.largeAOI = this.largeAOI;
-            varCopy.spawnVignette = this.spawnVignette;
-            varCopy.chestPersonalLoot = this.chestPersonalLoot;
-            varCopy.turnpersonallootsecurityoff = this.turnpersonallootsecurityoff;
-            varCopy.chestProperties = this.chestProperties;
-            varCopy.chestPushLoot = this.chestPushLoot;
-            varCopy.forceSingleLooter = this.forceSingleLooter;
-
-            return varCopy;
-        }
     }
 
     public final static class binder {
         public int interactRadiusOverride; // 0 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
 
-        public binder clone() {
-            binder varCopy = new binder();
-
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-
-            return varCopy;
-        }
     }
 
     public final static class generic {
@@ -949,23 +755,7 @@ public class GameObjectTemplate {
         public int interactRadiusOverride; // 9 Interact Radius override (in hundredths), int, Min value: 0, Max value: 2147483647, Default value: 0
         public int allowunfriendlycrossfactionpartymemberstocollaborateonaritual; // 10 Allow unfriendly cross faction party members to collaborate on a ritual, enum { false, true, }; Default: false
 
-        public generic clone() {
-            generic varCopy = new generic();
 
-            varCopy.floatingTooltip = this.floatingTooltip;
-            varCopy.highlight = this.highlight;
-            varCopy.serverOnly = this.serverOnly;
-            varCopy.giganticAOI = this.giganticAOI;
-            varCopy.floatOnWater = this.floatOnWater;
-            varCopy.questID = this.questID;
-            varCopy.conditionID1 = this.conditionID1;
-            varCopy.largeAOI = this.largeAOI;
-            varCopy.useGarrisonOwnerGuildColors = this.useGarrisonOwnerGuildColors;
-            varCopy.interactRadiusOverride = this.interactRadiusOverride;
-            varCopy.allowunfriendlycrossfactionpartymemberstocollaborateonaritual = this.allowunfriendlycrossfactionpartymemberstocollaborateonaritual;
-
-            return varCopy;
-        }
     }
 
     public final static class trap {

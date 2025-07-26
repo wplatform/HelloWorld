@@ -1,7 +1,7 @@
 package com.github.azeroth.game.service.boot;
 
 import com.github.azeroth.game.domain.creature.CreatureTemplate;
-import com.github.azeroth.game.service.mapper.RowMappers;
+import com.github.azeroth.game.service.repository.mapper.RowMappers;
 import com.github.azeroth.game.domain.misc.NpcText;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
 import com.zaxxer.hikari.HikariDataSource;

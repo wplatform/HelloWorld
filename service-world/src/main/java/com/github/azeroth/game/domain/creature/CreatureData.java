@@ -3,6 +3,7 @@ package com.github.azeroth.game.domain.creature;
 
 import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.game.domain.spawn.SpawnData;
+import com.github.azeroth.game.domain.spawn.SpawnObjectType;
 import com.github.azeroth.game.domain.unit.UnitFlag;
 import com.github.azeroth.game.domain.unit.UnitFlag2;
 import com.github.azeroth.game.domain.unit.UnitFlag3;
@@ -24,4 +25,11 @@ public class CreatureData extends SpawnData {
     public int dynamicFlags;
     public int eventEntry;
     public CreatureTemplate creatureTemplate;
+
+    public CreatureAddon creatureAddon;
+
+    public CreatureData() {
+        type = SpawnObjectType.CREATURE;
+    }
 }
+

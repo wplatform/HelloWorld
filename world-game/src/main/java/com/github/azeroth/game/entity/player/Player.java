@@ -4,6 +4,7 @@ package com.github.azeroth.game.entity.player;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.DifficultyFlag;
 import com.github.azeroth.dbc.domain.MapEntry;
+import com.github.azeroth.defines.SkillType;
 import com.github.azeroth.defines.Team;
 import com.github.azeroth.defines.TeamId;
 import com.github.azeroth.game.*;

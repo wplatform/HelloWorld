@@ -1,8 +1,14 @@
 package com.github.azeroth.game.battlepet;
 
 
+import com.github.azeroth.dbc.defines.BattlePetSpeciesFlags;
+import com.github.azeroth.dbc.domain.BattlePetBreedQuality;
+import com.github.azeroth.dbc.domain.BattlePetSpecie;
 import com.github.azeroth.game.entity.item.ItemPosCount;
+import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.entity.object.enums.HighGuid;
 import com.github.azeroth.game.entity.unit.declinedName;
+import com.github.azeroth.game.networking.packet.battlepet.PetBattleSlotUpdates;
 import com.github.azeroth.game.spell.CastSpellExtraArgs;
 import game.WorldSession;
 
@@ -12,10 +18,10 @@ import java.util.HashSet;
 
 
 public class BattlePetMgr {
-    private static final HashMap<Integer, BattlePetSpeciesRecord> BATTLEPETSPECIESBYCREATURE = new HashMap<Integer, BattlePetSpeciesRecord>();
-    private static final HashMap<Integer, BattlePetSpeciesRecord> BATTLEPETSPECIESBYSPELL = new HashMap<Integer, BattlePetSpeciesRecord>();
+    private static final HashMap<Integer, BattlePetSpecie> BATTLEPETSPECIESBYCREATURE = new HashMap<>();
+    private static final HashMap<Integer, BattlePetSpecie> BATTLEPETSPECIESBYSPELL = new HashMap<>();
     private static final MultiMap<Integer, Byte> AVAILABLEBREEDSPERSPECIES = new MultiMap<Integer, Byte>();
-    private static final HashMap<Integer, battlePetBreedQuality> DEFAULTQUALITYPERSPECIES = new HashMap<Integer, battlePetBreedQuality>();
+    private static final HashMap<Integer, BattlePetBreedQuality> DEFAULTQUALITYPERSPECIES = new HashMap<Integer, battlePetBreedQuality>();
     public static HashMap<Integer, HashMap<BattlePetState, Integer>> BATTLEPETBREEDSTATES = new HashMap<Integer, HashMap<BattlePetState, Integer>>();
     public static HashMap<Integer, HashMap<BattlePetState, Integer>> BATTLEPETSPECIESSTATES = new HashMap<Integer, HashMap<BattlePetState, Integer>>();
     private final WorldSession owner;
@@ -27,7 +33,7 @@ public class BattlePetMgr {
     public BattlePetMgr(WorldSession owner) {
         owner = owner;
 
-        for (byte i = 0; i < BattlePetSlots.count.getValue(); ++i) {
+        for (byte i = 0; i < BattlePetSlot.count.getValue(); ++i) {
             BattlePetSlot slot = new BattlePetSlot();
             slot.index = i;
             slots.add(slot);
@@ -69,15 +75,15 @@ public class BattlePetMgr {
         loadDefaultPetQualities();
     }
 
-    public static void addBattlePetSpeciesBySpell(int spellId, BattlePetSpeciesRecord speciesEntry) {
+    public static void addBattlePetSpeciesBySpell(int spellId, BattlePetSpecie speciesEntry) {
         BATTLEPETSPECIESBYSPELL.put(spellId, speciesEntry);
     }
 
-    public static BattlePetSpeciesRecord getBattlePetSpeciesByCreature(int creatureId) {
+    public static BattlePetSpecie getBattlePetSpeciesByCreature(int creatureId) {
         return BATTLEPETSPECIESBYCREATURE.get(creatureId);
     }
 
-    public static BattlePetSpeciesRecord getBattlePetSpeciesBySpell(int spellId) {
+    public static BattlePetSpecie getBattlePetSpeciesBySpell(int spellId) {
         return BATTLEPETSPECIESBYSPELL.get(spellId);
     }
 
@@ -99,7 +105,7 @@ public class BattlePetMgr {
         return DEFAULTQUALITYPERSPECIES.get(species);
     }
 
-    public static int selectPetDisplay(BattlePetSpeciesRecord speciesEntry) {
+    public static int selectPetDisplay(BattlePetSpecie speciesEntry) {
         var creatureTemplate = global.getObjectMgr().getCreatureTemplate(speciesEntry.creatureID);
 
         if (creatureTemplate != null) {
@@ -205,7 +211,7 @@ public class BattlePetMgr {
     }
 
     public final boolean isBattlePetSystemEnabled() {
-        return getSlot(BattlePetSlots.Slot0).locked != true;
+        return getSlot(BattlePetSlot.Slot0).locked != true;
     }
 
     public final void loadFromDB(SQLResult petsResult, SQLResult slotsResult) {
@@ -521,7 +527,7 @@ public class BattlePetMgr {
         }
     }
 
-    public final byte getPetCount(BattlePetSpeciesRecord battlePetSpecies, ObjectGuid ownerGuid) {
+    public final byte getPetCount(BattlePetSpecie battlePetSpecies, ObjectGuid ownerGuid) {
         return (byte) pets.values().size() (battlePet ->
         {
             if (battlePet == null || battlePet.packetInfo.species != battlePetSpecies.id) {
@@ -544,7 +550,7 @@ public class BattlePetMgr {
         });
     }
 
-    public final boolean hasMaxPetCount(BattlePetSpeciesRecord battlePetSpecies, ObjectGuid ownerGuid) {
+    public final boolean hasMaxPetCount(BattlePetSpecie battlePetSpecies, ObjectGuid ownerGuid) {
         var maxPetsPerSpecies = battlePetSpecies.getFlags().hasFlag(BattlePetSpeciesFlags.LegacyAccountUnique) ? 1 : SharedConst.DefaultMaxBattlePetsPerSpecies;
 
         return getPetCount(battlePetSpecies, ownerGuid) >= maxPetsPerSpecies;
@@ -562,12 +568,9 @@ public class BattlePetMgr {
         return (int) speciesIds.size();
     }
 
-    public final void unlockSlot(BattlePetSlots slot) {
-        if (slot.getValue() >= BattlePetSlots.count.getValue()) {
-            return;
-        }
+    public final void unlockSlot(BattlePetSlot slot) {
 
-        var slotIndex = (byte) slot.getValue();
+        var slotIndex = (byte) slot.ordinal();
 
         if (!slots.get(slotIndex).locked) {
             return;
@@ -948,8 +951,8 @@ public class BattlePetMgr {
         }
     }
 
-    public final BattlePetSlot getSlot(BattlePetSlots slot) {
-        return slot.getValue() < BattlePetSlots.count.getValue() ? slots.get((byte) slot.getValue()) : null;
+    public final BattlePetSlot getSlot(BattlePetSlot slot) {
+        return slot.getValue() < BattlePetSlot.count.getValue() ? slots.get((byte) slot.getValue()) : null;
     }
 
     public final void toggleJournalLock(boolean on) {

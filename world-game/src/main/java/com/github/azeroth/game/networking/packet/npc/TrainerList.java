@@ -1,24 +1,29 @@
 package com.github.azeroth.game.networking.packet.npc;
 
 
+import com.github.azeroth.game.domain.creature.TrainerType;
+import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
+
 import java.util.ArrayList;
 
 
 public class TrainerList extends ServerPacket {
     public ObjectGuid trainerGUID = ObjectGuid.EMPTY;
-    public int trainerType;
+    public TrainerType trainerType;
     public int trainerID = 1;
     public ArrayList<TrainerListSpell> spells = new ArrayList<>();
     public String greeting;
 
     public TrainerList() {
-        super(ServerOpcode.TrainerList);
+        super(ServerOpCode.SMSG_TRAINER_LIST);
     }
 
     @Override
     public void write() {
         this.writeGuid(trainerGUID);
-        this.writeInt32(trainerType);
+        this.writeInt32(trainerType.ordinal());
         this.writeInt32(trainerID);
 
         this.writeInt32(spells.size());
@@ -29,11 +34,11 @@ public class TrainerList extends ServerPacket {
             this.writeInt32(spell.reqSkillLine);
             this.writeInt32(spell.reqSkillRank);
 
-            for (int i = 0; i < SharedConst.MaxTrainerspellAbilityReqs; ++i) {
-                this.writeInt32(spell.ReqAbility[i]);
+            for (int reqAbility : spell.reqAbility) {
+                this.writeInt32(reqAbility);
             }
 
-            this.writeInt8((byte) spell.usable.getValue());
+            this.writeInt8((byte) spell.usable.ordinal());
             this.writeInt8(spell.reqLevel);
         }
 

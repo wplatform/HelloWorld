@@ -76,7 +76,7 @@ public enum DbcObjects {
     FriendshipRepReaction(FriendshipRepReaction.class),
     FriendshipReputation(FriendshipReputation.class),
     GameObjectDisplayInfo(GameObjectDisplayInfo.class),
-    GameObject(GameObject.class),
+    GameObject(GameObjectEntry.class),
     GarrAbility(GarrAbility.class),
     GarrBuilding(GarrBuilding.class),
     GarrBuildingPlotInst(GarrBuildingPlotInst.class),

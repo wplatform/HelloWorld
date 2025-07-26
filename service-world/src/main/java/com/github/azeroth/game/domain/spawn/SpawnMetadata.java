@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class SpawnMetadata {
     public SpawnObjectType type;
-    public long spawnId;
+    public int spawnId;
     public int mapId = 0xFFFFFFFF;
     public boolean dbData = true;
     public SpawnGroupTemplateData spawnGroupData = null;

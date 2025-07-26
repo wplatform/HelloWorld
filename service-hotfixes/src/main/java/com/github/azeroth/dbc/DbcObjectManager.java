@@ -608,11 +608,11 @@ public interface DbcObjectManager {
         return gameObjectDisplayInfo().get(id);
     }
 
-    default DbcEntityStore<GameObject> gameObject() {
+    default DbcEntityStore<GameObjectEntry> gameObject() {
         return getEntityStore(DbcObjects.GameObject);
     }
 
-    default GameObject gameObject(int id) {
+    default GameObjectEntry gameObject(int id) {
         return gameObject().get(id);
     }
 
@@ -2441,4 +2441,7 @@ public interface DbcObjectManager {
 
 
     List<ItemBonus> getItemBonusList(int bonusList);
+
+
+    Map<Integer, List<TaxiPathNode>> getTaxiPathNodesByPath();
 }
