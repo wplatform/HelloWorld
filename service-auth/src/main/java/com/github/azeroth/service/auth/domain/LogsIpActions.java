@@ -1,0 +1,43 @@
+package com.github.azeroth.service.auth.domain;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Table("logs_ip_actions")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LogsIpActions {
+    
+    @Id
+    @Column("id")
+    private Long id;
+    
+    @Column("account_id")
+    private Long accountId;
+    
+    @Column("character_guid")
+    private Long characterGuid;
+    
+    @Column("type")
+    private Byte type;
+    
+    @Column("ip")
+    private String ip;
+    
+    @Column("systemnote")
+    private String systemNote;
+    
+    @Column("unixtime")
+    private Long unixTime;
+    
+    @Column("time")
+    private String time;
+    
+    @Column("comment")
+    private String comment;
+}

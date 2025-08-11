@@ -24,7 +24,7 @@ public interface ItemDefine {
             ItemSubclassContainer.values().length,
             ItemSubclassWeapon.values().length,
             ItemSubclassGem.values().length,
-            ItemSubclassArmor.values().length,
+            ItemSubClassArmor.values().length,
             ItemSubclassReagent.values().length,
             ItemSubclassProjectile.values().length,
             ItemSubclassTradeGoods.values().length,

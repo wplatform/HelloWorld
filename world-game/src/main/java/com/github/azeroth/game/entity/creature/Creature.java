@@ -10,6 +10,7 @@ import com.github.azeroth.game.ai.IUnitAI;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.entity.object.*;
+import com.github.azeroth.game.entity.object.enums.CellMoveState;
 import com.github.azeroth.game.entity.object.enums.HighGuid;
 import com.github.azeroth.game.entity.object.update.ObjectFields;
 import com.github.azeroth.game.entity.player.Player;
@@ -19,6 +20,7 @@ import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.map.grid.GridObject;
 import com.github.azeroth.game.map.grid.GridReference;
+import com.github.azeroth.game.movement.MovementGeneratorType;
 import com.github.azeroth.game.spell.SpellEffectInfo;
 import com.github.azeroth.game.spell.SpellInfo;
 import com.github.azeroth.game.world.setting.WorldSetting;
@@ -113,7 +115,7 @@ public class Creature extends Unit implements GridObject<Creature>, MapObject {
     private boolean respawnCompatibilityMode;
 
     private Cell currentCell;
-    private MapObject.CellMoveState moveState;
+    private CellMoveState moveState;
     private Position newPosition = new Position();
 
     CreatureTemplate creatureInfo;

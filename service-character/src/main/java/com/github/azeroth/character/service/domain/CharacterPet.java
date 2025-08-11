@@ -1,84 +1,67 @@
 package com.github.azeroth.character.service.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import lombok.Getter;
-import lombok.Setter;
 
-
-@Getter
-@Setter
-
-@Table(name = "character_pet")
+@Table("character_pet")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CharacterPet {
+    
     @Id
-
     @Column("id")
-    private Long id;
-
-
+    private Integer id;
+    
     @Column("entry")
-    private Long entry;
-
-
+    private Integer entry;
+    
     @Column("owner")
     private Long owner;
-
-
+    
     @Column("modelid")
-    private Long modelid;
-
-
+    private Integer modelid;
+    
     @Column("CreatedBySpell")
-    private Long createdBySpell;
-
-
+    private Integer createdBySpell;
+    
     @Column("PetType")
-    private Short petType;
-
-
+    private Byte petType;
+    
     @Column("level")
-    private Integer level;
-
-
+    private Short level;
+    
     @Column("exp")
-    private Long exp;
-
-
+    private Integer exp;
+    
     @Column("Reactstate")
-    private Short reactstate;
-
-
+    private Byte reactstate;
+    
     @Column("name")
     private String name;
-
-
+    
     @Column("renamed")
-    private Short renamed;
-
-
+    private Byte renamed;
+    
     @Column("slot")
-    private Short slot;
-
-
+    private Byte slot;
+    
     @Column("curhealth")
-    private Long curhealth;
-
-
+    private Integer curhealth;
+    
     @Column("curmana")
-    private Long curmana;
-
-
+    private Integer curmana;
+    
     @Column("savetime")
-    private Long savetime;
-
+    private Integer savetime;
     
     @Column("abdata")
     private String abdata;
-
-
+    
     @Column("specialization")
-    private Integer specialization;
-
+    private Short specialization;
 }

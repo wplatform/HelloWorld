@@ -1,40 +1,34 @@
 package com.github.azeroth.character.service.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import lombok.Getter;
-import lombok.Setter;
 
-
-@Getter
-@Setter
-
-
-@Table(name = "character_banned")
+@Table("character_banned")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CharacterBanned {
+    
     @Id
-
     @Column("guid")
-    private Integer guid;
-
-    @Id
-
+    private Long guid;
+    
     @Column("bandate")
-    private Long bandate;
-
-
+    private Integer banDate;
+    
     @Column("unbandate")
-    private Long unbandate;
-
+    private Integer unbanDate;
+    
     @Column("bannedby")
-    private String bannedby;
-
+    private String bannedBy;
+    
     @Column("banreason")
-    private String banreason;
-
-
+    private String banReason;
+    
     @Column("active")
-    private Short active;
-
+    private Byte active;
 }

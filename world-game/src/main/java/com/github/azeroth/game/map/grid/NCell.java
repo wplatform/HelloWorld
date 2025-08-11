@@ -12,7 +12,7 @@ import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.scene.SceneObject;
 
-public class Grid {
+public class NCell {
 
     //AllGridObjectTypes: GameObject, Creature(except pets), DynamicObject, Corpse(Bones), AreaTrigger, SceneObject, Conversation
     private final GridRefManager<GameObject> gridGameObjects = new GridRefManager<>();

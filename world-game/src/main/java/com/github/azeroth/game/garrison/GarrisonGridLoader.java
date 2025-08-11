@@ -4,23 +4,23 @@ package com.github.azeroth.game.garrison;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.map.MapDefine;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.Grid;
+import com.github.azeroth.game.map.grid.NCell;
 import com.github.azeroth.game.map.interfaces.*;
 
 class GarrisonGridLoader implements IGridNotifierGameObject {
     private final Cell i_cell;
-    private final Grid i_grid;
+    private final NCell i_NCell;
     private final GarrisonMap i_map;
     private final Garrison i_garrison;
     private final int i_creatures;
     private int i_gameObjects;
-    public GarrisonGridLoader(Grid grid, GarrisonMap map, Cell cell) {
-        this(grid, map, cell, gridType.Grid);
+    public GarrisonGridLoader(NCell NCell, GarrisonMap map, Cell cell) {
+        this(NCell, map, cell, gridType.Grid);
     }    private gridType gridType = getGridType().values()[0];
 
-    public GarrisonGridLoader(Grid grid, GarrisonMap map, Cell cell, GridType gridType) {
+    public GarrisonGridLoader(NCell NCell, GarrisonMap map, Cell cell, GridType gridType) {
         i_cell = cell;
-        i_grid = grid;
+        i_NCell = NCell;
         i_map = map;
         i_garrison = map.getGarrison();
         setGridType(gridType);
@@ -72,12 +72,12 @@ class GarrisonGridLoader implements IGridNotifierGameObject {
                     i_cell.data.celly = y;
 
                     //Load creatures and game objects
-                    i_grid.visitGrid(x, y, this);
+                    i_NCell.visitGrid(x, y, this);
                 }
             }
         }
 
-        Logs.MAPS.debug("{0} GameObjects and {1} Creatures loaded for grid {2} on map {3}", i_gameObjects, i_creatures, i_grid.getGridId(), i_map.getId());
+        Logs.MAPS.debug("{0} GameObjects and {1} Creatures loaded for grid {2} on map {3}", i_gameObjects, i_creatures, i_NCell.getGridId(), i_map.getId());
     }
 
 

@@ -1,12 +1,13 @@
 package com.github.azeroth.game.map.model;
 
 import com.github.azeroth.common.EnumFlag;
-import com.github.azeroth.world.map.enums.MapLiquidHeaderTypeFlags;
+import com.github.azeroth.game.map.enums.LiquidHeaderTypeFlag;
+
 import lombok.Data;
 
 @Data
 public class LiquidData {
-    private EnumFlag<MapLiquidHeaderTypeFlags> typeFlags = EnumFlag.of(MapLiquidHeaderTypeFlags.NoWater);
+    private EnumFlag<LiquidHeaderTypeFlag> typeFlags = EnumFlag.of(LiquidHeaderTypeFlag.NoWater);
     private int entry;
     private float level;
     private float depthLevel;

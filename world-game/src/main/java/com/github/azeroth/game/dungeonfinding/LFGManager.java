@@ -2207,7 +2207,7 @@ public class LFGManager {
     private LfgRoles filterClassRoles(Player player, LfgRoles roles) {
         var allowedRoles = (int) LfgRoles.leader.getValue();
 
-        for (int i = 0; i < PlayerConst.MaxSpecializations; ++i) {
+        for (int i = 0; i < MAX_SPECIALIZATIONS; ++i) {
             var specialization = global.getDB2Mgr().GetChrSpecializationByIndex(player.getClass(), i);
 
             if (specialization != null) {

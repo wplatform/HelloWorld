@@ -52,7 +52,7 @@ public class VMapManager {
         return enableLineOfSightCalc || enableHeightCalc;
     }
 
-    public final LoadResult loadMap(int mapId, int x, int y) throws IOException {
+    public final LoadResult loadMap(int mapId, int x, int y)  {
         if (!isMapLoadingEnabled()) {
             return LoadResult.DisabledInConfig;
         }

@@ -32,13 +32,15 @@ public interface GameObjectRepository {
 
     @Query("SELECT entry, faction, flags, mingold, maxgold, artkit0, artkit1, artkit2, artkit3, artkit4, WorldEffectID, AIAnimKitID FROM gameobject_template_addon")
     Stream<GameObjectTemplateAddon> streamAllGameObjectTemplateAddons();
-
     @Query("SELECT spawnId, faction, flags FROM gameobject_overrides")
     Stream<GameObjectOverride> streamAllGameObjectOverrides();
     @Query("SELECT guid, parent_rotation0, parent_rotation1, parent_rotation2, parent_rotation3, invisibilityType, invisibilityValue, WorldEffectID, AIAnimKitID FROM gameobject_addon")
     Stream<GameObjectAddon> streamAllGameObjectAddons();
     @Query("SELECT GameObjectEntry, ItemId, Idx FROM gameobject_questitem ORDER BY Idx ASC")
     Stream<int[]> streamAllGameObjectQuestItem();
+
+    @Query("SELECT entry, locale, name, castBarCaption, unk1 FROM gameobject_template_locale")
+    Stream<GameObjectLocale> streamAllGameObjectTemplateLocales();
 
     @Modifying
     @Query("UPDATE gameobject SET zoneId = :zoneId, areaId = :areaId WHERE guid = :guid")

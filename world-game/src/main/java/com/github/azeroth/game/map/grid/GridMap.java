@@ -252,7 +252,7 @@ public class GridMap {
                 }
             }
 
-            typeFlags.or(LiquidHeaderTypeFlag.valueOf(1 << liqTypeIdx));
+            typeFlags.addFlag(LiquidHeaderTypeFlag.valueOf(1 << liqTypeIdx));
         }
 
         if (typeFlags.equals(LiquidHeaderTypeFlag.NoWater))
@@ -416,7 +416,7 @@ public class GridMap {
             return false;
 
         liquidGlobalEntry = liquidHeader.liquidType();
-        liquidGlobalFlags = MapLiquidHeaderTypeFlags.valueOf(liquidHeader.liquidFlags());
+        liquidGlobalFlags = LiquidHeaderTypeFlag.valueOf(liquidHeader.liquidFlags());
         liquidOffX = liquidHeader.offsetX();
         liquidOffY = liquidHeader.offsetY();
         liquidWidth = liquidHeader.width();

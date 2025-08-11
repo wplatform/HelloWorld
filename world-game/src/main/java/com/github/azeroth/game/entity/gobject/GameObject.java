@@ -13,6 +13,7 @@ import com.github.azeroth.game.domain.gobject.GameObjectData;
 import com.github.azeroth.game.domain.gobject.GameObjectOverride;
 import com.github.azeroth.game.domain.gobject.GameObjectTemplate;
 import com.github.azeroth.game.domain.gobject.GameObjectTemplateAddon;
+import com.github.azeroth.game.entity.GameObjectFieldData;
 import com.github.azeroth.game.entity.ObjectFieldData;
 import com.github.azeroth.game.entity.UpdateMask;
 import com.github.azeroth.game.entity.gameObjectFieldData;
@@ -20,6 +21,7 @@ import com.github.azeroth.game.entity.object.MapObject;
 import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.enums.CellMoveState;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.loot.Loot;
@@ -84,11 +86,11 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
     private HashMap<ObjectGuid, Loot> personalLoot = new HashMap<>();
     private ObjectGuid linkedTrap = ObjectGuid.EMPTY;
     private Cell currentCell;
-    private MapObject.CellMoveState moveState;
+    private CellMoveState moveState;
     private Position newPosition = new Position();
     private GameObjectFieldData gameObjectFieldData;
     private Position stationaryPosition;
-    private loot loot;
+    private Loot loot;
     private GameObjectmodel model;
 
     public gameObject() {

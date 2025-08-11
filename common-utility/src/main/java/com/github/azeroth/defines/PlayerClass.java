@@ -1,9 +1,5 @@
 package com.github.azeroth.defines;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 public enum PlayerClass {
     NONE,
     WARRIOR,

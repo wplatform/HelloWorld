@@ -1,61 +1,58 @@
 package com.github.azeroth.service.auth.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Setter
-@Getter
-@Table(name = "realmlist")
+@Table("realmlist")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RealmList {
+    
     @Id
-    public Integer id;
-
-    @Column(value = "name")
-    public String name;
-
-    @Column(value = "address")
-    public String address;
-
-    @Column(value = "localAddress")
-    public String localAddress;
-
-    @Column(value = "address3")
-    public String address3;
-
-    @Column(value = "address4")
-    public String address4;
-
-    @Column(value = "localSubnetMask")
-    public String localSubnetMask;
-
-    @Column(value = "port")
-    public Integer port;
-
-    @Column(value = "icon")
-    public Short icon;
-
-    @Column(value = "flag")
-    public Short flag;
-
-    @Column(value = "timezone")
-    public Short timezone;
-
-    @Column(value = "allowedSecurityLevel")
-    public Short allowedSecurityLevel;
-
-    @Column(value = "population")
-    public Float population;
-
-    @Column(value = "gamebuild")
-    public Long gamebuild;
-
-    @Column(value = "Region")
-    public Short region;
-
-    @Column(value = "Battlegroup")
-    public Short battlegroup;
-
+    @Column("id")
+    private Long id;
+    
+    @Column("name")
+    private String name;
+    
+    @Column("address")
+    private String address;
+    
+    @Column("localAddress")
+    private String localAddress;
+    
+    @Column("localSubnetMask")
+    private String localSubnetMask;
+    
+    @Column("port")
+    private Short port;
+    
+    @Column("icon")
+    private Byte icon;
+    
+    @Column("flag")
+    private Byte flag;
+    
+    @Column("timezone")
+    private Byte timezone;
+    
+    @Column("allowedSecurityLevel")
+    private Byte allowedSecurityLevel;
+    
+    @Column("population")
+    private Float population;
+    
+    @Column("gamebuild")
+    private Long gamebuild;
+    
+    @Column("Region")
+    private Byte region;
+    
+    @Column("Battlegroup")
+    private Byte battlegroup;
 }

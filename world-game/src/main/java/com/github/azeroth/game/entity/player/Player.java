@@ -11433,7 +11433,7 @@ public class Player extends Unit implements GridObject<Player> {
         setActiveTalentGroup(activeTalentGroup);
         var primarySpec = CliDB.ChrSpecializationStorage.get(getPrimarySpecialization());
 
-        if (primarySpec == null || primarySpec.classID != (byte) getClass().getValue() || getActiveTalentGroup() >= PlayerConst.MaxSpecializations) {
+        if (primarySpec == null || primarySpec.classID != (byte) getClass().getValue() || getActiveTalentGroup() >= MAX_SPECIALIZATIONS) {
             resetTalentSpecialization();
         }
 
@@ -13229,7 +13229,7 @@ public class Player extends Unit implements GridObject<Player> {
 //				return index;
 //			}
 
-        for (int i = 0; i < PlayerConst.MaxSpecializations - 1; ++i) {
+        for (int i = 0; i < MAX_SPECIALIZATIONS - 1; ++i) {
             var spec = global.getDB2Mgr().GetChrSpecializationByIndex(getClass(), i);
 
             if (spec != null) {
@@ -13288,7 +13288,7 @@ public class Player extends Unit implements GridObject<Player> {
         do {
             var spec = result.<Byte>Read(0);
 
-            if (spec >= PlayerConst.MaxSpecializations || global.getDB2Mgr().GetChrSpecializationByIndex(getClass(), spec) == null) {
+            if (spec >= MAX_SPECIALIZATIONS || global.getDB2Mgr().GetChrSpecializationByIndex(getClass(), spec) == null) {
                 continue;
             }
 
@@ -13938,7 +13938,7 @@ public class Player extends Unit implements GridObject<Player> {
         stmt.AddValue(0, getGUID().getCounter());
         trans.append(stmt);
 
-        for (byte spec = 0; spec < PlayerConst.MaxSpecializations; ++spec) {
+        for (byte spec = 0; spec < MAX_SPECIALIZATIONS; ++spec) {
             for (var glyphId : getGlyphs(spec)) {
                 byte index = 0;
 
@@ -14257,7 +14257,7 @@ public class Player extends Unit implements GridObject<Player> {
         stmt.AddValue(0, getGUID().getCounter());
         trans.append(stmt);
 
-        for (byte group = 0; group < PlayerConst.MaxSpecializations; ++group) {
+        for (byte group = 0; group < MAX_SPECIALIZATIONS; ++group) {
             var talents = getTalentMap(group);
 
             for (var pair : talents.ToList()) {
@@ -14279,7 +14279,7 @@ public class Player extends Unit implements GridObject<Player> {
         stmt.AddValue(0, getGUID().getCounter());
         trans.append(stmt);
 
-        for (byte group = 0; group < PlayerConst.MaxSpecializations; ++group) {
+        for (byte group = 0; group < MAX_SPECIALIZATIONS; ++group) {
             var talents = getPvpTalentMap(group);
             stmt = DB.characters.GetPreparedStatement(CharStatements.INS_CHAR_PVP_TALENT);
             stmt.AddValue(0, getGUID().getCounter());
@@ -30586,7 +30586,7 @@ public class Player extends Unit implements GridObject<Player> {
     }
 
     private void removeSpecializationSpells() {
-        for (int i = 0; i < PlayerConst.MaxSpecializations; ++i) {
+        for (int i = 0; i < MAX_SPECIALIZATIONS; ++i) {
             var specialization = global.getDB2Mgr().GetChrSpecializationByIndex(getClass(), i);
 
             if (specialization != null) {
@@ -32775,7 +32775,7 @@ public class Player extends Unit implements GridObject<Player> {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().maxTalentTiers), talentTiers);
 
         if (!getSession().hasPermission(RBACPermissions.SkipCheckMoreTalentsThanAllowed)) {
-            for (byte spec = 0; spec < PlayerConst.MaxSpecializations; ++spec) {
+            for (byte spec = 0; spec < MAX_SPECIALIZATIONS; ++spec) {
                 for (var slot = global.getDB2Mgr().GetPvpTalentNumSlotsAtLevel(level, getClass()); slot < PlayerConst.MaxPvpTalentSlots; ++slot) {
                     var pvpTalent = CliDB.PvpTalentStorage.get(getPvpTalentMap(spec)[slot]);
 
@@ -33358,7 +33358,7 @@ public class Player extends Unit implements GridObject<Player> {
         UpdateTalentData packet = new UpdateTalentData();
         packet.info.primarySpecialization = getPrimarySpecialization();
 
-        for (byte i = 0; i < PlayerConst.MaxSpecializations; ++i) {
+        for (byte i = 0; i < MAX_SPECIALIZATIONS; ++i) {
             var spec = global.getDB2Mgr().GetChrSpecializationByIndex(getClass(), i);
 
             if (spec == null) {
@@ -33809,7 +33809,7 @@ public class Player extends Unit implements GridObject<Player> {
 
     //Pvp
     private void resetPvpTalents() {
-        for (byte spec = 0; spec < PlayerConst.MaxSpecializations; ++spec) {
+        for (byte spec = 0; spec < MAX_SPECIALIZATIONS; ++spec) {
             for (var talentId : getPvpTalentMap(spec)) {
                 var talentInfo = CliDB.PvpTalentStorage.get(talentId);
 

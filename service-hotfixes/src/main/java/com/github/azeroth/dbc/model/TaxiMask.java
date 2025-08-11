@@ -15,7 +15,7 @@ public class TaxiMask {
 
     public final int size()
     {
-        return data.size();
+        return data.length;
     }
 
     public final byte[] data()

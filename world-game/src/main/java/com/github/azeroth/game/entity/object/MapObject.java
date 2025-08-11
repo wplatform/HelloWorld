@@ -10,11 +10,4 @@ public interface MapObject {
     void setCurrentCell(Cell currentCell);
 
     void setNewCellPosition(float x, float y, float z, float o);
-
-
-    enum CellMoveState {
-        NONE, //not in move list
-        ACTIVE, //in move list
-        INACTIVE, //in move list but should not move
-    }
 }

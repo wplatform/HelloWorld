@@ -9,6 +9,7 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.*;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.dbc.defines.ItemSpecStat;
 import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.dbc.defines.TaxiNodeFlag;
 import com.github.azeroth.dbc.domain.*;
@@ -46,9 +47,11 @@ import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerSpawn;
 import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerTemplate;
 import com.github.azeroth.game.entity.creature.Trainer;
 import com.github.azeroth.game.domain.creature.TrainerSpell;
+import com.github.azeroth.game.entity.item.ItemSpecStats;
 import com.github.azeroth.game.entity.item.ItemTemplate;
 import com.github.azeroth.game.entity.item.enums.InventoryType;
 import com.github.azeroth.game.entity.item.enums.ItemClass;
+import com.github.azeroth.game.entity.item.enums.ItemFlagsCustom;
 import com.github.azeroth.game.entity.item.enums.ItemSubclassConsumable;
 import com.github.azeroth.game.entity.object.ObjectDefine;
 import com.github.azeroth.game.entity.object.ObjectGuid;
@@ -62,6 +65,7 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.vehicle.VehicleAccessory;
 import com.github.azeroth.game.entity.vehicle.VehicleSeatAddon;
 import com.github.azeroth.game.entity.vehicle.VehicleTemplate;
+import com.github.azeroth.game.loot.LootStorage;
 import com.github.azeroth.game.map.MapDefine;
 import com.github.azeroth.game.map.enums.LoadResult;
 import com.github.azeroth.game.map.grid.Coordinate;
@@ -232,7 +236,7 @@ public final class ObjectManager {
     //Scripts
     private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
     private final HashMap<Integer, List<Integer>> spellScriptsStorage = new HashMap<>();
-    private final HashMap<Integer, List<Integer>> areaTriggerScriptStorage = new HashMap<>();
+    private final HashMap<Integer, Integer> areaTriggerScriptStorage = new HashMap<>();
     private final MapCache<Tuple<Integer,Difficulty, Integer>, CellSpawnData> mapCellSpawnDataStorage;
 
     private final MapCache<Pair<Integer,Difficulty>, CellSpawnData> transportMapSpawnDataStorage;
@@ -297,6 +301,8 @@ public final class ObjectManager {
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<Integer, AreaTriggerStruct>();
     private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<>();
     private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
+
+    private final Set<Integer> eventStorage = new HashSet<>();
     private final int[] baseXPTable = new int[SharedDefine.MAX_LEVEL];
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> spellScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
     public HashMap<Integer, MultiMap<Integer, ScriptInfo>> eventScripts = new HashMap<Integer, MultiMap<Integer, ScriptInfo>>();
@@ -323,15 +329,17 @@ public final class ObjectManager {
     private World world;
     private CacheProvider cacheProvider;
     private DbcObjectManager dbcObjectManager;
-    private MiscRepository miscRepository;
-    private CreatureRepository creatureRepository;
-    private GameObjectRepository gameObjectRepository;
-    private ReputationRepository reputationRepository;
+    private MiscRepository miscRepo;
+    private CreatureRepository creatureRepo;
+    private GameObjectRepository gameObjectRepo;
+    private ReputationRepository reputationRepo;
+    private AreaTriggerRepository areaTriggerRepo;
     private ConditionManager conditionManager;
-    private QuestRepository questRepository;
+    private QuestRepository questRepo;
+    private ItemRepository itemRepo;
     private SpellManager spellManager;
     private DisableManager disableManager;
-    private PlayerRepository playerRepository;
+    private PlayerRepository playerRepo;
     // first free id for selected id type
     private int auctionId;
     private long equipmentSetGuid;
@@ -429,7 +437,7 @@ public final class ObjectManager {
         messageTextStorage.clear();
 
 
-        try (Stream<SystemText> trinityString = miscRepository.streamAllMessageText()) {
+        try (Stream<SystemText> trinityString = miscRepo.streamAllMessageText()) {
             trinityString.forEach(e -> {
                 LocalizedString string = new LocalizedString();
                 Locale[] values = Locale.values();
@@ -464,7 +472,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         raceUnlockRequirementStorage.clear();
 
-        try (Stream<RaceUnlockRequirement> raceUnlockRequirements = miscRepository.queryAllRaceUnlockRequirement()) {
+        try (Stream<RaceUnlockRequirement> raceUnlockRequirements = miscRepo.queryAllRaceUnlockRequirement()) {
             raceUnlockRequirements.forEach(e -> {
                 var chrClass = dbcObjectManager.chrRace(e.raceId);
                 if (chrClass == null) {
@@ -497,7 +505,7 @@ public final class ObjectManager {
 
         HashMap<Byte, Map<Byte, Pair<Byte, Byte>>> temp = new HashMap<>();
         var minRequirementForClass = new byte[PlayerClass.values().length];
-        try (Stream<ClassExpansionRequirement> raceUnlockRequirements = miscRepository.queryAllClassExpansionRequirement()) {
+        try (Stream<ClassExpansionRequirement> raceUnlockRequirements = miscRepo.queryAllClassExpansionRequirement()) {
             raceUnlockRequirements.forEach(e -> {
                 ChrClass classEntry = dbcObjectManager.chrClass(e.classID);
                 if (classEntry == null) {
@@ -609,7 +617,7 @@ public final class ObjectManager {
 
         Map<Integer, List<GossipMenus>> tmp = new HashMap<>();
         AtomicInteger count = new AtomicInteger();
-        try (var items = miscRepository.streamAllGossipMenu()) {
+        try (var items = miscRepo.streamAllGossipMenu()) {
             items.forEach(e -> {
                 if (getNpcText(e.textId) == null) {
                     Logs.SQL.error("Table gossip_menu: ID {} is using non-existing TextID {}", e.menuId, e.textId);
@@ -629,7 +637,7 @@ public final class ObjectManager {
         Map<Integer, List<GossipMenuOption>> temp = new HashMap<>();
         AtomicInteger count = new AtomicInteger();
         gossipMenuItemsStorage.clear();
-        try (var items = miscRepository.streamAllGossipMenuOption()) {
+        try (var items = miscRepo.streamAllGossipMenuOption()) {
             items.forEach(e -> {
                 if (e.optionNpc == null) {
                     Logs.SQL.error("Table `gossip_menu_option` for menu {}, id {} has unknown NPC option id {}. Replacing with GossipOptionNpc::None", e.menuId, e.orderIndex, e.optionNpc);
@@ -687,7 +695,7 @@ public final class ObjectManager {
         oldMSTime = System.currentTimeMillis();
 
         AtomicInteger countLocale = new AtomicInteger();
-        try (var items = miscRepository.streamAllGossipMenuOptionLocale()) {
+        try (var items = miscRepo.streamAllGossipMenuOptionLocale()) {
             items.forEach(e -> {
                 if (e.locale == Locale.enUS) {
                     return;
@@ -718,7 +726,7 @@ public final class ObjectManager {
 
         gossipMenuAddonStorage.clear();
 
-        try (var items = miscRepository.streamAllGossipMenuAddon()) {
+        try (var items = miscRepo.streamAllGossipMenuAddon()) {
             items.forEach(e -> {
                 var entry = dbcObjectManager.faction(e.friendshipFactionId);
 
@@ -741,7 +749,7 @@ public final class ObjectManager {
 
         pointsOfInterestStorage.clear(); // need for reload case
         HashMap<Integer, PointOfInterest> tmpPointsOfInterestStorage = new HashMap<>();
-        try (var items = miscRepository.streamAllPointsOfInterest()) {
+        try (var items = miscRepo.streamAllPointsOfInterest()) {
             items.forEach(e -> {
                 if (!MapDefine.isValidMapCoordinate(e.positionX, e.positionY, e.positionZ)) {
                     Logs.SQL.error("Table `points_of_interest` (ID: {}) have invalid coordinates (PositionX: {} PositionY: {}, PositionZ: {}), ignored.",
@@ -756,7 +764,7 @@ public final class ObjectManager {
 
         oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var items = miscRepository.streamAllPointsOfInterestLocale()) {
+        try (var items = miscRepo.streamAllPointsOfInterestLocale()) {
             items.forEach(e -> {
                 PointOfInterest pointOfInterest = tmpPointsOfInterestStorage.get(e.id);
                 if(pointOfInterest == null) {
@@ -795,7 +803,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         graveYardStorage.clear(); // need for reload case
         AtomicInteger count = new AtomicInteger();
-        try (var items = miscRepository.streamAllGraveyardZone()) {
+        try (var items = miscRepo.streamAllGraveyardZone()) {
             items.forEach(fields -> {
                 count.getAndIncrement();
                 WorldLocation entry = getWorldSafeLoc(fields[0]);
@@ -1014,7 +1022,7 @@ public final class ObjectManager {
 
         // add link to DB
         if (persist) {
-            miscRepository.insertGraveyardZone(id, zoneId);
+            miscRepo.insertGraveyardZone(id, zoneId);
         }
         if (team != Team.TEAM_OTHER)
         {
@@ -1028,59 +1036,21 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
 
         areaTriggerScriptStorage.clear(); // need for reload case
-        var result = DB.World.query("SELECT entry, ScriptName FROM areatrigger_scripts");
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 areatrigger scripts. DB table `areatrigger_scripts` is empty.");
+        try(var items = areaTriggerRepo.streamAllAreaTriggerScripts()) {
+            items.forEach(item -> {
+                var id = (Integer) item[0];
+                var scriptName = (String) item[0];
+                var atEntry = dbcObjectManager.areaTrigger(id);
+                if (atEntry == null) {
+                    Logs.SQL.error("AreaTrigger (ID: {}) does not exist in `AreaTrigger.dbc`.", id);
+                    return;
+                }
+                areaTriggerScriptStorage.put(id, getScriptId(scriptName));
 
-            return;
+            });
         }
-
-        int count = 0;
-
-        do {
-            var id = result.<Integer>Read(0);
-            var scriptName = result.<String>Read(1);
-
-            var atEntry = CliDB.AreaTriggerStorage.get(id);
-
-            if (atEntry == null) {
-                Logs.SQL.error("Area trigger (Id:{0}) does not exist in `AreaTrigger.dbc`.", id);
-
-                continue;
-            }
-
-            ++count;
-            areaTriggerScriptStorage.AddUnique(id, getScriptId(scriptName));
-        } while (result.NextRow());
-
-        areaTriggerScriptStorage.RemoveIfMatching((script) ->
-        {
-            var areaTriggerScriptLoaders = global.getScriptMgr().createAreaTriggerScriptLoaders(script.key);
-
-            for (var pair : areaTriggerScriptLoaders.entrySet()) {
-                var areaTriggerScript = pair.getKey().getAreaTriggerScript();
-                var valid = true;
-
-                if (areaTriggerScript == null) {
-                    Log.outError(LogFilter.Scripts, "Functions loadAreaTriggerScripts() of script `{0}` do not return object - script skipped", getScriptName(pair.getValue()));
-                    valid = false;
-                }
-
-                if (areaTriggerScript != null) {
-                    areaTriggerScript._Init(pair.getKey().getName(), script.key);
-                    areaTriggerScript._Register();
-                }
-
-                if (!valid) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-
-        Logs.SERVER_LOADING.info("Loaded {0} areatrigger scripts in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SQL.error(">> Loaded {} areatrigger scripts in {} ms", areaTriggerScriptStorage.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadSpellScripts() {
@@ -1114,61 +1084,66 @@ public final class ObjectManager {
     }
 
     public void loadEventScripts() {
+
+        // Set of valid events referenced in several sources
+        LoadEventSet();
+
+        // Deprecated
         loadScripts(ScriptsType.EVENT);
 
-        ArrayList<Integer> evt_scripts = new ArrayList<>();
+        // Then check if all scripts are in above list of possible script entries
+        for (var script : eventScripts.entrySet()) {
+            if(eventStorage.contains(script.getKey())) {
+                Logs.SQL.error("Table `event_scripts` has script (Id: {}) not referring to any gameobject_template (type 3 data6 field, type 7 data3 field, type 10 data2 field, type 13 data2 field, type 50 data7 field), any taxi path node or any spell effect {}",
+                        script.getKey(), SpellEffectName.SEND_EVENT);
+            }
+        }
 
+
+    }
+
+    private void LoadEventSet() {
         // Load all possible script entries from gameobjects
         for (var go : gameObjectTemplateStorage.entrySet()) {
             var eventId = go.getValue().getEventScriptId();
-
             if (eventId != 0) {
-                evt_scripts.add(eventId);
+                eventStorage.add(eventId);
             }
         }
 
         // Load all possible script entries from spells
-        for (var spellNameEntry : CliDB.SpellNameStorage.values()) {
-            var spell = world.getSpellManager().getSpellInfo(spellNameEntry.id, Difficulty.NONE);
-
+        for (var spellEntry : dbcObjectManager.spell()) {
+            var spell = world.getSpellManager().getSpellInfo(spellEntry.getId(), Difficulty.NONE);
             if (spell != null) {
-                for (var spellEffectInfo : spell.effects) {
-                    if (spellEffectInfo.isEffect(SpellEffectName.SendEvent)) {
+                for (var spellEffectInfo : spell.getEffects()) {
+                    if (spellEffectInfo.isEffect(SpellEffectName.SEND_EVENT)) {
                         if (spellEffectInfo.miscValue != 0) {
-                            evt_scripts.add((int) spellEffectInfo.miscValue);
+                            eventStorage.add(spellEffectInfo.miscValue);
                         }
                     }
                 }
             }
         }
 
-        for (var path_idx : CliDB.TaxiPathNodesByPath.entrySet()) {
-            for (int node_idx = 0; node_idx < path_idx.getValue().length; ++node_idx) {
-                var node = path_idx.getValue()[node_idx];
-
-                if (node.ArrivalEventID != 0) {
-                    evt_scripts.add(node.ArrivalEventID);
+        var taxiPathNodesByPath = dbcObjectManager.getTaxiPathNodesByPath();
+        for (var integerListEntry : taxiPathNodesByPath.entrySet()) {
+            var value = integerListEntry.getValue();
+            for (TaxiPathNode node : value) {
+                if (node.getArrivalEventID() != 0) {
+                    eventStorage.add(node.getArrivalEventID());
                 }
 
-                if (node.DepartureEventID != 0) {
-                    evt_scripts.add(node.DepartureEventID);
+                if (node.getDepartureEventID() != 0) {
+                    eventStorage.add(node.getDepartureEventID());
                 }
             }
-        }
 
-        // Then check if all scripts are in above list of possible script entries
-        for (var script : eventScripts.entrySet()) {
-            var id = tangible.ListHelper.find(evt_scripts, p -> p == script.getKey());
-
-            if (id == 0) {
-                Logs.SQL.error("Table `event_scripts` has script (Id: {0}) not referring to any gameobject_template type 10 data2 field, type 3 data6 field, type 13 data 2 field or any spell effect {1}", script.getKey(), SpellEffectName.SendEvent);
-            }
         }
     }
 
     //Load WP Scripts
     public void loadWaypointScripts() {
-        loadScripts(ScriptsType.Waypoint);
+        loadScripts(ScriptsType.WAYPOINT);
 
         ArrayList<Integer> actionSet = new ArrayList<>();
 
@@ -1396,7 +1371,7 @@ public final class ObjectManager {
     public void loadCreatureTemplates() {
         var time = System.currentTimeMillis();
         HashMap<Integer, CreatureTemplate> templateHashMap = new HashMap<>();
-        try(var items = creatureRepository.streamCreatureTemplate(0, 1)) {
+        try(var items = creatureRepo.streamCreatureTemplate(0, 1)) {
             items.forEach(creatureTemplate -> {
                 creatureTemplate.scriptID = getScriptId(creatureTemplate.script);
                 templateHashMap.put(creatureTemplate.entry, creatureTemplate);
@@ -1560,7 +1535,7 @@ public final class ObjectManager {
         var time = System.currentTimeMillis();
 
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllCreatureTemplateAddon()) {
+        try(var items = creatureRepo.streamAllCreatureTemplateAddon()) {
             items.forEach(e -> {
                 CreatureTemplate template = templateHashMap.get(e.entry);
                 if (template == null) {
@@ -1626,7 +1601,7 @@ public final class ObjectManager {
     void loadCreatureTemplateSparring(HashMap<Integer, CreatureTemplate> templateHashMap) {
         long oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var items = creatureRepository.streamAllCreatureTemplateSparring()) {
+        try (var items = creatureRepo.streamAllCreatureTemplateSparring()) {
             items.forEach(fields -> {
                 Integer entry = (Integer) fields[0];
                 Float noNPCDamageBelowHealthPct = (Float) fields[1];
@@ -1650,7 +1625,7 @@ public final class ObjectManager {
     void loadCreatureTemplateDifficulty(HashMap<Integer, CreatureTemplate> templateHashMap) {
         long oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var items = creatureRepository.streamAllCreatureTemplateDifficulty()) {
+        try (var items = creatureRepo.streamAllCreatureTemplateDifficulty()) {
             items.forEach(e -> {
                 CreatureTemplate template = templateHashMap.get(e.entry);
                 if (template == null) {
@@ -1676,7 +1651,7 @@ public final class ObjectManager {
     public void loadCreatureAddons(Map<Integer, CreatureData> creatureData) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var item = creatureRepository.streamAllCreatureAddon()) {
+        try (var item = creatureRepo.streamAllCreatureAddon()) {
             item.forEach(e -> {
                 var creData = creatureData.get(e.entry);
                 if (creData == null)
@@ -1747,7 +1722,7 @@ public final class ObjectManager {
     public void loadCreatureQuestItems() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var item = creatureRepository.streamAllCreatureQuestItem()) {
+        try (var item = creatureRepo.streamAllCreatureQuestItem()) {
             item.forEach(fields -> {
 
                 Difficulty difficulty = Difficulty.values()[fields[1]];
@@ -1772,7 +1747,7 @@ public final class ObjectManager {
     public void loadEquipmentTemplates() {
         var time = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var item = creatureRepository.streamAllCreatureEquipTemplate()) {
+        try (var item = creatureRepo.streamAllCreatureEquipTemplate()) {
             item.forEach(fields -> {
 
                 if (getCreatureTemplate(fields[0]) == null) {
@@ -1842,7 +1817,7 @@ public final class ObjectManager {
     public void loadCreatureMovementOverrides() {
         var oldMSTime = System.currentTimeMillis();
         creatureMovementOverrides.clear();
-        try (var item = creatureRepository.streamAllCreatureMovementOverride()) {
+        try (var item = creatureRepo.streamAllCreatureMovementOverride()) {
             item.forEach(e -> {
                 checkCreatureMovement("creature_movement_override", e.spawnId, e);
                 creatureMovementOverrides.put(e.spawnId, e);
@@ -1855,7 +1830,7 @@ public final class ObjectManager {
         var time = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
         creatureBaseStatsStorage.clear();
-        try (var item = creatureRepository.streamAllCreatureClassLevelStats()) {
+        try (var item = creatureRepo.streamAllCreatureClassLevelStats()) {
             item.forEach(e -> {
                 if (((1 << (e.klass - 1)) & SharedDefine.CLASS_MASK_ALL_CREATURES) == 0) {
                     Logs.SQL.error("Creature base stats for level {} has invalid class {}", e.level, e.klass);
@@ -1882,7 +1857,7 @@ public final class ObjectManager {
         // List of model FileDataIDs that the client treats as invisible stalker
         int[] triggerCreatureModelFileID = {124640, 124641, 124642, 343863, 439302};
         AtomicInteger count = new AtomicInteger();
-        try (var item = creatureRepository.streamAllCreatureModelInfo()) {
+        try (var item = creatureRepo.streamAllCreatureModelInfo()) {
             item.forEach(e -> {
 
                 CreatureDisplayInfo creatureDisplay = dbcObjectManager.creatureDisplayInfo(e.displayId);
@@ -1918,7 +1893,7 @@ public final class ObjectManager {
     public void loadLinkedRespawn() {
         var oldMSTime = System.currentTimeMillis();
         linkedRespawnStorage.clear();
-        try(var item = creatureRepository.streamAllLinkedRespawn()) {
+        try(var item = creatureRepo.streamAllLinkedRespawn()) {
             item.forEach(fields -> {
                 int guidLow = fields[0];
                 int linkedGuidLow = fields[1];
@@ -2069,7 +2044,7 @@ public final class ObjectManager {
 
         npcTextStorage.clear();
         AtomicInteger count = new AtomicInteger();
-        try (var items = miscRepository.streamAllNpcText()) {
+        try (var items = miscRepo.streamAllNpcText()) {
             items.forEach(e -> {
                 if (e.id == 0) {
                     Logs.SQL.error("Table `npc_text` has record with reserved id 0, ignore.");
@@ -2109,7 +2084,7 @@ public final class ObjectManager {
         // For reload case
         trainers.clear();
         Map<Integer, List<TrainerSpell>> spellsByTrainer = new HashMap<>();
-        try(var items = creatureRepository.streamAllTrainerSpell()) {
+        try(var items = creatureRepo.streamAllTrainerSpell()) {
             items.forEach(e -> {
                 SpellInfo spellInfo = spellManager.getSpellInfo(e.spellId, Difficulty.NONE);
                 if (spellInfo == null)
@@ -2144,7 +2119,7 @@ public final class ObjectManager {
             });
         }
 
-        try(var items = creatureRepository.streamAllTrainer()) {
+        try(var items = creatureRepo.streamAllTrainer()) {
             items.forEach(e -> {
                 List<TrainerSpell> spellList = spellsByTrainer.get(e.id);
                 List<TrainerSpell> spells = spellList == null ? Collections.emptyList() : spellList;
@@ -2161,7 +2136,7 @@ public final class ObjectManager {
             }
         }
 
-        try(var items = creatureRepository.streamAllTrainerLocale()) {
+        try(var items = creatureRepo.streamAllTrainerLocale()) {
             items.forEach(fields -> {
                 int trainerId = (Integer)fields[0];
                 String localeName = (String)fields[1];
@@ -2179,7 +2154,7 @@ public final class ObjectManager {
 
         creatureDefaultTrainers.clear();
 
-        try(var items = creatureRepository.streamAllCreatureTrainer()) {
+        try(var items = creatureRepo.streamAllCreatureTrainer()) {
             items.forEach(fields -> {
                 int creatureId = fields[0];
                 int trainerId = fields[1];
@@ -2227,7 +2202,7 @@ public final class ObjectManager {
         Map<Integer, VendorItemData> tmp = new HashMap<>();
         Set<Integer> skipVendors = new HashSet<>();
 
-        try(var items = creatureRepository.streamAllNpcVendor()) {
+        try(var items = creatureRepo.streamAllNpcVendor()) {
             items.forEach(e-> {
                 var vList = tmp.compute(e.entry, Functions.ifAbsent(VendorItemData::new));
                 if(e.item < 0) {
@@ -2254,7 +2229,7 @@ public final class ObjectManager {
             spawnMasks.compute(mapDifficulty.getMapID(), Functions.addToSet(mapDifficulty.getDifficulty()));
 
         PhaseShift phaseShift = new PhaseShift();
-        try(var items = creatureRepository.streamAllCreature()) {
+        try(var items = creatureRepo.streamAllCreature()) {
             items.forEach(data -> {
                 var cInfo = getCreatureTemplate(data.id);
 
@@ -2418,7 +2393,7 @@ public final class ObjectManager {
                     PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
                     ZoneAndAreaId result = world.getTerrainManager().getZoneAndAreaId(phaseShift, data.mapId, data.positionX, data.positionY, data.positionZ);
                     if (result != null) {
-                        creatureRepository.updateCreatureZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
+                        creatureRepo.updateCreatureZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
                     }
                 }
                 // Add to grid if not managed by the game event
@@ -2501,7 +2476,7 @@ public final class ObjectManager {
         if (linkedGuidLow == 0) // we're removing the linking
         {
             linkedRespawnStorage.remove(guid);
-            creatureRepository.deleteLinkedRespawn(guidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
+            creatureRepo.deleteLinkedRespawn(guidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
             return true;
         }
 
@@ -2534,7 +2509,7 @@ public final class ObjectManager {
 
         linkedRespawnStorage.put(guid, linkedGuid);
 
-        creatureRepository.replaceLinkedRespawn(guidLow, linkedGuidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
+        creatureRepo.replaceLinkedRespawn(guidLow, linkedGuidLow, LinkedRespawnType.CREATURE_TO_CREATURE.ordinal());
         return true;
     }
 
@@ -2631,7 +2606,7 @@ public final class ObjectManager {
             gameObjectTemplateStorage.put(db2go.getId(), go);
         }
 
-        try(var items = gameObjectRepository.streamAllGameObjectTemplate()) {
+        try(var items = gameObjectRepo.streamAllGameObjectTemplate()) {
             items.forEach(got -> {
                 switch (got.type) {
                     case DOOR: //0
@@ -2819,7 +2794,7 @@ public final class ObjectManager {
 
         AtomicInteger count = new AtomicInteger();
 
-        try(var items = gameObjectRepository.streamAllGameObjectTemplateAddons()) {
+        try(var items = gameObjectRepo.streamAllGameObjectTemplateAddons()) {
             items.forEach(gameObjectAddon -> {
                 int entry = gameObjectAddon.entry;
 
@@ -2840,7 +2815,7 @@ public final class ObjectManager {
 
                 // checks
                 if (gameObjectAddon.faction != 0 && !dbcObjectManager.factionTemplate().contains(gameObjectAddon.faction)) {
-                    Logs.SQL.error("GameObject (Entry: {}) has invalid faction ({}) defined in `gameobject_template_addon`.", entry, gameObjectAddon.faction));
+                    Logs.SQL.error("GameObject (Entry: {}) has invalid faction ({}) defined in `gameobject_template_addon`.", entry, gameObjectAddon.faction);
                 }
 
                 if (gameObjectAddon.maxgold > 0) {
@@ -2861,7 +2836,7 @@ public final class ObjectManager {
                 }
 
                 if (gameObjectAddon.aiAnimKitId != 0 && !dbcObjectManager.animKit().contains(gameObjectAddon.aiAnimKitId)) {
-                    Logs.SQL.error("GameObject (Entry: {}) has invalid AIAnimKitID ({}) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.aiAnimKitId));
+                    Logs.SQL.error("GameObject (Entry: {}) has invalid AIAnimKitID ({}) defined in `gameobject_template_addon`, set to 0.", entry, gameObjectAddon.aiAnimKitId);
                     gameObjectAddon.aiAnimKitId = 0;
                 }
 
@@ -2877,7 +2852,7 @@ public final class ObjectManager {
     public void loadGameObjectOverrides() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = gameObjectRepository.streamAllGameObjectOverrides()) {
+        try(var items = gameObjectRepo.streamAllGameObjectOverrides()) {
             items.forEach(gameObjectOverride -> {
                 var goData = getGameObjectData(gameObjectOverride.spawnId);
 
@@ -2910,7 +2885,7 @@ public final class ObjectManager {
 
         PhaseShift phaseShift = new PhaseShift();
 
-        try(var items = gameObjectRepository.streamAllGameObject()) {
+        try(var items = gameObjectRepo.streamAllGameObject()) {
             items.forEach(data -> {
                 var gInfo = getGameObjectTemplate(data.id);
 
@@ -3077,7 +3052,7 @@ public final class ObjectManager {
                     PhasingHandler.initDbVisibleMapId(phaseShift, data.terrainSwapMap);
                     ZoneAndAreaId result = world.getTerrainManager().getZoneAndAreaId(phaseShift, data.mapId, data.positionX, data.positionY, data.positionZ);
                     if (result != null) {
-                        gameObjectRepository.updateGameObjectZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
+                        gameObjectRepo.updateGameObjectZoneAndAreaId(result.zoneId, result.areaId, data.spawnId);
                     }
                 }
 
@@ -3099,7 +3074,7 @@ public final class ObjectManager {
         AtomicInteger count = new AtomicInteger();
         gameObjectAddonStorage.clear();
 
-        try(var items = gameObjectRepository.streamAllGameObjectAddons()) {
+        try(var items = gameObjectRepo.streamAllGameObjectAddons()) {
             items.forEach(data -> {
 
                 var goData = getGameObjectData(data.guid);
@@ -3145,7 +3120,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         var count = new AtomicInteger();
 
-        try(var items = gameObjectRepository.streamAllGameObjectQuestItem()) {
+        try(var items = gameObjectRepo.streamAllGameObjectQuestItem()) {
             items.forEach(fields -> {
 
                 int entry = fields[0];
@@ -3191,9 +3166,9 @@ public final class ObjectManager {
         // collect GO entries for GO that must activated
         for (var pair : getGameObjectTemplates().entrySet()) {
             switch (pair.getValue().type) {
-                case GameObjectTypes.QuestGiver:
+                case GameObjectType.QUEST_GIVER:
                     break;
-                case GameObjectTypes.Chest: {
+                case GameObjectType.CHEST: {
                     // scan GO chest with loot including quest items
                     // find quest loot for GO
                     if (pair.getValue().chest.questID != 0 || LootStorage.GAMEOBJECT.haveQuestLootFor(pair.getValue().chest.chestLoot) || LootStorage.GAMEOBJECT.haveQuestLootFor(pair.getValue().chest.chestPersonalLoot) || LootStorage.GAMEOBJECT.haveQuestLootFor(pair.getValue().chest.chestPushLoot)) {
@@ -3202,7 +3177,7 @@ public final class ObjectManager {
 
                     continue;
                 }
-                case GameObjectTypes.Generic: {
+                case GameObjectType.GENERIC: {
                     if (pair.getValue().generic.questID > 0) //quests objects
                     {
                         break;
@@ -3210,7 +3185,7 @@ public final class ObjectManager {
 
                     continue;
                 }
-                case GameObjectTypes.Goober: {
+                case GameObjectType.GOOBER: {
                     if (pair.getValue().goober.questID > 0) //quests objects
                     {
                         break;
@@ -3218,7 +3193,7 @@ public final class ObjectManager {
 
                     continue;
                 }
-                case GameObjectTypes.GatheringNode: {
+                case GameObjectType.GATHERING_NODE: {
                     // scan GO chest with loot including quest items
                     // find quest loot for GO
                     if (LootStorage.GAMEOBJECT.haveQuestLootFor(pair.getValue().gatheringNode.chestLoot)) {
@@ -3235,7 +3210,7 @@ public final class ObjectManager {
             ++count;
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} GameObjects for quests in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} GameObjects for quests in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void addGameObjectToGrid(GameObjectData data) {
@@ -3246,23 +3221,23 @@ public final class ObjectManager {
         removeSpawnDataFromGrid(data);
     }
 
-    public GameObjectAddon getGameObjectAddon(long lowguid) {
+    public GameObjectAddon getGameObjectAddon(int lowguid) {
         return gameObjectAddonStorage.get(lowguid);
     }
 
-    public ArrayList<Integer> getGameObjectQuestItemList(int id) {
+    public List<Integer> getGameObjectQuestItemList(int id) {
         return gameObjectQuestItemStorage.get(id);
     }
 
-    public HashMap<Long, GameObjectData> getAllGameObjectData() {
+    public HashMap<Integer, GameObjectData> getAllGameObjectData() {
         return gameObjectDataStorage;
     }
 
-    public GameObjectData getGameObjectData(long spawnId) {
+    public GameObjectData getGameObjectData(int spawnId) {
         return gameObjectDataStorage.get(spawnId);
     }
 
-    public void deleteGameObjectData(long spawnId) {
+    public void deleteGameObjectData(int spawnId) {
         var data = getGameObjectData(spawnId);
 
         if (data != null) {
@@ -3289,7 +3264,7 @@ public final class ObjectManager {
         return gameObjectTemplateAddonStorage.get(entry);
     }
 
-    public GameObjectOverride getGameObjectOverride(long spawnId) {
+    public GameObjectOverride getGameObjectOverride(int spawnId) {
         return gameObjectOverrideStorage.get(spawnId);
     }
 
@@ -3306,47 +3281,53 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         int sparseCount = 0;
 
-        for (var sparse : CliDB.ItemSparseStorage.values()) {
-            var db2Data = CliDB.ItemStorage.get(sparse.id);
+        for (var sparse : dbcObjectManager.itemSparse()) {
+            var db2Data = dbcObjectManager.item(sparse.getId());
 
             if (db2Data == null) {
                 continue;
             }
 
             var itemTemplate = new ItemTemplate(db2Data, sparse);
-            itemTemplate.setMaxDurability(fillMaxDurability(db2Data.classID, db2Data.SubclassID, sparse.inventoryType, itemQuality.forValue(sparse.OverallQualityID), sparse.itemLevel));
+            ItemClass classID = ItemClass.values()[db2Data.getClassID()];
+            InventoryType inventoryType = InventoryType.values()[sparse.getInventoryType()];
+            int maxDurability = fillMaxDurability(classID, db2Data.getSubclassID(), inventoryType, ItemQuality.values()[sparse.getOverallQualityID()], sparse.getItemLevel());
+            itemTemplate.setMaxDurability(maxDurability);
 
-            var itemSpecOverrides = dbcObjectManager.GetItemSpecOverrides(sparse.id);
+            var itemSpecOverrides = dbcObjectManager.getItemSpecOverrides(sparse.getId());
 
             if (itemSpecOverrides != null) {
                 for (var itemSpecOverride : itemSpecOverrides) {
-                    var specialization = CliDB.ChrSpecializationStorage.get(itemSpecOverride.specID);
+                    var specialization = dbcObjectManager.chrSpecialization(itemSpecOverride.getSpecID());
 
                     if (specialization != null) {
-                        itemTemplate.setItemSpecClassMask(itemTemplate.getItemSpecClassMask() | 1 << (specialization.ClassID - 1));
+                        itemTemplate.setItemSpecClassMask(itemTemplate.getItemSpecClassMask() | 1 << (specialization.getClassID() - 1));
                         itemTemplate.getSpecializations()[0].set(ItemTemplate.calculateItemSpecBit(specialization), true);
 
-                        itemTemplate.getSpecializations()[1] = itemTemplate.getSpecializations()[1].Or(itemTemplate.getSpecializations()[0]);
-                        itemTemplate.getSpecializations()[2] = itemTemplate.getSpecializations()[2].Or(itemTemplate.getSpecializations()[0]);
+                        itemTemplate.getSpecializations()[1].or(itemTemplate.getSpecializations()[0]);
+                        itemTemplate.getSpecializations()[2].or(itemTemplate.getSpecializations()[0]);
                     }
                 }
             } else {
-                ItemSpecStats itemSpecStats = new ItemSpecStats(db2Data, sparse);
+                ItemSpecStats itemSpecStats = new ItemSpecStats(db2Data, sparse, dbcObjectManager);
+                for (var itemSpec : dbcObjectManager.itemSpec()) {
 
-                for (var itemSpec : CliDB.ItemSpecStorage.values()) {
-                    if (itemSpecStats.itemType != itemSpec.itemType) {
+
+                    if (itemSpecStats.itemType != itemSpec.getItemType()) {
                         continue;
                     }
 
-                    var hasPrimary = itemSpec.PrimaryStat == ItemSpecStat.NONE;
-                    var hasSecondary = itemSpec.SecondaryStat == ItemSpecStat.NONE;
+                    ItemSpecStat primaryStat = ItemSpecStat.values()[itemSpec.getPrimaryStat()];
+                    ItemSpecStat secondaryStat = ItemSpecStat.values()[itemSpec.getSecondaryStat()];
+                    var hasPrimary = primaryStat == ItemSpecStat.NONE;
+                    var hasSecondary = secondaryStat == ItemSpecStat.NONE;
 
                     for (int i = 0; i < itemSpecStats.itemSpecStatCount; ++i) {
-                        if (itemSpecStats.ItemSpecStatTypes[i] == itemSpec.PrimaryStat) {
+                        if (itemSpecStats.itemSpecStatTypes[i] == primaryStat) {
                             hasPrimary = true;
                         }
 
-                        if (itemSpecStats.ItemSpecStatTypes[i] == itemSpec.SecondaryStat) {
+                        if (itemSpecStats.itemSpecStatTypes[i] == secondaryStat) {
                             hasSecondary = true;
                         }
                     }
@@ -3355,19 +3336,19 @@ public final class ObjectManager {
                         continue;
                     }
 
-                    var specialization = CliDB.ChrSpecializationStorage.get(itemSpec.specializationID);
+                    var specialization = dbcObjectManager.chrSpecialization(itemSpec.getSpecializationID());
 
                     if (specialization != null) {
-                        if ((boolean) ((1 << (specialization.ClassID - 1)) & sparse.AllowableClass)) {
-                            itemTemplate.setItemSpecClassMask(itemTemplate.getItemSpecClassMask() | 1 << (specialization.ClassID - 1));
+                        if (((1 << (specialization.getClassID() - 1)) & sparse.getAllowableClass()) != 0) {
+                            itemTemplate.setItemSpecClassMask(itemTemplate.getItemSpecClassMask() | 1 << (specialization.getClassID() - 1));
                             var specBit = ItemTemplate.calculateItemSpecBit(specialization);
                             itemTemplate.getSpecializations()[0].set(specBit, true);
 
-                            if (itemSpec.maxLevel > 40) {
+                            if (itemSpec.getMaxLevel() > 40) {
                                 itemTemplate.getSpecializations()[1].set(specBit, true);
                             }
 
-                            if (itemSpec.maxLevel >= 110) {
+                            if (itemSpec.getMaxLevel() >= 110) {
                                 itemTemplate.getSpecializations()[2].set(specBit, true);
                             }
                         }
@@ -3377,69 +3358,61 @@ public final class ObjectManager {
 
             // Items that have no specializations set can be used by everyone
             for (var specs : itemTemplate.getSpecializations()) {
-                if (specs.count == 0) {
-                    specs.setAll(true);
+                if (specs.isEmpty()) {
+                    specs.set(0, specs.size(), true);
                 }
             }
 
             ++sparseCount;
-            itemTemplateStorage.put(sparse.id, itemTemplate);
+            itemTemplateStorage.put(sparse.getId(), itemTemplate);
         }
 
         // Load item effects (spells)
-        for (var effectEntry : CliDB.ItemXItemEffectStorage.values()) {
-            var item = itemTemplateStorage.get(effectEntry.itemID);
+        for (var effectEntry : dbcObjectManager.itemEffect()) {
+            var item = itemTemplateStorage.get(effectEntry.getParentItemID());
 
             if (item != null) {
-                var effect = CliDB.ItemEffectStorage.get(effectEntry.ItemEffectID);
-
-                if (effect != null) {
-                    item.effects.add(effect);
-                }
+                item.getEffects().add(effectEntry);
             }
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} item templates in {1} ms", sparseCount, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} item templates in {} ms", sparseCount, System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadItemTemplateAddon() {
         var time = System.currentTimeMillis();
-
-        int count = 0;
-        var result = DB.World.query("SELECT id, flagsCu, foodType, minMoneyLoot, maxMoneyLoot, SpellPPMChance, RandomBonusListTemplateId FROM item_template_addon");
-
-        if (!result.isEmpty()) {
-            do {
-                var itemId = result.<Integer>Read(0);
+        AtomicInteger count = new AtomicInteger();
+        try(var items = itemRepo.streamAllItemTemplateAddons()) {
+            items.forEach(fields -> {
+                var itemId = fields[0];
                 var itemTemplate = getItemTemplate(itemId);
 
                 if (itemTemplate == null) {
-                    Logs.SQL.error("Item {0} specified in `itemtemplateaddon` does not exist, skipped.", itemId);
+                    Logs.SQL.error("Item {} specified in `item_template_addon` does not exist, skipped.", itemId);
 
-                    continue;
+                    return;
                 }
 
-                var minMoneyLoot = result.<Integer>Read(3);
-                var maxMoneyLoot = result.<Integer>Read(4);
+                var minMoneyLoot = fields[3];
+                var maxMoneyLoot = fields[4];
 
                 if (minMoneyLoot > maxMoneyLoot) {
-                    Logs.SQL.error("Minimum money loot specified in `itemtemplateaddon` for item {0} was greater than maximum amount, swapping.", itemId);
+                    Logs.SQL.error("Minimum money loot specified in `item_template_addon` for item {} was greater than maximum amount, swapping.", itemId);
                     var temp = minMoneyLoot;
                     minMoneyLoot = maxMoneyLoot;
                     maxMoneyLoot = temp;
                 }
-
-                itemTemplate.setFlagsCu(ItemFlagsCustom.forValue(result.<Integer>Read(1)));
-                itemTemplate.setFoodType(result.<Integer>Read(2));
+                itemTemplate.setFlagsCu(ItemFlagsCustom.valueOf(fields[1]));
+                itemTemplate.setFoodType(fields[2]);
                 itemTemplate.setMinMoneyLoot(minMoneyLoot);
                 itemTemplate.setMaxMoneyLoot(maxMoneyLoot);
-                itemTemplate.setSpellPPMRate(result.<Float>Read(5));
-                itemTemplate.setRandomBonusListTemplateId(result.<Integer>Read(6));
-                ++count;
-            } while (result.NextRow());
+                itemTemplate.setSpellPPMRate(fields[5]);
+                itemTemplate.setRandomBonusListTemplateId(fields[6]);
+                count.incrementAndGet();
+            });
         }
 
-        Logs.SERVER_LOADING.info("Loaded {0} item addon templates in {1} ms", count, time.GetMSTimeDiffToNow(time));
+        Logs.SERVER_LOADING.info(">> Loaded {} item addon templates in {} ms", count, System.currentTimeMillis() - (time));
     }
 
     public void loadItemScriptNames() {
@@ -3487,7 +3460,7 @@ public final class ObjectManager {
         vList.addItem(vItem);
 
         if (persist) {
-            creatureRepository.insertNpcVendor(entry, vItem.item, vItem.maxcount, vItem.incrtime, vItem.extendedCost, vItem.type.ordinal());
+            creatureRepo.insertNpcVendor(entry, vItem.item, vItem.maxcount, vItem.incrtime, vItem.extendedCost, vItem.type.ordinal());
         }
     }
 
@@ -3507,7 +3480,7 @@ public final class ObjectManager {
         }
 
         if (persist) {
-            creatureRepository.deleteNpcVendor(entry, item, type.ordinal());
+            creatureRepo.deleteNpcVendor(entry, item, type.ordinal());
         }
 
         return true;
@@ -3662,7 +3635,7 @@ public final class ObjectManager {
     public void loadInstanceTemplate() {
         var oldMSTime = System.currentTimeMillis();
 
-        try (var instanceTemplates = miscRepository.streamAllInstanceTemplate()) {
+        try (var instanceTemplates = miscRepo.streamAllInstanceTemplate()) {
             instanceTemplates.forEach(e -> {
                 if (!world.getMapManager().isValidMap(e.map)) {
                     Logs.SQL.error("ObjectMgr::LoadInstanceTemplate: bad mapid {} for template!", e.map);
@@ -3686,7 +3659,7 @@ public final class ObjectManager {
 
         gameTeleStorage.clear();
 
-        try (var gameTeleports = miscRepository.streamAllGameTeleport()) {
+        try (var gameTeleports = miscRepo.streamAllGameTeleport()) {
             gameTeleports.forEach(gt -> {
                 if (!world.getMapManager().isValidMapCoordinate(gt.mapId, gt.posX, gt.posY, gt.posZ, gt.orientation)) {
                     Logs.SQL.error("Wrong position for id {} (name: {}) in `game_tele` table, ignoring.", gt.id, gt.name);
@@ -3952,7 +3925,7 @@ public final class ObjectManager {
     public void loadSpawnGroupTemplates() {
         var oldMSTime = System.currentTimeMillis();
 
-        try(var items = miscRepository.streamAllSpawnGroupTemplate()) {
+        try(var items = miscRepo.streamAllSpawnGroupTemplate()) {
             items.forEach(e -> {
                 if (e.flags.hasNotFlag(SpawnGroupFlag.ALL))
                 {
@@ -4309,7 +4282,7 @@ public final class ObjectManager {
     //Player
     public void loadPlayerInfo() {
         var oldMSTime = System.currentTimeMillis();
-        try(var items = playerRepository.streamsAllPlayerCreateInfo()) {
+        try(var items = playerRepo.streamsAllPlayerCreateInfo()) {
             items.forEach(e -> {
                 ChrRace chrRace = dbcObjectManager.chrRace(e.race);
                 if (chrRace == null) {
@@ -4400,7 +4373,7 @@ public final class ObjectManager {
 
         Logs.SERVER_LOADING.info("Loading Player Create Items Override data...");
         AtomicInteger count = new AtomicInteger();
-        try(var items = playerRepository.streamsAllPlayerCreateInfoItems()) {
+        try(var items = playerRepo.streamsAllPlayerCreateInfoItems()) {
             items.forEach(fields -> {
                 if (fields[0] >= Race.values().length) {
                     Logs.SQL.error("Wrong race {} in `playercreateinfo_item` table, ignoring.", fields[0]);
@@ -4474,7 +4447,7 @@ public final class ObjectManager {
         // Load playercreate custom spells
         Logs.SERVER_LOADING.info("Loading Player Create Custom Spell data...");
 
-        try (var items = playerRepository.streamsAllPlayerCreateInfoSpellCustom()) {
+        try (var items = playerRepo.streamsAllPlayerCreateInfoSpellCustom()) {
             items.forEach(fields -> {
                 RaceMask raceMask = fields.raceMask();
                 PlayerClassMask playerClassMask = fields.classMask();
@@ -4511,7 +4484,7 @@ public final class ObjectManager {
         oldMSTime = System.currentTimeMillis();
         count.set(0);
 
-        try (var items = playerRepository.streamsAllPlayerCreateInfoCastSpell()) {
+        try (var items = playerRepo.streamsAllPlayerCreateInfoCastSpell()) {
             items.forEach(fields -> {
                 RaceMask raceMask = fields.raceMask();
                 PlayerClassMask playerClassMask = fields.classMask();
@@ -4547,7 +4520,7 @@ public final class ObjectManager {
         count.set(0);
         Logs.SERVER_LOADING.info("Loading Player Create Action data...");
 
-        try (var items = playerRepository.streamsAllPlayerCreateInfoAction()) {
+        try (var items = playerRepo.streamsAllPlayerCreateInfoAction()) {
             items.forEach(fields -> {
                 if (fields[0] >= Race.values().length) {
                     Logs.SQL.error("Wrong race {} in `playercreateinfo_action` table, ignoring.", fields[0]);
@@ -4575,7 +4548,7 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info("Loading Player Create Level Stats data...");
 
         int[][] raceStatModifiers = new int[Race.values().length][SharedDefine.MAX_STATS];
-        try (var items = playerRepository.streamsAllPlayerRaceStats()) {
+        try (var items = playerRepo.streamsAllPlayerRaceStats()) {
             items.forEach(fields -> {
                 if (fields[0] >= Race.values().length) {
                     Logs.SQL.error("Wrong race {} in `player_racestats` table, ignoring.", fields[0]);
@@ -4591,7 +4564,7 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(">> Loaded {} player create race stats in {} ms", count, System.currentTimeMillis() - oldMSTime);
         oldMSTime = System.currentTimeMillis();
         count.set(0);
-        try (var items = playerRepository.streamsAllPlayerClassLevelStats()) {
+        try (var items = playerRepo.streamsAllPlayerClassLevelStats()) {
             items.forEach(fields -> {
                 if (fields[0] >= PlayerClass.values().length) {
                     Logs.SQL.error("Wrong class {} in `playercreateinfo_action` table, ignoring.", fields[0]);
@@ -4692,7 +4665,7 @@ public final class ObjectManager {
                 playerXPperLevel[level] = (int) xp.getRow(level).total;
             }
 
-            try (var items = playerRepository.streamsAllPlayerXoForLevel()) {
+            try (var items = playerRepo.streamsAllPlayerXoForLevel()) {
                 items.forEach(fields -> {
                     if (fields[0] >= world.getWorldSettings().maxPlayerLevel) {
                         // hardcoded level maximum
@@ -4762,7 +4735,7 @@ public final class ObjectManager {
         int maxPlayerLevel = world.getWorldSettings().maxPlayerLevel;
         AtomicInteger count = new AtomicInteger();
         HashMap<Integer, PetLevelInfo[]> tmp = new HashMap<>();
-        try(var items = playerRepository.streamsAllPetLevelStats()) {
+        try(var items = playerRepo.streamsAllPetLevelStats()) {
             items.forEach(fields -> {
                 if (getCreatureTemplate(fields[0]) == null) {
                     Logs.SQL.error("Wrong creature id {} in `pet_levelstats` table, ignoring.", fields[0]);
@@ -4824,7 +4797,7 @@ public final class ObjectManager {
     public void loadPetNames() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = playerRepository.streamsAllPetNameGeneration()) {
+        try(var items = playerRepo.streamsAllPetNameGeneration()) {
             items.forEach(field->{
                 if (field.half != 0) {
                     petHalfName1.compute(field.entry, Functions.addToList(field.word));
@@ -4880,7 +4853,7 @@ public final class ObjectManager {
     public void loadFactionChangeAchievements() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeAchievement()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeAchievement()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.achievement().contains(fields[0])) {
                     Logs.SQL.error("Achievement {} (alliance_id) referenced in `player_factionchange_achievement` does not exist, pair skipped!", fields[0]);
@@ -4898,7 +4871,7 @@ public final class ObjectManager {
     public void loadFactionChangeItems() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeItem()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeItem()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.item().contains(fields[0])) {
                     Logs.SQL.error("Item {} (alliance_id) referenced in `player_factionchange_items` does not exist, pair skipped!", fields[0]);
@@ -4916,7 +4889,7 @@ public final class ObjectManager {
     public void loadFactionChangeQuests() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeQuests()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeQuests()) {
             items.forEach(fields -> {
                 if (!questTemplates.containsKey(fields[0])) {
                     Logs.SQL.error("Quest {} (alliance_id) referenced in `player_factionchange_quests` does not exist, pair skipped!", fields[0]);
@@ -4934,7 +4907,7 @@ public final class ObjectManager {
     public void loadFactionChangeReputations() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeReputations()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeReputations()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.faction().contains(fields[0])) {
                     Logs.SQL.error("Reputation {} (alliance_id) referenced in `player_factionchange_reputations` does not exist, pair skipped!", fields[0]);
@@ -4953,7 +4926,7 @@ public final class ObjectManager {
     public void loadFactionChangeSpells() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeSpells()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeSpells()) {
             items.forEach(fields -> {
                 if (!spellManager.hasSpellInfo(fields[0], Difficulty.NONE)) {
                     Logs.SQL.error("Spell {} (alliance_id) referenced in `player_factionchange_spells` does not exist, pair skipped!", fields[0]);
@@ -4971,7 +4944,7 @@ public final class ObjectManager {
     public void loadFactionChangeTitles() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = miscRepository.streamAllPlayerFactionChangeTitles()) {
+        try(var items = miscRepo.streamAllPlayerFactionChangeTitles()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.charTitle().contains(fields[0])) {
                     Logs.SQL.error("Title {} (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", fields[0]);
@@ -5000,7 +4973,7 @@ public final class ObjectManager {
         // some quests can have many previous maps set by NextQuestId in previous quest
         // for example set of race quests can lead to single not race specific quest
         Map<Integer, QuestTemplate> tmp = new HashMap<>();
-        try (var items = questRepository.streamAllQuestTemplate()) {
+        try (var items = questRepo.streamAllQuestTemplate()) {
             items.forEach(questTemplate -> {
                 tmp.put(questTemplate.id, questTemplate);
                 if (questTemplate.isAutoPush()) {
@@ -5010,7 +4983,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_reward_choice_items`
-        try (var items = questRepository.streamAllQuestRewardChoiceItems()) {
+        try (var items = questRepo.streamAllQuestRewardChoiceItems()) {
             items.forEach(e -> {
                 QuestTemplate questTemplate = tmp.get(e[0]);
                 if (questTemplate == null) {
@@ -5030,7 +5003,7 @@ public final class ObjectManager {
 
 
         // Load `quest_reward_display_spell`
-        try (var items = questRepository.streamAllQuestRewardDisplaySpell()) {
+        try (var items = questRepo.streamAllQuestRewardDisplaySpell()) {
             items.forEach(e -> {
                 int spellId = e[1];
                 int playerConditionId = e[2];
@@ -5061,7 +5034,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_details`
-        try (var items = questRepository.streamAllQuestDetails()) {
+        try (var items = questRepo.streamAllQuestDetails()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get(fields[0]);
                 if (questTemplate == null) {
@@ -5083,7 +5056,7 @@ public final class ObjectManager {
 
 
         // Load `quest_request_items`
-        try (var items = questRepository.streamAllQuestRequestItems()) {
+        try (var items = questRepo.streamAllQuestRequestItems()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get((Integer) fields[0]);
                 if (questTemplate == null) {
@@ -5106,7 +5079,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_offer_reward`
-        try (var items = questRepository.streamAllQuestOfferReward()) {
+        try (var items = questRepo.streamAllQuestOfferReward()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get((Integer) fields[0]);
                 if (questTemplate == null) {
@@ -5130,7 +5103,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_template_addon`
-        try (var items = questRepository.streamAllQuestTemplateAddon()) {
+        try (var items = questRepo.streamAllQuestTemplateAddon()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get((Integer) fields[0]);
                 if (questTemplate == null) {
@@ -5163,7 +5136,7 @@ public final class ObjectManager {
 
 
         // Load `quest_mail_sender`
-        try (var items = questRepository.streamAllQuestMailSender()) {
+        try (var items = questRepo.streamAllQuestMailSender()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get(fields[0]);
                 if (questTemplate == null) {
@@ -5177,7 +5150,7 @@ public final class ObjectManager {
 
         // Load `quest_objectives`
         Map<Integer, QuestObjective> tmpObjectives = new HashMap<>();
-        try (var items = questRepository.streamAllQuestObjectives()) {
+        try (var items = questRepo.streamAllQuestObjectives()) {
             items.forEach(e -> {
                 QuestTemplate questTemplate = tmp.get(e.questID);
                 if (questTemplate == null) {
@@ -5192,7 +5165,7 @@ public final class ObjectManager {
 
 
         // Load `quest_visual_effect` join table with quest_objectives because visual effects are based on objective ID (core stores objectives by their index in quest)
-        try (var items = questRepository.streamAllQuestVisualEffect()) {
+        try (var items = questRepo.streamAllQuestVisualEffect()) {
             items.forEach(fields -> {
                 QuestTemplate questTemplate = tmp.get(fields[2]);
                 if (questTemplate == null) {
@@ -5214,7 +5187,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_template_locale`
-        try (var items = questRepository.streamAllQuestTemplateLocale()) {
+        try (var items = questRepo.streamAllQuestTemplateLocale()) {
             items.forEach(e -> {
                 QuestTemplate questTemplate = tmp.get(e.id);
                 if (questTemplate == null) {
@@ -5235,7 +5208,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_offer_reward_locale`
-        try (var items = questRepository.streamAllQuestOfferRewardLocale()) {
+        try (var items = questRepo.streamAllQuestOfferRewardLocale()) {
             items.forEach(e -> {
                 QuestTemplate questTemplate = tmp.get(e.id);
                 if (questTemplate == null) {
@@ -5248,7 +5221,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_objectives_locale`
-        try (var items = questRepository.streamAllQuestObjectivesLocale()) {
+        try (var items = questRepo.streamAllQuestObjectivesLocale()) {
             items.forEach(e -> {
                 QuestObjective questObjective = tmpObjectives.get(e.id);
                 if (questObjective == null) {
@@ -5261,7 +5234,7 @@ public final class ObjectManager {
         }
 
         // Load `quest_request_items_locale`
-        try (var items = questRepository.streamAllQuestRequestItemsLocale()) {
+        try (var items = questRepo.streamAllQuestRequestItemsLocale()) {
             items.forEach(e -> {
                 QuestTemplate questTemplate = tmp.get(e.id);
                 if (questTemplate == null) {
@@ -5857,7 +5830,7 @@ public final class ObjectManager {
         long oldMSTime = System.currentTimeMillis();
         Logs.SERVER_LOADING.info("Loading GO Start Quest data...");
         AtomicInteger count = new AtomicInteger();
-        try (var items = questRepository.streamAllGameObjectQuestStarter()) {
+        try (var items = questRepo.streamAllGameObjectQuestStarter()) {
             items.forEach(fields -> {
                 if (!questTemplates.containsKey(fields[1])) {
                     Logs.SQL.error("Table `gameobject_queststarter`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
@@ -5882,7 +5855,7 @@ public final class ObjectManager {
         count.set(0);
 
         Logs.SERVER_LOADING.info("Loading GO End Quest data...");
-        try (var items = questRepository.streamAllGameObjectQuestEnder()) {
+        try (var items = questRepo.streamAllGameObjectQuestEnder()) {
             items.forEach(fields -> {
                 if (!questTemplates.containsKey(fields[1])) {
                     Logs.SQL.error("Table `gameobject_questender`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
@@ -5906,7 +5879,7 @@ public final class ObjectManager {
         count.set(0);
 
         Logs.SERVER_LOADING.info("Loading Creature Start Quest data...");
-        try (var items = questRepository.streamAllCreatureQuestStarter()) {
+        try (var items = questRepo.streamAllCreatureQuestStarter()) {
             items.forEach(fields -> {
                 if (!questTemplates.containsKey(fields[1])) {
                     Logs.SQL.error("Table `creature_queststarter`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
@@ -5931,7 +5904,7 @@ public final class ObjectManager {
         count.set(0);
 
         Logs.SERVER_LOADING.info("Loading Creature End Quest data...");
-        try (var items = questRepository.streamAllCreatureQuestEnder()) {
+        try (var items = questRepo.streamAllCreatureQuestEnder()) {
             items.forEach(fields -> {
                 if (!questTemplates.containsKey(fields[1])) {
                     Logs.SQL.error("Table `gameobject_questender`: Quest {} listed for entry {} does not exist.", fields[1], fields[0]);
@@ -5960,14 +5933,14 @@ public final class ObjectManager {
 
         questPOIStorage.clear(); // need for reload case
         HashMap<Integer, HashMap<Integer, List<QuestPOIBlobPoint>>> allPoints = new HashMap<>();
-        try (var items = questRepository.streamAllQuestPoiPoints()) {
+        try (var items = questRepo.streamAllQuestPoiPoints()) {
             items.forEach(e -> {
                 allPoints.compute(e.questId, Functions.ifAbsent(HashMap::new)).compute(e.idx1, Functions.addToList(e));
             });
         }
 
 
-        try (var items = questRepository.streamAllQuestPoi()) {
+        try (var items = questRepo.streamAllQuestPoi()) {
             items.forEach(e -> {
                 if (getQuestTemplate(e.questID) == null) {
                     Logs.SQL.error("`quest_poi` quest id ({}) Idx1 ({}) does not exist in `quest_template`", e.questID, e.idx1);
@@ -5998,7 +5971,7 @@ public final class ObjectManager {
 
         questAreaTriggerStorage.clear(); // need for reload case
         AtomicInteger count = new AtomicInteger();
-        try (var items = questRepository.streamAllAreaTriggerInvolvedRelation()) {
+        try (var items = questRepo.streamAllAreaTriggerInvolvedRelation()) {
             items.forEach(fields -> {
                 AreaTrigger atEntry = dbcObjectManager.areaTrigger(fields[0]);
                 if (atEntry == null)
@@ -6040,7 +6013,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         HashMap<Integer, QuestGreeting> tmp = new HashMap<>();
         AtomicInteger count = new AtomicInteger();
-        try (var items = questRepository.streamAllQuestGreeting()) {
+        try (var items = questRepo.streamAllQuestGreeting()) {
             items.forEach(e -> {
                 switch (e.type) {
                     case 0: // Creature
@@ -6066,7 +6039,7 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(">> Loaded {} Quest Greeting locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
         count.set(0);
         oldMSTime = System.currentTimeMillis();
-        try(var items = questRepository.streamAllQuestGreetingLocale()) {
+        try(var items = questRepo.streamAllQuestGreetingLocale()) {
             items.forEach(e -> {
                 QuestGreeting questGreeting = tmp.get(e.id << 1 | e.type);
                 if(questGreeting == null) {
@@ -6183,7 +6156,7 @@ public final class ObjectManager {
 
         spellClickInfoStorage.clear();
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllNpcSpellClickSpells()) {
+        try(var items = creatureRepo.streamAllNpcSpellClickSpells()) {
             items.forEach(fields -> {
                 CreatureTemplate cInfo = getCreatureTemplate(fields[0]);
                 if (cInfo == null)
@@ -6229,7 +6202,7 @@ public final class ObjectManager {
 
         fishingBaseForArea.clear(); // for reload case
 
-        try(var items = miscRepository.streamAllSkillFishingBaseLevel()) {
+        try(var items = miscRepo.streamAllSkillFishingBaseLevel()) {
             items.forEach(fields -> {
                 var fArea = dbcObjectManager.areaTable(fields[0]);
                 if (fArea == null)
@@ -6249,7 +6222,7 @@ public final class ObjectManager {
 
         skillTiers.clear();
 
-        try(var items = miscRepository.streamAllSkillTiers()) {
+        try(var items = miscRepo.streamAllSkillTiers()) {
             items.forEach(fields -> {
                 SkillTiersEntry tier = skillTiers.get(fields[0]);
                 System.arraycopy(fields, 1, tier.value, 0, SkillTiersEntry.MAX_SKILL_STEP);
@@ -6288,7 +6261,7 @@ public final class ObjectManager {
     public void loadCreatureLocales(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllCreatureTemplateLocale()) {
+        try(var items = creatureRepo.streamAllCreatureTemplateLocale()) {
             items.forEach(e -> {
                 CreatureTemplate creatureTemplate = templateHashMap.get(e.entry);
                 if (creatureTemplate == null)
@@ -6307,38 +6280,29 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info(">> Loaded {} creature locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    public void loadGameObjectLocales() {
+    public void loadGameObjectLocales(HashMap<Integer, GameObjectTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
 
         gameObjectLocaleStorage.clear(); // need for reload case
 
-        //                                               0      1       2     3               4
-        var result = DB.World.query("SELECT entry, locale, name, castBarCaption, unk1 FROM gameobject_template_locale");
-
-        if (result.isEmpty()) {
-            return;
+        AtomicInteger count = new AtomicInteger();
+        try(var items = gameObjectRepo.streamAllGameObjectTemplateLocales()) {
+            items.forEach(e -> {
+                GameObjectTemplate gameObjectTemplate = templateHashMap.get(e.entry);
+                if (gameObjectTemplate == null)
+                {
+                    Logs.SQL.error("GameObject template (Entry: {}) does not exist but has a record in `gameobject_template_locale`", e.entry);
+                    return;
+                }
+                Locale locale = Locale.values()[e.locale];
+                gameObjectTemplate.name.set(locale, e.name);
+                gameObjectTemplate.castBarCaption.set(locale, e.castBarCaption);
+                gameObjectTemplate.unk1.set(locale, e.unk1);
+                count.getAndIncrement();
+            });
         }
 
-        do {
-            var id = result.<Integer>Read(0);
-            var localeName = result.<String>Read(1);
-            var locale = localeName.<locale>ToEnum();
-
-            if (!SharedConst.IsValidLocale(locale) || locale == locale.enUS) {
-                continue;
-            }
-
-            if (!gameObjectLocaleStorage.containsKey(id)) {
-                gameObjectLocaleStorage.put(id, new GameObjectLocale());
-            }
-
-            var data = gameObjectLocaleStorage.get(id);
-            addLocaleString(result.<String>Read(2), locale, data.name);
-            addLocaleString(result.<String>Read(3), locale, data.castBarCaption);
-            addLocaleString(result.<String>Read(4), locale, data.unk1);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} gameobject_template_locale locale strings in {1} ms", gameObjectLocaleStorage.size(), time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} gameobject_template_locale strings in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
 
@@ -6364,7 +6328,7 @@ public final class ObjectManager {
 
         repRewardRateStorage.clear(); // for reload case
 
-        try (var reputationRewardRates = reputationRepository.streamReputationRewardRate()) {
+        try (var reputationRewardRates = reputationRepo.streamReputationRewardRate()) {
             reputationRewardRates.forEach(e -> {
                 Faction faction = dbcObjectManager.faction(e.factionId);
                 if (faction == null) {
@@ -6424,7 +6388,7 @@ public final class ObjectManager {
         // For reload case
         repOnKillStorage.clear();
 
-        try (var reputationOnKills = reputationRepository.streamAllCreatureOnKillReputation()) {
+        try (var reputationOnKills = reputationRepo.streamAllCreatureOnKillReputation()) {
             reputationOnKills.forEach(e -> {
                 if (getCreatureTemplate(e.creatureId) == null) {
                     Logs.SQL.error("Table `creature_onkill_reputation` has data for nonexistent creature entry ({}), skipped", e.creatureId);
@@ -6454,7 +6418,7 @@ public final class ObjectManager {
 
         repSpilloverTemplateStorage.clear(); // for reload case
 
-        try (var result = reputationRepository.streamAllReputationSpilloverTemplate()) {
+        try (var result = reputationRepo.streamAllReputationSpilloverTemplate()) {
             result.forEach(e -> {
                 var faction = dbcObjectManager.faction(e.factionId);
                 if (faction == null) {
@@ -6511,7 +6475,7 @@ public final class ObjectManager {
 
         tavernAreaTriggerStorage.clear(); // need for reload case
 
-        List<Integer> result = miscRepository.queryAllTavernAreaTriggers();
+        List<Integer> result = miscRepo.queryAllTavernAreaTriggers();
 
 
         if (result.isEmpty()) {
@@ -6532,7 +6496,7 @@ public final class ObjectManager {
         mailLevelRewardStorage.clear(); // for reload case
 
         Map<Byte, List<MailLevelReward>> tmp = new HashMap<>();
-        try (var mailLevelRewards = miscRepository.streamsAllMailLevelReward()) {
+        try (var mailLevelRewards = miscRepo.streamsAllMailLevelReward()) {
             mailLevelRewards.forEach(e -> {
                 if (e.level > SharedDefine.MAX_LEVEL) {
                     Logs.SQL.error("Table `mail_level_reward` has data for level {} that more supported by client ({}), ignoring.", e.level, SharedDefine.MAX_LEVEL);
@@ -6570,7 +6534,7 @@ public final class ObjectManager {
     public void loadExplorationBaseXP() {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var explorationBaseXps = miscRepository.streamsAllExplorationBaseXp()) {
+        try (var explorationBaseXps = miscRepo.streamsAllExplorationBaseXp()) {
             explorationBaseXps.forEach(e -> {
                 if (e.id > 0 && e.id < baseXPTable.length) {
                     baseXPTable[e.id] = e.basexp;
@@ -6597,7 +6561,7 @@ public final class ObjectManager {
 
         Map<Tuple<Integer, SummonerType, Short>, List<TempSummonData>> tmp = new HashMap<>();
         AtomicInteger count = new AtomicInteger();
-        try (var creatureSummonGroupStream = creatureRepository.streamsAllTempSummon()) {
+        try (var creatureSummonGroupStream = creatureRepo.streamsAllTempSummon()) {
             creatureSummonGroupStream.forEach(e -> {
                 SummonerType[] values = SummonerType.values();
                 if (e.summonerType > values.length || e.summonerType < 0) {
@@ -6647,7 +6611,7 @@ public final class ObjectManager {
     public void loadPageTexts() {
         var oldMSTime = System.currentTimeMillis();
         Map<Integer, PageText> tmp = new HashMap<>();
-        try (var pageTexts = miscRepository.streamAllPageText()) {
+        try (var pageTexts = miscRepo.streamAllPageText()) {
             pageTexts.forEach(e -> tmp.put(e.id, e));
         }
         for (var pair : tmp.entrySet()) {
@@ -6665,7 +6629,7 @@ public final class ObjectManager {
         }
         oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var item = miscRepository.streamAllPageTextLocale()) {
+        try (var item = miscRepo.streamAllPageTextLocale()) {
             item.forEach(e -> {
                 PageText pageText = tmp.get(e.id);
                 if(pageText == null) {
@@ -6687,7 +6651,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
         sceneTemplateStorage.clear();
 
-        try (var item = miscRepository.streamAllSceneTemplates()) {
+        try (var item = miscRepo.streamAllSceneTemplates()) {
             item.forEach(e -> {
                 sceneTemplateStorage.put(e.sceneId, e);
             });
@@ -6706,11 +6670,11 @@ public final class ObjectManager {
         AtomicInteger factionRewardCount = new AtomicInteger();
         AtomicInteger itemChoiceRewardCount = new AtomicInteger();
         AtomicInteger mawPowersCount = new AtomicInteger();
-        try (var items = playerRepository.streamsAllPlayerChoice()) {
+        try (var items = playerRepo.streamsAllPlayerChoice()) {
             items.forEach(e -> tmp.put(e.choiceId, e));
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponse()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponse()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6722,7 +6686,7 @@ public final class ObjectManager {
                 responseCount.getAndIncrement();
             });
         }
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseReward()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseReward()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6760,7 +6724,7 @@ public final class ObjectManager {
             });
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseRewardItem()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseRewardItem()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6790,7 +6754,7 @@ public final class ObjectManager {
             });
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseRewardCurrency()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseRewardCurrency()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6820,7 +6784,7 @@ public final class ObjectManager {
             });
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseRewardFaction()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseRewardFaction()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6850,7 +6814,7 @@ public final class ObjectManager {
             });
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseRewardItemChoice()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseRewardItemChoice()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6880,7 +6844,7 @@ public final class ObjectManager {
             });
         }
 
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseRewardMawPower()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseRewardMawPower()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = tmp.get(e.choiceId);
                 if (playerChoice == null) {
@@ -6916,7 +6880,7 @@ public final class ObjectManager {
 
         // need for reload case
         AtomicInteger count = new AtomicInteger();
-        try (var items = playerRepository.streamsAllPlayerChoiceLocale()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceLocale()) {
             items.forEach(e->{
                 PlayerChoice playerChoice = getPlayerChoice(e.choiceId);
                 if (playerChoice == null) {
@@ -6936,7 +6900,7 @@ public final class ObjectManager {
 
         oldMSTime = System.currentTimeMillis();
         count.set(0);
-        try (var items = playerRepository.streamsAllPlayerChoiceResponseLocale()) {
+        try (var items = playerRepo.streamsAllPlayerChoiceResponseLocale()) {
             items.forEach(e -> {
                 PlayerChoice playerChoice = getPlayerChoice(e.choiceId);
                 if (playerChoice == null) {
@@ -6975,7 +6939,7 @@ public final class ObjectManager {
         // need for reload case
         jumpChargeParams.clear();
 
-        var result = miscRepository.queryAllJumpChargeParams();
+        var result = miscRepo.queryAllJumpChargeParams();
 
         if (result.isEmpty()) {
             return;
@@ -7029,7 +6993,7 @@ public final class ObjectManager {
     public void loadPhaseNames() {
         var oldMSTime = System.currentTimeMillis();
         phaseNameStorage.clear();
-        try(var items = miscRepository.streamAllPhaseName()) {
+        try(var items = miscRepo.streamAllPhaseName()) {
             items.forEach(fields -> {
                 phaseNameStorage.put((Integer) fields[0], fields[1].toString());
             });
@@ -7909,7 +7873,7 @@ public final class ObjectManager {
     private void loadCreatureTemplateResistances(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllCreatureTemplateResistance()) {
+        try(var items = creatureRepo.streamAllCreatureTemplateResistance()) {
             items.forEach(fields -> {
                 if (fields[1] == 0 || fields[1] >= SpellSchool.values().length)
                 {
@@ -7932,7 +7896,7 @@ public final class ObjectManager {
     private void loadCreatureTemplateSpells(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllCreatureTemplateSpell()) {
+        try(var items = creatureRepo.streamAllCreatureTemplateSpell()) {
             items.forEach(fields -> {
                 if (fields[1] >= CreatureTemplate.MAX_CREATURE_SPELLS)
                 {
@@ -7955,7 +7919,7 @@ public final class ObjectManager {
     private void loadCreatureTemplateModels(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try(var items = creatureRepository.streamAllCreatureTemplateModel()) {
+        try(var items = creatureRepo.streamAllCreatureTemplateModel()) {
             items.forEach(fields -> {
                 var creatureId = (Integer)fields[0];
                 var creatureDisplayId = (Integer)fields[1];
@@ -7995,7 +7959,7 @@ public final class ObjectManager {
     private void loadCreatureSummonedData(HashMap<Integer, CreatureTemplate> templateHashMap) {
         var oldMSTime = System.currentTimeMillis();
         AtomicInteger count = new AtomicInteger();
-        try (var items = creatureRepository.streamAllCreatureSummonedData()) {
+        try (var items = creatureRepo.streamAllCreatureSummonedData()) {
             items.forEach(fields -> {
 
                 CreatureTemplate creatureTemplate = templateHashMap.get(fields.creatureID);
@@ -8059,7 +8023,7 @@ public final class ObjectManager {
 
     private int loadReferenceVendor(int vendor, int item, Set<Integer> skipVendors, VendorItemData vList) {
         AtomicInteger count = new AtomicInteger();
-        creatureRepository.queryNpcVendorByEntry(item).forEach(e->{
+        creatureRepo.queryNpcVendorByEntry(item).forEach(e->{
             if(e.item < 0) {
                 count.addAndGet(loadReferenceVendor(vendor, -item, skipVendors, vList));
             } else {
@@ -8350,7 +8314,7 @@ public final class ObjectManager {
     private void loadTerrainWorldMaps() {
         var oldMSTime = System.currentTimeMillis();
 
-        try (var items = miscRepository.streamAllTerrainWorldMap()) {
+        try (var items = miscRepo.streamAllTerrainWorldMap()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.map().contains(fields[0])) {
                     Logs.SQL.error("Map {} defined in `terrain_swap_defaults` does not exist, skipped.", fields[0]);
@@ -8371,7 +8335,7 @@ public final class ObjectManager {
 
     private void loadTerrainSwapDefaults() {
         var oldMSTime = System.currentTimeMillis();
-        try (var items = miscRepository.streamAllTerrainSwapDefaults()) {
+        try (var items = miscRepo.streamAllTerrainSwapDefaults()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.map().contains(fields[0])) {
                     Logs.SQL.error("Map {} defined in `terrain_swap_defaults` does not exist, skipped.", fields[0]);
@@ -8393,7 +8357,7 @@ public final class ObjectManager {
         var oldMSTime = System.currentTimeMillis();
 
         AtomicInteger count = new AtomicInteger();
-        try (var items = miscRepository.streamAllPhaseArea()) {
+        try (var items = miscRepo.streamAllPhaseArea()) {
             items.forEach(fields -> {
                 if (!dbcObjectManager.areaTrigger().contains(fields[0])) {
                     Logs.SQL.error("Area {} defined in `phase_area` does not exist, skipped.", fields[0]);

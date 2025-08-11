@@ -26,7 +26,6 @@ import lombok.ToString;
 })
 public class GemProperty implements DbcEntity {
     @Id
-
     @Column("ID")
     private int id;
 
@@ -40,7 +39,6 @@ public class GemProperty implements DbcEntity {
     private Short minItemLevel;
 
     @Id
-
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 

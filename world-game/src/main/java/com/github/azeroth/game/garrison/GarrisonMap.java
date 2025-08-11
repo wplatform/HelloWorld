@@ -4,7 +4,7 @@ package com.github.azeroth.game.garrison;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.Grid;
+import com.github.azeroth.game.map.grid.NCell;
 
 class GarrisonMap extends Map {
     private final ObjectGuid owner;
@@ -18,10 +18,10 @@ class GarrisonMap extends Map {
     }
 
     @Override
-    public void loadGridObjects(Grid grid, Cell cell) {
-        super.loadGridObjects(grid, cell);
+    public void loadGridObjects(NCell NCell, Cell cell) {
+        super.loadGridObjects(NCell, cell);
 
-        GarrisonGridLoader loader = new GarrisonGridLoader(grid, this, cell);
+        GarrisonGridLoader loader = new GarrisonGridLoader(NCell, this, cell);
         loader.loadN();
     }
 

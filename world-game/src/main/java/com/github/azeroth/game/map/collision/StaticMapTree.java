@@ -116,7 +116,7 @@ public class StaticMapTree {
         return Pair.of(titleFilePath, mapID);
     }
 
-    public final LoadResult initMap(Path filePath) throws IOException {
+    public final LoadResult initMap(Path filePath) {
 
 
         Logs.MAPS.debug("StaticMapTree::InitMap() : initializing StaticMapTree '{}'", filePath);
@@ -161,6 +161,9 @@ public class StaticMapTree {
                 var spawnId = buffer.getInt();
                 spawnIndices.put(spawnId, i);
             }
+        } catch (IOException e) {
+            Logs.MAPS.error("StaticMapTree::InitMap() :  initializing StaticMapTree '{}' error.", filePath, e);
+            return LoadResult.ReadFromFileFailed;
         }
 
         return LoadResult.Success;

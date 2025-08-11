@@ -44,7 +44,7 @@ public class Cell {
         noCreate = cell.noCreate;
     }
 
-    public static Area CalculateCellArea(float x, float y, float radius) {
+    public static Area calculateCellArea(float x, float y, float radius) {
         if (radius <= 0.0f) {
             Coordinate center = MapDefine.computeCellCoordinate(x, y).normalize();
             return new Area(center, center);
@@ -121,7 +121,7 @@ public class Cell {
             radius = MapDefine.SIZE_OF_GRIDS;
 
         //lets calculate object coord offsets from cell borders.
-        Area area = CalculateCellArea(x_off, y_off, radius);
+        Area area = calculateCellArea(x_off, y_off, radius);
         //if radius fits inside standing cell
         if (area.isSingleCellArea()) {
             map.visit(this, visitor);

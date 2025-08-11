@@ -411,4 +411,13 @@ public class ItemSparse implements DbcEntity {
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
 
+    public short[] getStatModifierBonusStat() {
+        return new short[] {
+                statModifierBonusStat1, statModifierBonusStat2, statModifierBonusStat3,
+                statModifierBonusStat4, statModifierBonusStat5, statModifierBonusStat6,
+                statModifierBonusStat7, statModifierBonusStat8, statModifierBonusStat9,
+                statModifierBonusStat10
+        };
+    }
+
 }

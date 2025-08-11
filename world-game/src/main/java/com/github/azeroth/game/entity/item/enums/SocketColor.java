@@ -1,10 +1,12 @@
 package com.github.azeroth.game.entity.item.enums;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
-public
-enum SocketColor {
+public enum SocketColor implements EnumFlag.FlagValue {
     META(0x00001),
     RED(0x00002),
     YELLOW(0x00004),

@@ -2,10 +2,12 @@ package com.github.azeroth.game.entity.object;
 
 import com.github.azeroth.game.entity.object.enums.HighGuid;
 import com.github.azeroth.utils.SecureUtils;
+import lombok.EqualsAndHashCode;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@EqualsAndHashCode
 public final class ObjectGuid implements Comparable<ObjectGuid>{
 
     public static final ObjectGuid EMPTY = new ObjectGuid();
@@ -388,18 +390,6 @@ public final class ObjectGuid implements Comparable<ObjectGuid>{
         return highGuid() == HighGuid.Cast;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ObjectGuid that)) return false;
-
-        return Arrays.equals(data, that.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(data);
-    }
 
     @Override
     public int compareTo(ObjectGuid o) {

@@ -730,15 +730,22 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
             int field = (node.getId() - 1) / (8);
             byte subMask = (byte) (1 << ((node.getId() - 1) % (8)));
 
-            taxiNodesMask[field] |= subMask;
-            if (node.flags().hasFlag(TaxiNodeFlag.ShowOnHordeMap))
-                hordeTaxiNodesMask[field] |= subMask;
-            if (node.flags().hasFlag(TaxiNodeFlag.ShowOnAllianceMap))
-                allianceTaxiNodesMask[field] |= subMask;
+            byte currentValue = taxiNodesMask.get(field);
+            taxiNodesMask.set(field, (byte)(currentValue | subMask));
+            if (node.flags().hasFlag(TaxiNodeFlag.ShowOnHordeMap)) {
+                currentValue = hordeTaxiNodesMask.get(field);
+                hordeTaxiNodesMask.set(field, (byte)(currentValue | subMask));
+            }
+            if (node.flags().hasFlag(TaxiNodeFlag.ShowOnAllianceMap)) {
+                currentValue = allianceTaxiNodesMask.get(field);
+                allianceTaxiNodesMask.set(field, (byte)(currentValue | subMask));
+            }
 
             int nodeMap = determinaAlternateMapPosition(node.getContinentID(), node.getPosX(), node.getPosY(), node.getPosZ(), null);
-            if (nodeMap < 2)
-                oldContinentsNodesMask[field] |= subMask;
+            if (nodeMap < 2) {
+                currentValue = oldContinentsNodesMask.get(field);
+                oldContinentsNodesMask.set(field, (byte)(currentValue | subMask));
+            }
         }
 
         toys = new HashSet<>();

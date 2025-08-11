@@ -4,7 +4,10 @@ package com.github.azeroth.game.domain.gobject;
 import com.github.azeroth.common.LocalizedString;
 
 public class GameObjectLocale {
-    public LocalizedString name = new LocalizedString();
-    public LocalizedString castBarCaption = new LocalizedString();
-    public LocalizedString unk1 = new LocalizedString();
+
+    public int entry;
+    public int locale;
+    public String name;
+    public String castBarCaption;
+    public String unk1;
 }

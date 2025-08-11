@@ -1,6 +1,7 @@
 package com.github.azeroth.game.domain.gobject;
 
 
+import com.github.azeroth.common.LocalizedString;
 import com.github.azeroth.defines.GameObjectType;
 import com.github.azeroth.defines.SharedDefine;
 
@@ -15,17 +16,17 @@ public class GameObjectTemplate {
     
     public int displayId;
 
-    
-    public String name;
+
+    public LocalizedString name = new LocalizedString();
 
     
     public String iconName;
 
-    
-    public String castBarCaption;
 
-    
-    public String unk1;
+    public LocalizedString castBarCaption = new LocalizedString();
+
+
+    public LocalizedString unk1 = new LocalizedString();
 
     
     public float size;

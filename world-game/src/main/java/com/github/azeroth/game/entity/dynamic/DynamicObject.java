@@ -6,6 +6,7 @@ import com.github.azeroth.game.entity.object.MapObject;
 import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.enums.CellMoveState;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.grid.Cell;
@@ -18,10 +19,12 @@ import com.github.azeroth.game.spell.AuraRemoveMode;
 import com.github.azeroth.game.spell.SpellInfo;
 import game.PhasingHandler;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 
 @Getter
+@Setter
 public class DynamicObject extends WorldObject implements GridObject<DynamicObject>, MapObject {
 
     private final GridReference<DynamicObject> gridReference = new GridReference<>();
@@ -32,7 +35,7 @@ public class DynamicObject extends WorldObject implements GridObject<DynamicObje
     private int duration; // for non-aura dynobjects
     private boolean isViewpoint;
     private Cell currentCell;
-    private MapObject.CellMoveState moveState;
+    private CellMoveState moveState;
     private Position newPosition = new Position();
 
     public DynamicObject(boolean isWorldObject) {

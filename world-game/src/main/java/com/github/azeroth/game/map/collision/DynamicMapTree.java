@@ -143,6 +143,5 @@ public class DynamicMapTree {
     }
 
     void update(float t_diff) {
-        grid
     }
 }

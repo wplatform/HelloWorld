@@ -173,13 +173,10 @@ public class MapEntry implements DbcEntity {
         if (corpseMapID < 0)
             return false;
 
-        if (corpseMapID < 0)
-            return false;
-
         mapid = corpseMapID;
         x = corpseX;
         y = corpseY;
-        return new WorldLocal;
+        return true;
     }
 
     public boolean isContinent() {

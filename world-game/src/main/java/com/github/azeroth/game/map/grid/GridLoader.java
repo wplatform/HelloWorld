@@ -41,7 +41,7 @@ public class GridLoader {
 
     void loadCreature()
     {
-        CellCoord cellCoord = i_cell.GetCellCoord();
+        Coordinate cellCoord = cell.getCellCoordinate();
         if (CellSpawnData const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
         LoadHelper(cell_guids->creatures, cellCoord, m, i_creatures, i_map);
     }
@@ -63,7 +63,7 @@ public class GridLoader {
 
         for (int x = 0; x < MapDefine.MAX_NUMBER_OF_CELLS; ++x) {
             for (int y = 0; y < MapDefine.MAX_NUMBER_OF_CELLS; ++y) {
-                Grid gridCell = grid.getGrid(x, y);
+                NCell NCellCell = grid.getGrid(x, y);
             }
         }
 

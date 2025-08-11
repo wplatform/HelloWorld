@@ -4,7 +4,7 @@ package com.github.azeroth.game.map;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.Grid;
+import com.github.azeroth.game.map.grid.NCell;
 import com.github.azeroth.game.map.interfaces.*;
 
 
@@ -12,8 +12,8 @@ class PersonalPhaseGridLoader extends ObjectGridLoaderBase implements IGridNotif
     private final ObjectGuid phaseOwner;
     private int phaseId;
 
-    public PersonalPhaseGridLoader(Grid grid, Map map, Cell cell, ObjectGuid phaseOwner, GridType gridType) {
-        super(grid, map, cell);
+    public PersonalPhaseGridLoader(NCell NCell, Map map, Cell cell, ObjectGuid phaseOwner, GridType gridType) {
+        super(NCell, map, cell);
         phaseId = 0;
         phaseOwner = phaseOwner;
         setGridType(gridType);

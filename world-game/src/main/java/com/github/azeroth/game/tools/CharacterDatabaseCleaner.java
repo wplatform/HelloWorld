@@ -117,7 +117,7 @@ class CharacterDatabaseCleaner {
     }
 
     private static void cleanCharacterTalent() {
-        DB.characters.DirectExecute("DELETE FROM character_talent WHERE talentGroup > {0}", PlayerConst.MaxSpecializations);
+        DB.characters.DirectExecute("DELETE FROM character_talent WHERE talentGroup > {0}", MAX_SPECIALIZATIONS);
         checkUnique("talentId", "character_talent", CharacterDatabaseCleaner::TalentCheck);
     }
 

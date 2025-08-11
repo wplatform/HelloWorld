@@ -8,6 +8,7 @@ import com.github.azeroth.game.entity.object.MapObject;
 import com.github.azeroth.game.entity.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.enums.CellMoveState;
 import com.github.azeroth.game.entity.object.enums.HighGuid;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;

@@ -1,7 +1,13 @@
 package com.github.azeroth.game.entity.item;
 
 
+import com.github.azeroth.dbc.domain.ChrSpecialization;
 import com.github.azeroth.dbc.domain.ItemEffect;
+import com.github.azeroth.dbc.domain.ItemEntry;
+import com.github.azeroth.dbc.domain.ItemSparse;
+import com.github.azeroth.defines.PlayerClass;
+import com.github.azeroth.defines.SharedDefine;
+import com.github.azeroth.defines.SkillType;
 import com.github.azeroth.game.entity.item.enums.*;
 import com.github.azeroth.game.entity.player.Player;
 
@@ -10,41 +16,66 @@ import java.util.BitSet;
 import java.util.Locale;
 
 
+
 public class ItemTemplate {
-    private static final SkillType[] ITEMWEAPONSKILLS = {SkillType.Axes, SkillType.TwoHandedAxes, SkillType.Bows, SkillType.Guns, SkillType.Maces, SkillType.TwoHandedMaces, SkillType.Polearms, SkillType.Swords, SkillType.TwoHandedSwords, SkillType.Warglaives, SkillType.Staves, 0, 0, SkillType.FistWeapons, 0, SkillType.Daggers, 0, 0, SkillType.Crossbows, SkillType.Wands, SkillType.ClassicFishing};
+    private static final SkillType[] ITEM_WEAPON_SKILLS = {
+            SkillType.AXES, SkillType.TWO_HANDED_AXES, SkillType.BOWS,
+            SkillType.GUNS, SkillType.MACES, SkillType.TWO_HANDED_MACES,
+            SkillType.POLEARMS, SkillType.SWORDS, SkillType.TWO_HANDED_SWORDS,
+            SkillType.WARGLAIVES, SkillType.STAVES, SkillType.NONE, SkillType.NONE,
+            SkillType.FIST_WEAPONS, SkillType.NONE, SkillType.DAGGERS, SkillType.NONE,
+            SkillType.NONE, SkillType.CROSSBOWS, SkillType.WANDS, SkillType.FISHING
+    };
 
-    private static final SkillType[] ITEMARMORSKILLS = {0, SkillType.Cloth, SkillType.Leather, SkillType.MAIL, SkillType.PlateMail, 0, SkillType.Shield, 0, 0, 0, 0, 0};
+    private static final SkillType[] ITEM_ARMOR_SKILLS = {
+            SkillType.NONE, SkillType.CLOTH, SkillType.LEATHER,
+            SkillType.MAIL, SkillType.PLATE_MAIL, SkillType.NONE,
+            SkillType.SHIELD, SkillType.NONE, SkillType.NONE,
+            SkillType.NONE, SkillType.NONE, SkillType.NONE
+    };
 
-    private static final SkillType[] ITEMPROFESSIONSKILLS = {SkillType.Blacksmithing, SkillType.Leatherworking, SkillType.Alchemy, SkillType.Herbalism, SkillType.Cooking, SkillType.Mining, SkillType.Tailoring, SkillType.Engineering, SkillType.Enchanting, SkillType.FISHING, SkillType.SKINNING, SkillType.Jewelcrafting, SkillType.Inscription, SkillType.Archaeology};
+    private static final SkillType[] ITEM_PROFESSION_SKILLS = {
+            SkillType.BLACKSMITHING, SkillType.LEATHERWORKING, SkillType.ALCHEMY,
+            SkillType.HERBALISM, SkillType.COOKING, SkillType.MINING,
+            SkillType.TAILORING, SkillType.ENGINEERING, SkillType.ENCHANTING,
+            SkillType.FISHING, SkillType.SKINNING, SkillType.JEWELCRAFTING,
+            SkillType.INSCRIPTION, SkillType.ARCHAEOLOGY
+    };
 
-    private final SkillType[] itemProfessionSkills = {SkillType.Blacksmithing, SkillType.Leatherworking, SkillType.Alchemy, SkillType.Herbalism, SkillType.Cooking, SkillType.ClassicBlacksmithing, SkillType.ClassicLeatherworking, SkillType.ClassicAlchemy, SkillType.ClassicHerbalism, SkillType.ClassicCooking, SkillType.Mining, SkillType.Tailoring, SkillType.Engineering, SkillType.Enchanting, SkillType.FISHING, SkillType.ClassicMining, SkillType.ClassicTailoring, SkillType.ClassicEngineering, SkillType.ClassicEnchanting, SkillType.ClassicFishing, SkillType.SKINNING, SkillType.Jewelcrafting, SkillType.Inscription, SkillType.Archaeology, SkillType.ClassicSkinning, SkillType.ClassicJewelcrafting, SkillType.ClassicInscription};
+    private final SkillType[] itemProfessionSkills = {
+            SkillType.BLACKSMITHING, SkillType.LEATHERWORKING, SkillType.ALCHEMY,     SkillType.HERBALISM,  SkillType.COOKING,
+            SkillType.MINING,        SkillType.TAILORING,      SkillType.ENGINEERING, SkillType.ENCHANTING, SkillType.FISHING,
+            SkillType.SKINNING,      SkillType.JEWELCRAFTING,  SkillType.INSCRIPTION, SkillType.ARCHAEOLOGY
+
+    };
 
     private int maxDurability;
-    private ArrayList<ItemEffectRecord> effects = new ArrayList<>();
+    private ArrayList<ItemEffect> effects = new ArrayList<>();
     // extra fields, not part of db2 files
     private int scriptId;
     private int foodType;
     private int minMoneyLoot;
     private int maxMoneyLoot;
-    private ItemflagsCustom flagsCu = ItemFlagsCustom.values()[0];
+    private ItemFlagsCustom flagsCu = ItemFlagsCustom.values()[0];
     private float spellPPMRate;
     private int randomBonusListTemplateId;
     private BitSet[] specializations = new BitSet[3];
     private int itemSpecClassMask;
-    private ItemRecord basicData;
-    private ItemSparseRecord extendedData;
+    private ItemEntry basicData;
+    private ItemSparse extendedData;
 
-    public ItemTemplate(ItemRecord item, ItemSparseRecord sparse) {
-        setBasicData(item);
-        setExtendedData(sparse);
+    public ItemTemplate(ItemEntry item, ItemSparse sparse) {
 
-        getSpecializations()[0] = new bitSet(playerClass.max.getValue() * PlayerConst.MaxSpecializations);
-        getSpecializations()[1] = new bitSet(playerClass.max.getValue() * PlayerConst.MaxSpecializations);
-        getSpecializations()[2] = new bitSet(playerClass.max.getValue() * PlayerConst.MaxSpecializations);
+        this.basicData = item;
+        this.extendedData = sparse;
+
+        specializations[0] = new BitSet(PlayerClass.values().length * SharedDefine.MAX_SPECIALIZATIONS);
+        specializations[1] = new BitSet(PlayerClass.values().length * SharedDefine.MAX_SPECIALIZATIONS);
+        specializations[2] = new BitSet(PlayerClass.values().length * SharedDefine.MAX_SPECIALIZATIONS);
     }
 
-    public static int calculateItemSpecBit(ChrSpecializationRecord spec) {
-        return (int) ((spec.ClassID - 1) * PlayerConst.MaxSpecializations + spec.orderIndex);
+    public static int calculateItemSpecBit(ChrSpecialization spec) {
+        return (int) ((spec.getClassID() - 1) * SharedDefine.MAX_SPECIALIZATIONS + spec.getOrderIndex());
     }
 
     public final int getMaxDurability() {
@@ -59,7 +90,7 @@ public class ItemTemplate {
         return effects;
     }
 
-    public final void setEffects(ArrayList<ItemEffectRecord> value) {
+    public final void setEffects(ArrayList<ItemEffect> value) {
         effects = value;
     }
 
@@ -135,200 +166,185 @@ public class ItemTemplate {
         itemSpecClassMask = value;
     }
 
-    protected final ItemRecord getBasicData() {
-        return basicData;
-    }
-
-    protected final void setBasicData(ItemRecord value) {
-        basicData = value;
-    }
-
-    protected final ItemSparseRecord getExtendedData() {
-        return extendedData;
-    }
-
-    protected final void setExtendedData(ItemSparseRecord value) {
-        extendedData = value;
-    }
 
     public final boolean getHasSignature() {
         return getMaxStackSize() == 1 && getClass() != itemClass.Consumable && getClass() != itemClass.Quest && !hasFlag(ItemFlags.NoCreator) && getId() != 6948;
     }
 
     public final int getId() {
-        return getBasicData().id;
+        return basicData.id;
     }
 
     public final ItemClass getItemClass() {
-        return getBasicData().classID;
+        return basicData.classID;
     }
 
     public final ItemSubclassConsumable getSubClass() {
-        return getBasicData().SubclassID;
+        return basicData.SubclassID;
     }
 
     public final ItemQuality getQuality() {
-        return itemQuality.forValue(getExtendedData().OverallQualityID);
+        return itemQuality.forValue(extendedData.OverallQualityID);
     }
 
     public final int getOtherFactionItemId() {
-        return getExtendedData().FactionRelated;
+        return extendedData.FactionRelated;
     }
 
     public final float getPriceRandomValue() {
-        return getExtendedData().PriceRandomValue;
+        return extendedData.PriceRandomValue;
     }
 
     public final float getPriceVariance() {
-        return getExtendedData().PriceVariance;
+        return extendedData.PriceVariance;
     }
 
     public final int getBuyCount() {
-        return Math.max(getExtendedData().VendorStackCount, 1);
+        return Math.max(extendedData.VendorStackCount, 1);
     }
 
     public final int getBuyPrice() {
-        return getExtendedData().BuyPrice;
+        return extendedData.BuyPrice;
     }
 
     public final int getSellPrice() {
-        return getExtendedData().SellPrice;
+        return extendedData.SellPrice;
     }
 
     public final InventoryType getInventoryType() {
-        return getExtendedData().inventoryType;
+        return extendedData.inventoryType;
     }
 
     public final int getAllowableClass() {
-        return getExtendedData().AllowableClass;
+        return extendedData.AllowableClass;
     }
 
     public final long getAllowableRace() {
-        return getExtendedData().AllowableRace;
+        return extendedData.AllowableRace;
     }
 
     public final int getBaseItemLevel() {
-        return getExtendedData().itemLevel;
+        return extendedData.itemLevel;
     }
 
     public final int getBaseRequiredLevel() {
-        return getExtendedData().requiredLevel;
+        return extendedData.requiredLevel;
     }
 
     public final int getRequiredSkill() {
-        return getExtendedData().RequiredSkill;
+        return extendedData.RequiredSkill;
     }
 
     public final int getRequiredSkillRank() {
-        return getExtendedData().RequiredSkillRank;
+        return extendedData.RequiredSkillRank;
     }
 
     public final int getRequiredSpell() {
-        return getExtendedData().RequiredAbility;
+        return extendedData.RequiredAbility;
     }
 
     public final int getRequiredReputationFaction() {
-        return getExtendedData().MinFactionID;
+        return extendedData.MinFactionID;
     }
 
     public final int getRequiredReputationRank() {
-        return getExtendedData().MinReputation;
+        return extendedData.MinReputation;
     }
 
     public final int getMaxCount() {
-        return getExtendedData().maxCount;
+        return extendedData.maxCount;
     }
 
     public final int getContainerSlots() {
-        return getExtendedData().ContainerSlots;
+        return extendedData.ContainerSlots;
     }
 
     public final int getScalingStatContentTuning() {
-        return getExtendedData().contentTuningID;
+        return extendedData.contentTuningID;
     }
 
     public final int getPlayerLevelToItemLevelCurveId() {
-        return getExtendedData().PlayerLevelToItemLevelCurveID;
+        return extendedData.PlayerLevelToItemLevelCurveID;
     }
 
     public final int getDamageType() {
-        return getExtendedData().DamageType;
+        return extendedData.DamageType;
     }
 
     public final int getDelay() {
-        return getExtendedData().ItemDelay;
+        return extendedData.ItemDelay;
     }
 
     public final float getRangedModRange() {
-        return getExtendedData().ItemRange;
+        return extendedData.ItemRange;
     }
 
     public final ItemBondingType getBonding() {
-        return ItemBondingType.forValue(getExtendedData().bonding);
+        return ItemBondingType.forValue(extendedData.bonding);
     }
 
     public final int getPageText() {
-        return getExtendedData().PageID;
+        return extendedData.PageID;
     }
 
     public final int getStartQuest() {
-        return getExtendedData().StartQuestID;
+        return extendedData.StartQuestID;
     }
 
     public final int getLockID() {
-        return getExtendedData().LockID;
+        return extendedData.LockID;
     }
 
     public final int getItemSet() {
-        return getExtendedData().ItemSet;
+        return extendedData.ItemSet;
     }
 
     public final int getMap() {
-        return getExtendedData().InstanceBound;
+        return extendedData.InstanceBound;
     }
 
     public final BagFamilyMask getBagFamily() {
-        return BagFamilyMask.forValue(getExtendedData().BagFamily);
+        return BagFamilyMask.forValue(extendedData.BagFamily);
     }
 
     public final int getTotemCategory() {
-        return getExtendedData().TotemCategoryID;
+        return extendedData.TotemCategoryID;
     }
 
     public final int getSocketBonus() {
-        return getExtendedData().SocketMatchEnchantmentId;
+        return extendedData.SocketMatchEnchantmentId;
     }
 
     public final int getGemProperties() {
-        return getExtendedData().GemProperties;
+        return extendedData.GemProperties;
     }
 
     public final float getQualityModifier() {
-        return getExtendedData().QualityModifier;
+        return extendedData.QualityModifier;
     }
 
     public final int getDuration() {
-        return getExtendedData().DurationInInventory;
+        return extendedData.DurationInInventory;
     }
 
     public final int getItemLimitCategory() {
-        return getExtendedData().limitCategory;
+        return extendedData.limitCategory;
     }
 
     public final HolidayIds getHolidayID() {
-        return HolidayIds.forValue(getExtendedData().RequiredHoliday);
+        return HolidayIds.forValue(extendedData.RequiredHoliday);
     }
 
     public final float getDmgVariance() {
-        return getExtendedData().DmgVariance;
+        return extendedData.DmgVariance;
     }
 
     public final byte getArtifactID() {
-        return getExtendedData().ArtifactID;
+        return extendedData.ArtifactID;
     }
 
     public final byte getRequiredExpansion() {
-        return (byte) getExtendedData().ExpansionID;
+        return (byte) extendedData.ExpansionID;
     }
 
     public final boolean isCurrencyToken() {
@@ -336,7 +352,7 @@ public class ItemTemplate {
     }
 
     public final int getMaxStackSize() {
-        return (getExtendedData().Stackable == 2147483647 || getExtendedData().Stackable <= 0) ? (0x7FFFFFFF - 1) : getExtendedData().Stackable;
+        return (extendedData.Stackable == 2147483647 || extendedData.Stackable <= 0) ? (0x7FFFFFFF - 1) : extendedData.Stackable;
     }
 
     public final boolean isPotion() {
@@ -372,23 +388,23 @@ public class ItemTemplate {
     }
 
     public final String getName(Locale locale) {
-        return getExtendedData().display.get(locale);
+        return extendedData.display.get(locale);
     }
 
     public final boolean hasFlag(ItemFlag flag) {
-        return (getExtendedData().Flags[0] & flag.getValue()) != 0;
+        return (extendedData.Flags[0] & flag.getValue()) != 0;
     }
 
     public final boolean hasFlag(ItemFlag2 flag) {
-        return (getExtendedData().Flags[1] & flag.getValue()) != 0;
+        return (extendedData.Flags[1] & flag.getValue()) != 0;
     }
 
     public final boolean hasFlag(ItemFlag3 flag) {
-        return (getExtendedData().Flags[2] & flag.getValue()) != 0;
+        return (extendedData.Flags[2] & flag.getValue()) != 0;
     }
 
     public final boolean hasFlag(ItemFlag4 flag) {
-        return (getExtendedData().Flags[3] & flag.getValue()) != 0;
+        return (extendedData.Flags[3] & flag.getValue()) != 0;
     }
 
     public final boolean hasFlag(ItemFlagsCustom customFlag) {
@@ -627,22 +643,22 @@ public class ItemTemplate {
     }
 
     public final int getStatModifierBonusStat(int index) {
-        return getExtendedData().StatModifierBonusStat[index];
+        return extendedData.StatModifierBonusStat[index];
     }
 
     public final int getStatPercentEditor(int index) {
-        return getExtendedData().StatPercentEditor[index];
+        return extendedData.StatPercentEditor[index];
     }
 
     public final float getStatPercentageOfSocket(int index) {
-        return getExtendedData().StatPercentageOfSocket[index];
+        return extendedData.StatPercentageOfSocket[index];
     }
 
     public final int getArea(int index) {
-        return getExtendedData().ZoneBound[index];
+        return extendedData.ZoneBound[index];
     }
 
     public final SocketColor getSocketColor(int index) {
-        return SocketColor.forValue(getExtendedData().SocketType[index]);
+        return SocketColor.forValue(extendedData.SocketType[index]);
     }
 }

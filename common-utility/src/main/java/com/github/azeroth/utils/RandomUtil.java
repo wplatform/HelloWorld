@@ -68,11 +68,25 @@ public class RandomUtil {
         if(collection.size() == 1) {
             return collection.iterator().next();
         }
-        float totalWight = collection.stream().map(eleWeight).filter(weight -> weight >= 0f).reduce(0f, Float::sum);
+        float totalWeight = collection.stream().map(eleWeight).filter(weight -> weight >= 0f).reduce(0f, Float::sum);
 
-        float randomFloat = randomFloat();
+        if (totalWeight <= 0f) {
+            return null;
+        }
 
-        collection.stream().filter(e -> eleWeight.apply(e) >= 0f).collect(Collectors.toMap())
+        float randomFloat = randomFloat(0f, totalWeight);
+        float currentWeight = 0f;
 
+        for (T element : collection) {
+            float weight = eleWeight.apply(element);
+            if (weight >= 0f) {
+                currentWeight += weight;
+                if (randomFloat <= currentWeight) {
+                    return element;
+                }
+            }
+        }
+
+        return null;
     }
 }

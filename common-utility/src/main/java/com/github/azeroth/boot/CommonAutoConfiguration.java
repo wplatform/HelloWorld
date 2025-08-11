@@ -3,7 +3,6 @@ package com.github.azeroth.boot;
 import com.github.azeroth.cache.MapdbCacheProvider;
 import com.github.azeroth.config.ConfigurationRefreshProcessor;
 import com.github.azeroth.converter.IntToBool;
-import com.github.azeroth.converter.IntToEnum;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;

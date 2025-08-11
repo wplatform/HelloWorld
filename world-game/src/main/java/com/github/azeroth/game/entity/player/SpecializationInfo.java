@@ -6,11 +6,11 @@ import java.util.HashMap;
 
 public class SpecializationInfo {
 
-    private HashMap<Integer, PlayerSpellState>[] talents = new HashMap<Integer, PlayerSpellState>[PlayerConst.MaxSpecializations];
+    private HashMap<Integer, PlayerSpellState>[] talents = new HashMap<Integer, PlayerSpellState>[MAX_SPECIALIZATIONS];
 
-    private int[][] pvpTalents = new int[PlayerConst.MaxSpecializations][];
+    private int[][] pvpTalents = new int[MAX_SPECIALIZATIONS][];
 
-    private ArrayList<Integer>[] glyphs = new ArrayList<Integer>[PlayerConst.MaxSpecializations];
+    private ArrayList<Integer>[] glyphs = new ArrayList<Integer>[MAX_SPECIALIZATIONS];
 
     private int resetTalentsCost;
     private long resetTalentsTime;
@@ -18,7 +18,7 @@ public class SpecializationInfo {
     private byte activeGroup;
 
     public SpecializationInfo() {
-        for (byte i = 0; i < PlayerConst.MaxSpecializations; ++i) {
+        for (byte i = 0; i < MAX_SPECIALIZATIONS; ++i) {
             getTalents()[i] = new HashMap<Integer, PlayerSpellState>();
             getPvpTalents()[i] = new int[PlayerConst.MaxPvpTalentSlots];
             getGlyphs()[i] = new ArrayList<>();

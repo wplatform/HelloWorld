@@ -1,356 +1,241 @@
 package com.github.azeroth.character.service.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import lombok.Getter;
-import lombok.Setter;
 
-
-@Getter
-@Setter
-
-@Table(name = "character")
+@Table("characters")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Character {
+    
     @Id
-
     @Column("guid")
-    private Long id;
-
-
+    private Long guid;
+    
     @Column("account")
-    private Long account;
-
+    private Integer account;
+    
     @Column("name")
     private String name;
-
-
+    
     @Column("slot")
-    private Short slot;
-
-
+    private Byte slot;
+    
     @Column("race")
-    private Short race;
-
-
-    @Column("class")
-    private Short classField;
-
-
+    private Byte race;
+    
+    @Column("clazz")
+    private Byte clazz;
+    
     @Column("gender")
-    private Short gender;
-
-
+    private Byte gender;
+    
     @Column("level")
-    private Short level;
-
-
+    private Byte level;
+    
     @Column("xp")
-    private Long xp;
-
-
+    private Integer xp;
+    
     @Column("money")
     private Long money;
-
-
+    
     @Column("inventorySlots")
-    private Short inventorySlots;
-
-
+    private Byte inventorySlots;
+    
     @Column("bankSlots")
-    private Short bankSlots;
-
-
+    private Byte bankSlots;
+    
     @Column("restState")
-    private Short restState;
-
-
+    private Byte restState;
+    
     @Column("playerFlags")
-    private Long playerFlags;
-
-
+    private Integer playerFlags;
+    
     @Column("playerFlagsEx")
-    private Long playerFlagsEx;
-
-
+    private Integer playerFlagsEx;
+    
     @Column("position_x")
     private Float positionX;
-
-
+    
     @Column("position_y")
     private Float positionY;
-
-
+    
     @Column("position_z")
     private Float positionZ;
-
-
+    
     @Column("map")
-    private Integer map;
-
-
+    private Short map;
+    
     @Column("instance_id")
-    private Long instanceId;
-
-
+    private Integer instanceId;
+    
     @Column("dungeonDifficulty")
-    private Short dungeonDifficulty;
-
-
+    private Byte dungeonDifficulty;
+    
     @Column("raidDifficulty")
-    private Short raidDifficulty;
-
-
+    private Byte raidDifficulty;
+    
     @Column("legacyRaidDifficulty")
-    private Short legacyRaidDifficulty;
-
-
+    private Byte legacyRaidDifficulty;
+    
     @Column("orientation")
     private Float orientation;
-
     
     @Column("taximask")
     private String taximask;
-
-
+    
     @Column("online")
-    private Short online;
-
-
-    @Column("createTime")
-    private Long createTime;
-
-
-    @Column("createMode")
-    private Byte createMode;
-
-
+    private Byte online;
+    
     @Column("cinematic")
-    private Short cinematic;
-
-
+    private Byte cinematic;
+    
     @Column("totaltime")
-    private Long totaltime;
-
-
+    private Integer totaltime;
+    
     @Column("leveltime")
-    private Long leveltime;
-
-
+    private Integer leveltime;
+    
     @Column("logout_time")
-    private Long logoutTime;
-
-
+    private Integer logoutTime;
+    
     @Column("is_logout_resting")
-    private Short isLogoutResting;
-
-
+    private Byte isLogoutResting;
+    
     @Column("rest_bonus")
     private Float restBonus;
-
-
+    
     @Column("resettalents_cost")
-    private Long resettalentsCost;
-
-
+    private Integer resettalentsCost;
+    
     @Column("resettalents_time")
-    private Long resettalentsTime;
-
-
+    private Integer resettalentsTime;
+    
     @Column("numRespecs")
-    private Short numRespecs;
-
-
+    private Byte numRespecs;
+    
     @Column("primarySpecialization")
-    private Long primarySpecialization;
-
-
+    private Integer primarySpecialization;
+    
     @Column("trans_x")
     private Float transX;
-
-
+    
     @Column("trans_y")
     private Float transY;
-
-
+    
     @Column("trans_z")
     private Float transZ;
-
-
+    
     @Column("trans_o")
     private Float transO;
-
-
+    
     @Column("transguid")
     private Long transguid;
-
-
+    
     @Column("extra_flags")
-    private Integer extraFlags;
-
-
-    @Column("summonedPetNumber")
-    private Long summonedPetNumber;
-
-
+    private Short extraFlags;
+    
+    @Column("stable_slots")
+    private Byte stableSlots;
+    
     @Column("at_login")
-    private Integer atLogin;
-
-
+    private Short atLogin;
+    
     @Column("zone")
-    private Integer zone;
-
-
+    private Short zone;
+    
     @Column("death_expire_time")
-    private Long deathExpireTime;
-
+    private Integer deathExpireTime;
     
     @Column("taxi_path")
     private String taxiPath;
-
-
+    
     @Column("totalKills")
-    private Long totalKills;
-
-
+    private Integer totalKills;
+    
     @Column("todayKills")
-    private Integer todayKills;
-
-
+    private Short todayKills;
+    
     @Column("yesterdayKills")
-    private Integer yesterdayKills;
-
-
+    private Short yesterdayKills;
+    
     @Column("chosenTitle")
-    private Long chosenTitle;
-
-
+    private Integer chosenTitle;
+    
     @Column("watchedFaction")
-    private Long watchedFaction;
-
-
+    private Integer watchedFaction;
+    
     @Column("drunk")
-    private Short drunk;
-
-
+    private Byte drunk;
+    
     @Column("health")
-    private Long health;
-
-
+    private Integer health;
+    
     @Column("power1")
-    private Long power1;
-
-
+    private Integer power1;
+    
     @Column("power2")
-    private Long power2;
-
-
+    private Integer power2;
+    
     @Column("power3")
-    private Long power3;
-
-
+    private Integer power3;
+    
     @Column("power4")
-    private Long power4;
-
-
+    private Integer power4;
+    
     @Column("power5")
-    private Long power5;
-
-
+    private Integer power5;
+    
     @Column("power6")
-    private Long power6;
-
-
-    @Column("power7")
-    private Long power7;
-
-
-    @Column("power8")
-    private Long power8;
-
-
-    @Column("power9")
-    private Long power9;
-
-
-    @Column("power10")
-    private Long power10;
-
-
+    private Integer power6;
+    
     @Column("latency")
-    private Long latency;
-
-
+    private Integer latency;
+    
     @Column("activeTalentGroup")
-    private Short activeTalentGroup;
-
-
+    private Byte activeTalentGroup;
+    
     @Column("lootSpecId")
-    private Long lootSpecId;
-
+    private Integer lootSpecId;
     
     @Column("exploredZones")
     private String exploredZones;
-
     
     @Column("equipmentCache")
     private String equipmentCache;
-
     
     @Column("knownTitles")
     private String knownTitles;
-
-
+    
     @Column("actionBars")
-    private Short actionBars;
-
+    private Byte actionBars;
+    
     @Column("deleteInfos_Account")
-    private Long deleteinfosAccount;
-
+    private Integer deleteInfosAccount;
+    
     @Column("deleteInfos_Name")
-    private String deleteinfosName;
-
+    private String deleteInfosName;
+    
     @Column("deleteDate")
-    private Long deleteDate;
-
-
+    private Integer deleteDate;
+    
     @Column("honor")
-    private Long honor;
-
-
+    private Integer honor;
+    
     @Column("honorLevel")
-    private Long honorLevel;
-
-
+    private Integer honorLevel;
+    
     @Column("honorRestState")
-    private Short honorRestState;
-
-
+    private Byte honorRestState;
+    
     @Column("honorRestBonus")
     private Float honorRestBonus;
-
-
+    
     @Column("lastLoginBuild")
-    private Long lastLoginBuild;
-
-
-    @Column("personalTabardEmblemStyle")
-    private Integer personalTabardEmblemStyle;
-
-
-    @Column("personalTabardEmblemColor")
-    private Integer personalTabardEmblemColor;
-
-
-    @Column("personalTabardBorderStyle")
-    private Integer personalTabardBorderStyle;
-
-
-    @Column("personalTabardBorderColor")
-    private Integer personalTabardBorderColor;
-
-
-    @Column("personalTabardBackgroundColor")
-    private Integer personalTabardBackgroundColor;
-
+    private Integer lastLoginBuild;
 }

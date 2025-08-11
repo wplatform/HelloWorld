@@ -18,6 +18,7 @@ import com.github.azeroth.game.map.grid.GridMap;
 import com.github.azeroth.game.map.model.*;
 import com.github.azeroth.game.phasing.PhaseShift;
 import com.github.azeroth.game.phasing.PhasingHandler;
+import com.github.azeroth.game.world.setting.WorldSetting;
 import com.github.azeroth.utils.MathUtil;
 import com.github.azeroth.utils.StringUtil;
 import game.PhasingHandler;
@@ -57,7 +58,7 @@ public class TerrainInfo {
     private final VMapManager vMapManager;
     private final MMapManager mMapManager;
     private final DbcObjectManager dbcObjectManager;
-    private final WorldProperties worldProperties;
+    private final WorldSetting worldSetting;
     private LocalizedString name;
     private TerrainInfo parentTerrain;
 
@@ -74,12 +75,12 @@ public class TerrainInfo {
             MapEntry map = dbcObjectManager.map(mapId);
             name = map.getMapName();
         }
-        return LocalizedString.get(name, worldProperties.getDbcLocale());
+        return LocalizedString.get(name, worldSetting.dbcLocale);
     }
 
     public void discoverGridMapFiles() {
 
-        Path tileListPath = worldProperties.getDataDir().resolve(StringUtil.format("maps/{:04}.tilelist", mapId));
+        Path tileListPath = worldSetting.dataDir.resolve(StringUtil.format("maps/{:04}.tilelist", mapId));
 
         // tile list is optional
         if (Files.exists(tileListPath)) {
@@ -115,7 +116,7 @@ public class TerrainInfo {
     }
 
     public boolean existMap(int mapId, int gx, int gy, boolean logging) {
-        Path mapFilePath = worldProperties.getDataDir().resolve(StringUtil.format("maps/{:04}_{:02}_{:02}.map", mapId, gx, gy));
+        Path mapFilePath = worldSetting.dataDir.resolve(StringUtil.format("maps/{:04}_{:02}_{:02}.map", mapId, gx, gy));
         boolean ret = false;
         if (!Files.exists(mapFilePath)) {
             try (FileChannel fileChannel = FileChannel.open(mapFilePath, StandardOpenOption.READ)) {
@@ -150,8 +151,8 @@ public class TerrainInfo {
 
     public boolean existVMap(int mapid, int gx, int gy) {
         if (vMapManager.isMapLoadingEnabled()) {
-            Path vmtreePath = worldProperties.getDataDir().resolve(StringUtil.format("vmaps/{:04}/{:04}.vmtree", gx, gy));
-            LoadResult result = vMapManager.existsMap(vmtreePath, mapid, gx, gy);
+            Path vmtreePath = worldSetting.dataDir.resolve(StringUtil.format("vmaps/{:04}/{:04}.vmtree", gx, gy));
+            LoadResult result = vMapManager.existsMap(mapid, gx, gy);
             switch (result) {
                 case Success:
                     break;
@@ -221,7 +222,7 @@ public class TerrainInfo {
             return;
 
         // map file name
-        Path mapFilePath = worldProperties.getDataDir().resolve(StringUtil.format("maps/{:04}_{:02}_{:02}.map", mapId, gx, gy));
+        Path mapFilePath = worldSetting.dataDir.resolve(StringUtil.format("maps/{:04}_{:02}_{:02}.map", mapId, gx, gy));
         Logs.MAPS.info("Loading map {}", mapFilePath.toAbsolutePath());
 
         // loading data

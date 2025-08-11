@@ -50,7 +50,7 @@ public class TerrainManager {
 
 
     public final TerrainInfo loadTerrain(int mapId) {
-        var entry = CliDB.MapStorage.get(mapId);
+        var entry = dbc.MapStorage.get(mapId);
 
         if (entry == null) {
             return null;
