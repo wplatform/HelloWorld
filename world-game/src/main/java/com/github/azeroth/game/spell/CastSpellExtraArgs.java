@@ -3,7 +3,7 @@ package com.github.azeroth.game.spell;
 
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.game.entity.item.Item;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.spell.enums.SpellValueMod;
 import com.github.azeroth.game.spell.enums.TriggerCastFlag;
 

@@ -175,7 +175,7 @@ public final class ScriptInfo {
 
     public final static class RespawnGameObject // RESPAWNGAMEOBJECT (9)
     {
-        public int GOGuid; // datalong
+        public int goGuid; // datalong
         public int despawnDelay; // datalong2
 
     }
@@ -196,7 +196,7 @@ public final class ScriptInfo {
     public final static class ToggleDoor // CLOSEDOOR (12)
     {
         // OPENDOOR (11)
-        public int GOGuid; // datalong
+        public int goGuid; // datalong
         public int resetDelay; // datalong2
 
     }

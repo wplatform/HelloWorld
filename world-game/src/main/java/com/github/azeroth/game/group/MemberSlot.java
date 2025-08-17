@@ -2,7 +2,7 @@ package com.github.azeroth.game.group;
 
 
 import com.github.azeroth.defines.Race;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 
 public class MemberSlot {
     public ObjectGuid guid = ObjectGuid.EMPTY;

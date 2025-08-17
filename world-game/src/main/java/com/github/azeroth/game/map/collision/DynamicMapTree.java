@@ -3,11 +3,11 @@ package com.github.azeroth.game.map.collision;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.github.azeroth.dbc.DbcObjectManager;
-import com.github.azeroth.game.map.collision.model.Distance;
-import com.github.azeroth.game.map.collision.model.GameObjectModel;
-import com.github.azeroth.game.map.collision.model.LocationInfo;
-import com.github.azeroth.game.map.model.AreaInfo;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.map.model.Distance;
+import com.github.azeroth.game.domain.map.model.GameObjectModel;
+import com.github.azeroth.game.domain.map.model.LocationInfo;
+import com.github.azeroth.game.domain.map.AreaInfo;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.utils.MathUtil;
 
 public class DynamicMapTree {

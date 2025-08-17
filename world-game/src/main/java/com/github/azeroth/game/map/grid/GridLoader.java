@@ -2,10 +2,12 @@ package com.github.azeroth.game.map.grid;
 
 
 import com.github.azeroth.common.Logs;
-import com.github.azeroth.game.domain.creature.CellSpawnData;
+import com.github.azeroth.game.domain.spawn.SpawnData;
+import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
+import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.globals.ObjectManager;
 import com.github.azeroth.game.map.Map;
-import com.github.azeroth.game.map.MapDefine;
 
 
 public class GridLoader {
@@ -24,36 +26,9 @@ public class GridLoader {
         this.objectManager = objectManager;
         this.grid = grid;
         this.map = map;
-        this.cell =cell;
+        this.cell = cell;
 
     }
-
-
-
-    void loadGameObject()
-    {
-        Coordinate cellCoord = cell.getCellCoordinate();
-        CellSpawnData cellSpawnData = objectManager.getCellObjectGuids(map.getId(), map.getDifficultyID(), cellCoord.getId());
-
-        if (CellSpawnData const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
-        LoadHelper(cell_guids->gameobjects, cellCoord, m, i_gameObjects, i_map);
-    }
-
-    void loadCreature()
-    {
-        Coordinate cellCoord = cell.getCellCoordinate();
-        if (CellSpawnData const* cell_guids = sObjectMgr->GetCellObjectGuids(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
-        LoadHelper(cell_guids->creatures, cellCoord, m, i_creatures, i_map);
-    }
-
-    void loadAreaTrigger()
-    {
-        CellCoord cellCoord = i_cell.GetCellCoord();
-        if (CellGuidSet const* areaTriggers = sAreaTriggerDataStore->GetAreaTriggersForMapAndCell(i_map->GetId(), i_map->GetDifficultyID(), cellCoord.GetId()))
-        LoadHelper(*areaTriggers, cellCoord, m, i_areaTriggers, i_map);
-    }
-
-
 
     public final void loadN() {
         creatures = 0;
@@ -61,9 +36,50 @@ public class GridLoader {
         corpses = 0;
         areaTriggers = 0;
 
-        for (int x = 0; x < MapDefine.MAX_NUMBER_OF_CELLS; ++x) {
-            for (int y = 0; y < MapDefine.MAX_NUMBER_OF_CELLS; ++y) {
-                NCell NCellCell = grid.getGrid(x, y);
+
+        var gridSpawnData = objectManager.getGridObjectGuids(map.getId(), map.getDifficultyID(), cell.getId());
+
+
+        for (SpawnData data : gridSpawnData.spawnData) {
+
+            if (!map.shouldBeSpawnedOnGridLoad(data.spawnId)) {
+                continue;
+            }
+
+            var object = switch (data.type) {
+                case CREATURE -> {
+                    Creature creature = new Creature();
+                    boolean isOk = creature.loadFromDB(data.spawnId, map, false, false);
+                    yield isOk ? creature : null;
+                }
+                case GAME_OBJECT -> {
+                    GameObject gameObject = new GameObject();
+                    boolean isOk = gameObject.loadFromDB(data.spawnId, map, false, false);
+                    yield isOk ? gameObject : null;
+                }
+                case AREA_TRIGGER -> {
+                    AreaTrigger areaTrigger = new AreaTrigger();
+                    boolean isOk = areaTrigger.loadFromDB(data.spawnId, map, false, false);
+                    yield isOk ? areaTrigger : null;
+                }
+                case TYPES_WITH_DATA -> null;
+                case NUM_SPAWN_TYPES -> null;
+            };
+
+            if (object == null) {
+                continue;
+            }
+
+            map.addToGrid(object, cell);
+            object.addToWorld();
+            if (object.isActiveObject())
+                map.addToActive(object);
+
+
+            switch (data.type) {
+                case CREATURE -> creatures++;
+                case AREA_TRIGGER -> areaTriggers++;
+                case GAME_OBJECT -> gameObjects++;
             }
         }
 

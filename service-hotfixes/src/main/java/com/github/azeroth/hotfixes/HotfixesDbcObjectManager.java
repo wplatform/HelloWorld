@@ -126,13 +126,11 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     private Map<Short, WorldMapArea> worldMapAreaByAreaID;
     private Map<Integer, WorldSafeLoc> worldSafeLocContainer;
 
-
+    @Getter(onMethod_ = @Override)
     private TaxiMask taxiNodesMask;
     private TaxiMask oldContinentsNodesMask;
     private TaxiMask hordeTaxiNodesMask;
     private TaxiMask allianceTaxiNodesMask;
-
-
 
     public HotfixesDbcObjectManager(CacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;

@@ -5,7 +5,7 @@ import com.github.azeroth.dbc.defines.ItemContext;
 import com.github.azeroth.game.entity.ArtifactPower;
 import com.github.azeroth.game.entity.SocketedGem;
 import com.github.azeroth.game.entity.UpdateMask;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.loot.Loot;

@@ -1,7 +1,7 @@
 package com.github.azeroth.game.map;
 
 
-import com.github.azeroth.game.map.enums.TransferAbortReason;
+import com.github.azeroth.game.domain.map.enums.TransferAbortReason;
 
 public class TransferAbortParams {
     public TransferAbortReason reason;

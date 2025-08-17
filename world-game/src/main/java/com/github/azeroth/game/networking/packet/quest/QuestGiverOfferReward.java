@@ -1,6 +1,6 @@
 package com.github.azeroth.game.networking.packet.quest;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 
 import java.util.ArrayList;

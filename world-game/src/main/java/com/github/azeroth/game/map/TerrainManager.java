@@ -2,10 +2,11 @@ package com.github.azeroth.game.map;
 
 
 
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.entity.object.WorldLocation;
-import com.github.azeroth.game.map.model.ZoneAndAreaId;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.WorldLocation;
+import com.github.azeroth.game.domain.map.ZoneAndAreaId;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 
 
 import java.util.HashMap;

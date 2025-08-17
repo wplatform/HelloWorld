@@ -2,8 +2,9 @@ package com.github.azeroth.game.map;
 
 
 import com.github.azeroth.common.Pair;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.map.enums.TransferAbortReason;
+import com.github.azeroth.game.domain.map.MapDb2Entries;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.map.enums.TransferAbortReason;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,0 +1,19 @@
+package com.github.azeroth.game.domain.phasing;// C# TO JAVA CONVERTER WARNING: Java does not allow user-defined value types. The behavior of this class may differ from the original:
+
+
+import com.github.azeroth.game.domain.phasing.TerrainSwapInfo;
+
+public final class VisibleMapIdRef {
+    public int references;
+    public TerrainSwapInfo visibleMapInfo;
+
+    public VisibleMapIdRef() {
+    }
+
+    public VisibleMapIdRef(int references, TerrainSwapInfo visibleMapInfo) {
+        this.references = references;
+        this.visibleMapInfo = visibleMapInfo;
+    }
+
+
+}

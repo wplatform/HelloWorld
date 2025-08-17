@@ -1,24 +1,17 @@
 package com.github.azeroth.game.entity.conversation;
 
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
-import game.maps.*;
-import game.spells.*;
-import lombok.Getter;
+
+
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Locale;
 
 
-public class Conversation extends WorldObject implements GridObject<Conversation> {
-
-    @Getter
-    private final GridReference<Conversation> gridReference = new GridReference<>();
+public class Conversation extends WorldObject {
 
     private final ConversationData mConversationData;
     private final Position stationaryPosition = new Position();

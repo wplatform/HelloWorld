@@ -162,4 +162,13 @@ public interface MiscRepository {
 
     @Query("SELECT `ID`, `Name` FROM `phase_name`")
     Stream<Object[]> streamAllPhaseName();
+
+
+    @Query("SELECT id, delay, command, datalong, datalong2, dataint, x, y, z, o, effIndex FROM spell_scripts")
+    Stream<Object[]> streamAllSpellScripts();
+
+
+    @Query("SELECT id, delay, command, datalong, datalong2, dataint, x, y, z, o FROM event_scripts")
+    Stream<Object[]> streamAllEventScripts();
+
 }

@@ -1,31 +1,35 @@
 package com.github.azeroth.service.auth.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("ip_banned")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "ip_banned")
 public class IpBanned {
-    
     @Id
     @Column("ip")
     private String ip;
-    
+
+    @Id
     @Column("bandate")
-    private Long banDate;
-    
+    private Long bandate;
+
     @Column("unbandate")
-    private Long unbanDate;
-    
+    private Long unbandate;
+
     @Column("bannedby")
-    private String bannedBy;
-    
+    private String bannedby;
+
     @Column("banreason")
-    private String banReason;
+    private String banreason;
+
+    @Column("active")
+    private Boolean active;
 }

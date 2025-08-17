@@ -7,19 +7,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("rbac_default_permissions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "rbac_default_permissions")
 public class RbacDefaultPermissions {
-    
     @Id
     @Column("secId")
-    private Long secId;
-    
+    private Integer secId;
+
+    @Id
     @Column("permissionId")
-    private Long permissionId;
-    
+    private Integer permissionId;
+
     @Column("realmId")
     private Integer realmId;
 }

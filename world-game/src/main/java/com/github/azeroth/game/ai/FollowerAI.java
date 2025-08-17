@@ -2,7 +2,7 @@ package com.github.azeroth.game.ai;
 
 
 import com.github.azeroth.game.entity.creature.Creature;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 

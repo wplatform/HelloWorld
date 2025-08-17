@@ -1,6 +1,6 @@
 package com.github.azeroth.game.networking.packet.combatlog;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 
 public final class SpellLogEffectExtraAttacksParams {
     public ObjectGuid victim = ObjectGuid.EMPTY;

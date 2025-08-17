@@ -1,7 +1,7 @@
 package com.github.azeroth.game.movement;
 
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 
 public class JumpArrivalCastArgs {
     public int spellId;

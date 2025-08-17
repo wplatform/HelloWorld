@@ -1,7 +1,7 @@
 package com.github.azeroth.game.chat;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.entity.item.ItemPosCount;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.scripting.interfaces.iplayer.IPlayerOnQuestStatusChange;

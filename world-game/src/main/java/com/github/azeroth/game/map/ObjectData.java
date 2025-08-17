@@ -1,22 +1,12 @@
 package com.github.azeroth.game.map;
 
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public final class ObjectData {
     public int entry;
     public int type;
-
-    public objectData() {
-    }
-    public objectData(int entry, int type) {
-        entry = entry;
-        type = type;
-    }
-
-    public ObjectData clone() {
-        ObjectData varCopy = new objectData();
-
-        varCopy.entry = this.entry;
-        varCopy.type = this.type;
-
-        return varCopy;
-    }
 }

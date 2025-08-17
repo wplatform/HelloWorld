@@ -1,6 +1,9 @@
 package com.github.azeroth.game.map.model;
 
-import com.github.azeroth.world.weather.Weather;
+import com.github.azeroth.game.domain.weather.WeatherState;
+import com.github.azeroth.game.weather.Weather;
+
+
 import lombok.Data;
 
 import java.util.List;

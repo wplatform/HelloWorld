@@ -1,8 +1,8 @@
 package com.github.azeroth.game.spell;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.entity.object.WorldObject;
 
 public class SpellDestination {

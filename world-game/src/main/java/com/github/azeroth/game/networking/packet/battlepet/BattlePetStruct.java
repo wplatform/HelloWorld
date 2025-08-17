@@ -1,6 +1,6 @@
 package com.github.azeroth.game.networking.packet.battlepet;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 
 

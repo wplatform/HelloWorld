@@ -3,7 +3,7 @@ package com.github.azeroth.game.networking.packet.trade;
 
 import com.github.azeroth.defines.TradeStatus;
 import com.github.azeroth.game.entity.item.enums.InventoryResult;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.ServerPacket;
 import com.github.azeroth.game.networking.opcode.ServerOpCode;
 

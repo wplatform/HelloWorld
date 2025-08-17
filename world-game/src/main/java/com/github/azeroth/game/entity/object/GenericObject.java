@@ -9,10 +9,11 @@ import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.defines.Power;
 import com.github.azeroth.defines.UnitDynFlag;
 import com.github.azeroth.exeception.ValueOverflowException;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.UnitMoveType;
 import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerCreatePropertiesFlag;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerCreatePropertiesFlag;
 import com.github.azeroth.game.entity.conversation.Conversation;
 import com.github.azeroth.game.entity.corpse.Corpse;
 import com.github.azeroth.game.entity.creature.Creature;
@@ -20,8 +21,8 @@ import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.dynamic.DynamicObject;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.item.Item;
-import com.github.azeroth.game.entity.object.enums.TypeId;
-import com.github.azeroth.game.entity.object.enums.TypeMask;
+import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.TypeMask;
 import com.github.azeroth.game.entity.object.update.*;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.scene.SceneObject;
@@ -159,7 +160,7 @@ public abstract class GenericObject {
         return (mask.value & objectType) != 0;
     }
 
-    protected void buildCreateUpdateBlockForPlayer(UpdateData data, Player target) {
+    public void buildCreateUpdateBlockForPlayer(UpdateData data, Player target) {
         if (target == null) return;
 
         ObjectUpdateType updateType = newObject ? ObjectUpdateType.CREATE_OBJECT2 : ObjectUpdateType.CREATE_OBJECT;
@@ -808,7 +809,7 @@ public abstract class GenericObject {
         }
     }
 
-    abstract void addToObjectUpdate();
+    abstract boolean addToObjectUpdate();
 
     private void addToObjectUpdateIfNeeded() {
         if (inWorld && !objectUpdated) {

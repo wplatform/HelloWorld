@@ -1,7 +1,7 @@
 package com.github.azeroth.game.networking.packet.battleground;
 
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.ServerPacket;
 
 public class BattlefieldStatusFailed extends ServerPacket {

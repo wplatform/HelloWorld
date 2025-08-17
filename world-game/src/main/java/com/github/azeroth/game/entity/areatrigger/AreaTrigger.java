@@ -3,19 +3,20 @@ package com.github.azeroth.game.entity.areatrigger;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.github.azeroth.game.entity.areatrigger.model.*;
-import com.github.azeroth.game.entity.object.MapObject;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.areatrigger.*;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerOrbitInfo;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerShapeInfo;
+import com.github.azeroth.game.entity.object.GirdObject;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.entity.object.enums.CellMoveState;
-import com.github.azeroth.game.entity.object.enums.HighGuid;
+import com.github.azeroth.game.domain.object.enums.CellMoveState;
+import com.github.azeroth.game.domain.object.enums.HighGuid;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
 import com.github.azeroth.game.movement.PathGenerator;
 import com.github.azeroth.game.movement.PathType;
 import com.github.azeroth.game.movement.Spline;
@@ -27,7 +28,6 @@ import com.github.azeroth.game.scripting.interfaces.iareatrigger.*;
 import com.github.azeroth.game.spell.AuraEffect;
 import com.github.azeroth.game.spell.CastSpellExtraArgs;
 import com.github.azeroth.game.spell.SpellInfo;
-import game.PhasingHandler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,10 +37,9 @@ import java.util.HashSet;
 
 @Getter
 @Setter
-public class AreaTrigger extends WorldObject implements GridObject<AreaTrigger>, MapObject {
+public class AreaTrigger extends WorldObject implements GirdObject {
 
     private static final ArrayList<IAreaTriggerScript> DUMMY = new ArrayList<>();
-    private final GridReference<AreaTrigger> gridReference = new GridReference<>();
     private final AreaTriggerFieldData areaTriggerData;
     private final Spline spline;
     private final HashSet<ObjectGuid> insideUnits = new HashSet<ObjectGuid>();

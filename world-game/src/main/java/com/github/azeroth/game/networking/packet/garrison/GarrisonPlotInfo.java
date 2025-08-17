@@ -1,6 +1,6 @@
 package com.github.azeroth.game.networking.packet.garrison;
 
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.networking.WorldPacket;
 
 public final class GarrisonPlotInfo {

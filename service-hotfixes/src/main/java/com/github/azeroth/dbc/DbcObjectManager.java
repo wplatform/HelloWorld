@@ -20,6 +20,7 @@ import com.github.azeroth.dbc.domain.TotemCategory;
 import com.github.azeroth.dbc.model.DBCPosition2D;
 import com.github.azeroth.dbc.model.PathDb2;
 
+import com.github.azeroth.dbc.model.TaxiMask;
 import com.github.azeroth.defines.*;
 
 import java.util.List;
@@ -2444,4 +2445,6 @@ public interface DbcObjectManager {
 
 
     Map<Integer, List<TaxiPathNode>> getTaxiPathNodesByPath();
+
+    TaxiMask getTaxiNodesMask();
 }

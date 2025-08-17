@@ -2,23 +2,20 @@ package com.github.azeroth.game.entity.corpse;
 
 
 import com.github.azeroth.game.entity.ChrCustomizationChoice;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.loot.Loot;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
+
 import com.github.azeroth.game.networking.WorldPacket;
-import game.PhasingHandler;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 @Getter
-public class Corpse extends WorldObject implements GridObject<Corpse> {
+public class Corpse extends WorldObject {
 
-    private final GridReference<Corpse> gridReference = new GridReference<>();
 
     private final CorpseType type;
     private long time;

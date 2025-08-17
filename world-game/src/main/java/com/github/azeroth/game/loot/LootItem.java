@@ -4,7 +4,7 @@ package com.github.azeroth.game.loot;
 import com.github.azeroth.dbc.defines.ItemContext;
 import com.github.azeroth.game.condition.Condition;
 import com.github.azeroth.game.entity.item.ItemEnchantmentManager;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.player.Player;
 
 import java.util.ArrayList;

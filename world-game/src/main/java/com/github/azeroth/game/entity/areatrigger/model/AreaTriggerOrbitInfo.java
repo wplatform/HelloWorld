@@ -1,5 +1,7 @@
 package com.github.azeroth.game.entity.areatrigger.model;
 
+import com.badlogic.gdx.math.Vector3;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 
 public class AreaTriggerOrbitInfo {
@@ -30,11 +32,11 @@ public class AreaTriggerOrbitInfo {
         data.writeFloat(ZOffset);
 
         if (pathTarget != null) {
-            data.writeGuid(pathTarget.getValue());
+            data.writeGuid(pathTarget);
         }
 
         if (center != null) {
-            data.writeVector3(center.getValue());
+            data.writeVector3(center);
         }
     }
 }

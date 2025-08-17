@@ -23,5 +23,5 @@ public class TaxiMask {
         return data;
     }
 
-    private byte[] data = new byte[16];
+    private final byte[] data = new byte[16];
 }

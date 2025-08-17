@@ -1,6 +1,6 @@
 package com.github.azeroth.game.entity.creature;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.spell.Spell;
 
 final class SpellFocusInfo {

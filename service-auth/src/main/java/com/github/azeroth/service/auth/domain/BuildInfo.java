@@ -1,46 +1,34 @@
 package com.github.azeroth.service.auth.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("build_info")
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "build_info")
 public class BuildInfo {
-    
     @Id
     @Column("build")
-    private Long build;
-    
+    private Integer build;
+
     @Column("majorVersion")
     private Integer majorVersion;
-    
+
     @Column("minorVersion")
     private Integer minorVersion;
-    
+
     @Column("bugfixVersion")
     private Integer bugfixVersion;
-    
+
     @Column("hotfixVersion")
-    private String hotfixVersion;
-    
-    @Column("winAuthSeed")
-    private String winAuthSeed;
-    
-    @Column("win64AuthSeed")
-    private String win64AuthSeed;
-    
-    @Column("mac64AuthSeed")
-    private String mac64AuthSeed;
-    
-    @Column("winChecksumSeed")
-    private String winChecksumSeed;
-    
-    @Column("macChecksumSeed")
-    private String macChecksumSeed;
+    private Integer hotfixVersion;
 }

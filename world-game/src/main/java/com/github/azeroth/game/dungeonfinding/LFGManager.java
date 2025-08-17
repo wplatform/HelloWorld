@@ -1,7 +1,7 @@
 package com.github.azeroth.game.dungeonfinding;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.entity.player.AccessRequirement;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.group.PlayerGroup;

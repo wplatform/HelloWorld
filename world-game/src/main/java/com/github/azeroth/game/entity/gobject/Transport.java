@@ -6,7 +6,7 @@ import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.creature.minion;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.entity.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.TransportTemplate;

@@ -2,8 +2,8 @@ package com.github.azeroth.game.movement;
 
 
 import com.github.azeroth.game.ai.AISelector;
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.entity.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.movement.generator.*;
 import com.github.azeroth.game.movement.spline.MoveSpline;

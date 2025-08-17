@@ -10,7 +10,7 @@ public class AreaTriggerScaleInfo {
     public StructuredData structured = new StructuredData();
 
 
-    public RawData raw = new rawData();
+    public RawData raw = new RawData();
 
 
     public final static class StructuredData {
@@ -35,19 +35,6 @@ public class AreaTriggerScaleInfo {
 
         public int overrideActive;
 
-        public StructuredData clone() {
-            StructuredData varCopy = new structuredData();
-
-            varCopy.startTimeOffset = this.startTimeOffset;
-            varCopy.X = this.X;
-            varCopy.Y = this.Y;
-            varCopy.Z = this.Z;
-            varCopy.W = this.W;
-            varCopy.curveParameters = this.curveParameters;
-            varCopy.overrideActive = this.overrideActive;
-
-            return varCopy;
-        }
 
         public final static class curveparameters {
             public int raw;
@@ -68,13 +55,6 @@ public class AreaTriggerScaleInfo {
                 return (raw & 0x1F) << 27;
             }
 
-            public curveparameters clone() {
-                curveparameters varCopy = new curveparameters();
-
-                varCopy.raw = this.raw;
-
-                return varCopy;
-            }
         }
     }
 

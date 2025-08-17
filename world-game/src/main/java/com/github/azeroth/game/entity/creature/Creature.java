@@ -8,18 +8,21 @@ import com.github.azeroth.game.ai.AISelector;
 import com.github.azeroth.game.ai.CreatureAI;
 import com.github.azeroth.game.ai.IUnitAI;
 import com.github.azeroth.game.domain.creature.*;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.ObjectDefine;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.entity.object.*;
-import com.github.azeroth.game.entity.object.enums.CellMoveState;
-import com.github.azeroth.game.entity.object.enums.HighGuid;
+import com.github.azeroth.game.domain.object.enums.CellMoveState;
+import com.github.azeroth.game.domain.object.enums.HighGuid;
 import com.github.azeroth.game.entity.object.update.ObjectFields;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.loot.Loot;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
 import com.github.azeroth.game.movement.MovementGeneratorType;
 import com.github.azeroth.game.spell.SpellEffectInfo;
 import com.github.azeroth.game.spell.SpellInfo;
@@ -39,9 +42,8 @@ import java.util.HashSet;
 
 @Getter
 @Setter
-public class Creature extends Unit implements GridObject<Creature>, MapObject {
+public class Creature extends Unit implements GirdObject {
 
-    private final GridReference<Creature> gridReference = new GridReference<>();
     private final MultiMap<Byte, Byte> textRepeat = new MultiMap<Byte, Byte>();
     private final Position homePosition;
     private final Position transportHomeposition = new Position();

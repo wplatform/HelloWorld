@@ -7,25 +7,26 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("logs_ip_actions")
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "logs_ip_actions")
 public class LogsIpActions {
-    
     @Id
     @Column("id")
-    private Long id;
-    
+    private Integer id;
+
     @Column("account_id")
-    private Long accountId;
-    
+    private Integer accountId;
+
     @Column("character_guid")
     private Long characterGuid;
     
     @Column("type")
     private Byte type;
-    
+
     @Column("ip")
     private String ip;
     
@@ -36,7 +37,7 @@ public class LogsIpActions {
     private Long unixTime;
     
     @Column("time")
-    private String time;
+    private Instant time;
     
     @Column("comment")
     private String comment;

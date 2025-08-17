@@ -1,7 +1,7 @@
 package com.github.azeroth.game.achievement;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.entity.activePlayerData;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;

@@ -1,7 +1,7 @@
 package com.github.azeroth.game.entity.vehicle;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.map.Map;
 

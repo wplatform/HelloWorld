@@ -2,8 +2,8 @@ package com.github.azeroth.game.entity.gobject;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.github.azeroth.game.map.collision.model.GameObjectModelOwnerBase;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.map.model.GameObjectModelOwnerBase;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 
 class GameObjectModelOwnerImpl extends GameObjectModelOwnerBase {
     private final GameObject owner;

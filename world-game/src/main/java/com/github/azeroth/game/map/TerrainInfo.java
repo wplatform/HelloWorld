@@ -8,15 +8,15 @@ import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.domain.AreaTable;
 import com.github.azeroth.dbc.domain.MapEntry;
 import com.github.azeroth.dbc.domain.WmoAreaTable;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.map.*;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.map.collision.DynamicMapTree;
 import com.github.azeroth.game.map.collision.VMapManager;
-import com.github.azeroth.game.map.enums.LiquidHeaderTypeFlag;
-import com.github.azeroth.game.map.enums.LoadResult;
-import com.github.azeroth.game.map.enums.ZLiquidStatus;
+import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
+import com.github.azeroth.game.domain.map.enums.LoadResult;
+import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.game.map.grid.GridMap;
-import com.github.azeroth.game.map.model.*;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.world.setting.WorldSetting;
 import com.github.azeroth.utils.MathUtil;
@@ -40,7 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.github.azeroth.defines.SharedDefine.GROUND_HEIGHT_TOLERANCE;
 import static com.github.azeroth.defines.SharedDefine.Z_OFFSET_FIND_HEIGHT;
-import static com.github.azeroth.game.map.MapDefine.*;
+import static com.github.azeroth.game.domain.map.MapDefine.*;
 
 @RequiredArgsConstructor
 public class TerrainInfo {

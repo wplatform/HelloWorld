@@ -3,9 +3,9 @@ package com.github.azeroth.game.movement;
 
 import com.badlogic.gdx.math.Vector3;
 import com.github.azeroth.common.EnumFlag;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.domain.map.MapDefine;
 import game.*;
 
 public class PathGenerator {

@@ -2,7 +2,7 @@ package com.github.azeroth.game.garrison;
 
 
 import com.github.azeroth.game.entity.gobject.GameObject;
-import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.map.grid.NCell;
 import com.github.azeroth.game.map.interfaces.*;

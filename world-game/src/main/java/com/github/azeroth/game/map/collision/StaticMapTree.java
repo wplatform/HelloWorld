@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.github.azeroth.common.Logs;
 import com.github.azeroth.common.Pair;
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.domain.map.model.*;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.map.collision.model.*;
-import com.github.azeroth.game.map.enums.LoadResult;
-import com.github.azeroth.game.map.enums.ModelIgnoreFlags;
-import com.github.azeroth.game.map.model.AreaInfo;
+import com.github.azeroth.game.domain.map.enums.LoadResult;
+import com.github.azeroth.game.domain.map.enums.ModelIgnoreFlags;
+import com.github.azeroth.game.domain.map.AreaInfo;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

@@ -2,7 +2,7 @@ package com.github.azeroth.game.movement.spline;
 
 
 import com.badlogic.gdx.math.Vector4;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.NPCFlags2;

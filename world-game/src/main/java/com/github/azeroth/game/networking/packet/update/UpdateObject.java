@@ -1,13 +1,16 @@
 package com.github.azeroth.game.networking.packet.update;
 
 
+import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
+
 public class UpdateObject extends ServerPacket {
     public int numObjUpdates;
     public short mapID;
     public byte[] data;
 
     public UpdateObject() {
-        super(ServerOpcode.UpdateObject);
+        super(ServerOpCode.SMSG_UPDATE_OBJECT);
     }
 
     @Override

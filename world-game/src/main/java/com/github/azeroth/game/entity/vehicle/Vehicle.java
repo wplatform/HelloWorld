@@ -2,7 +2,7 @@ package com.github.azeroth.game.entity.vehicle;
 
 import Framework.Constants.*;
 import com.github.azeroth.dbc.domain.VehicleEntry;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnInstall;

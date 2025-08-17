@@ -3,7 +3,7 @@ package com.github.azeroth.game.networking.packet.movement;
 
 import com.badlogic.gdx.math.Vector3;
 import com.github.azeroth.common.EnumFlag;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.MovementFlag2;
 import com.github.azeroth.game.movement.Spline;

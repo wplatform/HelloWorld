@@ -1,6 +1,6 @@
 package com.github.azeroth.game.entity.player.model;
 
-import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.domain.object.WorldLocation;
 
 public class StoredAuraTeleportLocation {
     private WorldLocation loc;

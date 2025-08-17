@@ -1,6 +1,7 @@
 package com.github.azeroth.game.phasing;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.map.PersonalPhaseGridLoader;

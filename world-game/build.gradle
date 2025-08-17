@@ -14,5 +14,4 @@ dependencies {
     implementation project(':service-auth')
     implementation project(':service-character')
     implementation project(':service-world')
-    implementation group: 'org.recast4j', name: 'detour', version: '1.5.8'
 }

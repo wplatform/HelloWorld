@@ -7,22 +7,22 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("rbac_account_permissions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "rbac_account_permissions")
 public class RbacAccountPermissions {
-    
     @Id
     @Column("accountId")
-    private Long accountId;
-    
+    private Integer accountId;
+
+    @Id
     @Column("permissionId")
-    private Long permissionId;
-    
+    private Integer permissionId;
+
     @Column("granted")
-    private Byte granted;
-    
+    private Boolean granted;
+
     @Column("realmId")
     private Integer realmId;
 }

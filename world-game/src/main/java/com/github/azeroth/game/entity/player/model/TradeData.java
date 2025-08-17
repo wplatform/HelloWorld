@@ -4,7 +4,7 @@ package com.github.azeroth.game.entity.player.model;
 import com.github.azeroth.defines.TradeStatus;
 import com.github.azeroth.game.entity.item.Item;
 import com.github.azeroth.game.entity.item.enums.InventoryResult;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.player.enums.TradeSlots;
 import com.github.azeroth.game.networking.packet.trade.TradeStatusPkt;

@@ -1,9 +1,9 @@
 package com.github.azeroth.game.map;
 
 
-import com.github.azeroth.game.InstanceSpawnGroupInfo;
 import com.github.azeroth.game.ai.BossAI;
 import com.github.azeroth.game.ai.CreatureAI;
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.WorldObject;

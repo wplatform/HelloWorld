@@ -2,7 +2,7 @@ package com.github.azeroth.game.movement.model;
 
 
 import com.badlogic.gdx.math.Vector3;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.packet.movement.MovementIOUtil;
 import lombok.Data;

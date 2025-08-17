@@ -1,16 +1,15 @@
 package com.github.azeroth.game.map.grid;
 
 
+import com.github.azeroth.game.domain.map.Coordinate;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.map.Map;
-import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.domain.map.MapDefine;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Consumer;
 
 @Data
 public class Cell {
@@ -21,11 +20,11 @@ public class Cell {
     public final int cellX;
     public final int cellY;
     public boolean noCreate;
-    public Cell(Coordinate p) {
-        gridX = p.axisX() / MapDefine.MAX_NUMBER_OF_CELLS;
-        gridY = p.axisY() / MapDefine.MAX_NUMBER_OF_CELLS;
-        cellX = p.axisX() % MapDefine.MAX_NUMBER_OF_CELLS;
-        cellY = p.axisY() % MapDefine.MAX_NUMBER_OF_CELLS;
+    public Cell(Coordinate cellCoordinate) {
+        gridX = cellCoordinate.axisX() / MapDefine.MAX_NUMBER_OF_CELLS;
+        gridY = cellCoordinate.axisY() / MapDefine.MAX_NUMBER_OF_CELLS;
+        cellX = cellCoordinate.axisX() % MapDefine.MAX_NUMBER_OF_CELLS;
+        cellY = cellCoordinate.axisY() % MapDefine.MAX_NUMBER_OF_CELLS;
     }
 
     public Cell(float x, float y) {
@@ -55,13 +54,12 @@ public class Cell {
         return new Area(centerX, centerY);
     }
 
-    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius) {
-        visitGrid(options, center, consumer, radius, true);
+    public static void visitGrid(WorldObject center, GridVisitor visitor, float radius) {
+        visitGrid(center, visitor, radius, true);
     }
 
-    public static void visitGrid(Set<GridVisitOption> options, WorldObject center, Consumer<GridRefManager<? extends WorldObject>> consumer, float radius, boolean dontLoad) {
+    public static void visitGrid(WorldObject center, GridVisitor visitor, float radius, boolean dontLoad) {
 
-        GridVisitor visitor = new GridVisitor(options, consumer);
         var p = MapDefine.computeCellCoordinate(center.getLocation().getX(), center.getLocation().getY());
         Cell cell = new Cell(p);
 

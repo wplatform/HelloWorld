@@ -2,28 +2,22 @@ package com.github.azeroth.game.entity.scene;
 
 
 import com.github.azeroth.game.entity.UpdateMask;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.entity.object.enums.TypeId;
-import com.github.azeroth.game.entity.object.enums.TypeMask;
+import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.TypeMask;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.Map;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
 import com.github.azeroth.game.networking.WorldPacket;
-import game.PhasingHandler;
-import lombok.Getter;
 
-public class SceneObject extends WorldObject implements GridObject<SceneObject> {
-    @Getter
-    private final GridReference<SceneObject> gridReference = new GridReference<>();
+public class SceneObject extends WorldObject {
     private final SceneObjectData sceneObjectData;
-    private final position stationaryposition = new Position();
+    private final Position stationaryposition = new Position();
     private ObjectGuid createdBySpellCast = ObjectGuid.EMPTY;
 
-    public sceneObject() {
+    public SceneObject() {
         super(false);
         setObjectTypeMask(TypeMask.forValue(getObjectTypeMask().getValue() | TypeMask.sceneObject.getValue()));
         setObjectTypeId(TypeId.SCENE_OBJECT);

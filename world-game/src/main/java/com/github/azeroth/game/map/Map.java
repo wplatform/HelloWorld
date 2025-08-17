@@ -15,6 +15,9 @@ import com.github.azeroth.dbc.domain.SummonProperty;
 import com.github.azeroth.defines.LineOfSightChecks;
 import com.github.azeroth.defines.SummonCategory;
 import com.github.azeroth.defines.SummonTitle;
+import com.github.azeroth.game.domain.map.Coordinate;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.*;
 import com.github.azeroth.game.domain.spawn.*;
 import com.github.azeroth.game.domain.unit.UnitTypeMask;
 import com.github.azeroth.game.entity.ChrCustomizationChoice;
@@ -25,31 +28,31 @@ import com.github.azeroth.game.entity.dynamic.DynamicObject;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.gobject.Transport;
 import com.github.azeroth.game.entity.object.*;
-import com.github.azeroth.game.entity.object.enums.CellMoveState;
-import com.github.azeroth.game.entity.object.enums.HighGuid;
-import com.github.azeroth.game.entity.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.CellMoveState;
+import com.github.azeroth.game.domain.object.enums.HighGuid;
+import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.object.update.UpdateData;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.scene.SceneObject;
 import com.github.azeroth.game.entity.totem.Totem;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.collision.DynamicMapTree;
-import com.github.azeroth.game.map.collision.model.GameObjectModel;
-import com.github.azeroth.game.map.enums.LiquidHeaderTypeFlag;
-import com.github.azeroth.game.map.enums.ModelIgnoreFlags;
-import com.github.azeroth.game.map.enums.TransferAbortReason;
-import com.github.azeroth.game.map.enums.ZLiquidStatus;
+import com.github.azeroth.game.domain.map.model.GameObjectModel;
+import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
+import com.github.azeroth.game.domain.map.enums.ModelIgnoreFlags;
+import com.github.azeroth.game.domain.map.enums.TransferAbortReason;
+import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.game.map.grid.*;
-import com.github.azeroth.game.map.model.PositionFullTerrainStatus;
-import com.github.azeroth.game.map.model.ZoneAndAreaId;
+import com.github.azeroth.game.domain.map.PositionFullTerrainStatus;
+import com.github.azeroth.game.domain.map.ZoneAndAreaId;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.packet.misc.WeatherPkt;
+import com.github.azeroth.game.networking.packet.update.UpdateObject;
 import com.github.azeroth.game.networking.packet.worldstate.UpdateWorldState;
 import com.github.azeroth.game.phasing.MultiPersonalPhaseTracker;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.pools.SpawnedPoolData;
-import com.github.azeroth.game.scripting.interfaces.iworldstate.IWorldStateOnValueChange;
 import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.world.World;
 import lombok.Getter;
@@ -357,7 +360,7 @@ public class Map {
         return poolData;
     }
 
-    public final void close() {
+    public final void destroy() {
         onDestroyMap(this);
 
         // Delete all waiting spawns
@@ -369,10 +372,6 @@ public class Map {
             obj.resetMap();
         }
 
-        if (!scriptSchedule.isEmpty()) {
-            world.getVMapManager().decreaseScheduledScriptCount((int) scriptSchedule.Sum(kvp -> kvp.value.count));
-        }
-
         world.getOutDoorPvpManager().destroyOutdoorPvPForMap(this);
         world.getBattleFieldManager().destroyBattlefieldsForMap(this);
 
@@ -381,23 +380,34 @@ public class Map {
 
     public final void loadAllCells() {
 
-
         for (int cellX = 0; cellX < MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP; cellX++)
             for (int cellY = 0; cellY < MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP; cellY++)
                 loadGrid((cellX + 0.5f - MapDefine.CENTER_GRID_CELL_ID) * MapDefine.SIZE_OF_GRID_CELL,
                         (cellY + 0.5f - MapDefine.CENTER_GRID_CELL_ID) * MapDefine.SIZE_OF_GRID_CELL);
 
-
     }
 
-    public final void addToGrid(WorldObject obj, Cell cell) {
+
+    public final <T extends WorldObject & GirdObject> void  removeFromGrid(T obj, Cell cell) {
+        nGrids.computeIfPresent(cell.getId(), (k,v)-> {
+            if (obj.isWorldObject()) {
+                v.getNCell(cell.getCellX(), cell.getCellY()).removeWorldObject(obj);
+            } else {
+                v.getNCell(cell.getCellX(), cell.getCellY()).removeGridObject(obj);
+            }
+            return v;
+        });
+        obj.setCurrentCell(null);
+    }
+
+    public final <T extends WorldObject & GirdObject> void addToGrid(T obj, Cell cell) {
         NGrid grid = getNGrid(cell);
         if (obj.isWorldObject()) {
-            grid.retain();
-            grid.getGrid(cell.getCellX(), cell.getCellY()).addWorldObject(obj);
+            grid.getNCell(cell.getCellX(), cell.getCellY()).addWorldObject(obj);
         } else {
-            grid.getGrid(cell.getCellX(), cell.getCellY()).addGridObject(obj);
+            grid.getNCell(cell.getCellX(), cell.getCellY()).addGridObject(obj);
         }
+        obj.setCurrentCell(new Cell(cell));
     }
 
     public void loadGridObjects(NGrid grid, Cell cell) {
@@ -405,7 +415,7 @@ public class Map {
             return;
         }
 
-        GridLoader loader = new GridLoader(grid, this, cell);
+        GridLoader loader = new GridLoader(world.getObjectManager(), grid, this, cell);
         loader.loadN();
     }
 
@@ -479,35 +489,25 @@ public class Map {
 
 
     public final void setWorldStateValue(int worldStateId, int value, boolean hidden) {
-        var oldValue = 0;
-
-        if (!worldStateValues.ad.TryAdd(worldStateId, 0)) {
-            int oldValue1 = worldStateValues.get(worldStateId);
-            oldValue = oldValue1;
-
-            if (oldValue == value) {
-                return;
-            }
+        int oldValue = worldStateValues.get(worldStateId, 0);
+        if (oldValue == value) {
+            return;
         }
-
         worldStateValues.put(worldStateId, value);
 
         var worldStateTemplate = world.getWorldStateManager().getWorldStateTemplate(worldStateId);
 
-        if (worldStateTemplate != null) {
-            global.getScriptMgr().<IWorldStateOnValueChange>RunScript(script -> script.OnValueChange(worldStateTemplate.id, oldValue, value, this), worldStateTemplate.scriptId);
-        }
-
         // Broadcast update to all players on the map
         UpdateWorldState updateWorldState = new UpdateWorldState();
-        updateWorldState.variableID = (int) worldStateId;
+        updateWorldState.variableID = worldStateId;
         updateWorldState.value = value;
         updateWorldState.hidden = hidden;
         updateWorldState.write();
 
         for (var player : getPlayers()) {
             if (worldStateTemplate != null && !worldStateTemplate.areaIds.isEmpty()) {
-                var isInAllowedArea = worldStateTemplate.areaIds.Any(requiredAreaId -> global.getDB2Mgr().IsInArea(player.getArea(), requiredAreaId));
+                var isInAllowedArea = worldStateTemplate.areaIds.stream()
+                        .anyMatch(requiredAreaId -> world.getDbcObjectManager().isInArea(player.getArea(), requiredAreaId));
 
                 if (!isInAllowedArea) {
                     continue;
@@ -564,13 +564,14 @@ public class Map {
     public final boolean addToMap(Transport obj) {
         //TODO: Needs clean up. An object should not be added to map twice.
         if (obj.isInWorld()) {
+
             return true;
         }
 
         var cellCoordinate = MapDefine.computeCellCoordinate(obj.getLocation().getX(), obj.getLocation().getY());
 
         if (!cellCoordinate.isCoordinateValid()) {
-            Logs.MAPS.error("Map.Add: Object {0} has invalid coordinates X:{1} Y:{2} grid cell [{3}:{4}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoord.getXCoord(), cellCoord.getYCoord());
+            Logs.MAPS.error("Map::Add: Object {} has invalid coordinates X:{} Y:{} grid cell [{}:{}]", obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), cellCoordinate.axisX(), cellCoordinate.axisY());
 
             //Should delete object
             return false;
@@ -587,8 +588,7 @@ public class Map {
                     var data = new UpdateData(getId());
                     obj.buildCreateUpdateBlockForPlayer(data, player);
                     player.getVisibleTransports().add(obj.getGUID());
-                    UpdateObject packet;
-                    tangible.OutObject<UpdateObject> tempOut_packet = new tangible.OutObject<UpdateObject>();
+
                     data.buildPacket(tempOut_packet);
                     packet = tempOut_packet.outArgValue;
                     player.sendPacket(packet);
@@ -1222,9 +1222,7 @@ public class Map {
             moveAllAreaTriggersInMoveList();
 
             // move creatures to respawn grids if this is diff.nGrid or to remove list
-            Set<GridVisitOption> interesting = Set.of(GridVisitOption.GRID_CREATURE, GridVisitOption.GRID_GAME_OBJECT);
-            GridVisitor worker = new GridVisitor(interesting, GridVisitors.OBJECT_GRID_EVACUATOR);
-            nGrid.visitAllGrids(worker);
+            nGrid.visitGrid(GridVisitors.OBJECT_GRID_EVACUATOR);
 
             // Finish creature moves, remove and delete all creatures with delayed remove before unload
             moveAllCreaturesInMoveList();
@@ -1232,17 +1230,14 @@ public class Map {
             moveAllAreaTriggersInMoveList();
         }
 
-        GridVisitor worker = new GridVisitor(GridVisitOption.GRID_OBJECTS, GridVisitors.OBJECT_GRID_CLEANER);
-        nGrid.visitAllGrids(worker);
+        nGrid.visitGrid(GridVisitors.OBJECT_GRID_CLEANER);
 
         removeAllObjectsInRemoveList();
 
         // After removing all objects from the map, purge empty tracked phases
         getMultiPersonalPhaseTracker().unloadGrid(nGrid);
 
-        worker = new GridVisitor(GridVisitOption.GRID_OBJECTS, GridVisitors.OBJECT_GRID_UN_LOADER);
-        nGrid.visitAllGrids(worker);
-
+        nGrid.visitGrid(GridVisitors.OBJECT_GRID_UN_LOADER);
 
         nGrids.remove(nGrid.getGridId());
 
@@ -1616,11 +1611,11 @@ public class Map {
         SpawnObjectType type;
 
         switch (obj.getTypeId()) {
-            case Unit:
+            case UNIT:
                 type = SpawnObjectType.CREATURE;
 
                 break;
-            case GameObject:
+            case GAME_OBJECT:
                 type = SpawnObjectType.gameObject;
 
                 break;
@@ -3062,11 +3057,15 @@ public class Map {
 
         Logs.MAPS.debug("Switch object {} from grid[{}, {}] {}", obj.getGUID(), cell.getGridX(), cell.getGridY(), on);
 
-        var ngrid = getNGrid(cell.getGridX(), cell.getGridY());
+        var ngrid = getNGrid(cell);
 
         obj.removeFromGrid();
 
-        var gridCell = ngrid.getGrid(cell.getCellX(), cell.getCellY());
+        removeFromGrid(obj, cell);
+
+
+
+        var gridCell = ngrid.getNCell(cell.getCellX(), cell.getCellY());
 
         if (on) {
             gridCell.addWorldObject(obj);
@@ -3533,7 +3532,6 @@ public class Map {
 
         if (isGridLoaded(grid)) {
             removeFromGrid(obj, old_cell);
-            ensureGridCreated(grid);
             addToGrid(obj, new_cell);
 
             return true;

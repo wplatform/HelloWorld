@@ -1,7 +1,7 @@
 package com.github.azeroth.game.map;
 
-import com.github.azeroth.game.weather.Weather;
-import com.github.azeroth.game.weather.WeatherState;
+import com.github.azeroth.game.domain.weather.Weather;
+import com.github.azeroth.game.domain.weather.WeatherState;
 
 import java.util.ArrayList;
 

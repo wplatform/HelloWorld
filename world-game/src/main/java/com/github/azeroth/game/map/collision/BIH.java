@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.IntArray;
 import com.github.azeroth.common.Logs;
-import com.github.azeroth.game.map.collision.model.Distance;
-import com.github.azeroth.game.map.collision.model.GameObjectModel;
+import com.github.azeroth.game.domain.map.model.Distance;
+import com.github.azeroth.game.domain.map.model.GameObjectModel;
 import com.github.azeroth.utils.MathUtil;
 
 import java.nio.ByteBuffer;

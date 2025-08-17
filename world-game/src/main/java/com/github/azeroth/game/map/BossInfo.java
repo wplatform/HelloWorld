@@ -1,6 +1,8 @@
 package com.github.azeroth.game.map;
 
 
+import com.github.azeroth.game.domain.map.MapDefine;
+
 import java.util.ArrayList;
 
 

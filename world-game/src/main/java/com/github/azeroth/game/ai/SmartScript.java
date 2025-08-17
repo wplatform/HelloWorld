@@ -7,7 +7,7 @@ import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.gobject.GameObject;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;

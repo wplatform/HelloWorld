@@ -1,7 +1,7 @@
 package com.github.azeroth.game.entity.player;
 
 
-import com.github.azeroth.game.entity.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.group.PlayerGroup;
 

@@ -7,16 +7,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("rbac_linked_permissions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "rbac_linked_permissions")
 public class RbacLinkedPermissions {
-    
     @Id
     @Column("id")
-    private Long id;
-    
+    private Integer id;
+
+    @Id
     @Column("linkedId")
-    private Long linkedId;
+    private Integer linkedId;
 }

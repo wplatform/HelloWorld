@@ -5,6 +5,10 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.defines.*;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerAction;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerActionType;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerActionUserTypes;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerId;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.gobject.*;
 import com.github.azeroth.game.domain.misc.NpcText;
@@ -59,50 +63,50 @@ public interface RowMappers {
         creature.entry = rs.getInt(1);
 
         for (int i = 0; i < CreatureTemplate.MAX_KILL_CREDIT; ++i)
-            creature.killCredit[i]      = rs.getInt(2 + i);
+            creature.killCredit[i] = rs.getInt(2 + i);
 
-        creature.name                   .set(Locale.enUS, rs.getString(4));
-        creature.femaleName             .set(Locale.enUS, rs.getString(5));
-        creature.subName                .set(Locale.enUS, rs.getString(6));
-        creature.titleAlt               .set(Locale.enUS, rs.getString(7));
-        creature.iconName               .set(Locale.enUS, rs.getString(8));
-        creature.requiredExpansion      = rs.getInt(9);
-        creature.vignetteID             = rs.getInt(10);
-        creature.faction                = rs.getInt(11);
-        creature.npcFlag                = EnumFlag.of(NPCFlag.class, rs.getInt(12));
-        creature.speedWalk             = rs.getFloat(13);
-        creature.speedRun              = rs.getFloat(14);
-        creature.scale                  = rs.getFloat(15);
-        creature.classification         = CreatureClassification.values()[rs.getByte(16)];
+        creature.name.set(Locale.enUS, rs.getString(4));
+        creature.femaleName.set(Locale.enUS, rs.getString(5));
+        creature.subName.set(Locale.enUS, rs.getString(6));
+        creature.titleAlt.set(Locale.enUS, rs.getString(7));
+        creature.iconName.set(Locale.enUS, rs.getString(8));
+        creature.requiredExpansion = rs.getInt(9);
+        creature.vignetteID = rs.getInt(10);
+        creature.faction = rs.getInt(11);
+        creature.npcFlag = EnumFlag.of(NPCFlag.class, rs.getInt(12));
+        creature.speedWalk = rs.getFloat(13);
+        creature.speedRun = rs.getFloat(14);
+        creature.scale = rs.getFloat(15);
+        creature.classification = CreatureClassification.values()[rs.getByte(16)];
         int dmgSchool = rs.getInt(17);
-        if(dmgSchool > -1 && dmgSchool < SpellSchool.values().length) {
-            creature.dmgSchool              = SpellSchool.values()[dmgSchool];
-        }else {
+        if (dmgSchool > -1 && dmgSchool < SpellSchool.values().length) {
+            creature.dmgSchool = SpellSchool.values()[dmgSchool];
+        } else {
             Logs.SQL.error("Creature (Entry: {}) has invalid unit_class ({}) in creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", creature.entry, creature.unitClass);
             creature.unitClass = UnitClass.WARRIOR;
         }
 
-        creature.baseAttackTime         = rs.getInt(18);
-        creature.rangeAttackTime        = rs.getInt(19);
-        creature.baseVariance           = rs.getFloat(20);
-        creature.rangeVariance          = rs.getFloat(21);
+        creature.baseAttackTime = rs.getInt(18);
+        creature.rangeAttackTime = rs.getInt(19);
+        creature.baseVariance = rs.getFloat(20);
+        creature.rangeVariance = rs.getFloat(21);
         int unitClass = rs.getInt(22);
-        if(dmgSchool > 0 && dmgSchool < SpellSchool.values().length) {
-            creature.unitClass              = UnitClass.values()[unitClass];
+        if (dmgSchool > 0 && dmgSchool < SpellSchool.values().length) {
+            creature.unitClass = UnitClass.values()[unitClass];
         } else {
             Logs.SQL.error("Creature (Entry: {}) has invalid spell school value ({}) in `dmgschool`.", creature.entry, unitClass);
             creature.dmgSchool = SpellSchool.NORMAL;
         }
-        creature.unitFlags             = EnumFlag.of(UnitFlag.class, rs.getInt(23));
-        creature.unitFlags2            = EnumFlag.of(UnitFlag2.class, rs.getInt(24));
-        creature.unitFlags3            = EnumFlag.of(UnitFlag3.class, rs.getInt(25));
-        creature.family                 = CreatureFamily.values()[rs.getInt(26)];
-        creature.trainerClass          = PlayerClass.values()[rs.getInt(27)];
-        creature.type                   = CreatureType.values()[rs.getInt(28)];
+        creature.unitFlags = EnumFlag.of(UnitFlag.class, rs.getInt(23));
+        creature.unitFlags2 = EnumFlag.of(UnitFlag2.class, rs.getInt(24));
+        creature.unitFlags3 = EnumFlag.of(UnitFlag3.class, rs.getInt(25));
+        creature.family = CreatureFamily.values()[rs.getInt(26)];
+        creature.trainerClass = PlayerClass.values()[rs.getInt(27)];
+        creature.type = CreatureType.values()[rs.getInt(28)];
 
-        creature.vehicleId              = rs.getInt(29);
-        creature.aiName                 = rs.getString(30);
-        creature.movementType           = rs.getInt(31);
+        creature.vehicleId = rs.getInt(29);
+        creature.aiName = rs.getString(30);
+        creature.movementType = rs.getInt(31);
 
         int ground = rs.getInt(32);
         if (!rs.wasNull() && ground < CreatureGroundMovementType.values().length) {
@@ -133,14 +137,14 @@ public interface RowMappers {
         if (!rs.wasNull())
             creature.movement.interactionPauseTimer = interactionPauseTimer;
 
-        creature.modExperience          = rs.getFloat(39);
-        creature.racialLeader           = rs.getBoolean(40);
-        creature.movementId             = rs.getInt(41);
-        creature.regenHealth            = rs.getBoolean(42);
-        creature.creatureImmunitiesId   = rs.getInt(43);
-        creature.flagsExtra            = EnumFlag.of(CreatureFlagExtra.class, rs.getInt(44));
-        creature.script               = rs.getString(45);
-        creature.stringId               = rs.getString(46);
+        creature.modExperience = rs.getFloat(39);
+        creature.racialLeader = rs.getBoolean(40);
+        creature.movementId = rs.getInt(41);
+        creature.regenHealth = rs.getBoolean(42);
+        creature.creatureImmunitiesId = rs.getInt(43);
+        creature.flagsExtra = EnumFlag.of(CreatureFlagExtra.class, rs.getInt(44));
+        creature.script = rs.getString(45);
+        creature.stringId = rs.getString(46);
 
         return creature;
     };
@@ -197,7 +201,7 @@ public interface RowMappers {
         playerInfo.o = rs.getFloat(7);
 
         int introMovieId = rs.getInt(8);
-        if(!rs.wasNull()) {
+        if (!rs.wasNull()) {
             playerInfo.introMovieId = introMovieId;
         }
         return playerInfo;
@@ -207,14 +211,14 @@ public interface RowMappers {
     RowMapper<GameObjectTemplate> GAME_OBJECT_TEMPLATE_ROW_MAPPER = (rs, rowNum) -> {
         GameObjectTemplate got = new GameObjectTemplate();
 
-        got.entry          = rs.getInt(1);
-        got.type           = GameObjectType.values()[rs.getByte(2)];
-        got.displayId      = rs.getInt(3);
-        got.name           = rs.getString(4);
-        got.iconName       = rs.getString(5);
+        got.entry = rs.getInt(1);
+        got.type = GameObjectType.values()[rs.getByte(2)];
+        got.displayId = rs.getInt(3);
+        got.name = rs.getString(4);
+        got.iconName = rs.getString(5);
         got.castBarCaption = rs.getString(6);
-        got.unk1           = rs.getString(7);
-        got.size           = rs.getFloat(8);
+        got.unk1 = rs.getString(7);
+        got.size = rs.getFloat(8);
 
         for (byte i = 0; i < got.raw.length; ++i)
             got.raw[i] = rs.getInt(9 + i);
@@ -231,13 +235,13 @@ public interface RowMappers {
     RowMapper<GameObjectTemplateAddon> GAME_OBJECT_TEMPLATE_ADDON_ROW_MAPPER = (rs, rowNum) -> {
         GameObjectTemplateAddon gameObjectAddon = new GameObjectTemplateAddon();
 
-        gameObjectAddon.entry          = rs.getInt(1);
-        gameObjectAddon.faction        = rs.getInt(2);
-        gameObjectAddon.flags          = GameObjectFlag.values()[rs.getInt(3)];
-        gameObjectAddon.mingold        = rs.getInt(4);
-        gameObjectAddon.maxgold        = rs.getInt(5);
-        gameObjectAddon.worldEffectId  = rs.getInt(11);
-        gameObjectAddon.aiAnimKitId    = rs.getInt(12);
+        gameObjectAddon.entry = rs.getInt(1);
+        gameObjectAddon.faction = rs.getInt(2);
+        gameObjectAddon.flags = GameObjectFlag.values()[rs.getInt(3)];
+        gameObjectAddon.mingold = rs.getInt(4);
+        gameObjectAddon.maxgold = rs.getInt(5);
+        gameObjectAddon.worldEffectId = rs.getInt(11);
+        gameObjectAddon.aiAnimKitId = rs.getInt(12);
 
         for (byte i = 0; i < gameObjectAddon.artKits.length; ++i)
             gameObjectAddon.artKits[i] = rs.getInt(6 + i);
@@ -248,9 +252,9 @@ public interface RowMappers {
     RowMapper<GameObjectData> GAME_OBJECTS_ROW_MAPPER = (rs, rowNum) -> {
         GameObjectData data = new GameObjectData();
 
-        data.spawnId          = rs.getInt(1);
-        data.id  = rs.getInt(2);
-        data.mapId  = rs.getInt(3);
+        data.spawnId = rs.getInt(1);
+        data.id = rs.getInt(2);
+        data.mapId = rs.getInt(3);
         data.positionX = rs.getFloat(4);
         data.positionY = rs.getFloat(5);
         data.positionZ = rs.getFloat(6);
@@ -262,14 +266,14 @@ public interface RowMappers {
         data.spawnTimeSecs = rs.getInt(12);
 
         data.animProgress = rs.getInt(13);
-        data.artKit         = 0;
-        data.goState     = GOState.valueOf(rs.getByte(13));
+        data.artKit = 0;
+        data.goState = GOState.valueOf(rs.getByte(13));
         data.spawnDifficultiesText = rs.getString(14);
-        data.gameEvent      = rs.getInt(15);
-        data.poolId         = rs.getInt(16);
-        data.phaseUseFlags  = EnumFlag.of(PhaseUseFlag.class, rs.getInt(17));
-        data.phaseId        = rs.getInt(18);
-        data.phaseGroup     = rs.getInt(19);
+        data.gameEvent = rs.getInt(15);
+        data.poolId = rs.getInt(16);
+        data.phaseUseFlags = EnumFlag.of(PhaseUseFlag.class, rs.getInt(17));
+        data.phaseId = rs.getInt(18);
+        data.phaseGroup = rs.getInt(19);
         data.terrainSwapMap = rs.getInt(20);
         data.script = rs.getString(21);
         data.stringId = rs.getString(22);
@@ -300,9 +304,9 @@ public interface RowMappers {
     RowMapper<CreatureData> CREATURE_ROW_MAPPER = (rs, rowNum) -> {
         CreatureData data = new CreatureData();
 
-        data.spawnId        = rs.getInt(1);
-        data.id             = rs.getInt(2);
-        data.mapId          = rs.getInt(3);
+        data.spawnId = rs.getInt(1);
+        data.id = rs.getInt(2);
+        data.mapId = rs.getInt(3);
         data.positionX = rs.getFloat(4);
         data.positionY = rs.getFloat(5);
         data.positionZ = rs.getFloat(6);
@@ -312,15 +316,15 @@ public interface RowMappers {
             data.display = new CreatureModel(displayId, 1.0f, 1.0f);
         }
 
-        data.equipmentId    = rs.getByte(9);
-        data.spawnTimeSecs  = rs.getInt(10);
+        data.equipmentId = rs.getByte(9);
+        data.spawnTimeSecs = rs.getInt(10);
         data.wanderDistance = rs.getFloat(11);
-        data.currentWaypoint= rs.getInt(12);
-        data.curHealthPct   = rs.getInt(13);
-        data.movementType   = rs.getByte(14);
+        data.currentWaypoint = rs.getInt(12);
+        data.curHealthPct = rs.getInt(13);
+        data.movementType = rs.getByte(14);
         data.spawnDifficultiesText = rs.getString(15);
-        data.gameEvent     = rs.getInt(16);
-        data.poolId         = rs.getInt(17);
+        data.gameEvent = rs.getInt(16);
+        data.poolId = rs.getInt(17);
 
         long npcFlag = rs.getLong(18);
         if (!rs.wasNull())
@@ -338,12 +342,29 @@ public interface RowMappers {
         if (!rs.wasNull())
             data.unitFlags3 = EnumFlag.of(UnitFlag3.class, unitFlags3);
 
-        data.phaseUseFlags  = EnumFlag.of(PhaseUseFlag.class, rs.getByte(22));
-        data.phaseId        = rs.getInt(23);
-        data.phaseGroup     = rs.getInt(24);
+        data.phaseUseFlags = EnumFlag.of(PhaseUseFlag.class, rs.getByte(22));
+        data.phaseId = rs.getInt(23);
+        data.phaseGroup = rs.getInt(24);
         data.terrainSwapMap = rs.getInt(25);
-        data.script         = rs.getString(26);
-        data.stringId       = rs.getString(27);
+        data.script = rs.getString(26);
+        data.stringId = rs.getString(27);
+        return data;
+    };
+
+
+    RowMapper<AreaTriggerAction> AREA_TRIGGER_ACTION_ROW_MAPPER = (rs, rowNum) -> {
+        AreaTriggerAction data = new AreaTriggerAction();
+        data.id = new AreaTriggerId(rs.getInt(1), rs.getBoolean(2));
+        data.param = rs.getInt(3);
+        int actionType = rs.getInt(4);
+        int targetType = rs.getInt(5);
+        if (actionType < AreaTriggerActionType.values().length) {
+            data.actionType = AreaTriggerActionType.values()[actionType];
+
+        }
+        if (targetType < AreaTriggerActionUserTypes.values().length) {
+            data.targetType = AreaTriggerActionUserTypes.values()[targetType];
+        }
         return data;
     };
 

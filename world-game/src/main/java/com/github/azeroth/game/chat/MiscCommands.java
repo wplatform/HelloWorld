@@ -1,6 +1,7 @@
 package com.github.azeroth.game.chat;
 
 
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.entity.activePlayerData;
 import com.github.azeroth.game.entity.gobject.transport;
 import com.github.azeroth.game.entity.object.WorldObject;

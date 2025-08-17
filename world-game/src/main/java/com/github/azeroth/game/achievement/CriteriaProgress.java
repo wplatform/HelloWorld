@@ -1,6 +1,6 @@
 package com.github.azeroth.game.achievement;
 
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 
 public class CriteriaProgress {
     public long counter;

@@ -9,11 +9,10 @@ import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.domain.AreaTable;
 import com.github.azeroth.dbc.domain.LiquidType;
-import com.github.azeroth.game.map.MapDefine;
-import com.github.azeroth.game.map.enums.LiquidHeaderTypeFlag;
-import com.github.azeroth.game.map.enums.LoadResult;
-import com.github.azeroth.game.map.enums.ZLiquidStatus;
-import com.github.azeroth.game.map.model.*;
+import com.github.azeroth.game.domain.map.*;
+import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
+import com.github.azeroth.game.domain.map.enums.LoadResult;
+import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.utils.Flags;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.BiFunction;
 
 import static com.github.azeroth.defines.SharedDefine.GROUND_HEIGHT_TOLERANCE;
-import static com.github.azeroth.game.map.MapDefine.*;
+import static com.github.azeroth.game.domain.map.MapDefine.*;
 
 public class GridMap {
 

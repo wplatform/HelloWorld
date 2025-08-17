@@ -9,8 +9,10 @@ import com.github.azeroth.common.Logs;
 import com.github.azeroth.common.Pair;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.domain.MapDifficulty;
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.entity.object.WorldLocation;
+import com.github.azeroth.game.domain.map.MapDb2Entries;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.group.PlayerGroup;
 import com.github.azeroth.game.world.World;
@@ -611,7 +613,7 @@ public class MapManager  {
         }
 
         // erase map
-        map.close();
+        map.destroy();
 
         return true;
     }

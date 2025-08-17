@@ -3,7 +3,7 @@ package com.github.azeroth.game.arena;
 
 import com.github.azeroth.game.battleground.Battleground;
 import com.github.azeroth.game.battleground.BattlegroundTemplate;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.player.Player;
 
 

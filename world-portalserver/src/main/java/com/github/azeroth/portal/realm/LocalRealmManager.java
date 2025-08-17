@@ -38,6 +38,8 @@ public class LocalRealmManager implements RealmManager, InitializingBean {
     private final RealmListRepository realmlistRepo;
     private Map<Integer, ClientBuild> clientBuildMap;
 
+    private List<BuildInfo> buildInfo;
+
     private final ConcurrentHashMap<RealmKey, Realm> realmMap = new ConcurrentHashMap<>(5, .1f);
 
 
@@ -57,8 +59,14 @@ public class LocalRealmManager implements RealmManager, InitializingBean {
     }
 
     public void loadBuildInfo() {
-        this.clientBuildMap = buildInfoRepo.stream().filter(item -> {
-            BuildInfo buildInfo = item.buildInfo();
+
+        buildInfo = buildInfoRepo.stream().toList();
+
+
+
+
+        this.clientBuildMap = buildInfoRepo.stream().filter(buildInfo -> {
+
             BuildAuthKey buildAuthKey = item.authKey();
             boolean result = true;
             if (!ClientBuild.PLATFORM_TYPE.contains(buildAuthKey.getId().getPlatform())) {
@@ -75,7 +83,7 @@ public class LocalRealmManager implements RealmManager, InitializingBean {
                 result = false;
             }
             return result;
-        }).collect(Collectors.groupingBy(item -> item.buildInfo().getId(), Collectors.collectingAndThen(Collectors.toList(), list -> {
+        }).collect(Collectors.groupingBy(item -> item.getId(), Collectors.collectingAndThen(Collectors.toList(), list -> {
             BuildInfo buildInfo = list.getFirst().buildInfo();
             ClientBuild clientBuild = new ClientBuild();
             clientBuild.setBuild(buildInfo.getId());

@@ -1,10 +1,6 @@
 package com.github.azeroth.game.condition;
 
 
-import com.github.azeroth.game.DisableFlags;
-import com.github.azeroth.game.DisableType;
-import com.github.azeroth.game.entity.object.WorldObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -428,9 +424,9 @@ public class DisableManager {
             case Battleground:
             case OutdoorPVP:
             case Criteria:
-            case MMAP:
+            case DisableType.MMAP:
                 return true;
-            case VMAP:
+            case DisableType.VMAP:
                 return flags.hasFlag(data.flags);
         }
 

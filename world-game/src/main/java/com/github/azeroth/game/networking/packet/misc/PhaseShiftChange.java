@@ -2,7 +2,7 @@ package com.github.azeroth.game.networking.packet.misc;
 
 
 import com.badlogic.gdx.utils.ShortArray;
-import com.github.azeroth.game.entity.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.ServerPacket;
 import com.github.azeroth.game.networking.opcode.ServerOpCode;
 

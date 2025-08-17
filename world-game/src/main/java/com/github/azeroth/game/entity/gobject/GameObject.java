@@ -13,31 +13,25 @@ import com.github.azeroth.game.domain.gobject.GameObjectData;
 import com.github.azeroth.game.domain.gobject.GameObjectOverride;
 import com.github.azeroth.game.domain.gobject.GameObjectTemplate;
 import com.github.azeroth.game.domain.gobject.GameObjectTemplateAddon;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.GameObjectFieldData;
 import com.github.azeroth.game.entity.ObjectFieldData;
-import com.github.azeroth.game.entity.UpdateMask;
-import com.github.azeroth.game.entity.gameObjectFieldData;
-import com.github.azeroth.game.entity.object.MapObject;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.Position;
-import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.entity.object.enums.CellMoveState;
+
+import com.github.azeroth.game.entity.object.*;
+import com.github.azeroth.game.domain.object.enums.CellMoveState;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.loot.Loot;
 import com.github.azeroth.game.loot.LootManager;
 import com.github.azeroth.game.loot.LootStorage;
 import com.github.azeroth.game.map.*;
-import com.github.azeroth.game.map.collision.model.GameObjectModel;
+import com.github.azeroth.game.domain.map.model.GameObjectModel;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.spell.CastSpellExtraArgs;
 import com.github.azeroth.game.spell.SpellInfo;
-import game.ConditionManager;
-import game.GameEvents;
-import game.PhasingHandler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,12 +39,12 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.locale;
+
 
 @Getter
 @Setter
-public class GameObject extends WorldObject implements GridObject<GameObject>, MapObject {
-    private final GridReference<GameObject> gridReference = new GridReference<>();
+public class GameObject extends WorldObject implements GirdObject {
+
     private final ArrayList<ObjectGuid> uniqueUsers = new ArrayList<>();
     private final HashMap<Integer, ObjectGuid> chairListSlots = new HashMap<Integer, ObjectGuid>();
     private final ArrayList<ObjectGuid> skillupList = new ArrayList<>();
@@ -91,9 +85,9 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
     private GameObjectFieldData gameObjectFieldData;
     private Position stationaryPosition;
     private Loot loot;
-    private GameObjectmodel model;
+    private GameObjectModel model;
 
-    public gameObject() {
+    public GameObject() {
         super(false);
         setObjectTypeMask(TypeMask.forValue(getObjectTypeMask().getValue() | TypeMask.gameObject.getValue()));
         setObjectTypeId(TypeId.gameObject);
@@ -109,7 +103,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
         resetLootMode(); // restore default loot mode
         setStationaryPosition(new Position());
 
-        setGameObjectFieldData(new gameObjectFieldData());
+        setGameObjectFieldData(new GameObjectFieldData());
     }
 
     public static GameObject createGameObject(int entry, Map map, Position pos, Quaternion rotation, int animProgress, GOState goState) {
@@ -123,7 +117,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
             return null;
         }
 
-        GameObject go = new gameObject();
+        GameObject go = new GameObject();
 
         if (!go.create(entry, map, pos, rotation, animProgress, goState, artKit, false, 0)) {
             return null;
@@ -137,7 +131,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
     }
 
     public static GameObject createGameObjectFromDb(long spawnId, Map map, boolean addToMap) {
-        GameObject go = new gameObject();
+        GameObject go = new GameObject();
 
         if (!go.loadFromDB(spawnId, map, addToMap)) {
             return null;
@@ -1457,6 +1451,7 @@ public class GameObject extends WorldObject implements GridObject<GameObject>, M
     @Override
     public boolean loadFromDB(long spawnId, Map map, boolean addToMap, boolean unused) {
         var data = global.getObjectMgr().getGameObjectData(spawnId);
+
 
         if (data == null) {
             Log.outError(LogFilter.Maps, "Gameobject (SpawnId: {0}) not found in table `gameobject`, can't load. ", spawnId);

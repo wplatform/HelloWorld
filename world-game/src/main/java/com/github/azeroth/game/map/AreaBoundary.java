@@ -1,6 +1,6 @@
 package com.github.azeroth.game.map;
 
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 
 public class AreaBoundary {
     private final boolean isInvertedBoundary;

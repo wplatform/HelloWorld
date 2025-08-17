@@ -6,8 +6,8 @@ import com.github.azeroth.common.Logs;
 import com.github.azeroth.defines.RaceMask;
 import com.github.azeroth.game.domain.unit.UnitStandStateType;
 import com.github.azeroth.game.domain.unit.UnitState;
-import com.github.azeroth.game.entity.object.enums.TypeId;
-import com.github.azeroth.game.entity.object.enums.TypeMask;
+import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.domain.object.enums.TypeMask;
 import com.github.azeroth.game.map.InstanceMap;
 import com.github.azeroth.game.map.grid.GridMapTypeMask;
 import com.github.azeroth.game.domain.quest.QuestStatus;
@@ -58,27 +58,16 @@ public class Condition {
                     var instance = ((InstanceMap) map).getInstanceScript();
 
                     if (instance != null) {
-                        switch (InstanceInfo.values()[conditionValue3]) {
-                            case INFO_DATA:
-                                condMeets = instance.getData(conditionValue1) == conditionValue2;
-
-                                break;
+                        condMeets = switch (InstanceInfo.values()[conditionValue3]) {
+                            case INFO_DATA -> instance.getData(conditionValue1) == conditionValue2;
                             //case INSTANCE_INFO_GUID_DATA:
                             //    condMeets = instance->GetGuidData(conditionValue1) == objectGuid(uint64(conditionValue2));
                             //    break;
-                            case INFO_BOSS_STATE:
-                                condMeets = instance.getBossState(conditionValue1) == EncounterState.forValue(conditionValue2);
-
-                                break;
-                            case INFO_DATA64:
-                                condMeets = instance.getData64(conditionValue1) == conditionValue2;
-
-                                break;
-                            default:
-                                condMeets = false;
-
-                                break;
-                        }
+                            case INFO_BOSS_STATE ->
+                                    instance.getBossState(conditionValue1) == EncounterState.forValue(conditionValue2);
+                            case INFO_DATA64 -> instance.getData64(conditionValue1) == conditionValue2;
+                            default -> false;
+                        };
                     }
                 }
 

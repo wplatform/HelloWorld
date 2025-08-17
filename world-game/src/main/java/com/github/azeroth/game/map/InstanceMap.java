@@ -2,6 +2,7 @@ package com.github.azeroth.game.map;
 
 
 import com.github.azeroth.common.Logs;
+import com.github.azeroth.game.domain.map.MapDb2Entries;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.group.GroupInstanceReference;
 import com.github.azeroth.game.group.PlayerGroup;

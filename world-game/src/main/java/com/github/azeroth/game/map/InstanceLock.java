@@ -3,6 +3,7 @@ package com.github.azeroth.game.map;
 
 import Time.GameTime;
 import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.game.domain.map.MapDb2Entries;
 
 import java.time.LocalDateTime;
 

@@ -7,19 +7,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("realmcharacters")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "realmcharacters")
 public class Realmcharacters {
-    
     @Id
     @Column("realmid")
-    private Integer realmId;
-    
+    private Integer realmid;
+
+    @Id
     @Column("acctid")
-    private Long acctId;
-    
+    private Integer acctid;
+
     @Column("numchars")
-    private Byte numChars;
+    private Integer numchars;
 }

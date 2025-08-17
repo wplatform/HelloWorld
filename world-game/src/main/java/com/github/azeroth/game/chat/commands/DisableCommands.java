@@ -1,7 +1,7 @@
 package com.github.azeroth.game.chat.commands;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.chat.CommandHandler;
 
 

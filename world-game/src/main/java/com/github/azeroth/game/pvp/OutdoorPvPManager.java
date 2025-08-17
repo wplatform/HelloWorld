@@ -1,7 +1,7 @@
 package com.github.azeroth.game.pvp;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.map.Map;

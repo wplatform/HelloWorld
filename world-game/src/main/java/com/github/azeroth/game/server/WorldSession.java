@@ -1,7 +1,7 @@
 package game;
 
 
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.LoginQueryHolder;
 import com.github.azeroth.game.account.RBACData;
 import com.github.azeroth.game.ai.PetAI;
@@ -40,7 +40,7 @@ import com.github.azeroth.game.mail.MailReceiver;
 import com.github.azeroth.game.mail.MailSender;
 import com.github.azeroth.game.map.CreatureListSearcher;
 import com.github.azeroth.game.map.InstanceLock;
-import com.github.azeroth.game.map.MapDefine;
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.movement.MovementGenerator;
 import com.github.azeroth.game.movement.generator.FlightPathMovementGenerator;

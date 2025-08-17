@@ -1,5 +1,7 @@
 package com.github.azeroth.game.entity.object;
 
+import com.github.azeroth.game.domain.object.ObjectGuid;
+
 public final class FindCreatureOptions {
     public Integer creatureId = null;
     public String stringId;

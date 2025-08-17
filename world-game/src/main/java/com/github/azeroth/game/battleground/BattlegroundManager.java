@@ -2,7 +2,7 @@ package com.github.azeroth.game.battleground;
 
 
 import Framework.Threading.*;
-import com.github.azeroth.game.DisableType;
+import com.github.azeroth.game.condition.DisableType;
 import com.github.azeroth.game.arena.*;
 import com.github.azeroth.game.battleground.zones.BgArathiBasin;
 import com.github.azeroth.game.battleground.zones.BgEyeofStorm;

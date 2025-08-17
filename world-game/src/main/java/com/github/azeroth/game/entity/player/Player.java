@@ -7,7 +7,10 @@ import com.github.azeroth.dbc.domain.MapEntry;
 import com.github.azeroth.defines.SkillType;
 import com.github.azeroth.defines.Team;
 import com.github.azeroth.defines.TeamId;
-import com.github.azeroth.game.*;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerStruct;
+import com.github.azeroth.game.CleaningFlags;
+import com.github.azeroth.game.condition.DisableType;
+import com.github.azeroth.game.QuestRelationResult;
 import com.github.azeroth.game.achievement.CriteriaManager;
 import com.github.azeroth.game.achievement.PlayerAchievementMgr;
 import com.github.azeroth.game.ai.IUnitAI;
@@ -18,18 +21,24 @@ import com.github.azeroth.game.battlepet.BattlePet;
 import com.github.azeroth.game.chat.Channel;
 import com.github.azeroth.game.chat.ChannelManager;
 import com.github.azeroth.game.chat.CustomChatTextBuilder;
+import com.github.azeroth.game.domain.creature.CreatureTemplate;
+import com.github.azeroth.game.domain.map.MapDb2Entries;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.ObjectDefine;
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.Position;
+import com.github.azeroth.game.domain.object.WorldLocation;
+import com.github.azeroth.game.domain.player.PlayerLoginQueryLoad;
+import com.github.azeroth.game.domain.quest.QuestObjectiveType;
+import com.github.azeroth.game.domain.quest.QuestStatus;
 import com.github.azeroth.game.domain.quest.QuestStatusData;
 import com.github.azeroth.game.entity.corpse.Corpse;
 import com.github.azeroth.game.entity.creature.Creature;
-import com.github.azeroth.game.domain.creature.CreatureTemplate;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.gobject.Transport;
 import com.github.azeroth.game.entity.item.*;
 import com.github.azeroth.game.entity.item.enums.BuyResult;
-import com.github.azeroth.game.entity.object.GenericObject;
-import com.github.azeroth.game.entity.object.ObjectGuid;
-import com.github.azeroth.game.entity.object.WorldLocation;
-import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.*;
 import com.github.azeroth.game.entity.player.enums.PlayerFlag;
 import com.github.azeroth.game.entity.player.enums.PlayerFlagEx;
 import com.github.azeroth.game.entity.player.enums.QuestSaveType;
@@ -52,8 +61,6 @@ import com.github.azeroth.game.mail.MailReceiver;
 import com.github.azeroth.game.mail.MailSender;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.GridObject;
-import com.github.azeroth.game.map.grid.GridReference;
 import com.github.azeroth.game.misc.PlayerMenu;
 import com.github.azeroth.game.movement.model.MovementInfo;
 import com.github.azeroth.game.networking.WorldPacket;
@@ -63,8 +70,6 @@ import com.github.azeroth.game.networking.packet.quest.DisplayPlayerChoice;
 import com.github.azeroth.game.networking.packet.spell.SetSpellModifier;
 import com.github.azeroth.game.networking.packet.spell.SpellModifierInfo;
 import com.github.azeroth.game.pvp.OutdoorPvP;
-import com.github.azeroth.game.quest.QuestObjectiveCriteriaManager;
-import com.github.azeroth.game.domain.quest.QuestStatus;
 import com.github.azeroth.game.reputation.ReputationMgr;
 import com.github.azeroth.game.scripting.ScriptManager;
 import com.github.azeroth.game.scripting.interfaces.iitem.IItemOnCastItemCombatSpell;
@@ -73,14 +78,11 @@ import com.github.azeroth.game.scripting.interfaces.iitem.IItemOnRemove;
 import com.github.azeroth.game.scripting.interfaces.iplayer.*;
 import com.github.azeroth.game.scripting.interfaces.iquest.IQuestOnQuestObjectiveChange;
 import com.github.azeroth.game.scripting.interfaces.iquest.IQuestOnQuestStatusChange;
-import com.github.azeroth.game.domain.player.PlayerLoginQueryLoad;
-import com.github.azeroth.game.domain.quest.QuestObjectiveType;
 import com.github.azeroth.game.spell.*;
 import com.github.azeroth.game.spell.enums.SpellModOp;
 import com.github.azeroth.utils.MathUtil;
-import game.*;
+
 import game.WorldSession;
-import lombok.Getter;
 
 import java.io.IOException;
 import java.util.*;
@@ -90,10 +92,7 @@ import static com.github.azeroth.game.entity.player.PlayerDefine.PLAYER_BYTES_4_
 import static com.github.azeroth.game.entity.player.PlayerDefine.PLAYER_BYTES_4_OFFSET_PVP_TITLE;
 
 
-public class Player extends Unit implements GridObject<Player> {
-
-    @Getter
-    private final GridReference<Player> gridReference = new GridReference<>();
+public class Player extends Unit implements GirdObject {
     private final ArrayList<Channel> channels = new ArrayList<>();
     private final ArrayList<ObjectGuid> whisperList = new ArrayList<>();
     //Inventory

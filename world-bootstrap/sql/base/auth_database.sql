@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.30, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.41, for Linux (x86_64)
 --
 -- Host: localhost    Database: auth
 -- ------------------------------------------------------
--- Server version	5.7.30-0ubuntu0.18.04.1
+-- Server version	8.0.41-0ubuntu0.22.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+08:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,40 +21,41 @@
 
 DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
-  `username` varchar(32) NOT NULL DEFAULT '',
-  `salt` binary(32) DEFAULT NULL,
-  `verifier` binary(32) DEFAULT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `salt` binary(32) NOT NULL,
+  `verifier` binary(32) NOT NULL,
   `session_key_auth` binary(40) DEFAULT NULL,
   `session_key_bnet` varbinary(64) DEFAULT NULL,
-  `sha_pass_hash` varchar(40) NOT NULL DEFAULT '',
-  `token_key` varchar(100) NOT NULL DEFAULT '',
-  `email` varchar(255) NOT NULL DEFAULT '',
-  `reg_mail` varchar(255) NOT NULL DEFAULT '',
+  `totp_secret` varbinary(128) DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `reg_mail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `joindate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
-  `last_attempt_ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
-  `failed_logins` tinyint unsigned NOT NULL DEFAULT '0',
+  `last_ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `last_attempt_ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `failed_logins` int unsigned NOT NULL DEFAULT '0',
   `locked` tinyint unsigned NOT NULL DEFAULT '0',
-  `lock_country` varchar(2) NOT NULL DEFAULT '00',
+  `lock_country` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '00',
   `last_login` timestamp NULL DEFAULT NULL,
-  `online` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `expansion` tinyint(3) unsigned NOT NULL DEFAULT '8',
-  `mutetime` bigint(20) NOT NULL DEFAULT '0',
-  `mutereason` varchar(255) NOT NULL DEFAULT '',
-  `muteby` varchar(50) NOT NULL DEFAULT '',
-  `locale` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `os` varchar(4) NOT NULL DEFAULT '',
-  `recruiter` bigint unsigned NOT NULL DEFAULT '0',
-  `battlenet_account` bigint unsigned DEFAULT NULL,
-  `battlenet_index` tinyint(3) unsigned DEFAULT NULL,
+  `online` tinyint unsigned NOT NULL DEFAULT '0',
+  `expansion` tinyint unsigned NOT NULL DEFAULT '9',
+  `mutetime` bigint NOT NULL DEFAULT '0',
+  `mutereason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `muteby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `client_build` int unsigned NOT NULL DEFAULT '0',
+  `locale` tinyint unsigned NOT NULL DEFAULT '0',
+  `os` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `timezone_offset` smallint NOT NULL DEFAULT '0',
+  `recruiter` int unsigned NOT NULL DEFAULT '0',
+  `battlenet_account` int unsigned DEFAULT NULL,
+  `battlenet_index` tinyint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_username` (`username`),
   UNIQUE KEY `uk_bnet_acc` (`battlenet_account`,`battlenet_index`),
   CONSTRAINT `fk_bnet_acc` FOREIGN KEY (`battlenet_account`) REFERENCES `battlenet_accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Account System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Account System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,14 +73,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `account_access`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_access` (
-  `AccountID` bigint unsigned NOT NULL,
-  `SecurityLevel` tinyint(3) unsigned NOT NULL,
+  `AccountID` int unsigned NOT NULL,
+  `SecurityLevel` tinyint unsigned NOT NULL,
   `RealmID` int NOT NULL DEFAULT '-1',
-  `Comment` varchar(255) DEFAULT NULL,
+  `Comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`AccountID`,`RealmID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,16 +98,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `account_banned`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_banned` (
-  `id` bigint unsigned NOT NULL DEFAULT '0' COMMENT 'Account id',
-  `bandate` bigint unsigned NOT NULL DEFAULT '0',
-  `unbandate` bigint unsigned NOT NULL DEFAULT '0',
-  `bannedby` varchar(50) NOT NULL,
-  `banreason` varchar(255) NOT NULL,
-  `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Account id',
+  `bandate` int unsigned NOT NULL DEFAULT '0',
+  `unbandate` int unsigned NOT NULL DEFAULT '0',
+  `bannedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `banreason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `active` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ban List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Ban List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,17 +125,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `account_last_played_character`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_last_played_character` (
-  `accountId` bigint unsigned NOT NULL,
-  `region` tinyint(3) unsigned NOT NULL,
-  `battlegroup` tinyint(3) unsigned NOT NULL,
+  `accountId` int unsigned NOT NULL,
+  `region` tinyint unsigned NOT NULL,
+  `battlegroup` tinyint unsigned NOT NULL,
   `realmId` int unsigned DEFAULT NULL,
-  `characterName` varchar(12) DEFAULT NULL,
-  `characterGUID` bigint(20) unsigned DEFAULT NULL,
-  `lastPlayedTime` bigint unsigned DEFAULT NULL,
+  `characterName` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `characterGUID` bigint unsigned DEFAULT NULL,
+  `lastPlayedTime` int unsigned DEFAULT NULL,
   PRIMARY KEY (`accountId`,`region`,`battlegroup`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,15 +153,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `account_muted`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account_muted` (
-  `guid` bigint unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
-  `mutedate` bigint unsigned NOT NULL DEFAULT '0',
-  `mutetime` bigint unsigned NOT NULL DEFAULT '0',
-  `mutedby` varchar(50) NOT NULL,
-  `mutereason` varchar(255) NOT NULL,
+  `guid` int unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
+  `mutedate` int unsigned NOT NULL DEFAULT '0',
+  `mutetime` int unsigned NOT NULL DEFAULT '0',
+  `mutedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mutereason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`guid`,`mutedate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='mute List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='mute List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,14 +179,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `autobroadcast`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `autobroadcast` (
-  `realmid` int unsigned NOT NULL DEFAULT '-1',
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `weight` tinyint(3) unsigned DEFAULT '1',
-  `text` longtext NOT NULL,
+  `realmid` int NOT NULL DEFAULT '-1',
+  `id` tinyint unsigned NOT NULL AUTO_INCREMENT,
+  `weight` tinyint unsigned DEFAULT '1',
+  `text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`,`realmid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,19 +199,47 @@ LOCK TABLES `autobroadcast` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `battle_pet_declinedname`
+--
+
+DROP TABLE IF EXISTS `battle_pet_declinedname`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `battle_pet_declinedname` (
+  `guid` bigint NOT NULL,
+  `genitive` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `dative` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `accusative` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `instrumental` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `prepositional` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`guid`),
+  CONSTRAINT `fk_battle_pet__battle_pet_declinedname` FOREIGN KEY (`guid`) REFERENCES `battle_pets` (`guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `battle_pet_declinedname`
+--
+
+LOCK TABLES `battle_pet_declinedname` WRITE;
+/*!40000 ALTER TABLE `battle_pet_declinedname` DISABLE KEYS */;
+/*!40000 ALTER TABLE `battle_pet_declinedname` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `battle_pet_slots`
 --
 
 DROP TABLE IF EXISTS `battle_pet_slots`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battle_pet_slots` (
-  `id` tinyint(3) NOT NULL,
-  `battlenetAccountId` bigint NOT NULL,
-  `battlePetGuid` bigint(20) NOT NULL,
-  `locked` tinyint(3) NOT NULL DEFAULT '1',
+  `id` tinyint NOT NULL,
+  `battlenetAccountId` int NOT NULL,
+  `battlePetGuid` bigint NOT NULL,
+  `locked` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`,`battlenetAccountId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,20 +257,24 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battle_pets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battle_pets` (
-  `guid` bigint(20) NOT NULL,
-  `battlenetAccountId` bigint NOT NULL,
+  `guid` bigint NOT NULL,
+  `battlenetAccountId` int NOT NULL,
   `species` int NOT NULL,
-  `breed` smallint(5) NOT NULL,
-  `level` smallint(5) NOT NULL DEFAULT '1',
-  `exp` smallint(5) NOT NULL DEFAULT '0',
+  `breed` smallint NOT NULL,
+  `displayId` int NOT NULL DEFAULT '0',
+  `level` smallint NOT NULL DEFAULT '1',
+  `exp` smallint NOT NULL DEFAULT '0',
   `health` int NOT NULL DEFAULT '1',
-  `quality` tinyint(3) NOT NULL DEFAULT '0',
-  `flags` smallint(5) NOT NULL DEFAULT '0',
-  `name` varchar(12) NOT NULL,
+  `quality` tinyint NOT NULL DEFAULT '0',
+  `flags` smallint NOT NULL DEFAULT '0',
+  `name` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nameTimestamp` bigint NOT NULL DEFAULT '0',
+  `owner` bigint DEFAULT NULL,
+  `ownerRealmId` int DEFAULT NULL,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,15 +292,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_account_bans`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_account_bans` (
-  `id` bigint unsigned NOT NULL DEFAULT '0' COMMENT 'Account id',
-  `bandate` bigint unsigned NOT NULL DEFAULT '0',
-  `unbandate` bigint unsigned NOT NULL DEFAULT '0',
-  `bannedby` varchar(50) NOT NULL,
-  `banreason` varchar(255) NOT NULL,
+  `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Account id',
+  `bandate` int unsigned NOT NULL DEFAULT '0',
+  `unbandate` int unsigned NOT NULL DEFAULT '0',
+  `bannedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `banreason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ban List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Ban List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,13 +318,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_account_heirlooms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_account_heirlooms` (
-  `accountId` bigint unsigned NOT NULL,
-  `itemId` bigint unsigned NOT NULL DEFAULT '0',
+  `accountId` int unsigned NOT NULL,
+  `itemId` int unsigned NOT NULL DEFAULT '0',
   `flags` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`accountId`,`itemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -309,13 +342,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_account_mounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_account_mounts` (
-  `battlenetAccountId` bigint unsigned NOT NULL,
+  `battlenetAccountId` int unsigned NOT NULL,
   `mountSpellId` int unsigned NOT NULL,
-  `flags` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `flags` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`battlenetAccountId`,`mountSpellId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -333,14 +366,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_account_toys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_account_toys` (
-  `accountId` bigint unsigned NOT NULL,
-  `itemId` bigint NOT NULL DEFAULT '0',
+  `accountId` int unsigned NOT NULL,
+  `itemId` int NOT NULL DEFAULT '0',
   `isFavourite` tinyint(1) DEFAULT '0',
   `hasFanfare` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`accountId`,`itemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -353,34 +386,57 @@ LOCK TABLES `battlenet_account_toys` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `battlenet_account_transmog_illusions`
+--
+
+DROP TABLE IF EXISTS `battlenet_account_transmog_illusions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `battlenet_account_transmog_illusions` (
+  `battlenetAccountId` int unsigned NOT NULL,
+  `blobIndex` smallint unsigned NOT NULL,
+  `illusionMask` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`battlenetAccountId`,`blobIndex`),
+  CONSTRAINT `battlenet_account_transmog_illusions_ibfk_1` FOREIGN KEY (`battlenetAccountId`) REFERENCES `battlenet_accounts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `battlenet_account_transmog_illusions`
+--
+
+LOCK TABLES `battlenet_account_transmog_illusions` WRITE;
+/*!40000 ALTER TABLE `battlenet_account_transmog_illusions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `battlenet_account_transmog_illusions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `battlenet_accounts`
 --
 
 DROP TABLE IF EXISTS `battlenet_accounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_accounts` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
-  `email` varchar(320) NOT NULL,
-  `mobile_phone` varchar(16) NOT NULL,
-  `sha_pass_hash` varchar(64) NOT NULL DEFAULT '',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
+  `email` varchar(320) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `srp_version` tinyint NOT NULL DEFAULT '1',
+  `salt` binary(32) NOT NULL,
+  `verifier` blob NOT NULL,
   `joindate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
-  `failed_logins` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `locked` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `lock_country` varchar(2) NOT NULL DEFAULT '00',
+  `last_ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `failed_logins` int unsigned NOT NULL DEFAULT '0',
+  `locked` tinyint unsigned NOT NULL DEFAULT '0',
+  `lock_country` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '00',
   `last_login` timestamp NULL DEFAULT NULL,
-  `online` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `locale` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `os` varchar(4) NOT NULL DEFAULT '',
-  `LastCharacterUndelete` bigint unsigned NOT NULL DEFAULT '0',
-  `LoginTicket` varchar(64) DEFAULT NULL,
-  `LoginTicketExpiry` bigint unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_useremail` (`email`),
-  UNIQUE KEY `idx_userphone` (`mobile_phone`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Account System';
+  `online` tinyint unsigned NOT NULL DEFAULT '0',
+  `locale` tinyint unsigned NOT NULL DEFAULT '0',
+  `os` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `LastCharacterUndelete` int unsigned NOT NULL DEFAULT '0',
+  `LoginTicket` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `LoginTicketExpiry` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Account System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,14 +454,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_item_appearances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_item_appearances` (
-  `battlenetAccountId` bigint unsigned NOT NULL,
-  `blobIndex` smallint(5) unsigned NOT NULL,
-  `appearanceMask` bigint unsigned NOT NULL DEFAULT '0',
+  `battlenetAccountId` int unsigned NOT NULL,
+  `blobIndex` smallint unsigned NOT NULL,
+  `appearanceMask` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`battlenetAccountId`,`blobIndex`),
   CONSTRAINT `fk_battlenet_item_appearances` FOREIGN KEY (`battlenetAccountId`) REFERENCES `battlenet_accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -423,13 +479,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `battlenet_item_favorite_appearances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `battlenet_item_favorite_appearances` (
-  `battlenetAccountId` bigint unsigned NOT NULL,
-  `itemModifiedAppearanceId` bigint unsigned NOT NULL,
+  `battlenetAccountId` int unsigned NOT NULL,
+  `itemModifiedAppearanceId` int unsigned NOT NULL,
   PRIMARY KEY (`battlenetAccountId`,`itemModifiedAppearanceId`),
   CONSTRAINT `fk_battlenet_item_favorite_appearances` FOREIGN KEY (`battlenetAccountId`) REFERENCES `battlenet_accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,25 +498,388 @@ LOCK TABLES `battlenet_item_favorite_appearances` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `build_auth_key`
+--
+
+DROP TABLE IF EXISTS `build_auth_key`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `build_auth_key` (
+  `build` int NOT NULL,
+  `platform` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `arch` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `type` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `key` binary(16) NOT NULL,
+  PRIMARY KEY (`build`,`platform`,`arch`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `build_auth_key`
+--
+
+LOCK TABLES `build_auth_key` WRITE;
+/*!40000 ALTER TABLE `build_auth_key` DISABLE KEYS */;
+INSERT INTO `build_auth_key` VALUES
+(25549,'Mac','x64','WoW',0x66FC5E09B8706126795F140308C8C1D8),
+(25549,'Win','x64','WoW',0x1252624ED8CBD6FAC7D33F5D67A535F3),
+(25549,'Win','x86','WoW',0xFE594FC35E7F9AFF86D99D8A364AB297),
+(25996,'Mac','x64','WoW',0x210B970149D6F56CAC9BADF2AAC91E8E),
+(25996,'Win','x64','WoW',0xC7FF932D6A2174A3D538CA7212136D2B),
+(25996,'Win','x86','WoW',0x23C59C5963CBEF5B728D13A50878DFCB),
+(26124,'Mac','x64','WoW',0xC9CA997AB8EDE1C65465CB2920869C4E),
+(26124,'Win','x64','WoW',0x46DF06D0147BA67BA49AF553435E093F),
+(26124,'Win','x86','WoW',0xF8C05AE372DECA1D6C81DA7A8D1C5C39),
+(26365,'Mac','x64','WoW',0xDBE7F860276D6B400AAA86B35D51A417),
+(26365,'Win','x64','WoW',0x59A53F307288454B419B13E694DF503C),
+(26365,'Win','x86','WoW',0x2AAC82C80E829E2CA902D70CFA1A833A),
+(26654,'Mac','x64','WoW',0x9234C1BD5E9687ADBD19F764F2E0E811),
+(26654,'Win','x64','WoW',0xA752640E8B99FE5B57C1320BC492895A),
+(26654,'Win','x86','WoW',0xFAC2D693E702B9EC9F750F17245696D8),
+(26822,'Mac','x64','WoW',0x91003668C245D14ECD8DF094E065E06B),
+(26822,'Win','x64','WoW',0x2B05F6D746C0C6CC7EF79450B309E595),
+(26822,'Win','x86','WoW',0x283E8D77ECF7060BE6347BE4EB99C7C7),
+(26899,'Mac','x64','WoW',0x8368EFC2021329110A16339D298200D4),
+(26899,'Win','x64','WoW',0x3551EF0028B51E92170559BD25644B03),
+(26899,'Win','x86','WoW',0xF462CD2FE4EA3EADF875308FDBB18C99),
+(26972,'Mac','x64','WoW',0x341CFEFE3D72ACA9A4407DC535DED66A),
+(26972,'Win','x64','WoW',0x6E212DEF6A0124A3D9AD07F5E322F7AE),
+(26972,'Win','x86','WoW',0x797ECC19662DCBD5090A4481173F1D26),
+(28153,'Win','x64','WoW',0xDD626517CC6D31932B479934CCDC0ABF),
+(30706,'Win','x64','WoW',0xBB6D9866FE4A19A568015198783003FC),
+(30993,'Win','x64','WoW',0x2BAD61655ABC2FC3D04893B536403A91),
+(31229,'Win','x64','WoW',0x8A46F23670309F2AAE85C9A47276382B),
+(31429,'Win','x64','WoW',0x7795A507AF9DC3525EFF724FEE17E70C),
+(31478,'Win','x64','WoW',0x7973A8D54BDB8B798D9297B096E771EF),
+(32305,'Win','x64','WoW',0x21F5A6FC7AD89FBF411FDA8B8738186A),
+(32494,'Win','x64','WoW',0x58984ACE04919401835C61309A848F8A),
+(32580,'Win','x64','WoW',0x87C2FAA0D7931BF016299025C0DDCA14),
+(32638,'Win','x64','WoW',0x5D07ECE7D4A867DDDE615DAD22B76D4E),
+(32722,'Win','x64','WoW',0x1A09BE1D38A122586B4931BECCEAD4AA),
+(32750,'Mac','x64','WoW',0xEF1F4E4D099EA2A81FD4C0DEBC1E7086),
+(32750,'Win','x64','WoW',0xC5CB669F5A5B237D1355430877173207),
+(32978,'Mac','x64','WoW',0x1852C1F847E795D6EB45278CD433F339),
+(32978,'Win','x64','WoW',0x76AE2EA03E525D97F5688843F5489000),
+(33369,'Mac','x64','WoW',0xF5A849C70A1054F07EA3AB833EBF6671),
+(33369,'Win','x64','WoW',0x5986AC18B04D3C403F56A0CF8C4F0A14),
+(33528,'Win','x64','WoW',0x0ECE033CA9B11D92F7D2792C785B47DF),
+(33724,'Win','x64','WoW',0x38F7BBCF284939DD20E8C64CDBF9FE77),
+(33775,'Mac','x64','WoW',0x354D2DE619D124EE1398F76B0436FCFC),
+(33775,'Win','x64','WoW',0xB826300A8449ED0F6EF16EA747FA2D2E),
+(33941,'Win','x64','WoW',0x88AF1A36D2770D0A6CA086497096A889),
+(34220,'Win','x64','WoW',0xB5E35B976C6BAF82505700E7D9666A2C),
+(34601,'Win','x64','WoW',0x0D7DF38F725FABA4F009257799A10563),
+(34769,'Win','x64','WoW',0x93F9B9AF6397E3E4EED94D36D16907D2),
+(34963,'Mac','x64','WoW',0xC5658A17E702163447BAAAE46D130A1B),
+(34963,'Win','x64','WoW',0x7BA50C879C5D04221423B02AC3603A11),
+(35249,'Win','x64','WoW',0xC7B11F9AE9FF1409F5582902B3D10D1C),
+(35284,'Mac','x64','WoW',0xA6201B0AC5A73D13AB2FDCC79BB252AF),
+(35284,'Win','x64','WoW',0xEA3818E7DCFD2009DBFC83EE3C1E4F1B),
+(35435,'Mac','x64','WoW',0x8FE657C14A46BCDB2CE6DA37E430450E),
+(35435,'Win','x64','WoW',0xBB397A92FE23740EA52FC2B5BA2EC8E0),
+(35662,'Mac','x64','WoW',0x5966016C368ED9F7AAB603EE6703081C),
+(35662,'Win','x64','WoW',0x578BC94870C278CB6962F30E6DC203BB),
+(36753,'Win','x64','WoW',0x386FDE8559B5EAD67B791B490B200B88),
+(36839,'Win','x64','WoW',0x356EB4412B8EFCF72E3AF50D5181D529),
+(36949,'Win','x64','WoW',0x51C074CD8A09A75384B9B44188C56981),
+(37142,'Win','x64','WoW',0x5D9CFB3139F0D1B6C2B304261F9EABC9),
+(37176,'Win','x64','WoW',0x3C725EA504EC3DAED143EB6FF3B48CDA),
+(37474,'Mac','x64','WoW',0x024C9BE7E44237B7E81C6D42E678D433),
+(37474,'Win','x64','WoW',0x0DE685BBB0551086E7FBDC0B4BB06A5B),
+(38134,'Win','x64','WoW',0x32275ED0F13B357C28BDB0E611EF9E31),
+(38556,'Win','x64','WoW',0xEC7D5AF64364AC3E7181F3FBA1B3A882),
+(39653,'Win','x64','WoW',0x10D015AB1EEB91310428D9C57EE24632),
+(39804,'Win','x64','WoW',0xE42D2BBA12ED260A76F9B1E477E19EA5),
+(40000,'Win','x64','WoW',0x4CB1433AB637F09F03FBBD1B221B04B0),
+(40120,'Mac','x64','WoW',0x853F0F2985CEAED46DF422583CD07A7C),
+(40120,'Win','x64','WoW',0x04F47EAEFD8BDEFE14AA0350EA336678),
+(40443,'Win','x64','WoW',0x8597BB43E8AB38C85504E8BFB72ABBF5),
+(40593,'Win','x64','WoW',0xBA14570F2D62D5F61953394164A8DAE2),
+(40725,'Win','x64','WoW',0xC1EBDBEB9BB2956EBCCEF7C9D27A1B3B),
+(40906,'Win','x64','WoW',0xF5FC259C8635488AFE0D0CD023F361D4),
+(40944,'Win','x64','WoW',0x368FC7FABAF487A8A049C11970657074),
+(40966,'Win','x64','WoW',0xD90F47AF21F381D2D8F3763B994BAC88),
+(41031,'Win','x64','WoW',0x019A0FACD6B0D6374B7BA69A5B677449),
+(41079,'Win','x64','WoW',0xF8853CF823BC0BBE8A9677A762DFAEE1),
+(41288,'Win','x64','WoW',0x871C0C9691DBC536EB24B68EC73FAD5B),
+(41323,'Win','x64','WoW',0xE53D0DF1FAC1A59A1C8071B295A04A1D),
+(41359,'Win','x64','WoW',0x5F8D7F2A690A4375A1B52A28D6D681FA),
+(41488,'Win','x64','WoW',0x1BC91EC368705815F3F532B553DAD981),
+(41793,'Win','x64','WoW',0xB3B47DA3B7615570742A55B96614EE1C),
+(42010,'Win','x64','WoW',0x302970161D16417B5BE553CC530E011A),
+(42423,'Win','x64','WoW',0x0B03614A7E94DD57548596BE420E9DC2),
+(42488,'Win','x64','WoW',0xA78755E6928D83A271C5D1EE3CDB6F15),
+(42521,'Win','x64','WoW',0x5FE6C12FC407C6B15B4A5D3B5B4A5D3B),
+(42538,'Win','x64','WoW',0x71A7504BD53F8DE518F24265D37310AE),
+(42560,'Win','x64','WoW',0x115FE8C38A8D67CA4664BB192E0F0DFE),
+(42614,'Win','x64','WoW',0x772BE726FEEF42124255D2EA7973CA18),
+(42698,'Win','x64','WoW',0xB4497B1CD11FC974C5FB09548AC27269),
+(42825,'Win','x64','WoW',0xA14DA228C6A6AFF1DDBA51218939E557),
+(42852,'Win','x64','WoW',0xDE9F9F0C3CC8FD54D3AFF99CEFFCE129),
+(42937,'Win','x64','WoW',0xF5FC75E70874752C92846B3333920E63),
+(42979,'Win','x64','WoW',0xE1DD38AE6450FC4D2AE4609233C59E54),
+(43114,'Win','x64','WoW',0xF75C9380CCB24A48A24EEE52C1594A7E),
+(43206,'Win','x64','WoW',0xDDE806532C7704FFB75F256DC5F1F3D9),
+(43340,'Win','x64','WoW',0x70E46D2D888E84DF9316EA849B068CF4),
+(43345,'Win','x64','WoW',0xD911ABFCDA030DEE8CAF4EE3F60DEE13),
+(43971,'Win','x64','WoW',0x681CF99E61FB0005A5C7D31D0AAD1ED9),
+(44015,'Win','x64','WoW',0xFCF0BDA7C98BFEF92AE6D8C39A217ABD),
+(44061,'Win','x64','WoW',0xFD2B5C0B3293FE0E9CAA6EB0B7788119),
+(44127,'Win','x64','WoW',0x787887CEC9FCC9B516481F60E4FC34A8),
+(44232,'Win','x64','WoW',0x81F0A71DF7E9873BB3750022D64D33CF),
+(44325,'Win','x64','WoW',0x138A7D524D268A7F9934C3D148E8F01B),
+(44730,'Win','x64','WoW',0xFC0B18C47BB4C79F4300CA0FF3E5CAC7),
+(44908,'Win','x64','WoW',0xBFFAEC40C9BCD591C7C959A9D5A8BA8C),
+(45114,'Win','x64','WoW',0xD7AFE240BD00F06C30D0C2D16E54A8BE),
+(45161,'Win','x64','WoW',0x74BD2E787A98B145B063BDA9A98F6CBD),
+(45338,'Win','x64','WoW',0x5CE2094A41B61EDA9DF56378BC3B1DE0),
+(45745,'Win','x64','WoW',0x0F6DC90161694D765A595A3AF603166B),
+(46479,'Win','x64','WoW',0xCB9AF4D89B60A3ABA288D395D315D932),
+(46658,'Win','x64','WoW',0x3F8EFB085428D75360E9EFE25CD8639A),
+(46689,'Win','x64','WoW',0xD9A11D188D6AD60906F5467510EFD3AA),
+(46702,'Win','x64','WoW',0x01B4D1688FF97DC9AAFCCD0A0B842C0B),
+(46741,'Win','x64','WoW',0x4C0F4A7EC2098AF1FBA745848EC79A78),
+(46801,'Win','x64','WoW',0xE6AC18D1EA5D36ABFFAE5EDED80630DF),
+(46879,'Win','x64','WoW',0xEFEC43936051DD1A210633AF1F6B63DB),
+(46924,'Win','x64','WoW',0xE6CE0B1A8119F069ECF1E7DBAA7BB2F8),
+(47067,'Win','x64','WoW',0x63862CFCDEA6BD2BD7F740EB36B65657),
+(47187,'Win','x64','WoW',0x711F8455C5000C237292E1E6E90631E1),
+(47213,'Win','x64','WoW',0x23C50D88CEAC0A8696ADDE8DD244D4A2),
+(47631,'Win','x64','WoW',0xF986AB91D0AEB20822EFB72F4256713C),
+(47777,'Win','x64','WoW',0xA88C04915AB9E035A104E55C4DCF5F9F),
+(47799,'Win','x64','WoW',0x7364EB093C23DB2CDC9513D5A7B4933E),
+(47825,'Win','x64','WoW',0x82A3B94E5E727AF3A208B471FF2054C0),
+(47849,'Win','x64','WoW',0xDD8BBE2087A28C0AF4984CBE23A1C707),
+(47871,'Win','x64','WoW',0x8E4F7D30EE4982B02B3B3F8837C2C4F2),
+(47884,'Win','x64','WoW',0x2B7A002BC359F2C31104BC2DE04302BF),
+(47936,'Win','x64','WoW',0x833D30D8FBC43B3FAE99CD3898D70849),
+(47967,'Win','x64','WoW',0xCFE225D0089E224D9E7541D3B5C26478),
+(48001,'Win','x64','WoW',0x4B0260A37BD95B615E71048469E6D5BB),
+(48069,'Win','x64','WoW',0x558CDF958FA082E95849779C7C6945E5),
+(48317,'Win','x64','WoW',0xC096E37B45B43244E9C79916604DD4AF),
+(48397,'Win','x64','WoW',0x64BA8779EAA97E6C57982B6B1A5B32E7),
+(48526,'Win','x64','WoW',0xD5B7D3303A2A741E6913EE1AEB0BCB65),
+(48676,'Win','x64','WoW',0xE059FB74DFF6438CC20C7F28900F64CA),
+(48749,'Win','x64','WoW',0x92DBCCA0E33DFB8A17A2B6A39246B288),
+(48838,'Win','x64','WoW',0x9E6F4E1E46EF228D2DE90F7BC48AAA96),
+(48865,'Win','x64','WoW',0x4B774ABE7B34D6702571B4279A4B6A13),
+(48892,'Win','x64','WoW',0xAA31BF27458321B03A1A346964DD7B9D),
+(48966,'Win','x64','WoW',0x823142CA131FBB715FF55D4343E55C6D),
+(48999,'Win','x64','WoW',0x79BA6FF0F9672EEF875F64155C8B62D4),
+(49267,'Win','x64','WoW',0xEEE77EA5A216E0731ADBB41AEFB1DF31),
+(49318,'Win','x64','WoW',0xAF439AEE62EE48B36C1725111E3D9BBF),
+(49343,'Win','x64','WoW',0x301A0B4C0942B9B6F605B903AD6C1F60),
+(49407,'Win','x64','WoW',0x6413820DC9885BB0693B37090CBB2F30),
+(49426,'Win','x64','WoW',0xD85EDFBFE9A94A55E2B4510BE41C19B2),
+(49444,'Win','x64','WoW',0x363B2B05285BDD8857419D2866316D3C),
+(49474,'Win','x64','WoW',0x44A7D2B352EE3D098A3CB4C2F1065E37),
+(49570,'Win','x64','WoW',0xB024DE67ACAEB9E8EE6DB38DC53E8281),
+(49679,'Win','x64','WoW',0x9CE59B68D8797EBF00581F41138F4316),
+(49741,'Win','x64','WoW',0x0EF181E2BB0E946CF3B7422ADEB6CD1A),
+(49801,'Win','x64','WoW',0x0832179567B66CA85DBD5678B604C683),
+(49890,'Win','x64','WoW',0x22A5B8A1EB797A64995F705B3DBCB14C),
+(50000,'Win','x64','WoW',0x02F06FFA2296FD66384295DBFD5A4C91),
+(50401,'Win','x64','WoW',0x3EEF52D902CCE81D16D0E255F0AA4938),
+(50438,'Win','x64','WoW',0x0B5F68F06B129CB4C57702F6D30F260B),
+(50467,'Win','x64','WoW',0x5E996B1CDCEE68432D6340138E68D1EB),
+(50469,'Win','x64','WoW',0x1768CCB6589E16AB3BEFA9D608A393A2),
+(50504,'Win','x64','WoW',0x7D5FD20C0B32C9AF5DD65433B391D49C),
+(50585,'Win','x64','WoW',0xC4F7CC38A3B84935A485F7EDAD3E764B),
+(50622,'Win','x64','WoW',0xD23A26FD75FD9A6073EB7060AA28E6A7),
+(50747,'Win','x64','WoW',0x2D3C386A9C45C27304ED3A3C6EB3F7C8),
+(50791,'Win','x64','WoW',0x0BE7D0BB07EF37C25CBC682409091EA0),
+(51130,'Win','x64','WoW',0x44CD2C91E4F0655DA387483726CE4035),
+(51187,'Win','x64','WoW',0x74E2055D3965269447B5CB1B31FC71C6),
+(51237,'Win','x64','WoW',0xC8660A21B766646FBD67F481CFCF55C3),
+(51261,'Win','x64','WoW',0x1BEBB57AE450331E9F8C301AA7876FAB),
+(51313,'Win','x64','WoW',0x35419ED0AB16735CF720858F45DC300C),
+(51421,'Win','x64','WoW',0x45E24D6F3335269787DF2B2063939002),
+(51485,'Win','x64','WoW',0xEC549E1D0A5DD85C03E7A9D93B7DC6D1),
+(51536,'Win','x64','WoW',0x570EEA10A8EC169C3FF9621D1B635BB4),
+(51754,'Win','x64','WoW',0xBED5A861C071AB41FEF6087E0C37BB1A),
+(51886,'Win','x64','WoW',0x09CF8919FD2EABDEAEBC0C810F53B511),
+(51972,'Win','x64','WoW',0x444DC7EF3544B6670C18884DADA00428),
+(52038,'Win','x64','WoW',0xA8EF004ADED8A3AFF5A67D2BB8D95795),
+(52068,'Win','x64','WoW',0xA44F842BACCC7EE8E2975FAF01F12474),
+(52095,'Win','x64','WoW',0xBA36382887D16D274EA9149695F0C9C8),
+(52106,'Win','x64','WoW',0x95F43869B7D881212CBC1690B8F393ED),
+(52129,'Win','x64','WoW',0x02DD842F2A7162EEB8FD5B9D325606F8),
+(52148,'Win','x64','WoW',0x8A969717C8CDC6E7FF4C54D5CB00C224),
+(52188,'Win','x64','WoW',0x977DF9993E94855DED5E328BA7A2F21F),
+(52301,'Win','x64','WoW',0x821AA3BB237B400B82F44970250539AA),
+(52393,'Win','x64','WoW',0xB013ED23B7EF51B29A45594D9BBB0D03),
+(52485,'Win','x64','WoW',0x5805CEB4650730AE489258DD30E34441),
+(52545,'Win','x64','WoW',0xFB52179A8355A46EDBFBDC8E8E5CDAFD),
+(52607,'Win','x64','WoW',0x8F002E4AADCAEABB08ABC2880B31AD60),
+(52649,'Win','x64','WoW',0xD0B779FBECEBC1ED5A85D83F03C8A75B),
+(52808,'Win','x64','WoW',0x6276712B6C8AEA21CD5D94D52FEE70EE),
+(52902,'Win','x64','WoW',0xD4F0A24CDF165628538C1C387A326AF3),
+(52968,'Win','x64','WoW',0x2D247FD440C44D4F1BF80B075B8720F2),
+(52983,'Win','x64','WoW',0xB1E5ADA5FDD06C9AB5E5D8A6983324AC),
+(53007,'Win','x64','WoW',0xA21AFB4D381C56AF471D994258C0EEF5),
+(53040,'Win','x64','WoW',0x2F1283BF7B7F307B70DBBD75CC42D7C3),
+(53104,'Win','x64','WoW',0xDBD79EC8DF044B53C78931B985CAB406),
+(53162,'Win','x64','WoW',0x8A67511FBF8984EEE2B630F7CB23376A),
+(53212,'Win','x64','WoW',0x08761EFF2F9B639364B9A9FBFFFFB949),
+(53262,'Win','x64','WoW',0x614A72D53126348A4927EC0F53FD2B7A),
+(53441,'Win','x64','WoW',0xBFDD7D0FE87D5F75E6DEB4F5C99D7C99),
+(53584,'Win','x64','WoW',0xCDD7A93659A03460B5A6CE1C4ACE5554),
+(53627,'Win','x64','WoW',0x57F35840BA629BAC4717A901347C40F1),
+(53750,'Win','x64','WoW',0xE33BA2DF1C239AB1B539FE1A01FC82B1),
+(53863,'Win','x64','WoW',0x6052C8F657F398912862CFD7010DBC73),
+(54027,'Win','x64','WoW',0x2DE781D4918766E5C12FBC54D63A9195),
+(54737,'Win','x64','WoW',0x81E29E958CA39EE7BF0685B548A58B51),
+(54851,'Win','x64','WoW',0x04721BCF80465E14498799C00B32D646),
+(54901,'Win','x64','WoW',0xAB840E833490435689D5832D91A70871),
+(55006,'Win','x64','WoW',0xD13B75D1E7848DFBB61AB5D9FEE51B49),
+(55056,'Win','x64','WoW',0x209BEEBBBFE6AA3AE491D9D1F1A7C98A),
+(55141,'Win','x64','WoW',0x102810005F13A3440705DE344DF5633F),
+(55262,'Win','x64','WoW',0xEB4B58AF1B3B79DDD9E2477BA1375D42),
+(55460,'Win','x64','WoW',0xE5455F750394046CC9BD2ED0397F7418),
+(55613,'Win','x64','WoW',0x0BA3BFF2E324FE30D15BA8A88CF8738B),
+(55639,'Win','x64','WoW',0xFFD74533A9D95E1D38C972BA4F351B8D),
+(56014,'Win','x64','WoW',0x89AD7A75E156374D41F0CC70455B2F6B),
+(56420,'Win','x64','WoW',0xA8E98C37F813D988C81256424A024AB0),
+(56489,'Mac','A64','WoW',0x6A8C974BCAF78D6E2032E3B5776D89FA),
+(56489,'Mac','x64','WoW',0x482A7A1DCE05F878626F1B1D52BFA80B),
+(56489,'Win','A64','WoW',0xC0FA9CBF98C21ED7F062AB8ED5A34B50),
+(56489,'Win','x64','WoW',0xA3FC116BB68FA279DBB66B4024305D99),
+(56713,'Mac','A64','WoW',0x52EA30F5FC879526462F8FB65B9797AC),
+(56713,'Mac','x64','WoW',0x0DFE481E53DF3B21DF98B8598E0CA674),
+(56713,'Win','A64','WoW',0x7CD3F3C05BAA6B377202616A1D2C2504),
+(56713,'Win','x64','WoW',0x63D7153C3703C7E7FAB7C92F1BA7822C),
+(57244,'Mac','A64','WoW',0x4DC6904ECDDB8D45209C9A1A1EAFDF34),
+(57244,'Mac','x64','WoW',0x0D662EAB1F2F0EC74F6D11F167F378B6),
+(57244,'Win','A64','WoW',0x9A849BAEEC89BDBF3ADE5FEDDBB27A74),
+(57244,'Win','x64','WoW',0xF972E54BD89E8AD83420C6E3DEFA267F),
+(57294,'Mac','A64','WoW',0x8122F4637E54772F141A221CF838023F),
+(57294,'Mac','x64','WoW',0x20593AF7916DE92889DFAD00E56EC3E2),
+(57294,'Win','A64','WoW',0xE082A35A1F6AC2C86FB3D9AE2564E0A7),
+(57294,'Win','x64','WoW',0xCEAD7331A86E61C4119261FD2DA1BB43),
+(57359,'Mac','A64','WoW',0x876DE28FA3F827BC7A1772682C63FB5E),
+(57359,'Mac','x64','WoW',0x4CEAE55260F4D660CED9B8CFDA00C6F4),
+(57359,'Win','A64','WoW',0x3A8AE83F4A0C497DC6AF62AFEBA04DC4),
+(57359,'Win','x64','WoW',0x262A900D4BB08CB24D304AFF6A7FF8EE),
+(57564,'Mac','A64','WoW',0x2A136B5D92F275399D865907EAE4785D),
+(57564,'Mac','x64','WoW',0x7274992DA094F6438C37CC7AD1206542),
+(57564,'Win','A64','WoW',0xDF63590B1034D8DE12C329B31C35759B),
+(57564,'Win','x64','WoW',0x75891D08FD96EBFE8C3952155B69098B),
+(57916,'Mac','A64','WoW',0x6D5239A8150D6F988929E03A76782836),
+(57916,'Mac','x64','WoW',0x35F1A99195794D82981336E2A92695E7),
+(57916,'Win','A64','WoW',0xDEB31A3F7A285EB69D27F4C1C6134D29),
+(57916,'Win','x64','WoW',0x20696E852F3B5EE83866BF2A0D34470B),
+(58158,'Mac','A64','WoW',0x10EBC722A3FDD740E42B45C7FDD20EF0),
+(58158,'Mac','x64','WoW',0xD7450A6103A5DEB74D818F0C2F4C9085),
+(58158,'Win','A64','WoW',0x31ACD1E756B86D16D8EB5E7A47BB2DBF),
+(58158,'Win','x64','WoW',0x071CE2ACCDCC49D66F160B4218F01915),
+(58558,'Mac','A64','WoW',0x7FD54AE255B9757285A661630FA707B8),
+(58558,'Mac','x64','WoW',0x2D8D31D0DD1BF85E89292619CCF4317F),
+(58558,'Win','A64','WoW',0x498916D48F0C962F162FF425A443FA52),
+(58558,'Win','x64','WoW',0x80FEC2B5AC7846BAFB99FCF9C963DEF1),
+(59069,'Mac','A64','WoW',0xE6E34A403857D69026E1B4BAF75069CB),
+(59069,'Mac','A64','WoWC',0x20447F7BAEFE1A765D5BCE343FE8EFFC),
+(59069,'Mac','x64','WoW',0xF064E14A80A27B1BBCAE88C914D73E98),
+(59069,'Mac','x64','WoWC',0x789EB4CF15BD2F2BF2E35768670B233E),
+(59069,'Win','A64','WoW',0x44BF0502E2D95262727674CAA60E2E0F),
+(59069,'Win','x64','WoW',0x8C9B002B8EF6BFD44169842E8185706A),
+(59069,'Win','x64','WoWC',0x80DD4C1B6DF383AE5580402945D00052),
+(59185,'Mac','A64','WoW',0x6CFE66A02B1B3BFC3244E545B6441A3C),
+(59185,'Mac','A64','WoWC',0x457EF06E5D847ABAA1301BF46FEC8821),
+(59185,'Mac','x64','WoWC',0x059271AD396A89DCB4D6C717003799F0),
+(59185,'Win','A64','WoW',0x57E3FCEAE73BFAAEB3FCCE9E3F7653BA),
+(59185,'Win','x64','WoW',0x60F053E069B404839B6F7DEE88F40C97),
+(59185,'Win','x64','WoWC',0x291C3548C275691818AB78FB047A2F7D),
+(59297,'Mac','A64','WoW',0xFE7894BCAFA58F624BC354291683E0F1),
+(59297,'Mac','A64','WoWC',0x2D4A7F3417689BB8633DA25B426EC93A),
+(59297,'Mac','x64','WoW',0xA8F1B170342E673FBD4F8EB5013E36E2),
+(59297,'Mac','x64','WoWC',0xCC0FF87C541C2456F7FB7E1A8DA25855),
+(59297,'Win','A64','WoW',0xA3C147112D0D20D267FDCED3F23B428E),
+(59297,'Win','x64','WoW',0xA6BC4433D709D113DAC4643BC5B708D9),
+(59297,'Win','x64','WoWC',0xC3BD68A0D95B54AD42A81F2612C7EA85),
+(59734,'Mac','A64','WoW',0xF8901F0DC07E9F86245286DEEE31651B),
+(59734,'Mac','A64','WoWC',0x7B3021F41A7E1DD250BD18C1B4E4D6D4),
+(59734,'Mac','x64','WoW',0x5F4D1113B49A02EAF679D531FEB8D257),
+(59734,'Mac','x64','WoWC',0x1E12109DB4203C7536B56CEEDEC08ABC),
+(59734,'Win','A64','WoW',0xF5CA50B3A9DE84DE196710F90FE98D7E),
+(59734,'Win','x64','WoW',0xCB0C97D34528D30595DE815C079E0077),
+(59734,'Win','x64','WoWC',0x072944A1D6CC42B88F687E84D555CA90),
+(59962,'Mac','A64','WoW',0x3CB2AC0DFDFA182176D4196755D2CFD3),
+(59962,'Mac','A64','WoWC',0x5FF126190FCD2F391A06BF3C542CF6F4),
+(59962,'Mac','x64','WoW',0x7ABDF5110102EE5B793F6667537B0BC7),
+(59962,'Mac','x64','WoWC',0x5CD66B0981CD527E67470928A7712D2E),
+(59962,'Win','A64','WoW',0x4EEBCB9671EE6F485FDEE47D28513233),
+(59962,'Win','x64','WoW',0xC11C128E975164EBEE727A78ABDC17F9),
+(59962,'Win','x64','WoWC',0x53DA9BCB02FEFC73AD96D6D16C64E4B4),
+(60142,'Mac','A64','WoW',0x6D74A98252846F4E11179232F14958F0),
+(60142,'Mac','A64','WoWC',0x8EA62AF2C93B2E25FDCD23A1FE0C57C2),
+(60142,'Mac','x64','WoW',0xC6C7DFEB73EE8E859FC9DFA14890AFCC),
+(60142,'Mac','x64','WoWC',0xDE356C2C40DB9DD6AF92A2F5E6F29F28),
+(60142,'Win','A64','WoW',0x95F8B992F4D5E395B72437355B38410D),
+(60142,'Win','x64','WoW',0x0CE9E3662F4758138EBF587F10554A35),
+(60142,'Win','x64','WoWC',0x9EBB43722392643B85C1551CE747EF20),
+(60192,'Mac','A64','WoW',0x5909246906AB38CBDAB76B805B32684F),
+(60192,'Mac','A64','WoWC',0xCB12A6091F8811F63A63E751D9F91B60),
+(60192,'Mac','x64','WoW',0x5AD4530C21977C9CF132353CA248367C),
+(60192,'Mac','x64','WoWC',0xBD3205EC191FE1DE0E7A207EF459DE97),
+(60192,'Win','A64','WoW',0xA6F329ED8EBC1B43E59997AFD82BD5C1),
+(60192,'Win','x64','WoW',0x6987F36EEE27CBF05AF1D7841E77EE73),
+(60192,'Win','x64','WoWC',0xDC9D44DF6087F92CFE81F3CF3DAF8615),
+(60895,'Mac','A64','WoW',0x3EB8484A7F8BD3C993891E10396E182F),
+(60895,'Mac','A64','WoWC',0xC1F12AD6FB05A5F92B9152D3505DC025),
+(60895,'Mac','x64','WoW',0x324477347CCC88C66C12835377288474),
+(60895,'Mac','x64','WoWC',0x35192970DDC99E61776C2C65AA479222),
+(60895,'Win','A64','WoW',0x078E2CC82A4F3C342A4CE340341567AE),
+(60895,'Win','x64','WoW',0x5885E3019AE3F51D0227F92C365BABD3),
+(60895,'Win','x64','WoWC',0x0CAE464F32D03F1EEF0F14B2529907D2);
+/*!40000 ALTER TABLE `build_auth_key` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `build_executable_hash`
+--
+
+DROP TABLE IF EXISTS `build_executable_hash`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `build_executable_hash` (
+  `build` int NOT NULL,
+  `platform` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `executableHash` binary(20) NOT NULL,
+  PRIMARY KEY (`build`,`platform`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `build_executable_hash`
+--
+
+LOCK TABLES `build_executable_hash` WRITE;
+/*!40000 ALTER TABLE `build_executable_hash` DISABLE KEYS */;
+INSERT INTO `build_executable_hash` VALUES
+(5875,'OSX',0x8D173CC381961EEBABF336F5E6675B101BB513E5),
+(5875,'Win',0x95EDB27C7823B363CBDDAB56A392E7CB73FCCA20),
+(8606,'OSX',0xD8B0ECFE534BC1131E19BAD1D4C0E813EEE4994F),
+(8606,'Win',0x319AFAA3F2559682F9FF658BE01456255F456FB1),
+(12340,'OSX',0xB706D13FF2F4018839729461E3F8A0E2B5FDC034),
+(12340,'Win',0xCDCBBD5188315E6B4D19449D492DBCFAF156A347);
+/*!40000 ALTER TABLE `build_executable_hash` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `build_info`
 --
 
 DROP TABLE IF EXISTS `build_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `build_info` (
-  `build` bigint NOT NULL,
+  `build` int NOT NULL,
   `majorVersion` int DEFAULT NULL,
   `minorVersion` int DEFAULT NULL,
   `bugfixVersion` int DEFAULT NULL,
-  `hotfixVersion` char(3) DEFAULT NULL,
-  `winAuthSeed` varchar(32) DEFAULT NULL,
-  `win64AuthSeed` varchar(32) DEFAULT NULL,
-  `mac64AuthSeed` varchar(32) DEFAULT NULL,
-  `winChecksumSeed` varchar(40) DEFAULT NULL,
-  `macChecksumSeed` varchar(40) DEFAULT NULL,
+  `hotfixVersion` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`build`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -470,111 +889,281 @@ CREATE TABLE `build_info` (
 LOCK TABLES `build_info` WRITE;
 /*!40000 ALTER TABLE `build_info` DISABLE KEYS */;
 INSERT INTO `build_info` VALUES
-(5875,1,12,1,NULL,NULL,NULL,NULL,'95EDB27C7823B363CBDDAB56A392E7CB73FCCA20','8D173CC381961EEBABF336F5E6675B101BB513E5'),
-(6005,1,12,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(6141,1,12,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(8606,2,4,3,NULL,NULL,NULL,NULL,'319AFAA3F2559682F9FF658BE01456255F456FB1','D8B0ECFE534BC1131E19BAD1D4C0E813EEE4994F'),
-(9947,3,1,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(10505,3,2,2,'a',NULL,NULL,NULL,NULL,NULL),
-(11159,3,3,0,'a',NULL,NULL,NULL,NULL,NULL),
-(11403,3,3,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(11723,3,3,3,'a',NULL,NULL,NULL,NULL,NULL),
-(12340,3,3,5,'a',NULL,NULL,NULL,'CDCBBD5188315E6B4D19449D492DBCFAF156A347','B706D13FF2F4018839729461E3F8A0E2B5FDC034'),
-(13623,4,0,6,'a',NULL,NULL,NULL,NULL,NULL),
-(13930,3,3,5,'a',NULL,NULL,NULL,NULL,NULL),
-(14545,4,2,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(15595,4,3,4,NULL,NULL,NULL,NULL,NULL,NULL),
-(19116,6,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(19243,6,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(19342,6,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(19702,6,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(19802,6,1,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(19831,6,1,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(19865,6,1,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(20182,6,2,0,'a',NULL,NULL,NULL,NULL,NULL),
-(20201,6,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(20216,6,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(20253,6,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(20338,6,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(20444,6,2,2,NULL,NULL,NULL,NULL,NULL,NULL),
-(20490,6,2,2,'a',NULL,NULL,NULL,NULL,NULL),
-(20574,6,2,2,'a',NULL,NULL,NULL,NULL,NULL),
-(20726,6,2,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(20779,6,2,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(20886,6,2,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(21355,6,2,4,NULL,NULL,NULL,NULL,NULL,NULL),
-(21463,6,2,4,NULL,NULL,NULL,NULL,NULL,NULL),
-(21742,6,2,4,NULL,NULL,NULL,NULL,NULL,NULL),
-(22248,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22293,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22345,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22410,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22423,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22498,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22522,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22566,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22594,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22624,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22747,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22810,7,0,3,NULL,NULL,NULL,NULL,NULL,NULL),
-(22900,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(22908,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(22950,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(22995,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(22996,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(23171,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(23222,7,1,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(23360,7,1,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(23420,7,1,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(23911,7,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(23937,7,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(24015,7,2,0,NULL,NULL,NULL,NULL,NULL,NULL),
-(24330,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(24367,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(24415,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(24430,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(24461,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(24742,7,2,5,NULL,NULL,NULL,NULL,NULL,NULL),
-(25549,7,3,2,NULL,'FE594FC35E7F9AFF86D99D8A364AB297','1252624ED8CBD6FAC7D33F5D67A535F3','66FC5E09B8706126795F140308C8C1D8',NULL,NULL),
-(25996,7,3,5,NULL,'23C59C5963CBEF5B728D13A50878DFCB','C7FF932D6A2174A3D538CA7212136D2B','210B970149D6F56CAC9BADF2AAC91E8E',NULL,NULL),
-(26124,7,3,5,NULL,'F8C05AE372DECA1D6C81DA7A8D1C5C39','46DF06D0147BA67BA49AF553435E093F','C9CA997AB8EDE1C65465CB2920869C4E',NULL,NULL),
-(26365,7,3,5,NULL,'2AAC82C80E829E2CA902D70CFA1A833A','59A53F307288454B419B13E694DF503C','DBE7F860276D6B400AAA86B35D51A417',NULL,NULL),
-(26654,7,3,5,NULL,'FAC2D693E702B9EC9F750F17245696D8','A752640E8B99FE5B57C1320BC492895A','9234C1BD5E9687ADBD19F764F2E0E811',NULL,NULL),
-(26822,7,3,5,NULL,'283E8D77ECF7060BE6347BE4EB99C7C7','2B05F6D746C0C6CC7EF79450B309E595','91003668C245D14ECD8DF094E065E06B',NULL,NULL),
-(26899,7,3,5,NULL,'F462CD2FE4EA3EADF875308FDBB18C99','3551EF0028B51E92170559BD25644B03','8368EFC2021329110A16339D298200D4',NULL,NULL),
-(26972,7,3,5,NULL,'797ECC19662DCBD5090A4481173F1D26','6E212DEF6A0124A3D9AD07F5E322F7AE','341CFEFE3D72ACA9A4407DC535DED66A',NULL,NULL),
-(28153,8,0,1,NULL,NULL,'DD626517CC6D31932B479934CCDC0ABF',NULL,NULL,NULL),
-(30706,8,1,5,NULL,NULL,'BB6D9866FE4A19A568015198783003FC',NULL,NULL,NULL),
-(30993,8,2,0,NULL,NULL,'2BAD61655ABC2FC3D04893B536403A91',NULL,NULL,NULL),
-(31229,8,2,0,NULL,NULL,'8A46F23670309F2AAE85C9A47276382B',NULL,NULL,NULL),
-(31429,8,2,0,NULL,NULL,'7795A507AF9DC3525EFF724FEE17E70C',NULL,NULL,NULL),
-(31478,8,2,0,NULL,NULL,'7973A8D54BDB8B798D9297B096E771EF',NULL,NULL,NULL),
-(32305,8,2,5,NULL,NULL,'21F5A6FC7AD89FBF411FDA8B8738186A',NULL,NULL,NULL),
-(32494,8,2,5,NULL,NULL,'58984ACE04919401835C61309A848F8A',NULL,NULL,NULL),
-(32580,8,2,5,NULL,NULL,'87C2FAA0D7931BF016299025C0DDCA14',NULL,NULL,NULL),
-(32638,8,2,5,NULL,NULL,'5D07ECE7D4A867DDDE615DAD22B76D4E',NULL,NULL,NULL),
-(32722,8,2,5,NULL,NULL,'1A09BE1D38A122586B4931BECCEAD4AA',NULL,NULL,NULL),
-(32750,8,2,5,NULL,NULL,'C5CB669F5A5B237D1355430877173207','EF1F4E4D099EA2A81FD4C0DEBC1E7086',NULL,NULL),
-(32978,8,2,5,NULL,NULL,'76AE2EA03E525D97F5688843F5489000','1852C1F847E795D6EB45278CD433F339',NULL,NULL),
-(33369,8,3,0,NULL,NULL,'5986AC18B04D3C403F56A0CF8C4F0A14','F5A849C70A1054F07EA3AB833EBF6671',NULL,NULL),
-(33528,8,3,0,NULL,NULL,'0ECE033CA9B11D92F7D2792C785B47DF',NULL,NULL,NULL),
-(33724,8,3,0,NULL,NULL,'38F7BBCF284939DD20E8C64CDBF9FE77',NULL,NULL,NULL),
-(33775,8,3,0,NULL,NULL,'B826300A8449ED0F6EF16EA747FA2D2E','354D2DE619D124EE1398F76B0436FCFC',NULL,NULL),
-(33941,8,3,0,NULL,NULL,'88AF1A36D2770D0A6CA086497096A889',NULL,NULL,NULL),
-(34220,8,3,0,NULL,NULL,'B5E35B976C6BAF82505700E7D9666A2C',NULL,NULL,NULL),
-(34601,8,3,0,NULL,NULL,'0D7DF38F725FABA4F009257799A10563',NULL,NULL,NULL),
-(34769,8,3,0,NULL,NULL,'93F9B9AF6397E3E4EED94D36D16907D2',NULL,NULL,NULL),
-(34963,8,3,0,NULL,NULL,'7BA50C879C5D04221423B02AC3603A11','C5658A17E702163447BAAAE46D130A1B',NULL,NULL),
-(35249,8,3,7,NULL,NULL,'C7B11F9AE9FF1409F5582902B3D10D1C',NULL,NULL,NULL),
-(35284,8,3,7,NULL,NULL,'EA3818E7DCFD2009DBFC83EE3C1E4F1B','A6201B0AC5A73D13AB2FDCC79BB252AF',NULL,NULL),
-(35435,8,3,7,NULL,NULL,'BB397A92FE23740EA52FC2B5BA2EC8E0','8FE657C14A46BCDB2CE6DA37E430450E',NULL,NULL),
-(35662,8,3,7,NULL,NULL,'578BC94870C278CB6962F30E6DC203BB','5966016C368ED9F7AAB603EE6703081C',NULL,NULL),
-(36753,9,0,2,NULL,NULL,'386FDE8559B5EAD67B791B490B200B88',NULL,NULL,NULL),
-(36839,9,0,2,NULL,NULL,'356EB4412B8EFCF72E3AF50D5181D529',NULL,NULL,NULL),
-(36949,9,0,2,NULL,NULL,'51C074CD8A09A75384B9B44188C56981',NULL,NULL,NULL),
-(37142,9,0,2,NULL,NULL,'5D9CFB3139F0D1B6C2B304261F9EABC9',NULL,NULL,NULL),
-(37176,9,0,2,NULL,NULL,'3C725EA504EC3DAED143EB6FF3B48CDA',NULL,NULL,NULL),
-(37474,9,0,2,NULL,NULL,'0DE685BBB0551086E7FBDC0B4BB06A5B',NULL,NULL,NULL);
+(5875,1,12,1,NULL),
+(6005,1,12,2,NULL),
+(6141,1,12,3,NULL),
+(8606,2,4,3,NULL),
+(9947,3,1,3,NULL),
+(10505,3,2,2,'a'),
+(11159,3,3,0,'a'),
+(11403,3,3,2,NULL),
+(11723,3,3,3,'a'),
+(12340,3,3,5,'a'),
+(13623,4,0,6,'a'),
+(13930,3,3,5,'a'),
+(14545,4,2,2,NULL),
+(15595,4,3,4,NULL),
+(19116,6,0,3,NULL),
+(19243,6,0,3,NULL),
+(19342,6,0,3,NULL),
+(19702,6,1,0,NULL),
+(19802,6,1,2,NULL),
+(19831,6,1,2,NULL),
+(19865,6,1,2,NULL),
+(20182,6,2,0,'a'),
+(20201,6,2,0,NULL),
+(20216,6,2,0,NULL),
+(20253,6,2,0,NULL),
+(20338,6,2,0,NULL),
+(20444,6,2,2,NULL),
+(20490,6,2,2,'a'),
+(20574,6,2,2,'a'),
+(20726,6,2,3,NULL),
+(20779,6,2,3,NULL),
+(20886,6,2,3,NULL),
+(21355,6,2,4,NULL),
+(21463,6,2,4,NULL),
+(21742,6,2,4,NULL),
+(22248,7,0,3,NULL),
+(22293,7,0,3,NULL),
+(22345,7,0,3,NULL),
+(22410,7,0,3,NULL),
+(22423,7,0,3,NULL),
+(22498,7,0,3,NULL),
+(22522,7,0,3,NULL),
+(22566,7,0,3,NULL),
+(22594,7,0,3,NULL),
+(22624,7,0,3,NULL),
+(22747,7,0,3,NULL),
+(22810,7,0,3,NULL),
+(22900,7,1,0,NULL),
+(22908,7,1,0,NULL),
+(22950,7,1,0,NULL),
+(22995,7,1,0,NULL),
+(22996,7,1,0,NULL),
+(23171,7,1,0,NULL),
+(23222,7,1,0,NULL),
+(23360,7,1,5,NULL),
+(23420,7,1,5,NULL),
+(23911,7,2,0,NULL),
+(23937,7,2,0,NULL),
+(24015,7,2,0,NULL),
+(24330,7,2,5,NULL),
+(24367,7,2,5,NULL),
+(24415,7,2,5,NULL),
+(24430,7,2,5,NULL),
+(24461,7,2,5,NULL),
+(24742,7,2,5,NULL),
+(25549,7,3,2,NULL),
+(25996,7,3,5,NULL),
+(26124,7,3,5,NULL),
+(26365,7,3,5,NULL),
+(26654,7,3,5,NULL),
+(26822,7,3,5,NULL),
+(26899,7,3,5,NULL),
+(26972,7,3,5,NULL),
+(28153,8,0,1,NULL),
+(30706,8,1,5,NULL),
+(30993,8,2,0,NULL),
+(31229,8,2,0,NULL),
+(31429,8,2,0,NULL),
+(31478,8,2,0,NULL),
+(32305,8,2,5,NULL),
+(32494,8,2,5,NULL),
+(32580,8,2,5,NULL),
+(32638,8,2,5,NULL),
+(32722,8,2,5,NULL),
+(32750,8,2,5,NULL),
+(32978,8,2,5,NULL),
+(33369,8,3,0,NULL),
+(33528,8,3,0,NULL),
+(33724,8,3,0,NULL),
+(33775,8,3,0,NULL),
+(33941,8,3,0,NULL),
+(34220,8,3,0,NULL),
+(34601,8,3,0,NULL),
+(34769,8,3,0,NULL),
+(34963,8,3,0,NULL),
+(35249,8,3,7,NULL),
+(35284,8,3,7,NULL),
+(35435,8,3,7,NULL),
+(35662,8,3,7,NULL),
+(36753,9,0,2,NULL),
+(36839,9,0,2,NULL),
+(36949,9,0,2,NULL),
+(37142,9,0,2,NULL),
+(37176,9,0,2,NULL),
+(37474,9,0,2,NULL),
+(38134,9,0,5,NULL),
+(38556,9,0,5,NULL),
+(39653,9,1,0,NULL),
+(39804,9,1,0,NULL),
+(40000,9,1,0,NULL),
+(40120,9,1,0,NULL),
+(40443,9,1,0,NULL),
+(40593,9,1,0,NULL),
+(40725,9,1,0,NULL),
+(40906,9,1,5,NULL),
+(40944,9,1,5,NULL),
+(40966,9,1,5,NULL),
+(41031,9,1,5,NULL),
+(41079,9,1,5,NULL),
+(41288,9,1,5,NULL),
+(41323,9,1,5,NULL),
+(41359,9,1,5,NULL),
+(41488,9,1,5,NULL),
+(41793,9,1,5,NULL),
+(42010,9,1,5,NULL),
+(42423,9,2,0,NULL),
+(42488,9,2,0,NULL),
+(42521,9,2,0,NULL),
+(42538,9,2,0,NULL),
+(42560,9,2,0,NULL),
+(42614,9,2,0,NULL),
+(42698,9,2,0,NULL),
+(42825,9,2,0,NULL),
+(42852,9,2,0,NULL),
+(42937,9,2,0,NULL),
+(42979,9,2,0,NULL),
+(43114,9,2,0,NULL),
+(43206,9,2,0,NULL),
+(43340,9,2,0,NULL),
+(43345,9,2,0,NULL),
+(43971,9,2,5,NULL),
+(44015,9,2,5,NULL),
+(44061,9,2,5,NULL),
+(44127,9,2,5,NULL),
+(44232,9,2,5,NULL),
+(44325,9,2,5,NULL),
+(44730,9,2,5,NULL),
+(44908,9,2,5,NULL),
+(45114,9,2,7,NULL),
+(45161,9,2,7,NULL),
+(45338,9,2,7,NULL),
+(45745,9,2,7,NULL),
+(46479,10,0,2,NULL),
+(46658,10,0,2,NULL),
+(46689,10,0,2,NULL),
+(46702,10,0,2,NULL),
+(46741,10,0,2,NULL),
+(46801,10,0,2,NULL),
+(46879,10,0,2,NULL),
+(46924,10,0,2,NULL),
+(47067,10,0,2,NULL),
+(47187,10,0,2,NULL),
+(47213,10,0,2,NULL),
+(47631,10,0,2,NULL),
+(47777,10,0,5,NULL),
+(47799,10,0,5,NULL),
+(47825,10,0,5,NULL),
+(47849,10,0,5,NULL),
+(47871,10,0,5,NULL),
+(47884,10,0,5,NULL),
+(47936,10,0,5,NULL),
+(47967,10,0,5,NULL),
+(48001,10,0,5,NULL),
+(48069,10,0,5,NULL),
+(48317,10,0,5,NULL),
+(48397,10,0,5,NULL),
+(48526,10,0,5,NULL),
+(48676,10,0,7,NULL),
+(48749,10,0,7,NULL),
+(48838,10,0,7,NULL),
+(48865,10,0,7,NULL),
+(48892,10,0,7,NULL),
+(48966,10,0,7,NULL),
+(48999,10,0,7,NULL),
+(49267,10,0,7,NULL),
+(49318,10,1,0,NULL),
+(49343,10,0,7,NULL),
+(49407,10,1,0,NULL),
+(49426,10,1,0,NULL),
+(49444,10,1,0,NULL),
+(49474,10,1,0,NULL),
+(49570,10,1,0,NULL),
+(49679,10,1,0,NULL),
+(49741,10,1,0,NULL),
+(49801,10,1,0,NULL),
+(49890,10,1,0,NULL),
+(50000,10,1,0,NULL),
+(50401,10,1,5,NULL),
+(50438,10,1,5,NULL),
+(50467,10,1,5,NULL),
+(50469,10,1,5,NULL),
+(50504,10,1,5,NULL),
+(50585,10,1,5,NULL),
+(50622,10,1,5,NULL),
+(50747,10,1,5,NULL),
+(50791,10,1,5,NULL),
+(51130,10,1,5,NULL),
+(51187,10,1,7,NULL),
+(51237,10,1,7,NULL),
+(51261,10,1,7,NULL),
+(51313,10,1,7,NULL),
+(51421,10,1,7,NULL),
+(51485,10,1,7,NULL),
+(51536,10,1,7,NULL),
+(51754,10,1,7,NULL),
+(51886,10,1,7,NULL),
+(51972,10,1,7,NULL),
+(52038,10,2,0,NULL),
+(52068,10,2,0,NULL),
+(52095,10,2,0,NULL),
+(52106,10,2,0,NULL),
+(52129,10,2,0,NULL),
+(52148,10,2,0,NULL),
+(52188,10,2,0,NULL),
+(52301,10,2,0,NULL),
+(52393,10,2,0,NULL),
+(52485,10,2,0,NULL),
+(52545,10,2,0,NULL),
+(52607,10,2,0,NULL),
+(52649,10,2,0,NULL),
+(52808,10,2,0,NULL),
+(52902,10,2,5,NULL),
+(52968,10,2,5,NULL),
+(52983,10,2,5,NULL),
+(53007,10,2,5,NULL),
+(53040,10,2,5,NULL),
+(53104,10,2,5,NULL),
+(53162,10,2,5,NULL),
+(53212,10,2,5,NULL),
+(53262,10,2,5,NULL),
+(53441,10,2,5,NULL),
+(53584,10,2,5,NULL),
+(53627,4,4,0,NULL),
+(53750,4,4,0,NULL),
+(53863,4,4,0,NULL),
+(54027,4,4,0,NULL),
+(54737,4,4,0,NULL),
+(54851,4,4,0,NULL),
+(54901,4,4,0,NULL),
+(55006,4,4,0,NULL),
+(55056,4,4,0,NULL),
+(55141,4,4,0,NULL),
+(55262,4,4,0,NULL),
+(55460,4,4,0,NULL),
+(55613,4,4,0,NULL),
+(55639,4,4,0,NULL),
+(56014,4,4,0,NULL),
+(56420,4,4,0,NULL),
+(56489,4,4,0,NULL),
+(56713,4,4,0,NULL),
+(57244,4,4,0,NULL),
+(57294,4,4,1,NULL),
+(57359,4,4,1,NULL),
+(57564,4,4,1,NULL),
+(57916,4,4,1,NULL),
+(58158,4,4,1,NULL),
+(58558,4,4,1,NULL),
+(59069,4,4,1,NULL),
+(59185,4,4,2,NULL),
+(59297,4,4,2,NULL),
+(59734,4,4,2,NULL),
+(59962,4,4,2,NULL),
+(60142,4,4,2,NULL),
+(60192,4,4,2,NULL),
+(60895,4,4,2,NULL);
 /*!40000 ALTER TABLE `build_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -584,15 +1173,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `ip_banned`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ip_banned` (
-  `ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
-  `bandate` bigint unsigned NOT NULL,
-  `unbandate` bigint unsigned NOT NULL,
-  `bannedby` varchar(50) NOT NULL DEFAULT '[Console]',
-  `banreason` varchar(255) NOT NULL DEFAULT 'no reason',
+  `ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `bandate` int unsigned NOT NULL,
+  `unbandate` int unsigned NOT NULL,
+  `bannedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '[Console]',
+  `banreason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no reason',
   PRIMARY KEY (`ip`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Banned IPs';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Banned IPs';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -610,14 +1199,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `logs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logs` (
-  `time` bigint unsigned NOT NULL,
-  `realm` bigint unsigned NOT NULL,
-  `type` varchar(250) NOT NULL,
-  `level` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `string` text CHARACTER SET latin1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `time` int unsigned NOT NULL,
+  `realm` int unsigned NOT NULL,
+  `type` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level` tinyint unsigned NOT NULL DEFAULT '0',
+  `string` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -635,19 +1224,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `logs_ip_actions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logs_ip_actions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier',
-  `account_id` bigint unsigned NOT NULL COMMENT 'Account ID',
-  `character_guid` bigint(20) unsigned NOT NULL COMMENT 'Character Guid',
-  `type` tinyint(3) unsigned NOT NULL,
-  `ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
-  `systemnote` text COMMENT 'Notes inserted by system',
-  `unixtime` bigint unsigned NOT NULL COMMENT 'Unixtime',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier',
+  `account_id` int unsigned NOT NULL COMMENT 'Account ID',
+  `character_guid` bigint unsigned NOT NULL COMMENT 'Character Guid',
+  `realm_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Realm ID',
+  `type` tinyint unsigned NOT NULL,
+  `ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `systemnote` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Notes inserted by system',
+  `unixtime` int unsigned NOT NULL COMMENT 'Unixtime',
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp',
-  `comment` text COMMENT 'Allows users to add a comment',
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Allows users to add a comment',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Used to log ips of individual actions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Used to log ips of individual actions';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -665,17 +1255,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rbac_account_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rbac_account_permissions` (
-  `accountId` bigint unsigned NOT NULL COMMENT 'Account id',
-  `permissionId` bigint unsigned NOT NULL COMMENT 'Permission id',
+  `accountId` int unsigned NOT NULL COMMENT 'Account id',
+  `permissionId` int unsigned NOT NULL COMMENT 'Permission id',
   `granted` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Granted = 1, Denied = 0',
   `realmId` int NOT NULL DEFAULT '-1' COMMENT 'Realm Id, -1 means all',
   PRIMARY KEY (`accountId`,`permissionId`,`realmId`),
   KEY `fk__rbac_account_roles__rbac_permissions` (`permissionId`),
   CONSTRAINT `fk__rbac_account_permissions__account` FOREIGN KEY (`accountId`) REFERENCES `account` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk__rbac_account_roles__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Account-Permission relation';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Account-Permission relation';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -693,15 +1283,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rbac_default_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rbac_default_permissions` (
-  `secId` bigint unsigned NOT NULL COMMENT 'Security Level id',
-  `permissionId` bigint unsigned NOT NULL COMMENT 'permission id',
+  `secId` int unsigned NOT NULL COMMENT 'Security Level id',
+  `permissionId` int unsigned NOT NULL COMMENT 'permission id',
   `realmId` int NOT NULL DEFAULT '-1' COMMENT 'Realm Id, -1 means all',
   PRIMARY KEY (`secId`,`permissionId`,`realmId`),
   KEY `fk__rbac_default_permissions__rbac_permissions` (`permissionId`),
   CONSTRAINT `fk__rbac_default_permissions__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Default permission to assign to different account security levels';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Default permission to assign to different account security levels';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -724,16 +1314,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rbac_linked_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rbac_linked_permissions` (
-  `id` bigint unsigned NOT NULL COMMENT 'Permission id',
-  `linkedId` bigint unsigned NOT NULL COMMENT 'Linked Permission id',
+  `id` int unsigned NOT NULL COMMENT 'Permission id',
+  `linkedId` int unsigned NOT NULL COMMENT 'Linked Permission id',
   PRIMARY KEY (`id`,`linkedId`),
   KEY `fk__rbac_linked_permissions__rbac_permissions1` (`id`),
   KEY `fk__rbac_linked_permissions__rbac_permissions2` (`linkedId`),
   CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions1` FOREIGN KEY (`id`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions2` FOREIGN KEY (`linkedId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Permission - Linked Permission relation';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Permission - Linked Permission relation';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -766,6 +1356,8 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (192,792),
 (192,793),
 (192,794),
+(192,795),
+(192,796),
 (192,835),
 (192,844),
 (192,845),
@@ -782,6 +1374,7 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (193,197),
 (194,1),
 (194,2),
+(194,9),
 (194,11),
 (194,12),
 (194,13),
@@ -828,8 +1421,11 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (195,199),
 (196,7),
 (196,10),
-(196,200),
-(196,201),
+(196,202),
+(196,203),
+(196,204),
+(196,205),
+(196,206),
 (196,208),
 (196,212),
 (196,213),
@@ -1191,10 +1787,21 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (196,840),
 (196,842),
 (196,843),
+(196,852),
 (196,866),
 (196,869),
+(196,870),
+(196,871),
 (196,872),
+(196,873),
+(196,875),
+(196,876),
+(196,877),
+(196,878),
+(196,879),
 (196,881),
+(196,882),
+(196,883),
 (197,232),
 (197,236),
 (197,237),
@@ -1229,6 +1836,7 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (197,486),
 (197,487),
 (197,494),
+(197,501),
 (197,506),
 (197,509),
 (197,510),
@@ -1275,6 +1883,7 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (197,771),
 (197,772),
 (197,774),
+(197,775),
 (197,805),
 (197,811),
 (197,813),
@@ -1303,14 +1912,6 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,374),
 (198,376),
 (198,377),
-(198,378),
-(198,379),
-(198,380),
-(198,381),
-(198,382),
-(198,384),
-(198,385),
-(198,386),
 (198,408),
 (198,409),
 (198,410),
@@ -1319,7 +1920,6 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,413),
 (198,414),
 (198,415),
-(198,416),
 (198,430),
 (198,431),
 (198,432),
@@ -1372,9 +1972,6 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,740),
 (198,741),
 (198,742),
-(198,799),
-(198,800),
-(198,801),
 (198,802),
 (198,803),
 (198,804),
@@ -1393,8 +1990,6 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (198,824),
 (198,826),
 (198,828),
-(198,834),
-(198,852),
 (198,855),
 (198,868),
 (199,207),
@@ -1407,8 +2002,10 @@ INSERT INTO `rbac_linked_permissions` VALUES
 (199,223),
 (199,225),
 (199,263),
+(199,378),
+(199,379),
+(199,380),
 (199,496),
-(199,501),
 (199,507),
 (199,525),
 (199,534),
@@ -1422,12 +2019,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rbac_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rbac_permissions` (
-  `id` bigint unsigned NOT NULL DEFAULT '0' COMMENT 'Permission id',
-  `name` varchar(100) NOT NULL COMMENT 'Permission name',
+  `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Permission id',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Permission name',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Permission List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Permission List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1444,6 +2041,8 @@ INSERT INTO `rbac_permissions` VALUES
 (5,'Join Arenas'),
 (6,'Join Dungeon Finder'),
 (7,'Skip idle connection check'),
+(8,'Cannot earn achievements'),
+(9,'Cannot earn realm first achievements'),
 (10,'Use character templates'),
 (11,'Log GM trades'),
 (12,'Skip character creation demon hunter min level check'),
@@ -1458,7 +2057,7 @@ INSERT INTO `rbac_permissions` VALUES
 (21,'Skip reset talents when used more than allowed check'),
 (22,'Skip spam chat check'),
 (23,'Skip over-speed ping check'),
-(24,'Two side faction character on the same account'),
+(24,'Two side faction characters on the same account'),
 (25,'Allow say chat between factions'),
 (26,'Allow channel chat between factions'),
 (27,'Two side mail interaction'),
@@ -1662,14 +2261,10 @@ INSERT INTO `rbac_permissions` VALUES
 (375,'Command: gm list'),
 (376,'Command: gm visible'),
 (377,'Command: go'),
-(378,'Command: go creature'),
-(379,'Command: go graveyard'),
-(380,'Command: go grid'),
-(381,'Command: go object'),
-(382,'Command: go taxinode'),
-(384,'Command: go trigger'),
-(385,'Command: go xyz'),
-(386,'Command: go zonexy'),
+(378,'Command: account 2fa'),
+(379,'Command: account 2fa setup'),
+(380,'Command: account 2fa remove'),
+(381,'Command: account set 2fa'),
 (387,'Command: gobject'),
 (388,'Command: gobject activate'),
 (389,'Command: gobject add'),
@@ -1699,7 +2294,6 @@ INSERT INTO `rbac_permissions` VALUES
 (413,'Command: instance listbinds'),
 (414,'Command: instance unbind'),
 (415,'Command: instance stats'),
-(416,'Command: instance savedata'),
 (417,'Command: learn'),
 (418,'Command: learn all'),
 (419,'Command: learn all my'),
@@ -1982,9 +2576,7 @@ INSERT INTO `rbac_permissions` VALUES
 (702,'Command: reload spell_threats'),
 (703,'Command: reload spell_group_stack_rules'),
 (704,'Command: reload trinity_string'),
-(705,'Command: reload warden_action'),
-(706,'Command: reload waypoint_scripts'),
-(707,'Command: reload waypoint_data'),
+(707,'Command: reload waypoint_path'),
 (708,'Command: reload vehicle_accessory'),
 (709,'Command: reload vehicle_template_accessory'),
 (710,'Command: reset'),
@@ -2036,6 +2628,7 @@ INSERT INTO `rbac_permissions` VALUES
 (772,'Command: wp unload'),
 (773,'Command: wp reload'),
 (774,'Command: wp show'),
+(775,'Command: modify currency'),
 (776,'Command: debug phase'),
 (777,'Command: mailbox'),
 (778,'Command: ahbot'),
@@ -2055,11 +2648,10 @@ INSERT INTO `rbac_permissions` VALUES
 (792,'Command: ahbot reload'),
 (793,'Command: ahbot status'),
 (794,'Command: .guild info'),
+(795,'Command: instance setbossstate'),
+(796,'Command: instance getbossstate'),
 (797,'Command: pvpstats'),
 (798,'Command: .mod xp'),
-(799,'Command: .go bugticket'),
-(800,'Command: .go complaintticket'),
-(801,'Command: .go suggestionticket'),
 (802,'Command: .ticket bug'),
 (803,'Command: .ticket complaint'),
 (804,'Command: .ticket suggestion'),
@@ -2092,7 +2684,6 @@ INSERT INTO `rbac_permissions` VALUES
 (831,'Command: .ticket reset bug'),
 (832,'Command: .ticket reset complaint'),
 (833,'Command: .ticket reset suggestion'),
-(834,'Command: go quest'),
 (835,'Command: debug loadcells'),
 (836,'Command: .debug boundary'),
 (837,'Command: npc evade'),
@@ -2110,7 +2701,7 @@ INSERT INTO `rbac_permissions` VALUES
 (849,'Command: list scenes'),
 (850,'Command: reload scenes'),
 (851,'Command: reload areatrigger_templates'),
-(852,'Command: go offset'),
+(852,'Command: debug dummy'),
 (853,'Command: .reload conversation_template'),
 (854,'Command: .debug conversation'),
 (855,'Command: debug play music'),
@@ -2123,8 +2714,20 @@ INSERT INTO `rbac_permissions` VALUES
 (866,'Command: list spawnpoints'),
 (868,'Command: modify power'),
 (869,'Command: debug send playerchoice'),
+(870,'Command: debug threatinfo'),
+(871,'Command: debug instancespawn'),
 (872,'Command: server debug'),
-(881,'Command: reload vehicle_template');
+(873,'Command: reload creature_movement_override'),
+(874,'Command: debug asan'),
+(875,'Command: lookup map id'),
+(876,'Command: lookup item id'),
+(877,'Command: lookup quest id'),
+(878,'Command: debug questreset'),
+(879,'Command: debug poolstatus'),
+(880,'Command: pdump copy'),
+(881,'Command: reload vehicle_template'),
+(882,'Command: reload spell_script_names'),
+(883,'Command: quest objective complete');
 /*!40000 ALTER TABLE `rbac_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2134,14 +2737,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `realmcharacters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `realmcharacters` (
   `realmid` int unsigned NOT NULL DEFAULT '0',
-  `acctid` bigint unsigned NOT NULL,
-  `numchars` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `acctid` int unsigned NOT NULL,
+  `numchars` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`realmid`,`acctid`),
   KEY `acctid` (`acctid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Realm Character Tracker';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Realm Character Tracker';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2159,25 +2762,27 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `realmlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `realmlist` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL DEFAULT '',
-  `address` varchar(255) NOT NULL DEFAULT '127.0.0.1',
-  `localAddress` varchar(255) NOT NULL DEFAULT '127.0.0.1',
-  `localSubnetMask` varchar(255) NOT NULL DEFAULT '255.255.255.0',
-  `port` smallint(5) unsigned NOT NULL DEFAULT '8085',
-  `icon` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `flag` tinyint(3) unsigned NOT NULL DEFAULT '2',
-  `timezone` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `population` float unsigned NOT NULL DEFAULT '0',
-  `gamebuild` bigint unsigned NOT NULL DEFAULT '37474',
-  `Region` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `Battlegroup` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `localAddress` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
+  `address3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address4` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `localSubnetMask` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '255.255.255.0',
+  `port` smallint unsigned NOT NULL DEFAULT '8085',
+  `icon` tinyint unsigned NOT NULL DEFAULT '0',
+  `flag` tinyint unsigned NOT NULL DEFAULT '2',
+  `timezone` tinyint unsigned NOT NULL DEFAULT '0',
+  `allowedSecurityLevel` tinyint unsigned NOT NULL DEFAULT '0',
+  `population` float NOT NULL DEFAULT '0',
+  `gamebuild` int unsigned NOT NULL DEFAULT '60895',
+  `Region` tinyint unsigned NOT NULL DEFAULT '1',
+  `Battlegroup` tinyint unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Realm System';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Realm System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2187,8 +2792,31 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
 INSERT INTO `realmlist` VALUES
-(1,'RainbowLand','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,37474,1,1);
+(1,'Trinity','127.0.0.1','127.0.0.1',NULL,NULL,'255.255.255.0',8085,0,0,1,0,0,60895,1,1);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `secret_digest`
+--
+
+DROP TABLE IF EXISTS `secret_digest`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `secret_digest` (
+  `id` int unsigned NOT NULL,
+  `digest` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `secret_digest`
+--
+
+LOCK TABLES `secret_digest` WRITE;
+/*!40000 ALTER TABLE `secret_digest` DISABLE KEYS */;
+/*!40000 ALTER TABLE `secret_digest` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2197,15 +2825,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `updates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `updates` (
-  `name` varchar(200) NOT NULL COMMENT 'filename with extension of the update.',
-  `hash` char(40) DEFAULT '' COMMENT 'sha1 hash of the sql file.',
-  `state` enum('RELEASED','ARCHIVED') NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if an update is released or archived.',
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'filename with extension of the update.',
+  `hash` char(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'sha1 hash of the sql file.',
+  `state` enum('RELEASED','ARCHIVED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if an update is released or archived.',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when the query was applied.',
   `speed` int unsigned NOT NULL DEFAULT '0' COMMENT 'time the query takes to apply in ms.',
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='List of all applied updates in this database.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='List of all applied updates in this database.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2221,25 +2849,25 @@ INSERT INTO `updates` VALUES
 ('2014_11_03_00_auth.sql','5948C9F286CF0FEA8E241785C0259FF36B73BDC5','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_11_04_00_auth.sql','3AFC68B2375C2A417DDEA94583C53AFF83DE50DF','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_11_09_00_auth.sql','B8DD1A7047C0FDDB80344B239343EC33BF1A0D97','ARCHIVED','2015-03-21 16:55:52',0),
+('2014_11_10_00_auth_from_335.sql','0E3CB119442D09DD88E967015319BBC8DAFBBFE0','ARCHIVED','2014-11-10 00:00:00',0),
 ('2014_11_10_00_auth.sql','8FBA737A1D3FF4631A1E662A5B500A8BD304EC63','ARCHIVED','2015-03-21 16:55:52',0),
-('2014_11_10_00_auth_from_335.sql','0E3CB119442D09DD88E967015319BBC8DAFBBFE0','ARCHIVED','2015-03-21 16:55:52',0),
-('2014_11_10_01_auth.sql','327E77A1DA3546D5275AB249915DD57EDD6FDD3D','ARCHIVED','2015-03-21 16:55:52',0),
+('2014_11_10_01_auth.sql','327E77A1DA3546D5275AB249915DD57EDD6FDD3D','ARCHIVED','2014-11-10 00:00:01',0),
 ('2014_11_23_00_auth.sql','0BBEB3EB3AED0FEF277A062819B6B2C00084A742','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_11_25_00_auth.sql','4F45CDB26BDBB3EE83F1988E3D7818C5926ADC02','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_12_05_00_auth.sql','6A7BBCEF43111C73A2D2C3CCB6911BE50DE7DD94','ARCHIVED','2015-03-21 16:55:52',0),
-('2014_12_10_00_auth.sql','821703A96D80F9080074852B5A46E2909C9562EA','ARCHIVED','2015-03-21 16:55:52',0),
+('2014_12_10_00_auth.sql','821703A96D80F9080074852B5A46E2909C9562EA','ARCHIVED','2014-12-10 00:00:00',0),
 ('2014_12_19_00_auth.sql','44D8E12FFF327AD07878FBDF8D9C16B6B7DCB122','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_12_20_00_auth.sql','4DAA02AE285C02AE6C82EA2C8B97AC71990F1085','ARCHIVED','2015-03-21 16:55:52',0),
 ('2014_12_25_00_auth.sql','61411930F482BC73FC7FD2C370C811E944F5FF92','ARCHIVED','2015-03-21 16:55:52',0),
-('2014_12_27_00_auth.sql','CE2E5D2CD82E79C25294539ADED27A1429105B43','ARCHIVED','2015-03-21 16:55:52',0),
+('2014_12_27_00_auth.sql','CE2E5D2CD82E79C25294539ADED27A1429105B43','ARCHIVED','2014-12-21 00:00:00',0),
 ('2014_12_28_00_auth.sql','0A913217610E76AFF119C27259737BBC523090E6','ARCHIVED','2015-03-21 16:55:52',0),
 ('2015_02_22_00_auth.sql','21CCCF8B01252E16CA3D6C9E3E8DAA4C9B28ED6E','ARCHIVED','2015-03-21 16:55:52',0),
 ('2015_03_01_00_auth.sql','911881E273207FF6182D1FDAC8C85FFAE8F1C852','ARCHIVED','2015-03-21 16:55:52',0),
 ('2015_03_10_00_auth.sql','2CC8502C11412EFEB5C11BE166761A8754A59009','ARCHIVED','2015-03-21 16:55:52',0),
+('2015_03_15_00_auth.sql','1D8E107FBEFE5E7F47E09F45240DFF499B77CDED','ARCHIVED','2015-05-02 13:57:57',0),
 ('2015_03_20_00_auth.sql','B761760804EA73BD297F296C5C1919687DF7191C','ARCHIVED','2015-03-21 16:55:52',0),
 ('2015_03_20_01_auth.sql','5CCEDF20C8189FB1E8DF064A9F0DDC342841FBF0','ARCHIVED','2015-03-21 16:55:52',0),
 ('2015_03_20_02_auth.sql','85E4ACD9AA099C0C4AC034575F2BB07D348EAC72','ARCHIVED','2015-03-21 16:56:46',0),
-('2015_03_15_00_auth.sql','1D8E107FBEFE5E7F47E09F45240DFF499B77CDED','ARCHIVED','2015-05-02 13:57:57',0),
 ('2015_03_26_00_auth.sql','34AC8543E6A9C6C832DE58EAB33618EEEF70B9F9','ARCHIVED','2015-05-02 13:57:57',0),
 ('2015_04_04_00_auth.sql','57146B35E54A2EC7869C945034AB078358020311','ARCHIVED','2015-05-02 13:57:57',0),
 ('2015_04_06_00_auth.sql','2A8049DC2923420A002D42FB6F02C2FFCC5CDD22','ARCHIVED','2015-05-02 13:57:57',0),
@@ -2264,14 +2892,14 @@ INSERT INTO `updates` VALUES
 ('2015_10_09_00_auth.sql','B6D643D444C6AE711503F73B96B6252A852913D6','ARCHIVED','2015-10-10 08:30:48',0),
 ('2015_10_16_00_auth.sql','366AFFD1088762866091A81CE1EC64138B8B35F1','ARCHIVED','2015-11-08 00:46:02',0),
 ('2015_10_17_00_auth.sql','AC0D45E905033F42093852D2C4476663BDACCB3D','ARCHIVED','2015-10-17 12:39:12',0),
-('2015_11_01_00_auth_2015_08_21_00.sql','C31A9E1D28E11B60BE8F8198637DD51F6D75123F','ARCHIVED','2015-11-01 14:50:26',0),
-('2015_11_08_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2015-11-08 00:51:45',0),
+('2015_11_01_00_auth_2015_08_21_00.sql','C31A9E1D28E11B60BE8F8198637DD51F6D75123F','ARCHIVED','2015-08-21 00:00:00',0),
+('2015_11_08_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2015-11-07 00:00:00',0),
 ('2015_11_21_00_auth.sql','575A1D697CC6C7C517F7CCB950988267C99CE7FA','ARCHIVED','2015-11-21 21:25:38',0),
 ('2015_12_07_00_auth.sql','24A07AC1F38E5D26A3599FC06D29E267418F69F3','ARCHIVED','2015-12-07 20:55:48',0),
 ('2016_01_13_00_auth.sql','114527BCCB0DE286CBE6FDA3029DD0523D1037FA','ARCHIVED','2016-01-13 21:39:13',0),
 ('2016_03_22_01_auth_2016_01_13_00_auth.sql','24615CC69B3CD7BB4699874647C35BA86E8A93FD','ARCHIVED','2016-03-22 22:55:13',0),
 ('2016_03_28_00_auth.sql','BA14D23D81FA24565F04A359090DE86C5E195209','ARCHIVED','2016-03-28 16:49:32',0),
-('2016_04_11_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2016-04-11 02:24:14',0),
+('2016_04_11_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2016-04-11 00:00:00',0),
 ('2016_04_17_00_auth.sql','83399B64D1221B56F73A0FFB51889F11A70521BC','ARCHIVED','2016-04-17 00:22:05',0),
 ('2016_05_07_00_auth.sql','7E36DCC4F06FCDCDA7155AF3C5EDF8D3A720565F','ARCHIVED','2016-05-07 01:00:21',0),
 ('2016_05_19_00_auth.sql','FB52E6BF35682CE6FA667B552B551F4FBD72AC30','ARCHIVED','2016-05-19 22:18:06',0),
@@ -2289,7 +2917,7 @@ INSERT INTO `updates` VALUES
 ('2016_09_02_00_auth.sql','08932DAC4BDE74D3C39A43DDE404522F23EDD035','ARCHIVED','2016-09-02 00:00:00',0),
 ('2016_09_03_00_auth_2016_05_11_00_auth.sql','401EFD3586772BDED66B4A944C20A1AC18A22D3A','ARCHIVED','2016-09-03 11:29:38',0),
 ('2016_09_03_01_auth.sql','08B5ABCB74BBF25A30D37AF639F0EA1B10640673','ARCHIVED','2016-09-03 13:24:32',0),
-('2016_09_03_02_auth_2016_06_06_00_auth.sql','A0A8D73A952D0618833416513D53F73A70E7EA25','ARCHIVED','2016-09-03 15:56:50',0),
+('2016_09_03_02_auth_2016_06_06_00_auth.sql','A0A8D73A952D0618833416513D53F73A70E7EA25','ARCHIVED','2016-06-06 00:00:00',0),
 ('2016_09_03_03_auth.sql','9BF1C03EE39B6DC7E817BA46BE7D12A41AFBFDF7','ARCHIVED','2016-09-03 15:56:50',0),
 ('2016_09_15_00_auth.sql','CD65F822AF1B5B7776E39804D0362F3E34AA6445','ARCHIVED','2016-09-15 16:30:36',0),
 ('2016_09_21_00_auth.sql','57219A16B88080240EED94CDD41FC2764B8A32C5','ARCHIVED','2016-09-21 17:08:43',0),
@@ -2310,7 +2938,7 @@ INSERT INTO `updates` VALUES
 ('2017_01_26_00_auth.sql','723E1B69981A32A2F28A67C64902BA1AE7E98E48','ARCHIVED','2017-01-26 17:10:15',0),
 ('2017_01_29_00_auth.sql','B76C514678903F540302505AF66886F7D2C89E30','ARCHIVED','2017-01-29 00:00:00',0),
 ('2017_03_11_00_auth.sql','2F2F67E51439346B212C27B7224E4614C00E1AEB','ARCHIVED','2017-03-11 00:00:00',0),
-('2017_03_17_00_auth.sql','4902E9B1B063F399F928C2DD7AFD60427738E227','ARCHIVED','2017-03-17 18:58:01',0),
+('2017_03_17_00_auth.sql','4902E9B1B063F399F928C2DD7AFD60427738E227','ARCHIVED','2017-03-17 00:00:00',0),
 ('2017_04_17_00_auth.sql','86299FAB21D895E84272286309CC8EE80F9DA8C7','ARCHIVED','2017-04-17 00:00:00',0),
 ('2017_04_19_00_auth.sql','9903AAF50DF384F52E81F7E2892FE5271E000490','ARCHIVED','2017-04-18 23:16:18',0),
 ('2017_04_22_00_auth.sql','843663B18D28FBA1EB12548500EC93953881E5F0','ARCHIVED','2017-04-22 19:28:22',0),
@@ -2318,43 +2946,58 @@ INSERT INTO `updates` VALUES
 ('2017_05_14_00_auth.sql','B7E76CCDCC9A2C8103427DA4C43C7B0366ECE8B4','ARCHIVED','2017-05-14 12:00:00',0),
 ('2017_06_12_01_auth.sql','661B4935E101AF188BEBF43203144104E89F8C54','ARCHIVED','2017-06-12 00:00:01',0),
 ('2017_06_12_02_auth.sql','166F059E411FAA4901BBBA09A41EF07B1CADC4B6','ARCHIVED','2017-06-12 00:00:02',0),
-('2017_06_17_00_auth.sql','4A172895CB9DA8EFE1270434D6ECB22D4F4DCB17','ARCHIVED','2017-06-17 00:00:00',0),
 ('2017_06_15_00_auth.sql','DD71F25C1E61FD5F836931B02703BE3BD1B4F156','ARCHIVED','2017-06-15 15:20:50',0),
+('2017_06_17_00_auth.sql','4A172895CB9DA8EFE1270434D6ECB22D4F4DCB17','ARCHIVED','2017-06-17 00:00:00',0),
 ('2017_06_18_00_auth.sql','7200968BFC2D76499149937B19F2153FD2ABC397','ARCHIVED','2017-06-18 22:13:37',0),
 ('2017_06_25_00_auth.sql','A2DA6A64D4217992EF766915DEBD517DB0834E01','ARCHIVED','2017-06-25 00:54:10',0),
 ('2017_06_28_00_auth_master.sql','6E58300D4D4DAAEE89107ECB3CB7DA8529DA738F','ARCHIVED','2017-06-28 19:11:09',0),
 ('2017_06_28_00_auth_rbac.sql','D32EF80F57F629C23395D80F06E91D7E40719F83','ARCHIVED','2017-06-28 00:00:00',0),
-('2017_08_01_00_auth.sql','6ECE808AF52345177189E962C0606B769B6806A6','ARCHIVED','2017-08-01 00:00:00',0),
 ('2017_06_30_00_auth.sql','C73BD277D211DBE1BB86BB1B443CA8F292D8ADEE','ARCHIVED','2017-06-30 16:18:51',0),
+('2017_08_01_00_auth.sql','6ECE808AF52345177189E962C0606B769B6806A6','ARCHIVED','2017-08-01 00:00:00',0),
 ('2017_08_04_00_auth.sql','2E994A704C64FECE3CE0883ED0CAC5E5A0E3A36C','ARCHIVED','2017-08-04 23:46:32',0),
 ('2017_08_13_00_auth_2016_09_22_00_auth.sql','70047954E3556BFA430ADD5680EF8797F74A4B9E','ARCHIVED','2017-08-13 12:00:00',0),
 ('2017_09_22_00_auth.sql','9313CCE80A18212E6F0C78D83316DE8582AE8084','ARCHIVED','2017-09-22 18:05:17',0),
 ('2017_10_13_00_auth.sql','87674E0D166AC60E3725B445714427892E42C6FE','ARCHIVED','2017-10-13 00:00:00',0),
 ('2017_11_11_01_auth.sql','0D6EDB6B2FC8B9FBDF11ECD79B4B8E943328B6A9','ARCHIVED','2017-11-11 18:49:45',0),
+('2017_12_17_00_auth.sql','2CD99730D4D32DBF0584CD5B1AA6F8F4AE3DA975','ARCHIVED','2017-12-17 00:00:00',0),
 ('2017_12_30_00_auth.sql','F360E9555AC68E28834E3FF807E4E37A090EF363','ARCHIVED','2017-12-30 00:23:32',0),
 ('2017_12_30_01_auth.sql','1E11C78BA6D1D8E8CED7423DF92D1D197D6061EE','ARCHIVED','2017-12-30 23:00:00',0),
 ('2017_12_31_00_auth.sql','1721ACBD35EB95FAE33B9E95F8C4E4B1FB70A5E4','ARCHIVED','2017-12-31 20:15:23',0),
 ('2018_01_02_00_auth.sql','CD9B826B9D95697DC412DEF780E814FA3991D6CD','ARCHIVED','2018-01-02 20:40:37',0),
+('2018_01_09_00_auth.sql','A5D4EC8FCFAB4F2DCE70EDCAD1ACBFB484FD68D5','ARCHIVED','2018-01-09 00:00:00',0),
+('2018_01_24_00_auth.sql','167B17D8A253D62A8112F8A7EB21C6E99CAEF1E4','ARCHIVED','2018-01-24 00:00:00',0),
 ('2018_02_18_00_auth.sql','8489DD3EFFE14A7486B593435F0BA2BC69B6EABF','ARCHIVED','2018-02-18 16:35:55',0),
 ('2018_02_19_00_auth.sql','07CE658C5EF88693D3C047EF8E724F94ADA74C15','ARCHIVED','2018-02-19 22:33:32',0),
 ('2018_02_28_00_auth.sql','E92EF4ABF7FA0C66649E1633DD0459F44C09EB83','ARCHIVED','2018-02-28 23:07:59',0),
+('2018_03_08_00_auth.sql','624C58A07E0B4DDC4C1347E8BA8EFEEFD5B43DA7','ARCHIVED','2018-03-08 00:00:00',0),
 ('2018_03_14_00_auth.sql','2D71E93DF7419A30D0D21D8A80CF05698302575A','ARCHIVED','2018-03-14 23:07:59',0),
 ('2018_04_06_00_auth.sql','D8416F0C4751763202B1997C81423F6EE2FCF9A6','ARCHIVED','2018-04-06 18:00:32',0),
 ('2018_05_13_00_auth.sql','A9E20F2EB1E2FDBB982DB6B00DB7301852B27CD4','ARCHIVED','2018-05-13 20:22:32',0),
 ('2018_05_24_00_auth.sql','B98FD71AAA13810856729E034E6B8C9F8D5D4F6B','ARCHIVED','2018-05-24 22:32:49',0),
 ('2018_06_14_00_auth.sql','67EAB915BF0C7F2D410BE45F885A1A39D42C8C14','ARCHIVED','2018-06-14 23:06:59',0),
 ('2018_06_22_00_auth.sql','9DA24F70B8A365AFDEF58A9B578255CDEDFCA47C','ARCHIVED','2018-06-22 17:45:45',0),
-('2018_06_23_00_auth.sql','BE35312C386A127D047E5A7CE0D14DB41D905F8E','ARCHIVED','2018-05-23 10:14:39',0),
+('2018_06_23_00_auth.sql','BE35312C386A127D047E5A7CE0D14DB41D905F8E','ARCHIVED','2018-06-23 00:00:00',0),
 ('2018_06_29_00_auth.sql','03AAEA7E52848FA5522C3F0C6D9C38B988407480','ARCHIVED','2018-06-29 22:34:04',0),
-('2018_12_09_00_auth_2017_01_06_00_auth.sql','6CCFE6A9774EC733C9863D36A0F15F3534189BBD','ARCHIVED','2018-11-22 22:21:26',0),
+('2018_08_30_00_auth.sql','22F69864361D3E72F800379338310172C0576D1C','ARCHIVED','2018-08-30 00:00:00',0),
+('2018_09_06_00_auth.sql','309D21E0DF82ED8921F77EAFDE741F38AC32BB13','ARCHIVED','2018-09-06 00:00:00',0),
+('2018_09_17_00_auth.sql','4DB671F0A4FA1A93AF28FB6426AF13DE72C7DA3D','ARCHIVED','2018-09-17 00:00:00',0),
+('2018_12_09_00_auth_2017_01_06_00_auth.sql','6CCFE6A9774EC733C9863D36A0F15F3534189BBD','ARCHIVED','2017-01-06 00:00:00',0),
 ('2018_12_09_01_auth.sql','576C2A11BE671D8420FA3EB705E594E381ECCC56','ARCHIVED','2018-12-09 14:49:17',0),
+('2019_04_27_00_auth.sql','84B1EB9CC9B09BAF55E6295D202EC57D99B1B60E','ARCHIVED','2019-04-27 18:07:18',0),
+('2019_06_06_00_auth.sql','6DE8159E04BEE7BA0A4A81D72D160EB74934B6A5','ARCHIVED','2019-06-06 18:09:54',0),
 ('2019_06_08_00_auth.sql','EA5A78F5A26C17BC790481EA9B3772D3A6912459','ARCHIVED','2019-05-20 17:21:20',0),
 ('2019_06_08_01_auth.sql','8165B1B787E3ECF0C8C0AD2D641513270977ABB4','ARCHIVED','2019-06-04 16:51:31',0),
 ('2019_06_08_02_auth.sql','B39DCBD902290700A81C9D028F54B58601C19A99','ARCHIVED','2019-06-05 16:26:31',0),
 ('2019_06_08_03_auth.sql','F483B657015D39D4F63E3905C27C3AA48241AB03','ARCHIVED','2019-06-08 17:14:21',0),
+('2019_06_16_00_auth.sql','B14AED4D3387B56FF8C8161D3671750AEEAE0F2E','ARCHIVED','2019-06-15 23:32:12',0),
+('2019_06_21_00_auth.sql','C519239830204B68E710F698BC0C9E89B6D5FD24','ARCHIVED','2019-06-20 19:43:50',0),
 ('2019_07_14_00_auth.sql','94C2B877BD906538E1E008350BEA8D8B58E0A158','ARCHIVED','2019-07-14 19:22:08',0),
 ('2019_07_15_00_auth.sql','3649248104CFEC70553016273069A9AE744798E3','ARCHIVED','2019-07-15 19:22:08',0),
+('2019_07_16_00_auth.sql','36CB53A9EBD64BFDCF7030083E36E534F1753773','ARCHIVED','2019-07-16 00:00:00',0),
+('2019_07_17_00_auth.sql','4F983F039904894ACC483BE885676C5F0A18F06B','ARCHIVED','2019-07-17 00:00:00',0),
 ('2019_07_26_00_auth.sql','DC9D0651602AE78B1243B40555A1A7B8447D01B2','ARCHIVED','2019-07-26 18:21:34',0),
+('2019_08_10_00_auth.sql','3568A1C9C6D62BBCD470C0623C1580E332D545D2','ARCHIVED','2022-01-02 21:18:52',0),
+('2019_08_10_01_auth.sql','C58357260F0C70DA226A71F7E05DE2C49AAEFD74','ARCHIVED','2019-08-10 00:00:00',0),
 ('2019_08_11_00_auth.sql','04DCC2ABDA15BC7C015E8BFEA383C62A362B166F','ARCHIVED','2019-08-11 10:56:39',0),
 ('2019_08_18_00_auth.sql','0479A04B669A67D2E5A498CFB91507E742EFB34F','ARCHIVED','2019-08-17 11:51:02',0),
 ('2019_10_27_00_auth.sql','C943A651B5C9AC51BB7DF69821886F4B59F57153','ARCHIVED','2019-10-27 13:06:06',0),
@@ -2374,6 +3017,8 @@ INSERT INTO `updates` VALUES
 ('2020_03_23_00_auth.sql','B90D27BB8E3CEDF65881BDA0C7CE6FBC5EF310E0','ARCHIVED','2020-03-23 17:57:46',0),
 ('2020_03_31_00_auth.sql','BA82A58E95730A397922B6723DA027986E6CD535','ARCHIVED','2020-03-31 17:00:16',0),
 ('2020_04_04_00_auth.sql','5F118989A9F8AFA3B2065AB9C2C0BB7D9A0EB97A','ARCHIVED','2020-04-04 13:23:53',0),
+('2020_04_07_00_auth.sql','6D73A4E1EC5382F10C39F20E2E6E764510A8A5E6','ARCHIVED','2020-04-07 22:23:35',0),
+('2020_04_18_00_auth.sql','BD962B50760771B60F2785027D6957EEF2009240','ARCHIVED','2020-04-18 14:09:28',0),
 ('2020_04_30_00_auth.sql','2FD304B8EF82D529D69287BF22EF061A267F827E','ARCHIVED','2020-04-30 00:39:29',0),
 ('2020_05_19_00_auth.sql','12D9F26538F63546B74793499E8A71BD885E8E5F','ARCHIVED','2020-05-19 12:00:00',0),
 ('2020_06_04_00_auth.sql','BA797B558196B1A07F8FF66E5288AD04659CF6AC','ARCHIVED','2020-06-04 09:57:07',0),
@@ -2390,18 +3035,221 @@ INSERT INTO `updates` VALUES
 ('2020_08_03_01_auth.sql','EC1063396CA20A2303D83238470D41EF4439EC72','ARCHIVED','2020-08-03 00:00:01',0),
 ('2020_08_06_00_auth.sql','5D3C5B25132DAFCA3933E9CBE14F5E8A290C4AFA','ARCHIVED','2020-08-06 20:26:11',0),
 ('2020_08_08_00_auth.sql','BC6A08BE42A6F2C30C9286CBDD47D57B718C4635','ARCHIVED','2020-08-08 00:16:57',0),
+('2020_08_11_00_auth.sql','14C99177E43003D83A4D6F2227722F15FC15A1D0','ARCHIVED','2020-08-11 00:00:00',0),
 ('2020_08_14_00_auth.sql','DFB9B07A7846FC0E124EE4CC099E49FE5742FB66','ARCHIVED','2020-08-14 21:41:24',0),
 ('2020_08_26_00_auth.sql','D5EF787DECB41D898379588F101A0453B46F04D9','ARCHIVED','2020-08-26 21:00:34',0),
+('2020_09_06_00_auth.sql','DC4B5D4C65EB138D5609F137799C3289B9CC2493','ARCHIVED','2020-09-06 00:00:00',0),
+('2020_09_17_00_auth.sql','BBC0A8B2BBED38A57A83999909EB066753A893C5','ARCHIVED','2020-09-17 00:00:00',0),
 ('2020_09_25_00_auth.sql','3CCA78EF89223724BA6784A4F3783DED30416637','ARCHIVED','2020-09-25 19:52:40',0),
 ('2020_10_20_00_auth.sql','1835C5EFD5816DEF914F27E867C8C8D5E08B3F68','ARCHIVED','2020-10-20 21:36:49',0),
-('2020_12_06_00_auth.sql','FA254400D3D7D53E9C350EABFEABFF4EC3AD40DA','RELEASED','2020-12-06 20:25:10',0),
-('2020_12_07_00_auth.sql','23626805735CB9BEEEBD756D4A39AFBCDA6E366C','RELEASED','2020-12-07 21:12:53',0),
-('2020_12_15_00_auth.sql','37DA3C4830ABA30C49370A8647F5B6B3E1821E57','RELEASED','2020-12-15 19:33:15',0),
-('2020_12_22_00_auth.sql','1AED5AD7D93C30CF75E62EBEBCC64FFEDC58F00A','RELEASED','2020-12-22 22:00:39',0),
-('2020_12_31_00_auth.sql','05C9C105D55C6588CDA0D75AE3B135B7E6B54C06','RELEASED','2020-12-31 12:58:21',0),
-('2021_01_10_00_auth.sql','4430F5CC9A31DBBEA4E437E980E9F26AC919C016','RELEASED','2021-01-10 12:29:57',0),
-('2021_01_13_00_auth.sql','F7C15519FFA0FE27EED859343B58714624A302E6','RELEASED','2021-01-13 11:19:52',0),
-('2021_02_09_00_auth.sql','F00ABFF6E3C3F5ACE3444C9D70BADC764C8B3CE2','RELEASED','2021-02-09 17:22:24',0);
+('2020_12_06_00_auth.sql','FA254400D3D7D53E9C350EABFEABFF4EC3AD40DA','ARCHIVED','2020-12-06 20:25:10',0),
+('2020_12_07_00_auth.sql','23626805735CB9BEEEBD756D4A39AFBCDA6E366C','ARCHIVED','2020-12-07 21:12:53',0),
+('2020_12_15_00_auth.sql','37DA3C4830ABA30C49370A8647F5B6B3E1821E57','ARCHIVED','2020-12-15 19:33:15',0),
+('2020_12_22_00_auth.sql','1AED5AD7D93C30CF75E62EBEBCC64FFEDC58F00A','ARCHIVED','2020-12-22 22:00:39',0),
+('2020_12_31_00_auth.sql','05C9C105D55C6588CDA0D75AE3B135B7E6B54C06','ARCHIVED','2020-12-31 12:58:21',0),
+('2021_01_10_00_auth.sql','4430F5CC9A31DBBEA4E437E980E9F26AC919C016','ARCHIVED','2021-01-10 12:29:57',0),
+('2021_01_13_00_auth.sql','F7C15519FFA0FE27EED859343B58714624A302E6','ARCHIVED','2021-01-13 11:19:52',0),
+('2021_02_09_00_auth.sql','F00ABFF6E3C3F5ACE3444C9D70BADC764C8B3CE2','ARCHIVED','2021-02-09 17:22:24',0),
+('2021_04_10_00_auth.sql','7B92AC4F76507940EF2257897F25304CF0F306EB','ARCHIVED','2021-04-10 19:42:42',0),
+('2021_05_12_00_auth.sql','7F37DAD1777D62FDB00C19C0DF5E7DB742CCD5AD','ARCHIVED','2021-05-12 01:08:42',0),
+('2021_06_20_00_auth.sql','7CA418D570DC1444C19AAD18F4A50FF187642310','ARCHIVED','2021-06-20 17:29:17',0),
+('2021_07_04_00_auth.sql','3CF056F8F04E49C1E236060202AA8DA7E186B590','ARCHIVED','2021-07-04 22:23:24',0),
+('2021_08_07_00_auth.sql','D615C2CACC999FF8804AEF56BAAA08D02217D671','ARCHIVED','2021-08-07 23:18:57',0),
+('2021_08_18_00_auth.sql','162590897AC0020E68EB6845637901C3EB6509B4','ARCHIVED','2021-08-18 15:14:17',0),
+('2021_08_19_00_auth.sql','DE008EDFB1FEBA49567E245A64BFE70DA72D9E7B','ARCHIVED','2021-08-19 10:58:58',0),
+('2021_09_02_00_auth.sql','907344F4F0113A13D5E0A1D95E2C3E4C4150090C','ARCHIVED','2021-09-02 12:38:08',0),
+('2021_09_10_00_auth.sql','DE94812ABC7B395C6C3405FB6718A8AF2C9F8FEC','ARCHIVED','2021-09-10 12:18:54',0),
+('2021_10_07_00_auth.sql','45F2D92E28382F0CBE1F9B3A97693C0CC69E50BC','ARCHIVED','2021-10-07 10:32:05',0),
+('2021_10_13_00_auth.sql','220E63385CACCBCEC36C57717DE369F2FCABCAAF','ARCHIVED','2021-10-13 21:15:05',0),
+('2021_10_15_00_auth.sql','C8AA212AB2BB2DB5B3C2C9622A3874475AEFBD7B','ARCHIVED','2021-10-15 10:11:47',0),
+('2021_10_15_01_auth.sql','72A0437F0ADEC59FF9D6839DF845C473F693CA5B','ARCHIVED','2021-10-16 00:15:25',0),
+('2021_10_16_00_auth.sql','FDC45C7BEFBAFC9BCE6C77377B026A59AE52EE21','ARCHIVED','2021-10-16 11:24:39',0),
+('2021_10_22_00_auth.sql','07D7397061A5A906357DC6E91FC33C74638EFDC3','ARCHIVED','2021-11-17 13:21:03',0),
+('2021_10_23_00_auth.sql','97A8F2C2CEDB99C942D38F5B65DAD1DC11296E20','ARCHIVED','2021-10-23 00:00:00',0),
+('2021_10_26_00_auth.sql','91E8B308267847569D9A669BC34794F154242ECF','ARCHIVED','2021-10-26 00:41:04',0),
+('2021_11_05_00_auth.sql','4A4510436578B6486E8399602D3060376E96A8C7','ARCHIVED','2021-11-05 00:33:00',0),
+('2021_11_06_00_auth.sql','3646F9356429CCE7C1CECC7D9BA7960E011C7B6B','ARCHIVED','2021-11-06 11:54:12',0),
+('2021_11_10_00_auth.sql','EB3D26EFD3109BC17447B3BAC7573473F5103F65','ARCHIVED','2021-11-10 14:07:05',0),
+('2021_11_12_00_auth.sql','012C088794362FE57BAEA0C3BD05356B40289028','ARCHIVED','2021-11-12 12:17:24',0),
+('2021_11_17_00_auth.sql','298DA8468B30042B15FA17A90325C72879DF6D8E','ARCHIVED','2021-11-17 13:23:17',0),
+('2021_11_19_00_auth.sql','BE4F77E254D76A59DBF28B2CEEA5CAF6777B650E','ARCHIVED','2021-11-19 00:37:56',0),
+('2021_11_20_00_auth.sql','E476B6DAD9C47FC81E1DA5016DC79AB527F1847A','ARCHIVED','2021-11-20 18:40:53',0),
+('2021_11_25_00_auth.sql','7A01CEB201CB825BFD565BBF5EED0162BEA733E7','ARCHIVED','2021-11-25 19:32:21',0),
+('2021_12_02_00_auth.sql','ED40A45A8F5E5B1BB68216A3053D721B3BA3A556','ARCHIVED','2021-12-02 11:48:11',0),
+('2021_12_04_00_auth.sql','00C4A37A60F53A5E893CAADAC882E5A28375A4D2','ARCHIVED','2021-12-04 12:49:04',0),
+('2021_12_08_00_auth.sql','9B1A7C86F56159CA50A45B9CB4BC6422A3378231','ARCHIVED','2021-12-08 00:28:19',0),
+('2021_12_16_00_auth.sql','EF5050D779CC6CEAAFB4C7E0CFA26824D92B675E','ARCHIVED','2021-12-16 12:21:11',0),
+('2021_12_31_00_auth.sql','16AA1CFB93CC42DC9CC7C0C787C64D3CE9662EE5','ARCHIVED','2022-01-02 21:18:52',0),
+('2021_12_31_01_auth.sql','336E62A8850A3E78A1D0BD3E81FFD5769184BDF8','ARCHIVED','2021-12-31 15:58:32',0),
+('2022_01_02_00_auth.sql','F0AF198C5F7529508A5DB1F29D153256368AD1B4','ARCHIVED','2022-01-02 21:22:35',0),
+('2022_01_08_00_auth.sql','3C9853058A77817DD62943D0332418D84CA6BDA1','ARCHIVED','2022-01-15 23:21:37',0),
+('2022_01_15_00_auth.sql','11552D29BEDF73626FB8D932AB4362882964B4F0','ARCHIVED','2022-01-15 23:24:57',0),
+('2022_01_22_00_auth.sql','24A9BB761E805608EFDD8F647BF733602B337018','ARCHIVED','2022-01-22 01:39:01',0),
+('2022_02_25_00_auth.sql','1556FEDB9B46643634AE5BD0E38E7FF447FFC081','ARCHIVED','2022-02-25 12:39:15',0),
+('2022_02_26_00_auth.sql','955F8E13B0D91CA06FEEAD4E6C75E5495DA6DDF3','ARCHIVED','2022-02-26 01:01:22',0),
+('2022_03_01_00_auth.sql','53636BBB7DF4FFC2496456C1EEF2BD271D1C87E0','ARCHIVED','2022-03-01 16:07:38',0),
+('2022_03_02_00_auth.sql','928C11D145B98E90FB82D2A871C2456C848AB6C1','ARCHIVED','2022-03-02 10:10:19',0),
+('2022_03_03_00_auth.sql','408CCCF7D47FB5C876E976F883B4BDBFFEC5D146','ARCHIVED','2022-03-03 01:09:55',0),
+('2022_03_06_00_auth.sql','2883FD8D2CB8B2FC3DF7D20D3216301262E7A7C3','ARCHIVED','2022-03-06 15:12:24',0),
+('2022_03_08_00_auth.sql','E2C6B4E26FE55F5827C587CD668F6518EB2B51E8','ARCHIVED','2022-03-08 15:24:10',0),
+('2022_03_12_00_auth.sql','1A476DB06BC1F096E6F15225078373B3AD094C1B','ARCHIVED','2022-03-12 05:52:02',0),
+('2022_03_22_00_auth.sql','16A58234A1EF4F13ABD6EF78733BDBF5152AA70C','ARCHIVED','2022-03-22 00:32:54',0),
+('2022_03_25_00_auth.sql','173D4F7B5417AF11DDDE6EC1A58ECFA6783C7FAF','ARCHIVED','2022-03-25 00:26:53',0),
+('2022_03_30_00_auth.sql','37177AB41D7DF26CF4F908C0522EDEAF13094D7E','ARCHIVED','2022-03-30 00:37:34',0),
+('2022_03_30_01_auth.sql','AACD3E4E8673F6D90677C97D5B0B0F292D0C1763','ARCHIVED','2022-03-30 04:28:42',0),
+('2022_04_08_00_auth.sql','C0BE7634D6B84D860111AF5EEDF1D023875F3137','ARCHIVED','2022-04-08 21:01:16',0),
+('2022_04_14_00_auth.sql','4D79D1C7282CA8F1626D957AF17E711BFF94334B','ARCHIVED','2022-04-14 04:39:49',0),
+('2022_04_22_00_auth.sql','835EE2D6981AD7A7467490242D6A4B0E0B69E4F4','ARCHIVED','2022-04-22 20:04:53',0),
+('2022_05_03_00_auth.sql','0874FBE9821F2659BA51B91E9D69B9E6CA6D2EC9','ARCHIVED','2022-05-03 11:07:21',0),
+('2022_06_01_00_auth.sql','DCFC7EC6C52993769B568EAF87CA2DAA10359AEB','ARCHIVED','2022-06-02 00:52:17',0),
+('2022_06_06_00_auth.sql','68D73F068598D37FD6FBC84362F1BA7BA4EC2709','ARCHIVED','2022-06-06 21:35:16',0),
+('2022_06_07_00_auth.sql','76B4D21F13B0024445E5C0B48C630C1DF7E80966','ARCHIVED','2022-06-07 16:09:58',0),
+('2022_06_08_00_auth.sql','250081465C76AC9668E3F66D386CE2AAC05379E9','ARCHIVED','2022-06-08 10:45:01',0),
+('2022_06_09_00_auth.sql','29C2A4209FB977373440666F00B2E04F0E095247','ARCHIVED','2022-06-09 18:31:38',0),
+('2022_06_15_00_auth.sql','137223C2750CC3559EFE11AFF1A780D5DA070193','ARCHIVED','2022-06-15 11:16:51',0),
+('2022_06_18_00_auth.sql','63B75F9D79D83581AB3257C9EF86EDB626D8FDDA','ARCHIVED','2022-06-18 11:48:42',0),
+('2022_06_27_00_auth.sql','CF613CCAAF8B6F08AAE1C48DBC4AF4D224291D8D','ARCHIVED','2022-06-27 21:13:58',0),
+('2022_07_23_00_auth.sql','FEA7A8DA363F097A090F3BB39401C3FD7AE8E9B5','ARCHIVED','2022-07-25 18:40:38',0),
+('2022_07_25_00_auth.sql','8F5BA8F7E010EDCA70F49FDE947B2F89476A2F95','ARCHIVED','2022-07-25 18:44:10',0),
+('2022_08_02_00_auth.sql','4B97D20928B05086C7863497F4DDD408A51619BE','ARCHIVED','2022-08-02 18:28:31',0),
+('2022_08_17_00_auth.sql','1A45DAE660690A7F4D0822C514116BF44A3185BB','ARCHIVED','2022-08-17 10:16:00',0),
+('2022_08_19_00_auth.sql','332E7CC2E69D69BF274E5C61768FB80D1C217BDB','ARCHIVED','2022-08-19 09:52:06',0),
+('2022_08_19_01_auth.sql','8B32826AE09C27B98C9480EF4D61205666F68318','ARCHIVED','2022-08-19 23:43:01',0),
+('2022_08_21_00_auth.sql','5DEC0CB848F99D575B90356D82276749F2473B72','ARCHIVED','2022-08-21 00:02:03',0),
+('2022_09_02_00_auth.sql','E2ED8B4B90829CFD283C9679AE265A9C9B2CF762','ARCHIVED','2022-09-02 15:52:22',0),
+('2022_09_08_00_auth.sql','20B4503E316E042432AC25F7CEE9DCD9EDC631C6','ARCHIVED','2022-09-08 15:38:35',0),
+('2022_09_23_00_auth.sql','F7DB1B903982D99295BC0D7D2BC205C5A2145F03','ARCHIVED','2022-09-23 03:44:55',0),
+('2022_10_03_00_auth.sql','B956A37F71B42EB0289C2066A15D1F6C02F21E5A','ARCHIVED','2022-10-03 21:32:38',0),
+('2022_11_20_00_auth.sql','37123D83589CFD96472D9187799C1F3FD67645DD','ARCHIVED','2022-11-20 11:05:20',0),
+('2022_12_16_00_auth.sql','249B00480ACC8B67C908435748C202D8363C6EDE','ARCHIVED','2022-12-16 22:39:07',0),
+('2022_12_17_00_auth.sql','0D3963AC2DBF74A4C8B88EA4A680C046FCCF8E70','ARCHIVED','2022-12-17 07:34:53',0),
+('2022_12_17_01_auth.sql','5D1E2EA3C3CE087F7FB647CD0DE000979961863C','ARCHIVED','2022-12-17 13:09:19',0),
+('2022_12_20_00_auth.sql','BA88146743B060A14937688C0DB94BF11C6CF1BA','ARCHIVED','2022-12-20 03:10:07',0),
+('2022_12_21_00_auth.sql','B395CAE993D65E035AA621941D4C384E2E2E7DF5','ARCHIVED','2022-12-21 01:16:56',0),
+('2022_12_22_00_auth.sql','BBF3CDD7927520F0381ECEF1F30152CBD5344D6A','ARCHIVED','2022-12-22 16:35:36',0),
+('2023_01_17_00_auth.sql','EAEA99DF10DCC648C161D836FFA681D5B0F4CDC3','ARCHIVED','2023-01-17 18:41:32',0),
+('2023_01_28_00_auth.sql','94A640018494B9203100178EC67A582987456B8B','ARCHIVED','2023-01-28 00:11:59',0),
+('2023_01_28_01_auth.sql','4BDA614300858ADE6D58A119680724D867B0A355','ARCHIVED','2023-01-28 16:39:41',0),
+('2023_02_01_00_auth.sql','9C1FB6820EF3A543AB7DE2E2913014AFF445F91E','ARCHIVED','2023-02-01 10:10:30',0),
+('2023_02_02_00_auth.sql','8AC163759C83D887D5D7A48CFB8272FFBA71B801','ARCHIVED','2023-02-02 10:44:28',0),
+('2023_02_03_00_auth.sql','0309A99757DE1FAE595C6C32586B2B8F8CA4C134','ARCHIVED','2023-02-03 01:13:52',0),
+('2023_02_07_00_auth.sql','92D6C7A47B2F98ED93D62F6B7293D604C8F6BE16','ARCHIVED','2023-02-07 10:39:13',0),
+('2023_02_09_00_auth.sql','F4B797776CA62D9A048D231C8117D51AA312932C','ARCHIVED','2023-02-09 00:19:27',0),
+('2023_02_14_00_auth.sql','033F4460715121A8B6E9DD0F7456AE930DD18A7A','ARCHIVED','2023-02-14 10:02:49',0),
+('2023_02_28_00_auth.sql','F57F70D6E1BBB1CB799E338C3358C265FD7F8689','ARCHIVED','2023-02-28 21:32:14',0),
+('2023_03_08_00_auth.sql','2490CEA2EBDB0ECD3590F1D9328DD88266E179F3','ARCHIVED','2023-03-08 21:58:27',0),
+('2023_03_11_00_auth.sql','6532C5E043692E7361689090DA19E6350705B591','ARCHIVED','2023-03-11 00:10:17',0),
+('2023_03_22_00_auth.sql','C589D68CF88A62E03F2E797E03CF2F237371BD34','ARCHIVED','2023-03-21 18:12:28',0),
+('2023_03_27_00_auth.sql','25B04268224275D0A90EF13E62460CBF61B90CEF','ARCHIVED','2023-03-27 21:22:59',0),
+('2023_03_31_00_auth.sql','3F8CB31A261BCFE5C9A08B12945221CAA652AB24','ARCHIVED','2023-03-31 11:15:43',0),
+('2023_03_31_01_auth.sql','A70E14B46537BC9208663B94EDF6CE51CB1B23BA','ARCHIVED','2023-03-31 23:16:09',0),
+('2023_04_02_00_auth.sql','0238E0CE22D6422B19F648D026349A018CD4DB04','ARCHIVED','2023-04-02 01:02:26',0),
+('2023_04_05_00_auth.sql','67317FC9DAA66EBF68468E60F99E1F6DD5B237E8','ARCHIVED','2023-04-05 10:39:51',0),
+('2023_04_06_00_auth.sql','FECA06F32D077B1660D9FF8204D94F5C8E4065B4','ARCHIVED','2023-04-06 04:18:58',0),
+('2023_04_12_00_auth.sql','E28F892FCC2A923683E5EEE24E98C618A9534318','ARCHIVED','2023-04-12 00:26:10',0),
+('2023_04_25_00_auth.sql','AF297F37715F4A4C84E84182358C26CA83B0C655','ARCHIVED','2023-04-25 11:14:36',0),
+('2023_04_28_00_auth.sql','779248686CB60F21CA7E9514E33B2D3E37C91B9E','ARCHIVED','2023-07-14 08:19:57',0),
+('2023_05_04_00_auth.sql','1015EC7619C1F43B9FD70C8971F883D0CBF4D002','ARCHIVED','2023-05-04 16:02:32',0),
+('2023_05_05_00_auth.sql','C0F435B417D238619DC390F52B27BA0E08DDE2CF','ARCHIVED','2023-05-05 00:55:38',0),
+('2023_05_09_00_auth.sql','E14DC7567533284034ADCD74ED99486A4AD331AE','ARCHIVED','2023-05-09 01:07:29',0),
+('2023_05_15_00_auth.sql','B2A9E5D5ECDC04C44136B4BAC7350AAF1522E916','ARCHIVED','2023-05-15 00:36:20',0),
+('2023_05_23_00_auth.sql','C58C31ABA0AF08508B1946143746C44FB6ACB824','ARCHIVED','2023-05-23 09:23:42',0),
+('2023_05_25_00_auth.sql','52C460A556EE08EF149E55E021AF0A9B5EC9AE13','ARCHIVED','2023-05-25 00:34:18',0),
+('2023_05_27_00_auth.sql','C7B7718915274FC21BAE243D42D7419F67F93792','ARCHIVED','2023-05-27 12:10:20',0),
+('2023_06_06_00_auth.sql','F327269C75DF6D09B3D7B33137681E0C1188120A','ARCHIVED','2023-06-06 00:50:17',0),
+('2023_06_12_00_auth.sql','5BEE858205C3EDE75C5A5A1E46FBEE2257F97B83','ARCHIVED','2023-06-12 23:47:51',0),
+('2023_07_12_00_auth.sql','E610FC5F0B1079070F69B5AAA6D6BDA5630B081F','ARCHIVED','2023-07-12 11:21:50',0),
+('2023_07_13_00_auth.sql','BF718B6F8F2A324092D95BC1370120F0EE699BD2','ARCHIVED','2023-07-13 19:53:43',0),
+('2023_07_14_00_auth.sql','B66CDB7EE7E554992BB2A9DAB3C16122411C81DF','ARCHIVED','2023-07-14 08:24:44',0),
+('2023_07_14_01_auth.sql','8037C5101A08824DA6FE6B16E0004704DFC5B8FA','ARCHIVED','2023-07-14 19:35:41',0),
+('2023_07_15_00_auth.sql','89D51F3E0EAAA957A7C0E4A4A7812505F61F12E6','ARCHIVED','2023-07-15 00:15:31',0),
+('2023_07_19_00_auth.sql','8FE0EAB6C8DA5B060E95A9715F3D374340E361DD','ARCHIVED','2023-07-19 19:31:35',0),
+('2023_07_22_00_auth.sql','38BDC8DE5697366E26588552830E34E420861008','ARCHIVED','2023-07-22 13:57:13',0),
+('2023_07_28_00_auth.sql','1CC6C4E639ED9FD2EABFD0713C4D809C707E5E3F','ARCHIVED','2023-07-28 20:03:06',0),
+('2023_08_03_00_auth.sql','57B92FF9D84AFE5F37A533F8F7187E26A708D8EE','ARCHIVED','2023-08-03 22:49:11',0),
+('2023_08_09_00_auth.sql','3A0B9E91EB66D237785CD3F3CDFE5A6EAB33578E','ARCHIVED','2023-08-09 10:01:04',0),
+('2023_08_31_00_auth.sql','3A2242F0755CCC7658F458847B12E308FE75A314','ARCHIVED','2023-08-31 19:06:27',0),
+('2023_09_07_00_auth.sql','9127F7B6723477DE25886D451FE174ABF2039B94','ARCHIVED','2023-09-07 00:30:01',0),
+('2023_09_08_00_auth.sql','AA4E52CC2344F503151C88284807E8B7319B7C69','ARCHIVED','2023-09-08 21:46:01',0),
+('2023_09_13_00_auth.sql','49C44AE960C71C71DC9966D10D8DAA127976D22B','ARCHIVED','2023-09-13 00:30:28',0),
+('2023_09_20_00_auth.sql','6B3EAEB21A617564907EE843FC43272F0C020760','ARCHIVED','2023-09-20 04:49:35',0),
+('2023_09_23_00_auth.sql','B6250AE892CF5988FD4EB08EC35DE25096B52115','ARCHIVED','2023-09-23 01:57:24',0),
+('2023_09_28_00_auth.sql','E69955264CD347921DDD1B52BC31E8C39EC41B21','ARCHIVED','2023-09-28 05:36:07',0),
+('2023_10_06_00_auth.sql','3480687DEEB3E12ECC9632809A518425F9FA0FCC','ARCHIVED','2023-10-06 00:40:46',0),
+('2023_10_17_00_auth.sql','EE4C430E9535EC3466E4D2FABA7F009F87AF18BD','ARCHIVED','2023-10-17 21:07:51',0),
+('2023_10_25_00_auth.sql','86B16D5D78A8ED31FDD8553D223CF56F013B00DB','ARCHIVED','2023-10-25 00:06:14',0),
+('2023_11_01_00_auth.sql','4EA6010E9035AFC80326FE56C642C7918254F2BE','ARCHIVED','2023-11-01 10:47:18',0),
+('2023_11_09_00_auth.sql','C8A9223E6868593904634193ACBD421F40078FE5','ARCHIVED','2023-11-09 00:53:45',0),
+('2023_11_09_01_auth.sql','BC9BC28D41608A78166B5A38F3A7F598FBDB879D','ARCHIVED','2023-11-09 18:21:59',0),
+('2023_11_14_00_auth.sql','192D729737C5E3332D7B5B9B7F9DBDD9626D7B98','ARCHIVED','2023-11-14 11:36:05',0),
+('2023_11_15_00_auth.sql','85CE6DCBE9391F0FB3819C7579067E2775D7C20E','ARCHIVED','2023-11-15 00:48:07',0),
+('2023_11_15_01_auth.sql','622218EB74372055943D7B62AD30B52F959CC94B','ARCHIVED','2023-11-15 00:53:47',0),
+('2023_11_16_00_auth.sql','2EF3FE83B74EFC10B8536E2EB6AFAE7074FC59BD','ARCHIVED','2023-11-16 23:19:09',0),
+('2023_11_21_00_auth.sql','146E5E6EF94C5DB78343372A8FDB32B062B80040','ARCHIVED','2023-11-21 11:24:11',0),
+('2023_11_24_00_auth.sql','AC1B5136CC97264A21933BD1074D02E88D819488','ARCHIVED','2023-11-24 19:37:38',0),
+('2023_11_30_00_auth.sql','49E92311D7373965320CCEE3720D4EF9F1A28F97','ARCHIVED','2023-11-30 13:39:17',0),
+('2023_12_05_00_auth.sql','25DC15C708E6A962DC322293D0CE5D52941F560A','ARCHIVED','2023-12-05 16:18:14',0),
+('2023_12_12_00_auth.sql','EDC092787956178A08D15B9245EE4716ED0847B0','ARCHIVED','2023-12-12 05:47:47',0),
+('2023_12_13_00_auth.sql','C3D6AA45BECD5A7F8A420FE0022AAF6A349C5E3F','ARCHIVED','2023-12-13 06:42:48',0),
+('2023_12_19_00_auth.sql','EDC1C8E58EEF18F952A3509D40D27E17CAC49563','ARCHIVED','2024-02-08 00:48:00',0),
+('2023_12_21_00_auth.sql','DB294EF35C00AA92C79786F7A0BFBCE739D4E193','ARCHIVED','2023-12-21 09:08:30',0),
+('2023_12_24_00_auth.sql','F59B3A895750FD83177324B89BFCEBD8A43DD577','ARCHIVED','2023-12-24 06:24:58',0),
+('2023_12_26_00_auth.sql','5C8716F7F6E2792E15A42BDA8F2D855A7DE95FC5','ARCHIVED','2023-12-26 13:38:58',0),
+('2024_01_05_00_auth.sql','7F401D473B08BBE5212551E96A86F85107CE7C8E','ARCHIVED','2023-12-19 10:05:39',0),
+('2024_01_10_00_auth.sql','75F06894D95986AEAB2933F141DB7693FABB0324','ARCHIVED','2024-01-10 11:14:55',0),
+('2024_01_21_00_auth.sql','5F12B88EAADC5390AD42843290BD13CEF3BF2E0B','ARCHIVED','2024-01-21 21:21:50',0),
+('2024_01_23_00_auth.sql','55E3C2CC1FAF02916EB47711CD2278443F7AA183','ARCHIVED','2024-01-23 09:40:35',0),
+('2024_01_31_00_auth.sql','7328692BBD9B455D51ABE90B9C6571EA889EE26F','ARCHIVED','2024-01-31 11:58:00',0),
+('2024_02_01_00_auth.sql','1822B9B3E28AB0E77CF253C6A96F78EB5020447A','ARCHIVED','2024-02-01 10:46:27',0),
+('2024_02_07_00_auth.sql','F6A65673A7020B4C64083AFC1CAD4206BC960170','ARCHIVED','2024-02-07 12:26:24',0),
+('2024_02_08_00_auth.sql','E62D51C3D536FDF79EBEDFE060EB9D232ACE1EDD','ARCHIVED','2024-02-08 00:56:26',0),
+('2024_02_08_01_auth.sql','9972EE1527DFC182527FA3C1AC086B189574BDF0','ARCHIVED','2024-02-08 22:32:41',0),
+('2024_02_24_00_auth.sql','BEB6F94703C4574088289DFFC8E7660D223E2841','ARCHIVED','2024-02-24 00:27:13',0),
+('2024_03_05_00_auth.sql','61341FABF7243FBCBB6BDE35CECE1F7DFD988F26','ARCHIVED','2024-03-05 20:43:51',0),
+('2024_03_10_00_auth.sql','9DCF844BFA256075CD8A68C17F1DC124BA0E67BC','ARCHIVED','2024-03-10 05:13:22',0),
+('2024_03_13_00_auth.sql','4F753256F61738E4A5FE8C9316673761A218E95F','ARCHIVED','2024-03-13 23:45:21',0),
+('2024_03_22_00_auth.sql','1709D1E7F205A0A28135C33A525E9EBF880E4606','ARCHIVED','2024-03-22 22:42:07',0),
+('2024_03_31_00_auth.sql','D17A6ABBAD502D76D4095619CFC19120EC28B107','ARCHIVED','2024-03-31 23:40:18',0),
+('2024_05_28_00_auth.sql','87B7DF28C65D2692DD3D287FB746BCA827F35A66','ARCHIVED','2024-05-28 09:54:50',0),
+('2024_05_29_00_auth.sql','57667C0ED008ABAD6FFA494473768037B0A2EF34','ARCHIVED','2024-05-29 22:08:14',0),
+('2024_05_30_00_auth.sql','62DE591F17CE55BF3AF59B34C31171AAC9F3F71C','ARCHIVED','2024-05-30 21:34:22',0),
+('2024_06_02_00_auth.sql','5B651EFF2AE4F6A7BD161B1B190CEFAD54F4F7CC','ARCHIVED','2024-06-02 23:04:45',0),
+('2024_06_05_00_auth.sql','1A1631F97D556B5F340F83DB433A45A6210988FC','ARCHIVED','2024-06-05 17:42:38',0),
+('2024_06_13_00_auth.sql','7B9357FD383B94F3EF4C21A0D9CBAE66702FABBC','ARCHIVED','2024-06-13 13:58:30',0),
+('2024_06_17_00_auth.sql','BD2375B3A11DE71960A200D6FA27632D2F84B668','ARCHIVED','2024-06-17 22:15:09',0),
+('2024_06_27_00_auth.sql','AB334DD140BCCE062A6CD9CB67626A1146DE4E84','ARCHIVED','2024-06-27 04:52:27',0),
+('2024_07_09_00_auth.sql','A70A151A72308DC74B7AF0B7ACD1D87DE495538C','ARCHIVED','2024-07-09 21:19:18',0),
+('2024_07_14_00_auth.sql','578817B8AAD12414DEAF24A35AF400B304179524','ARCHIVED','2024-07-14 19:04:54',0),
+('2024_07_18_00_auth.sql','14FE2B8507519A7D7D21A6E3CFEDD6D40A9F689D','ARCHIVED','2024-07-18 22:44:20',0),
+('2024_08_09_00_auth.sql','3088FE594C953A1845B5A95A6F104A8EEF946D8C','ARCHIVED','2024-08-09 12:15:53',0),
+('2024_08_18_00_auth.sql','5C1D0A3FE0245F4030FE446288AE533556EC6C9E','ARCHIVED','2024-08-18 20:36:28',0),
+('2024_08_28_01_auth.sql','BC5D74553AF2D92606F55C1C462D2700FE73BD34','ARCHIVED','2024-08-29 04:45:54',0),
+('2024_08_30_00_auth.sql','BD76942F1C29AAA2450E051E7CA552672B5E331B','ARCHIVED','2024-08-30 19:24:30',0),
+('2024_09_04_00_auth.sql','FE7307AD520718D7F71F1264B58AA0DC9E4BEFAE','ARCHIVED','2024-09-04 09:54:29',0),
+('2024_09_17_00_auth.sql','CC4FD75037646F91F05FB8D7A9BE836A76B8F668','ARCHIVED','2024-09-17 01:41:19',0),
+('2024_09_17_01_auth.sql','C239FE5AFC0FF4F6D5C1E03131D869A2B2988B3C','ARCHIVED','2024-09-17 10:21:50',0),
+('2024_09_24_00_auth.sql','E20C474C16DACB9A10180F58D824B91378DABC32','ARCHIVED','2024-09-24 12:19:13',0),
+('2024_09_26_00_auth.sql','E37C3997FD7851EA360774AC568912846C448272','ARCHIVED','2024-09-26 18:27:26',0),
+('2024_10_24_00_auth.sql','B6DEDDEA09595E6E9520D076F02FFDF7ED615517','ARCHIVED','2024-10-24 16:16:03',0),
+('2024_10_27_00_auth.sql','D0D457EB1827ACC5908B3AC11239D0DC281BEB0F','ARCHIVED','2024-10-27 19:22:40',0),
+('2024_10_31_00_auth.sql','FCBF83D6981B26DE2807BDF338A3754972535906','ARCHIVED','2024-10-31 19:29:16',0),
+('2024_11_02_00_auth.sql','93A7F7A3C3BA586C139B4060180F7E032C535669','ARCHIVED','2024-11-02 12:35:24',0),
+('2024_11_06_00_auth.sql','0C8D79745E070CEEE55D9546EC78FE89C5CCB040','ARCHIVED','2024-11-06 17:27:41',0),
+('2024_11_11_00_auth.sql','F47CDFB857DB4105306739AF4FBBB3C92CA43363','ARCHIVED','2024-11-11 13:34:09',0),
+('2024_11_12_00_auth.sql','5A236A557291758C0F2C46FDEC02692E7C53F751','ARCHIVED','2024-11-12 11:42:13',0),
+('2024_11_14_00_auth.sql','93FD4474622BD2E19BD7665F28B32A8A5D05C2AA','ARCHIVED','2024-11-14 10:37:53',0),
+('2024_12_05_00_auth.sql','500CA33EB022AD2CEE8EB7DADA0D43C5DD206089','ARCHIVED','2024-12-05 23:25:47',0),
+('2024_12_19_00_auth.sql','AE82E1575F62741B417F6120A099284F18AF564C','ARCHIVED','2024-12-19 12:00:47',0),
+('2025_01_14_00_auth.sql','CA944A0F0028B8888F5576E8166115AD31264F84','ARCHIVED','2025-01-14 09:50:31',0),
+('2025_02_12_00_auth.sql','AF96D2CBDEED3AA8E1D489FEA6AA084771B3AC21','ARCHIVED','2025-02-12 10:13:07',0),
+('2025_02_13_00_auth.sql','85B38293CCFFC74094F56A6A1ACAB87E7DC5BB7E','ARCHIVED','2025-02-13 16:45:59',0),
+('2025_02_19_01_auth.sql','9435D6201F67CB303DA4C66F76061056BD744792','ARCHIVED','2025-02-19 14:30:51',0),
+('2025_02_20_00_auth.sql','AB6B8CAF5D4B7BDADE896EF9E54FE9384D0BFF61','ARCHIVED','2025-02-20 10:49:50',0),
+('2025_04_05_00_auth.sql','2523EEC30D3456441CF4EA8ED5E529506CED238B','ARCHIVED','2025-04-05 15:16:45',0),
+('2025_04_06_00_auth.sql','D65E53E402A789FC413131E1720830B43FEAD967','ARCHIVED','2025-04-06 19:08:23',0),
+('2025_04_09_01_auth.sql','07470857CD49E55C61714A9BB855EF49D645266B','ARCHIVED','2025-04-09 10:07:46',0),
+('2025_05_11_00_auth.sql','5024DAF97BDADC8ABAD06A893F920BACD45A59EC','ARCHIVED','2025-05-11 10:42:32',0),
+('2025_05_21_00_auth.sql','A2DB1127BDA3C3EA274D99771F7D753A33FBB15D','RELEASED','2025-05-21 10:14:15',0);
 /*!40000 ALTER TABLE `updates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2411,12 +3259,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `updates_include`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `updates_include` (
-  `path` varchar(200) NOT NULL COMMENT 'directory to include. $ means relative to the source directory.',
-  `state` enum('RELEASED','ARCHIVED') NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if the directory contains released or archived updates.',
+  `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'directory to include. $ means relative to the source directory.',
+  `state` enum('RELEASED','ARCHIVED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if the directory contains released or archived updates.',
   PRIMARY KEY (`path`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='List of directories where we want to include sql updates.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='List of directories where we want to include sql updates.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2426,11 +3274,14 @@ CREATE TABLE `updates_include` (
 LOCK TABLES `updates_include` WRITE;
 /*!40000 ALTER TABLE `updates_include` DISABLE KEYS */;
 INSERT INTO `updates_include` VALUES
-('$/sql/updates/auth','RELEASED'),
 ('$/sql/custom/auth','RELEASED'),
+('$/sql/old/10.x/auth','ARCHIVED'),
+('$/sql/old/4.4.x/auth','ARCHIVED'),
 ('$/sql/old/6.x/auth','ARCHIVED'),
 ('$/sql/old/7/auth','ARCHIVED'),
-('$/sql/old/8.x/auth','ARCHIVED');
+('$/sql/old/8.x/auth','ARCHIVED'),
+('$/sql/old/9.x/auth','ARCHIVED'),
+('$/sql/updates/auth','RELEASED');
 /*!40000 ALTER TABLE `updates_include` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2440,15 +3291,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `uptime`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `uptime` (
   `realmid` int unsigned NOT NULL,
-  `starttime` bigint unsigned NOT NULL DEFAULT '0',
-  `uptime` bigint unsigned NOT NULL DEFAULT '0',
-  `maxplayers` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `revision` varchar(255) NOT NULL DEFAULT 'RainbowLand',
+  `starttime` int unsigned NOT NULL DEFAULT '0',
+  `uptime` int unsigned NOT NULL DEFAULT '0',
+  `maxplayers` smallint unsigned NOT NULL DEFAULT '0',
+  `revision` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trinitycore',
   PRIMARY KEY (`realmid`,`starttime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Uptime system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Uptime system';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2461,8 +3312,77 @@ LOCK TABLES `uptime` WRITE;
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `vw_log_history`
+--
+
+DROP TABLE IF EXISTS `vw_log_history`;
+/*!50001 DROP VIEW IF EXISTS `vw_log_history`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vw_log_history` AS SELECT
+ 1 AS `First Logged`,
+ 1 AS `Last Logged`,
+ 1 AS `Occurrences`,
+ 1 AS `Realm`,
+ 1 AS `type`,
+ 1 AS `level`,
+ 1 AS `string`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vw_rbac`
+--
+
+DROP TABLE IF EXISTS `vw_rbac`;
+/*!50001 DROP VIEW IF EXISTS `vw_rbac`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vw_rbac` AS SELECT
+ 1 AS `Permission ID`,
+ 1 AS `Permission Group`,
+ 1 AS `Security Level`,
+ 1 AS `Permission`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Dumping routines for database 'auth'
 --
+
+--
+-- Final view structure for view `vw_log_history`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vw_log_history`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 SQL SECURITY INVOKER */
+/*!50001 VIEW `vw_log_history` AS select from_unixtime(min(`logs`.`time`)) AS `First Logged`,from_unixtime(max(`logs`.`time`)) AS `Last Logged`,count(0) AS `Occurrences`,`realmlist`.`name` AS `Realm`,`logs`.`type` AS `type`,`logs`.`level` AS `level`,`logs`.`string` AS `string` from (`logs` left join `realmlist` on((`logs`.`realm` = `realmlist`.`id`))) group by `logs`.`string`,`logs`.`type`,`logs`.`realm` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vw_rbac`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vw_rbac`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 SQL SECURITY INVOKER */
+/*!50001 VIEW `vw_rbac` AS select `t1`.`linkedId` AS `Permission ID`,`t1`.`id` AS `Permission Group`,ifnull(`t2`.`secId`,'linked') AS `Security Level`,`t3`.`name` AS `Permission` from ((`rbac_linked_permissions` `t1` left join `rbac_default_permissions` `t2` on((`t1`.`id` = `t2`.`permissionId`))) left join `rbac_permissions` `t3` on((`t1`.`linkedId` = `t3`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2473,4 +3393,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-20 21:36:50
+-- Dump completed on 2025-05-11 10:42:34

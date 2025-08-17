@@ -1,6 +1,7 @@
 package com.github.azeroth.game.map;
 
 
+import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.map.grid.Cell;

@@ -15,11 +15,13 @@ import com.github.azeroth.dbc.domain.Faction;
 import com.github.azeroth.dbc.domain.FactionTemplate;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.ai.CreatureAI;
+import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.object.*;
+import com.github.azeroth.game.domain.object.enums.*;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.gobject.GameObject;
-import com.github.azeroth.game.entity.object.enums.*;
 import com.github.azeroth.game.entity.object.update.UpdateData;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.player.enums.DuelState;
@@ -29,13 +31,12 @@ import com.github.azeroth.game.entity.vehicle.ITransport;
 import com.github.azeroth.game.loot.Loot;
 import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.map.*;
-import com.github.azeroth.game.map.enums.LiquidHeaderTypeFlag;
-import com.github.azeroth.game.map.enums.ModelIgnoreFlags;
-import com.github.azeroth.game.map.enums.ZLiquidStatus;
+import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
+import com.github.azeroth.game.domain.map.enums.ModelIgnoreFlags;
+import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.map.grid.Coordinate;
-import com.github.azeroth.game.map.model.PositionFullTerrainStatus;
-import com.github.azeroth.game.map.model.ZoneAndAreaId;
+import com.github.azeroth.game.domain.map.PositionFullTerrainStatus;
+import com.github.azeroth.game.domain.map.ZoneAndAreaId;
 import com.github.azeroth.game.movement.PathGenerator;
 import com.github.azeroth.game.movement.PathType;
 import com.github.azeroth.game.networking.ServerPacket;
@@ -47,7 +48,7 @@ import com.github.azeroth.game.networking.packet.spell.CancelSpellVisual;
 import com.github.azeroth.game.networking.packet.spell.PlayOrphanSpellVisual;
 import com.github.azeroth.game.networking.packet.spell.PlaySpellVisual;
 import com.github.azeroth.game.networking.packet.spell.PlaySpellVisualKit;
-import com.github.azeroth.game.phasing.PhaseShift;
+import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.reputation.ReputationFlag;
 import com.github.azeroth.game.scenario.Scenario;
 import com.github.azeroth.game.domain.creature.TempSummonType;
@@ -81,8 +82,8 @@ public abstract class WorldObject extends GenericObject {
     private final WorldLocation location;
     public int lastUsedScriptID;
     private boolean activeObject;
-    private int zoneId;
-    private int areaId;
+    private short zoneId;
+    private short areaId;
     private float staticFloorZ;
     private boolean outdoors;
     private ZLiquidStatus liquidStatus = ZLiquidStatus.values()[0];
@@ -90,7 +91,7 @@ public abstract class WorldObject extends GenericObject {
     private boolean farVisible;
     private Float visibilityDistanceOverride = null;
     private ITransport transport;
-    private Map currMap;
+    private volatile Map currMap;
     private PhaseShift phaseShift = new PhaseShift();
     private PhaseShift suppressedPhaseShift = new PhaseShift(); // contains phases for current area but not applied due to conditions
     private int dbPhase;
@@ -366,12 +367,12 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-    public final int getZone() {
+    public final short getZone() {
         return zoneId;
     }
 
 
-    public final int getArea() {
+    public final short getArea() {
         return areaId;
     }
 
@@ -502,7 +503,7 @@ public abstract class WorldObject extends GenericObject {
 
     public final void create(ObjectGuid guid) {
         objectUpdated = false;
-        guid = guid;
+        this.guid = guid;
     }
 
     public void addToWorld() {
@@ -1206,14 +1207,13 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final void getCreatureListInGrid(ArrayList<Creature> creatureList, float maxSearchRange) {
-        var pair = Coordinate.createCellCoordinate(getLocation().getX(), getLocation().getY());
-        var cell = new Cell(pair);
+        var cell = new Cell(getLocation().getX(), getLocation().getY());
         cell.setNoCreate();
 
         var check = new AllCreaturesWithinRange(this, maxSearchRange);
         var searcher = new CreatureListSearcher(this, creatureList, check, gridType.All);
 
-        cell.visit(pair, searcher, getMap(), this, maxSearchRange);
+        cell.visit(cell, searcher, getMap(), this, maxSearchRange);
     }
 
 
@@ -1222,14 +1222,13 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final void getAlliesWithinRange(ArrayList<Unit> unitList, float maxSearchRange, boolean includeSelf) {
-        var pair = new CellCoord((int) getLocation().getX(), (int) getLocation().getY());
-        var cell = new Cell(pair);
+        var cell = new Cell(getLocation().getX(), getLocation().getY());
         cell.setNoCreate();
 
         var check = new AnyFriendlyUnitInObjectRangeCheck(this, toUnit(), maxSearchRange);
         var searcher = new UnitListSearcher(this, unitList, check, gridType.All);
 
-        cell.visit(pair, searcher, getMap(), this, maxSearchRange);
+        cell.visit(cell, searcher, getMap(), this, maxSearchRange);
 
         if (!includeSelf) {
             unitList.remove(toUnit());
@@ -2989,6 +2988,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final Position getHitSpherePointFor(Position dest) {
+
         Vector3 vThis = new Vector3(getLocation().getX(), getLocation().getY(), getLocation().getZ() + getCollisionHeight());
         Vector3 vObj = new Vector3(dest.getX(), dest.getY(), dest.getZ());
         var contactPoint = vThis.add(vObj.sub(vThis).nor().scl(Math.min(dest.getExactDist(getLocation()), getCombatReach())));

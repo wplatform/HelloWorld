@@ -1,7 +1,7 @@
 package com.github.azeroth.game.spell;
 
 
-import com.github.azeroth.game.entity.object.Position;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
 
 import java.util.ArrayList;
