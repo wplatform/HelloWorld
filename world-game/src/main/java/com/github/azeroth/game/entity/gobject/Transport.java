@@ -9,7 +9,7 @@ import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
-import com.github.azeroth.game.map.TransportTemplate;
+import com.github.azeroth.game.domain.transport.TransportTemplate;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.scripting.interfaces.itransport.*;

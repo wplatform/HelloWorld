@@ -127,7 +127,7 @@ public class CreatureTemplate {
 
         // If only one element, ignore the probability (even if 0)
         if (models.size() == 1) {
-            return models.get(0);
+            return models.getFirst();
         }
 
         return RandomUtil.randomByWeight(models, model -> model.probability);

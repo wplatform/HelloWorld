@@ -1,6 +1,7 @@
 package com.github.azeroth.game.service.boot;
 
 import com.github.azeroth.game.domain.creature.CreatureTemplate;
+import com.github.azeroth.game.service.repository.WorldCrudRepository;
 import com.github.azeroth.game.service.repository.mapper.RowMappers;
 import com.github.azeroth.game.domain.misc.NpcText;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
@@ -34,8 +35,13 @@ public class WorldAutoConfiguration extends AbstractJdbcConfiguration {
     }
 
     @Bean
-    NamedParameterJdbcOperations worldNamedParameterJdbcOperations() {
+    NamedParameterJdbcTemplate worldJdbcTemplate() {
         return new NamedParameterJdbcTemplate(worldDataSource());
+    }
+
+    @Bean
+    WorldCrudRepository worldCrudRepository() {
+        return new WorldCrudRepository(worldJdbcTemplate());
     }
 
 

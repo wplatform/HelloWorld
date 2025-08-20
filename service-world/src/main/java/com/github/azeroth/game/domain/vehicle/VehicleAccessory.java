@@ -14,4 +14,5 @@ public class VehicleAccessory {
     private boolean isMinion;
     private byte summonType;
     private int summonTimer;
+    private Integer rideSpellID;
 }

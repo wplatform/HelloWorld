@@ -1,9 +1,10 @@
 package com.github.azeroth.game.service.repository;
 
 
+import com.github.azeroth.dbc.domain.AreaTriggerEntry;
 import com.github.azeroth.game.domain.areatrigger.AreaTriggerAction;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerCreateProperty;
 import com.github.azeroth.game.domain.areatrigger.AreaTriggerTemplate;
-import com.github.azeroth.game.domain.areatrigger.AreaTriggerTeleport;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +27,12 @@ public interface AreaTriggerRepository {
     Stream<Object[]> streamAllAreaTriggerScripts();
 
     @Query("SELECT ID, PortLocID FROM areatrigger_teleport")
-    Stream<AreaTriggerTeleport> streamAllAreaTriggerTeleport();
+    Stream<int[]> streamAllAreaTriggerTeleport();
+
+    @Query("SELECT Id, IsCustom, AreaTriggerId, IsAreatriggerCustom, Flags, MoveCurveId, ScaleCurveId, MorphCurveId, FacingCurveId, AnimId, AnimKitId, DecalPropertiesId, SpellForVisuals, TimeToTargetScale, Speed, Shape, ShapeData0, ShapeData1, ShapeData2, ShapeData3, ShapeData4, ShapeData5, ShapeData6, ShapeData7, ScriptName FROM `areatrigger_create_properties`")
+    Stream<AreaTriggerCreateProperty> streamAllAreaTriggerCreateProperties();
+
+    @Query("SELECT SpawnId, AreaTriggerCreatePropertiesId, IsCustom, MapId, SpawnDifficulties, PosX, PosY, PosZ, Orientation, PhaseUseFlags, PhaseId, PhaseGroup, ScriptName FROM `areatrigger`")
+    Stream<AreaTriggerEntry> streamAllAreaTrigger();
+
 }

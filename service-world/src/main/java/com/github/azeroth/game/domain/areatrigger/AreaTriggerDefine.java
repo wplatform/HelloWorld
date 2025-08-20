@@ -12,33 +12,6 @@ import java.util.ArrayList;
 
 public interface AreaTriggerDefine {
 
-    int MAX_AREATRIGGER_ENTITY_DATA = 8;
-    int MAX_AREATRIGGER_SCALE = 7;
-
-    public class AreaTriggerId {
-
-        public int Id = 0;
-        public boolean IsCustom = false;
-
-
-//	friend boolean operator ==(AreaTriggerId const& left, AreaTriggerId const& right) = default;
-    }
-
-
-    public class AreaTriggerAction {
-
-        public int Param;
-        public AreaTriggerActionType ActionType;
-        public AreaTriggerActionUserTypes TargetType;
-    }
-
-    public class AreaTriggerScaleCurvePointsTemplate {
-
-
-        public CurveInterpolationMode Mode;
-        public ArrayList<DBCPosition2D> Points = new ArrayList<DBCPosition2D>(2);
-    }
-
-
-
+    int MAX_AREA_TRIGGER_ENTITY_DATA = 8;
+    int MAX_AREA_TRIGGER_SCALE = 7;
 }

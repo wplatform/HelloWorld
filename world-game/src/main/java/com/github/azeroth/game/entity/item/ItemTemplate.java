@@ -1,6 +1,7 @@
 package com.github.azeroth.game.entity.item;
 
 
+import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.dbc.domain.ChrSpecialization;
 import com.github.azeroth.dbc.domain.ItemEffect;
 import com.github.azeroth.dbc.domain.ItemEntry;
@@ -10,13 +11,15 @@ import com.github.azeroth.defines.SharedDefine;
 import com.github.azeroth.defines.SkillType;
 import com.github.azeroth.game.entity.item.enums.*;
 import com.github.azeroth.game.entity.player.Player;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Locale;
 
-
-
+@Data
 public class ItemTemplate {
     private static final SkillType[] ITEM_WEAPON_SKILLS = {
             SkillType.AXES, SkillType.TWO_HANDED_AXES, SkillType.BOWS,
@@ -56,7 +59,7 @@ public class ItemTemplate {
     private int foodType;
     private int minMoneyLoot;
     private int maxMoneyLoot;
-    private ItemFlagsCustom flagsCu = ItemFlagsCustom.values()[0];
+    private EnumFlag<ItemFlagsCustom> flagsCu;
     private float spellPPMRate;
     private int randomBonusListTemplateId;
     private BitSet[] specializations = new BitSet[3];
@@ -126,13 +129,8 @@ public class ItemTemplate {
         maxMoneyLoot = value;
     }
 
-    public final ItemFlagsCustom getFlagsCu() {
-        return flagsCu;
-    }
 
-    public final void setFlagsCu(ItemFlagsCustom value) {
-        flagsCu = value;
-    }
+
 
     public final float getSpellPPMRate() {
         return spellPPMRate;

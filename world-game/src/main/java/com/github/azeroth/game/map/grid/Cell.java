@@ -21,6 +21,9 @@ public class Cell {
     public final int cellY;
     public boolean noCreate;
     public Cell(Coordinate cellCoordinate) {
+        if(cellCoordinate.isGridCoordinate()) {
+            throw new IllegalArgumentException("Cell coordinate must be cell coordinate");
+        }
         gridX = cellCoordinate.axisX() / MapDefine.MAX_NUMBER_OF_CELLS;
         gridY = cellCoordinate.axisY() / MapDefine.MAX_NUMBER_OF_CELLS;
         cellX = cellCoordinate.axisX() % MapDefine.MAX_NUMBER_OF_CELLS;

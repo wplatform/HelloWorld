@@ -9,6 +9,7 @@ import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.defines.Power;
 import com.github.azeroth.defines.UnitDynFlag;
 import com.github.azeroth.exeception.ValueOverflowException;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerOrbitInfo;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.UnitMoveType;
@@ -743,7 +744,27 @@ public abstract class GenericObject {
             }
 
             if (hasOrbit) {
-                areaTrigger.getCircularMovementInfo().write(data);
+                AreaTriggerOrbitInfo orbit = areaTrigger.getCircularMovementInfo();
+                data.writeBit(orbit.pathTarget != null);
+                data.writeBit(orbit.center != null);
+                data.writeBit(orbit.counterClockwise);
+                data.writeBit(orbit.canLoop);
+
+                data.writeInt32(orbit.timeToTarget);
+                data.writeInt32(orbit.elapsedTimeForMovement);
+                data.writeInt32(orbit.startDelay);
+                data.writeFloat(orbit.radius);
+                data.writeFloat(orbit.blendFromRadius);
+                data.writeFloat(orbit.initialAngle);
+                data.writeFloat(orbit.ZOffset);
+
+                if (orbit.pathTarget != null) {
+                    data.writeGuid(orbit.pathTarget);
+                }
+
+                if (orbit.center != null) {
+                    data.writeVector3(orbit.center);
+                }
             }
         }
 

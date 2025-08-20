@@ -1,4 +1,4 @@
-package com.github.azeroth.game.entity.vehicle;
+package com.github.azeroth.game.domain.vehicle;
 
 import game.datastorage.*;
 

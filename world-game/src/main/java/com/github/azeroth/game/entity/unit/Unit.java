@@ -3,6 +3,7 @@ package com.github.azeroth.game.entity.unit;
 
 import com.github.azeroth.dbc.domain.LiquidType;
 import com.github.azeroth.defines.*;
+import com.github.azeroth.defines.Power;
 import com.github.azeroth.game.ai.*;
 import com.github.azeroth.game.chat.BroadcastTextBuilder;
 import com.github.azeroth.game.chat.CustomChatTextBuilder;

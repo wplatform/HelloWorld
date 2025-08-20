@@ -1,4 +1,4 @@
-package com.github.azeroth.game.entity.gameobjecttype;
+package com.github.azeroth.game.entity.transport;
 
 
 import com.badlogic.gdx.utils.IntArray;
@@ -6,7 +6,7 @@ import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.vehicle.ITransport;
-import com.github.azeroth.game.map.TransportAnimation;
+import com.github.azeroth.game.domain.transport.TransportAnimation;
 import game.GameEvents;
 
 import java.time.Duration;

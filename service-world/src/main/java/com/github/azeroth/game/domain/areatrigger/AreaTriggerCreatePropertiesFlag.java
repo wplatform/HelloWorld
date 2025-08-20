@@ -8,19 +8,19 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AreaTriggerCreatePropertiesFlag implements EnumFlag.FlagValue {
-    None(0x00000),
-    HasAbsoluteOrientation(0x00001),
-    HasDynamicShape(0x00002),
-    HasAttached(0x00004),
-    HasFaceMovementDir(0x00008),
-    HasFollowsTerrain(0x00010), // NYI
-    Unk1(0x00020),
-    HasTargetRollPitchYaw(0x00040), // NYI
-    HasAnimId(0x00080), // DEPRECATED
-    Unk3(0x00100),
-    HasAnimKitId(0x00200), // DEPRECATED
-    HasCircularMovement(0x00400), // DEPRECATED
-    Unk5(0x00800);
+    NONE(0x00000),
+    HAS_ABSOLUTE_ORIENTATION(0x00001),
+    HAS_DYNAMIC_SHAPE(0x00002),
+    HAS_ATTACHED(0x00004),
+    HAS_FACE_MOVEMENT_DIR(0x00008),
+    HAS_FOLLOWS_TERRAIN(0x00010), // NYI
+    UNK1(0x00020),
+    HAS_TARGET_ROLL_PITCH_YAW(0x00040), // NYI
+    HAS_ANIM_ID(0x00080), // DEPRECATED
+    UNK3(0x00100),
+    HAS_ANIM_KIT_ID(0x00200), // DEPRECATED
+    HAS_CIRCULAR_MOVEMENT(0x00400), // DEPRECATED
+    UNK5(0x00800);
 
 
     public final int value;

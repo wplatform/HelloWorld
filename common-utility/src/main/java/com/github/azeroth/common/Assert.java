@@ -26,5 +26,7 @@ public interface Assert {
         throw new IllegalStateException("Assertion failed");
     }
 
-
+    static void fail(String message, Object... args) {
+        throw new IllegalStateException(MessageFormatter.basicArrayFormat(message, args));
+    }
 }

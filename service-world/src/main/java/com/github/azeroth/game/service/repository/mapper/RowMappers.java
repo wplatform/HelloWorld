@@ -5,13 +5,12 @@ import com.github.azeroth.common.Locale;
 import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.defines.*;
-import com.github.azeroth.game.domain.areatrigger.AreaTriggerAction;
-import com.github.azeroth.game.domain.areatrigger.AreaTriggerActionType;
-import com.github.azeroth.game.domain.areatrigger.AreaTriggerActionUserTypes;
-import com.github.azeroth.game.domain.areatrigger.AreaTriggerId;
+import com.github.azeroth.game.domain.areatrigger.*;
 import com.github.azeroth.game.domain.creature.*;
 import com.github.azeroth.game.domain.gobject.*;
 import com.github.azeroth.game.domain.misc.NpcText;
+import com.github.azeroth.game.domain.misc.WorldSafeLocEntry;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.domain.player.PlayerInfo;
 import com.github.azeroth.game.domain.reputation.RepSpilloverTemplate;
 import com.github.azeroth.game.domain.unit.NPCFlag;
@@ -214,10 +213,10 @@ public interface RowMappers {
         got.entry = rs.getInt(1);
         got.type = GameObjectType.values()[rs.getByte(2)];
         got.displayId = rs.getInt(3);
-        got.name = rs.getString(4);
+        got.name.set(Locale.enUS, rs.getString(4));
         got.iconName = rs.getString(5);
-        got.castBarCaption = rs.getString(6);
-        got.unk1 = rs.getString(7);
+        got.castBarCaption.set(Locale.enUS, rs.getString(6));
+        got.unk1.set(Locale.enUS, rs.getString(7));
         got.size = rs.getFloat(8);
 
         for (byte i = 0; i < got.raw.length; ++i)
@@ -367,5 +366,64 @@ public interface RowMappers {
         }
         return data;
     };
+
+    RowMapper<AreaTriggerCreateProperty> AREA_TRIGGER_CREATE_PROPERTY_ROW_MAPPER = (rs, rowNum) -> {
+        AreaTriggerCreateProperty data = new AreaTriggerCreateProperty();
+
+        data.id = new AreaTriggerId(rs.getInt(1), rs.getBoolean(2));
+        data.templateId = new AreaTriggerId(rs.getInt(3), rs.getBoolean(4));
+
+        data.Flags = EnumFlag.of(AreaTriggerCreatePropertiesFlag.class, rs.getInt(5));
+
+        data.MoveCurveId = rs.getInt(6);
+        data.ScaleCurveId = rs.getInt(7);
+        data.MorphCurveId = rs.getInt(8);
+        data.FacingCurveId = rs.getInt(9);
+
+
+
+        data.AnimId = rs.getInt(10);
+        data.AnimKitId = rs.getInt(11);
+        data.DecalPropertiesId = rs.getInt(12);
+
+        int spellForVisuals = rs.getInt(13);
+        if(!rs.wasNull()) {
+            data.SpellForVisuals = spellForVisuals;
+        }
+
+        data.TimeToTargetScale     = rs.getInt(14);
+        data.Speed                 = rs.getFloat(15);
+
+
+        data.Shape.Type = AreaTriggerShapeType.values()[rs.getByte(16)];
+
+        for (var i = 0; i < AreaTriggerDefine.MAX_AREA_TRIGGER_ENTITY_DATA; ++i)
+            data.Shape.DefaultData.Data[i] = rs.getFloat(16 + i);
+
+        data.scriptName = rs.getString(25);
+
+
+
+        return data;
+    };
+
+
+
+    RowMapper<WorldSafeLocEntry> WORLD_SAFE_LOC_ENTRY_ROW_MAPPER = (rs, rowNum) -> {
+        WorldSafeLocEntry data = new WorldSafeLocEntry();
+
+        data.id = rs.getInt(1);
+
+        data.loc = new WorldLocation(rs.getInt(2), rs.getFloat(3), rs.getFloat(4), rs.getFloat(5));
+
+        int transportSpawnId = rs.getInt(6);
+        if(!rs.wasNull()) {
+            data.transportSpawnId = transportSpawnId;
+        }
+
+        return data;
+    };
+
+
 
 }

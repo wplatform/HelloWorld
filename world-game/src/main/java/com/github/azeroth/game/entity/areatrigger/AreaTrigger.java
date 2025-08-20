@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.github.azeroth.game.domain.areatrigger.*;
 import com.github.azeroth.game.domain.map.MapDefine;
-import com.github.azeroth.game.entity.areatrigger.model.AreaTriggerOrbitInfo;
+import com.github.azeroth.game.domain.areatrigger.AreaTriggerOrbitInfo;
 import com.github.azeroth.game.domain.areatrigger.AreaTriggerShapeInfo;
 import com.github.azeroth.game.entity.object.GirdObject;
 import com.github.azeroth.game.domain.object.ObjectGuid;
@@ -34,6 +34,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 @Getter
 @Setter
@@ -65,7 +66,7 @@ public class AreaTrigger extends WorldObject implements GirdObject {
 
     private Vector3 rollPitchYaw;
     private Vector3 targetRollPitchYaw;
-    private ArrayList<Vector2> polygonVertices;
+    private List<Vector2> polygonVertices;
 
     private boolean reachedDestination;
     private int lastSplineIndex;
@@ -74,7 +75,7 @@ public class AreaTrigger extends WorldObject implements GirdObject {
 
     private AreaTriggerOrbitInfo orbitInfo;
 
-    private AreaTriggerCreateProperties areaTriggerCreateProperties;
+    private AreaTriggerCreateProperty areaTriggerCreateProperty;
     private AreaTriggerTemplate areaTriggerTemplate;
 
 
@@ -195,8 +196,8 @@ public class AreaTrigger extends WorldObject implements GirdObject {
         return insideUnits;
     }
 
-    public final AreaTriggerCreateProperties getCreateProperties() {
-        return areaTriggerCreateProperties;
+    public final AreaTriggerCreateProperty getCreateProperties() {
+        return areaTriggerCreateProperty;
     }
 
     public final ObjectGuid getCasterGuid() {
@@ -552,19 +553,19 @@ public class AreaTrigger extends WorldObject implements GirdObject {
             return false;
         }
 
-        this.<IAreaTriggerOverrideCreateProperties>ForEachAreaTriggerScript(a -> areaTriggerCreateProperties = a.AreaTriggerCreateProperties);
+        this.<IAreaTriggerOverrideCreateProperties>ForEachAreaTriggerScript(a -> areaTriggerCreateProperty = a.AreaTriggerCreateProperties);
 
-        if (areaTriggerCreateProperties == null) {
-            areaTriggerCreateProperties = global.getAreaTriggerDataStorage().GetAreaTriggerCreateProperties(areaTriggerCreatePropertiesId);
+        if (areaTriggerCreateProperty == null) {
+            areaTriggerCreateProperty = global.getAreaTriggerDataStorage().GetAreaTriggerCreateProperties(areaTriggerCreatePropertiesId);
 
-            if (areaTriggerCreateProperties == null) {
+            if (areaTriggerCreateProperty == null) {
                 Log.outError(LogFilter.areaTrigger, String.format("AreaTrigger (areaTriggerCreatePropertiesId %1$s) not created. Invalid areatrigger create properties id (%2$s)", areaTriggerCreatePropertiesId, areaTriggerCreatePropertiesId));
 
                 return false;
             }
         }
 
-        areaTriggerTemplate = areaTriggerCreateProperties.template;
+        areaTriggerTemplate = areaTriggerCreateProperty.template;
 
         create(ObjectGuid.create(HighGuid.AreaTrigger, getLocation().getMapId(), getTemplate() != null ? getTemplate().id.Id : 0, caster.getMap().generateLowGuid(HighGuid.AreaTrigger)));
 

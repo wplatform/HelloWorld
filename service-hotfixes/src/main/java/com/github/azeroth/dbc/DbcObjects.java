@@ -12,7 +12,7 @@ public enum DbcObjects {
     AnimKit(AnimKit.class),
     AreaGroupMember(AreaGroupMember.class),
     AreaTable(AreaTable.class),
-    AreaTrigger(AreaTrigger.class),
+    AreaTrigger(AreaTriggerEntry.class),
     AreaTriggerActionSet(AreaTriggerActionSet.class),
     ArmorLocation(ArmorLocation.class),
     Artifact(Artifact.class),

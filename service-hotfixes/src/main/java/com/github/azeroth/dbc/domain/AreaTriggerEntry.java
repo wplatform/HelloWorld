@@ -35,7 +35,7 @@ import lombok.ToString;
         @Db2Field(name = "flags", type = Db2Type.BYTE, signed = true),
         @Db2Field(name = "id", type = Db2Type.INT)
 })
-public class AreaTrigger implements DbcEntity {
+public class AreaTriggerEntry implements DbcEntity {
     @Column("PosX")
     private Float posX;
 

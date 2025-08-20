@@ -1,6 +1,7 @@
 package com.github.azeroth.game.globals;
 
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntMap;
 import com.github.azeroth.cache.CacheProvider;
 import com.github.azeroth.cache.MapCache;
@@ -18,7 +19,6 @@ import com.github.azeroth.dbc.gtable.GameTable;
 import com.github.azeroth.defines.QuestSort;
 import com.github.azeroth.defines.SpellCategory;
 import com.github.azeroth.defines.*;
-import com.github.azeroth.game.DungeonEncounter;
 import com.github.azeroth.game.*;
 import com.github.azeroth.game.condition.*;
 import com.github.azeroth.game.domain.areatrigger.*;
@@ -47,6 +47,7 @@ import com.github.azeroth.game.domain.script.ScriptsType;
 import com.github.azeroth.game.domain.spawn.*;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.domain.vehicle.VehicleAccessory;
+import com.github.azeroth.game.domain.vehicle.VehicleSeatAddon;
 import com.github.azeroth.game.domain.vehicle.VehicleTemplate;
 import com.github.azeroth.game.entity.creature.Trainer;
 import com.github.azeroth.game.domain.creature.TrainerSpell;
@@ -60,9 +61,9 @@ import com.github.azeroth.game.entity.object.*;
 import com.github.azeroth.game.domain.object.enums.HighGuid;
 import com.github.azeroth.game.domain.object.enums.SummonerType;
 import com.github.azeroth.game.domain.object.enums.TypeId;
-import com.github.azeroth.game.entity.player.AccessRequirement;
+import com.github.azeroth.game.domain.player.AccessRequirement;
 import com.github.azeroth.game.entity.player.Player;
-import com.github.azeroth.game.entity.vehicle.VehicleSeatAddon;
+import com.github.azeroth.game.entity.vehicle.Vehicle;
 import com.github.azeroth.game.loot.LootStorage;
 import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.domain.map.enums.LoadResult;
@@ -86,13 +87,12 @@ import com.github.azeroth.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.azeroth.game.domain.unit.UnitDefine.BASE_ATTACK_TIME;
-import static game.WardenActions.Log;
-import static java.util.logging.Logger.global;
 
 /**
  * sObjectMgr->LoadTrinityStrings())
@@ -233,7 +233,7 @@ public final class ObjectManager {
     private final MapCache<Integer, QuestGreeting> questGreetingStorage;
     //Scripts
     private final ScriptNameContainer scriptNamesStorage = new ScriptNameContainer();
-    private final HashMap<Integer, List<Integer>> spellScriptsStorage = new HashMap<>();
+    private final HashMap<Integer, List<Pair<Integer,Boolean>>> spellScriptsStorage = new HashMap<>();
     private final HashMap<Integer, Integer> areaTriggerScriptStorage = new HashMap<>();
     private final MapCache<Tuple<Integer,Difficulty, Integer>, GridSpawnData> mapGridSpawnDataStorage;
     private final MapCache<Pair<Integer,Difficulty>, GridSpawnData> transportMapSpawnDataStorage;
@@ -263,7 +263,7 @@ public final class ObjectManager {
     private final MapCache<Integer, CreatureData> creatureDataStorage;
     private final MapCache<Pair<Integer, Difficulty>, List<Integer>> creatureQuestItemStorage;
     private final HashMap<Integer, CreatureMovementData> creatureMovementOverrides = new HashMap<>();
-    private final MapCache<Integer, List<EquipmentInfo>> equipmentInfoStorage;
+    private final MapCache<Integer, Map<Byte, EquipmentInfo>> equipmentInfoStorage;
     private final HashMap<ObjectGuid, ObjectGuid> linkedRespawnStorage = new HashMap<>();
     private final HashMap<Integer, CreatureBaseStats> creatureBaseStatsStorage = new HashMap<Integer, CreatureBaseStats>();
     private final MapCache<Integer, VendorItemData> cacheVendorItemStorage;
@@ -288,24 +288,24 @@ public final class ObjectManager {
     //Vehicles
     private final HashMap<Integer, VehicleTemplate> vehicleTemplateStore = new HashMap<>();
     private final HashMap<Integer, List<VehicleAccessory>> vehicleTemplateAccessoryStore = new HashMap<>();
-    private final HashMap<Long, List<VehicleAccessory>> vehicleAccessoryStore = new HashMap<>();
-    private final HashMap<Integer, VehicleSeatAddon> vehicleSeatAddonStore = new HashMap<Integer, VehicleSeatAddon>();
+    private final HashMap<Integer, List<VehicleAccessory>> vehicleAccessoryStore = new HashMap<>();
+    private final HashMap<Integer, VehicleSeatAddon> vehicleSeatAddonStore = new HashMap<>();
     //Locales
     private final HashMap<Integer, GameObjectLocale> gameObjectLocaleStorage = new HashMap<Integer, GameObjectLocale>();
 
     private final Map<Tuple<Integer, Integer, Integer>, Integer> creatureDefaultTrainers = new HashMap<>();
     private final Set<Integer> tavernAreaTriggerStorage = new HashSet<>();
 
-    private final HashMap<Integer, AreaTriggerTemplate> areaTriggerTemplatesStorage = new HashMap<>();
+    private final HashMap<AreaTriggerId, AreaTriggerTemplate> areaTriggerTemplatesStorage = new HashMap<>();
     private final HashMap<Integer, AreaTriggerStruct> areaTriggerStorage = new HashMap<>();
-    private final HashMap<Long, AccessRequirement> accessRequirementStorage = new HashMap<>();
-    private final Map<Long, List<DungeonEncounter>> dungeonEncounterStorage = new HashMap<>();
+    private final HashMap<Integer, AccessRequirement> accessRequirementStorage = new HashMap<>();
 
     private final Set<Integer> eventStorage = new HashSet<>();
     private final int[] baseXPTable = new int[SharedDefine.MAX_LEVEL];
     public HashMap<Integer, Map<Integer, ScriptInfo>> spellScripts = new HashMap<>();
     public HashMap<Integer, Map<Integer, ScriptInfo>> eventScripts = new HashMap<>();
     public HashMap<Integer, List<GraveYardData>> graveYardStorage = new HashMap<>();
+    private final HashMap<Integer, WorldSafeLocEntry> worldSafeLocs = new HashMap<>();
     //Faction Change
     public HashMap<Integer, Integer> factionChangeAchievements = new HashMap<Integer, Integer>();
     public HashMap<Integer, Integer> factionChangeItemsAllianceToHorde = new HashMap<Integer, Integer>();
@@ -315,18 +315,18 @@ public final class ObjectManager {
     public HashMap<Integer, Integer> factionChangeSpells = new HashMap<Integer, Integer>();
     public HashMap<Integer, Integer> factionChangeTitles = new HashMap<Integer, Integer>();
 
-    private final HashMap<SpawnGridId, TreeSet<Long>> areaTriggerSpawnsByLocation = new HashMap<>();
-    private final HashMap<Long, AreaTriggerSpawn> areaTriggerSpawnsBySpawnId = new HashMap<Long, AreaTriggerSpawn>();
-    private final HashMap<AreaTriggerId, AreaTriggerTemplate> areaTriggerTemplateStore = new HashMap<AreaTriggerId, AreaTriggerTemplate>();
-    private final HashMap<Integer, AreaTriggerCreateProperties> areaTriggerCreateProperties = new HashMap<Integer, AreaTriggerCreateProperties>();
+    private final HashMap<Integer, AreaTriggerSpawn> areaTriggerSpawnsBySpawnId = new HashMap<>();
+    private final HashMap<AreaTriggerId, AreaTriggerTemplate> areaTriggerTemplateStore = new HashMap<>();
+    private final HashMap<AreaTriggerId, AreaTriggerCreateProperty> areaTriggerCreateProperties = new HashMap<>();
 
-    int creatureId;
-    int gossipMenuId;
-    int gossipOptionIndex;
+
 
     private World world;
     private CacheProvider cacheProvider;
     private DbcObjectManager dbcObjectManager;
+
+
+    private WorldCrudRepository worldCrudRepo;
     private MiscRepository miscRepo;
     private CreatureRepository creatureRepo;
     private GameObjectRepository gameObjectRepo;
@@ -339,7 +339,6 @@ public final class ObjectManager {
     private DisableManager disableManager;
     private PlayerRepository playerRepo;
     private VehicleRepository vehicleRepo;
-    private InstanceRepository instanceRepo;
     // first free id for selected id type
     private int auctionId;
     private long equipmentSetGuid;
@@ -399,8 +398,7 @@ public final class ObjectManager {
         var pos = name.indexOf('-');
 
         if (pos != -1) {
-
-            return new ExtendedPlayerName(name.substring(0, pos), name.charAt((pos + 1)));
+            return new ExtendedPlayerName(name.substring(0, pos), name.substring(pos + 1));
         } else {
             return new ExtendedPlayerName(name, "");
         }
@@ -412,12 +410,8 @@ public final class ObjectManager {
 
     public static CreatureModel chooseDisplayId(CreatureTemplate cinfo, CreatureData data) {
         // Load creature model (display id)
-        if (data != null && data.displayId != 0) {
-            var model = cinfo.getModelWithDisplayId(data.displayId);
-
-            if (model != null) {
-                return model;
-            }
+        if (data != null && data.display != null) {
+            return data.display;
         }
 
         if (!cinfo.flagsExtra.hasFlag(CreatureFlagExtra.TRIGGER)) {
@@ -806,7 +800,7 @@ public final class ObjectManager {
         try (var items = miscRepo.streamAllGraveyardZone()) {
             items.forEach(fields -> {
                 count.getAndIncrement();
-                WorldLocation entry = getWorldSafeLoc(fields[0]);
+                WorldSafeLocEntry entry = getWorldSafeLoc(fields[0]);
                 if (entry == null) {
                     Logs.SQL.error("Table `graveyard_zone` has a record for non-existing graveyard (WorldSafeLocsID: {}), skipped.", fields[0]);
                     return;
@@ -827,7 +821,7 @@ public final class ObjectManager {
 
 
 
-    public WorldLocation getDefaultGraveYard(Team team) {
+    public WorldSafeLocEntry getDefaultGraveYard(Team team) {
         if (team == Team.HORDE) {
             return getWorldSafeLoc(10);
         } else if (team == Team.ALLIANCE) {
@@ -837,7 +831,7 @@ public final class ObjectManager {
         }
     }
 
-    public WorldLocation getClosestGraveYard(WorldLocation location, Team team, WorldObject conditionObject) {
+    public WorldSafeLocEntry getClosestGraveYard(WorldLocation location, Team team, WorldObject conditionObject) {
         var mapId = location.getMapId();
 
         // search for zone associated closest graveyard
@@ -851,7 +845,7 @@ public final class ObjectManager {
             }
         }
 
-        WorldLocation  graveyard = getClosestGraveyardInZone(location, team, conditionObject, zoneId);
+        WorldSafeLocEntry  graveyard = getClosestGraveyardInZone(location, team, conditionObject, zoneId);
         AreaTable zoneEntry = Objects.requireNonNull(dbcObjectManager.areaTable(zoneId));
         AreaTable parentEntry = dbcObjectManager.areaTable(zoneEntry.getParentAreaID());
 
@@ -867,7 +861,7 @@ public final class ObjectManager {
         return graveyard;
     }
 
-    private WorldLocation getClosestGraveyardInZone(WorldLocation location, Team team, WorldObject conditionObject, int zoneId) {
+    private WorldSafeLocEntry getClosestGraveyardInZone(WorldLocation location, Team team, WorldObject conditionObject, int zoneId) {
         // Simulate std. algorithm:
         //   found some graveyard associated to (ghost_zone, ghost_map)
         //
@@ -892,15 +886,15 @@ public final class ObjectManager {
         // at corpse map
         var foundNear = false;
         float distNear = 10000;
-        WorldLocation entryNear = null;
+        WorldSafeLocEntry entryNear = null;
 
         // at entrance map for corpse map
         var foundEntr = false;
         float distEntr = 10000;
-        WorldLocation entryEntr = null;
+        WorldSafeLocEntry entryEntr = null;
 
         // some where other
-        WorldLocation entryFar = null;
+        WorldSafeLocEntry entryFar = null;
 
         ConditionSourceInfo conditionSource = new ConditionSourceInfo(conditionObject);
 
@@ -919,7 +913,7 @@ public final class ObjectManager {
                     continue;
                 }
 
-                if (entry.getMapId() == mapEntry.getParentMapID() && !conditionObject.getPhaseShift().hasVisibleMapId(entry.getMapId())) {
+                if (entry.loc.getMapId() == mapEntry.getParentMapID() && !conditionObject.getPhaseShift().hasVisibleMapId(entry.loc.getMapId())) {
                     continue;
                 }
             } else if (data.team != 0) {
@@ -929,9 +923,9 @@ public final class ObjectManager {
 
 
             // find now nearest graveyard at other map
-            if (mapId != entry.getMapId() && entry.getMapId() != mapEntry.getParentMapID()) {
+            if (mapId != entry.loc.getMapId() && entry.loc.getMapId() != mapEntry.getParentMapID()) {
                 // if find graveyard at different map from where entrance placed (or no entrance data), use any first
-                if (mapEntry == null || mapEntry.getCorpseMapID() < 0 || mapEntry.getCorpseMapID() != entry.getMapId() || (mapEntry.getCorpseX() == 0 && mapEntry.getCorpseY() == 0)) {
+                if (mapEntry == null || mapEntry.getCorpseMapID() < 0 || mapEntry.getCorpseMapID() != entry.loc.getMapId() || (mapEntry.getCorpseX() == 0 && mapEntry.getCorpseY() == 0)) {
                     // not have any corrdinates for check distance anyway
                     entryFar = entry;
 
@@ -939,8 +933,8 @@ public final class ObjectManager {
                 }
 
                 // at entrance map calculate distance (2D);
-                var dist2 = (entry.getX() - mapEntry.getCorpseX()) * (entry.getX() - mapEntry.getCorpseX())
-                        + (entry.getY() - mapEntry.getCorpseY()) * (entry.getY() - mapEntry.getCorpseY());
+                var dist2 = (entry.loc.getX() - mapEntry.getCorpseX()) * (entry.loc.getX() - mapEntry.getCorpseX())
+                        + (entry.loc.getY() - mapEntry.getCorpseY()) * (entry.loc.getY() - mapEntry.getCorpseY());
 
                 if (foundEntr) {
                     if (dist2 < distEntr) {
@@ -955,9 +949,9 @@ public final class ObjectManager {
             }
             // find now nearest graveyard at same map
             else {
-                var dist2 = (entry.getX() - location.getX()) * (entry.getX() - location.getX())
-                        + (entry.getY() - location.getY()) * (entry.getY() - location.getY())
-                        + (entry.getZ() - location.getZ()) * (entry.getZ() - location.getZ());
+                var dist2 = (entry.loc.getX() - location.getX()) * (entry.loc.getX() - location.getX())
+                        + (entry.loc.getY() - location.getY()) * (entry.loc.getY() - location.getY())
+                        + (entry.loc.getZ() - location.getZ()) * (entry.loc.getZ() - location.getZ());
 
                 if (foundNear) {
                     if (dist2 < distNear) {
@@ -996,12 +990,38 @@ public final class ObjectManager {
         return null;
     }
 
-    public WorldLocation getWorldSafeLoc(int id) {
-        WorldSafeLoc loc = dbcObjectManager.worldSafeLoc(id);
-        if(loc == null) {
-            return null;
+
+    void loadWorldSafeLoc()
+    {
+        long oldMSTime = System.currentTimeMillis();
+
+        try (var items = miscRepo.streamAllWorldSafeLoc()) {
+            items.forEach(item -> {
+                if (!world.getMapManager().isValidMapCoordinate(item.loc))
+                {
+                    Logs.SQL.error("World location (ID: {}) has a invalid position MapID: {} {}, skipped", item.id, item.loc.getMapId(), item.loc);
+                    return;
+                }
+
+                if (item.transportSpawnId != null)
+                {
+                    if (null == world.getTransportManager().getTransportSpawn(item.transportSpawnId))
+                    {
+                        Logs.SQL.error("World location (ID: {}) has a invalid transportSpawnID {}, skipped.", item.id, item.transportSpawnId);
+                        return;
+                    }
+                }
+
+                worldSafeLocs.put(item.id, item);
+            });
         }
-        return new WorldLocation(loc.getMapID(), loc.getLocX(), loc.getLocY(), loc.getLocZ(), loc.getFacing());
+
+        Logs.SQL.info(">> Loaded {} world locations {} ms", worldSafeLocs.size(), System.currentTimeMillis() - oldMSTime);
+    }
+
+
+    public WorldSafeLocEntry getWorldSafeLoc(int id) {
+        return worldSafeLocs.get(id);
     }
 
     public boolean addGraveYardLink(int id, int zoneId, Team team) {
@@ -1141,32 +1161,6 @@ public final class ObjectManager {
         }
     }
 
-    //Load WP Scripts
-    public void loadWaypointScripts() {
-        loadScripts(ScriptsType.WAYPOINT);
-
-        ArrayList<Integer> actionSet = new ArrayList<>();
-
-        for (var script : waypointScripts.entrySet()) {
-            actionSet.add(script.getKey());
-        }
-
-        var stmt = DB.World.GetPreparedStatement(WorldStatements.SEL_WAYPOINT_DATA_ACTION);
-        var result = DB.World.query(stmt);
-
-        if (!result.isEmpty()) {
-            do {
-                var action = result.<Integer>Read(0);
-
-                actionSet.remove((Integer) action);
-            } while (result.NextRow());
-        }
-
-        for (var id : actionSet) {
-            Logs.SQL.error("There is no waypoint which links to the waypoint script {0}", id);
-        }
-    }
-
     public boolean registerSpellScript(int spellId, String scriptName) {
         var allRanks = false;
 
@@ -1174,147 +1168,94 @@ public final class ObjectManager {
             allRanks = true;
             spellId = -spellId;
         }
-
-        return registerSpellScript(spellId, scriptName, allRanks);
-    }
-
-
-    public boolean registerSpellScript(int spellId, String scriptName, boolean allRanks) {
-        var spellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
-
-        if (spellInfo == null) {
-            Log.outError(LogFilter.ServerLoading, "Scriptname: `{0}` spell (Id: {1}) does not exist.", scriptName, spellId);
-
-            return false;
-        }
-
-        if (allRanks) {
-            if (!spellInfo.isRanked()) {
-                Log.outDebug(LogFilter.ServerLoading, "Scriptname: `{0}` spell (Id: {1}) has no ranks of spell.", scriptName, spellId);
-            }
-
-            while (spellInfo != null) {
-                spellScriptsStorage.AddUnique(spellInfo.getId(), getScriptId(scriptName));
-                spellInfo = spellInfo.getNextRankSpell();
-            }
-        } else {
-            if (spellInfo.isRanked()) {
-                Log.outDebug(LogFilter.ServerLoading, "Scriptname: `{0}` spell (Id: {1}) is ranked spell. Perhaps not all ranks are assigned to this script.", scriptName, spellId);
-            }
-
-            spellScriptsStorage.AddUnique(spellInfo.getId(), getScriptId(scriptName));
-        }
-
-        return true;
-    }
-
-    public boolean registerAreaTriggerScript(int areaTriggerId, String scriptName) {
-        areaTriggerScriptStorage.AddUnique(areaTriggerId, getScriptId(scriptName));
-
-        return true;
+        return false;
     }
 
     public void loadSpellScriptNames() {
         var oldMSTime = System.currentTimeMillis();
-
+        AtomicInteger count = new AtomicInteger();
         spellScriptsStorage.clear(); // need for reload case
 
-        var result = DB.World.query("SELECT spell_id, ScriptName FROM spell_script_names");
+        try(var result = miscRepo.streamAllSpellScriptNames()) {
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 spell script names. DB table `spell_script_names` is empty!");
+            result.forEach((row) -> {
+                var spellId = (Integer) row[0];
+                var scriptName = (String) row[1];
 
-            return;
+
+                boolean allRanks = false;
+                if (spellId < 0)
+                {
+                    allRanks = true;
+                    spellId = -spellId;
+                }
+
+                SpellInfo spellInfo = world.getSpellManager().getSpellInfo(spellId, Difficulty.NONE);
+                if (spellInfo == null)
+                {
+                    Logs.SQL.error("Scriptname: `{}` spell (Id: {}) does not exist.", scriptName, spellId);
+                    return;
+                }
+
+                if (allRanks)
+                {
+                    if (!spellInfo.isRanked())
+                        Logs.SQL.error("Scriptname: `{}` spell (Id: {}) has no ranks of spell.", scriptName, spellId);
+
+                    if (spellInfo.getFirstRankSpell().getId() != spellId)
+                    {
+                        Logs.SQL.error("Scriptname: `{}` spell (Id: {}) is not first rank of spell.", scriptName, spellId);
+                        return;
+                    }
+                    while (spellInfo != null)
+                    {
+                        spellScriptsStorage.compute(spellInfo.getId(), Functions.addToList(new Pair<>(getScriptId(scriptName), true)));
+
+                        spellInfo = spellInfo.getNextRankSpell();
+                    }
+                }
+                else
+                {
+                    if (spellInfo.isRanked())
+                        Logs.SQL.error("Scriptname: `{}` spell (Id: {}) is ranked spell. Perhaps not all ranks are assigned to this script.", scriptName, spellId);
+
+                    spellScriptsStorage.compute(spellInfo.getId(), Functions.addToList(new Pair<>(getScriptId(scriptName), true)));
+                }
+
+                count.incrementAndGet();
+
+
+            });
+
         }
 
-        int count = 0;
-
-        do {
-            var spellId = result.<Integer>Read(0);
-            var scriptName = result.<String>Read(1);
-
-            if (registerSpellScript(spellId, scriptName)) {
-                ++count;
-            }
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {0} spell script names in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} spell script names in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public void validateSpellScripts() {
         var oldMSTime = System.currentTimeMillis();
 
         if (spellScriptsStorage.isEmpty()) {
-            Logs.SERVER_LOADING.info("Validated 0 scripts.");
+            Logs.SERVER_LOADING.info(">> Validated 0 scripts.");
 
             return;
         }
 
         int count = 0;
 
-        spellScriptsStorage.RemoveIfMatching((script) ->
-        {
-            var spellEntry = world.getSpellManager().getSpellInfo(script.key, Difficulty.NONE);
 
-            var SpellScriptLoaders = global.getScriptMgr().createSpellScriptLoaders(script.key);
+        var iterator = spellScriptsStorage.entrySet().iterator();
 
-            for (var pair : SpellScriptLoaders.entrySet()) {
-                var spellScript = pair.getKey().getSpellScript();
-                var valid = true;
+        while (iterator.hasNext()) {
+            var entry = iterator.next();
 
-                if (spellScript == null) {
-                    Log.outError(LogFilter.Scripts, "Functions getSpellScript() of script `{0}` do not return object - script skipped", getScriptName(pair.getValue()));
-                    valid = false;
-                }
+            var spellEntry = world.getSpellManager().getSpellInfo(entry.getKey(), Difficulty.NONE);
+        }
 
-                if (spellScript != null) {
-                    spellScript._Init(pair.getKey().getName(), spellEntry.id);
-                    spellScript._Register();
-
-                    if (!spellScript._Validate(spellEntry)) {
-                        valid = false;
-                    }
-                }
-
-                if (!valid) {
-                    return true;
-                }
-            }
-
-            var AuraScriptLoaders = global.getScriptMgr().createAuraScriptLoaders(script.key);
-
-            for (var pair : AuraScriptLoaders.entrySet()) {
-                var auraScript = pair.getKey().getAuraScript();
-                var valid = true;
-
-                if (auraScript == null) {
-                    Log.outError(LogFilter.Scripts, "Functions getAuraScript() of script `{0}` do not return object - script skipped", getScriptName(pair.getValue()));
-                    valid = false;
-                }
-
-                if (auraScript != null) {
-                    auraScript._Init(pair.getKey().getName(), spellEntry.id);
-                    auraScript._Register();
-
-                    if (!auraScript._Validate(spellEntry)) {
-                        valid = false;
-                    }
-                }
-
-                if (!valid) {
-                    return true;
-                }
-            }
-
-            ++count;
-
-            return false;
-        });
-
-        Logs.SERVER_LOADING.info("Validated {0} scripts in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Validated {} scripts in {} ms", count, System.currentTimeMillis() - (oldMSTime));
     }
 
-    public List<Integer> getSpellScriptsBounds(int spellId) {
+    public List<Pair<Integer,Boolean>> getSpellScriptsBounds(int spellId) {
         return spellScriptsStorage.get(spellId);
     }
 
@@ -1344,7 +1285,7 @@ public final class ObjectManager {
         return scriptNamesStorage.insert(name, isDatabaseBound);
     }
 
-    public List<Integer> getAreaTriggerScriptIds(int triggerId) {
+    public int getAreaTriggerScriptIds(int triggerId) {
         return areaTriggerScriptStorage.get(triggerId);
     }
 
@@ -1736,38 +1677,45 @@ public final class ObjectManager {
                     return;
                 }
 
+                byte id = (byte) fields[1];
+                if (id == 0)
+                {
+                    Logs.SQL.error("Creature equipment template with id 0 found for creature {}, skipped.", fields[0]);
+                    return;
+                }
+
                 EquipmentInfo equipmentInfo = new EquipmentInfo();
 
                 for (var i = 0; i < UnitDefine.MAX_EQUIPMENT_ITEMS; ++i) {
-                    equipmentInfo.getItems()[i].itemId = fields[(2 + i * 3)];
-                    equipmentInfo.getItems()[i].appearanceModId = (short) fields[(3 + i * 3)];
-                    equipmentInfo.getItems()[i].itemVisual = (short) fields[(4 + i * 3)];
+                    equipmentInfo.items[i].itemId = fields[(2 + i * 3)];
+                    equipmentInfo.items[i].appearanceModId = (short) fields[(3 + i * 3)];
+                    equipmentInfo.items[i].itemVisual = (short) fields[(4 + i * 3)];
 
-                    if (equipmentInfo.getItems()[i].itemId == 0) {
+                    if (equipmentInfo.items[i].itemId == 0) {
                         continue;
                     }
 
-                    var dbcItem = dbcObjectManager.item(equipmentInfo.getItems()[i].itemId);
+                    var dbcItem = dbcObjectManager.item(equipmentInfo.items[i].itemId);
 
                     if (dbcItem == null) {
-                        Logs.SQL.error("Unknown item (ID={}) in creature_equip_template.ItemID{} for CreatureID = {} and ID={}, forced to 0.", equipmentInfo.getItems()[i].itemId, i + 1, fields[0], fields[1]);
+                        Logs.SQL.error("Unknown item (ID={}) in creature_equip_template.ItemID{} for CreatureID = {} and ID={}, forced to 0.", equipmentInfo.items[i].itemId, i + 1, fields[0], fields[1]);
 
-                        equipmentInfo.getItems()[i].itemId = 0;
+                        equipmentInfo.items[i].itemId = 0;
 
                         continue;
                     }
 
-                    if (dbcObjectManager.getItemModifiedAppearance(equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId) == null) {
+                    if (dbcObjectManager.getItemModifiedAppearance(equipmentInfo.items[i].itemId, equipmentInfo.items[i].appearanceModId) == null) {
                         Logs.SQL.error("Unknown item appearance for (ID: {}, AppearanceModID: {}) pair in creature_equip_template.ItemID{} " +
                                         "creature_equip_template.AppearanceModID{} for CreatureID: {} and ID: {}, forced to default.",
-                                equipmentInfo.getItems()[i].itemId, equipmentInfo.getItems()[i].appearanceModId, i + 1, i + 1, fields[0], fields[1]);
+                                equipmentInfo.items[i].itemId, equipmentInfo.items[i].appearanceModId, i + 1, i + 1, fields[0], fields[1]);
 
-                        var defaultAppearance = dbcObjectManager.getDefaultItemModifiedAppearance(equipmentInfo.getItems()[i].itemId);
+                        var defaultAppearance = dbcObjectManager.getDefaultItemModifiedAppearance(equipmentInfo.items[i].itemId);
 
                         if (defaultAppearance != null) {
-                            equipmentInfo.getItems()[i].appearanceModId = (short) defaultAppearance.getItemAppearanceModifierID();
+                            equipmentInfo.items[i].appearanceModId = (short) defaultAppearance.getItemAppearanceModifierID();
                         } else {
-                            equipmentInfo.getItems()[i].appearanceModId = 0;
+                            equipmentInfo.items[i].appearanceModId = 0;
                         }
 
                         continue;
@@ -1783,12 +1731,12 @@ public final class ObjectManager {
                             && dbcItem.getInventoryType() != InventoryType.THROWN.ordinal()
                             && dbcItem.getInventoryType() != InventoryType.RANGEDRIGHT.ordinal()) {
                         Logs.SQL.error("Item (ID={}) in creature_equip_template.ItemID{} for CreatureID = {} and ID = {} is not equipable in a hand, forced to 0.",
-                                equipmentInfo.getItems()[i].itemId, i + 1, fields[0], fields[1]);
+                                equipmentInfo.items[i].itemId, i + 1, fields[0], fields[1]);
 
-                        equipmentInfo.getItems()[i].itemId = 0;
+                        equipmentInfo.items[i].itemId = 0;
                     }
                 }
-                equipmentInfoStorage.compute(fields[0], Functions.addToList(equipmentInfo));
+                equipmentInfoStorage.compute(fields[0], Functions.addToMap(id, equipmentInfo));
                 count.getAndIncrement();
             });
         }
@@ -2575,7 +2523,7 @@ public final class ObjectManager {
             go.entry = db2go.getId();
             go.type = GameObjectType.values()[db2go.getTypeID()];
             go.displayId = db2go.getDisplayID();
-            go.name = db2go.getName().get(world.getDbcLocale());
+            go.name = db2go.getName();
             go.size = db2go.getScale();
 
             int[] propValues = db2go.getPropValues();
@@ -3383,7 +3331,7 @@ public final class ObjectManager {
                     minMoneyLoot = maxMoneyLoot;
                     maxMoneyLoot = temp;
                 }
-                itemTemplate.setFlagsCu(ItemFlagsCustom.valueOf(fields[1]));
+                itemTemplate.setFlagsCu(EnumFlag.of(ItemFlagsCustom.class, fields[1]));
                 itemTemplate.setFoodType(fields[2]);
                 itemTemplate.setMinMoneyLoot(minMoneyLoot);
                 itemTemplate.setMaxMoneyLoot(maxMoneyLoot);
@@ -3398,7 +3346,7 @@ public final class ObjectManager {
 
     public void loadItemScriptNames() {
         var oldMSTime = System.currentTimeMillis();
-        int count = 0;
+        AtomicInteger count = new AtomicInteger();
 
         try (var items = itemRepo.streamAllItemScriptNames()) {
             items.forEach(fields -> {
@@ -3411,7 +3359,7 @@ public final class ObjectManager {
                 }
 
                 itemTemplateStorage.get(itemId).setScriptId(getScriptId(scriptName));
-                ++count;
+                count.incrementAndGet();
             });
         }
 
@@ -3590,12 +3538,12 @@ public final class ObjectManager {
         return cacheVendorItemStorage.get(entry);
     }
 
-    public CreatureMovementData getCreatureMovementOverride(long spawnId) {
+    public CreatureMovementData getCreatureMovementOverride(int spawnId) {
         return creatureMovementOverrides.get(spawnId);
     }
 
 
-    public EquipmentInfo getEquipmentInfo(int entry, int id) {
+    public EquipmentInfo getEquipmentInfo(int entry, byte id) {
         var equip = equipmentInfoStorage.get(entry);
 
         if (equip.isEmpty()) {
@@ -3603,10 +3551,10 @@ public final class ObjectManager {
         }
 
         if (id == -1) {
-            return equip[RandomUtil.IRand(0, equip.size() - 1)].item2;
-            return RandomUtil.random(equip).
+            Byte random = RandomUtil.random(equip.keySet().stream().toList());
+            return equip.get(random);
         } else {
-            return (tangible.ListHelper.find(equip, p -> p.Item1 == id) == null ? null : tangible.ListHelper.find(equip, p -> p.Item1 == id).item2);
+            return equip.get(id);
         }
     }
 
@@ -3662,8 +3610,8 @@ public final class ObjectManager {
 
         areaTriggerTemplatesStorage.clear(); // need for reload case
 
-        Map<AreaTriggerId, List<Position>> verticesByCreateProperties = new HashMap<>();
-        Map<AreaTriggerId, List<Position>> verticesTargetByCreateProperties = new HashMap<>();
+        Map<AreaTriggerId, List<Vector2>> verticesByCreateProperties = new HashMap<>();
+        Map<AreaTriggerId, List<Vector2>> verticesTargetByCreateProperties = new HashMap<>();
         Map<AreaTriggerId, List<Position>> splinesByCreateProperties = new HashMap<>();
         Map<AreaTriggerId, List<AreaTriggerAction>> actionsByAreaTrigger = new HashMap<>();
 
@@ -3700,10 +3648,10 @@ public final class ObjectManager {
             items.forEach(field -> {
 
                 AreaTriggerId id = new AreaTriggerId((Integer) field[0], (Boolean) field[1]);
-                verticesByCreateProperties.compute(id, Functions.addToList(new Position((Float) field[3], (Float) field[4])));
+                verticesByCreateProperties.compute(id, Functions.addToList(new Vector2((Float) field[3], (Float) field[4])));
 
                 if (field[5] != null && field[6] != null)
-                    verticesTargetByCreateProperties.compute(id, Functions.addToList(new Position((Float) field[5], (Float) field[6])));
+                    verticesTargetByCreateProperties.compute(id, Functions.addToList(new Vector2((Float) field[5], (Float) field[6])));
                 else if (field[5] != null || field[6] != null)
                     Logs.SQL.error("Table `areatrigger_create_properties_polygon_vertex` has listed invalid target vertices (AreaTriggerCreatePropertiesId: (Id: {}, IsCustom: {}), Index: {}).",
                             id.id, id.isServerSide, field[2]);
@@ -3720,52 +3668,195 @@ public final class ObjectManager {
 
 
         try (var items = areaTriggerRepo.streamAllAreaTriggerTemplate()) {
-            items.forEach(field -> {
-                AreaTriggerId id = new AreaTriggerId((Integer) field[0], (Boolean) field[1]);
-                splinesByCreateProperties.compute(id, Functions.addToList(new Position((Float) field[2], (Float) field[3], (Float) field[4])));
+            items.forEach(item -> {
+                areaTriggerTemplatesStorage.put(item.id, item);
             });
         }
 
 
-        AtomicInteger count = new AtomicInteger();
+        try (var items = areaTriggerRepo.streamAllAreaTriggerCreateProperties()) {
+            items.forEach(item -> {
 
-        try (var teleportStream = areaTriggerRepo.streamAllAreaTriggerTeleport()) {
-            teleportStream.forEach(teleport -> {
-                int triggerId = teleport.getId();
-                int portLocId = teleport.getPortLocId();
+                AreaTriggerTemplate template = areaTriggerTemplatesStorage.get(item.templateId);
 
-                var portLoc = getWorldSafeLoc(portLocId);
 
-                if (portLoc == null) {
-                    Logs.SQL.error("Area trigger (ID: {}) has a non-existing Port loc (ID: {}) in WorldSafeLocs.dbc, skipped", triggerId, portLocId);
+                if (null != template) {
+
+                    Logs.SQL.error("Table `areatrigger_create_properties` references invalid AreaTrigger (Id: {}, IsCustom: {}) for AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {})",
+                            item.id, item.id.isServerSide, item.templateId, item.templateId.isServerSide);
                     return;
                 }
 
-                AreaTriggerStruct at = new AreaTriggerStruct();
-                at.target_mapId = portLoc.loc.getMapId();
-                at.target_X = portLoc.loc.getX();
-                at.target_Y = portLoc.loc.getY();
-                at.target_Z = portLoc.loc.getZ();
-                at.target_Orientation = portLoc.loc.getO();
-                at.portLocId = portLoc.id;
 
-                var atEntry = CliDB.AreaTriggerStorage.get(triggerId);
+                BiConsumer<Integer, Runnable> curveCheck = (cure, rester) -> {
+                    if (cure != 0 && !dbcObjectManager.curve().contains(cure)) {
+                        Logs.SQL.error("Table `areatrigger_create_properties` has listed AreaTrigger (Id: {}, IsCustom: {}) for AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with invalid #Curve ({}), set to 0!",
+                                item.id, item.id.isServerSide, item.templateId, item.templateId.isServerSide, cure);
+                        rester.run();
+                    }
+                };
 
-                if (atEntry == null) {
-                    Logs.SQL.error("Area trigger (ID: {}) does not exist in `AreaTrigger.dbc`.", triggerId);
-                    return;
+                curveCheck.accept(item.MoveCurveId, () -> item.MoveCurveId = 0);
+                curveCheck.accept(item.ScaleCurveId, () -> item.ScaleCurveId = 0);
+                curveCheck.accept(item.MorphCurveId, () -> item.MorphCurveId = 0);
+                curveCheck.accept(item.FacingCurveId, () -> item.FacingCurveId = 0);
+
+                if (item.SpellForVisuals != null) {
+                    if (null == spellManager.getSpellInfo(item.SpellForVisuals, Difficulty.NONE)) {
+                        Logs.SQL.error("Table `areatrigger_create_properties` has AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with invalid SpellForVisual {}, set to none.", item.id, item.id.isServerSide, item.SpellForVisuals);
+                        item.SpellForVisuals = null;
+                    }
                 }
 
-                areaTriggerStorage.put(triggerId, at);
-                count.getAndIncrement();
+                item.ScriptId = getScriptId(item.scriptName);
+
+
+                if (item.Shape.Type == AreaTriggerShapeType.Polygon) {
+                    if (item.Shape.PolygonDatas.Height <= 0.0f) {
+                        item.Shape.PolygonDatas.Height = 1.0f;
+                        if (item.Shape.PolygonDatas.HeightTarget <= 0.0f)
+                            item.Shape.PolygonDatas.HeightTarget = 1.0f;
+                    }
+                }
+
+
+                item.Shape.PolygonVertices = verticesByCreateProperties.get(item.id);
+                item.Shape.PolygonVerticesTarget = verticesTargetByCreateProperties.get(item.id);
+
+                if (!item.Shape.PolygonVerticesTarget.isEmpty() && item.Shape.PolygonVertices.size() != item.Shape.PolygonVerticesTarget.size()) {
+
+                    Logs.SQL.error("Table `areatrigger_create_properties_polygon_vertex` has invalid target vertices, either all or none vertices must have a corresponding target vertex (AreaTriggerCreatePropertiesId: (Id: {}, IsCustom: {})).",
+                            item.id, item.id.isServerSide);
+                    item.Shape.PolygonVerticesTarget.clear();
+                }
+
+                item.SplinePoints = splinesByCreateProperties.get(item.id);
+
+                areaTriggerCreateProperties.put(item.id, item);
+
             });
         }
 
-        if (count.get() == 0) {
-            Logs.SERVER_LOADING.info("Loaded 0 area trigger teleport definitions. DB table `areatrigger_teleport` is empty.");
+
+        var rs = worldCrudRepo.queryForRowSet("SELECT AreaTriggerCreatePropertiesId, IsCustom, StartDelay, CircleRadius, BlendFromRadius, InitialAngle, ZOffset, CounterClockwise, CanLoop FROM `areatrigger_create_properties_orbit`");
+        while (rs.next()) {
+
+            AreaTriggerId areaTriggerId = new AreaTriggerId(rs.getInt(1), rs.getBoolean(2));
+
+            AreaTriggerCreateProperty createProperty = areaTriggerCreateProperties.get(areaTriggerId);
+            if (createProperty == null) {
+                Logs.SQL.error("Table `areatrigger_create_properties_orbit` reference invalid AreaTriggerCreatePropertiesId: (Id: {}, IsCustom: {})",
+                        areaTriggerId.id, areaTriggerId.isServerSide);
+                continue;
+            }
+
+            AreaTriggerOrbitInfo data = new AreaTriggerOrbitInfo();
+            data.startDelay = rs.getInt(3);
+            data.radius = rs.getFloat(4);
+            data.blendFromRadius = rs.getFloat(5);
+            data.initialAngle = rs.getFloat(6);
+            data.ZOffset = rs.getFloat(7);
+            data.counterClockwise = rs.getBoolean(8);
+            data.canLoop = rs.getBoolean(9);
+
+            createProperty.OrbitInfo = data;
         }
 
-        Logs.SERVER_LOADING.info("Loaded {} area trigger teleport definitions in {} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
+        Logs.SERVER_LOADING.info(">> Loaded {} spell areatrigger templates in {} ms.", areaTriggerTemplatesStorage.size(), System.currentTimeMillis() - oldMSTime);
+    }
+
+
+    void loadAreaTriggerSpawns() {
+        // build single time for check spawnmask
+        Map<Integer, Set<Difficulty>> spawnMasks = new HashMap<>();
+        for (var mapDifficulty : dbcObjectManager.mapDifficulty())
+            spawnMasks.compute(Integer.valueOf(mapDifficulty.getMapID()), Functions.addToSet(mapDifficulty.getDifficulty()));
+
+        long oldMSTime = System.currentTimeMillis();
+        //                                                                            0        1                              2         3      4                  5     6     7     8            9              10       11          12
+        var rs = worldCrudRepo.queryForRowSet("SELECT SpawnId, AreaTriggerCreatePropertiesId, IsCustom, MapId, SpawnDifficulties, PosX, PosY, PosZ, Orientation, PhaseUseFlags, PhaseId, PhaseGroup, ScriptName FROM `areatrigger`");
+        while (rs.next()) {
+            var spawnId = rs.getInt(1);
+            var createPropertiesId = new AreaTriggerId(rs.getInt(2), rs.getBoolean(3));
+
+            var location = new WorldLocation(rs.getInt(4), rs.getFloat(6), rs.getFloat(7), rs.getFloat(8), rs.getFloat(9));
+
+            AreaTriggerCreateProperty createProperties = areaTriggerCreateProperties.get(createPropertiesId);
+            if (null == createProperties) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) that doesn't exist for SpawnId {}",
+                        createPropertiesId.id, createPropertiesId.isServerSide, spawnId);
+                continue;
+            }
+
+            if (!createProperties.Flags.equals(AreaTriggerCreatePropertiesFlag.NONE)) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with non - zero flags",
+                        createPropertiesId.id, createPropertiesId.isServerSide);
+                continue;
+            }
+
+            if (createProperties.ScaleCurveId != 0 || createProperties.MorphCurveId != 0 || createProperties.FacingCurveId != 0 || createProperties.MoveCurveId != 0) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with curve values",
+                        createPropertiesId.id, createPropertiesId.isServerSide);
+                continue;
+            }
+
+            if (createProperties.TimeToTargetScale != 0) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with time to target values",
+                        createPropertiesId.id, createPropertiesId.isServerSide);
+                continue;
+            }
+
+            if (createProperties.OrbitInfo != null) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with orbit info",
+                        createPropertiesId.id, createPropertiesId.isServerSide);
+                continue;
+            }
+
+            if (createProperties.HasSplines()) {
+                Logs.SQL.error("Table `areatrigger` has listed AreaTriggerCreatePropertiesId (Id: {}, IsCustom: {}) with splines",
+                        createPropertiesId.id, createPropertiesId.isServerSide);
+                continue;
+            }
+
+            if (!world.getMapManager().isValidMapCoordinate(location)) {
+                Logs.SQL.error("Table `areatrigger` has listed an invalid position: SpawnId: {}, MapId {}, Position {{}}",
+                        spawnId, location.getMapId(), location.toString());
+                continue;
+            }
+
+            var difficulties = parseSpawnDifficulties(rs.getString(5), "areatrigger", spawnId, location.getMapId(), spawnMasks.get(location.getMapId()));
+            if (difficulties.isEmpty()) {
+                Logs.SQL.debug("Table `areatrigger` has areatrigger (GUID: {}) that is not spawned in any difficulty, skipped.", spawnId);
+                continue;
+            }
+
+            AreaTriggerSpawn spawn = new AreaTriggerSpawn();
+            spawn.spawnId = spawnId;
+            spawn.mapId = location.getMapId();
+            spawn.triggerId = createPropertiesId;
+            spawn.positionX = location.getX();
+            spawn.positionY = location.getY();
+            spawn.positionZ = location.getZ();
+            spawn.positionO = location.getO();
+
+            spawn.phaseUseFlags = EnumFlag.of(PhaseUseFlag.class, rs.getByte(10));
+            spawn.phaseId = rs.getInt(11);
+            spawn.phaseGroup = rs.getInt(12);
+
+            spawn.scriptId = getScriptId(rs.getString(13));
+            spawn.spawnGroupData = getLegacySpawnGroup();
+
+            // Add the trigger to a map::cell map, which is later used by GridLoader to query
+
+            // if not this is to be managed by GameEvent System
+            if (spawn.gameEvent == 0) {
+                addSpawnDataToGrid(spawn);
+            }
+
+            areaTriggerSpawnsBySpawnId.put(spawn.spawnId, spawn);
+
+        }
+        Logs.SERVER_LOADING.info("Loaded {} areatrigger spawns in {} ms.", areaTriggerSpawnsBySpawnId.size(), System.currentTimeMillis() - oldMSTime);
     }
 
     public void loadAreaTriggerTeleports() {
@@ -3773,53 +3864,37 @@ public final class ObjectManager {
 
         areaTriggerStorage.clear(); // need for reload case
 
-        
 
-        //                                         0   1
-        var result = DB.World.query("SELECT ID, PortLocID FROM areatrigger_teleport");
+        try (var items = areaTriggerRepo.streamAllAreaTriggerTeleport()) {
+            items.forEach(fields -> {
+                int Trigger_ID = fields[0];
+                int PortLocID  = fields[1];
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 area trigger teleport definitions. DB table `areatrigger_teleport` is empty.");
+                WorldSafeLocEntry portLoc = getWorldSafeLoc(PortLocID);
+                if (null == portLoc)
+                {
+                    Logs.SQL.error("Area Trigger (ID: {}) has a non-existing Port Loc (ID: {}) in WorldSafeLocs.dbc, skipped", Trigger_ID, PortLocID);
+                    return;
+                }
 
-            return;
+                AreaTriggerStruct at = new AreaTriggerStruct();
+
+                at.target_mapId       = portLoc.loc.getMapId();
+                at.target_X           = portLoc.loc.getX();
+                at.target_Y           = portLoc.loc.getY();
+                at.target_Z           = portLoc.loc.getZ();
+                at.target_Orientation = portLoc.loc.getO();
+
+                AreaTriggerEntry atEntry = dbcObjectManager.areaTrigger(Trigger_ID);
+                if (null == atEntry)
+                {
+                    Logs.SQL.error("Area Trigger (ID: {}) does not exist in AreaTrigger.dbc.", Trigger_ID);
+                    return;
+                }
+
+                areaTriggerStorage.put(Trigger_ID, at);
+            });
         }
-
-        int count = 0;
-
-        do {
-            ++count;
-
-            var Trigger_ID = result.<Integer>Read(0);
-            var PortLocID = result.<Integer>Read(1);
-
-            var portLoc = getWorldSafeLoc(PortLocID);
-
-            if (portLoc == null) {
-                Logs.SQL.error("Area trigger (ID: {}) has a non-existing Port loc (ID: {}) in WorldSafeLocs.dbc, skipped", Trigger_ID, PortLocID);
-
-                continue;
-            }
-
-            AreaTriggerStruct at = new AreaTriggerStruct();
-            at.target_mapId = portLoc.loc.getMapId();
-            at.target_X = portLoc.loc.getX();
-            at.target_Y = portLoc.loc.getY();
-            at.target_Z = portLoc.loc.getZ();
-            at.target_Orientation = portLoc.loc.getO();
-            at.portLocId = portLoc.id;
-
-            var atEntry = CliDB.AreaTriggerStorage.get(Trigger_ID);
-
-            if (atEntry == null) {
-                Logs.SQL.error("Area trigger (ID: {}) does not exist in `AreaTrigger.dbc`.", Trigger_ID);
-
-                continue;
-            }
-
-            areaTriggerStorage.put(Trigger_ID, at);
-        } while (result.NextRow());
-
-        Logs.SERVER_LOADING.info("Loaded {} area trigger teleport definitions in {} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
     }
 
     public void loadAccessRequirements() {
@@ -3828,193 +3903,70 @@ public final class ObjectManager {
 
         accessRequirementStorage.clear();
 
-        int count = 0;
-        try (
-            var result = instanceRepo.streamAllAccessRequirements()
-        ) {
-            if (!result.iterator().hasNext()) {
-                Logs.SERVER_LOADING.info("Loaded 0 access requirement definitions. DB table `access_requirement` is empty.");
-                return;
-            }
+        AtomicInteger count = new AtomicInteger();
+        try (var result = playerRepo.streamAllAccessRequirements()) {
 
-            for (var ar : result) {
-                int mapid = ar.getMapid();
-                int difficulty = ar.getDifficulty();
-                int levelMin = ar.getLevelMin();
-                int levelMax = ar.getLevelMax();
-                int item = ar.getItem();
-                int item2 = ar.getItem2();
-                int questDoneA = ar.getQuestDoneA();
-                int questDoneH = ar.getQuestDoneH();
-                int completedAchievement = ar.getCompletedAchievement();
-                String questFailedText = ar.getQuestFailedText();
-
-                if (!CliDB.MapStorage.containsKey(mapid)) {
-                    Logs.SQL.error("Map {0} referenced in `access_requirement` does not exist, skipped.", mapid);
-                    continue;
+            result.forEach(item -> {
+                if (dbcObjectManager.map().contains(item.getMapId()))
+                {
+                    Logs.SQL.error("Map {} referenced in `access_requirement` does not exist, skipped.", item.getMapId());
+                    return;
                 }
 
-                if (dbcObjectManager.GetMapDifficultyData(mapid, Difficulty.forValue(difficulty)) == null) {
-                    Logs.SQL.error("Map {0} referenced in `access_requirement` does not have difficulty {1}, skipped", mapid, difficulty);
-                    continue;
+                if (null == dbcObjectManager.getMapDifficultyData(item.getMapId(), item.getDifficulty()))
+                {
+                    Logs.SQL.error("Map {} referenced in `access_requirement` does not have difficulty {}, skipped", item.getMapId(), item.getDifficulty());
+                    return;
                 }
+                //the type of mapId is short
+                int requirementId = item.getMapId() << 8 | item.getDifficulty().ordinal();
 
-                var requirementId = MathUtil.MakePair64(mapid, difficulty);
-
-                AccessRequirement accessRequirement = new AccessRequirement();
-                accessRequirement.setLevelMin((byte)levelMin);
-                accessRequirement.setLevelMax((byte)levelMax);
-                accessRequirement.setItem(item);
-                accessRequirement.setItem2(item2);
-                accessRequirement.setQuestA(questDoneA);
-                accessRequirement.setQuestH(questDoneH);
-                accessRequirement.setAchievement(completedAchievement);
-                accessRequirement.setQuestFailedText(questFailedText);
-
-                if (accessRequirement.getItem() != 0) {
-                    var pProto = getItemTemplate(accessRequirement.getItem());
+                if (item.getItem() != 0) {
+                    var pProto = getItemTemplate(item.getItem());
                     if (pProto == null) {
-                        Logs.SQL.error("Key item {0} does not exist for map {1} difficulty {2}, removing first requirement.", accessRequirement.getItem(), mapid, difficulty);
-                        accessRequirement.setItem(0);
+                        Logs.SQL.error("Key item {} does not exist for map {} difficulty {}, removing key requirement.", item.getItem(), item.getMapId(), item.getDifficulty());
+                        item.setItem(0);
                     }
                 }
 
-                if (accessRequirement.getItem2() != 0) {
-                    var pProto = getItemTemplate(accessRequirement.getItem2());
+                if (item.getItem2() != 0) {
+                    var pProto = getItemTemplate(item.getItem2());
                     if (pProto == null) {
-                        Logs.SQL.error("Second item {0} does not exist for map {1} difficulty {2}, removing first requirement.", accessRequirement.getItem2(), mapid, difficulty);
-                        accessRequirement.setItem2(0);
+                        Logs.SQL.error("Second item {} does not exist for map {} difficulty {}, removing key requirement.", item.getItem2(),  item.getMapId(), item.getDifficulty());
+                        item.setItem2(0);
                     }
                 }
 
-                if (accessRequirement.getQuestA() != 0) {
-                    if (getQuestTemplate(accessRequirement.getQuestA()) == null) {
-                        Logs.SQL.error("Required Alliance Quest {0} not exist for map {1} difficulty {2}, remove quest done requirement.", accessRequirement.getQuestA(), mapid, difficulty);
-                        accessRequirement.setQuestA(0);
+                if (item.getQuestDoneA() != 0) {
+                    if (getQuestTemplate(item.getQuestDoneA()) == null) {
+                        Logs.SQL.error("Required Alliance Quest {} not exist for map {} difficulty {}, remove quest done requirement.", item.getQuestDoneA(),  item.getMapId(), item.getDifficulty());
+                        item.setQuestDoneA(0);
                     }
                 }
 
-                if (accessRequirement.getQuestH() != 0) {
-                    if (getQuestTemplate(accessRequirement.getQuestH()) == null) {
-                        Logs.SQL.error("Required Horde Quest {0} not exist for map {1} difficulty {2}, remove quest done requirement.", accessRequirement.getQuestH(), mapid, difficulty);
-                        accessRequirement.setQuestH(0);
+                if (item.getQuestDoneH() != 0) {
+                    if (getQuestTemplate(item.getQuestDoneH()) == null) {
+                        Logs.SQL.error("Required Horde Quest {} not exist for map {} difficulty {}, remove quest done requirement.", item.getQuestDoneH(),  item.getMapId(), item.getDifficulty());
+                        item.setQuestDoneH(0);
                     }
                 }
 
-                if (accessRequirement.getAchievement() != 0) {
-                    if (!CliDB.AchievementStorage.containsKey(accessRequirement.getAchievement())) {
-                        Logs.SQL.error("Required Achievement {0} not exist for map {1} difficulty {2}, remove quest done requirement.", accessRequirement.getAchievement(), mapid, difficulty);
-                        accessRequirement.setAchievement(0);
+                if (item.getCompletedAchievement() != 0) {
+                    if (!dbcObjectManager.achievement().contains(item.getCompletedAchievement())) {
+                        Logs.SQL.error("Required Achievement {} not exist for map {} difficulty {}, remove quest done requirement.", item.getCompletedAchievement(),  item.getMapId(), item.getDifficulty());
+                        item.setCompletedAchievement(0);
                     }
                 }
 
-                accessRequirementStorage.put(requirementId, accessRequirement);
-                ++count;
-            }
+                accessRequirementStorage.put(requirementId, item);
+                count.incrementAndGet();
+            });
+
         }
 
-        Logs.SERVER_LOADING.info("Loaded {} access requirement definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
+        Logs.SERVER_LOADING.info(">> Loaded {} access requirement definitions in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
-    public void loadInstanceEncounters() {
-        Logs.SERVER_LOADING.info("Loading instance encounters...");
-        long oldMSTime = System.currentTimeMillis();
-
-        instanceEncounterStorage.clear();
-
-        int count = 0;
-        try (var result = instanceRepo.streamAllInstanceEncounters()) {
-
-            HashMap<Integer, Tuple<Integer, DungeonEncounterRecord>> dungeonLastBosses = new HashMap<Integer, Tuple<Integer, DungeonEncounterRecord>>();
-
-            for (var ie : result) {
-                int entry = ie.getEntry();
-                int creditType = ie.getCreditType();
-                int creditEntry = ie.getCreditEntry();
-                int lastEncounterDungeon = ie.getLastEncounterDungeon();
-                var dungeonEncounter = CliDB.DungeonEncounterStorage.get(entry);
-
-                if (dungeonEncounter == null) {
-                    Logs.SQL.error("Table `instance_encounters` has an invalid encounter id {0}, skipped!", entry);
-
-                    continue;
-                }
-
-                if (lastEncounterDungeon != 0 && global.getLFGMgr().getLFGDungeonEntry(lastEncounterDungeon) == 0) {
-                    Logs.SQL.error("Table `instance_encounters` has an encounter {0} ({1}) marked as final for invalid dungeon id {2}, skipped!", entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()), lastEncounterDungeon);
-
-                    continue;
-                }
-
-                var pair = dungeonLastBosses.get(lastEncounterDungeon);
-
-                if (lastEncounterDungeon != 0) {
-                    if (pair != null) {
-                        Logs.SQL.error("Table `instance_encounters` specified encounter {0} ({1}) as last encounter but {2} ({3}) is already marked as one, skipped!", entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()), pair.Item1, pair.item2.name.charAt(global.getWorldMgr().getDefaultDbcLocale()));
-
-                        continue;
-                    }
-
-                    dungeonLastBosses.put(lastEncounterDungeon, Tuple.create(entry, dungeonEncounter));
-                }
-
-                switch (creditType) {
-                    case KillCreature: {
-                        var creatureInfo = getCreatureTemplate(creditEntry);
-
-                        if (creatureInfo == null) {
-                            Logs.SQL.error("Table `instance_encounters` has an invalid creature (entry {0}) linked to the encounter {1} ({2}), skipped!", creditEntry, entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()));
-
-                            continue;
-                        }
-
-                        creatureInfo.flagsExtra = CreatureFlagExtra.forValue(creatureInfo.flagsExtra.getValue() | CreatureFlagExtra.DungeonBoss.getValue());
-
-                        for (byte diff = 0; diff < SharedConst.MaxCreatureDifficulties; ++diff) {
-                            var diffEntry = creatureInfo.DifficultyEntry[diff];
-
-                            if (diffEntry != 0) {
-                                var diffInfo = getCreatureTemplate(diffEntry);
-
-                                if (diffInfo != null) {
-                                    diffInfo.flagsExtra = CreatureFlagExtra.forValue(diffInfo.flagsExtra.getValue() | CreatureFlagExtra.DungeonBoss.getValue());
-                                }
-                            }
-                        }
-
-                        break;
-                    }
-                    case CastSpell:
-                        if (!world.getSpellManager().hasSpellInfo(creditEntry, Difficulty.NONE)) {
-                            Logs.SQL.error("Table `instance_encounters` has an invalid spell (entry {0}) linked to the encounter {1} ({2}), skipped!", creditEntry, entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()));
-
-                            continue;
-                        }
-
-                        break;
-                    default:
-                        Logs.SQL.error("Table `instance_encounters` has an invalid credit type ({0}) for encounter {1} ({2}), skipped!", creditType, entry, dungeonEncounter.name.charAt(global.getWorldMgr().getDefaultDbcLocale()));
-
-                        continue;
-                }
-
-                if (dungeonEncounter.difficultyID == 0) {
-                    for (var difficulty : CliDB.DifficultyStorage.values()) {
-                        if (dbcObjectManager.GetMapDifficultyData((int) dungeonEncounter.mapID, Difficulty.forValue(difficulty.id)) != null) {
-                            dungeonEncounterStorage.add(MathUtil.MakePair64((int) dungeonEncounter.mapID, difficulty.id), new dungeonEncounter(dungeonEncounter, creditType, creditEntry, lastEncounterDungeon));
-                        }
-                    }
-                } else {
-                    dungeonEncounterStorage.add(MathUtil.MakePair64((int) dungeonEncounter.mapID, (int) dungeonEncounter.difficultyID), new dungeonEncounter(dungeonEncounter, creditType, creditEntry, lastEncounterDungeon));
-                }
-
-                ++count;
-            }
-            while (result.NextRow()) ;
-
-            Logs.SERVER_LOADING.info("Loaded {0} instance encounters in {1} ms", count, time.GetMSTimeDiffToNow(oldMSTime));
-        }
-    }
 
     public void loadSpawnGroupTemplates() {
         var oldMSTime = System.currentTimeMillis();
@@ -4065,83 +4017,52 @@ public final class ObjectManager {
     public void loadSpawnGroups() {
         var oldMSTime = System.currentTimeMillis();
 
-        //                                         0        1          2
-        var result = DB.World.query("SELECT groupId, spawnType, spawnId FROM spawn_group");
 
-        if (result.isEmpty()) {
-            Logs.SERVER_LOADING.info("Loaded 0 spawn group members. DB table `spawn_group` is empty.");
+        AtomicInteger count = new AtomicInteger();
+        try (var result = miscRepo.streamAllSpawnGroups()) {
 
-            return;
-        }
+            result.forEach(fields -> {
+                int groupId = fields[0];
+                SpawnObjectType spawnType = SpawnObjectType.values()[fields[1]];
 
-        int numMembers = 0;
-
-        do {
-            var groupId = result.<Integer>Read(0);
-            var spawnType = SpawnObjectType.forValue(result.<Byte>Read(1));
-            var spawnId = result.<Long>Read(2);
-
-            if (!SpawnMetadata.typeIsValid(spawnType)) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM spawn_group WHERE groupId = %1$s AND spawnType = %2$s AND spawnId = %3$s", groupId, (byte) spawnType.getValue(), spawnId));
-                } else {
-                    Logs.SQL.error(String.format("Spawn data with invalid type %1$s listed for spawn group %2$s. Skipped.", spawnType, groupId));
+                if (!SpawnData.typeIsValid(spawnType)) {
+                    Logs.SQL.error("Spawn data with invalid type {} listed for spawn group {}. Skipped.", spawnType, groupId);
+                    return;
                 }
+                int spawnId = fields[2];
+                SpawnMetadata data = getSpawnMetadata(spawnType, spawnId);
 
-                continue;
-            }
-
-            var data = getSpawnMetadata(spawnType, spawnId);
-
-            if (data == null) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM spawn_group WHERE groupId = %1$s AND spawnType = %2$s AND spawnId = %3$s", groupId, (byte) spawnType.getValue(), spawnId));
-                } else {
-                    Logs.SQL.error(String.format("Spawn data with ID (%1$s,%2$s) not found, but is listed as a member of spawn group %3$s!", spawnType, spawnId, groupId));
+                if (data == null) {
+                    Logs.SQL.error("Spawn data with ID ({},{}) not found, but is listed as a member of spawn group {}!", spawnType, spawnId, groupId);
+                    return;
+                } else if (data.spawnGroupData.groupId == 0) {
+                    Logs.SQL.error("Spawn with ID ({},{}) is listed as a member of spawn group {}, but is already a member of spawn group {}. Skipping.", spawnType, spawnId, groupId, data.spawnGroupData.groupId);
+                    return;
                 }
-
-                continue;
-            } else if (data.getSpawnGroupData().getGroupId() != 0) {
-                if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                    DB.World.execute(String.format("DELETE FROM spawn_group WHERE groupId = %1$s AND spawnType = %2$s AND spawnId = %3$s", groupId, (byte) spawnType.getValue(), spawnId));
+                if (!spawnGroupDataStorage.containsKey(groupId)) {
+                    Logs.SQL.error("Spawn group {} assigned to spawn ID ({},{}) but group is found!", groupId, spawnType, spawnId);
                 } else {
-                    Logs.SQL.error(String.format("Spawn with ID (%1$s,%2$s) is listed as a member of spawn group %3$s, but is already a member of spawn group %4$s. Skipping.", spawnType, spawnId, groupId, data.getSpawnGroupData().getGroupId()));
-                }
-
-                continue;
-            }
-
-            var groupTemplate = spawnGroupDataStorage.get(groupId);
-
-            if (groupTemplate == null) {
-                Logs.SQL.error(String.format("Spawn group %1$s assigned to spawn ID (%2$s,%3$s), but group is found!", groupId, spawnType, spawnId));
-
-                continue;
-            } else {
-                if (groupTemplate.mapId == 0xFFFFFFFF) {
-                    groupTemplate.mapId = data.getMapId();
-                    spawnGroupsByMap.add(data.getMapId(), groupId);
-                } else if (groupTemplate.mapId != data.getMapId() && !groupTemplate.flags.hasFlag(SpawnGroupFlags.System)) {
-                    if (ConfigMgr.GetDefaultValue("load.autoclean", false)) {
-                        DB.World.execute(String.format("DELETE FROM spawn_group WHERE groupId = %1$s AND spawnType = %2$s AND spawnId = %3$s", groupId, (byte) spawnType.getValue(), spawnId));
-                    } else {
-                        Logs.SQL.error(String.format("Spawn group %1$s has map ID %2$s, but spawn (%3$s,%4$s) has map id %5$s - spawn NOT added to group!", groupId, groupTemplate.mapId, spawnType, spawnId, data.getMapId()));
+                    SpawnGroupTemplateData groupTemplate = spawnGroupDataStorage.get(groupId);
+                    if (groupTemplate.mapId == MapDefine.SPAWN_GROUP_MAP_UNSET) {
+                        groupTemplate.mapId = data.mapId;
+                        spawnGroupsByMap.compute(data.mapId, Functions.addToList(groupId));
+                    } else if (groupTemplate.mapId != data.mapId && !(groupTemplate.flags.hasFlag(SpawnGroupFlag.SYSTEM))) {
+                        Logs.SQL.error("Spawn group {} has map ID {}, but spawn ({},{}) has map id {} - spawn NOT added to group!", groupId, groupTemplate.mapId, spawnType, spawnId, data.mapId);
+                        return;
                     }
-
-                    continue;
+                    data.spawnGroupData = groupTemplate;
+                    if (!groupTemplate.flags.hasFlag(SpawnGroupFlag.SYSTEM)) {
+                        spawnGroupMapStorage.compute(groupId, Functions.addToList(data));
+                    }
+                    count.incrementAndGet();
                 }
 
-                data.setSpawnGroupData(groupTemplate);
+            });
 
-                if (!groupTemplate.flags.hasFlag(SpawnGroupFlags.System)) {
-                    spawnGroupMapStorage.add(groupId, data);
-                }
+            Logs.SERVER_LOADING.info(">> Loaded {} spawn group members in {} ms", count, System.currentTimeMillis() - oldMSTime);
 
-                ++numMembers;
-            }
-        } while (result.NextRow());
 
-        Logs.SERVER_LOADING.info(String.format("Loaded %1$s spawn group members in %2$s ms", numMembers, time.GetMSTimeDiffToNow(oldMSTime)));
+        }
     }
 
     public void loadInstanceSpawnGroups() {
@@ -4149,7 +4070,7 @@ public final class ObjectManager {
         long oldMSTime = System.currentTimeMillis();
 
         AtomicInteger count = new AtomicInteger();
-        try (var result = instanceRepo.streamAllInstanceSpawnGroups()) {
+        try (var result = miscRepo.streamAllInstanceSpawnGroups()) {
 
             result.forEach (item -> {
                 int instanceMapId = item.getInstanceMapId();
@@ -4191,7 +4112,7 @@ public final class ObjectManager {
                 if (flags.hasFlag(InstanceSpawnGroup.Flag.FLAG_ALLIANCE_ONLY) && flags.hasFlag(InstanceSpawnGroup.Flag.FLAG_HORDE_ONLY)) {
 
                     flags.removeFlag(InstanceSpawnGroup.Flag.FLAG_ALL, InstanceSpawnGroup.Flag.FLAG_HORDE_ONLY);
-                    Logs.SQL.error("Instance spawn group ({},{}) FLAG_ALLIANCE_ONLY and FLAG_HORDE_ONLY may not be used together in a single entry - truncated to {}.", instanceMapId, spawnGroupId, info.Flags);
+                    Logs.SQL.error("Instance spawn group ({},{}) FLAG_ALLIANCE_ONLY and FLAG_HORDE_ONLY may not be used together in a single entry - truncated to {}.", instanceMapId, spawnGroupId, flags);
                 }
 
                 instanceSpawnGroupStorage.compute(instanceMapId, Functions.addToList(item));
@@ -4215,87 +4136,53 @@ public final class ObjectManager {
     }
 
     public GameTele getGameTele(String name) {
-        name = name.toLowerCase();
+
 
         // Alternative first GameTele what contains wnameLow as substring in case no GameTele location found
         GameTele alt = null;
 
 
-        for (var(_, tele) : gameTeleStorage) {
-            if (Objects.equals(tele.nameLow, name)) {
+        for (var tele : gameTeleStorage.values()) {
+
+            if (StringUtil.containsIgnoreCase(tele.name, name)) {
                 return tele;
-            } else if (alt == null && tele.nameLow.contains(name)) {
+            } else if (StringUtil.containsIgnoreCase(tele.name, name)) {
                 alt = tele;
             }
         }
-
         return alt;
     }
 
     public GameTele getGameTeleExactName(String name) {
-        name = name.toLowerCase();
-
-
-        for (var(_, tele) : gameTeleStorage) {
-            if (Objects.equals(tele.nameLow, name)) {
-                return tele;
-            }
-        }
-
-        return null;
+        return gameTeleStorage.values()
+                .stream()
+                .filter(tele -> StringUtil.equalsIgnoreCase(tele.name, name))
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean addGameTele(GameTele tele) {
         // find max id
-        int newId = 0;
-
-        for (var itr : gameTeleStorage.entrySet()) {
-            if (itr.getKey() > newId) {
-                newId = itr.getKey();
-            }
-        }
-
+        Integer maxId = gameTeleStorage.keySet().stream().max(Integer::compare).orElse(0);
         // use next
-        ++newId;
-
-        gameTeleStorage.put(newId, tele);
-
-        var stmt = DB.World.GetPreparedStatement(WorldStatements.INS_GAME_TELE);
-
-        stmt.AddValue(0, newId);
-        stmt.AddValue(1, tele.posX);
-        stmt.AddValue(2, tele.posY);
-        stmt.AddValue(3, tele.posZ);
-        stmt.AddValue(4, tele.orientation);
-        stmt.AddValue(5, tele.mapId);
-        stmt.AddValue(6, tele.name);
-
-        DB.World.execute(stmt);
+        tele.id = ++maxId;
+        gameTeleStorage.put(maxId, tele);
+        miscRepo.addGameTele(tele);
 
         return true;
     }
 
     public boolean deleteGameTele(String name) {
-        name = name.toLowerCase(locale.ROOT);
-
-        for (var pair : gameTeleStorage.ToList()) {
-            if (Objects.equals(pair.value.nameLow, name)) {
-                var stmt = DB.World.GetPreparedStatement(WorldStatements.DEL_GAME_TELE);
-                stmt.AddValue(0, pair.value.name);
-                DB.World.execute(stmt);
-
-                gameTeleStorage.remove(pair.key);
-
+        for (var entry : gameTeleStorage.entrySet()) {
+            if (StringUtil.equalsIgnoreCase(entry.getValue().name, name)) {
+                gameTeleStorage.remove(entry.getKey());
+                miscRepo.deleteGameTele(entry.getValue());
                 return true;
             }
         }
-
         return false;
     }
 
-    public ArrayList<dungeonEncounter> getDungeonEncounterList(int mapId, Difficulty difficulty) {
-        return dungeonEncounterStorage.get(MathUtil.MakePair64(mapId, (int) difficulty.getValue()));
-    }
 
     public boolean isTransportMap(int mapId) {
         return transportMaps.contains((short) mapId);
@@ -4305,7 +4192,7 @@ public final class ObjectManager {
         return spawnGroupDataStorage.get(groupId);
     }
 
-    public SpawnGroupTemplateData getSpawnGroupData(SpawnObjectType type, long spawnId) {
+    public SpawnGroupTemplateData getSpawnGroupData(SpawnObjectType type, int spawnId) {
         var data = getSpawnMetadata(type, spawnId);
 
         return data != null ? data.getSpawnGroupData() : null;
@@ -4327,7 +4214,12 @@ public final class ObjectManager {
         return spawnGroupsByMap.get(mapId);
     }
 
-    public SpawnMetadata getSpawnMetadata(SpawnObjectType type, long spawnId) {
+    AreaTriggerSpawn getAreaTriggerSpawn(int spawnId)
+    {
+        return areaTriggerSpawnsBySpawnId.get(spawnId);
+    }
+
+    public SpawnMetadata getSpawnMetadata(SpawnObjectType type, int spawnId) {
         if (SpawnMetadata.typeHasData(type)) {
             return getSpawnData(type, spawnId);
         } else {
@@ -4335,26 +4227,19 @@ public final class ObjectManager {
         }
     }
 
-    public SpawnData getSpawnData(SpawnObjectType type, long spawnId) {
+    public SpawnData getSpawnData(SpawnObjectType type, int spawnId) {
         if (!SpawnMetadata.typeHasData(type)) {
             return null;
         }
 
-        switch (type) {
-            case Creature:
-                return getCreatureData(spawnId);
-            case GameObjectEntry:
-                return getGameObjectData(spawnId);
-            case AreaTrigger:
-                return global.getAreaTriggerDataStorage().GetAreaTriggerSpawn(spawnId);
-            default:
-                return null;
-        }
+        return switch (type) {
+            case CREATURE -> getCreatureData(spawnId);
+            case GAME_OBJECT -> getGameObjectData(spawnId);
+            case AREA_TRIGGER -> getAreaTriggerSpawn(spawnId);
+            default -> null;
+        };
     }
 
-    public List<InstanceSpawnGroupInfo> getInstanceSpawnGroupsForMap(int mapId) {
-        return instanceSpawnGroupStorage.get((short) mapId);
-    }
 
     //Player
     public void loadPlayerInfo() {
@@ -6050,7 +5935,7 @@ public final class ObjectManager {
         AtomicInteger count = new AtomicInteger();
         try (var items = questRepo.streamAllAreaTriggerInvolvedRelation()) {
             items.forEach(fields -> {
-                AreaTrigger atEntry = dbcObjectManager.areaTrigger(fields[0]);
+                AreaTriggerEntry atEntry = dbcObjectManager.areaTrigger(fields[0]);
                 if (atEntry == null)
                 {
                     Logs.SQL.error("Area trigger (ID:{}) does not exist in `AreaTrigger.dbc`.", fields[0]);
@@ -7221,9 +7106,9 @@ public final class ObjectManager {
         return areaTriggerStorage.get(trigger);
     }
 
-    public AccessRequirement getAccessRequirement(int mapid, Difficulty difficulty) {
-
-        return accessRequirementStorage.get(MathUtil.MakePair64(mapid, (int) difficulty.getValue()));
+    public AccessRequirement getAccessRequirement(int mapId, Difficulty difficulty) {
+        int id = mapId << 8 | difficulty.ordinal();
+        return accessRequirementStorage.get(id);
     }
 
     public boolean isTavernAreaTrigger(int Trigger_ID) {
@@ -7356,30 +7241,26 @@ public final class ObjectManager {
 
         vehicleAccessoryStore.clear(); // needed for reload case
 
-        int count = 0;
+        AtomicInteger count = new AtomicInteger();
 
-        try (
-            var result = vehicleRepo.streamAllVehicleAccessories()
-        ) {
-            for (var va : result) {
-                var uiGUID = va.getGuid();
-                var uiAccessory = va.getAccessoryEntry();
-                var uiSeat = va.getSeatId();
-                var bMinion = va.isMinion();
-                var uiSummonType = va.getSummonType();
-                var uiSummonTimer = va.getSummonTimer();
-
-                if (getCreatureTemplate(uiAccessory) == null) {
-                    Logs.SQL.error("Table `vehicle_accessory`: Accessory {0} does not exist.", uiAccessory);
-                    continue;
+        try (var result = vehicleRepo.streamAllVehicleAccessories()) {
+            result.forEach(item ->{
+                if (getCreatureTemplate(item.getAccessoryEntry()) == null) {
+                    Logs.SQL.error("Table `vehicle_accessory`: Accessory {} does not exist.", item.getAccessoryEntry());
+                    return;
                 }
 
-                vehicleAccessoryStore.add(uiGUID, new VehicleAccessory(uiAccessory, uiSeat, bMinion, uiSummonType, uiSummonTimer));
-                ++count;
-            }
+                if (item.getRideSpellID() != null && null == spellManager.getSpellInfo(item.getRideSpellID(), Difficulty.NONE)) {
+                    Logs.SQL.error("Table `vehicle_accessory`: rideSpellId {} does not exist for guid {}.", item.getRideSpellID(), item.getEntry());
+                    return;
+                }
+
+                vehicleAccessoryStore.compute(item.getEntry(), Functions.addToList(item));
+                count.incrementAndGet();
+            });
         }
 
-        Logs.SERVER_LOADING.info("Loaded {} vehicle accessories in {} ms", count, System.currentTimeMillis() - oldMSTime);
+        Logs.SERVER_LOADING.info(">> Loaded {} Vehicle Accessories in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     private void loadVehicleSeatAddon() {
@@ -7388,48 +7269,36 @@ public final class ObjectManager {
 
         vehicleSeatAddonStore.clear(); // needed for reload case
 
-        int count = 0;
+        AtomicInteger count = new AtomicInteger();
 
         try (var result = vehicleRepo.streamAllVehicleSeatAddons()) {
-            result.forEach(vsa -> {
-                var seatID = vsa.getSeatEntry();
-                var orientation = vsa.getSeatOrientation();
-                var exitX = vsa.getExitParamX();
-                var exitY = vsa.getExitParamY();
-                var exitZ = vsa.getExitParamZ();
-                var exitO = vsa.getExitParamO();
-                var exitParam = vsa.getExitParamValue();
+            result.forEach(item -> {
 
-                if (!CliDB.VehicleSeatStorage.containsKey(seatID)) {
-                    Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s does not exist in vehicleSeat.dbc. Skipping entry.", seatID));
+                if (!dbcObjectManager.vehicleSeat().contains(item.getSeatEntry())) {
+                    Logs.SQL.error("Table `vehicle_seat_addon`: SeatID: {} does not exist in VehicleSeat.dbc. Skipping entry.", item.getSeatEntry());
                     return;
                 }
 
                 // Sanitizing values
-                if (orientation > (float) Math.PI * 2) {
-                    Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid angle offset second (%2$s). Set Value to 0.", seatID, orientation));
-                    orientation = 0.0f;
+                if (item.getSeatOrientation() > (float) Math.PI * 2) {
+                    Logs.SQL.error("Table `vehicle_seat_addon`: SeatID: {} is using invalid angle offset value ({}). Set Value to 0.", item.getSeatEntry(), item.getSeatOrientation());
+                    item.setSeatOrientation(0.0f);
                 }
 
-                if (exitParam >= (byte) VehicleExitParameters.VehicleExitParamMax.getValue()) {
-                    Logs.SQL.error(String.format("Table `vehicle_seat_addon`: SeatID: %1$s is using invalid exit parameter second (%2$s). Setting to 0 (none).", seatID, exitParam));
-                    return;
-                }
-
-                vehicleSeatAddonStore.put(seatID, new VehicleSeatAddon(orientation, exitX, exitY, exitZ, exitO, exitParam));
-                ++count;
+                vehicleSeatAddonStore.put(item.getSeatEntry(), item);
+                count.incrementAndGet();
             });
         }
 
-        Logs.SERVER_LOADING.info("Loaded {} vehicle seat addons in {} ms", count, System.currentTimeMillis() - oldMSTime);
+        Logs.SERVER_LOADING.info(">> Loaded {} Vehicle Seat Addon entries in {} ms", count, System.currentTimeMillis() - oldMSTime);
     }
 
     public VehicleTemplate getVehicleTemplate(Vehicle veh) {
         return vehicleTemplateStore.get(veh.getCreatureEntry());
     }
 
-    public ArrayList<VehicleAccessory> getVehicleAccessoryList(Vehicle veh) {
-        var cre = veh.GetBase().toCreature();
+    public List<VehicleAccessory> getVehicleAccessoryList(Vehicle veh) {
+        var cre = veh.getBase().toCreature();
 
         if (cre != null) {
             // Give preference to GUID-based accessories
@@ -7439,7 +7308,6 @@ public final class ObjectManager {
                 return list;
             }
         }
-
         // Otherwise return entry-based
         return vehicleTemplateAccessoryStore.get(veh.getCreatureEntry());
     }
@@ -7514,7 +7382,7 @@ public final class ObjectManager {
                 // generic command args check
                 switch (tmp.command) {
                     case TALK: {
-                        if (ChatMsg.WHISPER.compareTo(tmp.talk.chatType) > 0 && tmp.talk.chatType != ChatMsg.RAID_BOSS_WHISPER) {
+                        if (ChatMsg.WHISPER.compareTo(tmp.talk.chatType) < 0 && tmp.talk.chatType != ChatMsg.RAID_BOSS_WHISPER) {
 
                             Logs.SQL.error("Table `{}` has invalid talk type (datalong = {}) in SCRIPT_COMMAND_TALK for script id {}",
                                     tableName, tmp.talk.chatType, tmp.id);
@@ -7581,7 +7449,7 @@ public final class ObjectManager {
 
                         if (tmp.questExplored.distance != 0 && tmp.questExplored.distance < ObjectDefine.INTERACTION_DISTANCE) {
                             Logs.SQL.error("Table `{}` has too small distance ({}) for exploring objective complete in `datalong2` in SCRIPT_COMMAND_QUEST_EXPLORED in `datalong` for script id {}, min distance is {} or 0 for disable distance check",
-                                    tableName, tmp.QuestExplored.Distance, tmp.id, ObjectDefine.INTERACTION_DISTANCE);
+                                    tableName, tmp.questExplored.distance, tmp.id, ObjectDefine.INTERACTION_DISTANCE);
                             return;
                         }
 
@@ -7849,7 +7717,7 @@ public final class ObjectManager {
 
                 CreatureTemplate creatureTemplate = templateHashMap.get(fields.creatureID);
                 if (creatureTemplate == null) {
-                    Logs.SQL.error("Table `creature_summoned_data` references non-existing creature {}, skipped", creatureId);
+                    Logs.SQL.error("Table `creature_summoned_data` references non-existing creature {}, skipped", fields.creatureID);
                     return;
                 }
 
@@ -7864,7 +7732,7 @@ public final class ObjectManager {
                 if (fields.groundMountDisplayId == null) {
                     if (!dbcObjectManager.creatureDisplayInfo().contains(fields.groundMountDisplayId)) {
                         Logs.SQL.error("Table `creature_summoned_data` references non-existing display id {} in GroundMountDisplayID for creature {}, set to 0",
-                                fields.groundMountDisplayId, creatureId);
+                                fields.groundMountDisplayId, fields.creatureID);
                         fields.groundMountDisplayId = 0;
                     }
                 }
@@ -8050,7 +7918,7 @@ public final class ObjectManager {
     }
 
     private int fillMaxDurability(ItemClass itemClass, int itemSubClass, InventoryType inventoryType, ItemQuality quality, int itemLevel) {
-        if (itemClass != itemClass.armor && itemClass != itemClass.Weapon) {
+        if (itemClass != ItemClass.ARMOR && itemClass != ItemClass.WEAPON) {
             return 0;
         }
 
@@ -8060,36 +7928,40 @@ public final class ObjectManager {
             levelPenalty = 0.966f - (28 - itemLevel) / 54.0f;
         }
 
-        if (itemClass == itemClass.armor) {
-            if (inventoryType.getValue() > inventoryType.Robe.getValue()) {
+        if (itemClass == ItemClass.ARMOR) {
+            if (InventoryType.ROBE.compareTo(inventoryType) < 0) {
                 return 0;
             }
 
-            return 5 * (int) (Math.rint(25.0f * qualityMultipliers[quality.getValue()] * armorMultipliers[inventoryType.getValue()] * levelPenalty));
+            return 5 * (int) (Math.rint(25.0f * qualityMultipliers[quality.ordinal()] * armorMultipliers[inventoryType.ordinal()] * levelPenalty));
         }
 
-        return 5 * (int) (Math.rint(18.0f * qualityMultipliers[quality.getValue()] * weaponMultipliers[itemSubClass] * levelPenalty));
+        return 5 * (int) (Math.rint(18.0f * qualityMultipliers[quality.ordinal()] * weaponMultipliers[itemSubClass] * levelPenalty));
     }
 
     private void onDeleteSpawnData(SpawnData data) {
-        var templateIt = spawnGroupDataStorage.get(data.getSpawnGroupData().getGroupId());
+        var templateIt = spawnGroupDataStorage.get(data.getSpawnGroupData().groupId);
 
         if (templateIt.flags.hasFlag(SpawnGroupFlag.SYSTEM)) // system groups don't store their members in the map
         {
             return;
         }
 
-        var spawnDatas = spawnGroupMapStorage.get(data.getSpawnGroupData().getGroupId());
+        var spawnDatas = spawnGroupMapStorage.get(data.getSpawnGroupData().groupId);
 
         for (var it : spawnDatas) {
             if (it != data) {
                 continue;
             }
 
-            spawnGroupMapStorage.remove(data.getSpawnGroupData().getGroupId(), it);
+            spawnGroupMapStorage.remove(data.getSpawnGroupData().groupId);
 
             return;
         }
+
+        Assert.fail("Spawn data ({},{}) being removed is member of spawn group %u, but not actually listed in the lookup table for that group!",
+                data.type, data.spawnId, data.spawnGroupData.groupId);
+
 
     }
 

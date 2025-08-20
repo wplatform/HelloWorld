@@ -171,4 +171,24 @@ public interface MiscRepository {
     @Query("SELECT id, delay, command, datalong, datalong2, dataint, x, y, z, o FROM event_scripts")
     Stream<Object[]> streamAllEventScripts();
 
+    @Query("SELECT instanceMapId, bossStateId, bossStates, spawnGroupId, flags FROM instance_spawn_groups")
+    Stream<InstanceSpawnGroup> streamAllInstanceSpawnGroups();
+
+    @Query("SELECT groupId, spawnType, spawnId FROM spawn_group")
+    Stream<int[]> streamAllSpawnGroups();
+
+    @Modifying
+    @Query("INSERT INTO game_tele (id, positionX, positionY, positionZ, orientation, map, name) VALUES (:id, :positionX, :positionY, :positionZ, :orientation, :map, :name)")
+    void addGameTele(GameTele tele);
+
+    @Modifying
+    @Query("DELETE FROM game_tele WHERE id = :id")
+    void deleteGameTele(GameTele tele);
+
+
+    @Query("SELECT spell_id, ScriptName FROM spell_script_names")
+    Stream<Object[]> streamAllSpellScriptNames();
+
+    @Query("SELECT ID, MapID, LocX, LocY, LocZ, Facing, TransportSpawnId FROM world_safe_locs")
+    Stream<WorldSafeLocEntry> streamAllWorldSafeLoc();
 }

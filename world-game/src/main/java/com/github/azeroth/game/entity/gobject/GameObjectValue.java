@@ -1,7 +1,7 @@
 package com.github.azeroth.game.entity.gobject;
 
 
-import com.github.azeroth.game.map.TransportAnimation;
+import com.github.azeroth.game.domain.transport.TransportAnimation;
 
 import java.util.ArrayList;
 

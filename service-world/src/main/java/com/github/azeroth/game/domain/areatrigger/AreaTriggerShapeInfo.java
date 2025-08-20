@@ -4,13 +4,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.azeroth.game.domain.object.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AreaTriggerShapeInfo {
 
 
     public AreaTriggerShapeType Type;
-    public ArrayList<Vector2> PolygonVertices = new ArrayList<>();
-    public ArrayList<Vector2> PolygonVerticesTarget = new ArrayList<>();
+    public List<Vector2> PolygonVertices = new ArrayList<>();
+    public List<Vector2> PolygonVerticesTarget = new ArrayList<>();
     public DefaultData DefaultData;
     public SphereData SphereData;
     public BoxData BoxData;
@@ -79,7 +80,7 @@ public class AreaTriggerShapeInfo {
 
 
     public static class DefaultData {
-        public float[] Data = new float[AreaTriggerDefine.MAX_AREATRIGGER_ENTITY_DATA];
+        public float[] Data = new float[AreaTriggerDefine.MAX_AREA_TRIGGER_ENTITY_DATA];
     }
 
     // AREATRIGGER_TYPE_SPHERE

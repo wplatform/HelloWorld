@@ -3,6 +3,7 @@ package com.github.azeroth.game.entity.vehicle;
 import Framework.Constants.*;
 import com.github.azeroth.dbc.domain.VehicleEntry;
 import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnInstall;
@@ -11,6 +12,7 @@ import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnReset;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnUninstall;
 import game.datastorage.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -168,15 +170,15 @@ public class Vehicle implements ITransport {
             removeAllPassengers(); // We might have aura's saved in the DB with now invalid casters - remove
         }
 
-        var accessories = Global.getObjectMgr().getVehicleAccessoryList(this);
+        var accessories = getBase().getWorldContext().getObjectManager().getVehicleAccessoryList(this);
 
         if (accessories == null) {
             return;
         }
 
         for (var acc : accessories) {
-            if (!evading || acc.isMinion) { // only install minions on evade mode
-                installAccessory(acc.accessoryEntry, acc.seatId, acc.isMinion, acc.summonedType, acc.summonTime);
+            if (!evading || acc.isMinion()) { // only install minions on evade mode
+                installAccessory(acc.getAccessoryEntry(), acc.getSeatId(), acc.isMinion(), acc.getSummonType(), acc.getSummonTimer());
             }
         }
     }
@@ -467,14 +469,17 @@ public class Vehicle implements ITransport {
         }
     }
 
-    public final TimeSpan getDespawnDelay() {
-        var vehicleTemplate = Global.getObjectMgr().getVehicleTemplate(this);
+    public final Duration getDespawnDelay() {
+
+        Unit base = getBase();
+
+        var vehicleTemplate = base.getWorldContext().getObjectManager().getVehicleTemplate(this);
 
         if (vehicleTemplate != null) {
             return vehicleTemplate.despawnDelay;
         }
 
-        return TimeSpan.FromMilliseconds(1);
+        return Duration.ofMillis(1);
     }
 
     public final String getDebugInfo() {

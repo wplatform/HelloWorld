@@ -1,4 +1,4 @@
-package com.github.azeroth.game.map;
+package com.github.azeroth.game.domain.transport;
 
 public class TransportPathSegment {
     private int segmentEndArrivalTimestamp;

@@ -1,13 +1,16 @@
-package com.github.azeroth.game.domain.misc;
+package com.github.azeroth.game.domain.player;
 
+import com.github.azeroth.dbc.defines.Difficulty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class AccessRequirement {
-    private int mapid;
-    private int difficulty;
+    private int mapId;
+    private Difficulty difficulty;
     private int levelMin;
     private int levelMax;
     private int item;

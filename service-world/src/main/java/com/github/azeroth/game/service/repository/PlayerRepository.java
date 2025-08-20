@@ -86,4 +86,7 @@ public interface PlayerRepository {
     Stream<PlayerChoiceResponseLocale> streamsAllPlayerChoiceResponseLocale();
 
 
+    @Query("SELECT mapid, difficulty, level_min, level_max, item, item2, quest_done_A, quest_done_H, completed_achievement, quest_failed_text FROM access_requirement")
+    Stream<AccessRequirement> streamAllAccessRequirements();
+
 }

@@ -1,4 +1,4 @@
-package com.github.azeroth.game.entity.gameobjecttype;
+package com.github.azeroth.game.entity.transport;
 
 class SetTransportAutoCycleBetweenStopFrames extends GameObjectTypeBase.CustomCommand {
     private final boolean on;

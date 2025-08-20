@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VehicleSeatAddon {
     private int seatEntry;
-    private int seatOrientation;
+    private float seatOrientation;
     private float exitParamX;
     private float exitParamY;
     private float exitParamZ;
     private float exitParamO;
-    private int exitParamValue;
+    private VehicleExitParameter exitParamValue;
 }

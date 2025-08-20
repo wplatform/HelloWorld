@@ -86,7 +86,7 @@ public class Creature extends Unit implements GirdObject {
     private HashMap<ObjectGuid, Loot> personalLoot = new HashMap<ObjectGuid, Loot>();
     private MovementGeneratorType defaultMovementType = MovementGeneratorType.values()[0];
 
-    private long spawnId;
+    private int spawnId;
     private StaticCreatureFlags staticFlags = new StaticCreatureFlags();
 
     private int[] spells = new int[SharedConst.MaxCreatureSpells];
@@ -3672,13 +3672,6 @@ public class Creature extends Unit implements GirdObject {
         defaultMovementType = value;
     }
 
-    public final long getSpawnId() {
-        return spawnId;
-    }
-
-    public final void setSpawnId(long value) {
-        spawnId = value;
-    }
 
     public final StaticCreatureFlags getStaticFlags() {
         return staticFlags;

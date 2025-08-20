@@ -53,7 +53,7 @@ public class RandomUtil {
         }
         // If only one element, ignore the probability (even if 0)
         if(collection.size() == 1) {
-            return collection.iterator().next();
+            return collection.getFirst();
         }
 
         int index = randomInt(0, collection.size());

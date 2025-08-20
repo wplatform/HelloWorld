@@ -35,4 +35,30 @@ public interface StringUtil {
     static int[] distinctSplitInts(String string, String delimiter) {
         return distinctSplitInts(string, delimiter, false);
     }
+
+    static boolean equalsIgnoreCase(String a, String b) {
+        if(a != null) {
+            return a.equalsIgnoreCase(b);
+        } else if(b != null) {
+            return b.equalsIgnoreCase(a);
+        } else {
+            return true;
+        }
+    }
+
+    static boolean containsIgnoreCase(String string, String substring) {
+        Objects.requireNonNull(string);
+        Objects.requireNonNull(substring);
+        var a = string.toLowerCase();
+        var b = substring.toLowerCase();
+        return a.contains(b);
+    }
+
+
+
+
+
+        
+
+
 }

@@ -63,6 +63,7 @@ public interface MapDefine {
     float DEFAULT_HEIGHT_SEARCH = 50.0f;              // default search distance to find height at nearby locations
 
     int DEFAULT_VISIBILITY_NOTIFY_PERIOD = 1000;
+    int SPAWN_GROUP_MAP_UNSET = 0xFFFFFFFF;
 
 
     static boolean isValidMapCoordinate(float c) {

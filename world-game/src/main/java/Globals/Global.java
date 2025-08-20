@@ -11,6 +11,7 @@ import com.github.azeroth.game.battleground.BattlegroundManager;
 import com.github.azeroth.game.blackmarket.BlackMarketManager;
 import com.github.azeroth.game.cache.CharacterCache;
 import com.github.azeroth.game.chat.LanguageManager;
+import com.github.azeroth.game.domain.transport.TransportManager;
 import com.github.azeroth.game.dungeonfinding.LFGManager;
 import com.github.azeroth.game.entity.player.PetitionManager;
 import com.github.azeroth.game.entity.player.SocialManager;

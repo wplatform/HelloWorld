@@ -1,4 +1,4 @@
-package com.github.azeroth.game.entity.areatrigger.model;
+package com.github.azeroth.game.domain.areatrigger;
 
 
 /**
@@ -10,7 +10,7 @@ public class AreaTriggerScaleInfo {
     public StructuredData structured = new StructuredData();
 
 
-    public RawData raw = new RawData();
+    public int[] raw = new int[AreaTriggerDefine.MAX_AREA_TRIGGER_SCALE];
 
 
     public final static class StructuredData {
@@ -57,10 +57,4 @@ public class AreaTriggerScaleInfo {
 
         }
     }
-
-
-//	public unsafe struct RawData
-//		{
-//			public fixed uint Data[SharedConst.MaxAreatriggerScale];
-//		}
 }

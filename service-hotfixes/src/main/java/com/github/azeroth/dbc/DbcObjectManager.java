@@ -93,11 +93,11 @@ public interface DbcObjectManager {
         return areaTable().get(id);
     }
 
-    default DbcEntityStore<AreaTrigger> areaTrigger() {
+    default DbcEntityStore<AreaTriggerEntry> areaTrigger() {
         return getEntityStore(DbcObjects.AreaTrigger);
     }
 
-    default AreaTrigger areaTrigger(int id) {
+    default AreaTriggerEntry areaTrigger(int id) {
         return areaTrigger().get(id);
     }
 

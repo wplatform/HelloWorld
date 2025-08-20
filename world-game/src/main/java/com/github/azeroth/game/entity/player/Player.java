@@ -28,6 +28,7 @@ import com.github.azeroth.game.domain.object.ObjectDefine;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.object.WorldLocation;
+import com.github.azeroth.game.domain.player.AccessRequirement;
 import com.github.azeroth.game.domain.player.PlayerLoginQueryLoad;
 import com.github.azeroth.game.domain.quest.QuestObjectiveType;
 import com.github.azeroth.game.domain.quest.QuestStatus;

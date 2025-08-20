@@ -10,5 +10,4 @@ public class GameTele
 	public float orientation;
 	public int mapId;
 	public String name;
-	public String nameLow;
 }
