@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr11 {
+public enum SpellAttr11 implements EnumFlag.FlagValue {
     UNK0(0x00000001), // TITLE Unknown attribute 0@Attr11
     UNK1(0x00000002), // TITLE Unknown attribute 1@Attr11
     SCALES_WITH_ITEM_LEVEL(0x00000004), // TITLE Scales with Casting Item's Level

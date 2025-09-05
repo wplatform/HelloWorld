@@ -46,12 +46,12 @@ public class ItemBonuses {
 
     public final void read(WorldPacket data) {
         context = itemContext.forValue(data.readUInt8());
-        var bonusListIdSize = data.readUInt();
+        var bonusListIdSize = data.readUInt32();
 
         bonusListIDs = new ArrayList<>();
 
         for (var i = 0; i < bonusListIdSize; ++i) {
-            var bonusId = data.readUInt();
+            var bonusId = data.readUInt32();
             bonusListIDs.add(bonusId);
         }
     }

@@ -3,28 +3,29 @@ package com.github.azeroth.game.entity.object;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.github.azeroth.common.Assert;
-import com.github.azeroth.common.EnumFlag;
-import com.github.azeroth.common.EnumIntArray;
-import com.github.azeroth.common.Logs;
+import com.github.azeroth.common.*;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.FactionTemplateFlag;
-import com.github.azeroth.dbc.defines.SummonPropertiesFlag;
+import com.github.azeroth.dbc.defines.SummonPropertyFlag;
 import com.github.azeroth.dbc.domain.AreaTable;
 import com.github.azeroth.dbc.domain.Faction;
 import com.github.azeroth.dbc.domain.FactionTemplate;
+import com.github.azeroth.dbc.domain.PowerType;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.ai.CreatureAI;
-import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.condition.ConditionManager;
+import com.github.azeroth.game.domain.map.*;
 import com.github.azeroth.game.domain.object.*;
 import com.github.azeroth.game.domain.object.enums.*;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.entity.creature.CreatureGroup;
 import com.github.azeroth.game.entity.creature.TempSummon;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.update.UpdateData;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.player.enums.DuelState;
+import com.github.azeroth.game.entity.player.enums.PlayerCommandState;
 import com.github.azeroth.game.entity.player.enums.PlayerFlag;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.entity.vehicle.ITransport;
@@ -35,25 +36,26 @@ import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
 import com.github.azeroth.game.domain.map.enums.ModelIgnoreFlags;
 import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.domain.map.PositionFullTerrainStatus;
-import com.github.azeroth.game.domain.map.ZoneAndAreaId;
+import com.github.azeroth.game.map.grid.visitor.GridVisitors;
 import com.github.azeroth.game.movement.PathGenerator;
-import com.github.azeroth.game.movement.PathType;
+import com.github.azeroth.game.movement.enums.PathType;
 import com.github.azeroth.game.networking.ServerPacket;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.packet.combatlog.CombatLogServerPacket;
 import com.github.azeroth.game.networking.packet.combatlog.SpellLogMissEntry;
 import com.github.azeroth.game.networking.packet.combatlog.SpellMissLog;
-import com.github.azeroth.game.networking.packet.spell.CancelSpellVisual;
-import com.github.azeroth.game.networking.packet.spell.PlayOrphanSpellVisual;
-import com.github.azeroth.game.networking.packet.spell.PlaySpellVisual;
-import com.github.azeroth.game.networking.packet.spell.PlaySpellVisualKit;
+import com.github.azeroth.game.networking.packet.misc.PlayMusic;
+import com.github.azeroth.game.networking.packet.misc.PlaySound;
+import com.github.azeroth.game.networking.packet.misc.PlaySpeakerBoxSound;
+import com.github.azeroth.game.networking.packet.spell.*;
 import com.github.azeroth.game.domain.phasing.PhaseShift;
+import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.reputation.ReputationFlag;
 import com.github.azeroth.game.scenario.Scenario;
 import com.github.azeroth.game.domain.creature.TempSummonType;
 import com.github.azeroth.game.spell.*;
 import com.github.azeroth.game.spell.auras.enums.AuraType;
+import com.github.azeroth.game.spell.enums.SpellGroup;
 import com.github.azeroth.game.spell.enums.SpellModOp;
 import com.github.azeroth.game.spell.enums.SpellValueMod;
 import com.github.azeroth.game.spell.enums.TriggerCastFlag;
@@ -62,53 +64,76 @@ import com.github.azeroth.utils.MathUtil;
 import com.github.azeroth.utils.RandomUtil;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.Locale;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static game.WardenActions.Log;
 
+@Setter
 @Getter
 public abstract class WorldObject extends GenericObject {
 
-    private final boolean worldObject;
+    protected LocalizedString name;
+    protected boolean isActive;
+    protected boolean isFarVisible;
+    protected Float visibilityDistanceOverride;
+    protected final boolean storedInWorldObjectGridContainer;
+    protected ZoneScript zoneScript;
+    // transports (gameobjects only)
+    protected ITransport transport;
+
+    protected int zoneId;
+    protected int areaId;
+    protected float staticFloorZ;
+    protected boolean outdoors;
+    protected EnumFlag<ZLiquidStatus> liquidStatus;
+    protected WmoLocation currentWmo;
+
+
     private final EnumIntArray<StealthType> stealth = EnumIntArray.of(StealthType.class);
     private final EnumIntArray<StealthType> stealthDetect = EnumIntArray.of(StealthType.class);
     private final EnumIntArray<InvisibilityType> invisibility = EnumIntArray.of(InvisibilityType.class);
     private final EnumIntArray<InvisibilityType> invisibilityDetect = EnumIntArray.of(InvisibilityType.class);
     private final EnumIntArray<ServerSideVisibilityType> serverSideVisibility = EnumIntArray.of(ServerSideVisibilityType.class);
     private final EnumIntArray<ServerSideVisibilityType> serverSideVisibilityDetect = EnumIntArray.of(ServerSideVisibilityType.class);
+
+
     private final WorldLocation location;
     public int lastUsedScriptID;
     private boolean activeObject;
-    private short zoneId;
-    private short areaId;
-    private float staticFloorZ;
-    private boolean outdoors;
-    private ZLiquidStatus liquidStatus = ZLiquidStatus.values()[0];
-    private String name;
+
+
     private boolean farVisible;
-    private Float visibilityDistanceOverride = null;
-    private ITransport transport;
+
     private volatile Map currMap;
-    private PhaseShift phaseShift = new PhaseShift();
-    private PhaseShift suppressedPhaseShift = new PhaseShift(); // contains phases for current area but not applied due to conditions
+    private final PhaseShift phaseShift = new PhaseShift();
+    private final PhaseShift suppressedPhaseShift = new PhaseShift(); // contains phases for current area but not applied due to conditions
     private int dbPhase;
-    private EnumFlag<NotifyFlag> notifyFlags = EnumFlag.of(NotifyFlag.NONE);
+    private final EnumFlag<NotifyFlag> notifyFlags = EnumFlag.of(NotifyFlag.NONE);
     private ObjectGuid privateObjectOwner = ObjectGuid.EMPTY;
     private SmoothPhasing smoothPhasing;
     // Event handler
-    private EventSystem events = new EventSystem();
-    private ZoneScript zoneScript;
-    private int instanceId;
-    private WorldContext worldContext;
-    private int faction;
+    private final EventProcessor events = new EventProcessor();
 
-    public WorldObject(boolean isWorldObject) {
-        super(null, null, null, null, null, 0);
-        name = "";
-        this.worldObject = isWorldObject;
+    private int instanceId;
+    private final WorldContext worldContext;
+    private int faction;
+    private int heartbeatTimer = ObjectDefine.HEARTBEAT_INTERVAL;
+
+    public WorldObject(WorldContext worldContext, ObjectGuid guid, EnumFlag<TypeMask> objectType, TypeId objectTypeId, CreateObjectBits updateFlag) {
+        this(worldContext, false, guid, objectType, objectTypeId, updateFlag);
+    }
+
+    public WorldObject(WorldContext worldContext, boolean storedInWorldObjectGridContainer, ObjectGuid guid, EnumFlag<TypeMask> objectType, TypeId objectTypeId, CreateObjectBits updateFlag) {
+        super(guid, objectType, objectTypeId, updateFlag);
+        this.worldContext = worldContext;
+        this.storedInWorldObjectGridContainer = storedInWorldObjectGridContainer;
         serverSideVisibility.setValue(ServerSideVisibilityType.GHOST, GhostVisibilityType.ALIVE.ordinal() | GhostVisibilityType.GHOST.ordinal());
         serverSideVisibilityDetect.setValue(ServerSideVisibilityType.GHOST, GhostVisibilityType.ALIVE.ordinal());
         staticFloorZ = MapDefine.VMAP_INVALID_HEIGHT_VALUE;
@@ -214,40 +239,17 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-    public short getAIAnimKitId() {
-        return 0;
-    }
+    public abstract short getAIAnimKitId();
 
 
-    public short getMovementAnimKitId() {
-        return 0;
-    }
+    public abstract short getMovementAnimKitId();
 
 
-    public short getMeleeAnimKitId() {
-        return 0;
-    }
+    public abstract short getMeleeAnimKitId();
 
     // Watcher
     public final boolean isPrivateObject() {
         return !privateObjectOwner.isEmpty();
-    }
-
-    public final ObjectGuid getPrivateObjectOwner() {
-        return privateObjectOwner;
-    }
-
-    public final void setPrivateObjectOwner(ObjectGuid value) {
-        privateObjectOwner = value;
-    }
-
-
-    public final boolean isActiveObject() {
-        return activeObject;
-    }
-
-    public final boolean isPermanentWorldObject() {
-        return worldObject;
     }
 
     public final float getTransOffsetX() {
@@ -290,17 +292,15 @@ public abstract class WorldObject extends GenericObject {
         return getLocation().getO();
     }
 
-    public float getCollisionHeight() {
-        return 0.0f;
-    }
+    public abstract float getCollisionHeight();
 
     public final float getMidsectionHeight() {
         return getCollisionHeight() / 2.0f;
     }
 
-    public ObjectGuid getOwnerGUID() {
-        return null;
-    }
+    public abstract ObjectGuid getOwnerGUID();
+
+    public abstract ObjectGuid getCreatorGUID();
 
     public ObjectGuid getCharmerOrOwnerGUID() {
         return getOwnerGUID();
@@ -366,29 +366,11 @@ public abstract class WorldObject extends GenericObject {
         return null;
     }
 
-
-    public final short getZone() {
-        return zoneId;
-    }
-
-
-    public final short getArea() {
-        return areaId;
-    }
-
-    public final boolean isOutdoors() {
-        return outdoors;
-    }
-
-    public final ZLiquidStatus getLiquidStatus() {
-        return liquidStatus;
-    }
-
     public final boolean isInWorldPvpZone() {
         // Wintergrasp
         // Tol Barad
         // Ashran
-        return switch (getZone()) {
+        return switch (getZoneId()) {
             case 4197, 5095, 6941 -> true;
             default -> false;
         };
@@ -402,7 +384,7 @@ public abstract class WorldObject extends GenericObject {
 
     public final float getGridActivationRange() {
         if (isActiveObject()) {
-            if (getTypeId() == TypeId.PLAYER && toPlayer().getCinematicMgr().isOnCinematic()) {
+            if (getObjectTypeId() == TypeId.PLAYER && toPlayer().getCinematicMgr().isOnCinematic()) {
                 return Math.max(ObjectDefine.DEFAULT_VISIBILITY_INSTANCE, getMap().getVisibilityRange());
             }
 
@@ -501,24 +483,14 @@ public abstract class WorldObject extends GenericObject {
         return visibilityDistanceOverride != null;
     }
 
-    public final void create(ObjectGuid guid) {
-        objectUpdated = false;
-        this.guid = guid;
-    }
-
     public void addToWorld() {
-        if (isInWorld()) {
-            return;
-        }
-
-        setInWorld(true);
-        clearUpdateMask(true);
-
+        super.addToWorld();
         if (getMap() != null) {
             ZoneAndAreaId zoneAndAreaId = getMap().getZoneAndAreaId(phaseShift, location);
             areaId = zoneAndAreaId.areaId;
             zoneId = zoneAndAreaId.zoneId;
         }
+
     }
 
     public void removeFromWorld() {
@@ -526,13 +498,10 @@ public abstract class WorldObject extends GenericObject {
             return;
         }
 
-        if (!getObjectTypeMask().hasFlag(TypeMask.item.getValue() | TypeMask.Container.getValue())) {
-            updateObjectVisibilityOnDestroy();
-        }
-
-        setInWorld(false);
-        clearUpdateMask(true);
+        updateObjectVisibilityOnDestroy();
+        super.removeFromWorld();
     }
+
 
     public final void updatePositionData() {
         PositionFullTerrainStatus data = new PositionFullTerrainStatus();
@@ -551,7 +520,7 @@ public abstract class WorldObject extends GenericObject {
             }
         }
 
-        outdoors = data.getOutdoors();
+        outdoors = data.isOutdoors();
         staticFloorZ = data.getFloorZ();
         liquidStatus = data.getLiquidStatus();
     }
@@ -562,24 +531,6 @@ public abstract class WorldObject extends GenericObject {
         }
     }
 
-    public void clearUpdateMask(boolean remove) {
-        changesMask.clear();
-        if (objectUpdated) {
-            if (remove) {
-                removeFromObjectUpdate();
-            }
-
-            objectUpdated = false;
-        }
-    }
-
-    public final void buildFieldsUpdate(Player player, HashMap<Player, UpdateData> data_map) {
-        if (!data_map.containsKey(player)) {
-            data_map.put(player, new UpdateData(player.getLocation().getMapId()));
-        }
-
-        buildValuesUpdateBlockForPlayer(data_map.get(player), player);
-    }
 
     public Loot getLootForPlayer(Player player) {
         return null;
@@ -589,29 +540,40 @@ public abstract class WorldObject extends GenericObject {
 
     public abstract void buildValuesUpdate(WorldPacket data, Player target);
 
+    public abstract void heartbeat();
+
     public final void forceUpdateFieldChange() {
         addToObjectUpdateIfNeeded();
     }
 
-    public final boolean isWorldObject() {
-        if (worldObject) {
-            return true;
-        }
-
-        return isTypeId(TypeId.UNIT) && toCreature().isTempWorldObject();
-    }
-
-    public final void setWorldObject(boolean on) {
+    public final void setIsStoredInWorldObjectGridContainer(boolean on) {
         if (!isInWorld()) {
             return;
         }
-
         getMap().addObjectToSwitchList(this, on);
     }
 
-    public void update(int diff) {
-        //getEvents().update(diff);
+    public void update(int delta) {
+        events.update(delta);
+        heartbeatTimer -= delta;
+        while (heartbeatTimer <= 0) {
+            heartbeatTimer += ObjectDefine.HEARTBEAT_INTERVAL;
+            heartbeat();
+        }
     }
+
+    public final boolean isAlwaysStoredInWorldObjectGridContainer() {
+        return this.storedInWorldObjectGridContainer;
+    }
+
+
+    public final boolean isStoredInWorldObjectGridContainer() {
+        if (storedInWorldObjectGridContainer)
+            return true;
+
+        return isCreature() && toCreature().isTempWorldObject();
+    }
+
 
     public final void setActive(boolean on) {
         if (activeObject == on) {
@@ -642,7 +604,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final void setVisibilityDistanceOverride(VisibilityDistanceType type) {
-        if (getTypeId() == TypeId.PLAYER) {
+        if (getObjectTypeId() == TypeId.PLAYER) {
             return;
         }
 
@@ -680,14 +642,12 @@ public abstract class WorldObject extends GenericObject {
         if (isInWorld()) {
             removeFromWorld();
         }
-
         var transport = getTransport();
 
         if (transport != null) {
             transport.removePassenger(this);
         }
-
-        getEvents().KillAllEvents(false); // non-delatable (currently cast spells) will not deleted now but it will deleted at call in Map::RemoveAllObjectsInRemoveList
+        events.clear();
     }
 
 
@@ -799,7 +759,7 @@ public abstract class WorldObject extends GenericObject {
         }
 
         ConditionManager conditionManager = worldContext.getConditionManager();
-        if (!obj.isPrivateObject() && !conditionManager.isObjectMeetingVisibilityByObjectIdConditions(obj.getTypeId(), obj.getEntry(), this)) {
+        if (!obj.isPrivateObject() && !conditionManager.isObjectMeetingVisibilityByObjectIdConditions(obj.getObjectTypeId(), obj.getEntry(), this)) {
             return false;
         }
 
@@ -910,27 +870,29 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public void sendMessageToSetInRange(ServerPacket data, float dist, boolean self) {
-        PacketSenderRef sender = new PacketSenderRef(data);
-        MessageDistDeliverer<PacketSenderRef> notifier = new MessageDistDeliverer<PacketSenderRef>(this, sender, dist);
+        Consumer<Player> sender = (player) -> player.sendPacket(data);
+        var notifier = GridVisitors.newMessageDistDeliverer(this, sender, dist);
         Cell.visitGrid(this, notifier, dist);
     }
 
     public void sendMessageToSet(ServerPacket data, Player skip) {
-        PacketSenderRef sender = new PacketSenderRef(data);
-        var notifier = new MessageDistDeliverer<PacketSenderRef>(this, sender, getVisibilityRange(), false, skip);
+        Consumer<Player> sender = (player) -> player.sendPacket(data);
+        var notifier = GridVisitors.newMessageDistDeliverer(this, sender, getVisibilityRange(), false, skip, false);
         Cell.visitGrid(this, notifier, getVisibilityRange());
     }
 
     public final void sendCombatLogMessage(CombatLogServerPacket combatLog) {
-        CombatLogSender combatLogSender = new CombatLogSender(combatLog);
+        Consumer<Player> sender = (player) -> {
+            combatLog.clear();
+            combatLog.setAdvancedCombatLogging(player.isAdvancedCombatLoggingEnabled());
+            player.sendPacket(combatLog);
+        };
 
         var self = toPlayer();
-
         if (self != null) {
-            combatLogSender.invoke(self);
+            sender.accept(self);
         }
-
-        MessageDistDeliverer<CombatLogSender> notifier = new MessageDistDeliverer<CombatLogSender>(this, combatLogSender, getVisibilityRange());
+        var notifier = GridVisitors.newMessageDistDeliverer(this, sender, getVisibilityRange());
         Cell.visitGrid(this, notifier, getVisibilityRange());
     }
 
@@ -950,7 +912,7 @@ public abstract class WorldObject extends GenericObject {
         var map = getMap();
 
         if (map == null) {
-            Log.outError(LogFilter.Server, "Object (TypeId: {0} Entry: {1} GUID: {2}) at attempt add to move list not have valid map (Id: {3}).", getTypeId(), getEntry(), getGUID().toString(), getLocation().getMapId());
+            Logs.MISC.error("Object {} at attempt add to move list not have valid map (Id: {}).", getGUID(), getLocation().getMapId());
 
             return;
         }
@@ -971,17 +933,17 @@ public abstract class WorldObject extends GenericObject {
             var bgMap = map.getToBattlegroundMap();
 
             if (bgMap != null) {
-                return (ZoneScript) bgMap.getBG();
+                return bgMap.getBattlegroundScript();
             }
 
             if (!map.isBattlegroundOrArena()) {
-                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(map, getZone());
+                var bf = worldContext.getBattleFieldManager().getBattlefieldToZoneId(map, getZoneId());
 
                 if (bf != null) {
                     return bf;
                 }
 
-                return global.getOutdoorPvPMgr().getOutdoorPvPToZoneId(map, getZone());
+                return worldContext.getOutdoorPvpManager().getOutdoorPvPToZoneId(map, getZoneId());
             }
         }
 
@@ -1043,7 +1005,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final TempSummon summonCreature(int entry, Position pos, TempSummonType despawnType, Duration despawnTime, int vehId, int spellId, ObjectGuid privateObjectOwner) {
-        if (pos.isDefault()) {
+        if (pos.isDefaultValue()) {
             getClosePoint(pos, getCombatReach());
         }
 
@@ -1054,7 +1016,7 @@ public abstract class WorldObject extends GenericObject {
         var map = getMap();
 
         if (map != null) {
-            var summon = map.summonCreature(entry, pos, null, (int) despawnTime.TotalMilliseconds, this, spellId, vehId, privateObjectOwner);
+            var summon = map.summonCreature(entry, pos, null, (int) despawnTime.toMillis(), this, spellId, vehId, privateObjectOwner);
 
             if (summon != null) {
                 summon.setTempSummonType(despawnType);
@@ -1183,9 +1145,9 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-    public final void summonCreatureGroup(byte group, ArrayList<TempSummon> list) {
+    public final void summonCreatureGroup(byte group, ArrayList<TempSummon> summoned) {
 
-        Assert.state(getTypeId() == TypeId.GAME_OBJECT || getTypeId() == TypeId.UNIT, "Only GOs and creatures can summon npc groups!");
+        Assert.state(getObjectTypeId() == TypeId.GAME_OBJECT || getObjectTypeId() == TypeId.UNIT, "Only GOs and creatures can summon npc groups!");
 
         var data = worldContext.getObjectManager().getSummonGroup(getEntry(), isTypeId(TypeId.GAME_OBJECT) ? SummonerType.GAME_OBJECT : SummonerType.CREATURE, group);
 
@@ -1193,76 +1155,29 @@ public abstract class WorldObject extends GenericObject {
 
             Logs.SCRIPTS.warn("{} ({}) tried to summon non-existing summon group {}.", getName(), getGUID(), group);
 
-
             return;
         }
 
-        for (var tempSummonData : data) {
-            var summon = summonCreature(tempSummonData.entry, tempSummonData.pos, tempSummonData.type, Duration.ofSeconds(tempSummonData.time));
+        List<TempSummon> summons = new ArrayList<>(data.size());
+        for (var item : data) {
+            var summon = summonCreature(item.entry, item.positionX, item.positionY, item.positionZ,
+                    item.orientation, null, Duration.ofMillis(item.summonTime));
 
             if (summon != null) {
-                list.add(summon);
+                summons.add(summon);
             }
         }
-    }
-
-    public final void getCreatureListInGrid(ArrayList<Creature> creatureList, float maxSearchRange) {
-        var cell = new Cell(getLocation().getX(), getLocation().getY());
-        cell.setNoCreate();
-
-        var check = new AllCreaturesWithinRange(this, maxSearchRange);
-        var searcher = new CreatureListSearcher(this, creatureList, check, gridType.All);
-
-        cell.visit(cell, searcher, getMap(), this, maxSearchRange);
-    }
 
 
-    public final void getAlliesWithinRange(ArrayList<Unit> unitList, float maxSearchRange) {
-        getAlliesWithinRange(unitList, maxSearchRange, true);
-    }
+        CreatureGroup creatureGroup = new CreatureGroup(0);
+        for (TempSummon summon : summons) {
+            if (!summon.isInWorld())   // evil script might despawn a summon
+                continue;
 
-    public final void getAlliesWithinRange(ArrayList<Unit> unitList, float maxSearchRange, boolean includeSelf) {
-        var cell = new Cell(getLocation().getX(), getLocation().getY());
-        cell.setNoCreate();
-
-        var check = new AnyFriendlyUnitInObjectRangeCheck(this, toUnit(), maxSearchRange);
-        var searcher = new UnitListSearcher(this, unitList, check, gridType.All);
-
-        cell.visit(cell, searcher, getMap(), this, maxSearchRange);
-
-        if (!includeSelf) {
-            unitList.remove(toUnit());
+            creatureGroup.addMember(summon);
+            if (summoned != null)
+                summoned.add(summon);
         }
-    }
-
-
-    public final void getAlliesWithinRangeWithOwnedAura(ArrayList<Unit> unitList, float maxSearchRange, int auraId) {
-        getAlliesWithinRangeWithOwnedAura(unitList, maxSearchRange, auraId, true);
-    }
-
-    public final void getAlliesWithinRangeWithOwnedAura(ArrayList<Unit> unitList, float maxSearchRange, int auraId, boolean includeSelf) {
-        getAlliesWithinRange(unitList, maxSearchRange, includeSelf);
-
-        unitList.RemoveIf((creature) ->
-        {
-            return !creature.hasAura(auraId, getGUID());
-        });
-    }
-
-    public final void getEnemiesWithinRange(ArrayList<Unit> unitList, float maxSearchRange) {
-        var u_check = new AnyUnfriendlyUnitInObjectRangeCheck(this, toUnit(), maxSearchRange);
-        var searcher = new UnitListSearcher(this, unitList, u_check, gridType.All);
-        Cell.visitGrid(this, searcher, maxSearchRange);
-    }
-
-
-    public final void getEnemiesWithinRangeWithOwnedAura(ArrayList<Unit> unitList, float maxSearchRange, int auraId) {
-        getEnemiesWithinRange(unitList, maxSearchRange);
-
-        unitList.RemoveIf((unit) ->
-        {
-            return !unit.hasAura(auraId, getGUID());
-        });
     }
 
 
@@ -1271,26 +1186,17 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final Creature findNearestCreature(int entry, float range, boolean alive) {
-        var checker = new NearestCreatureEntryWithLiveStateInObjectRangeCheck(this, entry, alive, range);
-        var searcher = new CreatureLastSearcher(this, checker, gridType.All);
-
+        YieldResult<Creature> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newCreatureLastSearcher(this, entry, range, alive, yieldResult);
         Cell.visitGrid(this, searcher, range);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
     public final Creature findNearestCreatureWithOptions(float range, FindCreatureOptions options) {
-        NearestCheckCustomizer checkCustomizer = new NearestCheckCustomizer(this, range);
-        CreatureWithOptionsInObjectRangeCheck<NearestCheckCustomizer> checker = new CreatureWithOptionsInObjectRangeCheck<NearestCheckCustomizer>(this, checkCustomizer, options);
-        CreatureLastSearcher searcher = new CreatureLastSearcher(this, checker, gridType.All);
-
-        if (options.ignorePhases) {
-            searcher.phaseShift = PhasingHandler.getAlwaysVisiblePhaseShift();
-        }
-
+        YieldResult<Creature> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newCreatureLastSearcher(this, range, options, yieldResult);
         Cell.visitGrid(this, searcher, range);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
 
@@ -1299,77 +1205,40 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final GameObject findNearestGameObject(int entry, float range, boolean spawnedOnly) {
-        var checker = new NearestGameObjectEntryInObjectRangeCheck(this, entry, range, spawnedOnly);
-        var searcher = new GameObjectLastSearcher(this, checker, gridType.Grid);
-
+        YieldResult<GameObject> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newGameObjectLastSearcher(this, entry, range, spawnedOnly, yieldResult);
         Cell.visitGrid(this, searcher, range);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
 
     public final GameObject findNearestUnspawnedGameObject(int entry, float range) {
-        NearestUnspawnedGameObjectEntryInObjectRangeCheck checker = new NearestUnspawnedGameObjectEntryInObjectRangeCheck(this, entry, range);
-        GameObjectLastSearcher searcher = new GameObjectLastSearcher(this, checker, gridType.Grid);
-
+        YieldResult<GameObject> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newGameObjectLastSearcher(this, entry, range, yieldResult);
         Cell.visitGrid(this, searcher, range);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
     public final GameObject findNearestGameObjectOfType(GameObjectType type, float range) {
-        var checker = new NearestGameObjectTypeInObjectRangeCheck(this, type, range);
-        var searcher = new GameObjectLastSearcher(this, checker, gridType.Grid);
-
+        YieldResult<GameObject> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newGameObjectLastSearcher(this, type, range, yieldResult);
         Cell.visitGrid(this, searcher, range);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
     public final Player selectNearestPlayer(float distance) {
-        var checker = new NearestPlayerInObjectRangeCheck(this, distance);
-        var searcher = new PlayerLastSearcher(this, checker, gridType.All);
+        YieldResult<Player> yieldResult = YieldResult.of();
+        var searcher = GridVisitors.newPlayerLastSearcher(this, distance, yieldResult);
         Cell.visitGrid(this, searcher, distance);
-
-        return searcher.getTarget();
+        return yieldResult.get();
     }
 
 
-    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId) {
-        return calculateSpellDamage(target, spellEffectInfo, basePoints, castItemId, -1);
-    }
-
-    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints) {
-        return calculateSpellDamage(target, spellEffectInfo, basePoints, 0, -1);
-    }
-
-    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo) {
-        return calculateSpellDamage(target, spellEffectInfo, null, 0, -1);
-    }
-
-    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
-
-        return calculateSpellDamage(out _, target, spellEffectInfo, basePoints, castItemId, itemLevel);
-    }
-
-    // function uses real base points (typically value - 1)
-
-    public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId) {
-        return calculateSpellDamage(variance, target, spellEffectInfo, basePoints, castItemId, -1);
-    }
-
-    public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo, Double basePoints) {
-        return calculateSpellDamage(variance, target, spellEffectInfo, basePoints, 0, -1);
-    }
-
-    public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo) {
-        return calculateSpellDamage(variance, target, spellEffectInfo, null, 0, -1);
-    }
-
-    public final double calculateSpellDamage(tangible.OutObject<Double> variance, Unit target, SpellEffectInfo spellEffectInfo, Double basePoints, int castItemId, int itemLevel) {
-        variance.outArgValue = 0.0f;
-
-        return spellEffectInfo != null ? spellEffectInfo.calcValue(variance, this, basePoints, target, castItemId, itemLevel) : 0;
+    public final double calculateSpellDamage(Unit target, SpellEffectInfo spellEffectInfo, YieldResult<Integer> basePoints, YieldResult<Float> variance) {
+        if (!variance.wasNull()) {
+            variance.set(0.0f);
+        }
+        return spellEffectInfo.calcValue(this, basePoints, target, variance);
     }
 
     public final float getSpellMaxRangeForTarget(Unit target, SpellInfo spellInfo) {
@@ -1377,11 +1246,11 @@ public abstract class WorldObject extends GenericObject {
             return 0.0f;
         }
 
-        if (spellInfo.getRangeEntry().RangeMax[0] == spellInfo.getRangeEntry().RangeMax[1]) {
+        if (spellInfo.getRangeEntry().getRangeMax()[0] == spellInfo.getRangeEntry().getRangeMax()[1]) {
             return spellInfo.getMaxRange();
         }
 
-        if (!target) {
+        if (target == null) {
             return spellInfo.getMaxRange(true);
         }
 
@@ -1393,84 +1262,68 @@ public abstract class WorldObject extends GenericObject {
             return 0.0f;
         }
 
-        if (spellInfo.getRangeEntry().RangeMin[0] == spellInfo.getRangeEntry().RangeMin[1]) {
+        if (spellInfo.getRangeEntry().getRangeMin()[0] == spellInfo.getRangeEntry().getRangeMin()[1]) {
             return spellInfo.getMinRange();
         }
 
-        if (!target) {
+        if (target == null) {
             return spellInfo.getMinRange(true);
         }
 
         return spellInfo.getMinRange(!isHostileTo(target));
     }
 
-    public final double applyEffectModifiers(SpellInfo spellInfo, int effIndex, double value) {
+    public final float applyEffectModifiers(SpellInfo spellInfo, SpellEffIndex effIndex, float value) {
         var modOwner = getSpellModOwner();
 
         if (modOwner != null) {
-            tangible.RefObject<Double> tempRef_value = new tangible.RefObject<Double>(value);
-            modOwner.applySpellMod(spellInfo, SpellModOp.points, tempRef_value);
-            value = tempRef_value.refArgValue;
 
-            switch (effIndex) {
-                case 0:
-                    tangible.RefObject<Double> tempRef_value2 = new tangible.RefObject<Double>(value);
-                    modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex0, tempRef_value2);
-                    value = tempRef_value2.refArgValue;
+            value = modOwner.applySpellMod(spellInfo, SpellModOp.Points, value);
 
-                    break;
-                case 1:
-                    tangible.RefObject<Double> tempRef_value3 = new tangible.RefObject<Double>(value);
-                    modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex1, tempRef_value3);
-                    value = tempRef_value3.refArgValue;
-
-                    break;
-                case 2:
-                    tangible.RefObject<Double> tempRef_value4 = new tangible.RefObject<Double>(value);
-                    modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex2, tempRef_value4);
-                    value = tempRef_value4.refArgValue;
-
-                    break;
-                case 3:
-                    tangible.RefObject<Double> tempRef_value5 = new tangible.RefObject<Double>(value);
-                    modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex3, tempRef_value5);
-                    value = tempRef_value5.refArgValue;
-
-                    break;
-                case 4:
-                    tangible.RefObject<Double> tempRef_value6 = new tangible.RefObject<Double>(value);
-                    modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex4, tempRef_value6);
-                    value = tempRef_value6.refArgValue;
-
-                    break;
-            }
+            value = switch (effIndex) {
+                case EFFECT_0 -> modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex0, value);
+                case EFFECT_1 -> modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex1, value);
+                case EFFECT_2 -> modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex2, value);
+                case EFFECT_3 -> modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex3, value);
+                case EFFECT_4 -> modOwner.applySpellMod(spellInfo, SpellModOp.PointsIndex4, value);
+                default -> value;
+            };
         }
 
         return value;
     }
 
     public final int calcSpellDuration(SpellInfo spellInfo) {
-        var comboPoints = 0;
-        var maxComboPoints = 5;
-        var unit = toUnit();
+        return calcSpellDuration(spellInfo, 0);
+    }
 
-        if (unit != null) {
-            comboPoints = unit.getPower(powerType.ComboPoints);
-            maxComboPoints = unit.getMaxPower(powerType.ComboPoints);
-        }
-
+    public final int calcSpellDuration(SpellInfo spellInfo, int spentComboPoints) {
         var minduration = spellInfo.getDuration();
+        if (minduration <= 0)
+            return minduration;
+
         var maxduration = spellInfo.getMaxDuration();
+        if (minduration == maxduration)
+            return minduration;
 
-        int duration;
+        var unit = toUnit();
+        if (unit == null)
+            return minduration;
 
-        if (comboPoints != 0 && minduration != -1 && minduration != maxduration) {
-            duration = minduration + ((maxduration - minduration) * comboPoints / maxComboPoints);
-        } else {
-            duration = minduration;
-        }
+        if (spentComboPoints == 0 || !spellInfo.isFinishingMove())
+            return minduration;
 
-        return duration;
+        // Combo Points increase an aura's duration per consumed point
+        int baseComboCost = 0;
+        PowerType powerType = worldContext.getDbcObjectManager().getPowerType(Power.COMBO_POINTS);
+        if (powerType == null)
+            baseComboCost += powerType.getMaxBasePower();
+
+        if (baseComboCost == 0)
+            return minduration;
+
+        float durationPerComboPoint = (float) (maxduration - minduration) / baseComboCost;
+        return minduration + (int) (durationPerComboPoint * spentComboPoints);
     }
 
     public final int modSpellDuration(SpellInfo spellInfo, WorldObject target, int duration, boolean positive, int effIndex) {
@@ -1486,53 +1339,41 @@ public abstract class WorldObject extends GenericObject {
         }
 
         // some auras are not affected by duration modifiers
-        if (spellInfo.hasAttribute(SpellAttr7.IgnoreDurationMods)) {
+        if (spellInfo.hasAttribute(SpellAttr7.NO_TARGET_DURATION_MOD)) {
             return duration;
         }
 
         // cut duration only of negative effects
         var unitTarget = target.toUnit();
 
-        if (!unitTarget) {
+        if (unitTarget == null) {
             return duration;
         }
 
         if (!positive) {
             var mechanicMask = spellInfo.getSpellMechanicMaskByEffectMask(effectMask);
 
-
-//			bool mechanicCheck(AuraEffect aurEff)
-//				{
-//					if ((mechanicMask & (1ul << aurEff.miscValue)) != 0)
-//						return true;
-//
-//					return false;
-//				}
-
+            Predicate<AuraEffect> mechanicCheck = (aurEff) -> (mechanicMask & (1L << aurEff.getMiscValue())) != 0;
             // Find total mod value (negative bonus)
-            var durationMod_always = unitTarget.getTotalAuraModifier(AuraType.MechanicDurationMod, mechanicCheck);
+            var durationMod_always = unitTarget.getTotalAuraModifier(AuraType.MECHANIC_DURATION_MOD, mechanicCheck);
             // Find max mod (negative bonus)
-            var durationMod_not_stack = unitTarget.getMaxNegativeAuraModifier(AuraType.MechanicDurationModNotStack, mechanicCheck);
+            var durationMod_not_stack = unitTarget.getMaxNegativeAuraModifier(AuraType.MECHANIC_DURATION_MOD_NOT_STACK, mechanicCheck);
 
             // Select strongest negative mod
             var durationMod = Math.min(durationMod_always, durationMod_not_stack);
 
             if (durationMod != 0) {
-                tangible.RefObject<Integer> tempRef_duration = new tangible.RefObject<Integer>(duration);
-                MathUtil.AddPct(tempRef_duration, durationMod);
-                duration = tempRef_duration.refArgValue;
+                duration = MathUtil.addPct(duration, durationMod);
             }
 
             // there are only negative mods currently
-            durationMod_always = unitTarget.getTotalAuraModifierByMiscValue(AuraType.ModAuraDurationByDispel, spellInfo.getDispel().getValue());
-            durationMod_not_stack = unitTarget.getMaxNegativeAuraModifierByMiscValue(AuraType.ModAuraDurationByDispelNotStack, spellInfo.getDispel().getValue());
+            durationMod_always = unitTarget.getTotalAuraModifierByMiscValue(AuraType.MOD_AURA_DURATION_BY_DISPEL, spellInfo.getDispel().ordinal());
+            durationMod_not_stack = unitTarget.getMaxNegativeAuraModifierByMiscValue(AuraType.MOD_AURA_DURATION_BY_DISPEL_NOT_STACK, spellInfo.getDispel().ordinal());
 
             durationMod = Math.min(durationMod_always, durationMod_not_stack);
 
             if (durationMod != 0) {
-                tangible.RefObject<Integer> tempRef_duration2 = new tangible.RefObject<Integer>(duration);
-                MathUtil.AddPct(tempRef_duration2, durationMod);
-                duration = tempRef_duration2.refArgValue;
+                duration = MathUtil.addPct(duration, durationMod);
             }
         } else {
             // else positive mods here, there are no currently
@@ -1540,7 +1381,8 @@ public abstract class WorldObject extends GenericObject {
 
             // Mixology - duration boost
             if (unitTarget.isPlayer()) {
-                if (spellInfo.getSpellFamilyName() == SpellFamilyNames.Potion && (global.getSpellMgr().isSpellMemberOfSpellGroup(spellInfo.getId(), SpellGroup.ElixirBattle) || global.getSpellMgr().isSpellMemberOfSpellGroup(spellInfo.getId(), SpellGroup.ElixirGuardian))) {
+                if (spellInfo.getSpellFamilyName() == SpellFamilyName.POTION
+                        && (worldContext.getSpellManager().isSpellMemberOfSpellGroup(spellInfo.getId(), SpellGroup.ELIXIR_BATTLE) || worldContext.getSpellManager().isSpellMemberOfSpellGroup(spellInfo.getId(), SpellGroup.ELIXIR_GUARDIAN))) {
                     var effect = spellInfo.getEffect(0);
 
                     if (unitTarget.hasAura(53042) && effect != null && unitTarget.hasSpell(effect.triggerSpell)) {
@@ -1554,52 +1396,56 @@ public abstract class WorldObject extends GenericObject {
     }
 
 
-    public final void modSpellCastTime(SpellInfo spellInfo, tangible.RefObject<Integer> castTime) {
-        modSpellCastTime(spellInfo, castTime, null);
+    public final int modSpellCastTime(SpellInfo spellInfo, int castTime) {
+        return modSpellCastTime(spellInfo, castTime, null);
     }
 
-    public final void modSpellCastTime(SpellInfo spellInfo, tangible.RefObject<Integer> castTime, Spell spell) {
-        if (spellInfo == null || castTime.refArgValue < 0) {
-            return;
+    public final int modSpellCastTime(SpellInfo spellInfo, int castTime, Spell spell) {
+        if (spellInfo == null || castTime < 0) {
+            return castTime;
         }
 
         // called from caster
         var modOwner = getSpellModOwner();
 
         if (modOwner != null) {
-            modOwner.applySpellMod(spellInfo, SpellModOp.ChangeCastTime, castTime, spell);
+            float spellModVal = modOwner.applySpellMod(spellInfo, SpellModOp.ChangeCastTime, castTime, spell);
+            castTime = Math.round(spellModVal);
         }
 
         var unitCaster = toUnit();
 
-        if (!unitCaster) {
-            return;
+        if (unitCaster == null) {
+            return castTime;
         }
 
-        if (unitCaster.isPlayer() && unitCaster.toPlayer().getCommandStatus(PlayerCommandStates.Casttime)) {
-            castTime.refArgValue = 0;
-        } else if (!(spellInfo.hasAttribute(SpellAttr0.IsAbility) || spellInfo.hasAttribute(SpellAttr0.IsTradeskill) || spellInfo.hasAttribute(SpellAttr3.IgnoreCasterModifiers)) && ((isPlayer() && spellInfo.getSpellFamilyName() != 0) || isCreature())) {
-            castTime.refArgValue = unitCaster.getCanInstantCast() ? 0 : (int) (castTime.refArgValue * unitCaster.getUnitData().modCastingSpeed);
-        } else if (spellInfo.hasAttribute(SpellAttr0.UsesRangedSlot) && !spellInfo.hasAttribute(SpellAttr2.AutoRepeat)) {
-            castTime.refArgValue = (int) (castTime.refArgValue * unitCaster.getModAttackSpeedPct()[WeaponAttackType.RangedAttack.getValue()]);
-        } else if (global.getSpellMgr().isPartOfSkillLine(SkillType.Cooking, spellInfo.getId()) && unitCaster.hasAura(67556)) // cooking with Chef Hat.
+        if (unitCaster.isPlayer() && unitCaster.toPlayer().getCommandStatus(PlayerCommandState.CAST_TIME)) {
+            castTime = 0;
+        } else if (!(spellInfo.hasAttribute(SpellAttr0.IS_ABILITY)
+                || spellInfo.hasAttribute(SpellAttr0.IS_TRADESKILL)
+                || spellInfo.hasAttribute(SpellAttr3.IGNORE_CASTER_MODIFIERS))
+                && ((isPlayer() && spellInfo.getSpellFamilyName() != SpellFamilyName.GENERIC) || isCreature())) {
+            castTime = unitCaster.getCanInstantCast() ? 0 : (castTime * unitCaster.getUnitData().modCastingSpeed);
+        } else if (spellInfo.hasAttribute(SpellAttr0.USES_RANGED_SLOT) && !spellInfo.hasAttribute(SpellAttr2.AUTO_REPEAT)) {
+            castTime = (int) (castTime * unitCaster.getModAttackSpeedPct()[WeaponAttackType.RANGED_ATTACK.ordinal()]);
+        } else if (worldContext.getSpellManager().isPartOfSkillLine(SkillType.COOKING, spellInfo.getId()) && unitCaster.hasAura(67556)) // cooking with Chef Hat.
         {
-            castTime.refArgValue = 500;
+            castTime = 500;
         }
+        return castTime;
     }
 
-
-    public final void modSpellDurationTime(SpellInfo spellInfo, tangible.RefObject<Integer> duration) {
-        modSpellDurationTime(spellInfo, duration, null);
+    public final int modSpellDurationTime(SpellInfo spellInfo, int duration) {
+        return modSpellDurationTime(spellInfo, duration, null);
     }
 
-    public final void modSpellDurationTime(SpellInfo spellInfo, tangible.RefObject<Integer> duration, Spell spell) {
-        if (spellInfo == null || duration.refArgValue < 0) {
-            return;
+    public final int modSpellDurationTime(SpellInfo spellInfo, int duration, Spell spell) {
+        if (spellInfo == null || duration < 0) {
+            return duration;
         }
 
-        if (spellInfo.isChanneled() && !spellInfo.hasAttribute(SpellAttr5.SpellHasteAffectsPeriodic)) {
-            return;
+        if (spellInfo.isChanneled() && !spellInfo.hasAttribute(SpellAttr5.SPELL_HASTE_AFFECTS_PERIODIC)) {
+            return duration;
         }
 
         // called from caster
@@ -1611,18 +1457,22 @@ public abstract class WorldObject extends GenericObject {
 
         var unitCaster = toUnit();
 
-        if (!unitCaster) {
-            return;
+        if (unitCaster == null) {
+            return duration;
         }
 
-        if (!(spellInfo.hasAttribute(SpellAttr0.IsAbility) || spellInfo.hasAttribute(SpellAttr0.IsTradeskill) || spellInfo.hasAttribute(SpellAttr3.IgnoreCasterModifiers)) && ((isPlayer() && spellInfo.getSpellFamilyName() != 0) || isCreature())) {
-            duration.refArgValue = (int) (duration.refArgValue * unitCaster.getUnitData().modCastingSpeed);
-        } else if (spellInfo.hasAttribute(SpellAttr0.UsesRangedSlot) && !spellInfo.hasAttribute(SpellAttr2.AutoRepeat)) {
-            duration.refArgValue = (int) (duration.refArgValue * unitCaster.getModAttackSpeedPct()[WeaponAttackType.RangedAttack.getValue()]);
+        if (!(spellInfo.hasAttribute(SpellAttr0.IS_ABILITY)
+                || spellInfo.hasAttribute(SpellAttr0.IS_TRADESKILL)
+                || spellInfo.hasAttribute(SpellAttr3.IGNORE_CASTER_MODIFIERS))
+                && ((isPlayer() && spellInfo.getSpellFamilyName() != SpellFamilyName.GENERIC) || isCreature())) {
+            duration = (duration * unitCaster.getUnitData().modCastingSpeed);
+        } else if (spellInfo.hasAttribute(SpellAttr0.USES_RANGED_SLOT) && !spellInfo.hasAttribute(SpellAttr2.AUTO_REPEAT)) {
+            duration = (int) (duration * unitCaster.getModAttackSpeedPct()[WeaponAttackType.RANGED_ATTACK.ordinal()]);
         }
+        return duration;
     }
 
-    public double meleeSpellMissChance(Unit victim, WeaponAttackType attType, SpellInfo spellInfo) {
+    public float meleeSpellMissChance(Unit victim, WeaponAttackType attType, SpellInfo spellInfo) {
         return 0.0f;
     }
 
@@ -1646,18 +1496,17 @@ public abstract class WorldObject extends GenericObject {
     public final SpellMissInfo spellHitResult(Unit victim, SpellInfo spellInfo, boolean canReflect) {
         // Check for immune
         if (victim.isImmunedToSpell(spellInfo, this)) {
-            return SpellMissInfo.Immune;
+            return SpellMissInfo.IMMUNE;
         }
 
         // Damage immunity is only checked if the spell has damage effects, this immunity must not prevent aura apply
         // returns SPELL_MISS_IMMUNE in that case, for other spells, the SMSG_SPELL_GO must show hit
         if (spellInfo.getHasOnlyDamageEffects() && victim.isImmunedToDamage(spellInfo)) {
-            return SpellMissInfo.Immune;
+            return SpellMissInfo.IMMUNE;
         }
 
         // All positive spells can`t miss
-        /** @todo client not show miss log for this spells - so need find info for this in dbc and use it!
-         */
+        /// @todo client not show miss log for this spells - so need find info for this in dbc and use it!
         if (spellInfo.isPositive() && !isHostileTo(victim)) // prevent from affecting enemy by "positive" spell
         {
             return SpellMissInfo.NONE;
@@ -1669,34 +1518,29 @@ public abstract class WorldObject extends GenericObject {
 
         // Return evade for units in evade mode
         if (victim.isCreature() && victim.toCreature().isEvadingAttacks()) {
-            return SpellMissInfo.Evade;
+            return SpellMissInfo.EVADE;
         }
 
         // Try victim reflect spell
         if (canReflect) {
-            var reflectchance = victim.getTotalAuraModifier(AuraType.ReflectSpells);
-            reflectchance += victim.getTotalAuraModifierByMiscMask(AuraType.ReflectSpellsSchool, spellInfo.getSchoolMask().getValue());
+            var reflectchance = victim.getTotalAuraModifier(AuraType.REFLECT_SPELLS);
+            reflectchance += victim.getTotalAuraModifierByMiscMask(AuraType.REFLECT_SPELLS_SCHOOL, spellInfo.getSchoolMask());
 
-            if (reflectchance > 0 && RandomUtil.randChance(reflectchance)) {
-                return SpellMissInfo.Reflect;
+            if (reflectchance > 0 && RandomUtil.randChance(Math.round(reflectchance))) {
+                return SpellMissInfo.REFLECT;
             }
         }
 
-        if (spellInfo.hasAttribute(SpellAttr3.AlwaysHit)) {
+        if (spellInfo.hasAttribute(SpellAttr3.ALWAYS_HIT)) {
             return SpellMissInfo.NONE;
         }
 
-        switch (spellInfo.getDmgClass()) {
-            case Ranged:
-            case Melee:
-                return meleeSpellHitResult(victim, spellInfo);
-            case None:
-                return SpellMissInfo.NONE;
-            case Magic:
-                return magicSpellHitResult(victim, spellInfo);
-        }
+        return switch (spellInfo.getDmgClass()) {
+            case RANGED, MELEE -> meleeSpellHitResult(victim, spellInfo);
+            case NONE -> SpellMissInfo.NONE;
+            case MAGIC -> magicSpellHitResult(victim, spellInfo);
+        };
 
-        return SpellMissInfo.NONE;
     }
 
 
@@ -1712,7 +1556,7 @@ public abstract class WorldObject extends GenericObject {
         var factionId = getFaction();
         var entry = worldContext.getDbcObjectManager().factionTemplate(factionId);
         if (entry == null) {
-            switch (getTypeId()) {
+            switch (getObjectTypeId()) {
                 case PLAYER:
                     Logs.UNIT.error("Player {} has invalid faction (faction template id) #{}", toPlayer().getName(), factionId);
                     break;
@@ -1728,7 +1572,7 @@ public abstract class WorldObject extends GenericObject {
 
                     break;
                 default:
-                    Logs.UNIT.error("Object (name={}, type={}) has invalid faction (faction template Id) #{}", getName(), getTypeId(), factionId);
+                    Logs.UNIT.error("Object (name={}, type={}) has invalid faction (faction template Id) #{}", getName(), getObjectTypeId(), factionId);
 
                     break;
             }
@@ -1754,7 +1598,7 @@ public abstract class WorldObject extends GenericObject {
             if (tempSummon == null || tempSummon.summonProperty == null)
                 return false;
 
-            return (tempSummon.summonProperty.getFlags() & SummonPropertiesFlag.AttackableBySummoner.value) != 0
+            return (tempSummon.summonProperty.getFlags().hasFlag(SummonPropertyFlag.AttackableBySummoner))
                     && Objects.equals(targetGuid, tempSummon.getSummonerGUID());
         };
 
@@ -2024,19 +1868,19 @@ public abstract class WorldObject extends GenericObject {
     public final SpellCastResult castSpell(CastSpellTargetArg targets, int spellId, CastSpellExtraArgs args) {
 
 
-        var info = worldContext.getSpellManager().getSpellInfo(spellId, args.castDifficulty != Difficulty.DIFFICULTY_NONE ? args.castDifficulty : getMap().getDifficultyID());
+        var info = worldContext.getSpellManager().getSpellInfo(spellId, args.castDifficulty != Difficulty.NONE ? args.castDifficulty : getMap().getDifficultyID());
 
         if (info == null) {
             Logs.UNIT.error("CastSpell: unknown spell {} by caster {}", spellId, getGUID());
             ;
 
-            return SpellCastResult.SPELL_FAILED_SPELL_UNAVAILABLE;
+            return SpellCastResult.FAILED_SPELL_UNAVAILABLE;
         }
 
         if (targets.targets == null) {
             Logs.UNIT.error("CastSpell: unknown spell {} by caster {}", spellId, getGUID());
 
-            return SpellCastResult.SPELL_FAILED_BAD_TARGETS;
+            return SpellCastResult.FAILED_BAD_TARGETS;
         }
 
         Spell spell = new Spell(this, info, args.triggerFlags, args.originalCaster, args.originalCastId, args.empowerStage);
@@ -2407,7 +2251,9 @@ public abstract class WorldObject extends GenericObject {
         }
 
         // can't assist non-friendly targets
-        if (getReactionTo(target) < ReputationRank.NEUTRAL && target.getReactionTo(this) < ReputationRank.Neutral.getValue() && (!toCreature() || !toCreature().getTemplate().typeFlags.hasFlag(CreatureTypeFlag.TreatAsRaidUnit))) {
+        if (ReputationRank.NEUTRAL.compareTo(getReactionTo(target)) > 0
+                && ReputationRank.NEUTRAL.compareTo(target.getReactionTo(this)) > 0
+                && (toCreature() == null || !toCreature().getTemplate().typeFlags.hasFlag(CreatureTypeFlag.TREAT_AS_RAID_UNIT))) {
             return false;
         }
 
@@ -2439,13 +2285,13 @@ public abstract class WorldObject extends GenericObject {
         }
         // PvC case - player can assist creature only if has specific type flags
         // !target.hasFlag(UNIT_FIELD_FLAGS, UnitFlag.PvpAttackable) &&
-        else if (unit != null && unit.hasUnitFlag(UnitFlag.PlayerControlled)) {
-            if (bySpell == null || !bySpell.hasAttribute(SpellAttr6.CanAssistImmunePc)) {
+        else if (unit != null && unit.hasUnitFlag(UnitFlag.PLAYER_CONTROLLED)) {
+            if (bySpell == null || !bySpell.hasAttribute(SpellAttr6.CAN_ASSIST_IMMUNE_PC)) {
                 if (unitTarget != null && !unitTarget.isPvP()) {
                     var creatureTarget = target.toCreature();
 
                     if (creatureTarget != null) {
-                        return (creatureTarget.getTemplate().typeFlags.hasFlag(CreatureTypeFlag.TreatAsRaidUnit) || creatureTarget.getTemplate().typeFlags.hasFlag(CreatureTypeFlag.CanAssist));
+                        return (creatureTarget.getTemplate().typeFlags.hasFlag(CreatureTypeFlag.TREAT_AS_RAID_UNIT) || creatureTarget.getTemplate().typeFlags.hasFlag(CreatureTypeFlag.CAN_ASSIST));
                     }
                 }
             }
@@ -2456,24 +2302,24 @@ public abstract class WorldObject extends GenericObject {
 
     public final Unit getMagicHitRedirectTarget(Unit victim, SpellInfo spellInfo) {
         // Patch 1.2 notes: Spell Reflection no longer reflects abilities
-        if (spellInfo.hasAttribute(SpellAttr0.IsAbility) || spellInfo.hasAttribute(SpellAttr1.NoRedirection) || spellInfo.hasAttribute(SpellAttr0.NoImmunities)) {
+        if (spellInfo.hasAttribute(SpellAttr0.IS_ABILITY) || spellInfo.hasAttribute(SpellAttr1.NO_REDIRECTION) || spellInfo.hasAttribute(SpellAttr0.NO_IMMUNITIES)) {
             return victim;
         }
 
-        var magnetAuras = victim.getAuraEffectsByType(AuraType.SpellMagnet);
+        var magnetAuras = victim.getAuraEffectsByType(AuraType.SPELL_MAGNET);
 
         for (var aurEff : magnetAuras) {
             var magnet = aurEff.getBase().getCaster();
 
             if (magnet != null) {
-                if (spellInfo.checkExplicitTarget(this, magnet) == SpellCastResult.SpellCastOk && isValidAttackTarget(magnet, spellInfo)) {
+                if (spellInfo.checkExplicitTarget(this, magnet) == SpellCastResult.CAST_OK && isValidAttackTarget(magnet, spellInfo)) {
                     /** @todo handle this charge drop by proc in cast phase on explicit target
                      */
                     if (spellInfo.getHasHitDelay()) {
                         // Set up missile speed based delay
                         var hitDelay = spellInfo.getLaunchDelay();
 
-                        if (spellInfo.hasAttribute(SpellAttr9.SpecialDelayCalculation)) {
+                        if (spellInfo.hasAttribute(SpellAttr9.SPECIAL_DELAY_CALCULATION)) {
                             hitDelay += spellInfo.getSpeed();
                         } else if (spellInfo.getSpeed() > 0.0f) {
                             hitDelay += Math.max(victim.getDistance(this), 5.0f) / spellInfo.getSpeed();
@@ -2508,13 +2354,10 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final ArrayList<GameObject> getGameObjectListWithEntryInGrid(int entry, float maxSearchRange) {
-        ArrayList<GameObject> gameobjectList = new ArrayList<>();
-        var check = new AllGameObjectsWithEntryInRange(this, entry, maxSearchRange);
-        var searcher = new GameObjectListSearcher(this, gameobjectList, check, gridType.Grid);
-
+        ArrayList<GameObject> gameObjects = new ArrayList<>();
+        var searcher = GridVisitors.newGameObjectListSearcher(this, entry, maxSearchRange, gameObjects);
         Cell.visitGrid(this, searcher, maxSearchRange, true);
-
-        return gameobjectList;
+        return gameObjects;
     }
 
     public final ArrayList<Creature> getCreatureListWithEntryInGrid(int entry) {
@@ -2527,11 +2370,8 @@ public abstract class WorldObject extends GenericObject {
 
     public final ArrayList<Creature> getCreatureListWithEntryInGrid(int entry, float maxSearchRange) {
         ArrayList<Creature> creatureList = new ArrayList<>();
-        var check = new AllCreaturesOfEntryInRange(this, entry, maxSearchRange);
-        var searcher = new CreatureListSearcher(this, creatureList, check, gridType.Grid);
-
+        var searcher = GridVisitors.newCreatureListSearcher(this, entry, maxSearchRange, creatureList);
         Cell.visitGrid(this, searcher, maxSearchRange, true);
-
         return creatureList;
     }
 
@@ -2541,38 +2381,25 @@ public abstract class WorldObject extends GenericObject {
 
     public final ArrayList<Creature> getCreatureListWithEntryInGrid(int[] entry, float maxSearchRange) {
         ArrayList<Creature> creatureList = new ArrayList<>();
-        var check = new AllCreaturesOfEntriesInRange(this, entry, maxSearchRange);
-        var searcher = new CreatureListSearcher(this, creatureList, check, gridType.Grid);
-
+        var searcher = GridVisitors.newCreatureListSearcher(this, entry, maxSearchRange, creatureList);
         Cell.visitGrid(this, searcher, maxSearchRange, true);
-
         return creatureList;
     }
 
     public final ArrayList<Creature> getCreatureListWithOptionsInGrid(float maxSearchRange, FindCreatureOptions options) {
         ArrayList<Creature> creatureList = new ArrayList<>();
-        NoopCheckCustomizer checkCustomizer = new NoopCheckCustomizer();
-        CreatureWithOptionsInObjectRangeCheck<NoopCheckCustomizer> check = new CreatureWithOptionsInObjectRangeCheck<NoopCheckCustomizer>(this, checkCustomizer, options);
-        CreatureListSearcher searcher = new CreatureListSearcher(this, creatureList, check, gridType.Grid);
-
-        if (options.ignorePhases) {
-            searcher.phaseShift = PhasingHandler.getAlwaysVisiblePhaseShift();
-        }
-
+        var searcher = GridVisitors.newCreatureListSearcher(this, maxSearchRange, options, creatureList);
         Cell.visitGrid(this, searcher, maxSearchRange, true);
-
         return creatureList;
     }
 
-    public final ArrayList<Unit> getPlayerListInGrid(float maxSearchRange) {
+    public final ArrayList<Player> getPlayerListInGrid(float maxSearchRange) {
         return getPlayerListInGrid(maxSearchRange, true);
     }
 
-    public final ArrayList<Unit> getPlayerListInGrid(float maxSearchRange, boolean alive) {
-        ArrayList<Unit> playerList = new ArrayList<>();
-        var checker = new AnyPlayerInObjectRangeCheck(this, maxSearchRange, alive);
-        var searcher = new PlayerListSearcher(this, playerList, checker);
-
+    public final ArrayList<Player> getPlayerListInGrid(float maxSearchRange, boolean alive) {
+        ArrayList<Player> playerList = new ArrayList<>();
+        var searcher = GridVisitors.newPlayerListSearcher(this, maxSearchRange, alive, playerList);
         Cell.visitGrid(this, searcher, maxSearchRange);
 
         return playerList;
@@ -2592,7 +2419,6 @@ public abstract class WorldObject extends GenericObject {
 
     public final void playDistanceSound(int soundId, Player target) {
         PlaySpeakerBoxSound playSpeakerBoxSound = new PlaySpeakerBoxSound(getGUID(), soundId);
-
         if (target != null) {
             target.sendPacket(playSpeakerBoxSound);
         } else {
@@ -2609,9 +2435,9 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final void playDirectSound(int soundId, Player target, int broadcastTextId) {
-        PlaySound sound = new playSound(getGUID(), soundId, broadcastTextId);
+        PlaySound sound = new PlaySound(getGUID(), soundId, broadcastTextId);
 
-        if (target) {
+        if (target != null) {
             target.sendPacket(sound);
         } else {
             sendMessageToSet(sound, true);
@@ -2623,7 +2449,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final void playDirectMusic(int musicId, Player target) {
-        if (target) {
+        if (target != null) {
             target.sendPacket(new PlayMusic(musicId));
         } else {
             sendMessageToSet(new PlayMusic(musicId), true);
@@ -2635,12 +2461,10 @@ public abstract class WorldObject extends GenericObject {
             return;
         }
 
-        ArrayList<Unit> targets = new ArrayList<>();
-        var check = new AnyPlayerInObjectRangeCheck(this, getVisibilityRange(), false);
-        var searcher = new PlayerListSearcher(this, targets, check);
+        ArrayList<Player> targets = new ArrayList<>();
 
+        var searcher = GridVisitors.newPlayerListSearcher(this, getVisibilityRange(), false, targets);
         Cell.visitGrid(this, searcher, getVisibilityRange());
-
         for (Player player : targets) {
             if (player == this) {
                 continue;
@@ -2654,12 +2478,8 @@ public abstract class WorldObject extends GenericObject {
             {
                 continue;
             }
-
             destroyForPlayer(player);
-
-            synchronized (player.getClientGuiDs()) {
-                player.getClientGuiDs().remove(getGUID());
-            }
+            player.getClientGuiDs().remove(getGUID());
         }
     }
 
@@ -2669,8 +2489,7 @@ public abstract class WorldObject extends GenericObject {
 
     public void updateObjectVisibility(boolean force) {
         //updates object's visibility for nearby players
-        var notifier = new VisibleChangesNotifier(new WorldObject[]{this}, gridType.World);
-
+        var notifier = GridVisitors.newVisibleChangesNotifier(new WorldObject[]{this});
         Cell.visitGrid(this, notifier, getVisibilityRange());
     }
 
@@ -2683,9 +2502,8 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public void buildUpdate(HashMap<Player, UpdateData> data) {
-        var notifier = new WorldObjectChangeAccumulator(this, data, gridType.World);
+        var notifier = GridVisitors.newWorldObjectChangeAccumulator(this, data);
         Cell.visitGrid(this, notifier, getVisibilityRange());
-
         clearUpdateMask(false);
     }
 
@@ -2699,20 +2517,12 @@ public abstract class WorldObject extends GenericObject {
         getMap().removeUpdateObject(this);
     }
 
-    public String getName() {
-        return getName(locale.enUS);
-    }
-
-    public final void setName(String name) {
-        name = name;
-    }
-
-    public String getName(Locale locale) {
-        return name;
+    public final String getName() {
+        return name.get(worldContext.getDbcLocale());
     }
 
     public final boolean isTypeId(TypeId typeId) {
-        return getTypeId() == typeId;
+        return getObjectTypeId() == typeId;
     }
 
 
@@ -2725,10 +2535,6 @@ public abstract class WorldObject extends GenericObject {
         return false;
     }
 
-    public final void setIsNewObject(boolean enable) {
-        newObject = enable;
-    }
-
 
     public int getLevelForTarget(WorldObject target) {
         return 1;
@@ -2739,7 +2545,7 @@ public abstract class WorldObject extends GenericObject {
     }
 
     public final boolean isNeedNotify(NotifyFlag f) {
-        return (boolean) (notifyFlags.getValue() & f.getValue());
+        return notifyFlags.hasFlag(f);
     }
 
     public final void resetAllNotifies() {
@@ -3100,8 +2906,8 @@ public abstract class WorldObject extends GenericObject {
         float y = (float) (srcPos.getY() + new_dist * Math.sin(angle));
         float z = srcPos.getZ();
 
-        x = MapDefine.normalizeMapCoord(x);
-        y = MapDefine.normalizeMapCoord(y);
+        x = MapDefine.normalizeMapCoordinate(x);
+        y = MapDefine.normalizeMapCoordinate(y);
         z = updateGroundPositionZ(x, y, z); // update to LOS height if available
 
 
@@ -3122,10 +2928,6 @@ public abstract class WorldObject extends GenericObject {
         return z;
     }
 
-    public final void updateAllowedPositionZ(Position pos, tangible.RefObject<Float> groundZ) {
-        pos.setZ(updateAllowedPositionZ(pos.getX(), pos.getY(), pos.getZ(), groundZ));
-    }
-
     public final void updateAllowedPositionZ(Position pos) {
         pos.setZ(updateAllowedPositionZ(pos.getX(), pos.getY(), pos.getZ()));
     }
@@ -3139,22 +2941,21 @@ public abstract class WorldObject extends GenericObject {
         return tempVar;
     }
 
-    public final PositionZAllowed updateAllowedPositionZ(float x, float y, float z, float groundZ) {
+    public final float updateAllowedPositionZ(Position pos, float groundZ) {
         // TODO: Allow transports to be part of dynamic vmap tree
         if (getTransport() != null) {
-            return new PositionZAllowed(z, z);
+            return pos.getZ();
         }
 
         if (this instanceof Unit unit) {
             if (!unit.getCanFly()) {
                 var canSwim = unit.getCanSwim();
-                var ground_z = z;
+                var ground_z = pos.getZ();
                 float max_z;
 
                 if (canSwim) {
-                    tangible.RefObject<Float> tempRef_ground_z = new tangible.RefObject<Float>(ground_z);
-                    max_z = getMapWaterOrGroundLevel(x, y, z, tempRef_ground_z);
-                    ground_z = tempRef_ground_z.refArgValue;
+                    max_z = getMapWaterOrGroundLevel(x, y, z, groundZ);
+                    ground_z = max_z;
                 } else {
                     max_z = ground_z = getMapHeight(x, y, z);
                 }
@@ -3228,8 +3029,8 @@ public abstract class WorldObject extends GenericObject {
         float x = getLocation().getX() + (effectiveReach + distance2d) * (float) Math.cos(absAngle);
         float y = getLocation().getY() + (effectiveReach + distance2d) * (float) Math.sin(absAngle);
 
-        x = MapDefine.normalizeMapCoord(x);
-        y = MapDefine.normalizeMapCoord(y);
+        x = MapDefine.normalizeMapCoordinate(x);
+        y = MapDefine.normalizeMapCoordinate(y);
 
         return new Position(x, y);
     }
@@ -3345,7 +3146,7 @@ public abstract class WorldObject extends GenericObject {
         var desty = pos.getY() + dist * (float) Math.sin(angle);
 
         // Prevent invalid coordinates here, position is unchanged
-        if (!MapDefine.isValidMapCoordinatei(destx, desty, pos.getZ())) {
+        if (!MapDefine.isValidMapCoordinate(destx, desty, pos.getZ())) {
             Log.outError(LogFilter.Server, "WorldObject.MovePosition invalid coordinates X: {0} and Y: {1} were passed!", destx, desty);
 
             return;
@@ -3481,7 +3282,7 @@ public abstract class WorldObject extends GenericObject {
         }
     }
 
-    public final float getMapWaterOrGroundLevel(float x, float y, float z) {
+    public final float getMapWaterOrGroundLevel(Position position) {
         float groundLevel = 0;
 
         tangible.RefObject<Float> tempRef_groundLevel = new tangible.RefObject<Float>(groundLevel);
@@ -3490,7 +3291,7 @@ public abstract class WorldObject extends GenericObject {
         return tempVar;
     }
 
-    public final float getMapWaterOrGroundLevel(float x, float y, float z, float ground) {
+    public final float getMapWaterOrGroundLevel(Position position, float ground) {
         return getMap().getWaterOrGroundLevel(getPhaseShift(), x, y, z, ground, isUnit() && !toUnit().hasAuraType(AuraType.WATER_WALK), getCollisionHeight());
     }
 
@@ -3569,7 +3370,6 @@ public abstract class WorldObject extends GenericObject {
 
         return true;
     }
-
 
 
 //	public static implicit operator bool(WorldObject obj)

@@ -20,11 +20,11 @@ public class CTextEmote extends ClientPacket {
         emoteID = this.readInt32();
         soundIndex = this.readInt32();
 
-        spellVisualKitIDs = new int[this.readUInt()];
+        spellVisualKitIDs = new int[this.readUInt32()];
         sequenceVariation = this.readInt32();
 
         for (var i = 0; i < spellVisualKitIDs.length; ++i) {
-            SpellVisualKitIDs[i] = this.readUInt();
+            SpellVisualKitIDs[i] = this.readUInt32();
         }
     }
 }

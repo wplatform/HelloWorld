@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr0 {
+public enum SpellAttr0 implements EnumFlag.FlagValue {
     PROC_FAILURE_BURNS_CHARGE(0x00000001), // TITLE Proc Failure Burns Charge
     USES_RANGED_SLOT(0x00000002), // TITLE Uses Ranged Slot DESCRIPTION Use ammo, ranged attack range modifiers, ranged haste, etc.
     ON_NEXT_SWING_NO_DAMAGE(0x00000004), // TITLE On Next Swing (No Damage) DESCRIPTION Both "on next swing" attributes have identical handling in server & client

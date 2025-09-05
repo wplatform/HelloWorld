@@ -40,16 +40,26 @@ public class WorldPacket extends DefaultByteBufHolder {
         this.opcode = opcode;
     }
 
+    protected WorldPacket(ServerOpCode opcode, int estimatedSize) {
+        super(ByteBufAllocator.DEFAULT.buffer(estimatedSize));
+        this.opcode = opcode;
+    }
+
     protected WorldPacket(ServerOpCode opcode, ByteBuf data) {
         super(data);
         this.opcode = opcode;
     }
 
+    public static WorldPacket newServerToClient(ServerOpCode opcode) {
+        return new WorldPacket(opcode);
+    }
 
     public static WorldPacket newServerToClient(ServerOpCode opcode, ByteBuf byteBuf) {
-        WorldPacket packet = new WorldPacket(byteBuf);
-        packet.opcode = opcode;
-        return packet;
+        return new WorldPacket(opcode, byteBuf);
+    }
+
+    public static WorldPacket newServerToClient(ServerOpCode opcode, int estimatedSize) {
+        return new WorldPacket(opcode, estimatedSize);
     }
 
     public static WorldPacket newClientToServer(ByteBuf byteBuf) {
@@ -130,7 +140,7 @@ public class WorldPacket extends DefaultByteBufHolder {
         return content().readUnsignedShort();
     }
 
-    public final int readUInt() {
+    public final int readUInt32() {
         resetBitPos();
         int i = content().readInt();
         if (i < 0) {
@@ -391,6 +401,11 @@ public class WorldPacket extends DefaultByteBufHolder {
 
     public final void writePackedTime() {
         writePackedTime(Instant.now());
+    }
+
+
+    public final void setInt32(int index, int value) {
+         content().setInt(index, value);
     }
 
 

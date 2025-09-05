@@ -34,7 +34,7 @@ public class WorldObjectTypedList {
         synchronized (worldObjects) {
             worldObjects.add(obj);
 
-            switch (obj.getTypeId()) {
+            switch (obj.getObjectTypeId()) {
                 case Unit:
                     creatures.add((CREATURE) obj);
 
@@ -82,7 +82,7 @@ public class WorldObjectTypedList {
         synchronized (worldObjects) {
             worldObjects.remove(obj);
 
-            switch (obj.getTypeId()) {
+            switch (obj.getObjectTypeId()) {
                 case Unit:
                     creatures.remove((CREATURE) obj);
 

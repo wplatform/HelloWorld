@@ -15,6 +15,6 @@ public class QuestGiverRequestReward extends ClientPacket {
     @Override
     public void read() {
         questGiverGUID = this.readPackedGuid();
-        questID = this.readUInt();
+        questID = this.readUInt32();
     }
 }

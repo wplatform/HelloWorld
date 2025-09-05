@@ -21,7 +21,7 @@ class AuctionListBiddedItems extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        offset = this.readUInt();
+        offset = this.readUInt32();
 
         if (this.readBit()) {
             taintedBy = new AddOnInfo();
@@ -39,7 +39,7 @@ class AuctionListBiddedItems extends ClientPacket {
         }
 
         for (var i = 0; i < auctionIDCount; ++i) {
-            auctionItemIDs.set(i, this.readUInt());
+            auctionItemIDs.set(i, this.readUInt32());
         }
     }
 }

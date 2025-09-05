@@ -13,7 +13,7 @@ public final class AuctionItemForSale {
 
     public AuctionItemForSale(WorldPacket data) {
         guid = data.readPackedGuid();
-        useCount = data.readUInt();
+        useCount = data.readUInt32();
     }
 
     public AuctionItemForSale clone() {

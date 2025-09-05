@@ -9,15 +9,15 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.networking.WorldPacket;
 
 public class DynamicObjectData extends BaseUpdateData<DynamicObject> {
-    public UpdateField<ObjectGuid> caster = new UpdateField<ObjectGuid>(0, 1);
+    public UpdateField<ObjectGuid> caster = new UpdateField<>(0, 1);
 
-    public UpdateField<Byte> type = new UpdateField<Byte>(0, 2);
-    public UpdateField<SpellCastVisualField> spellVisual = new UpdateField<SpellCastVisualField>(0, 3);
+    public UpdateField<Byte> type = new UpdateField<>(0, 2);
+    public UpdateField<SpellCastVisualField> spellVisual = new UpdateField<>(0, 3);
 
-    public UpdateField<Integer> spellID = new UpdateField<Integer>(0, 4);
-    public UpdateField<Float> radius = new UpdateField<Float>(0, 5);
+    public UpdateField<Integer> spellID = new UpdateField<>(0, 4);
+    public UpdateField<Float> radius = new UpdateField<>(0, 5);
 
-    public UpdateField<Integer> castTime = new UpdateField<Integer>(0, 6);
+    public UpdateField<Integer> castTime = new UpdateField<>(0, 6);
 
     public dynamicObjectData() {
         super(0, TypeId.DynamicObject, 7);

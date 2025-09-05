@@ -13,6 +13,6 @@ public class GuildSetFocusedAchievement extends ClientPacket {
 
     @Override
     public void read() {
-        achievementID = this.readUInt();
+        achievementID = this.readUInt32();
     }
 }

@@ -38,7 +38,6 @@ import com.github.azeroth.game.loot.LootStorage;
 import com.github.azeroth.game.mail.MailDraft;
 import com.github.azeroth.game.mail.MailReceiver;
 import com.github.azeroth.game.mail.MailSender;
-import com.github.azeroth.game.map.CreatureListSearcher;
 import com.github.azeroth.game.map.InstanceLock;
 import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.map.grid.Cell;
@@ -2961,7 +2960,7 @@ public class WorldSession implements Closeable {
             global.getBattlegroundMgr().sendAreaSpiritHealerQuery(getPlayer(), bg, areaSpiritHealerQuery.healerGuid);
         }
 
-        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZone());
+        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZoneId());
 
         if (bf != null) {
             bf.sendAreaSpiritHealerQuery(getPlayer(), areaSpiritHealerQuery.healerGuid);
@@ -2987,7 +2986,7 @@ public class WorldSession implements Closeable {
             bg.addPlayerToResurrectQueue(areaSpiritHealerQueue.healerGuid, getPlayer().getGUID());
         }
 
-        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZone());
+        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZoneId());
 
         if (bf != null) {
             bf.addPlayerToResurrectQueue(areaSpiritHealerQueue.healerGuid, getPlayer().getGUID());
@@ -3000,7 +2999,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZone());
+        var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getPlayer().getMap(), getPlayer().getZoneId());
 
         if (bf != null) {
             bf.playerAskToLeave(player);
@@ -3008,7 +3007,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        var atEntry = CliDB.AreaTableStorage.get(getPlayer().getArea());
+        var atEntry = CliDB.AreaTableStorage.get(getPlayer().getAreaId());
 
         if (atEntry == null || !atEntry.hasFlag(AreaFlags.CanHearthAndResurrect)) {
             return;
@@ -4343,7 +4342,7 @@ public class WorldSession implements Closeable {
 
 
     private void handleJoinChannel(JoinChannel packet) {
-        var zone = CliDB.AreaTableStorage.get(getPlayer().getZone());
+        var zone = CliDB.AreaTableStorage.get(getPlayer().getZoneId());
 
         if (packet.chatChannelId != 0) {
             var channel = CliDB.ChatChannelsStorage.get(packet.chatChannelId);
@@ -4412,7 +4411,7 @@ public class WorldSession implements Closeable {
             return;
         }
 
-        var zone = CliDB.AreaTableStorage.get(getPlayer().getZone());
+        var zone = CliDB.AreaTableStorage.get(getPlayer().getZoneId());
 
         if (packet.zoneChannelID != 0) {
             var channel = CliDB.ChatChannelsStorage.get(packet.zoneChannelID);
@@ -5543,7 +5542,7 @@ public class WorldSession implements Closeable {
                 if (!newChar.create(global.getObjectMgr().getGenerator(HighGuid.Player).generate(), createInfo)) {
                     // Player not create (race/class/etc problem?)
                     newChar.cleanupsBeforeDelete();
-                    newChar.close();
+                    newChar.destroy();
                     sendCharCreate(ResponseCodes.CharCreateError);
 
                     return;
@@ -5583,7 +5582,7 @@ public class WorldSession implements Closeable {
                     }
 
                     newChar.cleanupsBeforeDelete();
-                    newChar.close();
+                    newChar.destroy();
                 });
             }
 
@@ -7037,7 +7036,7 @@ public class WorldSession implements Closeable {
 
 
     private void handleRequestCemeteryList(RequestCemeteryList requestCemeteryList) {
-        var zoneId = getPlayer().getZone();
+        var zoneId = getPlayer().getZoneId();
         var team = (int) getPlayer().getTeam().getValue();
 
         ArrayList<Integer> graveyardIds = new ArrayList<>();
@@ -13815,7 +13814,7 @@ public class WorldSession implements Closeable {
 
         plMover.setSemaphoreTeleportNear(false);
 
-        var old_zone = plMover.getZone();
+        var old_zone = plMover.getZoneId();
 
         var dest = plMover.getTeleportDest();
 
@@ -15036,7 +15035,7 @@ public class WorldSession implements Closeable {
         var charmInfo = pet.getCharmInfo();
 
         if (charmInfo == null) {
-            Log.outError(LogFilter.Network, "WorldSession.handlePetAction(petGuid: {0}, tagGuid: {1}, spellId: {2}, flag: {3}): object (GUID: {4} Entry: {5} TypeId: {6}) is considered pet-like but doesn't have a charminfo!", guid1, guid2, spellid, flag, pet.getGUID().toString(), pet.getEntry(), pet.getTypeId());
+            Log.outError(LogFilter.Network, "WorldSession.handlePetAction(petGuid: {0}, tagGuid: {1}, spellId: {2}, flag: {3}): object (GUID: {4} Entry: {5} TypeId: {6}) is considered pet-like but doesn't have a charminfo!", guid1, guid2, spellid, flag, pet.getGUID().toString(), pet.getEntry(), pet.getObjectTypeId());
 
             return;
         }
@@ -15425,7 +15424,7 @@ public class WorldSession implements Closeable {
                 if (spellInfo != null) {
                     //sign for autocast
                     if (act_state == ActiveStates.enabled) {
-                        if (petControlled.getTypeId() == TypeId.UNIT && petControlled.isPet()) {
+                        if (petControlled.getObjectTypeId() == TypeId.UNIT && petControlled.isPet()) {
                             ((pet) petControlled).ToggleAutocast(spellInfo, true);
                         } else {
                             for (var unit : getPlayer().getControlled()) {
@@ -15437,7 +15436,7 @@ public class WorldSession implements Closeable {
                     }
                     //sign for no/turn off autocast
                     else if (act_state == ActiveStates.disabled) {
-                        if (petControlled.getTypeId() == TypeId.UNIT && petControlled.isPet()) {
+                        if (petControlled.getObjectTypeId() == TypeId.UNIT && petControlled.isPet()) {
                             petControlled.getAsPet().ToggleAutocast(spellInfo, false);
                         } else {
                             for (var unit : getPlayer().getControlled()) {
@@ -21105,7 +21104,7 @@ public class WorldSession implements Closeable {
                 player.teleportTo(player.getHomeBind());
             }
 
-            global.getOutdoorPvPMgr().handlePlayerLeaveZone(player, player.getZone());
+            global.getOutdoorPvPMgr().handlePlayerLeaveZone(player, player.getZoneId());
 
             for (int i = 0; i < SharedConst.MaxPlayerBGQueues; ++i) {
                 var bgQueueTypeId = player.getBattlegroundQueueTypeId(i);

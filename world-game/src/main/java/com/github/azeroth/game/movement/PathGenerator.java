@@ -6,6 +6,8 @@ import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.movement.enums.NavTerrainFlag;
+import com.github.azeroth.game.movement.enums.PathType;
 import game.*;
 
 public class PathGenerator {

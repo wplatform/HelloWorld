@@ -272,7 +272,7 @@ public class StaticMapTree {
 
     }
 
-    public final void unloadMapTile(int tileX, int tileY, VMapManager vm) throws IOException {
+    public final void unloadMapTile(int tileX, int tileY, VMapManager vm) {
 
 
         var tileID = packTileID(tileX, tileY);

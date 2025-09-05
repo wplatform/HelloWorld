@@ -22,12 +22,12 @@ public class GuildSetRankPermissions extends ClientPacket {
     public void read() {
         rankID = this.readUInt8();
         rankOrder = this.readInt32();
-        flags = this.readUInt();
-        withdrawGoldLimit = this.readUInt();
+        flags = this.readUInt32();
+        withdrawGoldLimit = this.readUInt32();
 
         for (byte i = 0; i < GuildConst.MaxBankTabs; i++) {
-            TabFlags[i] = this.readUInt();
-            TabWithdrawItemLimit[i] = this.readUInt();
+            TabFlags[i] = this.readUInt32();
+            TabWithdrawItemLimit[i] = this.readUInt32();
         }
 
         this.resetBitPos();
@@ -35,6 +35,6 @@ public class GuildSetRankPermissions extends ClientPacket {
 
         rankName = this.readString(rankNameLen);
 
-        oldFlags = this.readUInt();
+        oldFlags = this.readUInt32();
     }
 }

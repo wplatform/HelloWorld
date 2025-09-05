@@ -1,6 +1,9 @@
 package com.github.azeroth.game.networking.packet.misc;
 
+import com.badlogic.gdx.math.Vector3;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
 
 public class PlayObjectSound extends ServerPacket {
     public ObjectGuid targetObjectGUID = ObjectGuid.EMPTY;
@@ -10,7 +13,7 @@ public class PlayObjectSound extends ServerPacket {
     public int broadcastTextID;
 
     public PlayObjectSound() {
-        super(ServerOpcode.PlayObjectSound);
+        super(ServerOpCode.SMSG_PLAY_OBJECT_SOUND);
     }
 
     @Override

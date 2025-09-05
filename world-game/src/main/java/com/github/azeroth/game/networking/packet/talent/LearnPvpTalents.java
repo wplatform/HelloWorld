@@ -12,7 +12,7 @@ class LearnPvpTalents extends ClientPacket {
 
     @Override
     public void read() {
-        var size = this.readUInt();
+        var size = this.readUInt32();
 
         for (var i = 0; i < size; ++i) {
             talents.set(i, new PvPTalent(this));

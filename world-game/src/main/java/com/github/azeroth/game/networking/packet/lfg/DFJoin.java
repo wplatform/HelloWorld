@@ -23,13 +23,13 @@ class DFJoin extends ClientPacket {
         queueAsGroup = this.readBit();
         unknown = this.readBit();
         partyIndex = this.readUInt8();
-        roles = LfgRoles.forValue(this.readUInt());
+        roles = LfgRoles.forValue(this.readUInt32());
 
         var slotsCount = this.readInt32();
 
         for (var i = 0; i < slotsCount; ++i) // Slots
         {
-            slots.add(this.readUInt());
+            slots.add(this.readUInt32());
         }
     }
 }

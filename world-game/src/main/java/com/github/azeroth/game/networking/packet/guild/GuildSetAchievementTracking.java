@@ -15,10 +15,10 @@ class GuildSetAchievementTracking extends ClientPacket {
 
     @Override
     public void read() {
-        var count = this.readUInt();
+        var count = this.readUInt32();
 
         for (int i = 0; i < count; ++i) {
-            achievementIDs.add(this.readUInt());
+            achievementIDs.add(this.readUInt32());
         }
     }
 }

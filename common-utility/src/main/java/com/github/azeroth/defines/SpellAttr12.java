@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr12 {
+public enum SpellAttr12 implements EnumFlag.FlagValue {
     ENABLE_PROCS_FROM_SUPPRESSED_CASTER_PROCS(0x00000001), // TITLE Enable Procs from Suppressed Caster Procs
     CAN_PROC_FROM_SUPPRESSED_CASTER_PROCS(0x00000002), // TITLE Can Proc from Suppressed Caster Procs
     UNK2(0x00000004), // TITLE Unknown attribute 2@Attr12

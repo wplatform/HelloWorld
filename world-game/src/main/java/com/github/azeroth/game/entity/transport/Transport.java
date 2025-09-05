@@ -7,12 +7,11 @@ import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.vehicle.ITransport;
 import com.github.azeroth.game.domain.transport.TransportAnimation;
-import game.GameEvents;
 
 import java.time.Duration;
 import java.util.ArrayList;
 
-class Transport extends WorldObject implements com.github.azeroth.game.entity.vehicle.ITransport {
+public class Transport extends WorldObject implements ITransport {
     private static final Duration POSITIONUPDATEINTERVAL = duration.ofSeconds(50);
     private final TransportAnimation animationInfo;
 

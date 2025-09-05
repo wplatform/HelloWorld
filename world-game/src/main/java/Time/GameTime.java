@@ -17,14 +17,6 @@ public class GameTime {
     private static WowTime UtcWow = new WowTime();
     private static WowTime Wow = new WowTime();
 
-    public static long getStartTime() {
-        return StartTime;
-    }
-
-    public static long getGameTime() {
-        return GameTime;
-    }
-
     public static int getGameTimeMS() {
         return GameMSTime;
     }

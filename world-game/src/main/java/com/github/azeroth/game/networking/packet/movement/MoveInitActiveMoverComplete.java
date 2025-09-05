@@ -12,6 +12,6 @@ class MoveInitActiveMoverComplete extends ClientPacket {
 
     @Override
     public void read() {
-        ticks = this.readUInt();
+        ticks = this.readUInt32();
     }
 }

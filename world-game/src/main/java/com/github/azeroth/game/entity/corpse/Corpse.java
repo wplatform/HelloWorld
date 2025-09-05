@@ -414,24 +414,24 @@ public class Corpse extends WorldObject {
     }
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedCorpseMask, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         if (requestedCorpseMask.isAnySet()) {
-            valuesMask.set(getTypeId().Corpse.getValue());
+            valuesMask.set(getObjectTypeId().Corpse.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().Corpse.getValue())) {
+        if (valuesMask.get(getObjectTypeId().Corpse.getValue())) {
             getCorpseData().writeUpdate(buffer, requestedCorpseMask, true, this, target);
         }
 

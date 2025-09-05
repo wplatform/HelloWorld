@@ -121,7 +121,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
         }
 
         public void read(WorldPacket data) {
-            timestamp = data.readUInt();
+            timestamp = data.readUInt32();
             text = data.readString(data.<Integer>readBit(12));
         }
 
@@ -140,7 +140,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
         public Integer reportLineIndex = null;
 
         public final void read(WorldPacket data) {
-            var linesCount = data.readUInt();
+            var linesCount = data.readUInt32();
             var hasReportLineIndex = data.readBit();
 
             data.resetBitPos();
@@ -150,7 +150,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
             }
 
             if (hasReportLineIndex) {
-                reportLineIndex = data.readUInt();
+                reportLineIndex = data.readUInt32();
             }
         }
     }
@@ -184,7 +184,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
 
             if (hasRealmAddress) {
                 SenderRealm senderRealm = new SenderRealm();
-                senderRealm.virtualRealmAddress = data.readUInt();
+                senderRealm.virtualRealmAddress = data.readUInt32();
                 senderRealm.field_4 = data.readUInt16();
                 senderRealm.field_6 = data.readUInt8();
                 realmAddress = senderRealm;
@@ -232,7 +232,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
         public ArrayList<SupportTicketHorusChatLine> lines = new ArrayList<>();
 
         public final void read(WorldPacket data) {
-            var linesCount = data.readUInt();
+            var linesCount = data.readUInt32();
             data.resetBitPos();
 
             for (int i = 0; i < linesCount; i++) {
@@ -348,7 +348,7 @@ public class SupportTicketSubmitComplaint extends ClientPacket {
             rideTicket = new rideTicket();
             rideTicket.read(data);
 
-            groupFinderActivityID = data.readUInt();
+            groupFinderActivityID = data.readUInt32();
             lastTitleAuthorGuid = data.readPackedGuid();
             lastDescriptionAuthorGuid = data.readPackedGuid();
             lastVoiceChatAuthorGuid = data.readPackedGuid();

@@ -13,7 +13,7 @@ public class QueryPetition extends ClientPacket {
 
     @Override
     public void read() {
-        petitionID = this.readUInt();
+        petitionID = this.readUInt32();
         itemGUID = this.readPackedGuid();
     }
 }

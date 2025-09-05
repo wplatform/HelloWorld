@@ -1,12 +1,13 @@
 package com.github.azeroth.game.domain.creature;
 
+import com.github.azeroth.game.domain.object.enums.SummonerType;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class TempSummonData {
     public int summonerId;
 
-    public short summonerType;
+    public SummonerType summonerType;
 
     public short groupId;
 

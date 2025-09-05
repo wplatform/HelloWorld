@@ -14,6 +14,6 @@ class CalendarAddEvent extends ClientPacket {
     @Override
     public void read() {
         eventInfo.read(this);
-        maxSize = this.readUInt();
+        maxSize = this.readUInt32();
     }
 }

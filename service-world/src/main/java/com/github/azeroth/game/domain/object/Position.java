@@ -284,6 +284,9 @@ public class Position {
         return getExactDistSq(pos) < dist * dist;
     }
 
+    public boolean isDefaultValue() {
+        return x == 0.0f && y == 0.0f && z == 0.0f && o == 0.0f;
+    }
 
     public final Vector3 toVector3() {
         return new Vector3(getX(), getY(), getZ());
@@ -314,4 +317,5 @@ public class Position {
     public String toString() {
         return "Position{X: %f Y: %f Z: %f O: %f}".formatted(x, y, z, o);
     }
+
 }

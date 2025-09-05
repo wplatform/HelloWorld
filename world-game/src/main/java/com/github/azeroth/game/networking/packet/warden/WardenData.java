@@ -13,7 +13,7 @@ class WardenData extends ClientPacket {
 
     @Override
     public void read() {
-        var size = this.readUInt();
+        var size = this.readUInt32();
 
         if (size != 0) {
             data = new byteBuffer(this.readBytes(size));

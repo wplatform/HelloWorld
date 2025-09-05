@@ -18,7 +18,7 @@ class GarrisonPurchaseBuilding extends ClientPacket {
     @Override
     public void read() {
         npcGUID = this.readPackedGuid();
-        plotInstanceID = this.readUInt();
-        buildingID = this.readUInt();
+        plotInstanceID = this.readUInt32();
+        buildingID = this.readUInt32();
     }
 }

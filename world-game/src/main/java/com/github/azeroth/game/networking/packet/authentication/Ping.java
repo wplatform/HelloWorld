@@ -13,8 +13,8 @@ class Ping extends ClientPacket {
 
     @Override
     public void read() {
-        serial = this.readUInt();
-        latency = this.readUInt();
+        serial = this.readUInt32();
+        latency = this.readUInt32();
     }
 }
 

@@ -1,14 +1,17 @@
 package com.github.azeroth.game.battlefield;
 
 
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.group.PlayerGroup;
-import com.github.azeroth.game.networking.packet.AreaSpiritHealerTime;
-import com.github.azeroth.game.networking.packet.playSound;
+import com.github.azeroth.game.map.Map;
+import com.github.azeroth.game.map.ZoneScript;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

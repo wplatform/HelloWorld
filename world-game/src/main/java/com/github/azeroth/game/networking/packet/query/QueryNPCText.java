@@ -13,7 +13,7 @@ public class QueryNPCText extends ClientPacket {
 
     @Override
     public void read() {
-        textID = this.readUInt();
+        textID = this.readUInt32();
         guid = this.readPackedGuid();
     }
 }

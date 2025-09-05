@@ -13,11 +13,11 @@ public final class AuctionFavoriteInfo {
     }
 
     public auctionFavoriteInfo(WorldPacket data) {
-        order = data.readUInt();
-        itemID = data.readUInt();
-        itemLevel = data.readUInt();
-        battlePetSpeciesID = data.readUInt();
-        suffixItemNameDescriptionID = data.readUInt();
+        order = data.readUInt32();
+        itemID = data.readUInt32();
+        itemLevel = data.readUInt32();
+        battlePetSpeciesID = data.readUInt32();
+        suffixItemNameDescriptionID = data.readUInt32();
     }
 
     public void write(WorldPacket data) {

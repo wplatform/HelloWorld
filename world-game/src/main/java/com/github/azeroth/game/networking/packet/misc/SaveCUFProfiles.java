@@ -17,7 +17,7 @@ class SaveCUFProfiles extends ClientPacket {
 
     @Override
     public void read() {
-        var count = this.readUInt();
+        var count = this.readUInt32();
 
         for (byte i = 0; i < count && i < PlayerConst.MaxCUFProfiles; i++) {
             CufProfile cufProfile = new CufProfile();

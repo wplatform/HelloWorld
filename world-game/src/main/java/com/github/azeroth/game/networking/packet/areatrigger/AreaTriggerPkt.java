@@ -14,7 +14,7 @@ class AreaTriggerPkt extends ClientPacket {
 
     @Override
     public void read() {
-        areaTriggerID = this.readUInt();
+        areaTriggerID = this.readUInt32();
         entered = this.readBit();
         fromClient = this.readBit();
     }

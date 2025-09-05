@@ -515,7 +515,7 @@ public final class ConditionManager {
         }
 
         if (condition.weatherID != 0) {
-            if (player.getMap().getZoneWeather(player.getZone()) != WeatherState.forValue(condition.weatherID)) {
+            if (player.getMap().getZoneWeather(player.getZoneId()) != WeatherState.forValue(condition.weatherID)) {
                 return false;
             }
         }
@@ -567,7 +567,7 @@ public final class ConditionManager {
 
             for (var i = 0; i < condition.areaID.length; ++i) {
                 if (condition.AreaID[i] != 0) {
-                    results[i] = player.getArea() == condition.AreaID[i] || player.getZone() == condition.AreaID[i];
+                    results[i] = player.getAreaId() == condition.AreaID[i] || player.getZoneId() == condition.AreaID[i];
                 }
             }
 

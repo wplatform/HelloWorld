@@ -1,6 +1,7 @@
 package com.github.azeroth.game.entity.creature;
 
 
+import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.domain.SandboxScaling;
 import com.github.azeroth.defines.*;
@@ -13,17 +14,17 @@ import com.github.azeroth.game.domain.object.ObjectDefine;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.object.WorldLocation;
+import com.github.azeroth.game.domain.spawn.RespawnInfo;
 import com.github.azeroth.game.domain.unit.*;
 import com.github.azeroth.game.entity.object.*;
 import com.github.azeroth.game.domain.object.enums.CellMoveState;
 import com.github.azeroth.game.domain.object.enums.HighGuid;
-import com.github.azeroth.game.entity.object.update.ObjectFields;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.loot.Loot;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.movement.MovementGeneratorType;
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
 import com.github.azeroth.game.spell.SpellEffectInfo;
 import com.github.azeroth.game.spell.SpellInfo;
 import com.github.azeroth.game.world.setting.WorldSetting;
@@ -276,9 +277,8 @@ public class Creature extends Unit implements GirdObject {
 
 
 
-    @Override
     public CreatureAI getAI() {
-        IUnitAI tempVar = getAi();
+        IUnitAI tempVar = super.getAI();
         return tempVar instanceof CreatureAI ? (CreatureAI) tempVar : null;
     }
 
@@ -316,7 +316,7 @@ public class Creature extends Unit implements GirdObject {
                 }
 
                 if (getFormation() != null) {
-                    FormationMgr.removeCreatureFromGroup(getFormation(), this);
+                    CreatureGroup.removeCreatureFromGroup(getFormation(), this);
                 }
 
                 super.removeFromWorld();
@@ -350,10 +350,10 @@ public class Creature extends Unit implements GirdObject {
             return;
         }
 
-        var formationInfo = FormationMgr.getFormationInfo(lowguid);
+        var formationInfo = getWorldContext().getObjectManager().getFormationInfo(lowguid);
 
         if (formationInfo != null) {
-            FormationMgr.addCreatureToGroup(formationInfo.getLeaderSpawnId(), this);
+            CreatureGroup.addCreatureToGroup(formationInfo.leaderSpawnId, this);
         }
     }
 
@@ -650,7 +650,7 @@ public class Creature extends Unit implements GirdObject {
 
         // Do not update guardian stats here - they are handled in Guardian::InitStatsForLevel()
         if (!isGuardian()) {
-            setMeleeDamageSchool(SpellSchools.forValue(cInfo.dmgSchool));
+            setMeleeDamageSchool(SpellSchool.forValue(cInfo.dmgSchool));
             setStatFlatModifier(UnitMod.RESISTANCE_HOLY, UnitModifierFlatType.BASE_VALUE, cInfo.resistance[SpellSchool.HOLY.ordinal()]);
             setStatFlatModifier(UnitMod.RESISTANCE_FIRE, UnitModifierFlatType.BASE_VALUE, cInfo.resistance[SpellSchool.FIRE.ordinal()]);
             setStatFlatModifier(UnitMod.RESISTANCE_NATURE, UnitModifierFlatType.BASE_VALUE, cInfo.resistance[SpellSchool.NATURE.ordinal()]);
@@ -2029,7 +2029,7 @@ public class Creature extends Unit implements GirdObject {
 
                 removeUnitFlag(UnitFlag.IN_COMBAT);
 
-                setMeleeDamageSchool(SpellSchools.forValue(cInfo.dmgSchool));
+                setMeleeDamageSchool(SpellSchool.forValue(cInfo.dmgSchool));
             }
 
             initializeMovementAI();
@@ -2199,7 +2199,7 @@ public class Creature extends Unit implements GirdObject {
             applySpellImmune(placeholderSpellId, SpellImmunity.mechanic, i, false);
         }
 
-        for (var i = SpellSchools.NORMAL.getValue(); i < SpellSchools.max.getValue(); ++i) {
+        for (var i = SpellSchool.NORMAL.getValue(); i < SpellSchool.max.getValue(); ++i) {
             applySpellImmune(placeholderSpellId, SpellImmunity.school, 1 << i, false);
         }
 
@@ -2221,7 +2221,7 @@ public class Creature extends Unit implements GirdObject {
         var schoolMask = getTemplate().spellSchoolImmuneMask;
 
         if (schoolMask != 0) {
-            for (var i = SpellSchools.NORMAL.getValue(); i <= SpellSchools.max.getValue(); ++i) {
+            for (var i = SpellSchool.NORMAL.getValue(); i <= SpellSchool.max.getValue(); ++i) {
                 if ((schoolMask & (1 << i)) != 0) {
                     applySpellImmune(placeholderSpellId, SpellImmunity.school, 1 << i, true);
                 }
@@ -2361,7 +2361,7 @@ public class Creature extends Unit implements GirdObject {
         }
 
         // or if enemy is in evade mode
-        if (enemy.getTypeId() == TypeId.UNIT && enemy.toCreature().isInEvadeMode()) {
+        if (enemy.getObjectTypeId() == TypeId.UNIT && enemy.toCreature().isInEvadeMode()) {
             return false;
         }
 
@@ -2470,7 +2470,7 @@ public class Creature extends Unit implements GirdObject {
         }
 
         // or if enemy is in evade mode
-        if (victim.getTypeId() == TypeId.UNIT && victim.toCreature().isInEvadeMode()) {
+        if (victim.getObjectTypeId() == TypeId.UNIT && victim.toCreature().isInEvadeMode()) {
             return false;
         }
 
@@ -2582,7 +2582,7 @@ public class Creature extends Unit implements GirdObject {
         var enemy_team = attacker.getTeam();
 
         ZoneUnderAttack packet = new ZoneUnderAttack();
-        packet.areaID = getArea();
+        packet.areaID = getAreaId();
         global.getWorldMgr().sendGlobalMessage(packet, null, (enemy_team == Team.ALLIANCE ? Team.Horde : Team.ALLIANCE));
     }
 
@@ -3469,7 +3469,7 @@ public class Creature extends Unit implements GirdObject {
         if (isWildBattlePet()) {
             byte wildBattlePetLevel = 1;
 
-            var areaTable = CliDB.AreaTableStorage.get(getZone());
+            var areaTable = CliDB.AreaTableStorage.get(getZoneId());
 
             if (areaTable != null) {
                 if (areaTable.WildBattlePetLevelMin > 0) {

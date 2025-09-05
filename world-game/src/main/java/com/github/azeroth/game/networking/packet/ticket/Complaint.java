@@ -46,8 +46,8 @@ class Complaint extends ClientPacket {
 
         public void read(WorldPacket data) {
             playerGuid = data.readPackedGuid();
-            realmAddress = data.readUInt();
-            timeSinceOffence = data.readUInt();
+            realmAddress = data.readUInt32();
+            timeSinceOffence = data.readUInt32();
         }
 
         public ComplaintOffender clone() {
@@ -67,8 +67,8 @@ class Complaint extends ClientPacket {
         public String messageLog;
 
         public void read(WorldPacket data) {
-            command = data.readUInt();
-            channelID = data.readUInt();
+            command = data.readUInt32();
+            channelID = data.readUInt32();
             messageLog = data.readString(data.<Integer>readBit(12));
         }
 

@@ -3,7 +3,9 @@ package com.github.azeroth.game.entity.gobject;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.utils.IntArray;
+import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.defines.GOState;
+import com.github.azeroth.defines.GameObjectDynamicLowFlag;
 import com.github.azeroth.defines.GameObjectType;
 import com.github.azeroth.defines.LootMode;
 import com.github.azeroth.game.ai.AISelector;
@@ -16,11 +18,11 @@ import com.github.azeroth.game.domain.gobject.GameObjectTemplateAddon;
 import com.github.azeroth.game.domain.map.MapDefine;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.Position;
-import com.github.azeroth.game.entity.GameObjectFieldData;
-import com.github.azeroth.game.entity.ObjectFieldData;
+import com.github.azeroth.game.domain.spawn.RespawnInfo;
 
 import com.github.azeroth.game.entity.object.*;
 import com.github.azeroth.game.domain.object.enums.CellMoveState;
+import com.github.azeroth.game.entity.object.update.UpdateFieldFlag;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.loot.Loot;
@@ -39,6 +41,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 @Getter
@@ -49,7 +52,7 @@ public class GameObject extends WorldObject implements GirdObject {
     private final HashMap<Integer, ObjectGuid> chairListSlots = new HashMap<Integer, ObjectGuid>();
     private final ArrayList<ObjectGuid> skillupList = new ArrayList<>();
     protected GameObjectValue goValueProtected = new GameObjectValue(); // TODO: replace with m_goTypeImpl
-    protected GameObjectTemplate goInfoProtected;
+    protected GameObjectTemplate goInfo;
     protected GameObjectTemplateAddon goTemplateAddonProtected;
     private GameObjectTypeBase goTypeImpl;
     private GameObjectData goData;
@@ -82,10 +85,12 @@ public class GameObject extends WorldObject implements GirdObject {
     private Cell currentCell;
     private CellMoveState moveState;
     private Position newPosition = new Position();
-    private GameObjectFieldData gameObjectFieldData;
+    private GameObjectData gameObjectFieldData;
     private Position stationaryPosition;
     private Loot loot;
     private GameObjectModel model;
+    private Float pathProgressForClient;
+
 
     public GameObject() {
         super(false);
@@ -208,11 +213,11 @@ public class GameObject extends WorldObject implements GirdObject {
         return true;
     }
 
-    public final GameObjectFieldData getGameObjectFieldData() {
+    public final GameObjectData getGameObjectFieldData() {
         return gameObjectFieldData;
     }
 
-    public final void setGameObjectFieldData(GameObjectFieldData value) {
+    public final void setGameObjectFieldData(GameObjectData value) {
         gameObjectFieldData = value;
     }
 
@@ -269,6 +274,14 @@ public class GameObject extends WorldObject implements GirdObject {
     public void setFaction(int value) {
         setUpdateFieldValue(getValues().modifyValue(getGameObjectFieldData()).modifyValue(getGameObjectFieldData().factionTemplate), value);
     }
+
+    public Transport toTransport() {
+        if (goInfo.type == GameObjectType.MAP_OBJ_TRANSPORT)
+            return (Transport) this;
+        else
+            return null;
+    }
+
 
     @Override
     public float getStationaryX() {
@@ -407,7 +420,7 @@ public class GameObject extends WorldObject implements GirdObject {
     }
 
     public final GameObjectTemplate getTemplate() {
-        return goInfoProtected;
+        return goInfo;
     }
 
     public final GameObjectTemplateAddon getTemplateAddon() {
@@ -861,7 +874,7 @@ public class GameObject extends WorldObject implements GirdObject {
                             usetimes = 0;
 
                             switch (getGoType()) {
-                                case FishingNode: //  can't fish now
+                                case FISHING_NODE: //  can't fish now
                                 {
                                     var caster = getOwnerUnit();
 
@@ -1277,13 +1290,13 @@ public class GameObject extends WorldObject implements GirdObject {
         setLootState(LootState.NotReady);
         removeFromOwner();
 
-        if (goInfoProtected.type == GameObjectType.capturePoint) {
+        if (goInfo.type == GameObjectType.capturePoint) {
             sendMessageToSet(new CapturePointRemoved(getGUID()), true);
         }
 
         sendGameObjectDespawn();
 
-        if (goInfoProtected.type != GameObjectType.transport) {
+        if (goInfo.type != GameObjectType.transport) {
             setGoState(GOState.Ready);
         }
 
@@ -1313,7 +1326,7 @@ public class GameObject extends WorldObject implements GirdObject {
 
         Loot fishLoot = new loot(getMap(), getGUID(), LootType.FISHING, null);
 
-        var areaId = getArea();
+        var areaId = getAreaId();
         AreaTableRecord areaEntry;
 
         while ((areaEntry = CliDB.AreaTableStorage.get(areaId)) != null) {
@@ -1338,7 +1351,7 @@ public class GameObject extends WorldObject implements GirdObject {
 
         Loot fishLoot = new loot(getMap(), getGUID(), LootType.FishingJunk, null);
 
-        var areaId = getArea();
+        var areaId = getAreaId();
         AreaTableRecord areaEntry;
 
         while ((areaEntry = CliDB.AreaTableStorage.get(areaId)) != null) {
@@ -1948,11 +1961,11 @@ public class GameObject extends WorldObject implements GirdObject {
         var playerUser = user.toPlayer();
 
         if (playerUser != null) {
-            if (goInfoProtected.getNoDamageImmune() != 0 && playerUser.hasUnitFlag(UnitFlag.Immune)) {
+            if (goInfo.getNoDamageImmune() != 0 && playerUser.hasUnitFlag(UnitFlag.Immune)) {
                 return;
             }
 
-            if (!goInfoProtected.isUsableMounted()) {
+            if (!goInfo.isUsableMounted()) {
                 playerUser.removeAurasByType(AuraType.Mounted);
             }
 
@@ -2896,7 +2909,7 @@ public class GameObject extends WorldObject implements GirdObject {
 
                 if (personalLoot.size() >= info.gatheringNode.maxNumberofLoots) {
                     setGoState(GOState.active);
-                    setDynamicFlag(GameObjectDynamicLowFlags.NoInterract);
+                    setDynamicFlag(GameObjectDynamicLowFlag.NoInterract);
                 }
 
                 if (getLootState() != LootState.Activated) {
@@ -2918,7 +2931,7 @@ public class GameObject extends WorldObject implements GirdObject {
             }
             default:
                 if (getGoType().getValue() >= GameObjectType.max.getValue()) {
-                    Log.outError(LogFilter.Server, "GameObject.use(): unit (type: {0}, guid: {1}, name: {2}) tries to use object (guid: {3}, entry: {4}, name: {5}) of unknown type ({6})", user.getTypeId(), user.getGUID().toString(), user.getName(), getGUID().toString(), getEntry(), getTemplate().name, getGoType());
+                    Log.outError(LogFilter.Server, "GameObject.use(): unit (type: {0}, guid: {1}, name: {2}) tries to use object (guid: {3}, entry: {4}, name: {5}) of unknown type ({6})", user.getObjectTypeId(), user.getGUID().toString(), user.getName(), getGUID().toString(), getEntry(), getTemplate().name, getGoType());
                 }
 
                 break;
@@ -2959,7 +2972,7 @@ public class GameObject extends WorldObject implements GirdObject {
     }
 
     public final boolean isInRange(float x, float y, float z, float radius) {
-        var info = CliDB.GameObjectDisplayInfoStorage.get(goInfoProtected.displayId);
+        var info = CliDB.GameObjectDisplayInfoStorage.get(goInfo.displayId);
 
         if (info == null) {
             return isWithinDist3D(x, y, z, radius);
@@ -3222,7 +3235,7 @@ public class GameObject extends WorldObject implements GirdObject {
         switch (state) {
             case Intact:
                 removeFlag(GameObjectFlags.Damaged.getValue() | GameObjectFlags.destroyed.getValue());
-                setDisplayId(goInfoProtected.displayId);
+                setDisplayId(goInfo.displayId);
 
                 if (setHealth) {
                     goValueProtected.building.health = goValueProtected.building.maxHealth;
@@ -3237,13 +3250,13 @@ public class GameObject extends WorldObject implements GirdObject {
                     GameEvents.trigger(getTemplate().destructibleBuilding.damagedEvent, attackerOrHealer, this);
                 }
 
-                getAI().damaged(attackerOrHealer, goInfoProtected.destructibleBuilding.damagedEvent);
+                getAI().damaged(attackerOrHealer, goInfo.destructibleBuilding.damagedEvent);
 
                 removeFlag(GameObjectFlags.destroyed);
                 setFlag(GameObjectFlags.Damaged);
 
-                var modelId = goInfoProtected.displayId;
-                var modelData = CliDB.DestructibleModelDataStorage.get(goInfoProtected.destructibleBuilding.destructibleModelRec);
+                var modelId = goInfo.displayId;
+                var modelData = CliDB.DestructibleModelDataStorage.get(goInfo.destructibleBuilding.destructibleModelRec);
 
                 if (modelData != null) {
                     if (modelData.State1Wmo != 0) {
@@ -3272,7 +3285,7 @@ public class GameObject extends WorldObject implements GirdObject {
                     GameEvents.trigger(getTemplate().destructibleBuilding.destroyedEvent, attackerOrHealer, this);
                 }
 
-                getAI().destroyed(attackerOrHealer, goInfoProtected.destructibleBuilding.destroyedEvent);
+                getAI().destroyed(attackerOrHealer, goInfo.destructibleBuilding.destroyedEvent);
 
                 var player = attackerOrHealer != null ? attackerOrHealer.getCharmerOrOwnerPlayerOrPlayerItself() : null;
 
@@ -3287,8 +3300,8 @@ public class GameObject extends WorldObject implements GirdObject {
                 removeFlag(GameObjectFlags.Damaged);
                 setFlag(GameObjectFlags.destroyed);
 
-                var modelId = goInfoProtected.displayId;
-                var modelData = CliDB.DestructibleModelDataStorage.get(goInfoProtected.destructibleBuilding.destructibleModelRec);
+                var modelId = goInfo.displayId;
+                var modelData = CliDB.DestructibleModelDataStorage.get(goInfo.destructibleBuilding.destructibleModelRec);
 
                 if (modelData != null) {
                     if (modelData.State2Wmo != 0) {
@@ -3314,8 +3327,8 @@ public class GameObject extends WorldObject implements GirdObject {
 
                 removeFlag(GameObjectFlags.Damaged.getValue() | GameObjectFlags.destroyed.getValue());
 
-                var modelId = goInfoProtected.displayId;
-                var modelData = CliDB.DestructibleModelDataStorage.get(goInfoProtected.destructibleBuilding.destructibleModelRec);
+                var modelId = goInfo.displayId;
+                var modelData = CliDB.DestructibleModelDataStorage.get(goInfo.destructibleBuilding.destructibleModelRec);
 
                 if (modelData != null) {
                     if (modelData.State3Wmo != 0) {
@@ -3412,7 +3425,7 @@ public class GameObject extends WorldObject implements GirdObject {
     public final byte getNameSetId() {
         switch (getGoType()) {
             case DestructibleBuilding:
-                var modelData = CliDB.DestructibleModelDataStorage.get(goInfoProtected.destructibleBuilding.destructibleModelRec);
+                var modelData = CliDB.DestructibleModelDataStorage.get(goInfo.destructibleBuilding.destructibleModelRec);
 
                 if (modelData != null) {
                     switch (getDestructibleState()) {
@@ -3507,25 +3520,30 @@ public class GameObject extends WorldObject implements GirdObject {
         data.writeBytes(buffer);
     }
 
+    @Override
+    public void heartbeat() {
+
+    }
+
     public final void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedGameObjectMask, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         if (requestedGameObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().gameObject.getValue());
+            valuesMask.set(getObjectTypeId().gameObject.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().gameObject.getValue())) {
+        if (valuesMask.get(getObjectTypeId().gameObject.getValue())) {
             getGameObjectFieldData().writeUpdate(buffer, requestedGameObjectMask, true, this, target);
         }
 
@@ -3564,7 +3582,7 @@ public class GameObject extends WorldObject implements GirdObject {
             var dynamicFlags = (int) getDynamicFlags().getValue();
             dynamicFlags &= 0xFFFF; // remove high bits
             dynamicFlags |= (int) (progress * 65535.0f) << 16;
-            replaceAllDynamicFlags(GameObjectDynamicLowFlags.forValue((short) dynamicFlags));
+            replaceAllDynamicFlags(GameObjectDynamicLowFlag.forValue((short) dynamicFlags));
 
             if (!marked) {
                 getObjectData().clearChanged(getObjectData().dynamicFlags);
@@ -3790,7 +3808,7 @@ public class GameObject extends WorldObject implements GirdObject {
     }
 
     public final boolean canInteractWithCapturePoint(Player target) {
-        if (goInfoProtected.type != GameObjectType.capturePoint) {
+        if (goInfo.type != GameObjectType.capturePoint) {
             return false;
         }
 
@@ -3807,11 +3825,11 @@ public class GameObject extends WorldObject implements GirdObject {
     }
 
     public final boolean meetsInteractCondition(Player user) {
-        if (goInfoProtected.getConditionID1() == 0) {
+        if (goInfo.getConditionID1() == 0) {
             return true;
         }
 
-        var playerCondition = CliDB.PlayerConditionStorage.get(goInfoProtected.getConditionID1());
+        var playerCondition = CliDB.PlayerConditionStorage.get(goInfo.getConditionID1());
 
         if (playerCondition != null) {
             if (!ConditionManager.isPlayerMeetingCondition(user, playerCondition)) {
@@ -3842,24 +3860,28 @@ public class GameObject extends WorldObject implements GirdObject {
         setUpdateFieldValue(getValues().modifyValue(getGameObjectFieldData()).modifyValue(getGameObjectFieldData().level), level);
     }
 
-    public final GameObjectDynamicLowFlags getDynamicFlags() {
-        return GameObjectDynamicLowFlags.forValue((short) ((int) getObjectData().dynamicFlags));
+    public final GameObjectDynamicLowFlag getDynamicFlags() {
+        return GameObjectDynamicLowFlag.forValue((short) ((int) getObjectData().dynamicFlags));
     }
 
-    public final boolean hasDynamicFlag(GameObjectDynamicLowFlags flag) {
-        return (getObjectData().dynamicFlags & (int) flag.getValue()) != 0;
+    @Override
+    protected EnumFlag<UpdateFieldFlag> getUpdateFieldFlagsFor(Player target) {
+        return null;
     }
 
-    public final void setDynamicFlag(GameObjectDynamicLowFlags flag) {
-        setUpdateFieldFlagValue(getValues().modifyValue(getObjectData()).modifyValue(getObjectData().dynamicFlags), (int) flag.getValue());
+    @Override
+    protected void buildValuesCreate(WorldPacket data, EnumFlag<UpdateFieldFlag> flags, Player target) {
+
     }
 
-    public final void removeDynamicFlag(GameObjectDynamicLowFlags flag) {
-        removeUpdateFieldFlagValue(getValues().modifyValue(getObjectData()).modifyValue(getObjectData().dynamicFlags), (int) flag.getValue());
+    @Override
+    protected void buildValuesUpdate(WorldPacket data, EnumFlag<UpdateFieldFlag> flags, Player target) {
+
     }
 
-    public final void replaceAllDynamicFlags(GameObjectDynamicLowFlags flag) {
-        setUpdateFieldValue(getValues().modifyValue(getObjectData()).modifyValue(getObjectData().dynamicFlags), (int) flag.getValue());
+    @Override
+    public void buildValuesUpdateWithFlag(WorldPacket data, EnumFlag<UpdateFieldFlag> flags, Player target) {
+
     }
 
     public final void addToSkillupList(ObjectGuid playerGuid) {
@@ -4006,7 +4028,7 @@ public class GameObject extends WorldObject implements GirdObject {
 
         create(guid);
 
-        goInfoProtected = goInfo;
+        this.goInfo = goInfo;
         goTemplateAddonProtected = global.getObjectMgr().getGameObjectTemplateAddon(entry);
 
         if (goInfo.type.getValue() >= GameObjectType.max.getValue()) {
@@ -4110,11 +4132,11 @@ public class GameObject extends WorldObject implements GirdObject {
                 break;
             case PhaseableMo:
                 removeFlag(GameObjectFlags.forValue(0xF00));
-                setFlag(GameObjectFlags.forValue((goInfoProtected.phaseableMO.areaNameSet & 0xF) << 8));
+                setFlag(GameObjectFlags.forValue((this.goInfo.phaseableMO.areaNameSet & 0xF) << 8));
 
                 break;
             case CapturePoint:
-                setUpdateFieldValue(getValues().modifyValue(getGameObjectFieldData()).modifyValue(getGameObjectFieldData().spellVisualID), goInfoProtected.capturePoint.spellVisual1);
+                setUpdateFieldValue(getValues().modifyValue(getGameObjectFieldData()).modifyValue(getGameObjectFieldData().spellVisualID), this.goInfo.capturePoint.spellVisual1);
                 goValueProtected.capturePoint.assaultTimer = 0;
                 goValueProtected.capturePoint.lastTeamCapture = TeamIds.Neutral;
                 goValueProtected.capturePoint.state = BattlegroundCapturePointState.Neutral;

@@ -1,6 +1,10 @@
 package com.github.azeroth.common;
 
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.BitSet;
+
 public class FlagsArray {
     protected final int[] array;
 
@@ -60,6 +64,14 @@ public class FlagsArray {
 
     public void set(int[] right) {
         System.arraycopy(right, 0, array, 0, array.length);
+    }
+
+    public BitSet toBitSet() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 * array.length);
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.put(array);
+        byteBuffer.flip();
+        return BitSet.valueOf(byteBuffer.array());
     }
 
 }

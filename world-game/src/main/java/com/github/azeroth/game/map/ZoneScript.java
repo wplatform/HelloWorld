@@ -1,13 +1,16 @@
 package com.github.azeroth.game.map;
 
 
+import com.github.azeroth.game.domain.creature.CreatureData;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.creature.Creature;
+import com.github.azeroth.game.entity.creature.CreatureGroup;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.unit.Unit;
 
 public class ZoneScript {
-    protected eventMap events = new eventMap();
+
 
 
     public void triggerGameEvent(int gameEventId, WorldObject source) {
@@ -26,7 +29,7 @@ public class ZoneScript {
         }
     }
 
-    public int getCreatureEntry(long guidlow, CreatureData data) {
+    public int getCreatureEntry(int spawnId, CreatureData data) {
         return data.id;
     }
 
@@ -49,9 +52,12 @@ public class ZoneScript {
     public void onUnitDeath(Unit unit) {
     }
 
+    // Triggers when the CreatureGroup no longer has any alive members (either last alive member dies or is removed from the group)
+    public void onCreatureGroupDepleted(CreatureGroup creatureGroup) { }
+
     //All-purpose data storage 64 bit
     public ObjectGuid getGuidData(int DataId) {
-        return ObjectGuid.Empty;
+        return ObjectGuid.EMPTY;
     }
 
     public void setGuidData(int DataId, ObjectGuid value) {

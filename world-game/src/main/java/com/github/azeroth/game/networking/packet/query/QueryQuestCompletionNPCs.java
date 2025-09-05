@@ -12,11 +12,11 @@ class QueryQuestCompletionNPCs extends ClientPacket {
 
     @Override
     public void read() {
-        var questCount = this.readUInt();
+        var questCount = this.readUInt32();
         questCompletionNPCs = new int[questCount];
 
         for (int i = 0; i < questCount; ++i) {
-            QuestCompletionNPCs[i] = this.readUInt();
+            QuestCompletionNPCs[i] = this.readUInt32();
         }
     }
 }

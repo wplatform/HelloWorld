@@ -1,6 +1,7 @@
 package com.github.azeroth.game.networking.packet.trait;
 
 import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
 
 public class TraitConfigCommitFailed extends ServerPacket {
     public int configID;
@@ -21,7 +22,7 @@ public class TraitConfigCommitFailed extends ServerPacket {
     }
 
     public TraitConfigCommitFailed(int configId, int spellId, int reason) {
-        super(ServerOpcode.TraitConfigCommitFailed);
+        super(ServerOpCode.TraitConfigCommitFailed);
         configID = configId;
         spellID = spellId;
         reason = reason;

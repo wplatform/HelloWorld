@@ -5,6 +5,7 @@ import com.github.azeroth.game.ai.AISelector;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.object.enums.TypeId;
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.movement.enums.*;
 import com.github.azeroth.game.movement.generator.*;
 import com.github.azeroth.game.movement.spline.MoveSpline;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
@@ -16,7 +17,7 @@ import java.util.TreeSet;
 public class MotionMaster {
     public static final float GRAVITY = 19.29110527038574f;
     public static final float SPEED_CHARGE = 42.0f;
-    private static final idleMovementGenerator staticIdleMovement = new idleMovementGenerator();
+    private static final IdleMovementGenerator staticIdleMovement = new IdleMovementGenerator();
 
     private static int splineId;
 
@@ -1272,7 +1273,7 @@ public class MotionMaster {
 
 
     public final void moveFormation(Unit leader, float range, float angle, int point1, int point2) {
-        if (getOwner().getTypeId() == TypeId.UNIT && leader != null) {
+        if (getOwner().getObjectTypeId() == TypeId.UNIT && leader != null) {
             add(new FormationMovementGenerator(leader, range, angle, point1, point2), MovementSlot.Default);
         }
     }

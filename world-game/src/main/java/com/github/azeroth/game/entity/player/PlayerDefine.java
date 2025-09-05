@@ -79,7 +79,3 @@ public interface PlayerDefine {
 
 
 }
-
-
-record SpellModValue(double flat, double pct) {
-};

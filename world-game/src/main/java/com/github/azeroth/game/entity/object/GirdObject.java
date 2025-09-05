@@ -7,6 +7,7 @@ public interface GirdObject {
     default boolean isInGrid() {
         return getCurrentCell() != null;
     }
+
     void setNewCellPosition(float x, float y, float z, float o);
 
     Cell getCurrentCell();

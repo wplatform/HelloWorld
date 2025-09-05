@@ -7,6 +7,7 @@ import com.github.azeroth.game.entity.SocketedGem;
 import com.github.azeroth.game.entity.UpdateMask;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.object.update.UpdateData;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.loot.Loot;
 import com.github.azeroth.game.networking.WorldPacket;
@@ -944,11 +945,11 @@ public class Item extends WorldObject {
     }
 
     public final boolean isAzeriteItem() {
-        return getTypeId() == TypeId.azeriteItem;
+        return getObjectTypeId() == TypeId.azeriteItem;
     }
 
     public final boolean isAzeriteEmpoweredItem() {
-        return getTypeId() == TypeId.azeriteEmpoweredItem;
+        return getObjectTypeId() == TypeId.azeriteEmpoweredItem;
     }
 
     public final boolean isCurrencyToken() {
@@ -2275,7 +2276,7 @@ public class Item extends WorldObject {
     @Override
     public void buildValuesUpdateWithFlag(WorldPacket data, UpdateFieldFlag flags, Player target) {
         UpdateMask valuesMask = new UpdateMask(14);
-        valuesMask.set(getTypeId().item.getValue());
+        valuesMask.set(getObjectTypeId().item.getValue());
 
         WorldPacket buffer = new WorldPacket();
         UpdateMask mask = new UpdateMask(40);
@@ -3040,26 +3041,26 @@ public class Item extends WorldObject {
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedItemMask, Player target) {
         var flags = getUpdateFieldFlagsFor(target);
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         getItemData().filterDisallowedFieldsMaskForFlag(requestedItemMask, flags);
 
         if (requestedItemMask.isAnySet()) {
-            valuesMask.set(getTypeId().item.getValue());
+            valuesMask.set(getObjectTypeId().item.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().item.getValue())) {
+        if (valuesMask.get(getObjectTypeId().item.getValue())) {
             getItemData().writeUpdate(buffer, requestedItemMask, true, this, target);
         }
 

@@ -17,7 +17,7 @@ class PetAction extends ClientPacket {
     public void read() {
         petGUID = this.readPackedGuid();
 
-        tangible.Action0Param = this.readUInt();
+        tangible.Action0Param = this.readUInt32();
         targetGUID = this.readPackedGuid();
 
         actionPosition = this.readVector3();

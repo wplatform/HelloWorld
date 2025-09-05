@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr3 {
+public enum SpellAttr3 implements EnumFlag.FlagValue {
     PVP_ENABLING(0x00000001), // TITLE PvP Enabling
     NO_PROC_EQUIP_REQUIREMENT(0x00000002), // TITLE No Proc Equip Requirement DESCRIPTION Ignores subclass mask check when checking proc
     NO_CASTING_BAR_TEXT(0x00000004), // TITLE No Casting Bar Text

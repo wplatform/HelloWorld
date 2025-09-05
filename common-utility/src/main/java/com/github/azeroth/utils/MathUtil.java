@@ -64,65 +64,102 @@ public class MathUtil {
     }
 
 
-
-
-
-    public static int calculatePct(int value, double pct)
-    {
-        return (int)(value * (pct / 100.0f));
-    }
-    
-    public static long calculatePct(long value, double pct)
-    {
-        return (long)(value * (pct / 100.0f));
+    public static int calculatePct(int value, double pct) {
+        return (int) (value * (pct / 100.0f));
     }
 
-    public static double calculatePct(double value, double pct)
-    {
-        return (value * (pct / 100.0f));
+    public static long calculatePct(long value, double pct) {
+        return (long) (value * (pct / 100.0f));
     }
-    
-    public static double calculatePct(float value, double pct)
-    {
+
+    public static double calculatePct(double value, double pct) {
         return (value * (pct / 100.0f));
     }
 
-    public static double calculatePct(double value, float pct)
-    {
+    public static double calculatePct(float value, double pct) {
         return (value * (pct / 100.0f));
     }
 
-    public static int calculatePct(int value, float pct)
-    {
-        return (int)(value * (pct / 100.0f));
+    public static double calculatePct(double value, float pct) {
+        return (value * (pct / 100.0f));
     }
-    
 
-    public static float calculatePct(float value, float pct)
-    {
+    public static int calculatePct(int value, float pct) {
+        return (int) (value * (pct / 100.0f));
+    }
+
+
+    public static float calculatePct(float value, float pct) {
         return value * (pct / 100.0f);
     }
-    
 
-    public static long calculatePct(long value, float pct)
-    {
-        return (long)(value * (pct / 100.0f));
+
+    public static long calculatePct(long value, float pct) {
+        return (long) (value * (pct / 100.0f));
     }
 
-    public static float GetPctOf(float value, float max)
-    {
+    public static float GetPctOf(float value, float max) {
         return (value / max) * 100.0f;
     }
 
-    public static double GetPctOf(double value, int max)
-    {
+    public static double GetPctOf(double value, int max) {
         return (value / max) * 100.0f;
     }
 
-    public static int GetPctOf(int value, int max)
-    {
-        return (int)(((float) value / max) * 100.0f);
+    public static int GetPctOf(int value, int max) {
+        return (int) (((float) value / max) * 100.0f);
     }
+
+
+    public static int addPct(int base, int pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    public static int addPct(int base, float pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    public static long addPct(long base, int pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    public static long addPct(long base, float pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    public static float addPct(float base, float pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    public static double addPct(double base, double pct) {
+        return base + calculatePct(base, pct);
+    }
+
+    // ApplyPct functions
+    public static int applyPct(int base, int pct) {
+        return calculatePct(base, pct);
+    }
+
+    public static int applyPct(int base, float pct) {
+        return calculatePct(base, pct);
+    }
+
+    public static long applyPct(long base, int pct) {
+        return calculatePct(base, pct);
+    }
+
+    public static long applyPct(long base, float pct) {
+        return calculatePct(base, pct);
+    }
+
+    public static float applyPct(float base, float pct) {
+        return calculatePct(base, pct);
+    }
+
+    public static double applyPct(double base, double pct) {
+        return calculatePct(base, pct);
+    }
+
 
     public static int roundToInterval(int num, int floor, int ceil) {
         return Math.min(Math.max(num, floor), ceil);
@@ -137,5 +174,5 @@ public class MathUtil {
         return Math.min(Math.max(num, floor), ceil);
     }
 
-    
+
 }

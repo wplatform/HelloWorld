@@ -6,27 +6,12 @@ import java.util.ArrayList;
 
 
 public class MovementForces {
-    private final ArrayList<MovementForce> forces = new ArrayList<>();
-    private float modMagnitude = 1.0f;
+    public final ArrayList<MovementForce> forces = new ArrayList<>();
+    public float modMagnitude = 1.0f;
 
-    public final float getModMagnitude() {
-        return modMagnitude;
-    }
-
-    public final void setModMagnitude(float value) {
-        modMagnitude = value;
-    }
-
-    public final boolean isEmpty() {
-        return forces.isEmpty() && modMagnitude == 1.0f;
-    }
-
-    public final ArrayList<MovementForce> getForces() {
-        return forces;
-    }
 
     public final boolean add(MovementForce newForce) {
-        var movementForce = findMovementForce(newForce.getID());
+        var movementForce = findMovementForce(newForce.getId());
 
         if (movementForce == null) {
             forces.add(newForce);
@@ -50,6 +35,6 @@ public class MovementForces {
     }
 
     private MovementForce findMovementForce(ObjectGuid id) {
-        return tangible.ListHelper.find(forces, force -> Objects.equals(force.ID, id));
+        return forces.stream().filter(force -> force.id.equals(id)).findFirst().orElse(null);
     }
 }

@@ -7,6 +7,7 @@ import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.NPCFlags2;
 import com.github.azeroth.game.movement.*;
+import com.github.azeroth.game.movement.enums.PathType;
 
 import java.util.ArrayList;
 

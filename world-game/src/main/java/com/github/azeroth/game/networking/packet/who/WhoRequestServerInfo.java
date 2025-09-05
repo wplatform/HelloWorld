@@ -10,7 +10,7 @@ public final class WhoRequestServerInfo {
     public void read(WorldPacket data) {
         factionGroup = data.readInt32();
         locale = data.readInt32();
-        requesterVirtualRealmAddress = data.readUInt();
+        requesterVirtualRealmAddress = data.readUInt32();
     }
 
     public WhoRequestServerInfo clone() {

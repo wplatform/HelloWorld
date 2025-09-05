@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr6 {
+public enum SpellAttr6 implements EnumFlag.FlagValue {
     NO_COOLDOWN_ON_TOOLTIP(0x00000001), // TITLE No Cooldown On Tooltip (client only)
     DO_NOT_RESET_COOLDOWN_IN_ARENA(0x00000002), // TITLE Do Not Reset Cooldown In Arena
     NOT_AN_ATTACK(0x00000004), /*NYI*/ // TITLE Not an Attack

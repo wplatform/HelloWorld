@@ -54,8 +54,15 @@ public class SpellRange implements DbcEntity {
     private Byte flags;
 
     @Id
-
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
+
+    public float[] getRangeMin() {
+        return new float[]{rangeMin1, rangeMin2};
+    }
+
+    public float[] getRangeMax() {
+        return new float[]{rangeMax1, rangeMax2};
+    }
 
 }

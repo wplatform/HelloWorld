@@ -4,8 +4,6 @@ package com.github.azeroth.game.battlefield;
 import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
-import com.github.azeroth.game.map.AnyPlayerInObjectRangeCheck;
-import com.github.azeroth.game.map.PlayerListSearcher;
 import com.github.azeroth.game.map.grid.Cell;
 
 import java.util.ArrayList;

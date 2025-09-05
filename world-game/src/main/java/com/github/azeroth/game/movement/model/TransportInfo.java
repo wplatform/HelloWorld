@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class TransportInfo {
 
-    private ObjectGuid guid;
-    private Position pos;
-    private byte seat;
-    private int time;
-    private int prevTime;
-    private int vehicleId;
+    public ObjectGuid guid;
+    public Position pos;
+    public byte seat;
+    public int time;
+    public int prevTime;
+    public int vehicleId;
 
     void reset() {
         guid.clear();

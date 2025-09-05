@@ -1,10 +1,15 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 // EnumUtils: DESCRIBE THIS
+
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr2 {
+public enum SpellAttr2 implements EnumFlag.FlagValue {
     ALLOW_DEAD_TARGET(0x00000001), // TITLE Allow Dead Target
     NO_SHAPESHIFT_UI(0x00000002), // TITLE No shapeshift UI (client only) DESCRIPTION Does not replace action bar when shapeshifted
     IGNORE_LINE_OF_SIGHT(0x00000004), // TITLE Ignore Line of Sight

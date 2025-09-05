@@ -7,7 +7,7 @@ public abstract class ScriptObject implements IScriptObject {
     private final String name;
 
     public ScriptObject(String name) {
-        name = name;
+        this.name = name;
     }
 
     public static <T> T getInstanceAI(WorldObject obj) {

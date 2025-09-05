@@ -3,6 +3,7 @@ package com.github.azeroth.game.guild;
 
 import com.github.azeroth.game.achievement.CriteriaManager;
 import com.github.azeroth.game.achievement.GuildAchievementMgr;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.item.Item;
 import com.github.azeroth.game.entity.item.ItemPosCount;
 import com.github.azeroth.game.entity.object.WorldObject;
@@ -2787,7 +2788,7 @@ public class Guild {
             m_race = player.getRace();
             m_class = player.getClass();
             gender = player.getNativeGender();
-            m_zoneId = player.getZone();
+            m_zoneId = player.getZoneId();
             m_accountId = player.getSession().getAccountId();
             m_achievementPoints = player.getAchievementPoints();
         }

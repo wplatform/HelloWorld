@@ -6,10 +6,10 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.networking.WorldPacket;
 
 public class ItemEnchantment extends BaseUpdateData<item> {
-    public UpdateField<Integer> ID = new UpdateField<Integer>(0, 1);
-    public UpdateField<Integer> duration = new UpdateField<Integer>(0, 2);
-    public UpdateField<SHORT> charges = new UpdateField<SHORT>(0, 3);
-    public UpdateField<SHORT> inactive = new UpdateField<SHORT>(0, 4);
+    public UpdateField<Integer> ID = new UpdateField<>(0, 1);
+    public UpdateField<Integer> duration = new UpdateField<>(0, 2);
+    public UpdateField<SHORT> charges = new UpdateField<>(0, 3);
+    public UpdateField<SHORT> inactive = new UpdateField<>(0, 4);
 
     public ItemEnchantment() {
         super(5);

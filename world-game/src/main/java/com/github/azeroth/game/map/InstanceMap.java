@@ -185,16 +185,16 @@ public class InstanceMap extends Map {
     }
 
     @Override
-    public void update(int diff) {
-        super.update(diff);
+    public void update(int delta) {
+        super.update(delta);
 
         if (data != null) {
-            data.update(diff);
-            data.updateCombatResurrection(diff);
+            data.update(delta);
+            data.updateCombatResurrection(delta);
         }
 
         if (scenario != null) {
-            scenario.update(diff);
+            scenario.update(delta);
         }
 
         if (instanceExpireEvent != null && instanceExpireEvent.getValue().compareTo(gameTime.GetSystemTime()) < 0) {

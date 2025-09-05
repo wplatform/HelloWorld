@@ -13,6 +13,6 @@ class AdventureJournalOpenQuest extends ClientPacket {
 
     @Override
     public void read() {
-        adventureJournalID = this.readUInt();
+        adventureJournalID = this.readUInt32();
     }
 }

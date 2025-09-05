@@ -21,7 +21,7 @@ public class SpellHistory {
     private final Unit owner;
     private final LoopSafeDictionary<Integer, CooldownEntry> spellCooldowns = new LoopSafeDictionary<Integer, CooldownEntry>();
     private final LoopSafeDictionary<Integer, CooldownEntry> categoryCooldowns = new LoopSafeDictionary<Integer, CooldownEntry>();
-    private final LocalDateTime[] schoolLockouts = new LocalDateTime[SpellSchools.max.getValue()];
+    private final LocalDateTime[] schoolLockouts = new LocalDateTime[SpellSchool.max.getValue()];
     private final MultiMap<Integer, ChargeEntry> categoryCharges = new MultiMap<Integer, ChargeEntry>();
     private final HashMap<Integer, LocalDateTime> globalCooldowns = new HashMap<Integer, LocalDateTime>();
     private HashMap<Integer, CooldownEntry> spellCooldownsBeforeDuel = new HashMap<Integer, CooldownEntry>();
@@ -807,7 +807,7 @@ public class SpellHistory {
         var now = gameTime.GetSystemTime();
         var lockoutEnd = now + lockoutTime;
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
             if ((boolean) (spellSchoolMask.forValue(1 << i).getValue() & schoolMask.getValue())) {
                 _schoolLockouts[i] = lockoutEnd;
             }
@@ -879,7 +879,7 @@ public class SpellHistory {
     public final boolean isSchoolLocked(SpellSchoolMask schoolMask) {
         var now = gameTime.GetSystemTime();
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
             if ((boolean) (spellSchoolMask.forValue(1 << i).getValue() & schoolMask.getValue())) {
                 if (_schoolLockouts[i].compareTo(now) > 0) {
                     return true;

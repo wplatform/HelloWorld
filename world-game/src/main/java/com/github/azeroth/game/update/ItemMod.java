@@ -31,7 +31,7 @@ public class ItemMod {
     }
 
     public final void read(WorldPacket data) {
-        value = data.readUInt();
+        value = data.readUInt32();
         type = ItemModifier.forValue(data.readUInt8());
     }
 

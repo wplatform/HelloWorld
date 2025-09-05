@@ -1,6 +1,9 @@
 package com.github.azeroth.game.networking.packet.ticket;
 
 
+import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.opcode.ServerOpCode;
+
 import java.util.ArrayList;
 
 
@@ -8,7 +11,7 @@ public class GMTicketCaseStatus extends ServerPacket {
     public ArrayList<GMTicketCase> cases = new ArrayList<>();
 
     public GMTicketCaseStatus() {
-        super(ServerOpcode.GmTicketCaseStatus);
+        super(ServerOpCode.SMSG_GM_TICKET_CASE_STATUS);
     }
 
     @Override

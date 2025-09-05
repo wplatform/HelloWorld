@@ -14,7 +14,7 @@ class BattlenetRequest extends ClientPacket {
     @Override
     public void read() {
         method.read(this);
-        var protoSize = this.readUInt();
+        var protoSize = this.readUInt32();
 
         data = this.readBytes(protoSize);
     }

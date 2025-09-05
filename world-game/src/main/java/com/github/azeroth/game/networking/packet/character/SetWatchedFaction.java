@@ -12,6 +12,6 @@ class SetWatchedFaction extends ClientPacket {
 
     @Override
     public void read() {
-        factionIndex = this.readUInt();
+        factionIndex = this.readUInt32();
     }
 }

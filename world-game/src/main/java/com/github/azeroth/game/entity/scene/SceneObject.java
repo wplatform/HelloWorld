@@ -202,24 +202,24 @@ public class SceneObject extends WorldObject {
     }
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedSceneObjectMask, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         if (requestedSceneObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().sceneObject.getValue());
+            valuesMask.set(getObjectTypeId().sceneObject.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().sceneObject.getValue())) {
+        if (valuesMask.get(getObjectTypeId().sceneObject.getValue())) {
             sceneObjectData.writeUpdate(buffer, requestedSceneObjectMask, true, this, target);
         }
 

@@ -17,7 +17,7 @@ class AuctionConfirmCommoditiesPurchase extends ClientPacket {
     public void read() {
         auctioneer = this.readPackedGuid();
         itemID = this.readInt32();
-        quantity = this.readUInt();
+        quantity = this.readUInt32();
 
         if (this.readBit()) {
             taintedBy = new AddOnInfo();

@@ -1,6 +1,8 @@
 package com.github.azeroth.game.ai;
 
 
+import com.github.azeroth.defines.SpellCastResult;
+import com.github.azeroth.game.domain.unit.DamageEffectType;
 import com.github.azeroth.game.entity.unit.CalcDamageInfo;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.spell.CastSpellExtraArgs;

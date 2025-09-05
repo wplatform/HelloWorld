@@ -83,7 +83,7 @@ public class SpellArea {
                     return false;
                 }
 
-                var Bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZone());
+                var Bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZoneId());
 
                 if (Bf == null || Bf.canFlyIn() || (!player.hasAuraType(AuraType.ModIncreaseMountedFlightSpeed) && !player.hasAuraType(AuraType.Fly))) {
                     return false;
@@ -98,7 +98,7 @@ public class SpellArea {
                     return false;
                 }
 
-                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZone());
+                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZoneId());
 
                 if (bf == null || bf.getTypeId() != BattleFieldTypes.WinterGrasp.getValue()) {
                     return false;
@@ -136,7 +136,7 @@ public class SpellArea {
                     return false;
                 }
 
-                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZone());
+                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZoneId());
 
                 if (bf != null) {
                     return bf.isWarTime();

@@ -26,7 +26,7 @@ public enum UnitMod {
     FURY,
     PAIN,
     ESSENCE,
-    ARMOR,                                         // ARMOR..RESISTANCE_ARCANE must be in existed order, it's accessed by index values of SpellSchools enum.
+    ARMOR,                                         // ARMOR..RESISTANCE_ARCANE must be in existed order, it's accessed by index values of SpellSchool enum.
     RESISTANCE_HOLY,
     RESISTANCE_FIRE,
     RESISTANCE_NATURE,

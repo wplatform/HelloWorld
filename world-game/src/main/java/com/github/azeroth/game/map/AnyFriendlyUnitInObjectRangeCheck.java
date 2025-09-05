@@ -57,6 +57,6 @@ public class AnyFriendlyUnitInObjectRangeCheck implements ICheck<unit> {
             return false;
         }
 
-        return !playerOnly || u.getTypeId() == TypeId.PLAYER;
+        return !playerOnly || u.getObjectTypeId() == TypeId.PLAYER;
     }
 }

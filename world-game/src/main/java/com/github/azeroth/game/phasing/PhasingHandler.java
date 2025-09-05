@@ -6,6 +6,7 @@ import com.github.azeroth.dbc.defines.PhaseUseFlag;
 import com.github.azeroth.game.chat.CommandHandler;
 import com.github.azeroth.game.condition.ConditionSourceInfo;
 import com.github.azeroth.game.condition.ConditionSourceType;
+import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.phasing.PhaseFlag;
 import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.domain.phasing.PhaseShiftFlag;
@@ -52,7 +53,7 @@ public class PhasingHandler {
         for (var i = 0; i < unit.getControlled().size(); ++i) {
             var controlled = unit.getControlled().get(i);
 
-            if (controlled.getTypeId() != TypeId.PLAYER && controlled.getVehicle1() == null) // Player inside nested vehicle should not phase the root vehicle and its accessories (only direct root vehicle control does)
+            if (controlled.getObjectTypeId() != TypeId.PLAYER && controlled.getVehicle1() == null) // Player inside nested vehicle should not phase the root vehicle and its accessories (only direct root vehicle control does)
             {
                 func.invoke(controlled);
             }
@@ -176,7 +177,7 @@ public class PhasingHandler {
         obj.getPhaseShift().clearPhases();
         obj.getSuppressedPhaseShift().clearPhases();
 
-        var areaId = obj.getArea();
+        var areaId = obj.getAreaId();
         var areaEntry = CliDB.AreaTableStorage.get(areaId);
 
         while (areaEntry != null) {
@@ -447,7 +448,7 @@ public class PhasingHandler {
 
 
     public static boolean inDbPhaseShift(WorldObject obj, PhaseUseFlag phaseUseFlags, short phaseId, int phaseGroupId) {
-        game.PhaseShift phaseShift = new PhaseShift();
+        PhaseShift phaseShift = new PhaseShift();
         initDbPhaseShift(phaseShift, phaseUseFlags, phaseId, phaseGroupId);
 
         return obj.getPhaseShift().canSee(phaseShift);
@@ -459,17 +460,17 @@ public class PhasingHandler {
             return mapId;
         }
 
-        if (phaseShift.visibleMapIds.size() == 1) {
-            return phaseShift.visibleMapIds.getFirstEntry().key;
+        if (phaseShift.visibleMapIds.size == 1) {
+            return phaseShift.visibleMapIds.keys().next();
         }
 
         var gridCoordinate = MapDefine.computeGridCoordinate(x, y);
         var gx = MapDefine.MAX_NUMBER_OF_GRIDS - 1 - gridCoordinate.axisX();
         var gy = MapDefine.MAX_NUMBER_OF_GRIDS - 1 - gridCoordinate.axisY();
 
-        for (var visibleMap : phaseShift.visibleMapIds.entrySet()) {
-            if (terrain.hasChildTerrainGridFile(visibleMap.getKey(), gx, gy)) {
-                return visibleMap.getKey();
+        for (var visibleMap : phaseShift.visibleMapIds.entries()) {
+            if (terrain.hasChildTerrainGridFile(visibleMap.key, gx, gy)) {
+                return visibleMap.key;
             }
         }
 

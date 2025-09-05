@@ -14,7 +14,7 @@ class SetPetSlot extends ClientPacket {
 
     @Override
     public void read() {
-        petNumber = this.readUInt();
+        petNumber = this.readUInt32();
         destSlot = this.readUInt8();
         stableMaster = this.readPackedGuid();
     }

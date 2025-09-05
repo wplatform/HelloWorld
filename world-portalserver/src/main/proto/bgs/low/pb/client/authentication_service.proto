@@ -21,7 +21,7 @@ message ModuleLoadRequest {
 
 message ModuleNotification {
 	optional int32 module_id = 2;
-	optional uint32 result = 3;
+	optional uint32 yieldResult = 3;
 }
 
 message ModuleMessageRequest {
@@ -116,7 +116,7 @@ message SelectGameAccountRequest {
 }
 
 message GameAccountSelectedRequest {
-	required uint32 result = 1;
+	required uint32 yieldResult = 1;
 	optional .bgs.protocol.EntityId game_account_id = 2;
 }
 

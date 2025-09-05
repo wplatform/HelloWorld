@@ -14,6 +14,6 @@ class MoveTimeSkipped extends ClientPacket {
     @Override
     public void read() {
         moverGUID = this.readPackedGuid();
-        timeSkipped = this.readUInt();
+        timeSkipped = this.readUInt32();
     }
 }

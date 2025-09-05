@@ -13,7 +13,7 @@ public class QueryQuestInfo extends ClientPacket {
 
     @Override
     public void read() {
-        questID = this.readUInt();
+        questID = this.readUInt32();
         questGiver = this.readPackedGuid();
     }
 }

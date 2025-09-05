@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 public interface CreatureRepository {
 
 
-    
     @Query(value = """
             SELECT entry, KillCredit1, KillCredit2, name, femaleName, subname,
                 TitleAlt, IconName, RequiredExpansion, VignetteID, faction, npcflag,
@@ -37,10 +36,11 @@ public interface CreatureRepository {
 
     @Query(value = "SELECT creatureID, CreatureIDVisibleToSummoner, GroundMountDisplayID, FlyingMountDisplayID FROM creature_summoned_data")
     Stream<CreatureSummonedData> streamAllCreatureSummonedData();
+
     @Query(value = "SELECT entry, locale, name, nameAlt, title, TitleAlt FROM creature_template_locale")
     Stream<CreatureLocale> streamAllCreatureTemplateLocale();
 
-    
+
     @Query(value = """
             SELECT creature.guid, id, map, position_x, position_y, position_z, orientation, modelid, equipment_id, spawntimesecs, wander_distance,
                    currentwaypoint, curHealthPct, MovementType, spawnDifficulties, eventEntry, poolSpawnId, creature.npcflag, creature.unit_flags,
@@ -52,9 +52,10 @@ public interface CreatureRepository {
             """)
     Stream<CreatureData> streamAllCreature();
 
-    
+
     @Query("SELECT summonerId, summonerType, groupId, entry, position_x, position_y, position_z, orientation, summonType, summonTime FROM creature_summon_groups")
     Stream<TempSummonData> streamsAllTempSummon();
+
     @Query("SELECT npc_entry, spell_id, cast_flags, user_type FROM npc_spellclick_spells")
     Stream<int[]> streamAllNpcSpellClickSpells();
 
@@ -74,7 +75,7 @@ public interface CreatureRepository {
 
     @Modifying
     @Query("INSERT INTO npc_vendor (entry, item, maxcount, incrtime, extendedcost, type) VALUES(:entry, :item, :maxcount, :incrtime, :extendedcost, :type)")
-    void insertNpcVendor(int entry, int item, int maxcount, int incrtime, int extendedcost,int type);
+    void insertNpcVendor(int entry, int item, int maxcount, int incrtime, int extendedcost, int type);
 
 
     @Query("SELECT entry, path_id, mount, standState, animTier, visFlags, sheathState, PvPFlags, emote, aiAnimKit, movementAnimKit, meleeAnimKit, visibilityDistanceType, auras FROM creature_template_addon")
@@ -116,13 +117,20 @@ public interface CreatureRepository {
             LEFT JOIN creature_template_movement AS ctm ON ctm.CreatureId = c.id
             """)
     Stream<CreatureMovementData> streamAllCreatureMovementOverride();
+
     @Query("SELECT CreatureID, ID, ItemID1, AppearanceModID1, ItemVisual1, ItemID2, AppearanceModID2, ItemVisual2, ItemID3, AppearanceModID3, ItemVisual3 FROM creature_equip_template")
     Stream<int[]> streamAllCreatureEquipTemplate();
+
     @Query("SELECT guid, linkedGuid, linkType FROM linked_respawn ORDER BY guid ASC")
     Stream<int[]> streamAllLinkedRespawn();
+
+    @Query("SELECT leaderGUID, memberGUID, dist, angle, groupAI, point_1, point_2 FROM creature_formations ORDER BY leaderGUID")
+    Stream<FormationInfo> streamAllCreatureFormations();
+
     @Modifying
     @Query("DELETE FROM linked_respawn WHERE guid = :guid AND linkType  = :linkType")
     void deleteLinkedRespawn(int guid, int linkType);
+
     @Modifying
     @Query("DELETE FROM linked_respawn WHERE linkedGuid = :linkedGuid AND linkType = :linkType")
     void deleteLinkedRespawnMaster(int linkedGuid, int linkType);
@@ -130,8 +138,10 @@ public interface CreatureRepository {
     @Modifying
     @Query("REPLACE INTO linked_respawn (guid, linkedGuid, linkType) VALUES (?, ?, ?)")
     void replaceLinkedRespawn(int guid, int linkedGuid, int linkType);
+
     @Query("SELECT CreatureEntry, DifficultyID, ItemId, Idx FROM creature_questitem ORDER BY Idx ASC")
     Stream<int[]> streamAllCreatureQuestItem();
+
     @Query("SELECT CreatureID, TrainerID, MenuID, OptionID FROM creature_trainer")
     Stream<int[]> streamAllCreatureTrainer();
 
@@ -140,6 +150,7 @@ public interface CreatureRepository {
 
     @Query("SELECT Id, Type, Greeting FROM trainer")
     Stream<TrainerEntry> streamAllTrainer();
+
     @Query("SELECT id, locale, Greeting_lang FROM trainer_locale")
     Stream<Object[]> streamAllTrainerLocale();
 }

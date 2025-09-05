@@ -152,7 +152,7 @@ public class Condition {
 
                 break;
             case ZONEID:
-                condMeets = obj.getZone() == conditionValue1;
+                condMeets = obj.getZoneId() == conditionValue1;
 
                 break;
             case REPUTATION_RANK:
@@ -229,7 +229,7 @@ public class Condition {
 
                 break;
             case AREA_ID:
-                condMeets = obj.getArea() == conditionValue1;
+                condMeets = obj.getAreaId() == conditionValue1;
 
                 break;
             case SPELL:
@@ -259,11 +259,11 @@ public class Condition {
 
                 break;
             case OBJECT_ENTRY_GUID:
-                if ((int) obj.getTypeId().getValue() == conditionValue1) {
+                if ((int) obj.getObjectTypeId().getValue() == conditionValue1) {
                     condMeets = conditionValue2 == 0 || (obj.getEntry() == conditionValue2);
 
                     if (conditionValue3 != 0) {
-                        switch (obj.getTypeId()) {
+                        switch (obj.getObjectTypeId()) {
                             case UNIT:
                                 condMeets &= obj.toCreature().getSpawnId() == conditionValue3;
 

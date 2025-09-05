@@ -144,7 +144,7 @@ public class PlayerMenu {
         QuestGiverQuestListMessage questList = new QuestGiverQuestListMessage();
         questList.questGiverGUID = guid;
 
-        var questGreeting = global.getObjectMgr().getQuestGreeting(questgiver.getTypeId(), questgiver.getEntry());
+        var questGreeting = global.getObjectMgr().getQuestGreeting(questgiver.getObjectTypeId(), questgiver.getEntry());
 
         if (questGreeting != null) {
             questList.greetEmoteDelay = questGreeting.emoteDelay;
@@ -152,7 +152,7 @@ public class PlayerMenu {
             questList.greeting = questGreeting.text;
 
             if (localeConstant != locale.enUS) {
-                var questGreetingLocale = global.getObjectMgr().getQuestGreetingLocale(questgiver.getTypeId(), questgiver.getEntry());
+                var questGreetingLocale = global.getObjectMgr().getQuestGreetingLocale(questgiver.getObjectTypeId(), questgiver.getEntry());
 
                 if (questGreetingLocale != null) {
                     tangible.RefObject<String> tempRef_Greeting = new tangible.RefObject<String>(questList.greeting);

@@ -12,6 +12,6 @@ public class AcceptTrade extends ClientPacket {
 
     @Override
     public void read() {
-        stateIndex = this.readUInt();
+        stateIndex = this.readUInt32();
     }
 }

@@ -37,7 +37,9 @@ public class GridLoader {
         areaTriggers = 0;
 
 
-        var gridSpawnData = objectManager.getGridObjectGuids(map.getId(), map.getDifficultyID(), cell.getId());
+
+
+        var gridSpawnData = objectManager.getGridObjectGuids(map.getId(), map.getDifficultyID(), cell.getGridId());
 
 
         for (SpawnData data : gridSpawnData.spawnData) {

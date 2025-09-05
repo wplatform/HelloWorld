@@ -15,7 +15,7 @@ class LootItemPkt extends ClientPacket {
 
     @Override
     public void read() {
-        var count = this.readUInt();
+        var count = this.readUInt32();
 
         for (int i = 0; i < count; ++i) {
             var loot = new LootRequest();

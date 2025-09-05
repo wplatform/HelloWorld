@@ -14,8 +14,8 @@ class CollectionItemSetFavorite extends ClientPacket {
 
     @Override
     public void read() {
-        type = CollectionType.forValue(this.readUInt());
-        id = this.readUInt();
+        type = CollectionType.forValue(this.readUInt32());
+        id = this.readUInt32();
         isFavorite = this.readBit();
     }
 }

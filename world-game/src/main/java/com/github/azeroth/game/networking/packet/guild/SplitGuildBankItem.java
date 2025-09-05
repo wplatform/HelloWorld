@@ -22,6 +22,6 @@ class SplitGuildBankItem extends ClientPacket {
         bankSlot = this.readUInt8();
         bankTab1 = this.readUInt8();
         bankSlot1 = this.readUInt8();
-        stackCount = this.readUInt();
+        stackCount = this.readUInt32();
     }
 }

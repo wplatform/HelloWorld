@@ -26,13 +26,13 @@ public class CharRaceOrFactionChange extends ClientPacket {
         raceOrFactionChangeInfo.sexID = gender.forValue((byte) this.readUInt8());
         raceOrFactionChangeInfo.raceID = race.forValue(this.readUInt8());
         raceOrFactionChangeInfo.initialRaceID = race.forValue(this.readUInt8());
-        var customizationCount = this.readUInt();
+        var customizationCount = this.readUInt32();
         raceOrFactionChangeInfo.name = this.readString(nameLength);
 
         for (var i = 0; i < customizationCount; ++i) {
             ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
-            tempVar.chrCustomizationOptionID = this.readUInt();
-            tempVar.chrCustomizationChoiceID = this.readUInt();
+            tempVar.chrCustomizationOptionID = this.readUInt32();
+            tempVar.chrCustomizationChoiceID = this.readUInt32();
             raceOrFactionChangeInfo.customizations.set(i, tempVar);
         }
 

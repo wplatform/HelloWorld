@@ -1,12 +1,11 @@
 package com.github.azeroth.game.entity.player;
 
 
+import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.DifficultyFlag;
 import com.github.azeroth.dbc.domain.MapEntry;
-import com.github.azeroth.defines.SkillType;
-import com.github.azeroth.defines.Team;
-import com.github.azeroth.defines.TeamId;
+import com.github.azeroth.defines.*;
 import com.github.azeroth.game.domain.areatrigger.AreaTriggerStruct;
 import com.github.azeroth.game.CleaningFlags;
 import com.github.azeroth.game.condition.DisableType;
@@ -28,8 +27,10 @@ import com.github.azeroth.game.domain.object.ObjectDefine;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.object.WorldLocation;
+import com.github.azeroth.game.domain.object.enums.TypeMask;
 import com.github.azeroth.game.domain.player.AccessRequirement;
 import com.github.azeroth.game.domain.player.PlayerLoginQueryLoad;
+import com.github.azeroth.game.domain.player.SpellModValues;
 import com.github.azeroth.game.domain.quest.QuestObjectiveType;
 import com.github.azeroth.game.domain.quest.QuestStatus;
 import com.github.azeroth.game.domain.quest.QuestStatusData;
@@ -40,10 +41,8 @@ import com.github.azeroth.game.entity.gobject.Transport;
 import com.github.azeroth.game.entity.item.*;
 import com.github.azeroth.game.entity.item.enums.BuyResult;
 import com.github.azeroth.game.entity.object.*;
-import com.github.azeroth.game.entity.player.enums.PlayerFlag;
-import com.github.azeroth.game.entity.player.enums.PlayerFlagEx;
-import com.github.azeroth.game.entity.player.enums.QuestSaveType;
-import com.github.azeroth.game.entity.player.enums.SpellModType;
+import com.github.azeroth.game.entity.object.update.*;
+import com.github.azeroth.game.entity.player.enums.*;
 import com.github.azeroth.game.entity.player.model.*;
 import com.github.azeroth.game.entity.scene.SceneMgr;
 import com.github.azeroth.game.entity.unit.DamageInfo;
@@ -61,14 +60,18 @@ import com.github.azeroth.game.mail.MailDraft;
 import com.github.azeroth.game.mail.MailReceiver;
 import com.github.azeroth.game.mail.MailSender;
 import com.github.azeroth.game.map.*;
+import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.map.grid.Cell;
+import com.github.azeroth.game.map.grid.visitor.VisibleNotifier;
 import com.github.azeroth.game.misc.PlayerMenu;
 import com.github.azeroth.game.movement.model.MovementInfo;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.opcode.ServerOpCode;
 import com.github.azeroth.game.networking.packet.item.BuyFailed;
 import com.github.azeroth.game.networking.packet.quest.DisplayPlayerChoice;
+import com.github.azeroth.game.networking.packet.spell.ConvertRune;
 import com.github.azeroth.game.networking.packet.spell.SetSpellModifier;
+import com.github.azeroth.game.networking.packet.spell.SpellModifierData;
 import com.github.azeroth.game.networking.packet.spell.SpellModifierInfo;
 import com.github.azeroth.game.pvp.OutdoorPvP;
 import com.github.azeroth.game.reputation.ReputationMgr;
@@ -80,19 +83,23 @@ import com.github.azeroth.game.scripting.interfaces.iplayer.*;
 import com.github.azeroth.game.scripting.interfaces.iquest.IQuestOnQuestObjectiveChange;
 import com.github.azeroth.game.scripting.interfaces.iquest.IQuestOnQuestStatusChange;
 import com.github.azeroth.game.spell.*;
+import com.github.azeroth.game.spell.auras.enums.AuraType;
 import com.github.azeroth.game.spell.enums.SpellModOp;
 import com.github.azeroth.utils.MathUtil;
 
 import game.WorldSession;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.*;
 
-import static com.github.azeroth.game.entity.object.update.ObjectFields.*;
+import static com.github.azeroth.game.entity.objects.update.ObjectFields.*;
 import static com.github.azeroth.game.entity.player.PlayerDefine.PLAYER_BYTES_4_OFFSET_ARENA_FACTION;
 import static com.github.azeroth.game.entity.player.PlayerDefine.PLAYER_BYTES_4_OFFSET_PVP_TITLE;
 
-
+@Setter
+@Getter
 public class Player extends Unit implements GirdObject {
     private final ArrayList<Channel> channels = new ArrayList<>();
     private final ArrayList<ObjectGuid> whisperList = new ArrayList<>();
@@ -121,7 +128,6 @@ public class Player extends Unit implements GirdObject {
     private final HashMap<Integer, SkillStatusData> skillStatus = new HashMap<Integer, SkillStatusData>();
 
     private final HashMap<Integer, PlayerCurrency> currencyStorage = new HashMap<Integer, PlayerCurrency>();
-    private final ArrayList<SpellModifier>[][] spellModifiers = new ArrayList<SpellModifier>[SpellModOp.values().length][];
 
     private final MultiMap<Integer, Integer> overrideSpells = new MultiMap<Integer, Integer>();
 
@@ -130,6 +136,7 @@ public class Player extends Unit implements GirdObject {
     private final ArrayList<MAIL> mail = new ArrayList<>();
 
     private final HashMap<Long, Item> mailItems = new HashMap<>();
+
     private final RestMgr restMgr;
     //Combat
     private final int[] baseRatingValue = new int[CombatRating.max.getValue()];
@@ -168,7 +175,7 @@ public class Player extends Unit implements GirdObject {
     private final long logintime;
     private final HashMap<Integer, PlayerSpellState> traitConfigStates = new HashMap<Integer, PlayerSpellState>();
 
-    private final HashMap<Byte, ActionButton> actionButtons = new HashMap<Byte, ActionButton>();
+    private final HashMap<Integer, ActionButton> actionButtons = new HashMap<>();
     private final ArrayList<ItemSetEffect> itemSetEff = new ArrayList<>();
     private final ArrayList<Item> itemUpdateQueue = new ArrayList<>();
     private final float[] parry_cap = {65.631440f, 65.631440f, 145.560408f, 145.560408f, 0.0f, 65.631440f, 145.560408f, 0.0f, 0.0f, 90.6425f, 0.0f, 65.631440f, 0.0f, 0.0f};
@@ -222,6 +229,7 @@ public class Player extends Unit implements GirdObject {
 
     private int baseHealthRegen;
     private int spellPenetrationItemMod;
+    private List<SpellModifier> spellMods = new ArrayList<>();
 
     private int lastPotionId;
 
@@ -304,7 +312,7 @@ public class Player extends Unit implements GirdObject {
 
     private long guildIdInvited;
     private DeclinedName declinedname;
-    private runes runes = new runes();
+    private Runes runes = new Runes();
 
     private int hostileReferenceCheckTimer;
 
@@ -319,7 +327,7 @@ public class Player extends Unit implements GirdObject {
     private int sharedQuestId;
 
     private int ingametime;
-    private PlayerCommandStates activeCheats = PlayerCommandStates.values()[0];
+    private PlayerCommandState activeCheats = PlayerCommandState.values()[0];
     private boolean autoAcceptQuickJoin;
     private boolean overrideScreenFlash;
     //Gossip
@@ -327,7 +335,7 @@ public class Player extends Unit implements GirdObject {
     private String autoReplyMsg;
     private boolean instanceValid;
     //Movement
-    private Playertaxi taxi = new playerTaxi();
+    private PlayerTaxi taxi = new PlayerTaxi();
 
     private byte[] forcedSpeedChanges = new byte[UnitMoveType.max.getValue()];
 
@@ -339,12 +347,12 @@ public class Player extends Unit implements GirdObject {
     private boolean mailsUpdated;
     private ArrayList<PetAura> petAuras = new ArrayList<>();
     private DuelInfo duel;
-    private PlayerData playerData;
-    private activePlayerData activePlayerData;
+    private PlayerData playerData = new PlayerData();
+    private ActivePlayerData activePlayerData = new ActivePlayerData();
     private ArrayList<ObjectGuid> clientGuiDs = new ArrayList<>();
     private ArrayList<ObjectGuid> visibleTransports = new ArrayList<>();
-    private WorldObject seerView;
-    private AtloginFlags loginFlags = AtLoginFlags.values()[0];
+    private WorldObject seer;
+    private AtLoginFlags loginFlags = AtLoginFlags.values()[0];
     private boolean itemUpdateQueueBlocked;
     private boolean isDebugAreaTriggers;
 
@@ -405,7 +413,7 @@ public class Player extends Unit implements GirdObject {
 
         setUnitMovedByMe(this);
         setPlayerMovingMe(this);
-        setSeerView(this);
+        setSeer(this);
 
         m_isActive = true;
         setControlledByPlayer(true);
@@ -435,7 +443,7 @@ public class Player extends Unit implements GirdObject {
 
 
     public static int getDefaultGossipMenuForSource(WorldObject source) {
-        switch (source.getTypeId()) {
+        switch (source.getObjectTypeId()) {
             case Unit:
                 return source.toCreature().getGossipMenuId();
             case GameObject:
@@ -2852,7 +2860,7 @@ public class Player extends Unit implements GirdObject {
     }
 
     private boolean isInFriendlyArea() {
-        var areaEntry = CliDB.AreaTableStorage.get(getArea());
+        var areaEntry = CliDB.AreaTableStorage.get(getAreaId());
 
         if (areaEntry != null) {
             return isFriendlyArea(areaEntry);
@@ -2971,7 +2979,7 @@ public class Player extends Unit implements GirdObject {
     }
 
     @Override
-    public void close() throws IOException {
+    public void destroy() throws IOException {
         // Note: buy back item already deleted from DB when player was saved
         for (byte i = 0; i < PlayerSlot.count.getValue(); ++i) {
             if (_items[i] != null) {
@@ -3005,7 +3013,7 @@ public class Player extends Unit implements GirdObject {
 
         global.getWorldMgr().decreasePlayerCount();
 
-        super.close();
+        super.destroy();
     }
 
     //Core
@@ -3058,7 +3066,7 @@ public class Player extends Unit implements GirdObject {
         }
 
         // set initial homebind position
-        setHomebind(getLocation(), getArea());
+        setHomebind(getLocation(), getAreaId());
 
         var powertype = cEntry.displayPower;
 
@@ -3608,7 +3616,7 @@ public class Player extends Unit implements GirdObject {
         var viewpoint = getViewpoint();
 
         if (viewpoint != null) {
-            Log.outError(LogFilter.player, "Player {0} has viewpoint {1} {2} when removed from world", getName(), viewpoint.getEntry(), viewpoint.getTypeId());
+            Log.outError(LogFilter.player, "Player {0} has viewpoint {1} {2} when removed from world", getName(), viewpoint.getEntry(), viewpoint.getObjectTypeId());
 
             setViewpoint(viewpoint, false);
         }
@@ -3665,7 +3673,7 @@ public class Player extends Unit implements GirdObject {
 
     //Network
     public final void sendPacket(WorldPacket packet) {
-        session.sendPacket(data);
+        session.sendPacket(packet);
     }
 
     public final void createGarrison(int garrSiteId) {
@@ -3691,16 +3699,16 @@ public class Player extends Unit implements GirdObject {
     }
 
     //Cheat Commands
-    public final boolean getCommandStatus(PlayerCommandStates command) {
+    public final boolean getCommandStatus(PlayerCommandState command) {
         return (activeCheats.getValue() & command.getValue()) != 0;
     }
 
-    public final void setCommandStatusOn(PlayerCommandStates command) {
-        activeCheats = PlayerCommandStates.forValue(activeCheats.getValue() | command.getValue());
+    public final void setCommandStatusOn(PlayerCommandState command) {
+        activeCheats = PlayerCommandState.forValue(activeCheats.getValue() | command.getValue());
     }
 
-    public final void setCommandStatusOff(PlayerCommandStates command) {
-        activeCheats = PlayerCommandStates.forValue(activeCheats.getValue() & ~command.getValue());
+    public final void setCommandStatusOff(PlayerCommandState command) {
+        activeCheats = PlayerCommandState.forValue(activeCheats.getValue() & ~command.getValue());
     }
 
     public final void unsummonPetTemporaryIfAny() {
@@ -3805,7 +3813,7 @@ public class Player extends Unit implements GirdObject {
         }
 
         if (!getCharmedGUID().isEmpty()) {
-            Log.outFatal(LogFilter.player, "Player {0} (GUID: {1} is not able to uncharm unit (GUID: {2} Entry: {3}, Type: {4})", getName(), getGUID(), getCharmedGUID(), charm.getEntry(), charm.getTypeId());
+            Log.outFatal(LogFilter.player, "Player {0} (GUID: {1} is not able to uncharm unit (GUID: {2} Entry: {3}, Type: {4})", getName(), getGUID(), getCharmedGUID(), charm.getEntry(), charm.getObjectTypeId());
 
             if (!charm.getCharmerGUID().isEmpty()) {
                 Log.outFatal(LogFilter.player, String.format("Player::StopCastingCharm: Charmed unit has charmer %1$s\nPlayer debug info: %2$s\nCharm debug info: %3$s", charm.getCharmerGUID(), getDebugInfo(), charm.getDebugInfo()));
@@ -4267,14 +4275,14 @@ public class Player extends Unit implements GirdObject {
     public final void removeActionButton(byte _button) {
         var button = actionButtons.get(_button);
 
-        if (button == null || button.UState == ActionButtonUpdateState.Deleted) {
+        if (button == null || button.uState == ActionButtonUpdateState.Deleted) {
             return;
         }
 
-        if (button.UState == ActionButtonUpdateState.New) {
+        if (button.uState == ActionButtonUpdateState.New) {
             actionButtons.remove(_button); // new and not saved
         } else {
-            button.UState = ActionButtonUpdateState.Deleted; // saved, will deleted at next save
+            button.uState = ActionButtonUpdateState.Deleted; // saved, will deleted at next save
         }
 
         Log.outDebug(LogFilter.player, "Action Button '{0}' Removed from Player '{1}'", button, getGUID().toString());
@@ -4283,7 +4291,7 @@ public class Player extends Unit implements GirdObject {
     public final ActionButton getActionButton(byte _button) {
         var button = actionButtons.get(_button);
 
-        if (button == null || button.UState == ActionButtonUpdateState.Deleted) {
+        if (button == null || button.uState == ActionButtonUpdateState.Deleted) {
             return null;
         }
 
@@ -4943,7 +4951,7 @@ public class Player extends Unit implements GirdObject {
         SummonRequest summonRequest = new SummonRequest();
         summonRequest.summonerGUID = summoner.getGUID();
         summonRequest.summonerVirtualRealmAddress = global.getWorldMgr().getVirtualRealmAddress();
-        summonRequest.areaID = (int) summoner.getZone();
+        summonRequest.areaID = (int) summoner.getZoneId();
         sendPacket(summonRequest);
 
         var group = getGroup();
@@ -6184,7 +6192,7 @@ public class Player extends Unit implements GirdObject {
         // note: this can be called also when the player is alive
         // for example from WorldSession.HandleMovementOpcodes
 
-        var zone = CliDB.AreaTableStorage.get(getArea());
+        var zone = CliDB.AreaTableStorage.get(getAreaId());
 
         var shouldResurrect = false;
 
@@ -6202,7 +6210,7 @@ public class Player extends Unit implements GirdObject {
         if (bg) {
             ClosestGrave = bg.getClosestGraveYard(this);
         } else {
-            var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getMap(), getZone());
+            var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(getMap(), getZoneId());
 
             if (bf != null) {
                 ClosestGrave = bf.getClosestGraveYard(this);
@@ -6639,13 +6647,13 @@ public class Player extends Unit implements GirdObject {
     }
 
     public final boolean canEnableWarModeInArea() {
-        var zone = CliDB.AreaTableStorage.get(getZone());
+        var zone = CliDB.AreaTableStorage.get(getZoneId());
 
         if (zone == null || !isFriendlyArea(zone)) {
             return false;
         }
 
-        var area = CliDB.AreaTableStorage.get(getArea());
+        var area = CliDB.AreaTableStorage.get(getAreaId());
 
         if (area == null) {
             area = zone;
@@ -7365,7 +7373,7 @@ public class Player extends Unit implements GirdObject {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modHealingPercent), 1.0f);
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modPeriodicHealingDonePercent), 1.0f);
 
-        for (byte i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (byte i = 0; i < SpellSchool.max.getValue(); ++i) {
 
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, i), 0);
 
@@ -7420,10 +7428,10 @@ public class Player extends Unit implements GirdObject {
 
         // set armor (resistance 0) to original second (create_agility*2)
         setArmor((int) (getCreateStat(stats.Agility) * 2), 0);
-        setBonusResistanceMod(SpellSchools.NORMAL, 0);
+        setBonusResistanceMod(SpellSchool.NORMAL, 0);
 
         // set other resistance to original second (0)
-        for (var spellSchool = SpellSchools.Holy; spellSchool.getValue() < SpellSchools.max.getValue(); ++spellSchool) {
+        for (var spellSchool = SpellSchool.Holy; spellSchool.getValue() < SpellSchool.max.getValue(); ++spellSchool) {
             setResistance(spellSchool, 0);
             setBonusResistanceMod(spellSchool, 0);
         }
@@ -7431,7 +7439,7 @@ public class Player extends Unit implements GirdObject {
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modTargetResistance), 0);
         setUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modTargetPhysicalResistance), 0);
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
 
             setUpdateFieldValue(ref getValues().modifyValue(getUnitData()).modifyValue(getUnitData().manaCostModifier, i), 0);
         }
@@ -8329,7 +8337,7 @@ public class Player extends Unit implements GirdObject {
 
     public final void setViewpoint(WorldObject target, boolean apply) {
         if (apply) {
-            Logs.MAPS.debug("Player.CreateViewpoint: Player {0} create seer {1} (TypeId: {2}).", getName(), target.getEntry(), target.getTypeId());
+            Logs.MAPS.debug("Player.CreateViewpoint: Player {0} create seer {1} (TypeId: {2}).", getName(), target.getEntry(), target.getObjectTypeId());
 
             if (getActivePlayerData().farsightObject != ObjectGuid.Empty) {
                 Log.outFatal(LogFilter.player, "Player.CreateViewpoint: Player {0} cannot add new viewpoint!", getName());
@@ -8785,7 +8793,7 @@ public class Player extends Unit implements GirdObject {
         var flags = getUpdateFieldFlagsFor(target);
         WorldPacket buffer = new WorldPacket();
 
-        buffer.writeInt32(getValues().getChangedObjectTypeMask() & ~((target != this ? 1 : 0) << getTypeId().getValue().activePlayer.getValue()));
+        buffer.writeInt32(getValues().getChangedObjectTypeMask() & ~((target != this ? 1 : 0) << getObjectTypeId().getValue().activePlayer.getValue()));
 
         if (getValues().hasChanged(TypeId.object)) {
             getObjectData().writeUpdate(buffer, flags, this, target);
@@ -8809,9 +8817,9 @@ public class Player extends Unit implements GirdObject {
 
     @Override
     public void buildValuesUpdateWithFlag(WorldPacket data, UpdateFieldFlag flags, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
-        valuesMask.set(getTypeId().unit.getValue());
-        valuesMask.set(getTypeId().player.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
+        valuesMask.set(getObjectTypeId().unit.getValue());
+        valuesMask.set(getObjectTypeId().player.getValue());
 
         WorldPacket buffer = new WorldPacket();
 
@@ -9092,7 +9100,7 @@ public class Player extends Unit implements GirdObject {
         UpdateActionButtons packet = new UpdateActionButtons();
 
         for (var pair : actionButtons.entrySet()) {
-            if (pair.getValue().UState != ActionButtonUpdateState.Deleted && pair.getKey() < packet.actionButtons.length) {
+            if (pair.getValue().uState != ActionButtonUpdateState.Deleted && pair.getKey() < packet.actionButtons.length) {
                 packet.ActionButtons[pair.getKey()] = pair.getValue().packedData;
             }
         }
@@ -9472,7 +9480,7 @@ public class Player extends Unit implements GirdObject {
             }
         }
 
-        if (getCommandStatus(PlayerCommandStates.power)) {
+        if (getCommandStatus(PlayerCommandState.power)) {
             curValue = maxPower;
         }
 
@@ -10034,44 +10042,44 @@ public class Player extends Unit implements GirdObject {
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedUnitMask, UpdateMask requestedPlayerMask, UpdateMask requestedActivePlayerMask, Player target) {
         var flags = getUpdateFieldFlagsFor(target);
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         getUnitData().filterDisallowedFieldsMaskForFlag(requestedUnitMask, flags);
 
         if (requestedUnitMask.isAnySet()) {
-            valuesMask.set(getTypeId().unit.getValue());
+            valuesMask.set(getObjectTypeId().unit.getValue());
         }
 
         getPlayerData().filterDisallowedFieldsMaskForFlag(requestedPlayerMask, flags);
 
         if (requestedPlayerMask.isAnySet()) {
-            valuesMask.set(getTypeId().player.getValue());
+            valuesMask.set(getObjectTypeId().player.getValue());
         }
 
         if (target == this && requestedActivePlayerMask.isAnySet()) {
-            valuesMask.set(getTypeId().activePlayer.getValue());
+            valuesMask.set(getObjectTypeId().activePlayer.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().unit.getValue())) {
+        if (valuesMask.get(getObjectTypeId().unit.getValue())) {
             getUnitData().writeUpdate(buffer, requestedUnitMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().player.getValue())) {
+        if (valuesMask.get(getObjectTypeId().player.getValue())) {
             getPlayerData().writeUpdate(buffer, requestedPlayerMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().activePlayer.getValue())) {
+        if (valuesMask.get(getObjectTypeId().activePlayer.getValue())) {
             getActivePlayerData().writeUpdate(buffer, requestedActivePlayerMask, true, this, target);
         }
 
@@ -10107,7 +10115,7 @@ public class Player extends Unit implements GirdObject {
                 continue;
             }
 
-            switch (target.getTypeId()) {
+            switch (target.getObjectTypeId()) {
                 case Unit:
                     updateVisibilityOf(target.toCreature(), udata, newVisibleUnits);
 
@@ -10218,12 +10226,12 @@ public class Player extends Unit implements GirdObject {
     private <T extends WorldObject> void updateVisibilityOf_helper(ArrayList<ObjectGuid> s64, T target, ArrayList<Unit> v) {
         s64.add(target.getGUID());
 
-        switch (target.getTypeId()) {
-            case Unit:
+        switch (target.getObjectTypeId()) {
+            case UNIT:
                 v.add(target.toCreature());
 
                 break;
-            case Player:
+            case PLAYER:
                 v.add(target.toPlayer());
 
                 break;
@@ -10263,13 +10271,10 @@ public class Player extends Unit implements GirdObject {
     public final void updateVisibilityForPlayer() {
         // updates visibility of all objects around point of view for current player
         var notifier = new VisibleNotifier(this, gridType.All);
-        Cell.visitGrid(getSeerView(), notifier, getSightRange());
+        Cell.visitGrid(getSeer(), notifier, getSightRange());
         notifier.sendToSelf(); // send gathered data
     }
 
-    public final void setSeer(WorldObject target) {
-        setSeerView(target);
-    }
 
     @Override
     public void sendMessageToSetInRange(ServerPacket data, float dist, boolean self) {
@@ -10452,7 +10457,7 @@ public class Player extends Unit implements GirdObject {
             removeAurasWithAttribute(isOutdoors() ? SpellAttr0.OnlyIndoors : SpellAttr0.OnlyOutdoors);
         }
 
-        var areaId = getArea();
+        var areaId = getAreaId();
 
         if (areaId == 0) {
             return;
@@ -10481,7 +10486,7 @@ public class Player extends Unit implements GirdObject {
 
             setUpdateFieldFlagValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().exploredZones, (int) offset), val);
 
-            updateCriteria(CriteriaType.RevealWorldMapOverlay, getArea());
+            updateCriteria(CriteriaType.RevealWorldMapOverlay, getAreaId());
 
             var areaLevels = global.getDB2Mgr().GetContentTuningData(areaEntry.contentTuningID, getPlayerData().ctrOptions.getValue().contentTuningConditionMask);
 
@@ -11982,7 +11987,7 @@ public class Player extends Unit implements GirdObject {
             }
 
             stmt.AddValue(index++, (short) getLoginFlags().getValue());
-            stmt.AddValue(index++, getZone());
+            stmt.AddValue(index++, getZoneId());
             stmt.AddValue(index++, deathExpireTime);
 
             ss.setLength(0);
@@ -12160,7 +12165,7 @@ public class Player extends Unit implements GirdObject {
         ItemAdditionalLoadInfo.init(additionalData, artifactsResult, azeriteResult, azeriteItemMilestonePowersResult, azeriteItemUnlockedEssencesResult, azeriteEmpoweredItemResult);
 
         if (!result.isEmpty()) {
-            var zoneId = getZone();
+            var zoneId = getZoneId();
             HashMap<ObjectGuid, bag> bagMap = new HashMap<ObjectGuid, bag>(); // fast guid lookup for bags
             HashMap<ObjectGuid, item> invalidBagMap = new HashMap<ObjectGuid, item>(); // fast guid lookup for bags
             LinkedList<item> problematicItems = new LinkedList<item>();
@@ -12805,13 +12810,13 @@ public class Player extends Unit implements GirdObject {
                 var ab = addActionButton(button, action, type);
 
                 if (ab != null) {
-                    ab.UState = ActionButtonUpdateState.UnChanged;
+                    ab.uState = ActionButtonUpdateState.UnChanged;
                 } else {
                     Log.outError(LogFilter.player, String.format("Player::_LoadActions: Player '%1$s' (%2$s) has an invalid action button (Button: %3$s, Action: %4$s, Type: %5$s). It will be deleted at next save. This can be due to a player changing their talents.", getName(), getGUID(), button, action, type));
 
                     // Will deleted in DB at next save (it can create data until save but marked as deleted)
                     actionButtons.put(button, new ActionButton());
-                    actionButtons.get(button).UState = ActionButtonUpdateState.Deleted;
+                    actionButtons.get(button).uState = ActionButtonUpdateState.Deleted;
                 }
             } while (result.NextRow());
         }
@@ -14441,8 +14446,8 @@ public class Player extends Unit implements GirdObject {
             stmt.AddValue(index++, getStat(stats.forValue(i)));
         }
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
-            stmt.AddValue(index++, getResistance(SpellSchools.forValue(i)));
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
+            stmt.AddValue(index++, getResistance(SpellSchool.forValue(i)));
         }
 
         stmt.AddValue(index++, getActivePlayerData().blockPercentage);
@@ -14829,14 +14834,6 @@ public class Player extends Unit implements GirdObject {
 
     public final void setVisibleTransports(ArrayList<ObjectGuid> value) {
         visibleTransports = value;
-    }
-
-    public final WorldObject getSeerView() {
-        return seerView;
-    }
-
-    public final void setSeerView(WorldObject value) {
-        seerView = value;
     }
 
     public final AtLoginFlags getLoginFlags() {
@@ -20459,7 +20456,7 @@ public class Player extends Unit implements GirdObject {
             }
         }
         // For wintergrasp Quests
-        else if (getZone() == (int) areaId.wintergrasp.getValue()) {
+        else if (getZoneId() == (int) areaId.wintergrasp.getValue()) {
             bones.getLoot().fillLoot(1, LootStorage.CREATURE, this, true);
         }
 
@@ -23615,7 +23612,7 @@ public class Player extends Unit implements GirdObject {
                 updateCriteria(CriteriaType.honorableKills);
                 updateCriteria(CriteriaType.DeliverKillingBlowToClass, (int) victim.getClass().getValue());
                 updateCriteria(CriteriaType.DeliverKillingBlowToRace, (int) victim.getRace().getValue());
-                updateCriteria(CriteriaType.PVPKillInArea, getArea());
+                updateCriteria(CriteriaType.PVPKillInArea, getAreaId());
                 updateCriteria(CriteriaType.EarnHonorableKill, 1, 0, 0, victim);
                 updateCriteria(CriteriaType.KillPlayer, 1, 0, 0, victim);
             } else {
@@ -24116,7 +24113,7 @@ public class Player extends Unit implements GirdObject {
     }
 
     public final OutdoorPvP getOutdoorPvP() {
-        return global.getOutdoorPvPMgr().getOutdoorPvPToZoneId(getMap(), getZone());
+        return global.getOutdoorPvPMgr().getOutdoorPvPToZoneId(getMap(), getZoneId());
     }
 
     private void _InitHonorLevelOnLoadFromDB(int honor, int honorLevel) {
@@ -24186,7 +24183,7 @@ public class Player extends Unit implements GirdObject {
     }
 
     private boolean isInAreaThatActivatesPvpTalents() {
-        return isAreaThatActivatesPvpTalents(getArea());
+        return isAreaThatActivatesPvpTalents(getAreaId());
     }
 
 
@@ -24467,7 +24464,7 @@ public class Player extends Unit implements GirdObject {
     }
 
     public final boolean canInteractWithQuestGiver(WorldObject questGiver) {
-        switch (questGiver.getTypeId()) {
+        switch (questGiver.getObjectTypeId()) {
             case Unit:
                 return getNPCIfCanInteractWith(questGiver.getGUID(), NPCFlags.questGiver, NPCFlags2.NONE) != null;
             case GameObject:
@@ -24924,7 +24921,7 @@ public class Player extends Unit implements GirdObject {
             return;
         }
 
-        switch (questGiver.getTypeId()) {
+        switch (questGiver.getObjectTypeId()) {
             case Unit:
                 getPlayerTalkClass().clearMenus();
                 questGiver.toCreature().getAI().onQuestAccept(this, quest);
@@ -25469,7 +25466,7 @@ public class Player extends Unit implements GirdObject {
             var canHaveNextQuest = quest.hasFlag(QuestFlag.AutoComplete) || !questGiver.isPlayer();
 
             if (canHaveNextQuest) {
-                switch (questGiver.getTypeId()) {
+                switch (questGiver.getObjectTypeId()) {
                     case Unit:
                     case Player: {
                         //For AutoSubmition was added plr case there as it almost same exclute AI script cases.
@@ -26138,7 +26135,7 @@ public class Player extends Unit implements GirdObject {
         QuestRelationResult questRelations;
         QuestRelationResult questInvolvedRelations;
 
-        switch (questgiver.getTypeId()) {
+        switch (questgiver.getObjectTypeId()) {
             case GameObject: {
                 var ai = questgiver.toGameObject().getAI();
 
@@ -26173,7 +26170,7 @@ public class Player extends Unit implements GirdObject {
             }
             default:
                 // it's impossible, but check
-                Log.outError(LogFilter.player, "GetQuestDialogStatus called for unexpected type {0}", questgiver.getTypeId());
+                Log.outError(LogFilter.player, "GetQuestDialogStatus called for unexpected type {0}", questgiver.getObjectTypeId());
 
                 return QuestGiverStatus.NONE;
         }
@@ -29741,7 +29738,7 @@ public class Player extends Unit implements GirdObject {
         var spell = spells.get(spellId);
 
         if (spell != null) {
-            return spell.state != PlayerSpellState.removed && !spell.disabled;
+            return spell.state != PlayerSpellState.REMOVED && !spell.disabled;
         }
 
         return false;
@@ -29752,122 +29749,98 @@ public class Player extends Unit implements GirdObject {
         var spell = spells.get(spellId);
 
         if (spell != null) {
-            return spell.state != PlayerSpellState.removed && spell.active && !spell.disabled;
+            return spell.state != PlayerSpellState.REMOVED && spell.active && !spell.disabled;
         }
 
         return false;
     }
 
     public final void addSpellMod(SpellModifier mod, boolean apply) {
-        Log.outDebug(LogFilter.spells, "Player.AddSpellMod {0}", mod.getSpellId());
+        Logs.SPELLS.debug("Player::AddSpellMod: Player '{}' ({}), SpellID: {}", getName(), getGUID(), mod.getSpellId());
 
-        // first, manipulate our spellmodifier container
-        if (apply) {
-            spellModifiers[mod.getOp().ordinal()][mod.getType().ordinal()].add(mod);
-        } else {
-            spellModifiers[mod.getOp().ordinal()][mod.getType().ordinal()].remove(mod);
-        }
+        /// First, manipulate our spellmodifier container
+        if (apply)
+            spellMods.add(mod);
+        else
+            spellMods.remove(mod);
 
-        // Now, send spellmodifier packet
+        /// Now, send spellmodifier packet
         switch (mod.getType()) {
             case FLAT:
             case PCT:
                 if (!isLoading()) {
-                    var opcode = (mod.getType() == SpellModType.FLAT ? ServerOpCode.SetFlatSpellModifier : ServerOpcode.SetPctSpellModifier);
+                    ServerOpCode opcode = (mod.getType() == SpellModType.FLAT) ? ServerOpCode.SMSG_SET_FLAT_SPELL_MODIFIER : ServerOpCode.SMSG_SET_PCT_SPELL_MODIFIER;
+
                     SetSpellModifier packet = new SetSpellModifier(opcode);
 
-                    // @todo Implement sending of bulk modifiers instead of single
-                    SpellModifierInfo spellMod = new SpellModifierInfo();
+                    /// @todo Implement sending of bulk modifiers instead of single
+                    SpellModifierInfo spellModifierInfo = new SpellModifierInfo();
+                    spellModifierInfo.modIndex = (byte) mod.getOp().ordinal();
 
-                    spellMod.modIndex = (byte) mod.getOp().ordinal();
 
-                    for (var eff = 0; eff < 128; ++eff) {
-                        FlagArray128 mask = new flagArray128();
-                        mask.set(eff / 32, 1 << (eff % 32));
+                    var modifierList = spellMods.stream()
+                            .filter(spellMod -> spellMod.getOp() == mod.getOp() && spellMod.getType() == mod.getType()).toList();
 
-                        if ((mod instanceof SpellModifierByClassMask ? (SpellModifierByClassMask) mod : null).mask & mask) {
-                            SpellModifierData modData = new SpellModifierData();
+                    SpellModifierByClassMask spellModifierByClassMask = (SpellModifierByClassMask) (mod);
+                    BitSet mask = spellModifierByClassMask.mask.toBitSet();
 
-                            if (mod.getType() == SpellModType.Flat) {
-                                modData.modifierValue = 0.0f;
 
-                                for (SpellModifierByClassMask spell : spellModifiers[mod.getOp().ordinal()][SpellModType.Flat.getValue()]) {
-                                    if (spell.mask & mask) {
-                                        modData.modifierValue += spell.value;
-                                    }
-                                }
-                            } else {
-                                modData.modifierValue = 1.0f;
+                    for (int classIndex = mask.nextSetBit(0); classIndex != -1; classIndex = mask.nextSetBit(classIndex + 1)) {
 
-                                for (SpellModifierByClassMask spell : spellModifiers[mod.getOp().ordinal()][SpellModType.Pct.getValue()]) {
-                                    if (spell.mask & mask) {
-                                        modData.ModifierValue *= 1.0f + MathUtil.CalculatePct(1.0f, spell.value);
-                                    }
-                                }
+                        SpellModifierData modData = new SpellModifierData();
+                        modData.modifierValue = 0.0f;
+
+                        for (SpellModifier e : modifierList) {
+                            SpellModifierByClassMask spellMod = (SpellModifierByClassMask) e;
+                            if ((spellMod.mask.get(classIndex / 32) & (1 << (classIndex % 32))) != 0) {
+                                modData.modifierValue += spellMod.value;
                             }
-
-                            modData.classIndex = (byte) eff;
-
-                            spellMod.modifierData.add(modData);
                         }
+                        modData.classIndex = (byte) classIndex;
+                        spellModifierInfo.modifierData.add(modData);
+
+
+                        packet.modifiers.add(spellModifierInfo);
+                        sendPacket(packet);
                     }
-
-                    packet.modifiers.add(spellMod);
-
-                    sendPacket(packet);
                 }
-
                 break;
             case LABEL_FLAT:
+                SpellFlatModifierByLabel flatModifier = (SpellFlatModifierByLabel) mod;
                 if (apply) {
-                    addDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().spellFlatModByLabel), (mod instanceof SpellFlatModifierByLabel ? (SpellFlatModifierByLabel) mod : null).value);
+                    activePlayerData.getSpellFlatModByLabel().add(flatModifier.value);
                 } else {
-                    var firstIndex = getActivePlayerData().spellFlatModByLabel.FindIndex((mod instanceof SpellFlatModifierByLabel ? (SpellFlatModifierByLabel) mod : null).value);
-
-                    if (firstIndex >= 0) {
-                        removeDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().spellFlatModByLabel), firstIndex);
-                    }
+                    activePlayerData.getSpellFlatModByLabel().remove(flatModifier.value);
                 }
-
                 break;
             case LABEL_PCT:
+                SpellPctModifierByLabel pctModifier = (SpellPctModifierByLabel) mod;
                 if (apply) {
-                    addDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().spellPctModByLabel), (mod instanceof SpellPctModifierByLabel ? (SpellPctModifierByLabel) mod : null).value);
+                    activePlayerData.getSpellPctModByLabel().add(pctModifier.value);
                 } else {
-                    var firstIndex = getActivePlayerData().spellPctModByLabel.FindIndex((mod instanceof SpellPctModifierByLabel ? (SpellPctModifierByLabel) mod : null).value);
-
-                    if (firstIndex >= 0) {
-                        removeDynamicUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().spellPctModByLabel), firstIndex);
-                    }
+                    activePlayerData.getSpellPctModByLabel().remove(pctModifier.value);
                 }
-
+                break;
+            default:
                 break;
         }
     }
 
-
-    public final int applySpellMod(SpellInfo spellInfo, SpellModOp op, int basevalue) {
-        return applySpellMod(spellInfo, op, basevalue, null);
-    }
-
-    public final int applySpellMod(SpellInfo spellInfo, SpellModOp op, int baseValue, Spell spell) {
-        double val = applySpellMod(spellInfo, op, (double) baseValue, spell);
-        return (int) Math.round(val);
-    }
-
-    public final double applySpellMod(SpellInfo spellInfo, SpellModOp op, double baseValue) {
+    public final float applySpellMod(SpellInfo spellInfo, SpellModOp op, float baseValue) {
         return applySpellMod(spellInfo, op, baseValue, null);
     }
 
-    public final double applySpellMod(SpellInfo spellInfo, SpellModOp op, double baseValue, Spell spell) {
-        SpellModValue values = getSpellModValues(spellInfo, op, spell, baseValue);
-        return (baseValue + values.flat()) * values.pct();
+    public final float applySpellMod(SpellInfo spellInfo, SpellModOp op, float baseValue, Spell spell) {
+        var spellModValues = getSpellModValues(spellInfo, op, spell, baseValue);
+        return (baseValue + spellModValues.getFlat()) * spellModValues.getPct();
     }
 
-    public final SpellModValue getSpellModValues(SpellInfo spellInfo, SpellModOp op, Spell spell, double baseValue) {
+    public final SpellModValues getSpellModValues(SpellInfo spellInfo, SpellModOp op, Spell spell, float baseValue) {
 
-        double flat = 0;
-        double pct = 1.0;
+        SpellModValues modValues = new SpellModValues(0, 1.0f);
+
+        if (!spellInfo.isAffectedBySpellMods())
+            return modValues;
 
         // Drop charges for triggering spells instead of triggered ones
         if (this.spellModTakingSpell != null) {
@@ -29878,40 +29851,41 @@ public class Player extends Unit implements GirdObject {
             // special case, if a mod makes spell instant, only consume that mod
             case ChangeCastTime: {
                 SpellModifier modInstantSpell = null;
-
-                for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.PCT.ordinal()]) {
-                    SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
-                    if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                        continue;
-                    }
-
-                    if (baseValue - 10000d < 0 && mod.value <= -100) {
-                        modInstantSpell = mod;
-
-                        break;
-                    }
-                }
-
-                if (modInstantSpell == null) {
-                    for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_PCT.ordinal()]) {
-                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                for(SpellModifier item : spellMods) {
+                    if(item.getOp() == op && item.getType() == SpellModType.PCT) {
+                        SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
                         if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                             continue;
                         }
 
-                        if (baseValue - 10000d < 0 && mod.value.modifierValue <= -1.0f) {
+                        if (baseValue < 10000f && mod.value <= -100) {
                             modInstantSpell = mod;
-
                             break;
+                        }
+                    }
+                }
+
+
+                if (modInstantSpell == null) {
+                    for(SpellModifier item : spellMods) {
+                        if(item.getOp() == op && item.getType() == SpellModType.LABEL_PCT) {
+                            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
+                                continue;
+                            }
+
+                            if (baseValue < 10000f && mod.value.modifierValue <= -1.0f) {
+                                modInstantSpell = mod;
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (modInstantSpell != null) {
                     applyModToSpell(modInstantSpell, spell);
-                    pct = 0.0f;
-
-                    return new SpellModValue(flat, pct);
+                    modValues.setPct(0.0f);
+                    return modValues;
                 }
 
                 break;
@@ -29920,39 +29894,44 @@ public class Player extends Unit implements GirdObject {
             case CritChance: {
                 SpellModifier modCritical = null;
 
-                for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.FLAT.ordinal()]) {
-                    SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
-                    if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                        continue;
-                    }
 
-                    if (mod.value >= 100) {
-                        modCritical = mod;
-
-                        break;
-                    }
-                }
-
-                if (modCritical == null) {
-                    for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_FLAT.ordinal()]) {
-                        SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                for(SpellModifier item : spellMods) {
+                    if(item.getOp() == op && item.getType() == SpellModType.FLAT) {
+                        SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
                         if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                             continue;
                         }
 
-                        if (mod.value.modifierValue >= 100) {
+                        if (mod.value >= 100) {
                             modCritical = mod;
-
                             break;
+                        }
+                    }
+                }
+
+
+                if (modCritical == null) {
+
+                    for(SpellModifier item : spellMods) {
+                        if(item.getOp() == op && item.getType() == SpellModType.LABEL_FLAT) {
+                            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
+                                continue;
+                            }
+
+                            if (mod.value.modifierValue >= 100) {
+                                modCritical = mod;
+
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (modCritical != null) {
                     applyModToSpell(modCritical, spell);
-                    flat = 100;
-
-                    return new SpellModValue(flat, pct);
+                    modValues.setFlat(100);
+                    return modValues;
                 }
 
                 break;
@@ -29961,94 +29940,109 @@ public class Player extends Unit implements GirdObject {
                 break;
         }
 
-        for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.FLAT.ordinal()]) {
-            SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
-            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                continue;
-            }
 
-            var value = mod.value;
-
-            if (value == 0) {
-                continue;
-            }
-
-            flat += value;
-            applyModToSpell(mod, spell);
-        }
-
-        for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_FLAT.ordinal()]) {
-            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
-            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                continue;
-            }
-
-            var value = mod.value.modifierValue;
-
-            if (value == 0) {
-                continue;
-            }
-
-            flat += value;
-            applyModToSpell(mod, spell);
-        }
-
-        for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.PCT.ordinal()]) {
-            SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
-            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                continue;
-            }
-
-            // skip percent mods for null basevalue (most important for spell mods with charges)
-            if (baseValue + flat == 0) {
-                continue;
-            }
-
-            var value = mod.value;
-
-            if (value == 0) {
-                continue;
-            }
-
-            // special case (skip > 10sec spell casts for instant cast setting)
-            if (op == SpellModOp.ChangeCastTime) {
-                if (baseValue - 10000d > 0 && value <= -100) {
+        for(SpellModifier item : spellMods) {
+            if(item.getOp() == op && item.getType() == SpellModType.FLAT) {
+                SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
+                if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
                     continue;
                 }
-            }
 
-            pct *= 1.0f + MathUtil.calculatePct(1.0f, value);
-            applyModToSpell(mod, spell);
-        }
+                var value = mod.value;
 
-        for (SpellModifier item : spellModifiers[op.ordinal()][SpellModType.LABEL_PCT.ordinal()]) {
-            SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
-            if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
-                continue;
-            }
-
-            // skip percent mods for null basevalue (most important for spell mods with charges)
-            if (baseValue + flat == 0) {
-                continue;
-            }
-
-            double value = mod.value.modifierValue;
-
-            if (value == 1.0d) {
-                continue;
-            }
-
-            // special case (skip > 10sec spell casts for instant cast setting)
-            if (op == SpellModOp.ChangeCastTime) {
-                if (baseValue - 10000d > 0 && value <= -1.0f) {
+                if (value == 0) {
                     continue;
                 }
-            }
 
-            pct *= value;
-            applyModToSpell(mod, spell);
+                modValues.setFlat(modValues.flat + value);
+                applyModToSpell(mod, spell);
+            }
         }
-        return new SpellModValue(flat, pct);
+
+
+        for (SpellModifier item : spellMods) {
+            if (item.getOp() == op && item.getType() == SpellModType.LABEL_FLAT) {
+                SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                if (!isAffectedBySpellmod(spellInfo, mod, spell)) {
+                    continue;
+                }
+
+                var value = mod.value.modifierValue;
+
+                if (value == 0) {
+                    continue;
+                }
+
+                modValues.setFlat(modValues.flat + value);
+                applyModToSpell(mod, spell);
+            }
+        }
+
+        for(SpellModifier item : spellMods) {
+            if(item.getOp() == op && item.getType() == SpellModType.PCT) {
+                SpellModifierByClassMask mod = (SpellModifierByClassMask) item;
+                boolean applyCount = isAffectedBySpellmod(spellInfo, mod, spell);
+                if (!applyCount) {
+                    continue;
+                }
+
+
+                // skip percent mods for null basevalue (most important for spell mods with charges)
+                if (baseValue + modValues.flat == 0) {
+                    continue;
+                }
+
+                var value = mod.value;
+
+                if (value == 0) {
+                    continue;
+                }
+
+                // special case (skip > 10sec spell casts for instant cast setting)
+                if (op == SpellModOp.ChangeCastTime) {
+                    if (baseValue >= 10000f && value <= -100) {
+                        continue;
+                    }
+                }
+                modValues.setPct(modValues.pct * (1.0f + MathUtil.calculatePct(1.0f, value)));
+                applyModToSpell(mod, spell);
+            }
+        }
+
+
+        for(SpellModifier item : spellMods) {
+            if(item.getOp() == op && item.getType() == SpellModType.LABEL_PCT) {
+                SpellPctModifierByLabel mod = (SpellPctModifierByLabel) item;
+                boolean applyCount = isAffectedBySpellmod(spellInfo, mod, spell);
+                if (!applyCount) {
+                    continue;
+                }
+
+
+                // skip percent mods for null basevalue (most important for spell mods with charges)
+                if (baseValue + modValues.flat == 0) {
+                    continue;
+                }
+
+                float value = mod.value.modifierValue;
+
+                if (value == 1.0f) {
+                    continue;
+                }
+
+                // special case (skip > 10sec spell casts for instant cast setting)
+                if (op == SpellModOp.ChangeCastTime) {
+                    if (baseValue >= 10000f && value <= -1.0f) {
+                        continue;
+                    }
+                }
+
+                modValues.setPct(modValues.pct * value);
+                applyModToSpell(mod, spell);
+            }
+        }
+
+        return modValues;
     }
 
     public final void setSpellModTakingSpell(Spell spell, boolean apply) {
@@ -30101,19 +30095,88 @@ public class Player extends Unit implements GirdObject {
     /*************Runes****************/
     /**********************************/
     public final void setRuneCooldown(byte index, int cooldown) {
-        runes.getCooldown()[index] = cooldown;
-        runes.setRuneState(index, (cooldown == 0));
-        var activeRunes = runes.getCooldown().count(p -> p == 0);
+        runes.runes[index].cooldown = cooldown;
+        runes.setRuneState(index, cooldown == 0);
+    }
 
-        if (activeRunes != getPower(powerType.runes)) {
-            setPower(powerType.runes, activeRunes);
+
+    void removeRunesByAuraEffect(AuraEffect aura)
+    {
+        for (var i = 0; i < PlayerDefine.MAX_RUNES; ++i)
+        {
+            if (runes.runes[i].convertAura == aura)
+            {
+                convertRune(i, getBaseRune(i));
+                setRuneConvertAura(i, null, AuraType.NONE, null);
+            }
         }
     }
 
+    void RestoreBaseRune(int index)
+    {
+        SpellInfo spellInfo = runes.runes[index].convertAuraInfo;
+        AuraType type = runes.runes[index].convertAuraType;
+        // If rune was converted by a non-pasive aura that still active we should keep it converted
+        if (spellInfo != null)
+        {
+            if (!spellInfo.getAttributes().hasFlag(SpellAttr0.PASSIVE))
+                return;
 
-    public final byte getRunesState() {
-        return (byte) (runes.getRuneState() & ((1 << getMaxPower(powerType.runes)) - 1));
+            // Don't even convert aura for passive convertion
+            if (spellInfo.isPassive() && type == AuraType.CONVERT_RUNE)
+                return;
+        }
+
+        convertRune(index, getBaseRune(index));
+        setRuneConvertAura(index, null, AuraType.NONE, null);
     }
+
+    void convertRune(int index, RuneType newType)
+    {
+        setCurrentRune(index, newType);
+
+        ConvertRune packet = new ConvertRune();
+        packet.Index = index;
+        packet.Rune = newType.ordinal();
+
+        sendMessage(packet);
+    }
+
+
+
+    public final byte getRunesState() { return runes.getRuneState(); }
+    public final RuneType getBaseRune(int index) { return runes.runes[index].baseRune; }
+    public final RuneType getCurrentRune(int index) { return runes.runes[index].currentRune; }
+
+    public final Power getPowerTypeForBaseRune(int index)
+    {
+        return switch (getBaseRune(index)) {
+            case RuneType.BLOOD -> Power.RUNE_BLOOD;
+            case RuneType.FROST -> Power.RUNE_FROST;
+            case RuneType.UNHOLY -> Power.RUNE_UNHOLY;
+            default -> Power.MAX_POWERS;
+        };
+    }
+
+    public final float getRuneCooldown(int index) { return runes.runes[index].cooldown; }
+    public final boolean isRuneFullyDepleted(int index) { return runes.runes[index].cooldown == 0; }
+    public final void setBaseRune(int index, RuneType baseRune) { runes.runes[index].baseRune = baseRune; }
+    public final void setCurrentRune(int index, RuneType currentRune) { runes.runes[index].currentRune = currentRune; }
+    public final void setRuneConvertAura(int index, AuraEffect aura, AuraType auraType, SpellInfo spellInfo) {
+        runes.runes[index].convertAura = aura;
+        runes.runes[index].convertAuraType = auraType;
+        runes.runes[index].convertAuraInfo = spellInfo;
+    }
+    public final void addRuneByAuraEffect(int index, RuneType newType, AuraEffect aura, AuraType auraType, SpellInfo spellInfo) {
+        setRuneConvertAura(index, aura, auraType, spellInfo);
+        convertRune(index, newType);
+    }
+    public final void setRuneCooldown(int index, float cooldown) {
+        runes.runes[index].cooldown = cooldown;
+        runes.setRuneState(index, (cooldown == 0) ? true : false);
+    }
+
+
 
 
     public final int getRuneBaseCooldown() {
@@ -30140,26 +30203,31 @@ public class Player extends Unit implements GirdObject {
         return (int) cooldown;
     }
 
-    public final void resyncRunes() {
-        var maxRunes = getMaxPower(powerType.runes);
-
-        ResyncRunes data = new resyncRunes();
-        data.runes.start = (byte) ((1 << maxRunes) - 1);
-        data.runes.count = getRunesState();
-
-        float baseCd = getRuneBaseCooldown();
-
-        for (byte i = 0; i < maxRunes; ++i) {
-            data.runes.cooldowns.add((byte) ((baseCd - getRuneCooldown(i)) / baseCd * 255));
-        }
-
-        sendPacket(data);
-    }
 
     public final void initRunes() {
-        if (getClass() != playerClass.Deathknight) {
+
+
+
+        if (getClass() != PlayerClass.DEATH_KNIGHT) {
             return;
         }
+
+        runes = new Runes();
+
+        runes.setRuneState(0);
+        runes.setLastUsedRune(RuneType.BLOOD);
+        runes.setLastUsedRuneMask((byte) 0);
+
+
+        for (var i = 0; i < PlayerDefine.MAX_RUNES; ++i)
+        {
+            setBaseRune(i, runeSlotTypes[i]);                              // init base types
+            setCurrentRune(i, runeSlotTypes[i]);                           // init current types
+            setRuneCooldown(i, 0.0f);                                      // reset cooldowns
+            setRuneConvertAura(i, null, SPELL_AURA_NONE, null);
+            runes.setRuneState(i);
+        }
+
 
         var runeIndex = getPowerIndex(powerType.runes);
 
@@ -30167,7 +30235,7 @@ public class Player extends Unit implements GirdObject {
             return;
         }
 
-        runes = new runes();
+
         runes.setRuneState(0);
 
         for (byte i = 0; i < PlayerConst.MaxRunes; ++i) {
@@ -30564,7 +30632,7 @@ public class Player extends Unit implements GirdObject {
 
         for (var auraEffect : dummyAuras) {
             // Soulstone Resurrection                           // prio: 3 (max, non death persistent)
-            if (auraEffect.getSpellInfo().getSpellFamilyName() == SpellFamilyNames.Warlock && auraEffect.getSpellInfo().getSpellFamilyFlags().get(1).hasFlag(0x1000000)) {
+            if (auraEffect.getSpellInfo().getSpellFamilyName() == SpellFamilyName.Warlock && auraEffect.getSpellInfo().getSpellFamilyFlags().get(1).hasFlag(0x1000000)) {
                 spells[0] = 3026;
             }
             // Twisting Nether                                  // prio: 2 (max)
@@ -31774,8 +31842,8 @@ public class Player extends Unit implements GirdObject {
     }
 
     @Override
-    public void updateResistances(SpellSchools school) {
-        if (school.getValue() > SpellSchools.NORMAL.getValue()) {
+    public void updateResistances(SpellSchool school) {
+        if (school.getValue() > SpellSchool.NORMAL.getValue()) {
             super.updateResistances(school);
 
             var pet = getCurrentPet();
@@ -31800,22 +31868,22 @@ public class Player extends Unit implements GirdObject {
         applyRatingMod(cr, 0, true);
     }
 
-    public final void applyModDamageDonePos(SpellSchools school, int mod, boolean apply) {
+    public final void applyModDamageDonePos(SpellSchool school, int mod, boolean apply) {
 
         applyModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePos, school.getValue()), mod, apply);
     }
 
-    public final void applyModDamageDoneNeg(SpellSchools school, int mod, boolean apply) {
+    public final void applyModDamageDoneNeg(SpellSchool school, int mod, boolean apply) {
 
         applyModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, school.getValue()), mod, apply);
     }
 
-    public final void applyModDamageDonePercent(SpellSchools school, float pct, boolean apply) {
+    public final void applyModDamageDonePercent(SpellSchool school, float pct, boolean apply) {
 
         applyPercentModUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePercent, school.getValue()), pct, apply);
     }
 
-    public final void setModDamageDonePercent(SpellSchools school, float pct) {
+    public final void setModDamageDonePercent(SpellSchool school, float pct) {
 
         setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDonePercent, school.getValue()), pct);
     }
@@ -31933,7 +32001,7 @@ public class Player extends Unit implements GirdObject {
         // Get damage bonus for all schools
         var modDamageAuras = getAuraEffectsByType(AuraType.ModDamageDone);
 
-        for (var i = SpellSchools.Holy.getValue(); i < SpellSchools.max.getValue(); ++i) {
+        for (var i = SpellSchool.Holy.getValue(); i < SpellSchool.max.getValue(); ++i) {
 
             setUpdateFieldValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modDamageDoneNeg, i), (int) modDamageAuras.Aggregate(0f, (negativeMod, aurEff) ->
             {
@@ -31991,7 +32059,7 @@ public class Player extends Unit implements GirdObject {
         } else {
             int minSpellPower = getActivePlayerData().modHealingDonePos;
 
-            for (var i = SpellSchools.Holy; i.getValue() < SpellSchools.max.getValue(); ++i) {
+            for (var i = SpellSchool.Holy; i.getValue() < SpellSchool.max.getValue(); ++i) {
                 minSpellPower = Math.min(minSpellPower, getActivePlayerData().modDamageDonePos.get(i.getValue()));
             }
 
@@ -32297,7 +32365,7 @@ public class Player extends Unit implements GirdObject {
 
         var val = (float) value;
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
 
             setUpdateFieldStatValue(ref getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modHealingDonePercent, i), val);
         }
@@ -32737,7 +32805,7 @@ public class Player extends Unit implements GirdObject {
         // For speed just update for client
         applyModUpdateFieldValue(getValues().modifyValue(getActivePlayerData()).modifyValue(getActivePlayerData().modHealingDonePos), amount, apply);
 
-        for (var spellSchool = SpellSchools.Holy; spellSchool.getValue() < SpellSchools.max.getValue(); ++spellSchool) {
+        for (var spellSchool = SpellSchool.Holy; spellSchool.getValue() < SpellSchool.max.getValue(); ++spellSchool) {
             applyModDamageDonePos(spellSchool, amount, apply);
         }
 

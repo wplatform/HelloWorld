@@ -1,9 +1,11 @@
 package com.github.azeroth.dbc.domain;
 
 import com.github.azeroth.cache.DbcEntity;
+import com.github.azeroth.common.EnumFlag;
 import com.github.azeroth.dbc.db2.Db2Field;
 import com.github.azeroth.dbc.db2.Db2DataBind;
 import com.github.azeroth.dbc.db2.Db2Type;
+import com.github.azeroth.dbc.defines.SummonPropertyFlag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -27,7 +29,6 @@ import lombok.ToString;
 })
 public class SummonProperty implements DbcEntity {
     @Id
-
     @Column("ID")
     private int id;
 
@@ -47,8 +48,11 @@ public class SummonProperty implements DbcEntity {
     private Integer slot;
 
     @Id
-
     @Column("VerifiedBuild")
     private Integer verifiedBuild;
+
+    public EnumFlag<SummonPropertyFlag> getFlags() {
+        return EnumFlag.of(SummonPropertyFlag.class, flags);
+    }
 
 }

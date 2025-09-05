@@ -18,9 +18,9 @@ final class CalendarUpdateEventInfo {
         eventID = data.readUInt64();
         moderatorID = data.readUInt64();
         eventType = data.readUInt8();
-        textureID = data.readUInt();
+        textureID = data.readUInt32();
         time = data.readPackedTime();
-        flags = data.readUInt();
+        flags = data.readUInt32();
 
         var titleLen = data.<Byte>readBit(8);
         var descLen = data.<SHORT>readBit(11);

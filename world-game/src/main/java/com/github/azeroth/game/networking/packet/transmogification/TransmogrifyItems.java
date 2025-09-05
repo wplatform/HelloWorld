@@ -15,7 +15,7 @@ class TransmogrifyItems extends ClientPacket {
 
     @Override
     public void read() {
-        var itemsCount = this.readUInt();
+        var itemsCount = this.readUInt32();
         npc = this.readPackedGuid();
 
         for (var i = 0; i < itemsCount; ++i) {

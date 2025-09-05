@@ -3,7 +3,7 @@ package com.github.azeroth.game.movement.generator;
 
 import com.github.azeroth.game.movement.MovementGeneratorMedium;
 import com.github.azeroth.game.movement.PathGenerator;
-import com.github.azeroth.game.movement.PathType;
+import com.github.azeroth.game.movement.enums.PathType;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
 
 public class ConfusedMovementGenerator<T extends unit> extends MovementGeneratorMedium<T> {

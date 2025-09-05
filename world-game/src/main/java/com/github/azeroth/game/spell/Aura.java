@@ -1,7 +1,8 @@
 package com.github.azeroth.game.spell;
 
-
-import Framework.models.*;
+import Time.GameTime;
+import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.dbc.domain.SpellPower;
 import com.github.azeroth.game.entity.dynamic.DynamicObject;
 import com.github.azeroth.game.entity.item.Item;
 import com.github.azeroth.game.domain.object.ObjectGuid;
@@ -9,29 +10,35 @@ import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.player.model.SpellModifier;
 import com.github.azeroth.game.entity.unit.*;
-import com.github.azeroth.game.networking.packet.SpellCastVisual;
+
+import com.github.azeroth.game.networking.packet.spell.SpellCastVisual;
 import com.github.azeroth.game.scripting.AuraScript;
 import com.github.azeroth.game.scripting.interfaces.IAuraScript;
 import com.github.azeroth.game.scripting.interfaces.iaura.*;
+import com.github.azeroth.game.spell.auras.enums.AuraType;
+import com.github.azeroth.game.spell.enums.SpellModOp;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-
+@Getter
+@Setter
 public class Aura {
     private static final int UPDATE_TARGET_MAP_INTERVAL = 500;
 
     private static final ArrayList<IAuraScript> DUMMY = new ArrayList<>();
     private static final HashSet<Integer> DUMMYHASHSET = new HashSet<Integer>();
 	private static final ArrayList<(IAuraScript,IAuraEffectHandler)>DUMMYAURAEFFECTS =new ArrayList<(IAuraScript,IAuraEffectHandler)>();
-    private static final HashMap<unit, HashSet<Integer>> DUMMYAURAFILL = new HashMap<unit, HashSet<Integer>>();
-    private final HashMap<class,ArrayList<IAuraScript>>auraScriptsByType =new HashMap<class,ArrayList<IAuraScript>>();
+    private static final HashMap<Unit, HashSet<Integer>> DUMMYAURAFILL = new HashMap<Unit, HashSet<Integer>>();
+    private final HashMap<Class<?>,ArrayList<IAuraScript>>auraScriptsByType =new HashMap<Class<?>,ArrayList<IAuraScript>>();
 	private final Dictionary<Integer, Dictionary<AuraScriptHookType, ArrayList<(IAuraScript,IAuraEffectHandler)>>>effectHandlers =new();
     private final SpellInfo spellInfo;
     private final Difficulty castDifficulty;
     private final long applyTime;
     private final WorldObject owner;
-    private final ArrayList<SpellPowerRecord> periodicCosts = new ArrayList<>(); // Periodic costs
+    private final ArrayList<SpellPower> periodicCosts = new ArrayList<>(); // Periodic costs
 
     private final int casterLevel; // Aura level (store caster level for correct show level dep amount)
     private final HashMap<ObjectGuid, AuraApplication> auraApplications = new HashMap<ObjectGuid, AuraApplication>();
@@ -39,9 +46,8 @@ public class Aura {
     private final ObjectGuid castId;
     private final ObjectGuid casterGuid;
     private final SpellCastVisual spellCastVisual;
-    private final UUID guid = system.guid.NewGuid();
     private ArrayList<AuraScript> loadedScripts = new ArrayList<>();
-    private ObjectGuid castItemGuid = ObjectGuid.EMPTY;
+    private ObjectGuid castItemGuid;
     private int castItemId;
     private int castItemLevel;
     private int maxDuration; // Max aura duration
@@ -61,42 +67,42 @@ public class Aura {
     private LocalDateTime lastProcSuccessTime = LocalDateTime.MIN;
     private Byte empoweredStage = null;
 
-    public aura(AuraCreateInfo createInfo) {
-        spellInfo = createInfo.spellInfoInternal;
-        castDifficulty = createInfo.castDifficulty;
-        castId = createInfo.castId;
-        casterGuid = createInfo.casterGuid;
-        castItemGuid = createInfo.castItemGuid;
-        castItemId = createInfo.castItemId;
-        castItemLevel = createInfo.castItemLevel;
-        spellCastVisual = new spellCastVisual(createInfo.Caster ? createInfo.caster.getCastSpellXSpellVisualId(createInfo.spellInfoInternal) : createInfo.spellInfoInternal.getSpellXSpellVisualId(), 0);
-        applyTime = gameTime.GetGameTime();
-        owner = createInfo.ownerInternal;
-        timeCla = 0;
-        updateTargetMapInterval = 0;
-        casterLevel = createInfo.Caster ? createInfo.caster.getLevel() : spellInfo.getSpellLevel();
-        procCharges = 0;
-        stackAmount = 1;
-        isRemoved = false;
-        isSingleTarget = false;
-        isUsingCharges = false;
-        lastProcAttemptTime = (LocalDateTime.now() - duration.FromSeconds(10));
-        lastProcSuccessTime = (LocalDateTime.now() - duration.FromSeconds(120));
+    public Aura(AuraCreateInfo createInfo) {
+        this.spellInfo = createInfo.spellInfoInternal;
+        this.castDifficulty = createInfo.castDifficulty;
+        this.castId = createInfo.castId;
+        this.casterGuid = createInfo.casterGuid;
+        this.castItemGuid = createInfo.castItemGuid;
+        this.castItemId = createInfo.castItemId;
+        this.castItemLevel = createInfo.castItemLevel;
+        this.spellCastVisual = new SpellCastVisual(createInfo.caster != null ? createInfo.caster.getCastSpellXSpellVisualId(createInfo.spellInfoInternal) : createInfo.spellInfoInternal.getSpellXSpellVisualId(), 0);
+        this.applyTime = GameTime.getGameTime();
+        this.owner = createInfo.ownerInternal;
+        this.timeCla = 0;
+        this.updateTargetMapInterval = 0;
+        this.casterLevel = createInfo.Caster ? createInfo.caster.getLevel() : spellInfo.getSpellLevel();
+        this.procCharges = 0;
+        this.stackAmount = 1;
+        this.isRemoved = false;
+        this.isSingleTarget = false;
+        this.isUsingCharges = false;
+        this.lastProcAttemptTime = (LocalDateTime.now() - duration.FromSeconds(10));
+        this.lastProcSuccessTime = (LocalDateTime.now() - duration.FromSeconds(120));
 
         for (var power : spellInfo.powerCosts) {
             if (power != null && (power.ManaPerSecond != 0 || power.PowerPctPerSecond > 0.0f)) {
-                periodicCosts.add(power);
+                this.periodicCosts.add(power);
             }
         }
 
         if (!periodicCosts.isEmpty()) {
-            timeCla = 1 * time.InMilliseconds;
+            this.timeCla = 1 * time.InMilliseconds;
         }
 
-        maxDuration = calcMaxDuration(createInfo.caster);
-        duration = maxDuration;
-        procCharges = calcMaxCharges(createInfo.caster);
-        isUsingCharges = procCharges != 0;
+        this.maxDuration = calcMaxDuration(createInfo.caster);
+        this.duration = maxDuration;
+        this.procCharges = calcMaxCharges(createInfo.caster);
+        this.isUsingCharges = procCharges != 0;
         // m_casterLevel = cast item level/caster level, caster level should be saved to db, confirmed with sniffs
     }
 
@@ -171,7 +177,7 @@ public class Aura {
 
         Aura aura;
 
-        switch (createInfo.getOwner().getTypeId()) {
+        switch (createInfo.getOwner().getObjectTypeId()) {
             case Unit:
             case Player:
                 aura = new UnitAura(createInfo);
@@ -230,7 +236,7 @@ public class Aura {
         // isPermanent() checks max duration (which we are supposed to calculate here)
         if (maxDuration != -1 && modOwner != null) {
             tangible.RefObject<Integer> tempRef_maxDuration = new tangible.RefObject<Integer>(maxDuration);
-            modOwner.applySpellMod(spellInfo, SpellModOp.duration, tempRef_maxDuration);
+            modOwner.applySpellMod(spellInfo, SpellModOp.Duration, tempRef_maxDuration);
             maxDuration = tempRef_maxDuration.refArgValue;
         }
 
@@ -238,26 +244,19 @@ public class Aura {
     }
 
     public static boolean effectTypeNeedsSendingAmount(AuraType type) {
-        switch (type) {
-            case OverrideActionbarSpells:
-            case OverrideActionbarSpellsTriggered:
-            case ModSpellCategoryCooldown:
-            case ModMaxCharges:
-            case ChargeRecoveryMod:
-            case ChargeRecoveryMultiplier:
-                return true;
-            default:
-                break;
-        }
+        return switch (type) {
+            case OVERRIDE_ACTIONBAR_SPELLS, OVERRIDE_ACTIONBAR_SPELLS_TRIGGERED, MOD_SPELL_CATEGORY_COOLDOWN,
+                 MOD_MAX_CHARGES, CHARGE_RECOVERY_MOD, CHARGE_RECOVERY_MULTIPLIER -> true;
+            default -> false;
+        };
 
-        return false;
     }
 
     //Static Methods
     public static HashSet<Integer> buildEffectMaskForOwner(SpellInfo spellProto, HashSet<Integer> availableEffectMask, WorldObject owner) {
         var effMask = new HashSet<Integer>();
 
-        switch (owner.getTypeId()) {
+        switch (owner.getObjectTypeId()) {
             case Unit:
             case Player:
                 for (var spellEffectInfo : spellProto.getEffects()) {
@@ -484,7 +483,7 @@ public class Aura {
     }
 
     public final AuraObjectType getAuraObjType() {
-        return (owner.getTypeId() == TypeId.DynamicObject) ? AuraObjectType.DynObj : AuraObjectType.unit;
+        return (owner.getObjectTypeId() == TypeId.DynamicObject) ? AuraObjectType.DynObj : AuraObjectType.unit;
     }
 
     public final boolean isPassive() {

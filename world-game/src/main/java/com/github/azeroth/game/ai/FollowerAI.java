@@ -315,7 +315,7 @@ class FollowerAI extends ScriptedAI {
         }
 
         // or if enemy is in evade mode
-        if (who.getTypeId() == TypeId.UNIT && who.toCreature().isInEvadeMode()) {
+        if (who.getObjectTypeId() == TypeId.UNIT && who.toCreature().isInEvadeMode()) {
             return false;
         }
 

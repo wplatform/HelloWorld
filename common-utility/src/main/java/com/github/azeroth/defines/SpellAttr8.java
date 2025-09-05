@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr8 {
+public enum SpellAttr8 implements EnumFlag.FlagValue {
     NO_ATTACK_BLOCK(0x00000001), // TITLE No Attack Block
     IGNORE_DYNAMIC_OBJECT_CASTER(0x00000002), /*NYI*/ // TITLE Ignore Dynamic Object Caster
     REMOVE_OUTSIDE_DUNGEONS_AND_RAIDS(0x00000004), // TITLE Remove Outside Dungeons and Raids

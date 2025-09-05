@@ -13,7 +13,7 @@ class MountSpecial extends ClientPacket {
 
     @Override
     public void read() {
-        spellVisualKitIDs = new int[this.readUInt()];
+        spellVisualKitIDs = new int[this.readUInt32()];
         sequenceVariation = this.readInt32();
 
         for (var i = 0; i < spellVisualKitIDs.length; ++i) {

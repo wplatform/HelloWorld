@@ -12,6 +12,6 @@ class SelfRes extends ClientPacket {
 
     @Override
     public void read() {
-        spellId = this.readUInt();
+        spellId = this.readUInt32();
     }
 }

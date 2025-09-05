@@ -12,6 +12,6 @@ class ToyClearFanfare extends ClientPacket {
 
     @Override
     public void read() {
-        itemID = this.readUInt();
+        itemID = this.readUInt32();
     }
 }

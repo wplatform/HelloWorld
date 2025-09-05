@@ -14,7 +14,7 @@ class CheckCharacterNameAvailability extends ClientPacket {
 
     @Override
     public void read() {
-        sequenceIndex = this.readUInt();
+        sequenceIndex = this.readUInt32();
         name = this.readString(this.<Integer>readBit(6));
     }
 }

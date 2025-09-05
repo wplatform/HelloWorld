@@ -18,7 +18,7 @@ class AuctionListItemsByBucketKey extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        offset = this.readUInt();
+        offset = this.readUInt32();
         unknown830 = this.readByte();
 
         if (this.readBit()) {

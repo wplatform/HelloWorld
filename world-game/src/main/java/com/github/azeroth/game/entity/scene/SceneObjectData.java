@@ -9,10 +9,10 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.networking.WorldPacket;
 
 public class SceneObjectData extends BaseUpdateData<WorldObject> {
-    public UpdateField<Integer> scriptPackageID = new UpdateField<Integer>(0, 1);
-    public UpdateField<Integer> rndSeedVal = new UpdateField<Integer>(0, 2);
-    public UpdateField<ObjectGuid> createdBy = new UpdateField<ObjectGuid>(0, 3);
-    public UpdateField<Integer> sceneType = new UpdateField<Integer>(0, 4);
+    public UpdateField<Integer> scriptPackageID = new UpdateField<>(0, 1);
+    public UpdateField<Integer> rndSeedVal = new UpdateField<>(0, 2);
+    public UpdateField<ObjectGuid> createdBy = new UpdateField<>(0, 3);
+    public UpdateField<Integer> sceneType = new UpdateField<>(0, 4);
 
     public sceneObjectData() {
         super(5);

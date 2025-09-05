@@ -21,7 +21,7 @@ import com.github.azeroth.game.group.GroupManager;
 import com.github.azeroth.game.loot.LootItemStorage;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.collision.VMapManager;
-import com.github.azeroth.game.pvp.OutdoorPvPManager;
+import com.github.azeroth.game.pvp.OutdoorPvpManager;
 import com.github.azeroth.game.scenario.ScenarioManager;
 import com.github.azeroth.game.scripting.ScriptManager;
 import com.github.azeroth.game.service.WorldServiceManager;
@@ -133,8 +133,8 @@ public final class Global {
         return BattlegroundManager.getInstance();
     }
 
-    public static OutdoorPvPManager getOutdoorPvPMgr() {
-        return OutdoorPvPManager.getInstance();
+    public static OutdoorPvpManager getOutdoorPvPMgr() {
+        return OutdoorPvpManager.getInstance();
     }
 
     public static BattleFieldManager getBattleFieldMgr() {

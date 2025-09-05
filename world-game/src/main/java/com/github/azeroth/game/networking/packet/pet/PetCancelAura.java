@@ -14,6 +14,6 @@ class PetCancelAura extends ClientPacket {
     @Override
     public void read() {
         petGUID = this.readPackedGuid();
-        spellID = this.readUInt();
+        spellID = this.readUInt32();
     }
 }

@@ -1,6 +1,6 @@
 package com.github.azeroth.game.entity.vehicle;
 
-import Framework.Constants.*;
+
 import com.github.azeroth.dbc.domain.VehicleEntry;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.enums.TypeId;
@@ -10,7 +10,6 @@ import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnInstall;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnRemovePassenger;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnReset;
 import com.github.azeroth.game.scripting.interfaces.ivehicle.IVehicleOnUninstall;
-import game.datastorage.*;
 
 import java.time.Duration;
 import java.util.ArrayList;

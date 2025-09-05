@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr5 {
+public enum SpellAttr5 implements EnumFlag.FlagValue {
     ALLOW_ACTIONS_DURING_CHANNEL(0x00000001), // TITLE Allow Actions During Channel
     NO_REAGENT_COST_WITH_AURA(0x00000002), // TITLE No Reagent Cost With Aura
     REMOVE_ENTERING_ARENA(0x00000004), // TITLE Remove Entering Arena DESCRIPTION Force this aura to be removed on entering arena, regardless of other properties

@@ -8,7 +8,7 @@ public final class QualifiedGUID {
     public int virtualRealmAddress;
 
     public void read(WorldPacket data) {
-        virtualRealmAddress = data.readUInt();
+        virtualRealmAddress = data.readUInt32();
         guid = data.readPackedGuid();
     }
 

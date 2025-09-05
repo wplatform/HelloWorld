@@ -17,7 +17,7 @@ public class TutorialSetFlag extends ClientPacket {
         action = TutorialAction.forValue(this.<Byte>readBit(2));
 
         if (action == TutorialAction.Update) {
-            tutorialBit = this.readUInt();
+            tutorialBit = this.readUInt32();
         }
     }
 }

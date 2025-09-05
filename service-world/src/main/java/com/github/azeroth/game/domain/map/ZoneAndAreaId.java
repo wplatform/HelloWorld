@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor(staticName = "of")
 public class ZoneAndAreaId {
-    public final short zoneId;
-    public final short areaId;
+    public final int zoneId;
+    public final int areaId;
 }

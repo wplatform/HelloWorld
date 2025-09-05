@@ -20,7 +20,7 @@ public class WhoRequestPkt extends ClientPacket {
         var areasCount = this.<Integer>readBit(4);
 
         request.read(this);
-        requestID = this.readUInt();
+        requestID = this.readUInt32();
 
         for (var i = 0; i < areasCount; ++i) {
             areas.add(this.readInt32());

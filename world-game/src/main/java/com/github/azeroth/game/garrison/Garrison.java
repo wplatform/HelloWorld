@@ -867,7 +867,7 @@ public class Garrison {
 
             spawn.getLocation().relocate(pos);
 
-            switch (spawn.getTypeId()) {
+            switch (spawn.getObjectTypeId()) {
                 case Unit:
                     spawn.toCreature().setHomePosition(pos);
 

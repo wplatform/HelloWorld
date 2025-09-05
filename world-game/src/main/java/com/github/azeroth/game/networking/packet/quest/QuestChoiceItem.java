@@ -14,7 +14,7 @@ public final class QuestChoiceItem {
         lootItemType = lootItemType.forValue(data.readBit(2));
         item = new itemInstance();
         item.read(data);
-        quantity = data.readUInt();
+        quantity = data.readUInt32();
     }
 
     public void write(WorldPacket data) {

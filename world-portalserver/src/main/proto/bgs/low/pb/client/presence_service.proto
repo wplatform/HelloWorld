@@ -51,7 +51,7 @@ message BatchSubscribeRequest {
 
 message SubscribeResult {
 	optional .bgs.protocol.EntityId entity_id = 1;
-	optional uint32 result = 2;
+	optional uint32 yieldResult = 2;
 }
 
 message BatchSubscribeResponse {

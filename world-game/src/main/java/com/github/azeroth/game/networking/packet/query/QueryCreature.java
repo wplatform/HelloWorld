@@ -12,6 +12,6 @@ public class QueryCreature extends ClientPacket {
 
     @Override
     public void read() {
-        creatureID = this.readUInt();
+        creatureID = this.readUInt32();
     }
 }

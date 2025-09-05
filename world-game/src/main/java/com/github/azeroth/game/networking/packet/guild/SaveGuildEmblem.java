@@ -23,10 +23,10 @@ public class SaveGuildEmblem extends ClientPacket {
     @Override
     public void read() {
         vendor = this.readPackedGuid();
-        EStyle = this.readUInt();
-        EColor = this.readUInt();
-        BStyle = this.readUInt();
-        BColor = this.readUInt();
-        bg = this.readUInt();
+        EStyle = this.readUInt32();
+        EColor = this.readUInt32();
+        BStyle = this.readUInt32();
+        BColor = this.readUInt32();
+        bg = this.readUInt32();
     }
 }

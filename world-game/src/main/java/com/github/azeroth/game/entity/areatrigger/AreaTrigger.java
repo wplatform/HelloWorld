@@ -18,7 +18,7 @@ import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.movement.PathGenerator;
-import com.github.azeroth.game.movement.PathType;
+import com.github.azeroth.game.movement.enums.PathType;
 import com.github.azeroth.game.movement.Spline;
 import com.github.azeroth.game.movement.model.EvaluationMode;
 import com.github.azeroth.game.networking.WorldPacket;
@@ -453,24 +453,24 @@ public class AreaTrigger extends WorldObject implements GirdObject {
     }
 
     public final void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedAreaTriggerMask, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         if (requestedAreaTriggerMask.isAnySet()) {
-            valuesMask.set(getTypeId().areaTrigger.getValue());
+            valuesMask.set(getObjectTypeId().areaTrigger.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().areaTrigger.getValue())) {
+        if (valuesMask.get(getObjectTypeId().areaTrigger.getValue())) {
             areaTriggerData.writeUpdate(buffer, requestedAreaTriggerMask, true, this, target);
         }
 
@@ -1310,6 +1310,16 @@ public class AreaTrigger extends WorldObject implements GirdObject {
     public final void setNewCellPosition(float x, float y, float z, float o) {
         moveState = CellMoveState.ACTIVE;
         newPosition.relocate(x, y, z, o);
+    }
+
+    public boolean HasSplines() {
+        //TODO
+        return false;
+    }
+
+    public boolean HasOrbit() {
+        //TODO
+        return false;
     }
 
     private static class ValuesUpdateForPlayerWithMaskSender implements IDoWork<Player> {

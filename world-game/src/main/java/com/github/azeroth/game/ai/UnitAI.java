@@ -1,6 +1,7 @@
 package com.github.azeroth.game.ai;
 
 
+import com.github.azeroth.defines.SpellCastResult;
 import com.github.azeroth.game.combat.ThreatManager;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.unit.CalcDamageInfo;

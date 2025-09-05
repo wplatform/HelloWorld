@@ -17,7 +17,7 @@ public class GossipSelectOption extends ClientPacket {
     @Override
     public void read() {
         gossipUnit = this.readPackedGuid();
-        gossipID = this.readUInt();
+        gossipID = this.readUInt32();
         gossipOptionID = this.readInt32();
 
         var length = this.<Integer>readBit(8);

@@ -15,7 +15,7 @@ class QuestGiverStatusTrackedQuery extends ClientPacket {
 
     @Override
     public void read() {
-        var guidCount = this.readUInt();
+        var guidCount = this.readUInt32();
 
         for (int i = 0; i < guidCount; ++i) {
             questGiverGUIDs.add(this.readPackedGuid());

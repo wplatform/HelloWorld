@@ -25,7 +25,7 @@ class PowerUsersSelector implements ICheck<unit> {
             return false;
         }
 
-        if (playerOnly && target.getTypeId() != TypeId.PLAYER) {
+        if (playerOnly && target.getObjectTypeId() != TypeId.PLAYER) {
             return false;
         }
 

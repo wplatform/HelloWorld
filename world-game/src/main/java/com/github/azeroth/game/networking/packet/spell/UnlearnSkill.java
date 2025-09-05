@@ -12,6 +12,6 @@ class UnlearnSkill extends ClientPacket {
 
     @Override
     public void read() {
-        skillLine = this.readUInt();
+        skillLine = this.readUInt32();
     }
 }

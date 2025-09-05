@@ -318,24 +318,24 @@ public class DynamicObject extends WorldObject implements GirdObject {
     }
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedDynamicObjectMask, Player target) {
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         if (requestedDynamicObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().DynamicObject.getValue());
+            valuesMask.set(getObjectTypeId().DynamicObject.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().DynamicObject.getValue())) {
+        if (valuesMask.get(getObjectTypeId().DynamicObject.getValue())) {
             dynamicObjectData.writeUpdate(buffer, requestedDynamicObjectMask, true, this, target);
         }
 

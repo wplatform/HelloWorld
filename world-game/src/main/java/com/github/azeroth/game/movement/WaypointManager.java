@@ -1,9 +1,9 @@
 package game;
 
 
-import com.github.azeroth.game.WaypointMoveType;
-import com.github.azeroth.game.WaypointNode;
-import com.github.azeroth.game.WaypointPath;
+import com.github.azeroth.game.domain.misc.WaypointMoveType;
+import com.github.azeroth.game.domain.misc.WaypointNode;
+import com.github.azeroth.game.domain.misc.WaypointPath;
 
 import java.util.ArrayList;
 import java.util.HashMap;

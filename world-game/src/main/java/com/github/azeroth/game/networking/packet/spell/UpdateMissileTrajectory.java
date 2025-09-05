@@ -24,7 +24,7 @@ class UpdateMissileTrajectory extends ClientPacket {
         guid = this.readPackedGuid();
         castID = this.readPackedGuid();
         moveMsgID = this.readUInt16();
-        spellID = this.readUInt();
+        spellID = this.readUInt32();
         pitch = this.readFloat();
         speed = this.readFloat();
         firePos = this.readVector3();

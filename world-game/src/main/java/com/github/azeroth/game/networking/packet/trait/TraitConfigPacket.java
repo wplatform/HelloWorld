@@ -50,7 +50,7 @@ public class TraitConfigPacket {
     public final void read(WorldPacket data) {
         ID = data.readInt32();
         type = TraitConfigType.forValue(data.readInt32());
-        var entriesCount = data.readUInt();
+        var entriesCount = data.readUInt32();
 
         switch (type) {
             case Combat:
@@ -60,7 +60,7 @@ public class TraitConfigPacket {
 
                 break;
             case Profession:
-                skillLineID = data.readUInt();
+                skillLineID = data.readUInt32();
 
                 break;
             case Generic:

@@ -21,6 +21,7 @@ import com.github.azeroth.game.entity.gobject.GameObject;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.entity.object.update.UnitData;
 import com.github.azeroth.game.entity.pet.Pet;
 import com.github.azeroth.game.entity.player.KillRewarder;
 import com.github.azeroth.game.entity.player.Player;
@@ -57,26 +58,31 @@ import com.github.azeroth.game.spell.*;
 import com.github.azeroth.game.spell.auras.AuraApplicationCollection;
 import com.github.azeroth.game.spell.auras.AuraCollection;
 import com.github.azeroth.game.spell.auras.enums.AuraType;
+import com.github.azeroth.game.spell.enums.SpellGroup;
 import com.github.azeroth.game.spell.events.DelayedCastEvent;
 import com.github.azeroth.utils.MathUtil;
 import com.github.azeroth.utils.RandomUtil;
 import game.ConditionManager;
 import game.ObjectManager;
 import game.PhasingHandler;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 
-import static com.github.azeroth.game.entity.object.update.ObjectFields.*;
+import static com.github.azeroth.game.entity.objects.update.ObjectFields.*;
 import static com.github.azeroth.game.domain.unit.UnitDefine.*;
 
-
+@Getter
+@Setter
 public class Unit extends WorldObject {
-    private static final Duration DESPAWNTIME = duration.FromSeconds(2);
-    public static Duration MAX_DAMAGE_HISTORY_DURATION = duration.FromSeconds(20);
-    private final Object healthLock = new object();
+    private static final Duration DESPAWNTIME = Duration.ofSeconds(2);
+    public static Duration MAX_DAMAGE_HISTORY_DURATION = Duration.ofSeconds(20);
+    private final Object healthLock = new Object();
     private final ArrayList<AbstractFollower> followingMe = new ArrayList<>();
     private final MotionMaster motionMaster;
     private final TimeTracker splineSyncTimer;
@@ -95,7 +101,7 @@ public class Unit extends WorldObject {
     private final MultiMap<AuraStateType, AuraApplication> auraStateAuras = new MultiMap<AuraStateType, AuraApplication>(); // Used for improve performance of aura state checks on aura apply/remove
     private final TreeSet<AuraApplication> visibleAuras = new TreeSet<AuraApplication>(new visibleAuraSlotCompare());
     private final TreeSet<AuraApplication> visibleAurasToUpdate = new TreeSet<AuraApplication>(new visibleAuraSlotCompare());
-    private final auraApplicationCollection appliedAuras = new auraApplicationCollection();
+    private final HashMap<Integer,List<AuraApplication>> appliedAuras = new HashMap<>();
     private final auraCollection ownedAuras = new auraCollection();
     private final ArrayList<aura> scAuras = new ArrayList<>();
     private final DiminishingReturn[] diminishing = new DiminishingReturn[DiminishingGroup.max.getValue()];
@@ -106,7 +112,7 @@ public class Unit extends WorldObject {
     public boolean canDualWield;
     protected float[] createStats = new float[Stats.max.getValue()];
     private MovementForces movementForces;
-    private positionUpdateInfo positionUpdateInfo = new PositionUpdateInfo();
+    private PositionUpdateInfo positionUpdateInfo = new PositionUpdateInfo();
     private boolean isCombatDisallowed;
     private int lastExtraAttackSpell;
     private ObjectGuid lastDamagedTargetGuid = ObjectGuid.EMPTY;
@@ -140,9 +146,9 @@ public class Unit extends WorldObject {
     private Player playerMovingMe;
     //Combat
     private ArrayList<Unit> attackerList = new ArrayList<>();
-    private double[][] weaponDamage = new double[WeaponAttackType.max.getValue()][];
-    private double[] modAttackSpeedPct = new double[WeaponAttackType.max.getValue()];
-    private int[] attackTimer = new int[WeaponAttackType.max.getValue()];
+    private float[][] weaponDamage = new float[WeaponAttackType.values().length][];
+    private float[] modAttackSpeedPct = new float[WeaponAttackType.values().length];
+    private int[] attackTimer = new int[WeaponAttackType.values().length];
     private Unit attacking;
     private double modMeleeHitChance;
     private double modRangedHitChance;
@@ -159,7 +165,7 @@ public class Unit extends WorldObject {
     private double[][] auraFlatModifiersGroup = new double[UnitMod.End.getValue()][];
     private double[][] auraPctModifiersGroup = new double[UnitMod.End.getValue()][];
     //General
-    private unitData unitData;
+    private UnitData unitData;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<DynamicObject> dynamicObjects = new ArrayList<>();
     private ObjectGuid[] summonSlot = new ObjectGuid[7];
@@ -170,13 +176,13 @@ public class Unit extends WorldObject {
     private int lastSanctuaryTime;
     private LoopSafeSortedDictionary<LocalDateTime, Double> damageTakenHistory = new LoopSafeSortedDictionary<LocalDateTime, Double>();
 
-    public unit(boolean isWorldObject) {
+    public Unit(boolean isWorldObject) {
         super(isWorldObject);
-        setMoveSpline(new moveSpline());
+        setMoveSpline(new MoveSpline());
         motionMaster = new MotionMaster(this);
         combatManager = new CombatManager(this);
         threatManager = new ThreatManager(this);
-        spellHistory = new spellHistory(this);
+        spellHistory = new SpellHistory(this);
 
         setObjectTypeId(TypeId.UNIT);
         setObjectTypeMask(TypeMask.forValue(getObjectTypeMask().getValue() | TypeMask.unit.getValue()));
@@ -221,9 +227,8 @@ public class Unit extends WorldObject {
 
         getServerSideVisibility().setValue(ServerSideVisibilityType.Ghost, GhostVisibilityType.Alive);
 
-        splineSyncTimer = new timeTracker();
+        splineSyncTimer = new TimeTracker();
 
-        setUnitData(new unitData());
     }
 
     public static void kill(Unit attacker, Unit victim, boolean durabilityLoss) {
@@ -521,7 +526,7 @@ public class Unit extends WorldObject {
                 pvp.handleKill(player, victim);
             }
 
-            var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZone());
+            var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZoneId());
 
             if (bf != null) {
                 bf.handleKill(player, victim);
@@ -853,7 +858,7 @@ public class Unit extends WorldObject {
             victim.toPlayer().updateCriteria(CriteriaType.HighestDamageTaken, damageTaken);
         }
 
-        if (victim.getTypeId() != TypeId.PLAYER && (!victim.isControlledByPlayer() || victim.isVehicle())) {
+        if (victim.getObjectTypeId() != TypeId.PLAYER && (!victim.isControlledByPlayer() || victim.isVehicle())) {
             victim.toCreature().setTappedBy(attacker);
 
             if (attacker == null || attacker.isControlledByPlayer()) {
@@ -1576,7 +1581,7 @@ public class Unit extends WorldObject {
         }
 
         // Npcs can have holy resistance
-        if (schoolMask.hasFlag(spellSchoolMask.Holy) && victim.getTypeId() != TypeId.UNIT) {
+        if (schoolMask.hasFlag(spellSchoolMask.Holy) && victim.getObjectTypeId() != TypeId.UNIT) {
             return 0;
         }
 
@@ -1664,7 +1669,7 @@ public class Unit extends WorldObject {
         }
 
         // Chaos Bolt exception, ignore all target resistances (unknown attribute?)
-        if (spellInfo != null && spellInfo.getSpellFamilyName() == SpellFamilyNames.Warlock && spellInfo.getId() == 116858) {
+        if (spellInfo != null && spellInfo.getSpellFamilyName() == SpellFamilyName.Warlock && spellInfo.getId() == 116858) {
             victimResistance = 0.0f;
         }
 
@@ -2426,7 +2431,7 @@ public class Unit extends WorldObject {
         }
 
         // delay offhand weapon attack by 50% of the base attack time
-        if (haveOffhandWeapon() && getTypeId() != TypeId.PLAYER) {
+        if (haveOffhandWeapon() && getObjectTypeId() != TypeId.PLAYER) {
             setAttackTimer(WeaponAttackType.OffAttack, Math.max(getAttackTimer(WeaponAttackType.OffAttack), getAttackTimer(WeaponAttackType.BaseAttack) + MathUtil.CalculatePct(getBaseAttackTime(WeaponAttackType.BaseAttack), 50)));
         }
 
@@ -3370,7 +3375,7 @@ public class Unit extends WorldObject {
 
         // 7. CRUSHING
         // mobs can score crushing blows if they're 4 or more levels above victim
-        if (attackerLevel >= victimLevel + 4 && !isControlledByPlayer() && !(getTypeId() == TypeId.UNIT && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoCrushingBlows))) {
+        if (attackerLevel >= victimLevel + 4 && !isControlledByPlayer() && !(getObjectTypeId() == TypeId.UNIT && toCreature().getTemplate().flagsExtra.hasFlag(CreatureFlagExtra.NoCrushingBlows))) {
             // add 2% chance per level, min. is 15%
             tmp = (int) (attackerLevel - victimLevel * 1000 - 1500);
 
@@ -4111,9 +4116,7 @@ public class Unit extends WorldObject {
         return getTransport();
     }
 
-    public IUnitAI getAI() {
-        return getAi();
-    }
+
 
     public void setAI(IUnitAI value) {
         pushAI(value);
@@ -4124,8 +4127,7 @@ public class Unit extends WorldObject {
         return getAi();
     }
 
-    @Override
-    public void close() throws IOException {
+    public void destroy() throws IOException {
         // set current spells as deletable
         for (CurrentSpellType i = 0; i.getValue() < CurrentSpellType.max.getValue(); ++i) {
             if (getCurrentSpells().containsKey(i)) {
@@ -4355,7 +4357,7 @@ public class Unit extends WorldObject {
     public final void addPlayerToVision(Player player) {
         if (sharedVision.isEmpty()) {
             setActive(true);
-            setWorldObject(true);
+            setIsStoredInWorldObjectGridContainer(true);
         }
 
         sharedVision.add(player);
@@ -4367,9 +4369,14 @@ public class Unit extends WorldObject {
 
         if (sharedVision.isEmpty()) {
             setActive(false);
-            setWorldObject(false);
+            setIsStoredInWorldObjectGridContainer(false);
         }
     }
+
+    public boolean hasSharedVision() {
+        return !sharedVision.isEmpty();
+    }
+
 
     public void talk(String text, ChatMsg msgType, Language language, float textRange, WorldObject target) {
         var builder = new CustomChatTextBuilder(this, msgType, text, language, target);
@@ -5384,7 +5391,7 @@ public class Unit extends WorldObject {
 
         if (formEntry != null && formEntry.CreatureDisplayID[0] != 0) {
             // Take the alliance modelid as default
-            if (getTypeId() != TypeId.PLAYER) {
+            if (getObjectTypeId() != TypeId.PLAYER) {
                 return formEntry.CreatureDisplayID[0];
             } else {
                 if (player.teamForRace(getRace()) == Team.ALLIANCE) {
@@ -5493,13 +5500,13 @@ public class Unit extends WorldObject {
                 if (!powerTypeAuras.isEmpty()) {
                     var powerTypeAura = powerTypeAuras.get(0);
                     displayPower = powerType.forValue(powerTypeAura.miscValue);
-                } else if (getTypeId() == TypeId.PLAYER) {
+                } else if (getObjectTypeId() == TypeId.PLAYER) {
                     var cEntry = CliDB.ChrClassesStorage.get(getClass());
 
                     if (cEntry != null && cEntry.displayPower < powerType.max.getValue()) {
                         displayPower = cEntry.displayPower;
                     }
-                } else if (getTypeId() == TypeId.UNIT) {
+                } else if (getObjectTypeId() == TypeId.UNIT) {
                     var vehicle = getVehicleKit1();
 
                     if (vehicle) {
@@ -5961,7 +5968,7 @@ public class Unit extends WorldObject {
             return true;
         }
 
-        return u1.getTypeId() == TypeId.UNIT && u2.getTypeId() == TypeId.UNIT && u1.getFaction() == u2.getFaction();
+        return u1.getObjectTypeId() == TypeId.UNIT && u2.getObjectTypeId() == TypeId.UNIT && u1.getFaction() == u2.getFaction();
     }
 
     public final boolean isInRaidWith(Unit unit) {
@@ -5990,7 +5997,7 @@ public class Unit extends WorldObject {
         var owner = getCharmerOrOwnerOrSelf();
         PlayerGroup group = null;
 
-        if (owner.getTypeId() == TypeId.PLAYER) {
+        if (owner.getObjectTypeId() == TypeId.PLAYER) {
             group = owner.toPlayer().getGroup();
         }
 
@@ -6145,7 +6152,7 @@ public class Unit extends WorldObject {
     @Override
     public void buildValuesUpdateWithFlag(WorldPacket data, UpdateFieldFlag flags, Player target) {
         UpdateMask valuesMask = new UpdateMask(14);
-        valuesMask.set(getTypeId().unit.getValue());
+        valuesMask.set(getObjectTypeId().unit.getValue());
 
         WorldPacket buffer = new WorldPacket();
 
@@ -6160,26 +6167,26 @@ public class Unit extends WorldObject {
 
     public final void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedUnitMask, Player target) {
         var flags = getUpdateFieldFlagsFor(target);
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         getUnitData().filterDisallowedFieldsMaskForFlag(requestedUnitMask, flags);
 
         if (requestedUnitMask.isAnySet()) {
-            valuesMask.set(getTypeId().unit.getValue());
+            valuesMask.set(getObjectTypeId().unit.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().unit.getValue())) {
+        if (valuesMask.get(getObjectTypeId().unit.getValue())) {
             getUnitData().writeUpdate(buffer, requestedUnitMask, true, this, target);
         }
 
@@ -6503,7 +6510,7 @@ public class Unit extends WorldObject {
     }
 
     public final int getComboPoints() {
-        return (int) getPower(powerType.ComboPoints);
+        return getPower(Power.COMBO_POINTS);
     }
 
     public final void addComboPoints(byte count) {
@@ -6727,7 +6734,7 @@ public class Unit extends WorldObject {
             var mechanicMask = spellProto.getAllEffectsMechanicMask();
 
             // Shred, Maul - "Effects which increase Bleed damage also increase Shred damage"
-            if (spellProto.getSpellFamilyName() == SpellFamilyNames.Druid && spellProto.getSpellFamilyFlags().get(0).hasFlag(0x00008800)) {
+            if (spellProto.getSpellFamilyName() == SpellFamilyName.Druid && spellProto.getSpellFamilyFlags().get(0).hasFlag(0x00008800)) {
                 mechanicMask |= (1 << mechanics.Bleed.getValue());
             }
 
@@ -7209,7 +7216,7 @@ public class Unit extends WorldObject {
                 if (result != SpellCastResult.SpellCastOk) {
                     if (autoRepeatSpellInfo.getId() != 75) {
                         interruptSpell(CurrentSpellType.AutoRepeat);
-                    } else if (getTypeId() == TypeId.PLAYER) {
+                    } else if (getObjectTypeId() == TypeId.PLAYER) {
                         spell.sendCastResult(toPlayer(), autoRepeatSpellInfo, currentSpell.spellVisual, currentSpell.castId, result);
                     }
 
@@ -7470,13 +7477,7 @@ public class Unit extends WorldObject {
         unitAis = value;
     }
 
-    protected final IUnitAI getAi() {
-        return ai;
-    }
 
-    protected final void setAi(IUnitAI value) {
-        ai = value;
-    }
 
     protected final float[] getSpeedRate() {
         return speedRate;
@@ -7526,21 +7527,12 @@ public class Unit extends WorldObject {
         attackerList = value;
     }
 
-    protected final double[][] getWeaponDamage() {
-        return weaponDamage;
-    }
 
-    protected final void setWeaponDamage(double[][] value) {
-        weaponDamage = value;
-    }
 
-    public final double[] getModAttackSpeedPct() {
+    public final float[] getModAttackSpeedPct() {
         return modAttackSpeedPct;
     }
 
-    public final void setModAttackSpeedPct(double[] value) {
-        modAttackSpeedPct = value;
-    }
 
     protected final int[] getAttackTimer() {
         return attackTimer;
@@ -8468,7 +8460,7 @@ public class Unit extends WorldObject {
         if (minSpeedMod != 0) {
             var baseMinSpeed = 1.0f;
 
-            if (!getOwnerGUID().isPlayer() && !isHunterPet() && getTypeId() == TypeId.UNIT) {
+            if (!getOwnerGUID().isPlayer() && !isHunterPet() && getObjectTypeId() == TypeId.UNIT) {
                 baseMinSpeed = toCreature().getTemplate().speedRun;
             }
 
@@ -8603,7 +8595,7 @@ public class Unit extends WorldObject {
             return null;
         }
 
-        var areaId = getArea();
+        var areaId = getAreaId();
         int ridingSkill = 5000;
         AreaMountFlags mountFlags = AreaMountFlags.forValue(0);
         boolean isSubmerged;
@@ -9250,7 +9242,7 @@ public class Unit extends WorldObject {
             var charm = player.getCharmed();
 
             if (charm) {
-                if (charm.getTypeId() == TypeId.UNIT) {
+                if (charm.getObjectTypeId() == TypeId.UNIT) {
                     charm.setUnitFlag(UnitFlag.Stunned);
                 }
             }
@@ -9303,7 +9295,7 @@ public class Unit extends WorldObject {
             var charm = player.getCharmed();
 
             if (charm) {
-                if (charm.getTypeId() == TypeId.UNIT && charm.hasUnitFlag(UnitFlag.Stunned) && !charm.hasUnitState(UnitState.Stunned)) {
+                if (charm.getObjectTypeId() == TypeId.UNIT && charm.hasUnitFlag(UnitFlag.Stunned) && !charm.hasUnitState(UnitState.Stunned)) {
                     charm.removeUnitFlag(UnitFlag.Stunned);
                 }
             }
@@ -9385,12 +9377,12 @@ public class Unit extends WorldObject {
     }
 
     public final void updateMovementForcesModMagnitude() {
-        var modMagnitude = (float) getTotalAuraMultiplier(AuraType.ModMovementForceMagnitude);
+        var modMagnitude = (float) getTotalAuraMultiplier(AuraType.MOD_MOVEMENT_FORCE_MAGNITUDE);
 
         var movingPlayer = getPlayerMovingMe1();
 
         if (movingPlayer != null) {
-            MoveSetSpeed setModMovementForceMagnitude = new MoveSetSpeed(ServerOpcode.MoveSetModMovementForceMagnitude);
+            MoveSetSpeed setModMovementForceMagnitude = new MoveSetSpeed(ServerOpCode.SMSG_MOVE_SET_MOD_MOVEMENT_FORCE_MAGNITUDE);
             setModMovementForceMagnitude.moverGUID = getGUID();
             setModMovementForceMagnitude.sequenceIndex = getMovementCounter();
             setMovementCounter(getMovementCounter() + 1);
@@ -9418,39 +9410,63 @@ public class Unit extends WorldObject {
     }
 
     public final void addUnitMovementFlag(MovementFlag f) {
-        movementInfo.addMovementFlag(f);
+        movementInfo.flags.addFlag(f);
     }
 
     public final void removeUnitMovementFlag(MovementFlag f) {
-        movementInfo.removeMovementFlag(f);
+        movementInfo.flags.removeFlag(f);
     }
 
     public final boolean hasUnitMovementFlag(MovementFlag f) {
-        return movementInfo.hasMovementFlag(f);
+        return movementInfo.flags.hasFlag(f);
     }
 
     public final int getUnitMovementFlags() {
-        return movementInfo.getMovementFlags();
+        return movementInfo.flags.getFlag();
+    }
+
+    public final void setUnitMovementFlags(MovementFlag... f) {
+        movementInfo.flags.set(f);
     }
 
     public final void addExtraUnitMovementFlag(MovementFlag2 f) {
-        movementInfo.addExtraMovementFlag(f);
+        movementInfo.flags2.addFlag(f);
     }
 
     public final void removeExtraUnitMovementFlag(MovementFlag2 f) {
-        movementInfo.removeExtraMovementFlag(f);
+        movementInfo.flags2.removeFlag(f);
     }
 
     public final boolean hasExtraUnitMovementFlag(MovementFlag2 f) {
-        return movementInfo.hasExtraMovementFlag(f);
+        return movementInfo.flags2.hasFlag(f);
     }
 
     public final int getExtraUnitMovementFlags() {
-        return movementInfo.getExtraMovementFlags();
+        return movementInfo.flags2.getFlag();
     }
 
-    public final void SetExtraUnitMovementFlags(MovementFlag2 f) {
-        movementInfo.setExtraMovementFlags(f);
+    public final void setExtraUnitMovementFlags(MovementFlag2... f) {
+        movementInfo.flags2.set(f);
+    }
+
+    public final void addExtraUnitMovementFlag2(MovementFlag3 f) {
+        movementInfo.flags3.addFlag(f);
+    }
+
+    public final void removeExtraUnitMovementFlag2(MovementFlag3 f) {
+        movementInfo.flags3.removeFlag(f);
+    }
+
+    public final boolean hasExtraUnitMovementFlag2(MovementFlag3 f) {
+        return movementInfo.flags3.hasFlag(f);
+    }
+
+    public final int getExtraUnitMovementFlags2() {
+        return movementInfo.flags3.getFlag();
+    }
+
+    public final void setExtraUnitMovementFlags2(MovementFlag3... f) {
+        movementInfo.flags3.set(f);
     }
 
     public final void disableSpline() {
@@ -9697,7 +9713,7 @@ public class Unit extends WorldObject {
         }
 
         MovementForce force = new movementForce();
-        force.setID(id);
+        force.setId(id);
         force.setOrigin(origin);
         force.setDirection(direction);
 
@@ -10063,7 +10079,7 @@ public class Unit extends WorldObject {
                     setMinionGUID(unit.getGUID());
 
                     // show another pet bar if there is no charm bar
-                    if (getTypeId() == TypeId.PLAYER && getCharmedGUID().isEmpty()) {
+                    if (getObjectTypeId() == TypeId.PLAYER && getCharmedGUID().isEmpty()) {
                         if (unit.isPet()) {
                             toPlayer().petSpellInitialize();
                         } else {
@@ -10331,7 +10347,7 @@ public class Unit extends WorldObject {
                             if (getCharmInfo() != null) {
                                 getCharmInfo().setPetNumber(0, true);
                             } else {
-                                Log.outError(LogFilter.unit, "Aura:HandleModCharm: target={0} with typeid={1} has a charm aura but no charm info!", getGUID(), getTypeId());
+                                Log.outError(LogFilter.unit, "Aura:HandleModCharm: target={0} with typeid={1} has a charm aura but no charm info!", getGUID(), getObjectTypeId());
                             }
                         }
                     }
@@ -10476,11 +10492,15 @@ public class Unit extends WorldObject {
         return unit;
     }
 
+    public void removeBindSightAuras() {
+        removeAurasByType(AuraType.BIND_SIGHT);
+    }
+
     public final void removeCharmAuras() {
-        removeAurasByType(AuraType.ModCharm);
-        removeAurasByType(AuraType.ModPossessPet);
-        removeAurasByType(AuraType.ModPossess);
-        removeAurasByType(AuraType.AoeCharm);
+        removeAurasByType(AuraType.MOD_CHARM);
+        removeAurasByType(AuraType.MOD_POSSESS_PET);
+        removeAurasByType(AuraType.MOD_POSSESS);
+        removeAurasByType(AuraType.AOE_CHARM);
     }
 
     public final void removeAllControlled() {
@@ -10797,17 +10817,14 @@ public class Unit extends WorldObject {
     }
 
     // Auras
-    public final ArrayList<aura> getSingleCastAuras() {
+    public final ArrayList<Aura> getSingleCastAuras() {
         return scAuras;
     }
 
-    public final ArrayList<aura> getOwnedAurasList() {
+    public final ArrayList<Aura> getOwnedAurasList() {
         return ownedAuras.getAuras();
     }
 
-    public final HashSet<AuraApplication> getAppliedAuras() {
-        return appliedAuras.getAuraApplications();
-    }
 
     public final int getAppliedAurasCount() {
         return appliedAuras.getCount();
@@ -11066,7 +11083,7 @@ public class Unit extends WorldObject {
         }
 
         // Custom scripted damage. Need to figure out how to move this.
-        if (spellProto.getSpellFamilyName() == SpellFamilyNames.Warlock) {
+        if (spellProto.getSpellFamilyName() == SpellFamilyName.Warlock) {
             // Shadow Bite (30% increase from each dot)
             if (spellProto.getSpellFamilyFlags().get(1).<Integer>HasAnyFlag(0x00400000) && isPet()) {
                 var count = victim.getDoTsByCaster(getOwnerGUID());
@@ -11238,7 +11255,7 @@ public class Unit extends WorldObject {
         }
 
         // No bonus healing for potion spells
-        if (spellProto.getSpellFamilyName() == SpellFamilyNames.Potion) {
+        if (spellProto.getSpellFamilyName() == SpellFamilyName.Potion) {
             return healamount;
         }
 
@@ -11365,7 +11382,7 @@ public class Unit extends WorldObject {
         }
 
         // No bonus healing for potion spells
-        if (spellProto.getSpellFamilyName() == SpellFamilyNames.Potion) {
+        if (spellProto.getSpellFamilyName() == SpellFamilyName.Potion) {
             return 1.0f;
         }
 
@@ -11433,9 +11450,9 @@ public class Unit extends WorldObject {
         }
 
         // Nourish cast
-        if (spellProto.getSpellFamilyName() == SpellFamilyNames.Druid && spellProto.getSpellFamilyFlags().get(1).hasFlag(0x2000000)) {
+        if (spellProto.getSpellFamilyName() == SpellFamilyName.Druid && spellProto.getSpellFamilyFlags().get(1).hasFlag(0x2000000)) {
             // rejuvenation, regrowth, lifebloom, or Wild Growth
-            if (getAuraEffect(AuraType.PeriodicHeal, SpellFamilyNames.Druid, new flagArray128(0x50, 0x4000010, 0)) != null) {
+            if (getAuraEffect(AuraType.PeriodicHeal, SpellFamilyName.Druid, new flagArray128(0x50, 0x4000010, 0)) != null) {
                 // increase healing by 20%
                 TakenTotalMod *= 1.2f;
             }
@@ -11955,7 +11972,7 @@ public class Unit extends WorldObject {
 
     public final boolean hasAuraTypeWithFamilyFlags(AuraType auraType, int familyName, FlagArray128 familyFlags) {
         for (var aura : getAuraEffectsByType(auraType)) {
-            if (aura.getSpellInfo().getSpellFamilyName() == SpellFamilyNames.forValue(familyName) && aura.getSpellInfo().getSpellFamilyFlags() & familyFlags) {
+            if (aura.getSpellInfo().getSpellFamilyName() == SpellFamilyName.forValue(familyName) && aura.getSpellInfo().getSpellFamilyFlags() & familyFlags) {
                 return true;
             }
         }
@@ -13226,13 +13243,6 @@ public class Unit extends WorldObject {
         }
     }
 
-    public final AuraCollection.AuraQuery getAuraQuery() {
-        return ownedAuras.query();
-    }
-
-    public final AuraApplicationCollection.AuraApplicationQuery getAppliedAurasQuery() {
-        return appliedAuras.query();
-    }
 
     /**
      * Will add the aura to the unit. If the aura exists and it has a stack amount, a stack will be added up to the max stack amount.
@@ -14153,7 +14163,7 @@ public class Unit extends WorldObject {
         }
     }
 
-    public final void removeAurasWithFamily(SpellFamilyNames family, FlagArray128 familyFlag, ObjectGuid casterGUID) {
+    public final void removeAurasWithFamily(SpellFamilyName family, FlagArray128 familyFlag, ObjectGuid casterGUID) {
         appliedAuras.query().hasCasterGuid(casterGUID).hasSpellFamily(family).alsoMatches(a -> a.base.spellInfo.spellFamilyFlags & familyFlag).execute(this::RemoveAura);
     }
 
@@ -14514,11 +14524,11 @@ public class Unit extends WorldObject {
         return null;
     }
 
-    public final AuraEffect getAuraEffect(AuraType type, SpellFamilyNames family, FlagArray128 familyFlag) {
+    public final AuraEffect getAuraEffect(AuraType type, SpellFamilyName family, FlagArray128 familyFlag) {
         return getAuraEffect(type, family, familyFlag, null);
     }
 
-    public final AuraEffect getAuraEffect(AuraType type, SpellFamilyNames family, FlagArray128 familyFlag, ObjectGuid casterGUID) {
+    public final AuraEffect getAuraEffect(AuraType type, SpellFamilyName family, FlagArray128 familyFlag, ObjectGuid casterGUID) {
         var auras = getAuraEffectsByType(type);
 
         for (var aura : auras) {
@@ -14889,21 +14899,21 @@ public class Unit extends WorldObject {
         return modAuras.get(type);
     }
 
-    public final double getTotalAuraModifier(AuraType auraType) {
+    public final float getTotalAuraModifier(AuraType auraType) {
         return getTotalAuraModifier(auraType, aurEff -> true);
     }
 
-    public final double getTotalAuraModifier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
-        HashMap<SpellGroup, Double> sameEffectSpellGroup = new HashMap<SpellGroup, Double>();
-        double modifier = 0;
+    public final float getTotalAuraModifier(AuraType auraType, Predicate<AuraEffect> predicate) {
+        HashMap<SpellGroup, Double> sameEffectSpellGroup = new HashMap<>();
+        float modifier = 0;
 
         var mTotalAuraList = getAuraEffectsByType(auraType);
 
         for (var aurEff : mTotalAuraList) {
-            if (predicate.invoke(aurEff)) {
+            if (predicate.test(aurEff)) {
                 // Check if the Aura Effect has a the Same Effect Stack Rule and if so, use the highest amount of that SpellGroup
                 // If the Aura Effect does not have this Stack rule, it returns false so we can add to the multiplier as usual
-                if (!global.getSpellMgr().addSameEffectStackRuleSpellGroups(aurEff.getSpellInfo(), auraType, aurEff.getAmount(), sameEffectSpellGroup)) {
+                if (!getWorldContext().getSpellManager().addSameEffectStackRuleSpellGroups(aurEff.getSpellInfo(), auraType, aurEff.getAmount(), sameEffectSpellGroup)) {
                     modifier += aurEff.getAmount();
                 }
             }
@@ -14917,11 +14927,11 @@ public class Unit extends WorldObject {
         return modifier;
     }
 
-    public final double getTotalAuraMultiplier(AuraType auraType) {
+    public final float getTotalAuraMultiplier(AuraType auraType) {
         return getTotalAuraMultiplier(auraType, aurEff -> true);
     }
 
-    public final double getTotalAuraMultiplier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
+    public final float getTotalAuraMultiplier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
         var mTotalAuraList = getAuraEffectsByType(auraType);
 
         if (mTotalAuraList.isEmpty()) {
@@ -14953,11 +14963,11 @@ public class Unit extends WorldObject {
         return multiplier;
     }
 
-    public final double getMaxPositiveAuraModifier(AuraType auraType) {
+    public final float getMaxPositiveAuraModifier(AuraType auraType) {
         return getMaxPositiveAuraModifier(auraType, aurEff -> true);
     }
 
-    public final double getMaxPositiveAuraModifier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
+    public final float getMaxPositiveAuraModifier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
         var mTotalAuraList = getAuraEffectsByType(auraType);
 
         if (mTotalAuraList.isEmpty()) {
@@ -14975,21 +14985,21 @@ public class Unit extends WorldObject {
         return modifier;
     }
 
-    public final double getMaxNegativeAuraModifier(AuraType auraType) {
+    public final float getMaxNegativeAuraModifier(AuraType auraType) {
         return getMaxNegativeAuraModifier(auraType, aurEff -> true);
     }
 
-    public final double getMaxNegativeAuraModifier(AuraType auraType, tangible.Func1Param<AuraEffect, Boolean> predicate) {
+    public final float getMaxNegativeAuraModifier(AuraType auraType, Predicate<AuraEffect> predicate) {
         var mTotalAuraList = getAuraEffectsByType(auraType);
 
         if (mTotalAuraList.isEmpty()) {
             return 0;
         }
 
-        double modifier = 0;
+        float modifier = 0;
 
         for (var aurEff : mTotalAuraList) {
-            if (predicate.invoke(aurEff)) {
+            if (predicate.test(aurEff)) {
                 modifier = Math.min(modifier, aurEff.getAmount());
             }
         }
@@ -14997,7 +15007,7 @@ public class Unit extends WorldObject {
         return modifier;
     }
 
-    public final double getTotalAuraModifierByMiscMask(AuraType auraType, SpellSchoolMask miscMask) {
+    public final float getTotalAuraModifierByMiscMask(AuraType auraType, SpellSchoolMask miscMask) {
         return getTotalAuraModifier(auraType, aurEff ->
         {
             if ((aurEff.miscValue & miscMask.value) != 0) {
@@ -15008,7 +15018,7 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getTotalAuraMultiplierByMiscMask(AuraType auraType, int miscMask) {
+    public final float getTotalAuraMultiplierByMiscMask(AuraType auraType, int miscMask) {
         return getTotalAuraMultiplier(auraType, aurEff ->
         {
             if ((aurEff.miscValue & miscMask) != 0) {
@@ -15019,11 +15029,11 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getMaxPositiveAuraModifierByMiscMask(AuraType auraType, int miscMask) {
+    public final float getMaxPositiveAuraModifierByMiscMask(AuraType auraType, int miscMask) {
         return getMaxPositiveAuraModifierByMiscMask(auraType, miscMask, null);
     }
 
-    public final double getMaxPositiveAuraModifierByMiscMask(AuraType auraType, int miscMask, AuraEffect except) {
+    public final float getMaxPositiveAuraModifierByMiscMask(AuraType auraType, int miscMask, AuraEffect except) {
         return getMaxPositiveAuraModifier(auraType, aurEff ->
         {
             if (except != aurEff && (aurEff.miscValue & miscMask) != 0) {
@@ -15034,7 +15044,7 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getMaxNegativeAuraModifierByMiscMask(AuraType auraType, int miscMask) {
+    public final float getMaxNegativeAuraModifierByMiscMask(AuraType auraType, int miscMask) {
         return getMaxNegativeAuraModifier(auraType, aurEff ->
         {
             if ((aurEff.miscValue & miscMask) != 0) {
@@ -15045,7 +15055,7 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getTotalAuraModifierByMiscValue(AuraType auraType, int miscValue) {
+    public final float getTotalAuraModifierByMiscValue(AuraType auraType, int miscValue) {
         return getTotalAuraModifier(auraType, aurEff ->
         {
             if (aurEff.miscValue == miscValue) {
@@ -15056,7 +15066,7 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getTotalAuraMultiplierByMiscValue(AuraType auraType, int miscValue) {
+    public final float getTotalAuraMultiplierByMiscValue(AuraType auraType, int miscValue) {
         return getTotalAuraMultiplier(auraType, aurEff ->
         {
             if (aurEff.miscValue == miscValue) {
@@ -15067,7 +15077,7 @@ public class Unit extends WorldObject {
         });
     }
 
-    public final double getMaxNegativeAuraModifierByMiscValue(AuraType auraType, int miscValue) {
+    public final float getMaxNegativeAuraModifierByMiscValue(AuraType auraType, int miscValue) {
         return getMaxNegativeAuraModifier(auraType, aurEff ->
         {
             if (aurEff.miscValue == miscValue) {
@@ -15086,7 +15096,7 @@ public class Unit extends WorldObject {
         }
     }
 
-    public final double getTotalAuraModValue(UnitMod unitMod) {
+    public final float getTotalAuraModValue(UnitMod unitMod) {
         if (unitMod.getValue() >= UnitMod.End.getValue()) {
             Log.outError(LogFilter.unit, "attempt to access non-existing UnitMods in getTotalAuraModValue()!");
 
@@ -16257,11 +16267,12 @@ public class Unit extends WorldObject {
     public final int getMaxPower(Power powerType) {
         var powerIndex = getPowerIndex(powerType);
 
-        if (powerIndex == powerType.max.getValue() || powerIndex >= powerType.MaxPerClass.getValue()) {
+        if (powerIndex == Power.MAX_POWERS.ordinal()
+                || powerIndex >= SharedDefine.MAX_POWERS_PER_CLASS) {
             return 0;
         }
 
-        return (int) (int) getUnitData().MaxPower[(int) powerIndex];
+        return (int) getUnitData().MaxPower[(int) powerIndex];
     }
 
     public final int getCreatePowerValue(Power powerType) {
@@ -16279,7 +16290,7 @@ public class Unit extends WorldObject {
     }
 
     public int getPowerIndex(Power power) {
-        return 0;
+        return getWorldContext().getDbcObjectManager().getPowerIndexByClass(power, getClass());
     }
 
     public final float getPowerPct(Power power) {

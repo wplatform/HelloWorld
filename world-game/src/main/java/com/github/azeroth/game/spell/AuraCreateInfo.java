@@ -1,6 +1,8 @@
 package com.github.azeroth.game.spell;
 
 
+import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.unit.Unit;
 

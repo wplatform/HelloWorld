@@ -89,4 +89,9 @@ public class RandomUtil {
 
         return null;
     }
+
+    public static boolean randChance(int chance) {
+        return chance > randomInt(0, 100);
+
+    }
 }

@@ -12,6 +12,6 @@ class SetLootSpecialization extends ClientPacket {
 
     @Override
     public void read() {
-        specID = this.readUInt();
+        specID = this.readUInt32();
     }
 }

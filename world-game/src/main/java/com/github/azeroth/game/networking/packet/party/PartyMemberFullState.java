@@ -74,7 +74,7 @@ class PartyMemberFullState extends ServerPacket {
         memberStats.maxPower = (short) player.getMaxPower(player.getDisplayPowerType());
 
         // Position
-        memberStats.zoneID = (short) player.getZone();
+        memberStats.zoneID = (short) player.getZoneId();
         memberStats.positionX = (short) player.getLocation().getX();
         memberStats.positionY = (short) (player.getLocation().getY());
         memberStats.positionZ = (short) (player.getLocation().getZ());

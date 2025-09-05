@@ -16,7 +16,7 @@ class BattlemasterJoin extends ClientPacket {
 
     @Override
     public void read() {
-        var queueCount = this.readUInt();
+        var queueCount = this.readUInt32();
         roles = this.readUInt8();
         BlacklistMap[0] = this.readInt32();
         BlacklistMap[1] = this.readInt32();

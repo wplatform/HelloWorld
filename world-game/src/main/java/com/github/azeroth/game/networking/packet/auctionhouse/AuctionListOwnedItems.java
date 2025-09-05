@@ -16,7 +16,7 @@ class AuctionListOwnedItems extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        offset = this.readUInt();
+        offset = this.readUInt32();
 
         if (this.readBit()) {
             taintedBy = new AddOnInfo();

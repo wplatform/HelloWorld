@@ -13,6 +13,6 @@ public class ObjectTypeIdCheck implements ICheck<WorldObject> {
     }
 
     public final boolean invoke(WorldObject obj) {
-        return (obj.getTypeId() == typeId) == equals;
+        return (obj.getObjectTypeId() == typeId) == equals;
     }
 }

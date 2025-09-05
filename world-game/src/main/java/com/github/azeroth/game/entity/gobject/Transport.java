@@ -1,19 +1,23 @@
 package com.github.azeroth.game.entity.gobject;
 
 
+import com.github.azeroth.defines.GameObjectDynamicLowFlag;
 import com.github.azeroth.game.domain.gobject.GameObjectData;
+import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.domain.transport.TransportTemplate;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.creature.TempSummon;
-import com.github.azeroth.game.entity.creature.minion;
 import com.github.azeroth.game.entity.object.WorldObject;
-import com.github.azeroth.game.domain.object.enums.TypeId;
+import com.github.azeroth.game.entity.object.update.UpdateData;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
-import com.github.azeroth.game.domain.transport.TransportTemplate;
+import com.github.azeroth.game.entity.vehicle.ITransport;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.scripting.interfaces.itransport.*;
-import game.*;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,9 +25,10 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 
-
+@Getter
+@Setter
 public class Transport extends GameObject implements ITransport {
-    private final timeTracker positionChangeTimer = new timeTracker();
+    private final TimeTracker positionChangeTimer = new TimeTracker();
     private final HashSet<WorldObject> passengers = new HashSet<WorldObject>();
     private final HashSet<WorldObject> staticPassengers = new HashSet<WorldObject>();
 
@@ -32,7 +37,7 @@ public class Transport extends GameObject implements ITransport {
     private TransportMovementState movementState = TransportMovementState.values()[0];
     private BitSet eventsToTrigger;
     private int currentPathLeg;
-    private Integer requestStopTimestamp = null;
+    private Integer nextStopTimestamp = null;
     private int pathProgress;
 
     private boolean delayedAddModel;
@@ -127,7 +132,7 @@ public class Transport extends GameObject implements ITransport {
             return false;
         }
 
-        goInfoProtected = goinfo;
+        goInfo = goinfo;
         goTemplateAddonProtected = global.getObjectMgr().getGameObjectTemplateAddon(entry);
 
         var tInfo = global.getTransportMgr().getTransportTemplate(entry);
@@ -211,10 +216,10 @@ public class Transport extends GameObject implements ITransport {
             pathProgress = gameTime.GetGameTimeMS();
         }
 
-        else if (requestStopTimestamp == null || requestStopTimestamp > pathProgress + diff) {
+        else if (nextStopTimestamp == null || nextStopTimestamp > pathProgress + diff) {
             pathProgress += diff;
         } else {
-            pathProgress = requestStopTimestamp.intValue();
+            pathProgress = nextStopTimestamp.intValue();
         }
 
         if (_pathProgress / getTransportPeriod() != cycleId) {
@@ -264,9 +269,9 @@ public class Transport extends GameObject implements ITransport {
             movementState = moveState;
 
             if (justStopped) {
-                if (!requestStopTimestamp.equals(0) && getGoState() != GOState.Ready) {
+                if (!nextStopTimestamp.equals(0) && getGoState() != GOState.Ready) {
                     setGoState(GOState.Ready);
-                    setDynamicFlag(GameObjectDynamicLowFlags.Stopped);
+                    setDynamicFlag(GameObjectDynamicLowFlag.Stopped);
                 }
             }
 
@@ -560,11 +565,11 @@ public class Transport extends GameObject implements ITransport {
         }
 
         if (!enabled) {
-            requestStopTimestamp = (_pathProgress / getTransportPeriod()) * getTransportPeriod() + transportInfo.getNextPauseWaypointTimestamp(pathProgress);
+            nextStopTimestamp = (_pathProgress / getTransportPeriod()) * getTransportPeriod() + transportInfo.getNextPauseWaypointTimestamp(pathProgress);
         } else {
-            requestStopTimestamp = null;
+            nextStopTimestamp = null;
             setGoState(GOState.active);
-            removeDynamicFlag(GameObjectDynamicLowFlags.Stopped);
+            removeDynamicFlag(GameObjectDynamicLowFlag.Stopped);
         }
     }
 
@@ -603,6 +608,10 @@ public class Transport extends GameObject implements ITransport {
 
     public final void setPeriod(int period) {
         setLevel(period);
+    }
+
+    public final boolean isStopped() {
+        return hasDynamicFlag(GameObjectDynamicLowFlag.GO_DYNFLAG_LO_STOPPED);
     }
 
     public final int getTimer() {
@@ -755,7 +764,7 @@ public class Transport extends GameObject implements ITransport {
             var newPos = obj.getMovementInfo().transport.pos.Copy();
             itransport.calculatePassengerPosition(newPos, x, y, z, o);
 
-            switch (obj.getTypeId()) {
+            switch (obj.getObjectTypeId()) {
                 case Player:
                     if (!obj.toPlayer().teleportTo(newMapid, newPos, TeleportToOptions.NotLeaveTransport)) {
                         removePassenger(obj);

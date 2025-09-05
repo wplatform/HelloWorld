@@ -127,7 +127,7 @@ public class ItemInstance {
     }
 
     public final void read(WorldPacket data) {
-        itemID = data.readUInt();
+        itemID = data.readUInt32();
 
         if (data.readBit()) {
             itemBonus = new ItemBonuses();

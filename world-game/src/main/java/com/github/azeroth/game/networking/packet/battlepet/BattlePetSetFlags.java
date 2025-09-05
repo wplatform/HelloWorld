@@ -16,7 +16,7 @@ class BattlePetSetFlags extends ClientPacket {
     @Override
     public void read() {
         petGuid = this.readPackedGuid();
-        flags = this.readUInt();
+        flags = this.readUInt32();
         controlType = FlagsControlType.forValue(this.<Byte>readBit(2));
     }
 }

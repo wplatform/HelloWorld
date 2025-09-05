@@ -1,7 +1,6 @@
 package com.github.azeroth.game.entity.item;
 
 
-import com.github.azeroth.game.entity.*;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.packet.itemBonusKey;
@@ -9,24 +8,24 @@ import com.github.azeroth.game.networking.packet.itemBonusKey;
 public class ItemData extends BaseUpdateData<item> {
     public DynamicUpdateField<ArtifactPower> artifactPowers = new DynamicUpdateField<ArtifactPower>(0, 1);
     public DynamicUpdateField<SocketedGem> gems = new DynamicUpdateField<SocketedGem>(0, 2);
-    public UpdateField<ObjectGuid> owner = new UpdateField<ObjectGuid>(0, 3);
-    public UpdateField<ObjectGuid> containedIn = new UpdateField<ObjectGuid>(0, 4);
-    public UpdateField<ObjectGuid> creator = new UpdateField<ObjectGuid>(0, 5);
-    public UpdateField<ObjectGuid> giftCreator = new UpdateField<ObjectGuid>(0, 6);
-    public UpdateField<Integer> stackCount = new UpdateField<Integer>(0, 7);
-    public UpdateField<Integer> expiration = new UpdateField<Integer>(0, 8);
-    public UpdateField<Integer> dynamicFlags = new UpdateField<Integer>(0, 9);
-    public UpdateField<Integer> durability = new UpdateField<Integer>(0, 10);
-    public UpdateField<Integer> maxDurability = new UpdateField<Integer>(0, 11);
-    public UpdateField<Integer> createPlayedTime = new UpdateField<Integer>(0, 12);
-    public UpdateField<Integer> context = new UpdateField<Integer>(0, 13);
-    public UpdateField<Long> createTime = new UpdateField<Long>(0, 14);
-    public UpdateField<Long> artifactXP = new UpdateField<Long>(0, 15);
-    public UpdateField<Byte> itemAppearanceModID = new UpdateField<Byte>(0, 16);
-    public UpdateField<ItemModList> modifiers = new UpdateField<ItemModList>(0, 17);
-    public UpdateField<Integer> dynamicFlags2 = new UpdateField<Integer>(0, 18);
-    public UpdateField<itemBonusKey> itemBonusKey = new UpdateField<itemBonusKey>(0, 19);
-    public UpdateField<SHORT> DEBUGItemLevel = new UpdateField<SHORT>(0, 20);
+    public UpdateField<ObjectGuid> owner = new UpdateField<>(0, 3);
+    public UpdateField<ObjectGuid> containedIn = new UpdateField<>(0, 4);
+    public UpdateField<ObjectGuid> creator = new UpdateField<>(0, 5);
+    public UpdateField<ObjectGuid> giftCreator = new UpdateField<>(0, 6);
+    public UpdateField<Integer> stackCount = new UpdateField<>(0, 7);
+    public UpdateField<Integer> expiration = new UpdateField<>(0, 8);
+    public UpdateField<Integer> dynamicFlags = new UpdateField<>(0, 9);
+    public UpdateField<Integer> durability = new UpdateField<>(0, 10);
+    public UpdateField<Integer> maxDurability = new UpdateField<>(0, 11);
+    public UpdateField<Integer> createPlayedTime = new UpdateField<>(0, 12);
+    public UpdateField<Integer> context = new UpdateField<>(0, 13);
+    public UpdateField<Long> createTime = new UpdateField<>(0, 14);
+    public UpdateField<Long> artifactXP = new UpdateField<>(0, 15);
+    public UpdateField<Byte> itemAppearanceModID = new UpdateField<>(0, 16);
+    public UpdateField<ItemModList> modifiers = new UpdateField<>(0, 17);
+    public UpdateField<Integer> dynamicFlags2 = new UpdateField<>(0, 18);
+    public UpdateField<itemBonusKey> itemBonusKey = new UpdateField<>(0, 19);
+    public UpdateField<SHORT> DEBUGItemLevel = new UpdateField<>(0, 20);
     public UpdateFieldArray<Integer> spellCharges = new UpdateFieldArray<Integer>(5, 21, 22);
     public UpdateFieldArray<Itemenchantment> enchantment = new UpdateFieldArray<ItemEnchantment>(13, 27, 28);
 

@@ -13,7 +13,7 @@ public class SendContactList extends ClientPacket {
 
     @Override
     public void read() {
-        flags = SocialFlag.forValue(this.readUInt());
+        flags = SocialFlag.forValue(this.readUInt32());
     }
 }
 

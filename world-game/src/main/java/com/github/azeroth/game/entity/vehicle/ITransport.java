@@ -15,7 +15,7 @@ public interface ITransport {
 
         // Do not use Unit::UpdatePosition here, we don't want to remove auras
         // as if regular movement occurred
-        switch (passenger.getTypeId()) {
+        switch (passenger.getObjectTypeId()) {
             case UNIT: {
                 var creature = passenger.toCreature();
                 map.creatureRelocation(creature, pos, false);

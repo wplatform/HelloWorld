@@ -1,7 +1,7 @@
 package com.github.azeroth.game.ai;
 
 
-import com.github.azeroth.game.WaypointNode;
+import com.github.azeroth.game.domain.misc.WaypointNode;
 import com.github.azeroth.game.movement.MotionMaster;
 import game.waypointPath;
 

@@ -12,6 +12,6 @@ class PushQuestToParty extends ClientPacket {
 
     @Override
     public void read() {
-        questID = this.readUInt();
+        questID = this.readUInt32();
     }
 }

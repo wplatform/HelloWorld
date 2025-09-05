@@ -4,27 +4,27 @@ package com.github.azeroth.game.entity.conversation;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.entity.object.WorldObject;
-
+import com.github.azeroth.game.entity.object.update.Array;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.time.Duration;
-import java.util.Locale;
+import java.util.Map;
 
-
+@Getter
+@Setter
 public class Conversation extends WorldObject {
 
     private final ConversationData mConversationData;
     private final Position stationaryPosition = new Position();
-//C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: readonly Dictionary<(Locale locale, uint lineId), TimeSpan> _lineStartTimes = new();
-    private final HashMap<(
-        private final TimeSpan[] lastLineEndTimes = new TimeSpan[Locale.Total.getValue()];, Locale locale),TimeSpan>lineStartTimes =new HashMap<(
-    int lineId, Locale locale),TimeSpan>();
-int lineId
+
+    private Map<Integer /*lineId*/, Array<Duration> /*startTime*/> lineStartTimes;
+
+
+    private int lineId;
     private ObjectGuid creatorGuid = ObjectGuid.EMPTY;
     private Duration duration;
-    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
-//ORIGINAL LINE: uint _textureKitId;
     private int textureKitId;
 
     public Conversation() {

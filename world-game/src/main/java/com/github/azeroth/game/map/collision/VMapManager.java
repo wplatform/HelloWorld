@@ -8,11 +8,10 @@ import com.github.azeroth.game.condition.DisableFlags;
 import com.github.azeroth.game.domain.map.model.*;
 import com.github.azeroth.game.domain.object.Position;
 import com.github.azeroth.game.domain.map.MapDefine;
-import com.github.azeroth.game.map.collision.model.*;
+
 import com.github.azeroth.game.domain.map.enums.LoadResult;
 import com.github.azeroth.game.domain.map.enums.ModelIgnoreFlags;
 import com.github.azeroth.game.domain.map.AreaInfo;
-import game.DisableManager;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -79,7 +78,7 @@ public class VMapManager {
         return instanceTree.loadMapTile(x, y, this);
     }
 
-    public final void unloadMap(int mapId, int x, int y) throws IOException {
+    public final void unloadMap(int mapId, int x, int y) {
         var instanceTree = instanceMapTrees.get(mapId);
 
         if (instanceTree != null) {

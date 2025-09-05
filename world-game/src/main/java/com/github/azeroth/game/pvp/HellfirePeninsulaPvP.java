@@ -121,8 +121,8 @@ class HellfirePeninsulaPvP extends OutdoorPvP {
     public void sendRemoveWorldStates(Player player) {
         InitWorldStates initWorldStates = new InitWorldStates();
         initWorldStates.mapID = player.getLocation().getMapId();
-        initWorldStates.areaID = player.getZone();
-        initWorldStates.subareaID = player.getArea();
+        initWorldStates.areaID = player.getZoneId();
+        initWorldStates.subareaID = player.getAreaId();
         initWorldStates.addState(OutdoorPvPHPWorldStates.DISPLAY_A, 0);
         initWorldStates.addState(OutdoorPvPHPWorldStates.DISPLAY_H, 0);
         initWorldStates.addState(OutdoorPvPHPWorldStates.COUNT_H, 0);

@@ -24,11 +24,11 @@ class AuctionBrowseQuery extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        offset = this.readUInt();
+        offset = this.readUInt32();
         minLevel = this.readUInt8();
         maxLevel = this.readUInt8();
-        filters = AuctionHouseFilterMask.forValue(this.readUInt());
-        var knownPetSize = this.readUInt();
+        filters = AuctionHouseFilterMask.forValue(this.readUInt32());
+        var knownPetSize = this.readUInt32();
         maxPetLevel = this.readByte();
 
         var sizeLimit = CliDB.BattlePetSpeciesStorage.GetNumRows() / 8 + 1;

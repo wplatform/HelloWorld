@@ -2,14 +2,19 @@ package com.github.azeroth.game.entity.creature;
 
 
 import com.github.azeroth.common.Logs;
-import com.github.azeroth.game.entity.FormationInfo;
-import com.github.azeroth.game.entity.FormationMgr;
+import com.github.azeroth.game.domain.creature.FormationInfo;
+import com.github.azeroth.game.domain.creature.GroupAIFlag;
+import com.github.azeroth.game.domain.unit.UnitState;
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.map.ZoneScript;
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
+import com.github.azeroth.game.movement.enums.MovementSlot;
 
 import java.util.HashMap;
 
 
 public class CreatureGroup {
+
     private final HashMap<Creature, FormationInfo> members = new HashMap<>();
     private final long leaderSpawnId;
     private final boolean formed;
@@ -48,7 +53,7 @@ public class CreatureGroup {
         }
 
         // formation must be registered at this point
-        var formationInfo = FormationMgr.getFormationInfo(member.getSpawnId());
+        var formationInfo = member.getWorldContext().getObjectManager().getFormationInfo(member.getSpawnId());
         members.put(member, formationInfo);
         member.setFormation(this);
     }
@@ -68,17 +73,18 @@ public class CreatureGroup {
             return;
         }
 
-        var groupAI = GroupAIFlags.forValue(FormationMgr.getFormationInfo(member.getSpawnId()).getGroupAi());
+        var formationInfo = member.getWorldContext().getObjectManager().getFormationInfo(member.getSpawnId());
 
-        if (groupAI == 0) {
+        if (formationInfo.groupAI.getFlag() == 0) {
             return;
         }
 
+
         if (member == leader) {
-            if (!groupAI.hasFlag(GroupAIFlags.MEMBERS_ASSIST_LEADER)) {
+            if (!formationInfo.groupAI.hasFlag(GroupAIFlag.MEMBERS_ASSIST_LEADER)) {
                 return;
             }
-        } else if (!groupAI.hasFlag(GroupAIFlags.LEADER_ASSISTS_MEMBER)) {
+        } else if (!formationInfo.groupAI.hasFlag(GroupAIFlag.LEADER_ASSISTS_MEMBER)) {
             return;
         }
 
@@ -96,7 +102,9 @@ public class CreatureGroup {
                 continue;
             }
 
-            if (((other != leader && groupAI.hasFlag(GroupAIFlags.MEMBERS_ASSIST_LEADER)) || (other == leader && groupAI.hasFlag(GroupAIFlags.LEADER_ASSISTS_MEMBER))) && other.isValidAttackTarget(target)) {
+            if ((other != leader && formationInfo.groupAI.hasFlag(GroupAIFlag.MEMBERS_ASSIST_LEADER)
+                    || (other == leader && formationInfo.groupAI.hasFlag(GroupAIFlag.LEADER_ASSISTS_MEMBER)))
+                    && other.isValidAttackTarget(target)) {
                 other.engageWithTarget(target);
             }
         }
@@ -106,12 +114,18 @@ public class CreatureGroup {
 
     public final void formationReset(boolean dismiss) {
         for (var creature : members.keySet()) {
-            if (creature != leader && creature.isAlive) {
-                creature.MotionMaster.moveIdle();
+            if (creature != leader && creature.isAlive()) {
+
+                if (dismiss)
+                    creature.getMotionMaster().remove(MovementGeneratorType.FORMATION, MovementSlot.DEFAULT);
+                else
+                    creature.getMotionMaster().moveIdle();
+
+                Logs.UNIT.debug("CreatureGroup::FormationReset: Set {} movement for member {}", dismiss ? "default" : "idle", creature.getGUID());
+
             }
         }
 
-        //_formed = !dismiss;
     }
 
     public final void leaderStartedMoving() {
@@ -122,23 +136,23 @@ public class CreatureGroup {
         for (var pair : members.entrySet()) {
             var member = pair.getKey();
 
-            if (member == leader || !member.isAlive || member.IsEngaged || !pair.getValue().groupAi.hasFlag((int) GroupAIFlags.IdleInFormation.getValue())) {
+            if (member == leader || !member.isAlive() || member.isEngaged() || !pair.getValue().groupAI.hasFlag(GroupAIFlag.IDLE_IN_FORMATION)) {
                 continue;
             }
 
             var angle = pair.getValue().followAngle + (float) Math.PI; // for some reason, someone thought it was a great idea to invert relativ angles...
             var dist = pair.getValue().followDist;
 
-            if (!member.hasUnitState(UnitState.FollowFormation)) {
-                member.MotionMaster.moveFormation(leader, dist, angle, pair.getValue().LeaderWaypointIDs[0], pair.getValue().LeaderWaypointIDs[1]);
+            if (!member.hasUnitState(UnitState.FOLLOW_FORMATION)) {
+                member.getMotionMaster().moveFormation(leader, dist, angle, pair.getValue().leaderWaypointIds[0], pair.getValue().leaderWaypointIds[1]);
             }
         }
     }
 
     public final boolean canLeaderStartMoving() {
         for (var pair : members.entrySet()) {
-            if (pair.getKey() != leader && pair.getKey().isAlive) {
-                if (pair.getKey().IsEngaged || pair.getKey().IsReturningHome) {
+            if (pair.getKey() != leader && pair.getKey().isAlive()) {
+                if (pair.getKey().isEngaged() || pair.getKey().isReturningHome()) {
                     return false;
                 }
             }
@@ -154,4 +168,66 @@ public class CreatureGroup {
     public final boolean hasMember(Creature member) {
         return members.containsKey(member);
     }
+
+    public final boolean hasAliveMembers() {
+        return members.keySet().stream().anyMatch(Unit::isAlive);
+    }
+
+
+    public static void removeCreatureFromGroup(CreatureGroup group, Creature member) {
+        Logs.UNIT.debug("Deleting member GUID: {} from group {}", group.getLeaderSpawnId(), member.getSpawnId());
+        group.removeMember(member);
+
+        // If removed member was alive we need to check if we have any other alive members
+        // if not - fire OnCreatureGroupDepleted
+        ZoneScript zoneScript = member.getZoneScript();
+        if (zoneScript != null) {
+            if (member.isAlive() && !group.hasAliveMembers())
+                zoneScript.onCreatureGroupDepleted(group);
+        }
+
+        if (group.isEmpty()) {
+            var map = member.getMap();
+
+            Logs.UNIT.debug("Deleting group with InstanceID {}", member.getInstanceId());
+            map.getCreatureGroupHolder().remove(group.getLeaderSpawnId());
+        }
+    }
+
+
+    public static void addCreatureToGroup(long leaderSpawnId, Creature creature) {
+        var map = creature.getMap();
+
+        var creatureGroup = map.getCreatureGroupHolder().get(leaderSpawnId);
+
+        if (creatureGroup != null) {
+            //Add member to an existing group
+            Logs.UNIT.debug("Group found: {}, inserting creature {}, Group InstanceID {}", leaderSpawnId, creature.getGUID().toString(), creature.getInstanceId());
+
+            // With dynamic spawn the creature may have just respawned
+            // we need to find previous instance of creature and delete it from the formation, as it'll be invalidated
+            var bounds = map.getCreatureBySpawnIdStore().get(creature.getSpawnId());
+
+            for (var other : bounds) {
+                if (other == creature) {
+                    continue;
+                }
+
+                if (creatureGroup.hasMember(other)) {
+                    creatureGroup.removeMember(other);
+                }
+            }
+
+            creatureGroup.addMember(creature);
+        } else {
+            //Create new group
+            Logs.UNIT.debug("Group not found: {}. Creating new group.", leaderSpawnId);
+            CreatureGroup group = new CreatureGroup(leaderSpawnId);
+            map.getCreatureGroupHolder().put(leaderSpawnId, group);
+            group.addMember(creature);
+        }
+    }
+
+
+
 }

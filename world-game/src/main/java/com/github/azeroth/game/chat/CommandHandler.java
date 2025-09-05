@@ -7,7 +7,6 @@ import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.group.PlayerGroup;
-import com.github.azeroth.game.map.GameObjectLastSearcher;
 import com.github.azeroth.game.map.NearestGameObjectCheck;
 import com.github.azeroth.game.map.grid.Cell;
 

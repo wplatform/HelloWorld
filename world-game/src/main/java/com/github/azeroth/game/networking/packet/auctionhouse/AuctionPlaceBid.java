@@ -16,7 +16,7 @@ class AuctionPlaceBid extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        auctionID = this.readUInt();
+        auctionID = this.readUInt32();
         bidAmount = this.readUInt64();
 
         if (this.readBit()) {

@@ -18,12 +18,12 @@ public class CharCustomize extends ClientPacket {
         customizeInfo = new CharCustomizeInfo();
         customizeInfo.charGUID = this.readPackedGuid();
         customizeInfo.sexID = gender.forValue((byte) this.readUInt8());
-        var customizationCount = this.readUInt();
+        var customizationCount = this.readUInt32();
 
         for (var i = 0; i < customizationCount; ++i) {
             ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
-            tempVar.chrCustomizationOptionID = this.readUInt();
-            tempVar.chrCustomizationChoiceID = this.readUInt();
+            tempVar.chrCustomizationOptionID = this.readUInt32();
+            tempVar.chrCustomizationChoiceID = this.readUInt32();
             customizeInfo.customizations.set(i, tempVar);
         }
 

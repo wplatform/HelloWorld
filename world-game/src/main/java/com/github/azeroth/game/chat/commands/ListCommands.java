@@ -2,7 +2,7 @@ package com.github.azeroth.game.chat.commands;
 
 
 import com.github.azeroth.game.chat.PlayerIdentifier;
-import com.github.azeroth.game.map.RespawnInfo;
+import com.github.azeroth.game.domain.spawn.RespawnInfo;
 import com.github.azeroth.game.domain.spawn.SpawnData;
 import com.github.azeroth.game.spell.SpellInfo;
 import game.PhasingHandler;

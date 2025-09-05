@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr7 {
+public enum SpellAttr7 implements EnumFlag.FlagValue {
     ALLOW_SPELL_REFLECTION(0x00000001), // TITLE Allow Spell Reflection
     NO_TARGET_DURATION_MOD(0x00000002), // TITLE No Target Duration Mod
     DISABLE_AURA_WHILE_DEAD(0x00000004), // TITLE Disable Aura While Dead

@@ -17,7 +17,7 @@ class DFProposalResponse extends ClientPacket {
     public void read() {
         ticket.read(this);
         instanceID = this.readUInt64();
-        proposalID = this.readUInt();
+        proposalID = this.readUInt32();
         accepted = this.readBit();
     }
 }

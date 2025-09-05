@@ -34,6 +34,7 @@ import com.github.azeroth.game.map.*;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.map.interfaces.IGridNotifier;
 import com.github.azeroth.game.movement.*;
+import com.github.azeroth.game.movement.enums.PathType;
 import com.github.azeroth.game.networking.packet.spell.SpellCastVisual;
 import com.github.azeroth.game.scripting.SpellScript;
 import com.github.azeroth.game.scripting.interfaces.IHasSpellEffects;
@@ -3255,8 +3256,8 @@ public class Spell {
                     // not allow cast fly spells if not have req. skills  (all spells is self target)
                     // allow always ghost flight spells
                     if (originalCaster != null && originalCaster.isTypeId(TypeId.PLAYER) && originalCaster.isAlive()) {
-                        var Bf = global.getBattleFieldMgr().getBattlefieldToZoneId(originalCaster.getMap(), originalCaster.getZone());
-                        var area = CliDB.AreaTableStorage.get(originalCaster.getArea());
+                        var Bf = global.getBattleFieldMgr().getBattlefieldToZoneId(originalCaster.getMap(), originalCaster.getZoneId());
+                        var area = CliDB.AreaTableStorage.get(originalCaster.getAreaId());
 
                         if (area != null) {
                             if (area.hasFlag(AreaFlags.NoFlyZone) || (Bf != null && !Bf.canFlyIn())) {
@@ -8028,7 +8029,7 @@ public class Spell {
                                     return SpellCastResult.DontReport;
                                 } else {
                                     // Conjure Food/Water/Refreshment spells
-                                    if (spellInfo.getSpellFamilyName() != SpellFamilyNames.Mage || (!spellInfo.getSpellFamilyFlags().get(0).hasFlag(0x40000000))) {
+                                    if (spellInfo.getSpellFamilyName() != SpellFamilyName.Mage || (!spellInfo.getSpellFamilyFlags().get(0).hasFlag(0x40000000))) {
                                         return SpellCastResult.TooManyOfItem;
                                     } else if (!target.toPlayer().hasItemCount(spellEffectInfo.itemType)) {
                                         player.sendEquipError(msg, null, null, spellEffectInfo.itemType);
@@ -9782,7 +9783,7 @@ public class Spell {
         }
 
         // pet auras
-        if (caster.getTypeId() == TypeId.PLAYER) {
+        if (caster.getObjectTypeId() == TypeId.PLAYER) {
             var petSpell = global.getSpellMgr().getPetAura(spellInfo.getId(), (byte) effectInfo.effectIndex);
 
             if (petSpell != null) {
@@ -10499,7 +10500,7 @@ public class Spell {
             addhealth += damageAmount;
         }
         // Death Pact - return pct of max health to caster
-        else if (spellInfo.getSpellFamilyName() == SpellFamilyNames.Deathknight && spellInfo.getSpellFamilyFlags().get(0).hasFlag(0x00080000)) {
+        else if (spellInfo.getSpellFamilyName() == SpellFamilyName.Deathknight && spellInfo.getSpellFamilyFlags().get(0).hasFlag(0x00080000)) {
             addhealth = unitCaster.spellHealingBonusDone(unitTarget, spellInfo, unitCaster.countPctFromMaxHealth(damage), DamageEffectType.Heal, effectInfo, 1, this);
         } else {
             var bonus = unitCaster.spellHealingBonusDone(unitTarget, spellInfo, addhealth, DamageEffectType.Heal, effectInfo, 1, this);
@@ -12632,7 +12633,7 @@ public class Spell {
             return;
         }
 
-        var targetAreaEntry = CliDB.AreaTableStorage.get(target.getArea());
+        var targetAreaEntry = CliDB.AreaTableStorage.get(target.getAreaId());
 
         if (targetAreaEntry != null && !targetAreaEntry.hasFlag(AreaFlags.AllowDuels)) {
             sendCastResult(SpellCastResult.NoDueling); // Dueling isn't allowed here
@@ -13261,7 +13262,7 @@ public class Spell {
         ArrayList<Unit> attackerSet = new ArrayList<>();
 
         for (var unit : unitCaster.getAttackers()) {
-            if (unit.getTypeId() == TypeId.UNIT && !unit.getCanHaveThreatList()) {
+            if (unit.getObjectTypeId() == TypeId.UNIT && !unit.getCanHaveThreatList()) {
                 attackerSet.add(unit);
             }
         }
@@ -13529,7 +13530,7 @@ public class Spell {
         unitTarget.jumpTo(speedxy, (float) speedz, effectInfo.positionFacing);
 
         // changes fall time
-        if (caster.getTypeId() == TypeId.PLAYER) {
+        if (caster.getObjectTypeId() == TypeId.PLAYER) {
             caster.toPlayer().setFallInformation(0, caster.getLocation().getZ());
         }
     }
@@ -14807,7 +14808,7 @@ public class Spell {
         var player = unitTarget.toPlayer();
 
         WorldLocation homeLoc = new worldLocation();
-        var areaId = player.getArea();
+        var areaId = player.getAreaId();
 
         if (effectInfo.miscValue != 0) {
             areaId = (int) effectInfo.miscValue;
@@ -15424,7 +15425,7 @@ public class Spell {
             return;
         }
 
-        unitTarget.toPlayer().updateAreaDependentAuras(unitTarget.getArea());
+        unitTarget.toPlayer().updateAreaDependentAuras(unitTarget.getAreaId());
     }
 
     
@@ -15550,7 +15551,7 @@ public class Spell {
             return;
         }
 
-        if (caster.getTypeId() != TypeId.PLAYER) {
+        if (caster.getObjectTypeId() != TypeId.PLAYER) {
             return;
         }
 
@@ -15563,7 +15564,7 @@ public class Spell {
             return;
         }
 
-        if (!unitTarget || unitTarget.getTypeId() != TypeId.PLAYER) {
+        if (!unitTarget || unitTarget.getObjectTypeId() != TypeId.PLAYER) {
             return;
         }
 

@@ -12,6 +12,6 @@ class CommerceTokenGetLog extends ClientPacket {
 
     @Override
     public void read() {
-        unkInt = this.readUInt();
+        unkInt = this.readUInt32();
     }
 }

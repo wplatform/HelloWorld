@@ -30,7 +30,7 @@ public class MailSender {
     public MailSender(WorldObject sender, MailStationery stationery) {
         m_stationery = stationery;
 
-        switch (sender.getTypeId()) {
+        switch (sender.getObjectTypeId()) {
             case Unit:
                 m_messageType = MailMessageType.CREATURE;
                 m_senderId = sender.getEntry();
@@ -49,7 +49,7 @@ public class MailSender {
             default:
                 m_messageType = MailMessageType.NORMAL;
                 m_senderId = 0; // will show mail from not existed player
-                Log.outError(LogFilter.Server, "MailSender:MailSender - Mail have unexpected sender typeid ({0})", sender.getTypeId());
+                Log.outError(LogFilter.Server, "MailSender:MailSender - Mail have unexpected sender typeid ({0})", sender.getObjectTypeId());
 
                 break;
         }

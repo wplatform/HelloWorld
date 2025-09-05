@@ -12,6 +12,6 @@ public class SetDungeonDifficulty extends ClientPacket {
 
     @Override
     public void read() {
-        difficultyID = this.readUInt();
+        difficultyID = this.readUInt32();
     }
 }

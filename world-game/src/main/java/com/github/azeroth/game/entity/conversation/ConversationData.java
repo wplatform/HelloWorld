@@ -7,18 +7,18 @@ import java.util.ArrayList;
 
 
 public class ConversationData extends BaseUpdateData<Conversation> {
-    public UpdateField<Boolean> dontPlayBroadcastTextSounds = new UpdateField<Boolean>(0, 1);
+    public UpdateField<Boolean> dontPlayBroadcastTextSounds = new UpdateField<>(0, 1);
     public UpdateField<ArrayList<ConversationLine>> lines = new UpdateField<ArrayList<ConversationLine>>(0, 2);
     public DynamicUpdateField<ConversationActorField> actors = new DynamicUpdateField<ConversationActorField>(0, 3);
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> LastLineEndTime = new(0, 4);
-    public UpdateField<Integer> lastLineEndTime = new UpdateField<Integer>(0, 4);
+    public UpdateField<Integer> lastLineEndTime = new UpdateField<>(0, 4);
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> Progress = new(0, 5);
-    public UpdateField<Integer> progress = new UpdateField<Integer>(0, 5);
+    public UpdateField<Integer> progress = new UpdateField<>(0, 5);
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
 //ORIGINAL LINE: public UpdateField<uint> Flags = new(0, 6);
-    public UpdateField<Integer> flags = new UpdateField<Integer>(0, 6);
+    public UpdateField<Integer> flags = new UpdateField<>(0, 6);
 
     public ConversationData() {
         super(0, TypeId.Conversation, 7);

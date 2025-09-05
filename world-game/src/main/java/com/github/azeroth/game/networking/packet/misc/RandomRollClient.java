@@ -14,8 +14,8 @@ public class RandomRollClient extends ClientPacket {
 
     @Override
     public void read() {
-        min = this.readUInt();
-        max = this.readUInt();
+        min = this.readUInt32();
+        max = this.readUInt32();
         partyIndex = this.readUInt8();
     }
 }

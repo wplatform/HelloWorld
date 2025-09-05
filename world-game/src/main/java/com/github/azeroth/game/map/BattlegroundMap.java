@@ -1,22 +1,34 @@
 package com.github.azeroth.game.map;
 
 
+import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.game.battleground.Battleground;
+import com.github.azeroth.game.battleground.BattlegroundScript;
 import com.github.azeroth.game.entity.player.Player;
+import com.github.azeroth.game.scripting.basescripts.BattlegroundMapScript;
+import com.github.azeroth.game.world.World;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class BattlegroundMap extends Map {
+
     private Battleground bg;
 
+    private BattlegroundScript battlegroundScript;
+    private BattlegroundMapScript battlegroundMapScript;
 
-    public BattlegroundMap(int id, int expiry, int instanceId, Difficulty spawnMode) {
-        super(id, expiry, instanceId, spawnMode);
+
+    public BattlegroundMap(World world, int id, int expiry, int instanceId, Difficulty spawnMode) {
+        super(world, id, expiry, instanceId, spawnMode);
         initVisibilityDistance();
     }
 
     @Override
     public void initVisibilityDistance() {
-        setVisibleDistance(isBattleArena() ? global.getWorldMgr().getMaxVisibleDistanceInArenas() : global.getWorldMgr().getMaxVisibleDistanceInBG());
-        setVisibilityNotifyPeriod(isBattleArena() ? global.getWorldMgr().getVisibilityNotifyPeriodInArenas() : global.getWorldMgr().getVisibilityNotifyPeriodInBG());
+        setVisibleDistance(isBattleArena() ? world.getWorldMgr().getMaxVisibleDistanceInArenas() : world.getWorldMgr().getMaxVisibleDistanceInBG());
+        setVisibilityNotifyPeriod(isBattleArena() ? world.getWorldMgr().getVisibilityNotifyPeriodInArenas() : world.getWorldMgr().getVisibilityNotifyPeriodInBG());
     }
 
     @Override

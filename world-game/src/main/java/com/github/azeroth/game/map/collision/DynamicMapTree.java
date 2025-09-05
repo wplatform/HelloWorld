@@ -142,6 +142,6 @@ public class DynamicMapTree {
         return null;
     }
 
-    void update(float t_diff) {
+    public void update(float t_diff) {
     }
 }

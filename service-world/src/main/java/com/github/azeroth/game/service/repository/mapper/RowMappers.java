@@ -424,6 +424,17 @@ public interface RowMappers {
         return data;
     };
 
+    RowMapper<FormationInfo> CREATURE_FORMATION_ROW_MAPPER = (rs, rowNum) -> {
+        FormationInfo data = new FormationInfo();
+        data.leaderSpawnId = rs.getInt(1);
+        data.memberSpawnId = rs.getInt(2);
+        data.followDist = rs.getFloat(3);
+        data.followAngle = rs.getFloat(4) * (float) Math.PI / 180.0f;
+        data.groupAI = EnumFlag.of(GroupAIFlag.class, rs.getShort(5));
+        data.leaderWaypointIds[0] = rs.getInt(6);
+        data.leaderWaypointIds[1] = rs.getInt(7);
+        return data;
+    };
 
 
 }

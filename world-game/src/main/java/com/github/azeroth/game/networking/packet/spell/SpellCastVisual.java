@@ -9,37 +9,18 @@ public final class SpellCastVisual {
     public SpellCastVisual() {
     }
 
-    public spellCastVisual(int spellXSpellVisualID, int scriptVisualID) {
-        spellXSpellVisualID = spellXSpellVisualID;
-        scriptVisualID = scriptVisualID;
+    public SpellCastVisual(int spellXSpellVisualID, int scriptVisualID) {
+        this.spellXSpellVisualID = spellXSpellVisualID;
+        this.scriptVisualID = scriptVisualID;
     }
 
     public void read(WorldPacket data) {
-        spellXSpellVisualID = data.readUInt();
-        scriptVisualID = data.readUInt();
+        spellXSpellVisualID = data.readUInt32();
+        scriptVisualID = data.readUInt32();
     }
 
     public void write(WorldPacket data) {
         data.writeInt32(spellXSpellVisualID);
         data.writeInt32(scriptVisualID);
-    }
-
-
-//	public static implicit operator spellCastVisualField(SpellCastVisual spellCastVisual)
-//		{
-//			SpellCastVisualField visual = new();
-//			visual.spellXSpellVisualID = spellCastVisual.spellXSpellVisualID;
-//			visual.scriptVisualID = spellCastVisual.scriptVisualID;
-//
-//			return visual;
-//		}
-
-    public SpellCastVisual clone() {
-        SpellCastVisual varCopy = new spellCastVisual();
-
-        varCopy.spellXSpellVisualID = this.spellXSpellVisualID;
-        varCopy.scriptVisualID = this.scriptVisualID;
-
-        return varCopy;
     }
 }

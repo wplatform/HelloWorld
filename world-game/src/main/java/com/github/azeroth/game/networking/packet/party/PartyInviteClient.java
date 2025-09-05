@@ -24,7 +24,7 @@ class PartyInviteClient extends ClientPacket {
         var targetNameLen = this.<Integer>readBit(9);
         var targetRealmLen = this.<Integer>readBit(9);
 
-        proposedRoles = this.readUInt();
+        proposedRoles = this.readUInt32();
         targetGUID = this.readPackedGuid();
 
         targetName = this.readString(targetNameLen);

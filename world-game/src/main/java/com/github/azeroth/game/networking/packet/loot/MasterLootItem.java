@@ -14,7 +14,7 @@ class MasterLootItem extends ClientPacket {
 
     @Override
     public void read() {
-        var count = this.readUInt();
+        var count = this.readUInt32();
         target = this.readPackedGuid();
 
         for (var i = 0; i < count; ++i) {

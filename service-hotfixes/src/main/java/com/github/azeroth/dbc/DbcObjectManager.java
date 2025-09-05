@@ -2404,7 +2404,7 @@ public interface DbcObjectManager {
 
     List<SkillRaceClassInfo> getSkillRaceClassInfo(Integer skill);
 
-    boolean isValidSpellFamilyName(SpellFamilyNames family);
+    boolean isValidSpellFamilyName(SpellFamilyName family);
 
     List<SpellProcsPerMinuteMod> getSpellProcPerMinuteMods(Integer spellProcPerMinuteId);
 

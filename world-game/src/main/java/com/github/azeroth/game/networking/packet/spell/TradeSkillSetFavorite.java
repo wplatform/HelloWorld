@@ -14,7 +14,7 @@ class TradeSkillSetFavorite extends ClientPacket {
 
     @Override
     public void read() {
-        recipeID = this.readUInt();
+        recipeID = this.readUInt32();
         isFavorite = this.readBit();
     }
 }

@@ -3,12 +3,13 @@ package com.github.azeroth.game.map;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.github.azeroth.character.service.repository.CharacterRepository;
 import com.github.azeroth.common.Assert;
 import com.github.azeroth.common.Logs;
 import com.github.azeroth.dbc.defines.Difficulty;
 import com.github.azeroth.dbc.defines.DifficultyFlag;
 import com.github.azeroth.dbc.defines.MapFlag2;
-import com.github.azeroth.dbc.defines.SummonPropertiesFlag;
+import com.github.azeroth.dbc.defines.SummonPropertyFlag;
 import com.github.azeroth.dbc.domain.DifficultyEntry;
 import com.github.azeroth.dbc.domain.MapEntry;
 import com.github.azeroth.dbc.domain.SummonProperty;
@@ -36,6 +37,7 @@ import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.scene.SceneObject;
 import com.github.azeroth.game.entity.totem.Totem;
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.entity.unit.Vignette;
 import com.github.azeroth.game.map.collision.DynamicMapTree;
 import com.github.azeroth.game.domain.map.model.GameObjectModel;
 import com.github.azeroth.game.domain.map.enums.LiquidHeaderTypeFlag;
@@ -45,9 +47,13 @@ import com.github.azeroth.game.domain.map.enums.ZLiquidStatus;
 import com.github.azeroth.game.map.grid.*;
 import com.github.azeroth.game.domain.map.PositionFullTerrainStatus;
 import com.github.azeroth.game.domain.map.ZoneAndAreaId;
+import com.github.azeroth.game.map.grid.visitor.GridVisitor;
+import com.github.azeroth.game.map.grid.visitor.GridVisitors;
+import com.github.azeroth.game.networking.ServerPacket;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.packet.misc.WeatherPkt;
 import com.github.azeroth.game.networking.packet.update.UpdateObject;
+import com.github.azeroth.game.networking.packet.vignette.VignetteUpdate;
 import com.github.azeroth.game.networking.packet.worldstate.UpdateWorldState;
 import com.github.azeroth.game.phasing.MultiPersonalPhaseTracker;
 import com.github.azeroth.game.domain.phasing.PhaseShift;
@@ -55,10 +61,13 @@ import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.pools.SpawnedPoolData;
 import com.github.azeroth.game.server.WorldConfig;
 import com.github.azeroth.game.world.World;
+import com.github.azeroth.time.IntervalTimer;
+import com.github.azeroth.time.PeriodicTimer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -69,7 +78,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Setter
 @RequiredArgsConstructor
 public class Map {
-
 
     private final ArrayList<Creature> creaturesToMove = new ArrayList<>();
     private final ArrayList<GameObject> gameObjectsToMove = new ArrayList<>();
@@ -90,9 +98,9 @@ public class Map {
     private final TerrainInfo terrain;
     private final TreeMap<Long, ArrayList<ScriptAction>> scriptSchedule = new TreeMap<Long, ArrayList<ScriptAction>>();
     private final BitSet markedCells = new BitSet(MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP * MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP);
-    private final HashMap<Integer, ZoneDynamicInfo> zoneDynamicInfo = new HashMap<Integer, ZoneDynamicInfo>();
+    private final HashMap<Integer, ZoneDynamicInfo> zoneDynamicInfo = new HashMap<>();
 
-    private final HashMap<HighGuid, ObjectGuidGenerator> guidGenerators = new HashMap<HighGuid, ObjectGuidGenerator>();
+    private final HashMap<HighGuid, ObjectGuidGenerator> guidGenerators = new HashMap<>();
     private final ConcurrentHashMap<ObjectGuid, WorldObject> objectsStore = new ConcurrentHashMap<ObjectGuid, WorldObject>();
     private final ConcurrentHashMap<Integer, List<Creature>> creatureBySpawnIdStore = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, List<GameObject>> gameobjectBySpawnIdStore = new ConcurrentHashMap<>();
@@ -112,12 +120,17 @@ public class Map {
     private final ReadWriteLock nGridsLock = new ReentrantReadWriteLock();
     private final World world;
     private int respawnCheckTimer;
-    private HashMap<Long, CreatureGroup> creatureGroupHolder = new HashMap<Long, CreatureGroup>();
+    private HashMap<Long, CreatureGroup> creatureGroupHolder = new HashMap<>();
     private Object mapLock = new Object();
     private int instanceId;
     private int unloadTimer;
     private int visibilityNotifyPeriod;
     private float visibleDistance;
+    private final List<Vignette> infiniteAOIVignettes = new ArrayList<>();
+    private final PeriodicTimer vignetteUpdateTimer = new PeriodicTimer(5200, 5200);
+    private final IntervalTimer weatherUpdateTimer = new IntervalTimer(1000);
+
+    private CharacterRepository characterRepo;
 
 
     public Map(World world, int id, long expiry, int instanceId, Difficulty spawnMode) {
@@ -128,7 +141,6 @@ public class Map {
         this.visibleDistance = ObjectDefine.DEFAULT_VISIBILITY_DISTANCE;
         this.visibilityNotifyPeriod = MapDefine.DEFAULT_VISIBILITY_NOTIFY_PERIOD;
         this.terrain = world.getTerrainManager().loadTerrain(id);
-        zonePlayerCountMap.clear();
 
         //lets initialize visibility distance for map
         //init visibility for continents
@@ -160,7 +172,7 @@ public class Map {
 
     public TransferAbortParams playerCannotEnter(int mapid, Player player) {
         MapEntry entry;
-        if(mapEntry.getId() != mapid) {
+        if (mapEntry.getId() != mapid) {
             entry = world.getDbcObjectManager().map(mapid);
         } else {
             entry = mapEntry;
@@ -201,8 +213,7 @@ public class Map {
         var group = player.getGroup();
 
         // can only enter in a raid group but raids from old expansion don't need a group
-        if (entry.isRaid() && entry.getExpansionID() >= world.getWorldSettings().expansion.ordinal())
-        {
+        if (entry.isRaid() && entry.getExpansionID() >= world.getWorldSettings().expansion.ordinal()) {
             if ((group == null || !group.isRaidGroup()) && !world.getWorldSettings().instanceIgnoreRaid) {
                 return new TransferAbortParams(TransferAbortReason.NEED_GROUP);
             }
@@ -343,7 +354,6 @@ public class Map {
     }
 
 
-
     public final InstanceMap getToInstanceMap() {
         return isDungeon() ? (this instanceof InstanceMap ? (InstanceMap) this : null) : null;
     }
@@ -379,7 +389,6 @@ public class Map {
     }
 
     public final void loadAllCells() {
-
         for (int cellX = 0; cellX < MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP; cellX++)
             for (int cellY = 0; cellY < MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP; cellY++)
                 loadGrid((cellX + 0.5f - MapDefine.CENTER_GRID_CELL_ID) * MapDefine.SIZE_OF_GRID_CELL,
@@ -388,19 +397,34 @@ public class Map {
     }
 
 
-    public final <T extends WorldObject & GirdObject> void  removeFromGrid(T obj, Cell cell) {
-        nGrids.computeIfPresent(cell.getId(), (k,v)-> {
-            if (obj.isWorldObject()) {
-                v.getNCell(cell.getCellX(), cell.getCellY()).removeWorldObject(obj);
-            } else {
-                v.getNCell(cell.getCellX(), cell.getCellY()).removeGridObject(obj);
-            }
-            return v;
-        });
+    private <T extends WorldObject & GirdObject> void removeFromGrid(T obj) {
+        Assert.state(obj.isInGrid());
+        Coordinate coordinate = MapDefine.computeCellCoordinate(obj.getLocation().getX(), obj.getLocation().getY());
+        Assert.state(coordinate.isCoordinateValid());
+        Cell cell = new Cell(coordinate);
+        removeFromGrid(obj, cell);
+    }
+
+    private <T extends WorldObject & GirdObject> void removeFromGrid(T obj, Cell cell) {
+        NGrid nGrid = getNGrid(cell);
+        if (obj.isWorldObject()) {
+            nGrid.getNCell(cell.getCellX(), cell.getCellY()).removeWorldObject(obj);
+        } else {
+            nGrid.getNCell(cell.getCellX(), cell.getCellY()).removeGridObject(obj);
+        }
         obj.setCurrentCell(null);
     }
 
-    public final <T extends WorldObject & GirdObject> void addToGrid(T obj, Cell cell) {
+    private <T extends WorldObject & GirdObject> void addToGrid(T obj) {
+        Assert.state(!obj.isInGrid());
+        Coordinate coordinate = MapDefine.computeCellCoordinate(obj.getLocation().getX(), obj.getLocation().getY());
+        Assert.state(coordinate.isCoordinateValid());
+        Cell cell = new Cell(coordinate);
+
+        addToGrid(obj, cell);
+    }
+
+    private <T extends WorldObject & GirdObject> void addToGrid(T obj, Cell cell) {
         NGrid grid = getNGrid(cell);
         if (obj.isWorldObject()) {
             grid.getNCell(cell.getCellX(), cell.getCellY()).addWorldObject(obj);
@@ -414,7 +438,6 @@ public class Map {
         if (grid == null) {
             return;
         }
-
         GridLoader loader = new GridLoader(world.getObjectManager(), grid, this, cell);
         loader.loadN();
     }
@@ -507,7 +530,7 @@ public class Map {
         for (var player : getPlayers()) {
             if (worldStateTemplate != null && !worldStateTemplate.areaIds.isEmpty()) {
                 var isInAllowedArea = worldStateTemplate.areaIds.stream()
-                        .anyMatch(requiredAreaId -> world.getDbcObjectManager().isInArea(player.getArea(), requiredAreaId));
+                        .anyMatch(requiredAreaId -> world.getDbcObjectManager().isInArea(player.getAreaId(), requiredAreaId));
 
                 if (!isInAllowedArea) {
                     continue;
@@ -554,9 +577,9 @@ public class Map {
 
         //something, such as vehicle, needs to be update immediately
         //also, trigger needs to cast spell, if not update, cannot see visual
-        obj.setIsNewObject(true);
+        obj.setNewObject(true);
         obj.updateObjectVisibilityOnCreate();
-        obj.setIsNewObject(false);
+        obj.setNewObject(false);
 
         return true;
     }
@@ -588,10 +611,7 @@ public class Map {
                     var data = new UpdateData(getId());
                     obj.buildCreateUpdateBlockForPlayer(data, player);
                     player.getVisibleTransports().add(obj.getGUID());
-
-                    data.buildPacket(tempOut_packet);
-                    packet = tempOut_packet.outArgValue;
-                    player.sendPacket(packet);
+                    player.sendPacket(data.buildPacket());
                 }
             }
         }
@@ -600,23 +620,7 @@ public class Map {
     }
 
     public final boolean isGridLoaded(int gridId) {
-        return isGridLoaded(gridId % MapDefine.MAX_NUMBER_OF_GRIDS, gridId / MapDefine.MAX_NUMBER_OF_GRIDS);
-    }
-
-    public final boolean isGridLoaded(float x, float y) {
-        return isGridLoaded(MapDefine.computeGridCoordinate(x, y));
-    }
-
-    public final boolean isGridLoaded(Position pos) {
-        return isGridLoaded(pos.getX(), pos.getY());
-    }
-
-    public final boolean isGridLoaded(int x, int y) {
-        return (nGrids.get(getGridId(x, y)) != null);
-    }
-
-    public final boolean isGridLoaded(Coordinate p) {
-        return (nGrids.get(getGridId(p.axisX(), p.axisY())) != null);
+        return nGrids.get(gridId) != null;
     }
 
     public final void updatePlayerZoneStats(int oldZone, int newZone) {
@@ -626,7 +630,7 @@ public class Map {
         }
 
         if (oldZone != MapDefine.MAP_INVALID_ZONE) {
-            --_zonePlayerCountMap.get(oldZone);
+            --zonePlayerCountMap.get(oldZone);
         }
 
         if (!zonePlayerCountMap.containsKey(newZone)) {
@@ -636,18 +640,11 @@ public class Map {
         ++zonePlayerCountMap.get(newZone);
     }
 
-    public void update(int diff) {
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("_dynamicTree Update").StartMark();
-//#endif
-
-        dynamicTree.update(diff);
+    public void update(int delta) {
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("_dynamicTree Update").StopMark();
-//#endif
+        dynamicTree.update(delta);
+
 
         // update worldsessions for existing players
         for (var i = 0; i < getActivePlayers().size(); ++i) {
@@ -655,39 +652,26 @@ public class Map {
 
             if (player.isInWorld()) {
                 var session = player.getSession();
-                threadManager.Schedule(() -> session.updateMap(diff));
+                world.getTaskExecutor().execute(() -> session.updateMap(delta));
             }
         }
 
         /** process any due respawns
          */
-        if (respawnCheckTimer <= diff) {
-            threadManager.Schedule(this::ProcessRespawns);
-            threadManager.Schedule(this::UpdateSpawnGroupConditions);
-            respawnCheckTimer = WorldConfig.getUIntValue(WorldCfg.RespawnMinCheckIntervalMs);
+        if (respawnCheckTimer <= delta) {
+            world.getTaskExecutor().execute(this::processRespawns);
+            world.getTaskExecutor().execute(this::updateSpawnGroupConditions);
+            respawnCheckTimer = world.getWorldSettings().respawn.minCheckIntervalMS;
         } else {
-            _respawnCheckTimer -= diff;
+            respawnCheckTimer -= delta;
         }
 
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("_respawnCheckTimer & MapSessionFilter Update").StartMark();
-//#endif
-        threadManager.Wait();
-
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("_respawnCheckTimer & MapSessionFilter Update").StopMark();
-//#endif
         // update active cells around players and active objects
         resetMarkedCells();
 
-        var update = new UpdaterNotifier(diff, gridType.All);
+        var updater = GridVisitors.objectUpdater(delta);
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("Load UpdaterNotifier").StartMark();
-//#endif
         for (var i = 0; i < getActivePlayers().size(); ++i) {
             var player = getActivePlayers().get(i);
 
@@ -696,15 +680,15 @@ public class Map {
             }
 
             // update players at tick
-            threadManager.Schedule(() -> player.update(diff));
+            player.update(delta);
 
-            threadManager.Schedule(() -> visitNearbyCellsOf(player, update));
+            visitNearbyCellsOf(player, updater);
 
             // If player is using far sight or mind vision, visit that object too
             var viewPoint = player.getViewpoint();
 
-            if (viewPoint) {
-                threadManager.Schedule(() -> visitNearbyCellsOf(viewPoint, update));
+            if (viewPoint != null) {
+                visitNearbyCellsOf(viewPoint, updater);
             }
 
             ArrayList<Unit> toVisit = new ArrayList<>();
@@ -712,36 +696,33 @@ public class Map {
             // Handle updates for creatures in combat with player and are more than 60 yards away
             if (player.isInCombat()) {
                 for (var pair : player.getCombatManager().getPvECombatRefs().entrySet()) {
-                    var unit = pair.getValue().getOther(player).AsCreature;
+                    var unit = pair.getValue().getOther(player).toCreature();
 
                     if (unit != null) {
-                        if (unit.location.mapId == player.getLocation().getMapId() && !unit.isWithinDistInMap(player, getVisibilityRange(), false)) {
+                        if (unit.getCreatureData().getMapId() == player.getLocation().getMapId() && !unit.isWithinDistInMap(player, getVisibilityRange(), false)) {
                             toVisit.add(unit);
                         }
                     }
                 }
 
                 for (var unit : toVisit) {
-                    threadManager.Schedule(() -> visitNearbyCellsOf(unit, update));
+                    visitNearbyCellsOf(unit, updater);
                 }
             }
 
             // Update any creatures that own auras the player has applications of
             toVisit.clear();
 
-            player.getAppliedAurasQuery().isPlayer(false).forEachResult(aur ->
-            {
-                var caster = aur.base.caster;
-
-                if (caster != null) {
-                    if (!caster.isWithinDistInMap(player, getVisibilityRange(), false)) {
+            player.getAppliedAuras().forEach((key, value) -> {
+                value.forEach(aura -> {
+                    Unit caster = aura.getBase().getCaster();
+                    if (!caster.isPlayer() && !caster.isWithinDistInMap(player, getVisibilityRange(), false))
                         toVisit.add(caster);
-                    }
-                }
+                });
             });
 
             for (var unit : toVisit) {
-                threadManager.Schedule(() -> visitNearbyCellsOf(unit, update));
+                visitNearbyCellsOf(unit, updater);
             }
 
             // Update player's summons
@@ -761,78 +742,51 @@ public class Map {
             }
 
             for (var unit : toVisit) {
-                threadManager.Schedule(() -> visitNearbyCellsOf(unit, update));
+                visitNearbyCellsOf(unit, updater);
             }
         }
 
-        for (var i = 0; i < activeNonPlayers.size(); ++i) {
-            var obj = activeNonPlayers.get(i);
-
+        for (WorldObject obj : activeNonPlayers) {
             if (!obj.isInWorld()) {
                 continue;
             }
-
-            threadManager.Schedule(() -> visitNearbyCellsOf(obj, update));
+            visitNearbyCellsOf(obj, updater);
         }
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("Load UpdaterNotifier").StopMark();
-
-        // all the visits are queued in the thread manager, we wait to gather all the world objects that need
-        // updating. Also guarntees objects only get updated once.
-
-        metricFactory.Meter("VisitNearbyCellsOf Update").StartMark();
-//#endif
-        threadManager.Wait();
+        for (Transport transport : transports) {
+            transport.update(delta);
+        }
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("VisitNearbyCellsOf Update").StopMark();
-//#endif
+        if (vignetteUpdateTimer.update(delta)) {
+            for (Vignette vignette : infiniteAOIVignettes) {
+                if (vignette.isNeedUpdate()) {
+                    VignetteUpdate vignetteUpdate = new VignetteUpdate();
+                    vignette.fillPacket(vignetteUpdate.updated);
+                    vignetteUpdate.write();
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("update.ExecuteUpdate").StartMark();
-//#endif
-        update.executeUpdate();
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("update.ExecuteUpdate").StopMark();
-//#endif
-        for (var i = 0; i < transports.size(); ++i) {
-            var transport = transports.get(i);
-
-            if (!transport) {
-                continue;
+                    for (Player player : activePlayers) {
+                        if (Vignette.canSee(player, vignette))
+                            player.sendPacket(vignetteUpdate);
+                        vignette.setNeedUpdate(false);
+                    }
+                }
             }
-
-            processTransportaionQueue.Schedule(() -> transport.update(diff));
         }
 
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("_transports Update").StartMark();
-//#endif
-
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("_transports Update").StopMark();
-        metricFactory.Meter("SendObjectUpdates Update").StartMark();
-//#endif
         sendObjectUpdates();
 
         // Process necessary scripts
         if (!scriptSchedule.isEmpty()) {
-            synchronized (scriptLock) {
-                scriptsProcess();
-            }
+            scriptsProcess();
         }
 
-        weatherUpdateTimer.update(diff);
+        weatherUpdateTimer.update(delta);
 
-        if (weatherUpdateTimer.Passed) {
+        if (weatherUpdateTimer.passed()) {
             for (var zoneInfo : zoneDynamicInfo.entrySet()) {
-                if (zoneInfo.getValue().defaultWeather != null && !zoneInfo.getValue().defaultWeather.update((int) weatherUpdateTimer.Interval)) {
+                if (zoneInfo.getValue().defaultWeather != null && !zoneInfo.getValue().defaultWeather.update((int) weatherUpdateTimer.getInterval())) {
                     zoneInfo.getValue().defaultWeather = null;
                 }
             }
@@ -841,49 +795,22 @@ public class Map {
         }
 
         // update phase shift objects
-        getMultiPersonalPhaseTracker().update(this, diff);
+        getMultiPersonalPhaseTracker().update(this, delta);
 
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("SendObjectUpdates Update").StopMark();
-        metricFactory.Meter("MoveAll Update").StartMark();
-//#endif
         moveAllCreaturesInMoveList();
         moveAllGameObjectsInMoveList();
         moveAllAreaTriggersInMoveList();
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("MoveAll Update").StopMark();
-//#endif
-
         if (!getActivePlayers().isEmpty() || !activeNonPlayers.isEmpty()) {
-
-//#if DEBUGMETRIC
-            metricFactory.Meter("ProcessRelocationNotifies Update").StartMark();
-//#endif
-            processRelocationQueue.Post(diff);
-
-
-//#if DEBUGMETRIC
-            metricFactory.Meter("ProcessRelocationNotifies Update").StopMark();
-//#endif
+            processRelocationNotifies(delta);
         }
 
 
-//#if DEBUGMETRIC
-        metricFactory.Meter("OnMapUpdate Update").StartMark();
-//#endif
-        onMapUpdate(this, diff);
-
-
-//#if DEBUGMETRIC
-        metricFactory.Meter("OnMapUpdate Update").StopMark();
-//#endif
+        onMapUpdate(this, delta);
     }
 
     public void removePlayerFromMap(Player player, boolean remove) {
-
 
         // Before leaving map, update zone/area for stats
         player.updateZone(MapDefine.MAP_INVALID_ZONE, 0);
@@ -902,10 +829,11 @@ public class Map {
             player.updateObjectVisibilityOnDestroy();
         }
 
-        if (player.isInGrid())
-            player.removeFromGrid();
-        else
+        if (player.isInGrid()) {
+            removeFromGrid(player);
+        } else {
             Assert.state(remove); //maybe deleted in logoutplayer when player is not in a map
+        }
 
         getActivePlayers().remove(player);
 
@@ -915,7 +843,7 @@ public class Map {
     }
 
     public final void removeFromMap(WorldObject obj, boolean remove) {
-        var inWorld = obj.isInWorld() && obj.getTypeId().ordinal() >= TypeId.UNIT.ordinal() && obj.getTypeId().ordinal() <= TypeId.GAME_OBJECT.ordinal();
+        var inWorld = obj.isInWorld() && obj.getObjectTypeId().ordinal() >= TypeId.UNIT.ordinal() && obj.getObjectTypeId().ordinal() <= TypeId.GAME_OBJECT.ordinal();
         obj.removeFromWorld();
 
         if (obj.isActiveObject()) {
@@ -983,8 +911,6 @@ public class Map {
         Cell oldCell = new Cell(player.getLocation().getX(), player.getLocation().getY());
         var newCell = new Cell(x, y);
 
-        player.getLocation().relocate(x, y, z, orientation);
-
         if (player.isVehicle()) {
             player.getVehicleKit().relocatePassengers();
         }
@@ -995,14 +921,14 @@ public class Map {
                     player.getName(), oldCell.getGridX(), oldCell.getGridY(), oldCell.getCellX(), oldCell.getCellY(),
                     newCell.getGridX(), newCell.getGridY(), newCell.getCellX(), newCell.getCellY());
 
-            player.removeFromGrid();
+            removeFromGrid(player);
 
             if (oldCell.diffGrid(newCell)) {
                 var grid = getNGrid(newCell);
                 getMultiPersonalPhaseTracker().loadGrid(player.getPhaseShift(), grid, this, newCell);
             }
-
-            addToGrid(player, newCell);
+            player.getLocation().relocate(x, y, z, orientation);
+            addToGrid(player);
         }
 
         player.updatePositionData();
@@ -1064,9 +990,11 @@ public class Map {
     }
 
     public final void gameObjectRelocation(GameObject go, float x, float y, float z, float orientation, boolean respawnRelocationOnFail) {
+
+        Assert.state(checkGridIntegrity(go, false));
         var newCell = new Cell(x, y);
 
-        if (!respawnRelocationOnFail && nGrids.get(getGridId(newCell.getGridX(), newCell.getGridY())) == null) {
+        if (!respawnRelocationOnFail && nGrids.get(newCell.getGridId()) == null) {
             return;
         }
 
@@ -1094,7 +1022,7 @@ public class Map {
     public final void dynamicObjectRelocation(DynamicObject dynObj, float x, float y, float z, float orientation) {
         Cell newCell = new Cell(x, y);
 
-        if (nGrids.get(getGridId(newCell.getGridX(), newCell.getGridY())) == null) {
+        if (nGrids.get(newCell.getGridId()) == null) {
             return;
         }
 
@@ -1123,7 +1051,7 @@ public class Map {
     public final void areaTriggerRelocation(AreaTrigger at, float x, float y, float z, float orientation) {
         Cell newCell = new Cell(x, y);
 
-        if (nGrids.get(getGridId(newCell.getGridX(), newCell.getGridY()))== null) {
+        if (nGrids.get(newCell.getGridId()) == null) {
             return;
         }
 
@@ -1269,7 +1197,6 @@ public class Map {
         gameObjectsToMove.clear();
 
 
-
         nGrids.forEachValue(0, value -> unloadGrid(value, true));
 
         for (Transport transport : transports) {
@@ -1278,7 +1205,7 @@ public class Map {
 
         transports.clear();
 
-        corpsesByCell.forEach((k,v) -> {
+        corpsesByCell.forEach((k, v) -> {
             v.forEach(corpse -> {
                 corpse.removeFromWorld();
                 corpse.resetMap();
@@ -1426,27 +1353,27 @@ public class Map {
         return tempVar;
     }
 
-    public final float getWaterOrGroundLevel(PhaseShift phaseShift, float x, float y, float z, tangible.RefObject<Float> ground, boolean swim) {
-        return getWaterOrGroundLevel(phaseShift, x, y, z, ground, swim, MapDefine.DEFAULT_COLLISION_HEIGHT);
+    public final float getWaterOrGroundLevel(PhaseShift phaseShift, Position position, float ground, boolean swim) {
+        return getWaterOrGroundLevel(phaseShift, position, ground, swim, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
 
-    public final float getWaterOrGroundLevel(PhaseShift phaseShift, float x, float y, float z, tangible.RefObject<Float> ground) {
-        return getWaterOrGroundLevel(phaseShift, x, y, z, ground, false, MapDefine.DEFAULT_COLLISION_HEIGHT);
+    public final float getWaterOrGroundLevel(PhaseShift phaseShift, Position position, float ground) {
+        return getWaterOrGroundLevel(phaseShift, position, MapDefine.DEFAULT_COLLISION_HEIGHT);
     }
 
-    public final float getWaterOrGroundLevel(PhaseShift phaseShift, float x, float y, float z, float ground, boolean swim, float collisionHeight) {
-        return terrain.getWaterOrGroundLevel(phaseShift, getId(), x, y, z, ground, swim, collisionHeight, dynamicTree);
+    public final float getWaterOrGroundLevel(PhaseShift phaseShift, Position position, float ground, boolean swim, float collisionHeight) {
+        return terrain.getWaterOrGroundLevel(phaseShift, getId(), position, ground, swim, collisionHeight, dynamicTree);
     }
 
     public final boolean isInLineOfSight(PhaseShift phaseShift, Position position, Position position2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
         return isInLineOfSight(phaseShift, position, position2.getX(), position2.getY(), position2.getZ(), checks, ignoreFlags);
     }
 
-    public final boolean isInLineOfSight(PhaseShift phaseShift, Position position, float x2, float y2, float z2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
-        return isInLineOfSight(phaseShift, position.getX(), position.getY(), position.getZ(), x2, y2, z2, checks, ignoreFlags);
+    public final boolean isInLineOfSight(PhaseShift phaseShift, Position position, Position position2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
+        return isInLineOfSight(phaseShift, position, position2, checks, ignoreFlags);
     }
 
-    public final boolean isInLineOfSight(PhaseShift phaseShift, float x1, float y1, float z1, float x2, float y2, float z2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
+    public final boolean isInLineOfSight(PhaseShift phaseShift, Position position, Position position2, LineOfSightChecks checks, ModelIgnoreFlags ignoreFlags) {
         if (checks.hasFlag(LineOfSightChecks.Vmap) && !global.getVMapMgr().isInLineOfSight(PhasingHandler.getTerrainMapId(phaseShift, getId(), terrain, x1, y1), x1, y1, z1, x2, y2, z2, ignoreFlags)) {
             return false;
         }
@@ -1557,15 +1484,12 @@ public class Map {
         saveRespawnInfoDB(info, dbTrans);
     }
 
-    public final void removeRespawnTime(SpawnObjectType type, long spawnId, SQLTransaction dbTrans) {
-        removeRespawnTime(type, spawnId, dbTrans, false);
-    }
 
     public final void removeRespawnTime(SpawnObjectType type, long spawnId) {
-        removeRespawnTime(type, spawnId, null, false);
+        removeRespawnTime(type, spawnId, false);
     }
 
-    public final void removeRespawnTime(SpawnObjectType type, long spawnId, SQLTransaction dbTrans, boolean alwaysDeleteFromDB) {
+    public final void removeRespawnTime(SpawnObjectType type, long spawnId, boolean alwaysDeleteFromDB) {
         var info = getRespawnInfo(type, spawnId);
 
         if (info != null) {
@@ -1610,7 +1534,7 @@ public class Map {
 
         SpawnObjectType type;
 
-        switch (obj.getTypeId()) {
+        switch (obj.getObjectTypeId()) {
             case UNIT:
                 type = SpawnObjectType.CREATURE;
 
@@ -1633,11 +1557,11 @@ public class Map {
             return;
         }
 
-        if (!zonePlayerCountMap.containsKey(obj.getZone())) {
+        if (!zonePlayerCountMap.containsKey(obj.getZoneId())) {
             return;
         }
 
-        var playerCount = zonePlayerCountMap.get(obj.getZone());
+        var playerCount = zonePlayerCountMap.get(obj.getZoneId());
 
         if (playerCount == 0) {
             return;
@@ -1739,7 +1663,7 @@ public class Map {
                     Creature creature = new Creature();
 
                     if (!creature.loadFromDB(data.getSpawnId(), this, true, force)) {
-                        creature.close();
+                        creature.destroy();
                     } else {
                         if (spawnedObjects != null) {
                             spawnedObjects.add(creature);
@@ -2010,11 +1934,48 @@ public class Map {
     }
 
     public final void addToActive(WorldObject obj) {
-        addToActiveHelper(obj);
 
         Position respawnLocation = null;
 
-        switch (obj.getTypeId()) {
+        switch (obj.getObjectTypeId()) {
+            case UNIT:
+                var creature = obj.toCreature();
+
+                if (creature != null && !creature.isPet() && creature.getSpawnId() != 0) {
+                    respawnLocation = creature.getRespawnPosition();
+                }
+
+                break;
+            case GAME_OBJECT:
+                var gameObject = obj.toGameObject();
+
+                if (gameObject != null && gameObject.getSpawnId() != 0) {
+                    respawnLocation = gameObject.getRespawnPosition();
+                }
+
+                break;
+            default:
+                break;
+        }
+
+        if (respawnLocation != null) {
+            var p = MapDefine.computeGridCoordinate(respawnLocation.getX(), respawnLocation.getY());
+            if (nGrids.get(p.getId()) != null) {
+                activeNonPlayers.add(obj);
+            } else {
+                var p2 = MapDefine.computeGridCoordinate(obj.getLocation().getX(), obj.getLocation().getY());
+                Logs.MAPS.error("Active object {} added to grid[{}, {}] but spawn grid[{}, {}] was not loaded.",
+                        obj.getGUID(), p.axisX(), p.axisY(), p2.axisX(), p2.axisY());
+            }
+        }
+    }
+
+    public final void removeFromActive(WorldObject obj) {
+
+
+        Position respawnLocation = null;
+
+        switch (obj.getObjectTypeId()) {
             case UNIT:
                 var creature = obj.toCreature();
 
@@ -2038,71 +1999,29 @@ public class Map {
         if (respawnLocation != null) {
             var p = MapDefine.computeGridCoordinate(respawnLocation.getX(), respawnLocation.getY());
 
-            if (getNGrid(p.axisX(), p.axisY()) != null) {
-                getNGrid(p.axisX(), p.axisY()).incUnloadActiveLock();
+            if (nGrids.get(p.getId()) != null) {
+                activeNonPlayers.remove(obj);
             } else {
                 var p2 = MapDefine.computeGridCoordinate(obj.getLocation().getX(), obj.getLocation().getY());
-                Logs.MAPS.error("Active object {} added to grid[{}, {}] but spawn grid[{}, {}] was not loaded.",
-                        obj.getGUID(), p.axisX(), p.axisY(), p2.axisX(), p2.axisY());
+                Logs.MAPS.debug("Active object {} removed from grid[{}, {}] but spawn grid[{}, {}] was not loaded.", obj.getGUID(), p.axisX(), p.axisY(), p2.axisX(), p2.axisY());
             }
         }
     }
 
-    public final void removeFromActive(WorldObject obj) {
-        removeFromActiveHelper(obj);
 
-        Position respawnLocation = null;
-
-        switch (obj.getTypeId()) {
-            case UNIT:
-                var creature = obj.toCreature();
-
-                if (creature != null && !creature.isPet() && creature.getSpawnId() != 0) {
-                    respawnLocation = creature.getRespawnPosition();
-                }
-
-                break;
-            case GAME_OBJECT:
-                var gameObject = obj.toGameObject();
-
-                if (gameObject != null && gameObject.getSpawnId() != 0) {
-                    respawnLocation = gameObject.getRespawnPosition();
-                }
-
-                break;
-            default:
-                break;
-        }
-
-        if (respawnLocation != null) {
-            var p = MapDefine.computeGridCoord(respawnLocation.getX(), respawnLocation.getY());
-
-            if (getNGrid(p.getXCoord(), p.getYCoord()) != null) {
-                getNGrid(p.getXCoord(), p.getYCoord()).decUnloadActiveLock();
-            } else {
-                var p2 = MapDefine.computeGridCoord(obj.getLocation().getX(), obj.getLocation().getY());
-                Logs.MAPS.debug(String.format("Active object %1$s removed from grid[%2$s, %3$s] but spawn grid[%4$s, %5$s] was not loaded.", obj.getGUID(), p.getXCoord(), p.getYCoord(), p2.getXCoord(), p2.getYCoord()));
-            }
-        }
+    public final void saveRespawnTime(SpawnObjectType type, int spawnId, int entry, long respawnTime, int gridId) {
+        saveRespawnTime(type, spawnId, entry, respawnTime, gridId, false);
     }
 
-    public final void saveRespawnTime(SpawnObjectType type, long spawnId, int entry, long respawnTime, int gridId, SQLTransaction dbTrans) {
-        saveRespawnTime(type, spawnId, entry, respawnTime, gridId, dbTrans, false);
+    public final void saveRespawnTime(SpawnObjectType type, int spawnId, int entry, long respawnTime) {
+        saveRespawnTime(type, spawnId, entry, respawnTime, 0, false);
     }
 
-    public final void saveRespawnTime(SpawnObjectType type, long spawnId, int entry, long respawnTime, int gridId) {
-        saveRespawnTime(type, spawnId, entry, respawnTime, gridId, null, false);
-    }
-
-    public final void saveRespawnTime(SpawnObjectType type, long spawnId, int entry, long respawnTime) {
-        saveRespawnTime(type, spawnId, entry, respawnTime, 0, null, false);
-    }
-
-    public final void saveRespawnTime(SpawnObjectType type, long spawnId, int entry, long respawnTime, int gridId, SQLTransaction dbTrans, boolean startup) {
-        var data = global.getObjectMgr().getSpawnMetadata(type, spawnId);
+    public final void saveRespawnTime(SpawnObjectType type, int spawnId, int entry, long respawnTime, int gridId, boolean startup) {
+        var data = world.getObjectManager().getSpawnMetadata(type, spawnId);
 
         if (data == null) {
-            Logs.MAPS.error(String.format("Map %1$s attempt to save respawn time for nonexistant spawnid (%2$s,%3$s).", getId(), type, spawnId));
+            Logs.MAPS.error("Map {} attempt to save respawn time for nonexistant spawnid ({},{}).", getId(), type, spawnId);
 
             return;
         }
@@ -2450,7 +2369,7 @@ public class Map {
             PlayMusic playMusic = new PlayMusic(musicId);
 
             for (var player : players) {
-                if (player.getZone() == zoneId && !player.hasAuraType(AuraType.ForceWeather)) {
+                if (player.getZoneId() == zoneId && !player.hasAuraType(AuraType.ForceWeather)) {
                     player.sendPacket(playMusic);
                 }
             }
@@ -2510,7 +2429,7 @@ public class Map {
             WeatherPkt weather = new WeatherPkt(weatherId, intensity);
 
             for (var player : players) {
-                if (player.getZone() == zoneId) {
+                if (player.getZoneId() == zoneId) {
                     player.sendPacket(weather);
                 }
             }
@@ -2544,7 +2463,7 @@ public class Map {
             overrideLight.transitionMilliseconds = (int) transitionTime.TotalMilliseconds;
 
             for (var player : players) {
-                if (player.getZone() == zoneId) {
+                if (player.getZoneId() == zoneId) {
                     player.sendPacket(overrideLight);
                 }
             }
@@ -2557,8 +2476,8 @@ public class Map {
         for (var player : players) {
             if (player) {
                 if (player.isInWorld()) {
-                    player.updateAreaDependentAuras(player.getArea());
-                    player.updateZoneDependentAuras(player.getZone());
+                    player.updateAreaDependentAuras(player.getAreaId());
+                    player.updateZoneDependentAuras(player.getZoneId());
                 }
             }
         }
@@ -2822,32 +2741,32 @@ public class Map {
         var cell_y = cell.getCellY();
 
         if (!cell.noCreate || isGridLoaded(x, y)) {
-            ensureGridLoaded(cell);
-            getNGrid(x, y).visitGrid(cell_x, cell_y, visitor);
+
+            getNGrid(cell).visitGrid(cell_x, cell_y, visitor);
         }
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration, WorldObject summoner, int spellId, int vehId, ObjectGuid privateObjectOwner) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties, int duration, WorldObject summoner, int spellId, int vehId, ObjectGuid privateObjectOwner) {
         return summonCreature(entry, pos, properties, duration, summoner, spellId, vehId, privateObjectOwner, null);
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration, WorldObject summoner, int spellId, int vehId) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties, int duration, WorldObject summoner, int spellId, int vehId) {
         return summonCreature(entry, pos, properties, duration, summoner, spellId, vehId, null, null);
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration, WorldObject summoner, int spellId) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties, int duration, WorldObject summoner, int spellId) {
         return summonCreature(entry, pos, properties, duration, summoner, spellId, 0, null, null);
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration, WorldObject summoner) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties, int duration, WorldObject summoner) {
         return summonCreature(entry, pos, properties, duration, summoner, 0, 0, null, null);
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties, int duration) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties, int duration) {
         return summonCreature(entry, pos, properties, duration, null, 0, 0, null, null);
     }
 
-    public final TempSummon summonCreature(int entry, Position pos, SummonPropertiesRecord properties) {
+    public final TempSummon summonCreature(int entry, Position pos, SummonProperty properties) {
         return summonCreature(entry, pos, properties, 0, null, 0, 0, null, null);
     }
 
@@ -2906,7 +2825,7 @@ public class Map {
 
                             break;
                         default:
-                            if ((properties.getFlags() & SummonPropertiesFlag.JoinSummonerSpawnGroup.value) != 0) // Mirror Image, Summon Gargoyle
+                            if (properties.getFlags().hasFlag(SummonPropertyFlag.JoinSummonerSpawnGroup)) // Mirror Image, Summon Gargoyle
                             {
                                 mask = UnitTypeMask.GUARDIAN;
                             }
@@ -2957,7 +2876,7 @@ public class Map {
         var transport = summoner == null ? null : summoner.getTransport();
 
         if (transport != null) {
-            var relocatePos = pos.Copy();
+            var relocatePos = new Position(pos);
             transport.calculatePassengerOffset(relocatePos);
             summon.getMovementInfo().transport.pos.relocate(relocatePos);
 
@@ -2966,7 +2885,7 @@ public class Map {
         }
 
         // Set the summon to the summoner's phase
-        if (summoner != null && !(properties != null && properties.getFlags().hasFlag(SummonPropertiesFlag.IgnoreSummonerPhase))) {
+        if (summoner != null && !(properties != null && properties.getFlags().hasFlag(SummonPropertyFlag.IgnoreSummonerPhase))) {
             PhasingHandler.inheritPhaseShift(summon, summoner);
         }
 
@@ -2978,7 +2897,7 @@ public class Map {
 
         if (smoothPhasingInfo != null) {
             if (summoner != null && smoothPhasingInfo.replaceObject != null) {
-                var replacedObject = global.getObjAccessor().GetWorldObject(summoner, smoothPhasingInfo.replaceObject.getValue());
+                var replacedObject = world.getWorldObject(summoner, smoothPhasingInfo.replaceObject);
 
                 if (replacedObject != null) {
                     var originalSmoothPhasingInfo = smoothPhasingInfo;
@@ -2998,7 +2917,7 @@ public class Map {
                 transport.removePassenger(summon);
             }
 
-            summon.close();
+            summon.destroy();
 
             return null;
         }
@@ -3035,9 +2954,8 @@ public class Map {
     }
 
     private void switchGridContainers(Creature obj, boolean on) {
-        if (obj.isPermanentWorldObject()) {
-            return;
-        }
+
+        Assert.state(!obj.isAlwaysStoredInWorldObjectGridContainer());
 
         WorldLocation loc = obj.getLocation();
         var p = MapDefine.computeCellCoordinate(loc.getX(), loc.getY());
@@ -3057,15 +2975,9 @@ public class Map {
 
         Logs.MAPS.debug("Switch object {} from grid[{}, {}] {}", obj.getGUID(), cell.getGridX(), cell.getGridY(), on);
 
-        var ngrid = getNGrid(cell);
+        removeFromGrid(obj);
 
-        obj.removeFromGrid();
-
-        removeFromGrid(obj, cell);
-
-
-
-        var gridCell = ngrid.getNCell(cell.getCellX(), cell.getCellY());
+        var gridCell = getNGrid(cell).getNCell(cell.getCellX(), cell.getCellY());
 
         if (on) {
             gridCell.addWorldObject(obj);
@@ -3081,7 +2993,7 @@ public class Map {
     private void deleteFromWorld(Player player) {
         global.getObjAccessor().RemoveObject(player);
         removeUpdateObject(player); // @todo I do not know why we need this, it should be removed in ~Object anyway
-        player.close();
+        player.destroy();
     }
 
     private void deleteFromWorld(WorldObject obj) {
@@ -3091,7 +3003,7 @@ public class Map {
     private NGrid getNGrid(Cell cell) {
         int gridX = cell.getGridX();
         int gridY = cell.getGridY();
-        int gridId = getGridId(gridX, gridY);
+        int gridId = cell.getGridId();
         return this.nGrids.computeIfAbsent(gridId, (k) -> {
             Logs.MAPS.debug("Creating grid[{}, {}] for map {} instance {}", gridX, gridY, getId(), instanceId);
             var grid = new NGrid(gridId, gridX, gridY);
@@ -3118,136 +3030,95 @@ public class Map {
         }
     }
 
-    private void visitNearbyCellsOf(WorldObject obj, IGridNotifier gridVisitor) {
+    private void visitNearbyCellsOf(WorldObject center, GridVisitor gridVisitor) {
         // Check for valid position
-        if (!obj.getLocation().isPositionValid()) {
+        if (!center.getLocation().isPositionValid()) {
             return;
         }
 
         // Update mobs/objects in ALL visible cells around object!
-        var area = Cell.calculateCellArea(obj.getLocation().getX(), obj.getLocation().getY(), obj.getGridActivationRange());
+        var area = Cell.calculateCellArea(center.getLocation().getX(), center.getLocation().getY(), center.getGridActivationRange());
 
-        for (var x = area.getLowBound().getXCoord(); x <= area.getHighBound().getXCoord(); ++x) {
-            for (var y = area.getLowBound().getYCoord(); y <= area.getHighBound().getYCoord(); ++y) {
+        for (var x = area.getLowBound().axisX(); x <= area.getHighBound().axisX(); ++x) {
+            for (var y = area.getLowBound().axisY(); y <= area.getHighBound().axisY(); ++y) {
                 // marked cells are those that have been visited
                 // don't visit the same cell twice
-                var cell_id = (y * MapDefine.TotalCellsPerMap) + x;
-
-                if (isCellMarked(cell_id)) {
+                var coordinate = Coordinate.createCellCoordinate(x, y);
+                var cellId = coordinate.getId();
+                if (isCellMarked(cellId)) {
                     continue;
                 }
-
-                markCell(cell_id);
-                var pair = new CellCoord(x, y);
-                var cell = new Cell(pair);
+                markCell(cellId);
+                var cell = new Cell(coordinate);
                 cell.setNoCreate();
                 visit(cell, gridVisitor);
             }
         }
     }
 
-    private void processRelocationNotifies(int diff) {
-        var xKeys = gridXKeys();
+    private void processRelocationNotifies(int delta) {
 
-        for (var x : xKeys) {
-            for (var y : gridYKeys(x)) {
-                var grid = getNGrid(x, y);
+        nGrids.forEach((gridId, grid) -> {
 
-                if (grid == null) {
-                    continue;
-                }
-
-                if (grid.getGridState() != GridState.active) {
-                    continue;
-                }
-
-                grid.getGridInfoRef().getRelocationTimer().TUpdate((int) diff);
-
-                if (!grid.getGridInfoRef().getRelocationTimer().TPassed()) {
-                    continue;
-                }
-
-                var gx = grid.getX();
-                var gy = grid.getY();
-
-                var cell_min = new CellCoord(gx * MapDefine.MaxCells, gy * MapDefine.MaxCells);
-                var cell_max = new CellCoord(cell_min.getXCoord() + MapDefine.MaxCells, cell_min.getYCoord() + MapDefine.MaxCells);
+            Coordinate cellMin = Coordinate.createCellCoordinate(grid.getX() * MapDefine.MAX_NUMBER_OF_CELLS, grid.getY() * MapDefine.MAX_NUMBER_OF_CELLS);
+            Coordinate cellMax = Coordinate.createCellCoordinate(cellMin.axisX() + MapDefine.MAX_NUMBER_OF_CELLS, cellMin.axisY() + MapDefine.MAX_NUMBER_OF_CELLS);
 
 
-                for (var xx = cell_min.getXCoord(); xx < cell_max.getXCoord(); ++xx) {
-                    for (var yy = cell_min.getYCoord(); yy < cell_max.getYCoord(); ++yy) {
-                        var cell_id = (yy * MapDefine.TotalCellsPerMap) + xx;
+            for (int x = cellMin.axisX(); x < cellMax.axisX(); ++x) {
+                for (int y = cellMin.axisY(); y < cellMax.axisY(); ++y) {
+                    int cellId = (y * MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP) + x;
+                    if (!isCellMarked(cellId))
+                        continue;
 
-                        if (!isCellMarked(cell_id)) {
-                            continue;
-                        }
+                    var pair = Coordinate.createCellCoordinate(x, y);
+                    var cell = new Cell(pair);
+                    cell.setNoCreate();
 
-                        var pair = new CellCoord(xx, yy);
-                        var cell = new Cell(pair);
-                        cell.setNoCreate();
-
-                        var cell_relocation = new DelayedUnitRelocation(cell, pair, this, SharedConst.MaxVisibilityDistance, gridType.All);
-
-                        visit(cell, cell_relocation);
-                    }
+                    var gridVisitor = GridVisitors.newDelayedUnitRelocation(cell, pair, this, ObjectDefine.MAX_VISIBILITY_DISTANCE);
+                    visit(cell, gridVisitor);
                 }
             }
-        }
 
-        var reset = new ResetNotifier(gridType.All);
 
-        for (var x : xKeys) {
-            for (var y : gridYKeys(x)) {
-                var grid = getNGrid(x, y);
+        });
 
-                if (grid == null) {
-                    continue;
-                }
+        var reset = GridVisitors.newResetVisitor();
 
-                if (grid.getGridState() != GridState.active) {
-                    continue;
-                }
+        nGrids.forEach((gridId, grid) -> {
 
-                if (!grid.getGridInfoRef().getRelocationTimer().TPassed()) {
-                    continue;
-                }
+            Coordinate cellMin = Coordinate.createCellCoordinate(grid.getX() * MapDefine.MAX_NUMBER_OF_CELLS, grid.getY() * MapDefine.MAX_NUMBER_OF_CELLS);
+            Coordinate cellMax = Coordinate.createCellCoordinate(cellMin.axisX() + MapDefine.MAX_NUMBER_OF_CELLS, cellMin.axisY() + MapDefine.MAX_NUMBER_OF_CELLS);
 
-                grid.getGridInfoRef().getRelocationTimer().TReset((int) diff, getVisibilityNotifyPeriod());
+            for (int x = cellMin.axisX(); x < cellMax.axisX(); ++x) {
+                for (int y = cellMin.axisY(); y < cellMax.axisY(); ++y) {
+                    int cellId = (y * MapDefine.TOTAL_NUMBER_OF_CELLS_PER_MAP) + x;
+                    if (!isCellMarked(cellId))
+                        continue;
 
-                var gx = grid.getX();
-                var gy = grid.getY();
+                    var pair = Coordinate.createCellCoordinate(x, y);
+                    var cell = new Cell(pair);
+                    cell.setNoCreate();
 
-                var cell_min = new CellCoord(gx * MapDefine.MaxCells, gy * MapDefine.MaxCells);
-
-                var cell_max = new CellCoord(cell_min.getXCoord() + MapDefine.MaxCells, cell_min.getYCoord() + MapDefine.MaxCells);
-
-                for (var xx = cell_min.getXCoord(); xx < cell_max.getXCoord(); ++xx) {
-                    for (var yy = cell_min.getYCoord(); yy < cell_max.getYCoord(); ++yy) {
-                        var cell_id = (yy * MapDefine.TotalCellsPerMap) + xx;
-
-                        if (!isCellMarked(cell_id)) {
-                            continue;
-                        }
-
-                        var pair = new CellCoord(xx, yy);
-                        var cell = new Cell(pair);
-                        cell.setNoCreate();
-                        visit(cell, reset);
-                    }
+                    visit(cell, reset);
                 }
             }
-        }
+        });
+
     }
 
-    private <T extends WorldObject> boolean checkGridIntegrity(T obj, boolean moved) {
-        var cur_cell = obj.getLocation().GetCurrentCell();
+    private <T extends WorldObject & GirdObject> boolean checkGridIntegrity(T obj, boolean moved) {
+        var cur_cell = obj.getCurrentCell();
         Cell xy_cell = new Cell(obj.getLocation().getX(), obj.getLocation().getY());
 
-        if (Cell.opNotEquals(xy_cell, cur_cell)) {
-            //$"grid[{GetGridX()}, {GetGridY()}]cell[{GetCellX()}, {GetCellY()}]";
-            Logs.MAPS.debug(String.format("%1$s (%2$s) X: %3$s Y: %4$s (%5$s) is in %6$s instead of %7$s", obj.getTypeId(), obj.getGUID(), obj.getLocation().getX(), obj.getLocation().getY(), (moved ? "final" : "original"), cur_cell, xy_cell));
+        if (Objects.equals(xy_cell, cur_cell)) {
+            Logs.MAPS.debug("{} {} X: {} Y: {} ({}) is in grid[{}, {}]cell[{}, {}] instead of grid[{}, {}]cell[{}, {}]",
+                    obj.getObjectTypeId(), obj.getGUID(),
+                    obj.getLocation().getX(), obj.getLocation().getY(), (moved ? "final" : "original"),
+                    cur_cell.getGridX(), cur_cell.getGridY(), cur_cell.getCellX(), cur_cell.getCellY(),
+                    xy_cell.getGridX(), xy_cell.getGridY(), xy_cell.getCellX(), xy_cell.getCellY());
 
-            return true; // not crash at error, just output error in debug mode
+            // not crash at error, just output error in debug mode
+            return false;
         }
 
         return true;
@@ -3492,15 +3363,24 @@ public class Map {
         }
     }
 
-    private <T extends WorldObject> boolean mapObjectCellRelocation(T obj, Cell new_cell) {
-        var old_cell = obj.getLocation().GetCurrentCell();
+    private <T extends WorldObject & GirdObject> boolean mapObjectCellRelocation(T obj, Cell new_cell) {
+        var old_cell = obj.getCurrentCell();
 
         if (!old_cell.diffGrid(new_cell)) // in same grid
         {
             // if in same cell then none do
             if (old_cell.diffCell(new_cell)) {
+
+                Logs.MAPS.debug("{} {} moved in grid[{}, {}] from cell[{}, {}] to cell[{}, {}].",
+                        obj.getObjectTypeId(), obj.getGUID(), old_cell.getGridX(), old_cell.getGridY(),
+                        old_cell.getCellX(), old_cell.getCellY(), new_cell.getCellX(), new_cell.getCellY());
+
                 removeFromGrid(obj, old_cell);
                 addToGrid(obj, new_cell);
+            } else {
+                Logs.MAPS.debug("{} {} moved in same grid[{}, {}]cell[{}, {}].", obj.getObjectTypeId(),
+                        obj.getGUID(), old_cell.getGridX(), old_cell.getGridY(), old_cell.getCellX(), old_cell.getCellY());
+
             }
 
             return true;
@@ -3513,7 +3393,9 @@ public class Map {
                 getMultiPersonalPhaseTracker().loadGrid(obj.getPhaseShift(), grid, this, new_cell);
             }
 
-            Logs.MAPS.debug("Active creature (GUID: {0} Entry: {1}) moved from grid[{2}, {3}] to grid[{4}, {5}].", obj.getGUID().toString(), obj.getEntry(), old_cell.getGridX(), old_cell.getGridY(), new_cell.getGridX(), new_cell.getGridY());
+            Logs.MAPS.debug("Active {} {} moved from grid[{}, {}]cell[{}, {}] to grid[{}, {}]cell[{}, {}].",
+                    obj.getObjectTypeId(), obj.getGUID(), old_cell.getGridX(), old_cell.getGridY(), old_cell.getCellX(),
+                    old_cell.getCellY(), new_cell.getGridX(), new_cell.getGridY(), new_cell.getCellX(), new_cell.getCellY());
 
             removeFromGrid(obj, old_cell);
             addToGrid(obj, new_cell);
@@ -3524,13 +3406,13 @@ public class Map {
         var c = obj.toCreature();
 
         if (c != null && c.getCharmerOrOwnerGUID().isPlayer()) {
-            ensureGridLoaded(new_cell);
+            getNGrid(new_cell);
         }
 
         // in diff. loaded grid normal creature
-        var grid = new GridCoord(new_cell.getGridX(), new_cell.getGridY());
+        var grid = Coordinate.createGridCoordinate(new_cell.getGridX(), new_cell.getGridY());
 
-        if (isGridLoaded(grid)) {
+        if (isGridLoaded(grid.getId())) {
             removeFromGrid(obj, old_cell);
             addToGrid(obj, new_cell);
 
@@ -3608,7 +3490,7 @@ public class Map {
     }
 
     private void sendObjectUpdates() {
-        HashMap<Player, UpdateData> update_players = new HashMap<Player, UpdateData>();
+        HashMap<Player, UpdateData> update_players = new HashMap<>();
 
         synchronized (updateObjects) {
             while (!updateObjects.isEmpty()) {
@@ -3621,7 +3503,7 @@ public class Map {
         for (var iter : update_players.entrySet()) {
             var packet;
 
-            iter.getValue().buildPacket(out packet);
+            iter.getValue().buildPacket(packet);
             iter.getKey().sendPacket(packet);
         }
     }
@@ -3793,10 +3675,6 @@ public class Map {
     }
 
     private void deleteRespawnInfo(RespawnInfo info) {
-        deleteRespawnInfo(info, null);
-    }
-
-    private void deleteRespawnInfo(RespawnInfo info, SQLTransaction dbTrans) {
         // spawnid store
         var spawnMap = getRespawnMapForType(info.getObjectType());
 
@@ -3811,24 +3689,15 @@ public class Map {
         respawnTimes.remove(info);
 
         // database
-        deleteRespawnInfoFromDB(info.getObjectType(), info.getSpawnId(), dbTrans);
+        deleteRespawnInfoFromDB(info.getObjectType(), info.getSpawnId());
     }
 
-    private void deleteRespawnInfoFromDB(SpawnObjectType type, long spawnId) {
-        deleteRespawnInfoFromDB(type, spawnId, null);
-    }
 
-    private void deleteRespawnInfoFromDB(SpawnObjectType type, long spawnId, SQLTransaction dbTrans) {
+    private void deleteRespawnInfoFromDB(SpawnObjectType type, int spawnId) {
         if (isInstanceable()) {
             return;
         }
-
-        var stmt = DB.characters.GetPreparedStatement(CharStatements.DEL_RESPAWN);
-        stmt.AddValue(0, (short) type.getValue());
-        stmt.AddValue(1, spawnId);
-        stmt.AddValue(2, getId());
-        stmt.AddValue(3, getInstanceId());
-        DB.characters.ExecuteOrAppend(dbTrans, stmt);
+        characterRepo.deleteRespawn(type.ordinal(), spawnId, getId(), getInstanceId());
     }
 
     private void doRespawn(SpawnObjectType type, long spawnId, int gridId) {
@@ -3838,17 +3707,17 @@ public class Map {
         }
 
         switch (type) {
-            case Creature: {
+            case CREATURE: {
                 Creature obj = new Creature();
 
                 if (!obj.loadFromDB(spawnId, this, true, true)) {
-                    obj.close();
+                    obj.destroy();
                 }
 
                 break;
             }
-            case GameObject: {
-                GameObject obj = new gameObject();
+            case GAME_OBJECT: {
+                GameObject obj = new GameObject();
 
                 if (!obj.loadFromDB(spawnId, this, true)) {
                     obj.close();
@@ -3952,7 +3821,7 @@ public class Map {
             while (iterator.hasNext()) {
                 var pair = iterator.next();
                 var object = pair.getKey();
-                if (!object.isPermanentWorldObject() && object.getTypeId() == TypeId.UNIT) {
+                if (!object.isPermanentWorldObject() && object.getObjectTypeId() == TypeId.UNIT) {
                     switchGridContainers(object.toCreature(), pair.getValue());
 
                 }
@@ -3963,7 +3832,7 @@ public class Map {
         while (!objectsToRemove.isEmpty()) {
             var obj = objectsToRemove.getFirst();
 
-            switch (obj.getTypeId()) {
+            switch (obj.getObjectTypeId()) {
                 case TypeId.CORPSE: {
                     var corpse = world.getCorpse(obj, obj.getGUID());
 
@@ -4016,13 +3885,6 @@ public class Map {
         }
     }
 
-    private void addToActiveHelper(WorldObject obj) {
-        activeNonPlayers.add(obj);
-    }
-
-    private void removeFromActiveHelper(WorldObject obj) {
-        activeNonPlayers.remove(obj);
-    }
 
     private void removeCorpse(Corpse corpse) {
         corpse.updateObjectVisibilityOnDestroy();
@@ -4078,18 +3940,11 @@ public class Map {
     }
 
 
-    ///#region Script Updates
+    /// #region Script Updates
 
     private void setTimer(int t) {
         gridExpiry = t < MapDefine.MinGridDelay ? MapDefine.MinGridDelay : t;
     }
-
-    private int getGridId(int x, int y) {
-        Assert.state(x < MapDefine.MAX_NUMBER_OF_GRIDS && y < MapDefine.MAX_NUMBER_OF_GRIDS, "x = {}, y = {}", x, y);
-        return x * MapDefine.MAX_NUMBER_OF_GRIDS + y;
-    }
-
-
 
 
     private ObjectGuidGenerator getGuidSequenceGenerator(HighGuid high) {
@@ -4104,7 +3959,7 @@ public class Map {
     ///#endregion
 
 
-    ///#region Scripts
+    /// #region Scripts
 
     // Put scripts in the execution queue
     public final void scriptsStart(ScriptsType scriptsType, int id, WorldObject source, WorldObject target) {
@@ -4192,7 +4047,7 @@ public class Map {
             }
 
             if (player == null) {
-                Log.outError(LogFilter.Scripts, "{0} neither source nor target object is player (source: TypeId: {1}, Entry: {2}, {3}; target: TypeId: {4}, Entry: {5}, {6}), skipping.", scriptInfo.getDebugInfo(), source ? source.getTypeId() : 0, source ? source.getEntry() : 0, source ? source.getGUID().toString() : "", target ? target.getTypeId() : 0, target ? target.getEntry() : 0, target ? target.getGUID().toString() : "");
+                Log.outError(LogFilter.Scripts, "{0} neither source nor target object is player (source: TypeId: {1}, Entry: {2}, {3}; target: TypeId: {4}, Entry: {5}, {6}), skipping.", scriptInfo.getDebugInfo(), source ? source.getObjectTypeId() : 0, source ? source.getEntry() : 0, source ? source.getGUID().toString() : "", target ? target.getObjectTypeId() : 0, target ? target.getEntry() : 0, target ? target.getGUID().toString() : "");
             }
         }
 
@@ -4231,7 +4086,7 @@ public class Map {
             }
 
             if (creature == null) {
-                Log.outError(LogFilter.Scripts, "{0} neither source nor target are creatures (source: TypeId: {1}, Entry: {2}, {3}; target: TypeId: {4}, Entry: {5}, {6}), skipping.", scriptInfo.getDebugInfo(), source ? source.getTypeId() : 0, source ? source.getEntry() : 0, source ? source.getGUID().toString() : "", target ? target.getTypeId() : 0, target ? target.getEntry() : 0, target ? target.getGUID().toString() : "");
+                Log.outError(LogFilter.Scripts, "{0} neither source nor target are creatures (source: TypeId: {1}, Entry: {2}, {3}; target: TypeId: {4}, Entry: {5}, {6}), skipping.", scriptInfo.getDebugInfo(), source ? source.getObjectTypeId() : 0, source ? source.getEntry() : 0, source ? source.getGUID().toString() : "", target ? target.getObjectTypeId() : 0, target ? target.getEntry() : 0, target ? target.getGUID().toString() : "");
             }
         }
 
@@ -4265,7 +4120,7 @@ public class Map {
             }
 
             if (gameobject == null) {
-                Log.outError(LogFilter.MapsScript, String.format("%1$s neither source nor target are gameobjects ", scriptInfo.getDebugInfo()) + String.format("(source: TypeId: %1$s, Entry: %2$s, %3$s; ", (source != null ? source.getTypeId() : 0), (source != null ? source.getEntry() : 0), (source != null ? source.getGUID() : ObjectGuid.Empty)) + String.format("target: TypeId: %1$s, Entry: %2$s, %3$s), skipping.", (target != null ? target.getTypeId() : 0), (target != null ? target.getEntry() : 0), (target != null ? target.getGUID() : ObjectGuid.Empty)));
+                Log.outError(LogFilter.MapsScript, String.format("%1$s neither source nor target are gameobjects ", scriptInfo.getDebugInfo()) + String.format("(source: TypeId: %1$s, Entry: %2$s, %3$s; ", (source != null ? source.getObjectTypeId() : 0), (source != null ? source.getEntry() : 0), (source != null ? source.getGUID() : ObjectGuid.Empty)) + String.format("target: TypeId: %1$s, Entry: %2$s, %3$s), skipping.", (target != null ? target.getObjectTypeId() : 0), (target != null ? target.getEntry() : 0), (target != null ? target.getGUID() : ObjectGuid.Empty)));
             }
         }
 
@@ -4278,7 +4133,7 @@ public class Map {
         if (obj == null) {
             Log.outError(LogFilter.Scripts, "{0} {1} object is NULL.", scriptInfo.getDebugInfo(), isSource ? "source" : "target");
         } else if (!obj.isType(TypeMask.unit)) {
-            Log.outError(LogFilter.Scripts, "{0} {1} object is not unit (TypeId: {2}, Entry: {3}, GUID: {4}), skipping.", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getTypeId(), obj.getEntry(), obj.getGUID().toString());
+            Log.outError(LogFilter.Scripts, "{0} {1} object is not unit (TypeId: {2}, Entry: {3}, GUID: {4}), skipping.", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getObjectTypeId(), obj.getEntry(), obj.getGUID().toString());
         } else {
             unit = obj.toUnit();
 
@@ -4299,7 +4154,7 @@ public class Map {
             player = obj.toPlayer();
 
             if (player == null) {
-                Log.outError(LogFilter.Scripts, "{0} {1} object is not a player (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getTypeId(), obj.getEntry(), obj.getGUID().toString());
+                Log.outError(LogFilter.Scripts, "{0} {1} object is not a player (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getObjectTypeId(), obj.getEntry(), obj.getGUID().toString());
             }
         }
 
@@ -4315,7 +4170,7 @@ public class Map {
             creature = obj.toCreature();
 
             if (creature == null) {
-                Log.outError(LogFilter.Scripts, "{0} {1} object is not a creature (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getTypeId(), obj.getEntry(), obj.getGUID().toString());
+                Log.outError(LogFilter.Scripts, "{0} {1} object is not a creature (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getObjectTypeId(), obj.getEntry(), obj.getGUID().toString());
             }
         }
 
@@ -4331,7 +4186,7 @@ public class Map {
             pWorldObject = obj;
 
             if (pWorldObject == null) {
-                Log.outError(LogFilter.Scripts, "{0} {1} object is not a world object (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getTypeId(), obj.getEntry(), obj.getGUID().toString());
+                Log.outError(LogFilter.Scripts, "{0} {1} object is not a world object (TypeId: {2}, Entry: {3}, GUID: {4}).", scriptInfo.getDebugInfo(), isSource ? "source" : "target", obj.getObjectTypeId(), obj.getEntry(), obj.getGUID().toString());
             }
         }
 
@@ -4361,10 +4216,10 @@ public class Map {
         } else if (source == null) {
             Log.outError(LogFilter.Scripts, "{0} source object is NULL.", scriptInfo.getDebugInfo());
         } else if (!source.isType(TypeMask.unit)) {
-            Log.outError(LogFilter.Scripts, "{0} source object is not unit (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", scriptInfo.getDebugInfo(), source.getTypeId(), source.getEntry(), source.getGUID().toString());
+            Log.outError(LogFilter.Scripts, "{0} source object is not unit (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", scriptInfo.getDebugInfo(), source.getObjectTypeId(), source.getEntry(), source.getGUID().toString());
         } else {
             if (source == null) {
-                Log.outError(LogFilter.Scripts, "{0} source object could not be casted to world object (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", scriptInfo.getDebugInfo(), source.getTypeId(), source.getEntry(), source.getGUID().toString());
+                Log.outError(LogFilter.Scripts, "{0} source object could not be casted to world object (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", scriptInfo.getDebugInfo(), source.getObjectTypeId(), source.getEntry(), source.getGUID().toString());
             } else {
                 var pDoor = findGameObject(source, guid);
 
@@ -4619,7 +4474,7 @@ public class Map {
 
                         if (player != null) {
                             if (!source.isTypeId(TypeId.UNIT) && !source.isTypeId(TypeId.gameObject) && !source.isTypeId(TypeId.PLAYER)) {
-                                Log.outError(LogFilter.Scripts, "{0} source is not unit, gameobject or player (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), source.getTypeId(), source.getEntry(), source.getGUID().toString());
+                                Log.outError(LogFilter.Scripts, "{0} source is not unit, gameobject or player (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), source.getObjectTypeId(), source.getEntry(), source.getGUID().toString());
 
                                 break;
                             }
@@ -4630,7 +4485,7 @@ public class Map {
 
                             if (player != null) {
                                 if (!target.isTypeId(TypeId.UNIT) && !target.isTypeId(TypeId.gameObject) && !target.isTypeId(TypeId.PLAYER)) {
-                                    Log.outError(LogFilter.Scripts, "{0} target is not unit, gameobject or player (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), target.getTypeId(), target.getEntry(), target.getGUID().toString());
+                                    Log.outError(LogFilter.Scripts, "{0} target is not unit, gameobject or player (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), target.getObjectTypeId(), target.getEntry(), target.getGUID().toString());
 
                                     break;
                                 }
@@ -4744,7 +4599,7 @@ public class Map {
                             }
 
                             if (!target.isTypeId(TypeId.gameObject)) {
-                                Log.outError(LogFilter.Scripts, "{0} target object is not gameobject (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), target.getTypeId(), target.getEntry(), target.getGUID().toString());
+                                Log.outError(LogFilter.Scripts, "{0} target object is not gameobject (TypeId: {1}, Entry: {2}, GUID: {3}), skipping.", step.script.getDebugInfo(), target.getObjectTypeId(), target.getEntry(), target.getGUID().toString());
 
                                 break;
                             }

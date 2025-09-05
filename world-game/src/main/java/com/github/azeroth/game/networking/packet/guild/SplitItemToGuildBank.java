@@ -22,7 +22,7 @@ class SplitItemToGuildBank extends ClientPacket {
         bankSlot = this.readUInt8();
         ;
         containerItemSlot = this.readUInt8();
-        stackCount = this.readUInt();
+        stackCount = this.readUInt32();
 
         if (this.readBit()) {
             containerSlot = this.readUInt8();

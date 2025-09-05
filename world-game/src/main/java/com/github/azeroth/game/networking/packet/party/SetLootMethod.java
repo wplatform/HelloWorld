@@ -19,6 +19,6 @@ class SetLootMethod extends ClientPacket {
         partyIndex = this.readByte();
         lootMethod = lootMethod.forValue(this.readUInt8());
         lootMasterGUID = this.readPackedGuid();
-        lootThreshold = itemQuality.forValue(this.readUInt());
+        lootThreshold = itemQuality.forValue(this.readUInt32());
     }
 }

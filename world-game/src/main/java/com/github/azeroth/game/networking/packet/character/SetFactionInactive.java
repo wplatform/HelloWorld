@@ -13,7 +13,7 @@ class SetFactionInactive extends ClientPacket {
 
     @Override
     public void read() {
-        index = this.readUInt();
+        index = this.readUInt32();
         state = this.readBit();
     }
 }

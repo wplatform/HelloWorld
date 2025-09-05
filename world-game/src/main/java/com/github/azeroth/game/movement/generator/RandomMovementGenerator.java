@@ -4,7 +4,7 @@ package com.github.azeroth.game.movement.generator;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.movement.MovementGeneratorMedium;
 import com.github.azeroth.game.movement.PathGenerator;
-import com.github.azeroth.game.movement.PathType;
+import com.github.azeroth.game.movement.enums.PathType;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
 
 public class RandomMovementGenerator extends MovementGeneratorMedium<Creature> {

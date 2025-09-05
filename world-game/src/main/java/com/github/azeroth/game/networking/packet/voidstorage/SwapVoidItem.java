@@ -16,6 +16,6 @@ class SwapVoidItem extends ClientPacket {
     public void read() {
         npc = this.readPackedGuid();
         voidItemGuid = this.readPackedGuid();
-        dstSlot = this.readUInt();
+        dstSlot = this.readUInt32();
     }
 }

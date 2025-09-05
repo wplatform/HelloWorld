@@ -18,7 +18,7 @@ class QuestPushResult extends ClientPacket {
     @Override
     public void read() {
         senderGUID = this.readPackedGuid();
-        questID = this.readUInt();
+        questID = this.readUInt32();
         result = QuestPushReason.forValue(this.readUInt8());
     }
 }

@@ -2,6 +2,7 @@ package com.github.azeroth.game.chat;
 
 
 import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.domain.spawn.RespawnInfo;
 import com.github.azeroth.game.entity.activePlayerData;
 import com.github.azeroth.game.entity.gobject.transport;
 import com.github.azeroth.game.entity.object.WorldObject;
@@ -338,7 +339,7 @@ class MiscCommands {
 
         int school;
         tangible.OutObject<Integer> tempOut_school = new tangible.OutObject<Integer>();
-        if (!tangible.TryParseHelper.tryParseInt(schoolStr, tempOut_school) || school >= SpellSchools.max.getValue()) {
+        if (!tangible.TryParseHelper.tryParseInt(schoolStr, tempOut_school) || school >= SpellSchool.max.getValue()) {
             school = tempOut_school.outArgValue;
             return false;
         } else {
@@ -1425,7 +1426,7 @@ class MiscCommands {
             classid = target.getClass();
             muteTime = target.getSession().muteTime;
             mapId = target.getLocation().getMapId();
-            areaId = target.getArea();
+            areaId = target.getAreaId();
             alive = target.isAlive() ? handler.getSysMessage(SysMessage.Yes) : handler.getSysMessage(SysMessage.No);
             gender = target.getNativeGender();
         }

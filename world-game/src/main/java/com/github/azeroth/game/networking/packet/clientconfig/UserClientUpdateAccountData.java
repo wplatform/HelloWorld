@@ -19,10 +19,10 @@ public class UserClientUpdateAccountData extends ClientPacket {
     public void read() {
         playerGuid = this.readPackedGuid();
         time = this.readInt64();
-        size = this.readUInt();
+        size = this.readUInt32();
         dataType = AccountDataTypes.forValue(this.<Integer>readBit(4));
 
-        var compressedSize = this.readUInt();
+        var compressedSize = this.readUInt32();
 
         if (compressedSize != 0) {
             compressedData = new byteBuffer(this.readBytes(compressedSize));

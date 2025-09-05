@@ -14,6 +14,6 @@ public class ResurrectResponse extends ClientPacket {
     @Override
     public void read() {
         resurrecter = this.readPackedGuid();
-        response = this.readUInt();
+        response = this.readUInt32();
     }
 }

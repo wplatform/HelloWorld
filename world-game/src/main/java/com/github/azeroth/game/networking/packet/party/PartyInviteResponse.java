@@ -21,7 +21,7 @@ class PartyInviteResponse extends ClientPacket {
         var hasRolesDesired = this.readBit();
 
         if (hasRolesDesired) {
-            rolesDesired = this.readUInt();
+            rolesDesired = this.readUInt32();
         }
     }
 }

@@ -11,8 +11,8 @@ public class RideTicket {
 
     public final void read(WorldPacket data) {
         requesterGuid = data.readPackedGuid();
-        id = data.readUInt();
-        type = RideType.forValue(data.readUInt());
+        id = data.readUInt32();
+        type = RideType.forValue(data.readUInt32());
         time = data.readInt64();
         unknown925 = data.readBit();
         data.resetBitPos();

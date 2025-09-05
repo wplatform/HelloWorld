@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-// EnumUtils: DESCRIBE THIS
+// EnumUtils: DESCRIBE  THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr4 {
+public enum SpellAttr4 implements EnumFlag.FlagValue {
     NO_CAST_LOG(0x00000001), // TITLE No Cast Log
     CLASS_TRIGGER_ONLY_ON_TARGET(0x00000002), // TITLE Class Trigger Only On Target
     AURA_EXPIRES_OFFLINE(0x00000004), // TITLE Aura Expires Offline DESCRIPTION Debuffs (except Resurrection Sickness) will automatically do this

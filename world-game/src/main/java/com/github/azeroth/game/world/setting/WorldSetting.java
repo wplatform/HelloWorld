@@ -147,19 +147,6 @@ import java.nio.file.Path;
  * worldserver.listenrange.Say
  * worldserver.listenrange.TextEmote
  * worldserver.listenrange.Yell
- * worldserver.respawn.MinCheckIntervalMS
- * worldserver.respawn.GuidWarnLevel
- * worldserver.respawn.WarningMessage
- * worldserver.respawn.WarningFrequency
- * worldserver.respawn.GuidAlertLevel
- * worldserver.respawn.AlertRestartReason
- * worldserver.respawn.RestartQuietTime
- * worldserver.respawn.DynamicMode
- * worldserver.respawn.DynamicEscortNPC
- * worldserver.respawn.DynamicRateCreature
- * worldserver.respawn.DynamicMinimumCreature
- * worldserver.respawn.DynamicRateGameObject
- * worldserver.respawn.DynamicMinimumGameObject
  * worldserver.chatstrictlinkchecking.Severity
  * worldserver.chatstrictlinkchecking.Kick
  * <p>
@@ -479,6 +466,7 @@ public class WorldSetting {
     public AuctionHouseBotSetting auctionHouse;
     public MapSetting map;
     public BattlegroundSetting battleground;
+    public RespawnSetting respawn;
 
     public int getConfigMaxSkillValue() {
         int lvl = maxPlayerLevel;

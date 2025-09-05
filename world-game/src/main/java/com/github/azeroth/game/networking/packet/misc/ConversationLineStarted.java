@@ -14,6 +14,6 @@ class ConversationLineStarted extends ClientPacket {
     @Override
     public void read() {
         conversationGUID = this.readPackedGuid();
-        lineID = this.readUInt();
+        lineID = this.readUInt32();
     }
 }

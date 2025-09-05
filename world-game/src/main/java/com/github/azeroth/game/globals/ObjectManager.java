@@ -70,7 +70,7 @@ import com.github.azeroth.game.domain.map.enums.LoadResult;
 import com.github.azeroth.game.domain.map.Coordinate;
 import com.github.azeroth.game.domain.map.ZoneAndAreaId;
 import com.github.azeroth.game.movement.MotionMaster;
-import com.github.azeroth.game.movement.MovementGeneratorType;
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
 import com.github.azeroth.game.domain.phasing.PhaseShift;
 import com.github.azeroth.game.phasing.PhasingHandler;
 import com.github.azeroth.game.quest.Quest;
@@ -266,6 +266,7 @@ public final class ObjectManager {
     private final MapCache<Integer, Map<Byte, EquipmentInfo>> equipmentInfoStorage;
     private final HashMap<ObjectGuid, ObjectGuid> linkedRespawnStorage = new HashMap<>();
     private final HashMap<Integer, CreatureBaseStats> creatureBaseStatsStorage = new HashMap<Integer, CreatureBaseStats>();
+    private final HashMap<Integer, FormationInfo> creatureGroupMap = new HashMap<>();
     private final MapCache<Integer, VendorItemData> cacheVendorItemStorage;
     private final HashMap<Integer, Trainer> trainers = new HashMap<>();
     private final MapCache<Integer, NpcText> npcTextStorage;
@@ -2348,6 +2349,47 @@ public final class ObjectManager {
         Logs.SERVER_LOADING.info("Loaded {} creatures in {} ms", creatureDataStorage.size(), System.currentTimeMillis() - time);
     }
 
+    public void loadCreatureFormations() {
+        var oldMSTime = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        Set<Integer> leaderSpawnIds = new HashSet<>();
+        //Get group data
+        try(var items = creatureRepo.streamAllCreatureFormations()) {
+            items.forEach(data -> {
+                if (getCreatureData(data.leaderSpawnId) == null)
+                {
+                    Logs.SQL.error("creature_formations table leader guid {} incorrect (not exist)", data.leaderSpawnId);
+                    return;
+                }
+
+                if (getCreatureData(data.memberSpawnId) == null)
+                {
+                    Logs.SQL.error("creature_formations table member guid {} incorrect (not exist)", data.memberSpawnId);
+                    return;
+                }
+                leaderSpawnIds.add(data.leaderSpawnId);
+                //If creature is group leader we may skip loading of dist/angle
+                if (data.leaderSpawnId == data.memberSpawnId)
+                {
+                    data.followDist             = 0.0f;
+                    data.followAngle            = 0.0f;
+                }
+
+                creatureGroupMap.put(data.leaderSpawnId, data);
+                count.getAndIncrement();
+            });
+        }
+
+        for (var leaderSpawnId : leaderSpawnIds) {
+            if (!creatureGroupMap.containsKey(leaderSpawnId)) {
+                Logs.SQL.error("creature_formation contains leader spawn {} which is not included on its formation, removing", leaderSpawnId);
+                creatureGroupMap.entrySet().removeIf(entry -> entry.getValue().leaderSpawnId == leaderSpawnId);
+            }
+        }
+
+        Logs.SQL.info(">> Loaded {} creatures in formations in {} ms", count, System.currentTimeMillis() - oldMSTime);
+    }
+
 
     public GridSpawnData getCellPersonalObjectGuids(int mapId, Difficulty spawnMode, int cellId, int phaseId) {
         return mapPersonalSpawnDataStorage.get(PersonalCellSpawnDataKey.of(mapId, spawnMode, cellId, phaseId));
@@ -2392,6 +2434,24 @@ public final class ObjectManager {
         }
 
         return retGuid;
+    }
+
+    public FormationInfo getFormationInfo(int spawnId) {
+        return creatureGroupMap.get(spawnId);
+    }
+
+    public void addFormationMember(int spawnId, float followAng, float followDist, int leaderSpawnId, short groupAI) {
+        FormationInfo member = new FormationInfo();
+        member.leaderSpawnId = leaderSpawnId;
+        member.followDist = followDist;
+        member.followAngle = followAng;
+        member.groupAI = groupAI;
+
+        for (var i = 0; i < 2; ++i) {
+            member.leaderWaypointIds[i] = 0;
+        }
+
+        creatureGroupMap.put(member.memberSpawnId, member);
     }
 
     public boolean setCreatureLinkedRespawn(int guidLow, int linkedGuidLow) {
@@ -6526,12 +6586,11 @@ public final class ObjectManager {
         try (var creatureSummonGroupStream = creatureRepo.streamsAllTempSummon()) {
             creatureSummonGroupStream.forEach(e -> {
                 SummonerType[] values = SummonerType.values();
-                if (e.summonerType > values.length || e.summonerType < 0) {
+                if (e.summonerType == null) {
                     Logs.SQL.error("Table `creature_summon_groups` has unhandled summoner type {} for summoner {}, skipped.", e.summonerType, e.summonerId);
                     return;
                 }
-                var summonerType = values[e.summonerType];
-                switch (summonerType) {
+                switch (e.summonerType) {
                     case CREATURE:
                         if (getCreatureTemplate(e.summonerId) == null) {
                             Logs.SQL.error("Table `creature_summon_groups` has summoner with non existing entry {} for creature summoner type, skipped.", e.summonerId);
@@ -6561,7 +6620,7 @@ public final class ObjectManager {
                     return;
                 }
 
-                var key = Tuple.of(e.summonerId, summonerType, e.groupId);
+                var key = Tuple.of(e.summonerId, e.summonerType, e.groupId);
                 tmp.compute(key, Functions.addToList(e));
                 count.getAndIncrement();
             });

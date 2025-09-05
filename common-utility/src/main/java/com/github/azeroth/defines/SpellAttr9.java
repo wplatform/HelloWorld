@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr9 {
+public enum SpellAttr9 implements EnumFlag.FlagValue {
     UNK0(0x00000001), // TITLE Unknown attribute 0@Attr9
     UNK1(0x00000002), // TITLE Unknown attribute 1@Attr9
     RESTRICTED_FLIGHT_AREA(0x00000004), // TITLE Only When Illegally Mounted

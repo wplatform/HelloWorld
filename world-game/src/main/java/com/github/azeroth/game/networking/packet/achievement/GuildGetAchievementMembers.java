@@ -16,6 +16,6 @@ class GuildGetAchievementMembers extends ClientPacket {
     public void read() {
         playerGUID = this.readPackedGuid();
         guildGUID = this.readPackedGuid();
-        achievementID = this.readUInt();
+        achievementID = this.readUInt32();
     }
 }

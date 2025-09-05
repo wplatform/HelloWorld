@@ -1,7 +1,9 @@
 package com.github.azeroth.game.spell;
 
 
+import com.github.azeroth.defines.SpellAttr8;
 import com.github.azeroth.game.domain.creature.CreatureModel;
+import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.entity.item.ItemPosCount;
 import com.github.azeroth.game.entity.player.model.SpellModifier;
 import com.github.azeroth.game.entity.player.model.SpellModifierByClassMask;
@@ -10,25 +12,25 @@ import com.github.azeroth.game.entity.unit.*;
 import com.github.azeroth.game.map.AnyUnfriendlyUnitInObjectRangeCheck;
 import com.github.azeroth.game.map.UnitListSearcher;
 import com.github.azeroth.game.map.grid.Cell;
-import com.github.azeroth.game.networking.packet.BattlegroundPlayerPosition;
-import com.github.azeroth.game.networking.packet.WeatherPkt;
+
 import com.github.azeroth.game.scripting.interfaces.iunit.IUnitModifyPeriodicDamageAurasTick;
-import game.ConditionManager;
-import game.ObjectManager;
-import game.PhasingHandler;
-import game.WeatherState;
+import com.github.azeroth.game.spell.auras.enums.AuraType;
+import com.github.azeroth.utils.MathUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 
-
+@Getter
+@Setter
 public class AuraEffect {
     private final Aura auraBase;
     private final SpellInfo spellInfo;
     private final SpellEffectInfo effectInfo;
-    public double baseAmount;
+    public float baseAmount;
     private SpellModifier spellModifier;
-    private double amount;
+    private float amount;
     private Double estimatedAmount = null; // for periodic damage and healing auras this will include damage done bonuses
 
     // periodic stuff
@@ -96,52 +98,17 @@ public class AuraEffect {
         return effectInfo.applyAuraName;
     }
 
-    public final double getAmount() {
-        return amount;
-    }
 
-    public final void setAmount(double amount) {
-        amount = amount;
+    public final void setAmount(float amount) {
+        this.amount = amount;
         canBeRecalculated = false;
     }
 
-    public final void setAmount(long amount) {
-        setAmount((double) amount);
-    }
-
-    public final void setAmount(int amount) {
-        setAmount((double) amount);
-    }
-
-    public final void setAmount(int amount) {
-        setAmount((double) amount);
-    }
-
-    public final float getAmountAsFloat() {
-        return (float) amount;
-    }
-
-    public final int getAmountAsInt() {
-        return (int) amount;
-    }
-
-    public final int getAmountAsUInt() {
-        return (int) amount;
-    }
-
-    public final long getAmountAsULong() {
-        return (long) amount;
-    }
-
-    public final long getAmountAsLong() {
-        return (long) amount;
-    }
-
-    public final double calculateAmount(Unit caster) {
+    public final float calculateAmount(Unit caster) {
         // default amount calculation
-        double amount = 0;
+        float amount = 0;
 
-        if (!spellInfo.hasAttribute(SpellAttr8.MasteryAffectPoints) || MathUtil.fuzzyEq(getSpellEffectInfo().bonusCoefficient, 0.0f)) {
+        if (!spellInfo.hasAttribute(SpellAttr8.MASTERY_AFFECTS_POINTS) || MathUtil.fuzzyEq(getSpellEffectInfo().bonusCoefficient, 0.0f)) {
             amount = getSpellEffectInfo().calcValue(caster, baseAmount, getBase().getOwner().toUnit(), getBase().getCastItemId(), getBase().getCastItemLevel());
         } else if (caster != null && caster.isTypeId(TypeId.PLAYER)) {
             amount = caster.toPlayer().getActivePlayerData().Mastery * getSpellEffectInfo().bonusCoefficient;
@@ -3417,7 +3384,7 @@ public class AuraEffect {
 
         var target = aurApp.getTarget();
 
-        for (var x = (byte) SpellSchools.NORMAL.getValue(); x < (byte) SpellSchools.max.getValue(); x++) {
+        for (var x = (byte) SpellSchool.NORMAL.getValue(); x < (byte) SpellSchool.max.getValue(); x++) {
             if ((boolean) (getMiscValue() & (1 << x))) {
                 target.handleStatFlatModifier(UnitMods.ResistanceStart + x, UnitModifierFlatType.Total, getAmount(), apply);
             }
@@ -3444,7 +3411,7 @@ public class AuraEffect {
                 }
             }
         } else {
-            for (var x = (byte) SpellSchools.NORMAL.getValue(); x < (byte) SpellSchools.max.getValue(); x++) {
+            for (var x = (byte) SpellSchool.NORMAL.getValue(); x < (byte) SpellSchool.max.getValue(); x++) {
                 if ((boolean) (getMiscValue() & (1 << x))) {
                     if (apply) {
                         target.applyStatPctModifier(UnitMods.ResistanceStart + x, UnitModifierPctType.base, getAmount());
@@ -3465,7 +3432,7 @@ public class AuraEffect {
 
         var target = aurApp.getTarget();
 
-        for (var i = (byte) SpellSchools.NORMAL.getValue(); i < (byte) SpellSchools.max.getValue(); i++) {
+        for (var i = (byte) SpellSchool.NORMAL.getValue(); i < (byte) SpellSchool.max.getValue(); i++) {
             if ((boolean) (getMiscValue() & (1 << i))) {
                 var amount = target.getTotalAuraMultiplierByMiscMask(AuraType.ModResistancePct, 1 << i);
 
@@ -3493,7 +3460,7 @@ public class AuraEffect {
                 target.handleStatFlatModifier(UnitMods.armor, UnitModifierFlatType.Total, getAmount(), apply);
             }
         } else {
-            for (var i = (byte) SpellSchools.NORMAL.getValue(); i < (byte) SpellSchools.max.getValue(); i++) {
+            for (var i = (byte) SpellSchool.NORMAL.getValue(); i < (byte) SpellSchool.max.getValue(); i++) {
                 if ((boolean) (getMiscValue() & (1 << i))) {
                     target.handleStatFlatModifier(UnitMods.ResistanceStart + i, UnitModifierFlatType.Total, getAmount(), apply);
                 }
@@ -4586,12 +4553,12 @@ public class AuraEffect {
         var playerTarget = target.toPlayer();
 
         if (playerTarget != null) {
-            for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+            for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
                 if ((boolean) (getMiscValue() & (1 << i))) {
                     if (getAmount() >= 0) {
-                        playerTarget.applyModDamageDonePos(SpellSchools.forValue(i), getAmountAsInt(), apply);
+                        playerTarget.applyModDamageDonePos(SpellSchool.forValue(i), getAmountAsInt(), apply);
                     } else {
-                        playerTarget.applyModDamageDoneNeg(SpellSchools.forValue(i), getAmountAsInt(), apply);
+                        playerTarget.applyModDamageDoneNeg(SpellSchool.forValue(i), getAmountAsInt(), apply);
                     }
                 }
             }
@@ -4620,7 +4587,7 @@ public class AuraEffect {
         var thisPlayer = target.toPlayer();
 
         if (thisPlayer != null) {
-            for (var i = SpellSchools.NORMAL; i.getValue() < SpellSchools.max.getValue(); ++i) {
+            for (var i = SpellSchool.NORMAL; i.getValue() < SpellSchool.max.getValue(); ++i) {
                 if ((boolean) (getMiscValue() & (1 << i.getValue()))) {
                     // only aura type modifying PLAYER_FIELD_MOD_DAMAGE_DONE_PCT
                     var amount = thisPlayer.getTotalAuraMultiplierByMiscMask(AuraType.ModDamagePercentDone, 1 << i.getValue());
@@ -4690,9 +4657,9 @@ public class AuraEffect {
 
         var target = aurApp.getTarget();
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
             if ((boolean) (getMiscValue() & (1 << i))) {
-                target.applyModManaCostModifier(SpellSchools.forValue(i), getAmountAsInt(), apply);
+                target.applyModManaCostModifier(SpellSchool.forValue(i), getAmountAsInt(), apply);
             }
         }
     }
@@ -4759,7 +4726,7 @@ public class AuraEffect {
         var caster = getCaster();
 
         // pet auras
-        if (target.getTypeId() == TypeId.PLAYER && mode.hasFlag(AuraEffectHandleModes.Real)) {
+        if (target.getObjectTypeId() == TypeId.PLAYER && mode.hasFlag(AuraEffectHandleModes.Real)) {
             var petSpell = global.getSpellMgr().getPetAura(getId(), (byte) getEffIndex());
 
             if (petSpell != null) {
@@ -4869,7 +4836,7 @@ public class AuraEffect {
                                         bg.removePlayerFromResurrectQueue(target.getGUID());
                                     }
 
-                                    var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(target.getMap(), target.getZone());
+                                    var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(target.getMap(), target.getZoneId());
 
                                     if (bf != null) {
                                         bf.removePlayerFromResurrectQueue(target.getGUID());
@@ -5944,7 +5911,7 @@ public class AuraEffect {
             damage = unit.spellCriticalHealingBonus(caster, spellInfo, damage, target);
         }
 
-        Log.outDebug(LogFilter.spells, "PeriodicTick: {0} (TypeId: {1}) heal of {2} (TypeId: {3}) for {4} health inflicted by {5}", getCasterGuid().toString(), getCaster().getTypeId(), target.getGUID().toString(), target.getTypeId(), damage, getId());
+        Log.outDebug(LogFilter.spells, "PeriodicTick: {0} (TypeId: {1}) heal of {2} (TypeId: {3}) for {4} health inflicted by {5}", getCasterGuid().toString(), getCaster().getObjectTypeId(), target.getGUID().toString(), target.getObjectTypeId(), damage, getId());
 
         var heal = damage;
 
@@ -6272,7 +6239,7 @@ public class AuraEffect {
         if (apply) {
             target.sendPacket(new WeatherPkt(WeatherState.forValue(getMiscValue()), 1.0f));
         } else {
-            target.getMap().sendZoneWeather(target.getZone(), target);
+            target.getMap().sendZoneWeather(target.getZoneId(), target);
         }
     }
 
@@ -6527,7 +6494,7 @@ public class AuraEffect {
             target.setOverrideZonePvpType(ZonePVPTypeOverride.NONE);
         }
 
-        target.updateHostileAreaState(CliDB.AreaTableStorage.get(target.getZone()));
+        target.updateHostileAreaState(CliDB.AreaTableStorage.get(target.getZoneId()));
         target.updatePvPState();
     }
 

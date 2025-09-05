@@ -18,7 +18,7 @@ class PetSetAction extends ClientPacket {
     public void read() {
         petGUID = this.readPackedGuid();
 
-        index = this.readUInt();
-        action = this.readUInt();
+        index = this.readUInt32();
+        action = this.readUInt32();
     }
 }

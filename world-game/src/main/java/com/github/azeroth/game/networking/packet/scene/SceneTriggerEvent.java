@@ -14,7 +14,7 @@ class SceneTriggerEvent extends ClientPacket {
     @Override
     public void read() {
         var len = this.<Integer>readBit(6);
-        sceneInstanceID = this.readUInt();
+        sceneInstanceID = this.readUInt32();
         _Event = this.readString(len);
     }
 }

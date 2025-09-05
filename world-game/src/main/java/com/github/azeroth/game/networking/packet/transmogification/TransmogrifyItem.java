@@ -10,7 +10,7 @@ final class TransmogrifyItem {
 
     public void read(WorldPacket data) {
         itemModifiedAppearanceID = data.readInt32();
-        slot = data.readUInt();
+        slot = data.readUInt32();
         spellItemEnchantmentID = data.readInt32();
         secondaryItemModifiedAppearanceID = data.readInt32();
     }

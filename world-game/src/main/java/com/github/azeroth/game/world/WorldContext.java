@@ -3,6 +3,7 @@ package com.github.azeroth.game.world;
 import com.github.azeroth.common.Locale;
 import com.github.azeroth.dbc.DbcObjectManager;
 import com.github.azeroth.dbc.GameTableManager;
+import com.github.azeroth.game.battlefield.BattleFieldManager;
 import com.github.azeroth.game.condition.ConditionManager;
 import com.github.azeroth.game.entity.areatrigger.AreaTrigger;
 import com.github.azeroth.game.entity.conversation.Conversation;
@@ -23,6 +24,7 @@ import com.github.azeroth.game.globals.ObjectManager;
 import com.github.azeroth.game.map.InstanceLockManager;
 import com.github.azeroth.game.map.TerrainManager;
 import com.github.azeroth.game.map.collision.VMapManager;
+import com.github.azeroth.game.pvp.OutdoorPvpManager;
 import com.github.azeroth.game.spell.SpellManager;
 import com.github.azeroth.game.world.setting.WorldSetting;
 
@@ -39,20 +41,14 @@ public interface WorldContext {
 
     GameTableManager getGameTableManager();
     DbcObjectManager getDbcObjectManager();
-
     ObjectManager getObjectManager();
-
     ConditionManager getConditionManager();
-
     SpellManager getSpellManager();
-
     TerrainManager getTerrainManager();
-
     VMapManager getVMapManager();
-
-
     InstanceLockManager getInstanceLockManager();
-
+    BattleFieldManager getBattleFieldManager();
+    OutdoorPvpManager getOutdoorPvpManager();
 
     // these functions return objects only if in map of specified object
     WorldObject getWorldObject(ObjectGuid guid);

@@ -1474,7 +1474,7 @@ public class HotfixesDbcObjectManager implements DbcObjectManager {
     }
 
     @Override
-    public boolean isValidSpellFamilyName(SpellFamilyNames family) {
+    public boolean isValidSpellFamilyName(SpellFamilyName family) {
         return false;
     }
 

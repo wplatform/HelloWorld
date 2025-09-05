@@ -12,7 +12,7 @@ class QueryScenarioPOI extends ClientPacket {
 
     @Override
     public void read() {
-        var count = this.readUInt();
+        var count = this.readUInt32();
 
         for (var i = 0; i < count; ++i) {
             missingScenarioPOIs.set(i, this.readInt32());

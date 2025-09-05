@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr1 {
+public enum SpellAttr1 implements EnumFlag.FlagValue {
     DISMISS_PET_FIRST(0x00000001), // TITLE Dismiss Pet First DESCRIPTION Without this attribute, summoning spells will fail if caster already has a pet
     USE_ALL_MANA(0x00000002), // TITLE Use All Mana DESCRIPTION Ignores listed power cost and drains entire pool instead
     IS_CHANNELLED(0x00000004), // TITLE Is Channelled DESCRIPTION Both "channeled" attributes have identical handling in server & client

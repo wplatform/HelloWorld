@@ -1754,7 +1754,7 @@ public class CriteriaHandler {
                 break;
             case PlayerIsInZone: // 41
             {
-                var zoneId = referencePlayer.getArea();
+                var zoneId = referencePlayer.getAreaId();
                 var areaEntry = CliDB.AreaTableStorage.get(zoneId);
 
                 if (areaEntry != null) {
@@ -1775,7 +1775,7 @@ public class CriteriaHandler {
                     return false;
                 }
 
-                var zoneId = refe.getArea();
+                var zoneId = refe.getAreaId();
                 var areaEntry = CliDB.AreaTableStorage.get(zoneId);
 
                 if (areaEntry != null) {
@@ -2327,7 +2327,7 @@ public class CriteriaHandler {
 
                 break;
             case Weather: // 115
-                if (referencePlayer.getMap().getZoneWeather(referencePlayer.getZone()) != WeatherState.forValue(reqValue)) {
+                if (referencePlayer.getMap().getZoneWeather(referencePlayer.getZoneId()) != WeatherState.forValue(reqValue)) {
                     return false;
                 }
 
@@ -4273,7 +4273,7 @@ public class CriteriaHandler {
             case PlayerIsInAreaGroup: // 298
             {
                 var areas = global.getDB2Mgr().GetAreasForGroup(reqValue);
-                var area = CliDB.AreaTableStorage.get(referencePlayer.getArea());
+                var area = CliDB.AreaTableStorage.get(referencePlayer.getAreaId());
 
                 if (area != null) {
                     for (var areaInGroup : areas) {
@@ -4292,7 +4292,7 @@ public class CriteriaHandler {
                 }
 
                 var areas = global.getDB2Mgr().GetAreasForGroup(reqValue);
-                var area = CliDB.AreaTableStorage.get(refe.getArea());
+                var area = CliDB.AreaTableStorage.get(refe.getAreaId());
 
                 if (area != null) {
                     for (var areaInGroup : areas) {

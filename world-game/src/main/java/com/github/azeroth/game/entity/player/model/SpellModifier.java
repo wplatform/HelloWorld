@@ -4,9 +4,10 @@ import com.github.azeroth.game.entity.player.enums.SpellModType;
 import com.github.azeroth.game.spell.Aura;
 import com.github.azeroth.game.spell.enums.SpellModOp;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class SpellModifier {
+public class SpellModifier{
     private SpellModOp op;
     private SpellModType type;
 

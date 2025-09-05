@@ -16,6 +16,6 @@ public class SellItem extends ClientPacket {
     public void read() {
         vendorGUID = this.readPackedGuid();
         itemGUID = this.readPackedGuid();
-        amount = this.readUInt();
+        amount = this.readUInt32();
     }
 }

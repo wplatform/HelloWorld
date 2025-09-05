@@ -16,7 +16,7 @@ class AuctionRemoveItem extends ClientPacket {
     @Override
     public void read() {
         auctioneer = this.readPackedGuid();
-        auctionID = this.readUInt();
+        auctionID = this.readUInt32();
         itemID = this.readInt32();
 
         if (this.readBit()) {

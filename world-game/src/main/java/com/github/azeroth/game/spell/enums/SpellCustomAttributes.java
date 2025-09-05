@@ -1,11 +1,12 @@
 package com.github.azeroth.game.spell.enums;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SpellCustomAttributes {
+public enum SpellCustomAttributes implements EnumFlag.FlagValue {
     ENCHANT_PROC(0x00000001),
     CONE_BACK(0x00000002),
     CONE_LINE(0x00000004),

@@ -14,7 +14,7 @@ public class DestroyItem extends ClientPacket {
 
     @Override
     public void read() {
-        count = this.readUInt();
+        count = this.readUInt32();
         containerId = this.readUInt8();
         slotNum = this.readUInt8();
     }

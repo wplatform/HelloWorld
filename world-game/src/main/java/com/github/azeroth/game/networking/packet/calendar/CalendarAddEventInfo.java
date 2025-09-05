@@ -18,8 +18,8 @@ class CalendarAddEventInfo {
         eventType = data.readUInt8();
         textureID = data.readInt32();
         time = data.readPackedTime();
-        flags = data.readUInt();
-        var InviteCount = data.readUInt();
+        flags = data.readUInt32();
+        var InviteCount = data.readUInt32();
 
         var titleLength = data.<Byte>readBit(8);
         var descriptionLength = data.<SHORT>readBit(11);

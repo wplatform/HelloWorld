@@ -2,6 +2,7 @@ package com.github.azeroth.game.movement;
 
 
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.movement.enums.*;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
 
 public class PointMovementGenerator extends MovementGeneratorMedium<unit> {

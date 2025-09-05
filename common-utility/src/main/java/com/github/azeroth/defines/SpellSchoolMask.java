@@ -1,7 +1,9 @@
 package com.github.azeroth.defines;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum SpellSchoolMask {
     NONE(0x00),

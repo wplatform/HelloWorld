@@ -1,40 +1,38 @@
 package com.github.azeroth.game.entity.player;
 
 
+import com.github.azeroth.game.entity.player.enums.ActionButtonType;
+import com.github.azeroth.game.entity.player.enums.ActionButtonUpdateState;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ActionButton {
-    public ActionButtonUpdateState UState = ActionButtonUpdateState.values()[0];
+    public ActionButtonUpdateState uState;
 
     private long packedData;
 
     public ActionButton() {
-        setPackedData(0);
-        UState = ActionButtonUpdateState.New;
-    }
-
-    public final long getPackedData() {
-        return packedData;
-    }
-
-    public final void setPackedData(long value) {
-        packedData = value;
+        uState = ActionButtonUpdateState.NEW;
     }
 
     public final ActionButtonType getButtonType() {
-        return ActionButtonType.forValue((getPackedData() & 0xFF00000000000000) >>> 56);
+        return ActionButtonType.valueOf(((int) getPackedData() & 0xFF000000) >>> 24);
     }
 
     public final long getAction() {
-        return (getPackedData() & 0x00FFFFFFFFFFFFFF);
+        return (getPackedData() & 0x00FFFFFF);
     }
 
     public final void setActionAndType(long action, ActionButtonType type) {
-        var newData = action | ((long) type.getValue() << 56);
+        var newData = action | ((long) type.value << 56);
 
-        if (newData != getPackedData() || UState == ActionButtonUpdateState.Deleted) {
+        if (newData != getPackedData() || uState == ActionButtonUpdateState.DELETED) {
             setPackedData(newData);
 
-            if (UState != ActionButtonUpdateState.New) {
-                UState = ActionButtonUpdateState.changed;
+            if (uState != ActionButtonUpdateState.NEW) {
+                uState = ActionButtonUpdateState.CHANGED;
             }
         }
     }

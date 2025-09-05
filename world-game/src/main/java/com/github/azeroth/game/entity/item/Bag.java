@@ -242,34 +242,34 @@ public class Bag extends Item {
 
     private void buildValuesUpdateForPlayerWithMask(UpdateData data, UpdateMask requestedObjectMask, UpdateMask requestedItemMask, UpdateMask requestedContainerMask, Player target) {
         var flags = getUpdateFieldFlagsFor(target);
-        UpdateMask valuesMask = new UpdateMask(getTypeId().max.getValue());
+        UpdateMask valuesMask = new UpdateMask(getObjectTypeId().max.getValue());
 
         if (requestedObjectMask.isAnySet()) {
-            valuesMask.set(getTypeId().object.getValue());
+            valuesMask.set(getObjectTypeId().object.getValue());
         }
 
         getItemData().filterDisallowedFieldsMaskForFlag(requestedItemMask, flags);
 
         if (requestedItemMask.isAnySet()) {
-            valuesMask.set(getTypeId().item.getValue());
+            valuesMask.set(getObjectTypeId().item.getValue());
         }
 
         if (requestedContainerMask.isAnySet()) {
-            valuesMask.set(getTypeId().Container.getValue());
+            valuesMask.set(getObjectTypeId().Container.getValue());
         }
 
         WorldPacket buffer = new WorldPacket();
         buffer.writeInt32(valuesMask.getBlock(0));
 
-        if (valuesMask.get(getTypeId().object.getValue())) {
+        if (valuesMask.get(getObjectTypeId().object.getValue())) {
             getObjectData().writeUpdate(buffer, requestedObjectMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().item.getValue())) {
+        if (valuesMask.get(getObjectTypeId().item.getValue())) {
             getItemData().writeUpdate(buffer, requestedItemMask, true, this, target);
         }
 
-        if (valuesMask.get(getTypeId().Container.getValue())) {
+        if (valuesMask.get(getObjectTypeId().Container.getValue())) {
             m_containerData.writeUpdate(buffer, requestedContainerMask, true, this, target);
         }
 

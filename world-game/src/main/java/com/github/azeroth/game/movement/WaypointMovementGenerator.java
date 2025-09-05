@@ -1,9 +1,12 @@
 package com.github.azeroth.game.movement;
 
 
-import com.github.azeroth.game.WaypointPath;
+import com.github.azeroth.game.domain.misc.WaypointPath;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.movement.enums.MovementGeneratorMode;
+import com.github.azeroth.game.movement.enums.MovementGeneratorPriority;
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
 import com.github.azeroth.game.movement.spline.MoveSplineInit;
 
 public class WaypointMovementGenerator extends MovementGeneratorMedium<Creature> {

@@ -2,6 +2,11 @@ package com.github.azeroth.game.spell;
 
 
 import com.github.azeroth.dbc.defines.Difficulty;
+import com.github.azeroth.dbc.domain.SkillLineAbility;
+import com.github.azeroth.defines.Race;
+import com.github.azeroth.defines.SkillType;
+import com.github.azeroth.defines.SpellSchool;
+import com.github.azeroth.defines.SpellSchoolMask;
 import com.github.azeroth.game.battlepet.BattlePetMgr;
 import com.github.azeroth.game.domain.creature.CreatureTemplate;
 import com.github.azeroth.game.entity.player.Player;
@@ -9,6 +14,8 @@ import com.github.azeroth.game.extendability.*;
 import com.github.azeroth.game.movement.MotionMaster;
 import com.github.azeroth.game.scripting.interfaces.ispellmanager.ISpellManagerSpellFix;
 import com.github.azeroth.game.scripting.interfaces.ispellmanager.ISpellManagerSpellLateFix;
+import com.github.azeroth.game.spell.auras.enums.AuraType;
+import com.github.azeroth.game.spell.enums.SpellGroup;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,7 +48,7 @@ public final class SpellManager {
     private final MultiMap<Integer, SPELLAREA> spellAreaForQuestEndMap = new MultiMap<Integer, SPELLAREA>();
     private final MultiMap<Integer, SPELLAREA> spellAreaForAuraMap = new MultiMap<Integer, SPELLAREA>();
     private final MultiMap<Integer, SPELLAREA> spellAreaForAreaMap = new MultiMap<Integer, SPELLAREA>();
-    private final MultiMap<Integer, SkillLineAbilityRecord> skillLineAbilityMap = new MultiMap<Integer, SkillLineAbilityRecord>();
+    private final MultiMap<Integer, SkillLineAbility> skillLineAbilityMap = new MultiMap<Integer, SkillLineAbility>();
     private final HashMap<Integer, MultiMap<Integer, Integer>> petLevelupSpellMap = new HashMap<Integer, MultiMap<Integer, Integer>>();
     private final HashMap<Integer, PetDefaultSpellsEntry> petDefaultSpellsEntries = new HashMap<Integer, PetDefaultSpellsEntry>(); // only spells not listed in related mPetLevelupSpellMap entry
     private final HashMap<Integer, HashMap<Difficulty, spellInfo>> spellInfoMap = new HashMap<Integer, HashMap<Difficulty, spellInfo>>();
@@ -575,7 +582,7 @@ public final class SpellManager {
         }
     }
 
-    public ArrayList<SkillLineAbilityRecord> getSkillLineAbilityMapBounds(int spell_id) {
+    public ArrayList<SkillLineAbility> getSkillLineAbilityMapBounds(int spell_id) {
         return skillLineAbilityMap.get(spell_id);
     }
 
@@ -812,24 +819,19 @@ public final class SpellManager {
         var skillBounds = getSkillLineAbilityMapBounds(spellId);
 
         if (skillBounds != null) {
-            for (var skill : skillBounds) {
-                if (skill.skillLine == (int) skillId.getValue()) {
-                    return true;
-                }
-            }
+            return skillBounds.stream().allMatch(skill -> skill.getSkillLine() == skillId.ordinal());
         }
 
         return false;
     }
 
-    public SpellSchools getFirstSchoolInMask(SpellSchoolMask mask) {
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
-            if ((boolean) (mask.getValue() & (1 << i))) {
-                return SpellSchools.forValue(i);
+    public SpellSchool getFirstSchoolInMask(SpellSchoolMask mask) {
+        for (SpellSchool value : SpellSchool.values()) {
+            if ((mask.value & (1 << value.ordinal())) != 0) {
+                return value;
             }
         }
-
-        return SpellSchools.NORMAL;
+        return SpellSchool.NORMAL;
     }
 
     public int getModelForTotem(int spellId, Race race) {

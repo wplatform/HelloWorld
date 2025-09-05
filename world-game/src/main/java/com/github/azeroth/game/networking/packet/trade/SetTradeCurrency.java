@@ -13,7 +13,7 @@ public class SetTradeCurrency extends ClientPacket {
 
     @Override
     public void read() {
-        type = this.readUInt();
-        quantity = this.readUInt();
+        type = this.readUInt32();
+        quantity = this.readUInt32();
     }
 }

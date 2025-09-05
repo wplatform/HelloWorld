@@ -1,8 +1,8 @@
 package com.github.azeroth.game.scripting;
 
 
-import com.github.azeroth.game.WaypointNode;
-import com.github.azeroth.game.WaypointPath;
+import com.github.azeroth.game.domain.misc.WaypointNode;
+import com.github.azeroth.game.domain.misc.WaypointPath;
 import com.github.azeroth.game.ai.UnitAI;
 import com.github.azeroth.game.chat.Channel;
 import com.github.azeroth.game.entity.areatrigger.AreaTrigger;

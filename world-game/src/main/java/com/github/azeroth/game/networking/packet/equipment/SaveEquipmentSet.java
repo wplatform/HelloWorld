@@ -17,8 +17,8 @@ public class SaveEquipmentSet extends ClientPacket {
     public void read() {
         set.setType(EquipmentSetInfo.EquipmentSetType.forValue(this.readInt32()));
         set.setGuid(this.readUInt64());
-        set.setId(this.readUInt());
-        set.setIgnoreMask(this.readUInt());
+        set.setId(this.readUInt32());
+        set.setIgnoreMask(this.readUInt32());
 
         for (byte i = 0; i < EquipmentSlot.End; ++i) {
             set.getPieces()[i] = this.readPackedGuid();

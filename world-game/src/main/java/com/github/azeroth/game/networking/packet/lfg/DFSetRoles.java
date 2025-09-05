@@ -14,7 +14,7 @@ class DFSetRoles extends ClientPacket {
 
     @Override
     public void read() {
-        rolesDesired = LfgRoles.forValue(this.readUInt());
+        rolesDesired = LfgRoles.forValue(this.readUInt32());
         partyIndex = this.readUInt8();
     }
 }

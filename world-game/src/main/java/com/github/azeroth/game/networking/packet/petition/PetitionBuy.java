@@ -18,7 +18,7 @@ public class PetitionBuy extends ClientPacket {
         var titleLen = this.<Integer>readBit(7);
 
         unit = this.readPackedGuid();
-        unused910 = this.readUInt();
+        unused910 = this.readUInt32();
         title = this.readString(titleLen);
     }
 }

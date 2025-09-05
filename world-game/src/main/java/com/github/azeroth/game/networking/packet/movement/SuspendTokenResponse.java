@@ -12,6 +12,6 @@ class SuspendTokenResponse extends ClientPacket {
 
     @Override
     public void read() {
-        sequenceIndex = this.readUInt();
+        sequenceIndex = this.readUInt32();
     }
 }

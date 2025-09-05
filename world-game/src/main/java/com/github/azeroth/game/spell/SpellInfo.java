@@ -1,14 +1,15 @@
 package com.github.azeroth.game.spell;
 
 
+import com.github.azeroth.common.EnumFlag;
+import com.github.azeroth.common.Flag128;
 import com.github.azeroth.common.LocalizedString;
 import com.github.azeroth.dbc.defines.Difficulty;
-import com.github.azeroth.dbc.domain.SpellCastTime;
-import com.github.azeroth.dbc.domain.SpellDuration;
-import com.github.azeroth.dbc.domain.SpellRange;
+import com.github.azeroth.dbc.domain.*;
 import com.github.azeroth.defines.*;
 import com.github.azeroth.game.entity.item.Item;
 import com.github.azeroth.game.entity.item.ItemEnchantmentManager;
+import com.github.azeroth.game.entity.item.enums.ItemClass;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.player.model.SpellModifier;
@@ -17,23 +18,28 @@ import com.github.azeroth.game.entity.player.model.SpellPctModifierByLabel;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.spell.auras.enums.AuraType;
 import com.github.azeroth.game.spell.enums.*;
-import game.ConditionManager;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+
+@Getter
+@Setter
 public class SpellInfo {
-    private final ArrayList<SpellProcsPerMinuteModRecord> procPpmMods = new ArrayList<>();
+
+    private final ArrayList<SpellProcsPerMinuteMod> procPpmMods = new ArrayList<>();
     private final ArrayList<SpellEffectInfo> effects = new ArrayList<>();
-    private final ArrayList<SpellXSpellVisualRecord> visuals = new ArrayList<>();
-    private final Difficulty difficulty = Difficulty.DIFFICULTY_NONE;
-    public SpellPowerRecord[] powerCosts = new SpellPowerRecord[SpellConst.MaxPowersPerSpell];
-    public int[] totem = new int[SpellConst.MAX_SPELL_TOTEMS];
-    public int[] totemCategory = new int[SpellConst.MAX_SPELL_TOTEMS];
-    public int[] reagent = new int[SpellConst.MaxReagents];
-    public int[] reagentCount = new int[SpellConst.MaxReagents];
-    public ArrayList<SpellreagentsCurrencyRecord> reagentsCurrency = new ArrayList<>();
+    private final ArrayList<SpellXSpellVisual> visuals = new ArrayList<>();
+    private final Difficulty difficulty = Difficulty.NONE;
+    public SpellPower[] powerCosts = new SpellPower[SpellDefine.MaxPowersPerSpell];
+    public int[] totem = new int[SpellDefine.MAX_SPELL_TOTEMS];
+    public int[] totemCategory = new int[SpellDefine.MAX_SPELL_TOTEMS];
+    public int[] reagent = new int[SpellDefine.MaxReagents];
+    public int[] reagentCount = new int[SpellDefine.MaxReagents];
+    public ArrayList<SpellReagentsCurrency> reagentsCurrency = new ArrayList<>();
     public int chargeCategoryId;
     public ArrayList<Integer> labels = new ArrayList<>();
     // SpellScalingEntry
@@ -46,22 +52,22 @@ public class SpellInfo {
     private int categoryId;
     private DispelType dispel;
     private Mechanics mechanic;
-    private SpellAttr0 attributes;
-    private SpellAttr1 attributesEx;
-    private SpellAttr2 attributesEx2;
-    private SpellAttr3 attributesEx3;
-    private SpellAttr4 attributesEx4;
-    private SpellAttr5 attributesEx5;
-    private SpellAttr6 attributesEx6;
-    private SpellAttr7 attributesEx7;
-    private SpellAttr8 attributesEx8;
-    private SpellAttr9 attributesEx9;
-    private SpellAttr10 attributesEx10;
-    private SpellAttr11 attributesEx11;
-    private SpellAttr12 attributesEx12;
-    private SpellAttr13 attributesEx13;
-    private SpellAttr14 attributesEx14;
-    private SpellCustomAttributes attributesCu;
+    private EnumFlag<SpellAttr0> attributes;
+    private EnumFlag<SpellAttr1> attributesEx;
+    private EnumFlag<SpellAttr2> attributesEx2;
+    private EnumFlag<SpellAttr3> attributesEx3;
+    private EnumFlag<SpellAttr4> attributesEx4;
+    private EnumFlag<SpellAttr5> attributesEx5;
+    private EnumFlag<SpellAttr6> attributesEx6;
+    private EnumFlag<SpellAttr7> attributesEx7;
+    private EnumFlag<SpellAttr8> attributesEx8;
+    private EnumFlag<SpellAttr9> attributesEx9;
+    private EnumFlag<SpellAttr10> attributesEx10;
+    private EnumFlag<SpellAttr11> attributesEx11;
+    private EnumFlag<SpellAttr12> attributesEx12;
+    private EnumFlag<SpellAttr13> attributesEx13;
+    private EnumFlag<SpellAttr14> attributesEx14;
+    private EnumFlag<SpellCustomAttributes> attributesCu;
     private HashSet<Integer> negativeEffects;
 
     private long stances;
@@ -126,7 +132,7 @@ public class SpellInfo {
     private float launchDelay;
 
     private int stackAmount;
-    private ItemClass equippedItemClass = itemClass.NONE;
+    private ItemClass equippedItemClass;
     private int equippedItemSubClassMask;
     private int equippedItemInventoryTypeMask;
 
@@ -144,18 +150,16 @@ public class SpellInfo {
     private int maxTargetLevel;
 
     private int maxAffectedTargets;
-    private spellFamilyNames spellFamilyName = SpellFamilyNames.NONE;
-    private FlagArray128 spellFamilyFlags;
-    private SpelldmgClass dmgClass = SpellDmgClass.NONE;
-    private SpellpreventionType preventionType = SpellPreventionType.NONE;
+    private SpellFamilyName spellFamilyName;
+    private Flag128 spellFamilyFlags;
+    private SpellDmgClass dmgClass;
+    private SpellPreventionType preventionType;
     private int requiredAreasId;
-    private SpellSchoolMask schoolMask = SpellSchoolMask.NONE;
+    private SpellSchoolMask schoolMask;
 
-    private HashMap<Byte, SpellEmpowerStageRecord> empowerStages = new HashMap<Byte, SpellEmpowerStageRecord>();
+    private HashMap<Byte, SpellEmpowerStage> empowerStages = new HashMap<>();
     private SpellCastTargetFlag explicitTargetMask = SpellCastTargetFlag.NONE;
-    private SpellChainNode chainEntry;
-
-    public spellInfo(SpellNameRecord spellName, Difficulty difficulty, SpellInfoLoadHelper data) {
+    private SpellInfo(SpellName spellName, Difficulty difficulty, SpellInfoLoadHelper data) {
         setId(spellName.id);
         setDifficulty(difficulty);
 
@@ -276,7 +280,7 @@ public class SpellInfo {
         var classOptions = data.classOptions;
 
         if (classOptions != null) {
-            setSpellFamilyName(SpellFamilyNames.forValue(classOptions.SpellClassSet));
+            setSpellFamilyName(SpellFamilyName.forValue(classOptions.SpellClassSet));
             setSpellFamilyFlags(classOptions.spellClassMask);
         }
 
@@ -491,131 +495,131 @@ public class SpellInfo {
         mechanic = value;
     }
 
-    public final SpellAttr0 getAttributes() {
+    public final EnumFlag<SpellAttr0> getAttributes() {
         return attributes;
     }
 
-    public final void setAttributes(SpellAttr0 value) {
+    public final void setAttributes(EnumFlag<SpellAttr0> value) {
         attributes = value;
     }
 
-    public final SpellAttr1 getAttributesEx() {
+    public final EnumFlag<SpellAttr1> getAttributesEx() {
         return attributesEx;
     }
 
-    public final void setAttributesEx(SpellAttr1 value) {
+    public final void setAttributesEx(EnumFlag<SpellAttr1> value) {
         attributesEx = value;
     }
 
-    public final SpellAttr2 getAttributesEx2() {
+    public final EnumFlag<SpellAttr2> getAttributesEx2() {
         return attributesEx2;
     }
 
-    public final void setAttributesEx2(SpellAttr2 value) {
+    public final void setAttributesEx2(EnumFlag<SpellAttr2> value) {
         attributesEx2 = value;
     }
 
-    public final SpellAttr3 getAttributesEx3() {
+    public final EnumFlag<SpellAttr3> getAttributesEx3() {
         return attributesEx3;
     }
 
-    public final void setAttributesEx3(SpellAttr3 value) {
+    public final void setAttributesEx3(EnumFlag<SpellAttr3> value) {
         attributesEx3 = value;
     }
 
-    public final SpellAttr4 getAttributesEx4() {
+    public final EnumFlag<SpellAttr4> getAttributesEx4() {
         return attributesEx4;
     }
 
-    public final void setAttributesEx4(SpellAttr4 value) {
+    public final void setAttributesEx4(EnumFlag<SpellAttr4> value) {
         attributesEx4 = value;
     }
 
-    public final SpellAttr5 getAttributesEx5() {
+    public final EnumFlag<SpellAttr5> getAttributesEx5() {
         return attributesEx5;
     }
 
-    public final void setAttributesEx5(SpellAttr5 value) {
+    public final void setAttributesEx5(EnumFlag<SpellAttr5> value) {
         attributesEx5 = value;
     }
 
-    public final SpellAttr6 getAttributesEx6() {
+    public final EnumFlag<SpellAttr6> getAttributesEx6() {
         return attributesEx6;
     }
 
-    public final void setAttributesEx6(SpellAttr6 value) {
+    public final void setAttributesEx6(EnumFlag<SpellAttr6> value) {
         attributesEx6 = value;
     }
 
-    public final SpellAttr7 getAttributesEx7() {
+    public final EnumFlag<SpellAttr7> getAttributesEx7() {
         return attributesEx7;
     }
 
-    public final void setAttributesEx7(SpellAttr7 value) {
+    public final void setAttributesEx7(EnumFlag<SpellAttr7> value) {
         attributesEx7 = value;
     }
 
-    public final SpellAttr8 getAttributesEx8() {
+    public final EnumFlag<SpellAttr8> getAttributesEx8() {
         return attributesEx8;
     }
 
-    public final void setAttributesEx8(SpellAttr8 value) {
+    public final void setAttributesEx8(EnumFlag<SpellAttr8> value) {
         attributesEx8 = value;
     }
 
-    public final SpellAttr9 getAttributesEx9() {
+    public final EnumFlag<SpellAttr9> getAttributesEx9() {
         return attributesEx9;
     }
 
-    public final void setAttributesEx9(SpellAttr9 value) {
+    public final void setAttributesEx9(EnumFlag<SpellAttr9> value) {
         attributesEx9 = value;
     }
 
-    public final SpellAttr10 getAttributesEx10() {
+    public final EnumFlag<SpellAttr10> getAttributesEx10() {
         return attributesEx10;
     }
 
-    public final void setAttributesEx10(SpellAttr10 value) {
+    public final void setAttributesEx10(EnumFlag<SpellAttr10> value) {
         attributesEx10 = value;
     }
 
-    public final SpellAttr11 getAttributesEx11() {
+    public final EnumFlag<SpellAttr11> getAttributesEx11() {
         return attributesEx11;
     }
 
-    public final void setAttributesEx11(SpellAttr11 value) {
+    public final void setAttributesEx11(EnumFlag<SpellAttr11> value) {
         attributesEx11 = value;
     }
 
-    public final SpellAttr12 getAttributesEx12() {
+    public final EnumFlag<SpellAttr12> getAttributesEx12() {
         return attributesEx12;
     }
 
-    public final void setAttributesEx12(SpellAttr12 value) {
+    public final void setAttributesEx12(EnumFlag<SpellAttr12> value) {
         attributesEx12 = value;
     }
 
-    public final SpellAttr13 getAttributesEx13() {
+    public final EnumFlag<SpellAttr13> getAttributesEx13() {
         return attributesEx13;
     }
 
-    public final void setAttributesEx13(SpellAttr13 value) {
+    public final void setAttributesEx13(EnumFlag<SpellAttr13> value) {
         attributesEx13 = value;
     }
 
-    public final SpellAttr14 getAttributesEx14() {
+    public final EnumFlag<SpellAttr14> getAttributesEx14() {
         return attributesEx14;
     }
 
-    public final void setAttributesEx14(SpellAttr14 value) {
+    public final void setAttributesEx14(EnumFlag<SpellAttr14> value) {
         attributesEx14 = value;
     }
 
-    public final SpellCustomAttributes getAttributesCu() {
+    public final EnumFlag<SpellCustomAttributes> getAttributesCu() {
         return attributesCu;
     }
 
-    public final void setAttributesCu(SpellCustomAttributes value) {
+    public final void setAttributesCu(EnumFlag<SpellCustomAttributes> value) {
         attributesCu = value;
     }
 
@@ -963,163 +967,10 @@ public class SpellInfo {
         spellLevel = value;
     }
 
-    public final SpellDurationRecord getDurationEntry() {
+    public final SpellDuration getDurationEntry() {
         return durationEntry;
     }
 
-    public final void setDurationEntry(SpellDurationRecord value) {
-        durationEntry = value;
-    }
-
-    public final SpellRangeRecord getRangeEntry() {
-        return rangeEntry;
-    }
-
-    public final void setRangeEntry(SpellRangeRecord value) {
-        rangeEntry = value;
-    }
-
-    public final float getSpeed() {
-        return speed;
-    }
-
-    public final void setSpeed(float value) {
-        speed = value;
-    }
-
-    public final float getLaunchDelay() {
-        return launchDelay;
-    }
-
-    public final void setLaunchDelay(float value) {
-        launchDelay = value;
-    }
-
-
-    public final int getStackAmount() {
-        return stackAmount;
-    }
-
-
-    public final void setStackAmount(int value) {
-        stackAmount = value;
-    }
-
-    public final ItemClass getEquippedItemClass() {
-        return equippedItemClass;
-    }
-
-    public final void setEquippedItemClass(ItemClass value) {
-        equippedItemClass = value;
-    }
-
-    public final int getEquippedItemSubClassMask() {
-        return equippedItemSubClassMask;
-    }
-
-    public final void setEquippedItemSubClassMask(int value) {
-        equippedItemSubClassMask = value;
-    }
-
-    public final int getEquippedItemInventoryTypeMask() {
-        return equippedItemInventoryTypeMask;
-    }
-
-    public final void setEquippedItemInventoryTypeMask(int value) {
-        equippedItemInventoryTypeMask = value;
-    }
-
-
-    public final int getIconFileDataId() {
-        return iconFileDataId;
-    }
-
-
-    public final void setIconFileDataId(int value) {
-        iconFileDataId = value;
-    }
-
-
-    public final int getActiveIconFileDataId() {
-        return activeIconFileDataId;
-    }
-
-
-    public final void setActiveIconFileDataId(int value) {
-        activeIconFileDataId = value;
-    }
-
-
-    public final int getContentTuningId() {
-        return contentTuningId;
-    }
-
-
-    public final void setContentTuningId(int value) {
-        contentTuningId = value;
-    }
-
-
-    public final int getShowFutureSpellPlayerConditionId() {
-        return showFutureSpellPlayerConditionId;
-    }
-
-
-    public final void setShowFutureSpellPlayerConditionId(int value) {
-        showFutureSpellPlayerConditionId = value;
-    }
-
-    public final LocalizedString getSpellName() {
-        return spellName;
-    }
-
-    public final void setSpellName(LocalizedString value) {
-        spellName = value;
-    }
-
-    public final float getConeAngle() {
-        return coneAngle;
-    }
-
-    public final void setConeAngle(float value) {
-        coneAngle = value;
-    }
-
-    public final float getWidth() {
-        return width;
-    }
-
-    public final void setWidth(float value) {
-        width = value;
-    }
-
-
-    public final int getMaxTargetLevel() {
-        return maxTargetLevel;
-    }
-
-
-    public final void setMaxTargetLevel(int value) {
-        maxTargetLevel = value;
-    }
-
-
-    public final int getMaxAffectedTargets() {
-        return maxAffectedTargets;
-    }
-
-
-    public final void setMaxAffectedTargets(int value) {
-        maxAffectedTargets = value;
-    }
-
-    public final SpellFamilyNames getSpellFamilyName() {
-        return spellFamilyName;
-    }
-
-    public final void setSpellFamilyName(SpellFamilyNames value) {
-        spellFamilyName = value;
-    }
 
     public final FlagArray128 getSpellFamilyFlags() {
         return spellFamilyFlags;
@@ -1239,8 +1090,12 @@ public class SpellInfo {
         return getSpeed() > 0.0f || getLaunchDelay() > 0.0f;
     }
 
-    private boolean isAffectedBySpellMods() {
-        return !hasAttribute(SpellAttr3.IgnoreCasterModifiers);
+    public final boolean isFinishingMove() {
+        return attributesEx.hasAnyFlag(SpellAttr1.FINISHING_MOVE_DAMAGE, SpellAttr1.FINISHING_MOVE_DURATION);
+    }
+
+    public boolean isAffectedBySpellMods() {
+        return !hasAttribute(SpellAttr3.IGNORE_CASTER_MODIFIERS);
     }
 
     public final boolean getHasAreaAuraEffect() {
@@ -1420,7 +1275,7 @@ public class SpellInfo {
     }
 
     public final boolean isRangedWeaponSpell() {
-        return (getSpellFamilyName() == SpellFamilyNames.Hunter && !getSpellFamilyFlags().get(1).hasFlag(0x10000000)) || (boolean) (getEquippedItemSubClassMask() & ItemSubClassWeapon.MaskRanged.getValue()) || getAttributes().hasFlag(SpellAttr0.UsesRangedSlot);
+        return (getSpellFamilyName() == SpellFamilyName.Hunter && !getSpellFamilyFlags().get(1).hasFlag(0x10000000)) || (boolean) (getEquippedItemSubClassMask() & ItemSubClassWeapon.MaskRanged.getValue()) || getAttributes().hasFlag(SpellAttr0.UsesRangedSlot);
     }
 
     public final DiminishingGroup getDiminishingReturnsGroupForSpell() {
@@ -1621,7 +1476,7 @@ public class SpellInfo {
         return false;
     }
 
-    public final boolean isAffected(SpellFamilyNames familyName, FlagArray128 familyFlags) {
+    public final boolean isAffected(SpellFamilyName familyName, FlagArray128 familyFlags) {
         if (familyName == 0) {
             return true;
         }
@@ -2324,7 +2179,7 @@ public class SpellInfo {
 
     public final boolean checkTargetCreatureType(Unit target) {
         // Curse of Doom & Exorcism: not find another way to fix spell target check :/
-        if (getSpellFamilyName() == SpellFamilyNames.Warlock && getCategory() == 1179) {
+        if (getSpellFamilyName() == SpellFamilyName.Warlock && getCategory() == 1179) {
             // not allow cast at player
             if (target.isTypeId(TypeId.PLAYER)) {
                 return false;
@@ -2427,12 +2282,12 @@ public class SpellInfo {
         }
 
         // Swiftmend state on regrowth, rejuvenation, Wild Growth
-        if (getSpellFamilyName() == SpellFamilyNames.Druid && (getSpellFamilyFlags().get(0).hasFlag(0x50) || getSpellFamilyFlags().get(1).hasFlag(0x4000000))) {
+        if (getSpellFamilyName() == SpellFamilyName.Druid && (getSpellFamilyFlags().get(0).hasFlag(0x50) || getSpellFamilyFlags().get(1).hasFlag(0x4000000))) {
             auraState = AuraStateType.DruidPeriodicHeal;
         }
 
         // Deadly poison aura state
-        if (getSpellFamilyName() == SpellFamilyNames.Rogue && getSpellFamilyFlags().get(0).hasFlag(0x10000)) {
+        if (getSpellFamilyName() == SpellFamilyName.Rogue && getSpellFamilyFlags().get(0).hasFlag(0x10000)) {
             auraState = AuraStateType.RoguePoisoned;
         }
 
@@ -3968,59 +3823,59 @@ public class SpellInfo {
     }
 
     public boolean hasAttribute(SpellAttr0 attribute) {
-        return ((attributes & attribute.value) != 0);
+        return attributes.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr1 attribute) {
-        return (attributesEx & attribute.value) != 0;
+        return attributesEx.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr2 attribute) {
-        return (attributesEx2 & attribute.value) != 0;
+        return attributesEx2.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr3 attribute) {
-        return (attributesEx3 & attribute.value) != 0;
+        return attributesEx3.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr4 attribute) {
-        return (attributesEx4 & attribute.value) != 0;
+        return attributesEx4.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr5 attribute) {
-        return (attributesEx5 & attribute.value) != 0;
+        return attributesEx5.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr6 attribute) {
-        return (attributesEx6 & attribute.value) != 0;
+        return attributesEx6.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr7 attribute) {
-        return (attributesEx7 & attribute.value) != 0;
+        return attributesEx7.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr8 attribute) {
-        return (attributesEx8 & attribute.value) != 0;
+        return attributesEx8.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr9 attribute) {
-        return (attributesEx9 & attribute.value) != 0;
+        return attributesEx9.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr10 attribute) {
-        return (attributesEx10 & attribute.value) != 0;
+        return attributesEx10.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr11 attribute) {
-        return (attributesEx11 & attribute.value) != 0;
+        return attributesEx11.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr12 attribute) {
-        return (attributesEx12 & attribute.value) != 0;
+        return attributesEx12.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellAttr13 attribute) {
-        return (attributesEx13 & attribute.value) != 0;
+        return attributesEx13.hasFlag(attribute);
     }
 
     public boolean hasAttribute(SpellCustomAttributes customAttribute) {

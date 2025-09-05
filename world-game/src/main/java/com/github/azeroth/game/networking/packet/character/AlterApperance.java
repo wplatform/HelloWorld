@@ -16,14 +16,14 @@ public class AlterApperance extends ClientPacket {
 
     @Override
     public void read() {
-        var customizationCount = this.readUInt();
+        var customizationCount = this.readUInt32();
         newSex = this.readUInt8();
         customizedRace = this.readInt32();
 
         for (var i = 0; i < customizationCount; ++i) {
             ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
-            tempVar.chrCustomizationOptionID = this.readUInt();
-            tempVar.chrCustomizationChoiceID = this.readUInt();
+            tempVar.chrCustomizationOptionID = this.readUInt32();
+            tempVar.chrCustomizationChoiceID = this.readUInt32();
             customizations.set(i, tempVar);
         }
 

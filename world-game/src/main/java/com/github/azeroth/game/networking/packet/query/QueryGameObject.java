@@ -13,7 +13,7 @@ public class QueryGameObject extends ClientPacket {
 
     @Override
     public void read() {
-        gameObjectID = this.readUInt();
+        gameObjectID = this.readUInt32();
         guid = this.readPackedGuid();
     }
 }

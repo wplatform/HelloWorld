@@ -4,7 +4,6 @@ package com.github.azeroth.game.chat;
 import com.github.azeroth.game.WorldSafeLocsEntry;
 import com.github.azeroth.game.entity.gobject.transport;
 import com.github.azeroth.game.entity.unit.Unit;
-import com.github.azeroth.game.map.AllCreaturesOfEntryInRange;
 import com.github.azeroth.game.map.CreatureSearcher;
 import com.github.azeroth.game.map.grid.Cell;
 import com.github.azeroth.game.networking.packet.CastFailed;
@@ -736,7 +735,7 @@ class DebugCommands {
             if (bg) {
                 nearestLoc = bg.getClosestGraveYard(player);
             } else {
-                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZone());
+                var bf = global.getBattleFieldMgr().getBattlefieldToZoneId(player.getMap(), player.getZoneId());
 
                 if (bf != null) {
                     nearestLoc = bf.getClosestGraveYard(player);
@@ -1070,19 +1069,19 @@ class DebugCommands {
             var mods = mgr.singleSchoolModifiers;
             handler.sendSysMessage(" - Single-school threat modifiers:");
 
-            handler.sendSysMessage(String.format(" |-- Physical: {0:0.##}", mods[SpellSchools.NORMAL.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Physical: {0:0.##}", mods[SpellSchool.NORMAL.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Holy    : {0:0.##}", mods[SpellSchools.Holy.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Holy    : {0:0.##}", mods[SpellSchool.Holy.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Fire    : {0:0.##}", mods[SpellSchools.Fire.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Fire    : {0:0.##}", mods[SpellSchool.Fire.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Nature  : {0:0.##}", mods[SpellSchools.Nature.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Nature  : {0:0.##}", mods[SpellSchool.Nature.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Frost   : {0:0.##}", mods[SpellSchools.Frost.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Frost   : {0:0.##}", mods[SpellSchool.Frost.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Shadow  : {0:0.##}", mods[SpellSchools.Shadow.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Shadow  : {0:0.##}", mods[SpellSchool.Shadow.getValue()] * 100.0f));
 
-            handler.sendSysMessage(String.format(" |-- Arcane  : {0:0.##}", mods[SpellSchools.Arcane.getValue()] * 100.0f));
+            handler.sendSysMessage(String.format(" |-- Arcane  : {0:0.##}", mods[SpellSchool.Arcane.getValue()] * 100.0f));
         }
 
         {

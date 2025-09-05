@@ -28,7 +28,15 @@ public enum Power {
     FURY(17),
     PAIN(18),
     ESSENCE(19),
-    MAX_POWERS(20),
+    RUNE_BLOOD(20), // TITLE Blood Runes
+    RUNE_FROST(21), // TITLE Frost Runes
+    RUNE_UNHOLY(22), // TITLE Unholy Runes
+    ALTERNATE_QUEST(23), // TITLE Alternate (Quest)
+    ALTERNATE_ENCOUNTER(24), // TITLE Alternate (Encounter)
+    ALTERNATE_MOUNT(25), // TITLE Alternate (Mount)
+    BALANCE(26), // TITLE Balance
+    HAPPINESS(27), // TITLE Happiness
+    MAX_POWERS(28),
     POWER_ALL(127);
 
     public final int index;

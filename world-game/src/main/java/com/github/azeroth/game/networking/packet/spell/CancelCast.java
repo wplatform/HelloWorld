@@ -14,6 +14,6 @@ public class CancelCast extends ClientPacket {
     @Override
     public void read() {
         castID = this.readPackedGuid();
-        spellID = this.readUInt();
+        spellID = this.readUInt32();
     }
 }

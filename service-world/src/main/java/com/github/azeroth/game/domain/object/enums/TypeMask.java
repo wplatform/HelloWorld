@@ -19,7 +19,8 @@ public enum TypeMask implements EnumFlag.FlagValue {
     AREA_TRIGGER(0x0100),
     SCENE_OBJECT(0x0200),
     CONVERSATION(0x0400),
-    SEER(PLAYER.value | UNIT.value | DYNAMIC_OBJECT.value);
+    SEER(PLAYER.value | UNIT.value | DYNAMIC_OBJECT.value),
+    WORLD_OBJECT(UNIT.value | GAME_OBJECT.value | DYNAMIC_OBJECT.value | CORPSE.value | AREA_TRIGGER.value | SCENE_OBJECT.value | CONVERSATION.value);
 
     public final int value;
 

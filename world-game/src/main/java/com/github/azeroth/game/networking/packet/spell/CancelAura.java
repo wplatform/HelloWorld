@@ -13,7 +13,7 @@ class CancelAura extends ClientPacket {
 
     @Override
     public void read() {
-        spellID = this.readUInt();
+        spellID = this.readUInt32();
         casterGUID = this.readPackedGuid();
     }
 }

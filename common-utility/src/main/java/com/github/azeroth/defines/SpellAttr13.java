@@ -1,11 +1,14 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SpellAttr13 {
+public enum SpellAttr13 implements EnumFlag.FlagValue {
     ALLOW_CLASS_ABILITY_PROCS(0x00000001), // TITLE Allow Class Ability Procs
     UNK1(0x00000002), // TITLE Unknown attribute 0@Attr13
     PASSIVE_IS_UPGRADE(0x00000004), // TITLE Is Upgrade DESCRIPTION Displays "Upgrade" in spell tooltip instead of "Passive"

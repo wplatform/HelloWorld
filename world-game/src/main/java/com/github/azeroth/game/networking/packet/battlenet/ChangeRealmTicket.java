@@ -13,7 +13,7 @@ class ChangeRealmTicket extends ClientPacket {
 
     @Override
     public void read() {
-        token = this.readUInt();
+        token = this.readUInt32();
 
         for (var i = 0; i < secret.GetLimit(); ++i) {
             secret.set(i, this.readUInt8());

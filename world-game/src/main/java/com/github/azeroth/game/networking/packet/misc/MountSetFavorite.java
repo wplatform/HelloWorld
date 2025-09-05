@@ -13,7 +13,7 @@ class MountSetFavorite extends ClientPacket {
 
     @Override
     public void read() {
-        mountSpellID = this.readUInt();
+        mountSpellID = this.readUInt32();
         isFavorite = this.readBit();
     }
 }

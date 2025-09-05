@@ -16,7 +16,7 @@ class BlackMarketBidOnItem extends ClientPacket {
     @Override
     public void read() {
         guid = this.readPackedGuid();
-        marketID = this.readUInt();
+        marketID = this.readUInt32();
         bidAmount = this.readUInt64();
         item.read(this);
     }

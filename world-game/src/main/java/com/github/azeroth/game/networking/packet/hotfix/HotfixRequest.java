@@ -17,10 +17,10 @@ class HotfixRequest extends ClientPacket {
 
     @Override
     public void read() {
-        clientBuild = this.readUInt();
-        dataBuild = this.readUInt();
+        clientBuild = this.readUInt32();
+        dataBuild = this.readUInt32();
 
-        var hotfixCount = this.readUInt();
+        var hotfixCount = this.readUInt32();
 
         for (var i = 0; i < hotfixCount; ++i) {
             hotfixes.add(this.readInt32());

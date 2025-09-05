@@ -18,7 +18,7 @@ class AuctionSellCommodity extends ClientPacket {
     public void read() {
         auctioneer = this.readPackedGuid();
         unitPrice = this.readUInt64();
-        runTime = this.readUInt();
+        runTime = this.readUInt32();
 
         if (this.readBit()) {
             taintedBy = new AddOnInfo();

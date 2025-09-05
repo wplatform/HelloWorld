@@ -2,21 +2,21 @@ package com.github.azeroth.game.spell;
 
 
 import com.github.azeroth.common.Flag128;
+import com.github.azeroth.common.YieldResult;
 import com.github.azeroth.dbc.defines.ExpectedStatType;
 import com.github.azeroth.dbc.defines.SpellEffectAttributes;
 import com.github.azeroth.dbc.domain.SpellEffect;
 import com.github.azeroth.dbc.domain.SpellRadius;
-import com.github.azeroth.defines.Mechanics;
-import com.github.azeroth.defines.SpellAttr10;
-import com.github.azeroth.defines.SpellAttr11;
-import com.github.azeroth.defines.SpellEffectName;
+import com.github.azeroth.defines.*;
 import com.github.azeroth.game.condition.Condition;
 import com.github.azeroth.game.entity.item.ItemEnchantmentManager;
 import com.github.azeroth.game.entity.object.WorldObject;
+import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.spell.auras.enums.AuraType;
 import com.github.azeroth.game.spell.enums.SpellEffectImplicitTargetTypes;
 import com.github.azeroth.game.spell.enums.SpellTargetObjectTypes;
+import com.github.azeroth.utils.RandomUtil;
 
 import java.util.ArrayList;
 
@@ -332,17 +332,17 @@ public class SpellEffectInfo {
     };
     private final SpellInfo spellInfo;
     private final ImmunityInfo immunityInfo;
-    public int effectIndex;
+    public SpellEffIndex effectIndex;
     public SpellEffectName effect = SpellEffectName.NONE;
     public AuraType applyAuraName = AuraType.values()[0];
 
     public int applyAuraPeriod;
-    public double basePoints;
-    public double realPointsPerLevel;
-    public double pointsPerResource;
-    public double amplitude;
-    public double chainAmplitude;
-    public double bonusCoefficient;
+    public float basePoints;
+    public float realPointsPerLevel;
+    public float pointsPerResource;
+    public float amplitude;
+    public float chainAmplitude;
+    public float bonusCoefficient;
     public int miscValue;
     public int miscValueB;
     public Mechanics mechanic = Mechanics.MECHANIC_NONE;
@@ -352,12 +352,12 @@ public class SpellEffectInfo {
     public SpellRadius radiusEntry;
     public SpellRadius maxRadiusEntry;
     public int chainTargets;
-
+    public int dieSides;
     public int itemType;
 
     public int triggerSpell;
     public Flag128 spellClassMask;
-    public double bonusCoefficientFromAp;
+    public float bonusCoefficientFromAp;
     public ArrayList<Condition> implicitTargetConditions;
     public SpellEffectAttributes effectAttributes = SpellEffectAttributes.None;
     public ScalingInfo scaling = new ScalingInfo();
@@ -370,7 +370,7 @@ public class SpellEffectInfo {
         this.spellInfo = spellInfo;
 
         if (effect != null) {
-            effectIndex = effect.getEffectIndex();
+            effectIndex = SpellEffIndex.values()[effect.getEffectIndex()];
             effect = SpellEffectName.forValue(effect.effect);
             applyAuraName = AuraType.forValue(effect.EffectAura);
             applyAuraPeriod = effect.getEffectAuraPeriod();
@@ -382,22 +382,23 @@ public class SpellEffectInfo {
             bonusCoefficient = effect.getEffectBonusCoefficient();
             miscValue = effect.getEffectMiscValue1();
             miscValueB = effect.getEffectMiscValue2();
-            mechanic = mechanics.forValue(effect.EffectMechanic);
+            mechanic = mechanics.forValue(effect.getEffectMechanic());
             positionFacing = effect.getEffectPosFacing();
-            targetA = new spellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[0]));
-            targetB = new spellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[1]));
+            targetA = new SpellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[0]));
+            targetB = new SpellImplicitTargetInfo(targets.forValue(effect.ImplicitTarget[1]));
             radiusEntry = CliDB.SpellRadiusStorage.get(effect.EffectRadiusIndex[0]);
             maxRadiusEntry = CliDB.SpellRadiusStorage.get(effect.EffectRadiusIndex[1]);
             chainTargets = effect.getEffectChainTargets();
+            dieSides = effect.getEffectDieSides();
             itemType = effect.getEffectItemType();
             triggerSpell = effect.getEffectTriggerSpell();
-            spellClassMask = effect.getEffectSpellClassMask;
-            bonusCoefficientFromAp = effect.BonusCoefficientFromAP;
-            scaling.class = effect.ScalingClass;
-            scaling.coefficient = effect.coefficient;
-            scaling.variance = effect.variance;
-            scaling.resourceCoefficient = effect.resourceCoefficient;
-            effectAttributes = effect.effectAttributes;
+            spellClassMask = effect.getEffectSpellClassMask();
+            bonusCoefficientFromAp = effect.getEffectBonusCoefficientFromAP();
+            scaling.scalingClass = effect.getScalingClass();
+            scaling.coefficient = effect.getScalingCoefficient();
+            scaling.variance = effect.getScalingVariance();
+            scaling.resourceCoefficient = effect.getScalingResourceCoefficient();
+            effectAttributes = effect.getEffectAttributes();
         }
 
         implicitTargetConditions = null;
@@ -462,8 +463,8 @@ public class SpellEffectInfo {
     }
 
 
-    public final float calcValue(WorldObject CASTER, Double bp, Unit target, int castItemId) {
-        return calcValue(CASTER, bp, target, castItemId, -1);
+    public final float calcValue(WorldObject caster, Double bp, Unit target, int castItemId) {
+        return calcValue(caster, bp, target, castItemId, -1);
     }
 
     public final float calcValue(WorldObject CASTER, Double bp, Unit target) {
@@ -508,34 +509,43 @@ public class SpellEffectInfo {
         return calcValue(variance, null, null, null, 0, -1);
     }
 
-    public final float calcValue(tangible.OutObject<Double> variance, WorldObject CASTER, Double bp, Unit target, int castItemId, int itemLevel) {
-        variance.outArgValue = 0.0f;
+    public final float calcValue(WorldObject caster, YieldResult<Integer> bp, Unit target, YieldResult<Float> variance) {
         var basePointsPerLevel = realPointsPerLevel;
-        var basePoints = calcBaseValue(CASTER, target, castItemId, itemLevel);
-        var value = bp != null ? bp.doubleValue() : basePoints;
+        var basePoints = calcBaseValue(caster, target);
+        var value = bp != null && !bp.wasNull() ? bp.get() : basePoints;
         var comboDamage = pointsPerResource;
 
-        Unit CASTERUnit = null;
+        Unit casterUnit = null;
 
-        if (CASTER != null) {
-            CASTERUnit = CASTER.toUnit();
+        if (caster != null) {
+            casterUnit = caster.toUnit();
+        }
+
+        if (dieSides != 0) {
+            // roll in a range <1;EffectDieSides> as of patch 3.3.3
+            if (dieSides == 1)
+                value += dieSides;
+            else
+                value += (dieSides >= 1) ? RandomUtil.randomInt(1, dieSides + 1) : RandomUtil.randomInt(dieSides, 2);
         }
 
         if (scaling.variance != 0) {
-            var delta = Math.abs(scaling.Variance * 0.5f);
-            var valueVariance = RandomUtil.FRand(-delta, delta);
+            var delta = Math.abs(scaling.variance * 0.5f);
+            var valueVariance = RandomUtil.randomFloat(-delta, delta);
             value += basePoints * valueVariance;
-            variance.outArgValue = valueVariance;
+            if (variance != null) {
+                variance.set(valueVariance);
+            }
         }
 
-        // base amount modification based on spell lvl vs CASTER lvl
+        // base amount modification based on spell lvl vs caster lvl
         if (scaling.coefficient != 0.0f) {
             if (scaling.resourceCoefficient != 0) {
-                comboDamage = scaling.ResourceCoefficient * value;
+                comboDamage = scaling.resourceCoefficient * value;
             }
-        } else if (getScalingExpectedStat() == ExpectedStatType.NONE) {
-            if (CASTERUnit != null && basePointsPerLevel != 0.0f) {
-                var level = CASTERUnit.getLevel();
+        } else {
+            if (casterUnit != null && basePointsPerLevel != 0.0f) {
+                var level = casterUnit.getLevel();
 
                 if (level > spellInfo.getMaxLevel() && spellInfo.getMaxLevel() > 0) {
                     level = spellInfo.getMaxLevel();
@@ -553,33 +563,40 @@ public class SpellEffectInfo {
         }
 
         // random damage
-        if (CASTERUnit != null) {
+        if (casterUnit != null) {
             // bonus amount from combo points
             if (comboDamage != 0) {
-                var comboPoints = CASTERUnit.getComboPoints();
+                var comboPoints = casterUnit.getComboPoints();
 
                 if (comboPoints != 0) {
                     value += comboDamage * comboPoints;
                 }
             }
+            value = caster.applyEffectModifiers(spellInfo, effectIndex, value);
+        }
 
-            if (CASTER != null) {
-                value = CASTER.applyEffectModifiers(spellInfo, effectIndex, value);
+        if (caster != null && spellInfo.hasAttribute(SpellAttr8.MASTERY_AFFECTS_POINTS)) {
+            Player playerCaster = caster.toPlayer();
+            if (playerCaster != null) {
+                value += playerCaster.getActivePlayerData().getMastery() * bonusCoefficient;
             }
         }
+
+        if (caster != null)
+            value = caster.applyEffectModifiers(spellInfo, effectIndex, value);
 
         return value;
     }
 
 
-    public final float calcBaseValue(WorldObject CASTER, Unit target, int itemId, int itemLevel) {
+    public final float calcBaseValue(WorldObject caster, Unit target) {
         if (scaling.coefficient != 0.0f) {
             var level = spellInfo.getSpellLevel();
 
             if (target != null && spellInfo.isPositiveEffect(effectIndex) && (effect == SpellEffectName.APPLY_AURA)) {
                 level = target.getLevel();
-            } else if (CASTER != null && CASTER.isUnit()) {
-                level = CASTER.toUnit().getLevel();
+            } else if (caster != null && caster.isUnit()) {
+                level = caster.toUnit().getLevel();
             }
 
             if (spellInfo.getBaseLevel() != 0 && !spellInfo.hasAttribute(SpellAttr11.SCALES_WITH_ITEM_LEVEL) && spellInfo.hasAttribute(SpellAttr10.USE_SPELL_BASE_LEVEL_FOR_SCALING)) {
@@ -673,7 +690,7 @@ public class SpellEffectInfo {
                     expansion = contentTuning.ExpansionID;
                 }
 
-                var level = CASTER != null && CASTER.isUnit() ? CASTER.toUnit().getLevel() : 1;
+                var level = caster != null && caster.isUnit() ? caster.toUnit().getLevel() : 1;
                 tempValue = global.getDB2Mgr().EvaluateExpectedStat(stat, level, expansion, 0, playerClass.NONE) * BasePoints / 100.0f;
             }
 
@@ -928,20 +945,9 @@ public class SpellEffectInfo {
 
 
     public final static class ScalingInfo {
-        public int class;
-        public double coefficient;
-        public double variance;
-        public double resourceCoefficient;
-
-        public ScalingInfo clone() {
-            ScalingInfo varCopy = new scalingInfo();
-
-            varCopy.class = this. class ;
-            varCopy.coefficient = this.coefficient;
-            varCopy.variance = this.variance;
-            varCopy.resourceCoefficient = this.resourceCoefficient;
-
-            return varCopy;
-        }
+        public int scalingClass;
+        public float coefficient;
+        public float variance;
+        public float resourceCoefficient;
     }
 }

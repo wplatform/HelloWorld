@@ -222,7 +222,7 @@ public class Totem extends Minion {
     }
 
     @Override
-    public void updateResistances(SpellSchools school) {
+    public void updateResistances(SpellSchool school) {
     }
 
     @Override

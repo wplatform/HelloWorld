@@ -2,6 +2,8 @@ package com.github.azeroth.game.entity.player.enums;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @RequiredArgsConstructor
 public
 enum ActionButtonType {
@@ -15,4 +17,8 @@ enum ActionButtonType {
     MOUNT(0x60),
     ITEM(0x80);
     public final int value;
+
+    public static ActionButtonType valueOf(int value) {
+        return Arrays.stream(ActionButtonType.values()).filter(e -> e.value == value).findFirst().get();
+    }
 }

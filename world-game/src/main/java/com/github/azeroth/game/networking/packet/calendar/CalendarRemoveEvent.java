@@ -18,6 +18,6 @@ class CalendarRemoveEvent extends ClientPacket {
         eventID = this.readUInt64();
         moderatorID = this.readUInt64();
         clubID = this.readUInt64();
-        flags = this.readUInt();
+        flags = this.readUInt32();
     }
 }

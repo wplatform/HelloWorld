@@ -1,5 +1,7 @@
 package com.github.azeroth.game.map.grid;
 
+import com.github.azeroth.game.domain.map.Coordinate;
+import com.github.azeroth.game.map.grid.visitor.GridVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +30,9 @@ public class NGrid {
 
 
     public NGrid(Cell cell) {
-        this(cell.getId(), cell.getGridX(), cell.getGridY());
+        Coordinate coordinate = Coordinate.createGridCoordinate(cell.getGridX(), cell.getGridY());
+
+        this(cell.getGridId(), cell.getGridX(), cell.getGridY());
     }
 
     public final NCell getNCell(int x, int y) {

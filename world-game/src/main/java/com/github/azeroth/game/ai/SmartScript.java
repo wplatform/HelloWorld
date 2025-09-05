@@ -306,7 +306,7 @@ public class SmartScript {
             Log.outDebug(LogFilter.ScriptsAi, String.format("SmartScript::OnInitialize: source is Quest with id %1$s, triggered by player %2$s", qst.id, player.getGUID()));
         } else if (obj != null) // Handle object based scripts
         {
-            switch (obj.getTypeId()) {
+            switch (obj.getObjectTypeId()) {
                 case Unit:
                     scriptType = SmartScriptType.CREATURE;
                     me = obj.toCreature();
@@ -833,7 +833,7 @@ public class SmartScript {
                             go.castSpell(target.toUnit(), e.action.cast.spell, new CastSpellExtraArgs(triggerFlag));
                         }
                     } else {
-                        Log.outDebug(LogFilter.ScriptsAi, "Spell {0} not casted because it has flag SMARTCAST_AURA_NOT_PRESENT and the target (Guid: {1} Entry: {2} Type: {3}) already has the aura", e.action.cast.spell, target.getGUID(), target.getEntry(), target.getTypeId());
+                        Log.outDebug(LogFilter.ScriptsAi, "Spell {0} not casted because it has flag SMARTCAST_AURA_NOT_PRESENT and the target (Guid: {1} Entry: {2} Type: {3}) already has the aura", e.action.cast.spell, target.getGUID(), target.getEntry(), target.getObjectTypeId());
                     }
                 }
 
@@ -3976,7 +3976,7 @@ public class SmartScript {
                     return;
                 }
 
-                if (e.event.respawn.type == (int) SmartRespawnCondition.area.getValue() && getBaseObject().getZone() != e.event.respawn.area) {
+                if (e.event.respawn.type == (int) SmartRespawnCondition.area.getValue() && getBaseObject().getZoneId() != e.event.respawn.area) {
                     return;
                 }
 

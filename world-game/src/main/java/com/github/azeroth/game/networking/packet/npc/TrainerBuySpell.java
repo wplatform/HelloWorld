@@ -15,7 +15,7 @@ class TrainerBuySpell extends ClientPacket {
     @Override
     public void read() {
         trainerGUID = this.readPackedGuid();
-        trainerID = this.readUInt();
-        spellID = this.readUInt();
+        trainerID = this.readUInt32();
+        spellID = this.readUInt32();
     }
 }

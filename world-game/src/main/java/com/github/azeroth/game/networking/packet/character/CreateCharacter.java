@@ -24,18 +24,18 @@ public class CreateCharacter extends ClientPacket {
         createInfo.raceId = race.forValue(this.readUInt8());
         createInfo.classId = playerClass.forValue(this.readUInt8());
         createInfo.sex = gender.forValue((byte) this.readUInt8());
-        var customizationCount = this.readUInt();
+        var customizationCount = this.readUInt32();
 
         createInfo.name = this.readString(nameLength);
 
         if (createInfo.templateSet != null) {
-            createInfo.templateSet = this.readUInt();
+            createInfo.templateSet = this.readUInt32();
         }
 
         for (var i = 0; i < customizationCount; ++i) {
             ChrCustomizationChoice tempVar = new ChrCustomizationChoice();
-            tempVar.chrCustomizationOptionID = this.readUInt();
-            tempVar.chrCustomizationChoiceID = this.readUInt();
+            tempVar.chrCustomizationOptionID = this.readUInt32();
+            tempVar.chrCustomizationChoiceID = this.readUInt32();
             createInfo.customizations.set(i, tempVar);
         }
 

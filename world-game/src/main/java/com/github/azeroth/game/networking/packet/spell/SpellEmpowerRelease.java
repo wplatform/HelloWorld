@@ -12,6 +12,6 @@ class SpellEmpowerRelease extends ClientPacket {
 
     @Override
     public void read() {
-        spellID = this.readUInt();
+        spellID = this.readUInt32();
     }
 }

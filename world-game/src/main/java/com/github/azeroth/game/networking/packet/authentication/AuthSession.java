@@ -26,9 +26,9 @@ class AuthSession extends ClientPacket {
     @Override
     public void read() {
         dosResponse = this.readUInt64();
-        regionID = this.readUInt();
-        battlegroupID = this.readUInt();
-        realmID = this.readUInt();
+        regionID = this.readUInt32();
+        battlegroupID = this.readUInt32();
+        realmID = this.readUInt32();
 
         for (var i = 0; i < localChallenge.GetLimit(); ++i) {
             localChallenge.set(i, this.readUInt8());
@@ -37,7 +37,7 @@ class AuthSession extends ClientPacket {
         digest = this.readBytes(24);
 
         useIPv6 = this.readBit();
-        var realmJoinTicketSize = this.readUInt();
+        var realmJoinTicketSize = this.readUInt32();
 
         if (realmJoinTicketSize != 0) {
             realmJoinTicket = this.readString(realmJoinTicketSize);

@@ -18,7 +18,7 @@ public class MoveSetCollisionHeightAck extends ClientPacket {
     public void read() {
         data.read(this);
         height = this.readFloat();
-        mountDisplayID = this.readUInt();
+        mountDisplayID = this.readUInt32();
         reason = UpdateCollisionHeightReason.forValue(this.readUInt8());
     }
 }

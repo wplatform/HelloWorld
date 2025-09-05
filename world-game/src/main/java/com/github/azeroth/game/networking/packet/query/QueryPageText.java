@@ -13,7 +13,7 @@ public class QueryPageText extends ClientPacket {
 
     @Override
     public void read() {
-        pageTextID = this.readUInt();
+        pageTextID = this.readUInt32();
         itemGUID = this.readPackedGuid();
     }
 }

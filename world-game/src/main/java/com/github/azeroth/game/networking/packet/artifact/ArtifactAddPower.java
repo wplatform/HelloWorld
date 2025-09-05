@@ -17,11 +17,11 @@ class ArtifactAddPower extends ClientPacket {
         artifactGUID = this.readPackedGuid();
         forgeGUID = this.readPackedGuid();
 
-        var powerCount = this.readUInt();
+        var powerCount = this.readUInt32();
 
         for (var i = 0; i < powerCount; ++i) {
             ArtifactPowerChoice artifactPowerChoice = new ArtifactPowerChoice();
-            artifactPowerChoice.artifactPowerID = this.readUInt();
+            artifactPowerChoice.artifactPowerID = this.readUInt32();
             artifactPowerChoice.rank = this.readUInt8();
             powerChoices.set(i, artifactPowerChoice);
         }

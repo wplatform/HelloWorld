@@ -22,7 +22,7 @@ public class ThreatManager {
     private final HashMap<ObjectGuid, ThreatReference> threatenedByMe = new HashMap<ObjectGuid, ThreatReference>(); // these refs are entries for myself on other units' threat lists
     public Unit owner;
     public boolean needClientUpdate;
-    public double[] singleSchoolModifiers = new double[SpellSchools.max.getValue()]; // most spells are single school - we pre-calculate these and store them
+    public double[] singleSchoolModifiers = new double[SpellSchool.max.getValue()]; // most spells are single school - we pre-calculate these and store them
     public volatile HashMap<spellSchoolMask, Double> multiSchoolModifiers = new HashMap<spellSchoolMask, Double>(); // these are calculated on demand
     public ArrayList<Tuple<ObjectGuid, Integer>> redirectInfo = new ArrayList<Tuple<ObjectGuid, Integer>>(); // current redirection targets and percentages (updated from registry in ThreatManager::UpdateRedirectInfo)
     public HashMap<Integer, HashMap<ObjectGuid, Integer>> redirectRegistry = new HashMap<Integer, HashMap<ObjectGuid, Integer>>(); // spellid . (victim . pct); all redirection effects on us (removal individually managed by spell scripts because blizzard is dumb)
@@ -35,7 +35,7 @@ public class ThreatManager {
         owner = owner;
         updateTimer = THREAT_UPDATE_INTERVAL;
 
-        for (var i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (var i = 0; i < SpellSchool.max.getValue(); ++i) {
             _singleSchoolModifiers[i] = 1.0f;
         }
     }
@@ -112,31 +112,31 @@ public class ThreatManager {
 
         switch (mask) {
             case Normal:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.NORMAL.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.NORMAL.getValue()];
 
                 break;
             case Holy:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Holy.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Holy.getValue()];
 
                 break;
             case Fire:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Fire.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Fire.getValue()];
 
                 break;
             case Nature:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Nature.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Nature.getValue()];
 
                 break;
             case Frost:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Frost.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Frost.getValue()];
 
                 break;
             case Shadow:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Shadow.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Shadow.getValue()];
 
                 break;
             case Arcane:
-                threat *= victimMgr._singleSchoolModifiers[SpellSchools.Arcane.getValue()];
+                threat *= victimMgr._singleSchoolModifiers[SpellSchool.Arcane.getValue()];
 
                 break;
             default: {
@@ -668,7 +668,7 @@ public class ThreatManager {
     }
 
     public final void updateMySpellSchoolModifiers() {
-        for (byte i = 0; i < SpellSchools.max.getValue(); ++i) {
+        for (byte i = 0; i < SpellSchool.max.getValue(); ++i) {
             _singleSchoolModifiers[i] = owner.getTotalAuraMultiplierByMiscMask(AuraType.ModThreat, 1 << i);
         }
 

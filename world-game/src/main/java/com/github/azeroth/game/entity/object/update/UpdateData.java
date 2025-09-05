@@ -1,84 +1,100 @@
 package com.github.azeroth.game.entity.object.update;
 
 
+import com.github.azeroth.common.Assert;
 import com.github.azeroth.game.domain.object.ObjectGuid;
 import com.github.azeroth.game.networking.WorldPacket;
 import com.github.azeroth.game.networking.opcode.ServerOpCode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.CompositeByteBuf;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+@Getter
 @RequiredArgsConstructor
 public class UpdateData {
-    private final ArrayList<ObjectGuid> destroyGUIDs = new ArrayList<>();
-    private final ArrayList<ObjectGuid> outOfRangeGUIDs = new ArrayList<>();
     private final int mapId;
-    CompositeByteBuf compositeByteBuf = ByteBufAllocator.DEFAULT.compositeBuffer();
     private int blockCount;
+    private final Set<ObjectGuid> destroyGUIDs = new HashSet<>();
+    private final Set<ObjectGuid> outOfRangeGUIDs = new HashSet<>();
+    private ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer();
 
-    public final void addDestroyObject(ObjectGuid guid) {
+
+    // Move constructor equivalent using Java's copy constructor pattern
+    public UpdateData(UpdateData other) {
+        this.mapId = other.mapId;
+        this.blockCount = other.blockCount;
+        this.outOfRangeGUIDs.addAll(other.outOfRangeGUIDs);
+        this.destroyGUIDs.addAll(other.destroyGUIDs);
+        this.buffer = other.buffer.duplicate();
+    }
+
+    public void addDestroyObject(ObjectGuid guid) {
         destroyGUIDs.add(guid);
     }
 
-    public final void addOutOfRangeGUID(ArrayList<ObjectGuid> guids) {
+    public void addOutOfRangeGUID(Set<ObjectGuid> guids) {
         outOfRangeGUIDs.addAll(guids);
     }
 
-    public final void addOutOfRangeGUID(ObjectGuid guid) {
+    public void addOutOfRangeGUID(ObjectGuid guid) {
         outOfRangeGUIDs.add(guid);
     }
 
-    public final void addUpdateBlock(WorldPacket block) {
-        compositeByteBuf.addComponent(block.content());
-        ++blockCount;
+    public void addUpdateBlock() {
+        blockCount++;
     }
 
     public WorldPacket buildPacket() {
 
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.buffer(200);
-        WorldPacket head = WorldPacket.wrap(byteBuf);
+        try {
+            // Calculate packet capacity
+            int estimatedSize = 4 + 2 + 1 + (2 + 4 + 17 * (destroyGUIDs.size() + outOfRangeGUIDs.size())) + buffer.readableBytes();
 
-        head.writeInt32(blockCount);
-        head.writeInt16(mapId);
+            WorldPacket packet =WorldPacket.newServerToClient(ServerOpCode.SMSG_UPDATE_OBJECT, estimatedSize);
 
-        if (head.writeBit(!outOfRangeGUIDs.isEmpty() || !destroyGUIDs.isEmpty())) {
-            head.writeInt16(destroyGUIDs.size());
-            head.writeInt32(destroyGUIDs.size() + outOfRangeGUIDs.size());
+            // Write packet content
+            packet.writeInt16(mapId);
+            packet.writeInt32(blockCount);
+            packet.writeBit(true); // unk
 
-            for (var destroyGuid : destroyGUIDs) {
-                head.writeGuid(destroyGuid);
+            boolean hasGuidData = !outOfRangeGUIDs.isEmpty() || !destroyGUIDs.isEmpty();
+            if (packet.writeBit(hasGuidData)) {
+                packet.writeInt16(destroyGUIDs.size());
+                packet.writeInt32(destroyGUIDs.size() + outOfRangeGUIDs.size());
+
+                for (ObjectGuid guid : destroyGUIDs) {
+                    packet.writeGuid(guid);
+                }
+
+                for (ObjectGuid guid : outOfRangeGUIDs) {
+                    packet.writeGuid(guid);
+                }
             }
 
-            for (var outOfRangeGuid : outOfRangeGUIDs) {
-                head.writeGuid(outOfRangeGuid);
-            }
+            packet.writeInt32(buffer.readableBytes());
+            packet.writeBytes(buffer);
+            return packet;
+        } finally {
+            buffer.release();
         }
-        head.writeInt32(compositeByteBuf.writerIndex());
-        compositeByteBuf.addComponent(0, head.content());
-        return WorldPacket.newServerToClient(ServerOpCode.SMSG_UPDATE_OBJECT, compositeByteBuf);
     }
 
-    public final void clear() {
-        compositeByteBuf.clear();
-        destroyGUIDs.clear();
-        outOfRangeGUIDs.clear();
-        blockCount = 0;
-
-    }
-
-    public final boolean hasData() {
+    public boolean hasData() {
         return blockCount > 0 || !outOfRangeGUIDs.isEmpty() || !destroyGUIDs.isEmpty();
     }
 
-    public final ArrayList<ObjectGuid> getOutOfRangeGUIDs() {
-        return outOfRangeGUIDs;
+    public void clear() {
+        blockCount = 0;
+        outOfRangeGUIDs.clear();
+        destroyGUIDs.clear();
+        buffer.clear();
     }
 
-
-    public void close() {
-        compositeByteBuf.release();
+    public void release() {
+        buffer.release();
     }
 }

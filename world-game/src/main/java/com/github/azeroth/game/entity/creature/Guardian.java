@@ -82,7 +82,7 @@ public class Guardian extends Minion {
         }
         var creatureID = (petType == PetType.Hunter) ? 1 : cinfo.entry;
 
-        setMeleeDamageSchool(SpellSchools.forValue(cinfo.dmgSchool));
+        setMeleeDamageSchool(SpellSchool.forValue(cinfo.dmgSchool));
 
         setStatFlatModifier(UnitMods.Armor, UnitModifierFlatType.Base, (float) petlevel * 50);
 
@@ -96,7 +96,7 @@ public class Guardian extends Minion {
         // Resistance
         // Hunters pet should not inherit resistances from creature_template, they have separate auras for that
         if (!isHunterPet()) {
-            for (var i = SpellSchools.Holy.getValue(); i < SpellSchools.Max.getValue(); ++i) {
+            for (var i = SpellSchool.Holy.getValue(); i < SpellSchool.Max.getValue(); ++i) {
                 setStatFlatModifier(UnitMods.ResistanceStart + i, UnitModifierFlatType.Base, cinfo.resistance[i]);
             }
         }
@@ -151,8 +151,8 @@ public class Guardian extends Minion {
         switch (petType) {
             case Summon: {
                 // the damage bonus used for pets is either fire or shadow damage, whatever is higher
-                var fire = getOwnerUnit().getAsPlayer().activePlayerData.modDamageDonePos.get(SpellSchools.Fire.getValue());
-                var shadow = getOwnerUnit().getAsPlayer().activePlayerData.modDamageDonePos.get(SpellSchools.Shadow.getValue());
+                var fire = getOwnerUnit().getAsPlayer().activePlayerData.modDamageDonePos.get(SpellSchool.Fire.getValue());
+                var shadow = getOwnerUnit().getAsPlayer().activePlayerData.modDamageDonePos.get(SpellSchool.Shadow.getValue());
                 var val = (fire > shadow) ? fire : shadow;
 
                 if (val < 0) {
@@ -407,8 +407,8 @@ public class Guardian extends Minion {
     }
 
     @Override
-    public void updateResistances(SpellSchools school) {
-        if (school.getValue() > SpellSchools.Normal.getValue()) {
+    public void updateResistances(SpellSchool school) {
+        if (school.getValue() > SpellSchool.Normal.getValue()) {
             var baseValue = getFlatModifierValue(UnitMods.ResistanceStart + school.getValue(), UnitModifierFlatType.Base);
             var bonusValue = getTotalAuraModValue(UnitMods.ResistanceStart + school.getValue()) - baseValue;
 
@@ -553,8 +553,8 @@ public class Guardian extends Minion {
             }
             //demons benefit from warlocks shadow or fire damage
             else if (isPet()) {
-                var fire = owner.activePlayerData.modDamageDonePos.get(SpellSchools.Fire.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchools.Fire.getValue());
-                var shadow = owner.activePlayerData.modDamageDonePos.get(SpellSchools.Shadow.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchools.Shadow.getValue());
+                var fire = owner.activePlayerData.modDamageDonePos.get(SpellSchool.Fire.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchool.Fire.getValue());
+                var shadow = owner.activePlayerData.modDamageDonePos.get(SpellSchool.Shadow.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchool.Shadow.getValue());
                 var maximum = (fire > shadow) ? fire : shadow;
 
                 if (maximum < 0) {
@@ -566,7 +566,7 @@ public class Guardian extends Minion {
             }
             //water elementals benefit from mage's frost damage
             else if (getEntry() == ENTRY_WATER_ELEMENTAL) {
-                var frost = owner.activePlayerData.modDamageDonePos.get(SpellSchools.Frost.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchools.Frost.getValue());
+                var frost = owner.activePlayerData.modDamageDonePos.get(SpellSchool.Frost.getValue()) - owner.activePlayerData.modDamageDoneNeg.get(SpellSchool.Frost.getValue());
 
                 if (frost < 0) {
                     frost = 0;
@@ -601,7 +601,7 @@ public class Guardian extends Minion {
         if (playerOwner != null) {
             //force of nature
             if (getEntry() == ENTRY_TREANT) {
-                var spellDmg = playerOwner.activePlayerData.modDamageDonePos.get(SpellSchools.Nature.getValue()) - playerOwner.activePlayerData.modDamageDoneNeg.get(SpellSchools.Nature.getValue());
+                var spellDmg = playerOwner.activePlayerData.modDamageDonePos.get(SpellSchool.Nature.getValue()) - playerOwner.activePlayerData.modDamageDoneNeg.get(SpellSchool.Nature.getValue());
 
                 if (spellDmg > 0) {
                     bonusDamage = spellDmg * 0.09f;
@@ -609,7 +609,7 @@ public class Guardian extends Minion {
             }
             //greater fire elemental
             else if (getEntry() == ENTRY_FIRE_ELEMENTAL) {
-                var spellDmg = playerOwner.activePlayerData.modDamageDonePos.get(SpellSchools.Fire.getValue()) - playerOwner.activePlayerData.modDamageDoneNeg.get(SpellSchools.Fire.getValue());
+                var spellDmg = playerOwner.activePlayerData.modDamageDonePos.get(SpellSchool.Fire.getValue()) - playerOwner.activePlayerData.modDamageDoneNeg.get(SpellSchool.Fire.getValue());
 
                 if (spellDmg > 0) {
                     bonusDamage = spellDmg * 0.4f;

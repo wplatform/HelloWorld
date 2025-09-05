@@ -15,7 +15,7 @@ class SetSavedInstanceExtend extends ClientPacket {
     @Override
     public void read() {
         mapID = this.readInt32();
-        difficultyID = this.readUInt();
+        difficultyID = this.readUInt32();
         extend = this.readBit();
     }
 }

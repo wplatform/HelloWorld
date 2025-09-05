@@ -8,6 +8,7 @@ import com.github.azeroth.game.domain.unit.MovementFlag;
 import com.github.azeroth.game.domain.unit.MovementFlag2;
 import com.github.azeroth.game.movement.Spline;
 import com.github.azeroth.game.movement.model.MovementForce;
+import com.github.azeroth.game.movement.model.MovementForceType;
 import com.github.azeroth.game.movement.model.MovementInfo;
 import com.github.azeroth.game.movement.model.TransportInfo;
 import com.github.azeroth.game.movement.spline.MoveSpline;
@@ -25,17 +26,17 @@ public final class MovementIOUtil {
         transportInfo.setGuid(data.readPackedGuid()); // Transport Guid
         transportInfo.setPos(new Position(data.readFloat(), data.readFloat(), data.readFloat(), data.readFloat()));
         transportInfo.setSeat(data.readByte()); // VehicleSeatIndex
-        transportInfo.setTime(data.readUInt()); // MoveTime
+        transportInfo.setTime(data.readUInt32()); // MoveTime
 
         var hasPrevTime = data.readBit();
         var hasVehicleId = data.readBit();
 
         if (hasPrevTime) {
-            transportInfo.setPrevTime(data.readUInt()); // PrevMoveTime
+            transportInfo.setPrevTime(data.readUInt32()); // PrevMoveTime
         }
 
         if (hasVehicleId) {
-            transportInfo.setVehicleId(data.readUInt()); // VehicleRecID
+            transportInfo.setVehicleId(data.readUInt32()); // VehicleRecID
         }
         return transportInfo;
     }
@@ -68,13 +69,13 @@ public final class MovementIOUtil {
     public static MovementInfo readMovementInfo(WorldPacket data) {
         var movementInfo = new MovementInfo();
         movementInfo.setGuid(data.readPackedGuid());
-        movementInfo.setTime(data.readUInt());
+        movementInfo.setTime(data.readUInt32());
         movementInfo.setPos(new Position(data.readFloat(), data.readFloat(), data.readFloat(), data.readFloat()));
         movementInfo.setPitch(data.readFloat());
         movementInfo.setStepUpStartElevation(data.readFloat());
 
-        var removeMovementForcesCount = data.readUInt();
-        var moveIndex = data.readUInt();
+        var removeMovementForcesCount = data.readUInt32();
+        var moveIndex = data.readUInt32();
 
         for (int i = 0; i < removeMovementForcesCount; ++i) {
             data.readPackedGuid();
@@ -95,7 +96,7 @@ public final class MovementIOUtil {
         }
 
         if (hasFall) {
-            movementInfo.getJump().setFallTime(data.readUInt());
+            movementInfo.getJump().setFallTime(data.readUInt32());
             movementInfo.getJump().setZspeed(data.readFloat());
 
             // ResetBitReader
@@ -282,7 +283,7 @@ public final class MovementIOUtil {
     }
 
     public static void writeMovementForceWithDirection(MovementForce movementForce, WorldPacket data, Position objectPosition) {
-        data.writeGuid(movementForce.getID());
+        data.writeGuid(movementForce.getId());
         data.writeVector3(movementForce.getOrigin());
 
         if (movementForce.getType() == MovementForceType.Gravity && objectPosition != null) // gravity

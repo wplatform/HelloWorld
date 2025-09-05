@@ -9,7 +9,7 @@ public final class SupportTicketHeader {
     public int program;
 
     public void read(WorldPacket packet) {
-        mapID = packet.readUInt();
+        mapID = packet.readUInt32();
         position = packet.readVector3();
         facing = packet.readFloat();
         program = packet.readInt32();

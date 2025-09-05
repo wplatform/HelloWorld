@@ -23,15 +23,15 @@ public final class BlackMarketItem {
     public boolean highBid;
 
     public void read(WorldPacket data) {
-        marketID = data.readUInt();
-        sellerNPC = data.readUInt();
+        marketID = data.readUInt32();
+        sellerNPC = data.readUInt32();
         item.read(data);
-        quantity = data.readUInt();
+        quantity = data.readUInt32();
         minBid = data.readUInt64();
         minIncrement = data.readUInt64();
         currentBid = data.readUInt64();
-        secondsRemaining = data.readUInt();
-        numBids = data.readUInt();
+        secondsRemaining = data.readUInt32();
+        numBids = data.readUInt32();
         highBid = data.readBit();
     }
 

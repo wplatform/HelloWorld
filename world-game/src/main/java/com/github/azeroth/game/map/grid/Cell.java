@@ -1,10 +1,12 @@
 package com.github.azeroth.game.map.grid;
 
 
+import com.github.azeroth.common.Assert;
 import com.github.azeroth.game.domain.map.Coordinate;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.map.Map;
 import com.github.azeroth.game.domain.map.MapDefine;
+import com.github.azeroth.game.map.grid.visitor.GridVisitor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -77,8 +79,14 @@ public class Cell {
         return cellX < MapDefine.MAX_NUMBER_OF_CELLS && cellY < MapDefine.MAX_NUMBER_OF_CELLS;
     }
 
-    public final int getId() {
+    public final int getGridId() {
+        //Create a grid coordinate and call the coordinate.getId() is same as gridX * MapDefine.MAX_NUMBER_OF_GRIDS + gridY
+        Assert.state(gridX < MapDefine.MAX_NUMBER_OF_GRIDS && gridY < MapDefine.MAX_NUMBER_OF_GRIDS, "x = {}, y = {}", gridX, gridY);
         return gridX * MapDefine.MAX_NUMBER_OF_GRIDS + gridY;
+    }
+
+    public final int getCellId() {
+        return cellX * MapDefine.MAX_NUMBER_OF_CELLS + cellY;
     }
 
     public void setNoCreate() {

@@ -140,7 +140,7 @@ public class WorldObjectSpellTargetCheck implements ICheck<WorldObject> {
 
                     break;
                 case Tap:
-                    if (referer.getTypeId() != TypeId.UNIT || unitTarget.getTypeId() != TypeId.PLAYER) {
+                    if (referer.getObjectTypeId() != TypeId.UNIT || unitTarget.getObjectTypeId() != TypeId.PLAYER) {
                         return false;
                     }
 

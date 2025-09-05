@@ -13,6 +13,6 @@ class QueryRealmName extends ClientPacket {
 
     @Override
     public void read() {
-        virtualRealmAddress = this.readUInt();
+        virtualRealmAddress = this.readUInt32();
     }
 }

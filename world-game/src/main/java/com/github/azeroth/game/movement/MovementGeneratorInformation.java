@@ -1,6 +1,8 @@
 package com.github.azeroth.game.movement;
 
 
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
+
 public final class MovementGeneratorInformation {
     public MovementGeneratortype type = MovementGeneratorType.values()[0];
     public ObjectGuid targetGUID = ObjectGuid.EMPTY;

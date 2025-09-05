@@ -27,17 +27,17 @@ public class SpellCastRequest {
 
     public final void read(WorldPacket data) {
         castID = data.readPackedGuid();
-        misc[0] = data.readUInt();
-        misc[1] = data.readUInt();
-        spellID = data.readUInt();
+        misc[0] = data.readUInt32();
+        misc[1] = data.readUInt32();
+        spellID = data.readUInt32();
 
         visual.read(data);
 
         missileTrajectory.read(data);
         craftingNPC = data.readPackedGuid();
 
-        var optionalCurrencies = data.readUInt();
-        var optionalReagents = data.readUInt();
+        var optionalCurrencies = data.readUInt32();
+        var optionalReagents = data.readUInt32();
 
         for (var i = 0; i < optionalCurrencies; ++i) {
 
@@ -68,7 +68,7 @@ public class SpellCastRequest {
             SpellWeight weight = new SpellWeight();
             weight.type = data.readBit(2);
             weight.ID = data.readInt32();
-            weight.quantity = data.readUInt();
+            weight.quantity = data.readUInt32();
             weight.add(weight);
         }
     }

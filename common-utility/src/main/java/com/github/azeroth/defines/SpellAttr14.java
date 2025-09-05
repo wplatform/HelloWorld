@@ -1,10 +1,13 @@
 package com.github.azeroth.defines;
 
+import com.github.azeroth.common.EnumFlag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 // EnumUtils: DESCRIBE THIS
+@Getter
 @RequiredArgsConstructor
-public enum SpellAttr14 {
+public enum SpellAttr14 implements EnumFlag.FlagValue {
     UNK0(0x00000001), // TITLE Unknown attribute 0@Attr14
     REAGENT_COST_CONSUMES_CHARGES(0x00000002), // TITLE Reagent Consume Charges DESCRIPTION Consumes item charges for reagent costs instead of whole items
     UNK2(0x00000004), // TITLE Unknown attribute 2@Attr14

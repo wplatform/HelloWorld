@@ -1,6 +1,8 @@
 package com.github.azeroth.game.combat;
 
 
+import com.github.azeroth.game.domain.object.ObjectGuid;
+import com.github.azeroth.game.domain.unit.UnitState;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.unit.Unit;
 
@@ -9,11 +11,11 @@ import java.util.HashMap;
 
 public class CombatManager {
     private final Unit owner;
-    private final HashMap<ObjectGuid, CombatReference> pveRefs = new HashMap<ObjectGuid, CombatReference>();
-    private final HashMap<ObjectGuid, PvPCombatReference> pvpRefs = new HashMap<ObjectGuid, PvPCombatReference>();
+    private final HashMap<ObjectGuid, CombatReference> pveRefs = new HashMap<>();
+    private final HashMap<ObjectGuid, PvPCombatReference> pvpRefs = new HashMap<>();
 
     public CombatManager(Unit owner) {
-        owner = owner;
+        this.owner = owner;
     }
 
     public static boolean canBeginCombat(Unit a, Unit b) {
@@ -44,11 +46,11 @@ public class CombatManager {
             return false;
         }
 
-        if (a.hasUnitState(UnitState.Evade) || b.hasUnitState(UnitState.Evade)) {
+        if (a.hasUnitState(UnitState.EVADE) || b.hasUnitState(UnitState.EVADE)) {
             return false;
         }
 
-        if (a.hasUnitState(UnitState.InFlight) || b.hasUnitState(UnitState.InFlight)) {
+        if (a.hasUnitState(UnitState.IN_FLIGHT) || b.hasUnitState(UnitState.IN_FLIGHT)) {
             return false;
         }
 
@@ -65,11 +67,7 @@ public class CombatManager {
         var playerB = b.getCharmerOrOwnerPlayerOrPlayerItself();
 
         // ...neither of the two units must be (owned by) a player with .gm on
-        if ((playerA && playerA.isGameMaster()) || (playerB && playerB.isGameMaster())) {
-            return false;
-        }
-
-        return true;
+        return (playerA == null || !playerA.isGameMaster()) && (playerB == null || !playerB.isGameMaster());
     }
 
     public static void notifyAICombat(Unit me, Unit other) {

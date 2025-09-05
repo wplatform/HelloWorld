@@ -1,9 +1,9 @@
 package com.github.azeroth.game.ai;
 
 
-import com.github.azeroth.game.WaypointMoveType;
-import com.github.azeroth.game.WaypointNode;
-import com.github.azeroth.game.WaypointPath;
+import com.github.azeroth.game.domain.misc.WaypointMoveType;
+import com.github.azeroth.game.domain.misc.WaypointNode;
+import com.github.azeroth.game.domain.misc.WaypointPath;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;

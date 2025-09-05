@@ -1,15 +1,20 @@
 package com.github.azeroth.game.text;
 
 
+import com.badlogic.gdx.math.Vector3;
 import com.github.azeroth.defines.ChatMsg;
 import com.github.azeroth.defines.Language;
+import com.github.azeroth.defines.Team;
 import com.github.azeroth.game.chat.MessageBuilder;
+import com.github.azeroth.game.domain.object.WorldLocation;
 import com.github.azeroth.game.entity.creature.Creature;
 import com.github.azeroth.game.entity.object.WorldObject;
 import com.github.azeroth.game.entity.player.Player;
 import com.github.azeroth.game.entity.unit.Unit;
 import com.github.azeroth.game.map.PlayerDistWorker;
 import com.github.azeroth.game.map.grid.Cell;
+import com.github.azeroth.game.networking.ServerPacket;
+import com.github.azeroth.game.networking.packet.misc.PlayObjectSound;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -363,8 +368,9 @@ public final class CreatureTextManager {
             pkt.targetObjectGUID = whisperTarget.getGUID();
             pkt.sourceObjectGUID = source.getGUID();
             pkt.soundKitID = sound;
-            pkt.position = whisperTarget.getLocation();
-            pkt.broadcastTextID = (int) keyBroadcastTextId;
+            WorldLocation location = whisperTarget.getLocation();
+            pkt.position = new Vector3(location.getX(), location.getY(), location.getZ());
+            pkt.broadcastTextID = keyBroadcastTextId;
             sendNonChatPacket(source, pkt, msgType, whisperTarget, range, team, gmOnly);
         } else if (playType == SoundKitPlayType.NORMAL) {
             sendNonChatPacket(source, new playSound(source.getGUID(), sound, keyBroadcastTextId), msgType, whisperTarget, range, team, gmOnly);
@@ -500,11 +506,11 @@ public final class CreatureTextManager {
 
         switch (range) {
             case Area: {
-                var areaId = source.getArea();
+                var areaId = source.getAreaId();
                 var players = source.getMap().getPlayers();
 
                 for (var pl : players) {
-                    if (pl.getArea() == areaId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
+                    if (pl.getAreaId() == areaId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
                         localizer.invoke(pl);
                     }
                 }
@@ -512,11 +518,11 @@ public final class CreatureTextManager {
                 return;
             }
             case Zone: {
-                var zoneId = source.getZone();
+                var zoneId = source.getZoneId();
                 var players = source.getMap().getPlayers();
 
                 for (var pl : players) {
-                    if (pl.getZone() == zoneId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
+                    if (pl.getZoneId() == zoneId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
                         localizer.invoke(pl);
                     }
                 }
@@ -571,7 +577,7 @@ public final class CreatureTextManager {
         var dist = getRangeForChatType(msgType);
 
         switch (msgType) {
-            case MonsterParty:
+            case MONSTER_PARTY:
                 if (!whisperTarget) {
                     return;
                 }
@@ -587,8 +593,8 @@ public final class CreatureTextManager {
                 }
 
                 return;
-            case MonsterWhisper:
-            case RaidBossWhisper: {
+            case MONSTER_WHISPER:
+            case RAID_BOSS_WHISPER: {
                 if (range == CreatureTextRange.NORMAL) //ignores team and gmOnly
                 {
                     if (!whisperTarget || !whisperTarget.isTypeId(TypeId.PLAYER)) {
@@ -608,11 +614,11 @@ public final class CreatureTextManager {
 
         switch (range) {
             case Area: {
-                var areaId = source.getArea();
+                var areaId = source.getAreaId();
                 var players = source.getMap().getPlayers();
 
                 for (var pl : players) {
-                    if (pl.getArea() == areaId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
+                    if (pl.getAreaId() == areaId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
                         pl.sendPacket(data);
                     }
                 }
@@ -620,11 +626,11 @@ public final class CreatureTextManager {
                 return;
             }
             case Zone: {
-                var zoneId = source.getZone();
+                var zoneId = source.getZoneId();
                 var players = source.getMap().getPlayers();
 
                 for (var pl : players) {
-                    if (pl.getZone() == zoneId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
+                    if (pl.getZoneId() == zoneId && (team == 0 || pl.getEffectiveTeam() == team) && (!gmOnly || pl.isGameMaster())) {
                         pl.sendPacket(data);
                     }
                 }

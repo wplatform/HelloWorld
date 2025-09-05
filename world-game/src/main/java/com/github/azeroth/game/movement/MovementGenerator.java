@@ -2,6 +2,9 @@ package com.github.azeroth.game.movement;
 
 
 import com.github.azeroth.game.entity.unit.Unit;
+import com.github.azeroth.game.movement.enums.MovementGeneratorMode;
+import com.github.azeroth.game.movement.enums.MovementGeneratorPriority;
+import com.github.azeroth.game.movement.enums.MovementGeneratorType;
 
 public abstract class MovementGenerator implements IEquatable<MovementGenerator> {
     public MovementGeneratormode mode = MovementGeneratorMode.values()[0];
